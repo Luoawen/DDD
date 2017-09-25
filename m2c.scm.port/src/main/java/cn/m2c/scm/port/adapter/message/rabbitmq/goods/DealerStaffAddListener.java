@@ -1,21 +1,21 @@
 package cn.m2c.scm.port.adapter.message.rabbitmq.goods;
 
 
-import cn.m2c.ddd.common.application.configuration.RabbitmqConfiguration;
-import cn.m2c.ddd.common.event.ConsumedEventStore;
-import cn.m2c.ddd.common.notification.NotificationReader;
-import cn.m2c.ddd.common.port.adapter.messaging.rabbitmq.ExchangeListener;
-import cn.m2c.goods.domain.IDGenerator;
-import cn.m2c.scm.application.goods.goods.SellerApplication;
-import cn.m2c.scm.application.goods.goods.command.StaffAddOrUpdateCmd;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate4.HibernateTransactionManager;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import cn.m2c.ddd.common.application.configuration.RabbitmqConfiguration;
+import cn.m2c.ddd.common.event.ConsumedEventStore;
+import cn.m2c.ddd.common.notification.NotificationReader;
+import cn.m2c.ddd.common.port.adapter.messaging.rabbitmq.ExchangeListener;
+import cn.m2c.scm.application.goods.goods.SellerApplication;
+import cn.m2c.scm.application.goods.goods.command.StaffAddOrUpdateCmd;
+import cn.m2c.scm.domain.IDGenerator;
 
 public class DealerStaffAddListener  extends ExchangeListener{
 	

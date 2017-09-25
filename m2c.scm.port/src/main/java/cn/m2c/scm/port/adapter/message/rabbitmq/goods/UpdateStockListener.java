@@ -2,10 +2,7 @@ package cn.m2c.scm.port.adapter.message.rabbitmq.goods;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate4.HibernateTransactionManager;
-
-import com.google.gson.Gson;
 
 import cn.m2c.ddd.common.application.configuration.RabbitmqConfiguration;
 import cn.m2c.ddd.common.event.ConsumedEventStore;

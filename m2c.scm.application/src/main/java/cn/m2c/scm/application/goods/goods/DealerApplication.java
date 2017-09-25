@@ -1,7 +1,5 @@
 package cn.m2c.scm.application.goods.goods;
 
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,15 +9,14 @@ import org.springframework.transaction.annotation.Transactional;
 import cn.m2c.ddd.common.domain.model.DomainEvent;
 import cn.m2c.ddd.common.domain.model.DomainEventPublisher;
 import cn.m2c.ddd.common.event.annotation.EventListener;
-import cn.m2c.goods.domain.dealer.Dealer;
-import cn.m2c.goods.domain.dealer.DealerRepository;
-import cn.m2c.goods.domain.dealer.StaffAEvent;
-import cn.m2c.goods.domain.dealer.UorADealerEvent;
-import cn.m2c.goods.domain.goods.Goods;
-import cn.m2c.goods.exception.NegativeCode;
-import cn.m2c.goods.exception.NegativeException;
 import cn.m2c.pay.interfaces.dubbo.AccountService;
 import cn.m2c.scm.application.goods.goods.command.DealerAddOrUpdateCommand;
+import cn.m2c.scm.domain.NegativeCode;
+import cn.m2c.scm.domain.NegativeException;
+import cn.m2c.scm.domain.model.goods.dealer.Dealer;
+import cn.m2c.scm.domain.model.goods.dealer.DealerRepository;
+import cn.m2c.scm.domain.model.goods.dealer.StaffAEvent;
+import cn.m2c.scm.domain.model.goods.dealer.UorADealerEvent;
 import cn.m2c.system.interfaces.SalerService;
 import cn.m2c.system.interfaces.representation.Saler;
 import cn.m2c.users.interfaces.dubbo.UserService;

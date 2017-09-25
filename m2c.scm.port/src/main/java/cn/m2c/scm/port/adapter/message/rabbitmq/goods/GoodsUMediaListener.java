@@ -10,7 +10,6 @@ import cn.m2c.ddd.common.event.ConsumedEventStore;
 import cn.m2c.ddd.common.notification.NotificationReader;
 import cn.m2c.ddd.common.port.adapter.messaging.rabbitmq.ExchangeListener;
 import cn.m2c.scm.application.goods.goods.GoodsApplication;
-import cn.m2c.scm.application.goods.goods.command.GoodsAddMediaCommand;
 
 public class GoodsUMediaListener  extends ExchangeListener{
 private static final Logger LOGGER = LoggerFactory.getLogger(GoodsUMediaListener.class);

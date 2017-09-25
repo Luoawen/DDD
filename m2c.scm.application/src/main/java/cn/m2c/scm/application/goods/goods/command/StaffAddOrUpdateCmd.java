@@ -1,8 +1,8 @@
 package cn.m2c.scm.application.goods.goods.command;
 
-import cn.m2c.ddd.common.AssertionConcern;
-
 import java.io.Serializable;
+
+import cn.m2c.ddd.common.AssertionConcern;
 
 public class StaffAddOrUpdateCmd extends AssertionConcern implements Serializable{
 	

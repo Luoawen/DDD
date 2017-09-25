@@ -23,8 +23,6 @@ import cn.m2c.common.MCode;
 import cn.m2c.common.MPager;
 import cn.m2c.common.MResult;
 import cn.m2c.common.StringUtil;
-import cn.m2c.goods.domain.IDGenerator;
-import cn.m2c.goods.exception.NegativeException;
 import cn.m2c.helps.interfaces.dubbo.HelpsService;
 import cn.m2c.media.interfaces.dubbo.MediaService;
 import cn.m2c.pay.interfaces.dubbo.SettleRuleService;
@@ -35,6 +33,8 @@ import cn.m2c.scm.application.goods.goods.command.RecognizedPicCommand;
 import cn.m2c.scm.application.goods.goods.query.SpringJdbcGoodsQuery;
 import cn.m2c.scm.application.goods.goods.query.SpringJdbcHotWordQuery;
 import cn.m2c.scm.application.goods.goods.query.SpringJdbcLocQuery;
+import cn.m2c.scm.domain.IDGenerator;
+import cn.m2c.scm.domain.NegativeException;
 import cn.m2c.users.interfaces.dubbo.UserService;
 
 import com.google.gson.Gson;

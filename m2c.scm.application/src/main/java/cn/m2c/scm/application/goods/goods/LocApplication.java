@@ -6,11 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import cn.m2c.goods.domain.location.LocRepository;
-import cn.m2c.goods.domain.location.Location;
-import cn.m2c.goods.exception.NegativeCode;
-import cn.m2c.goods.exception.NegativeException;
 import cn.m2c.scm.application.goods.goods.command.LocationAddOrUpdateCommand;
+import cn.m2c.scm.domain.NegativeCode;
+import cn.m2c.scm.domain.NegativeException;
+import cn.m2c.scm.domain.model.goods.location.LocRepository;
+import cn.m2c.scm.domain.model.goods.location.Location;
 
 
 

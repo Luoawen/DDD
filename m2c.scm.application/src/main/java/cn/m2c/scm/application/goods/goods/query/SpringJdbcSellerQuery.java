@@ -11,7 +11,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import cn.m2c.common.MCode;
-import cn.m2c.goods.exception.NegativeException;
+import cn.m2c.scm.domain.NegativeException;
 
 @Repository
 public class SpringJdbcSellerQuery {

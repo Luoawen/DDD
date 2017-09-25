@@ -3,11 +3,8 @@ package cn.m2c.scm.port.adapter.persistence.hibernate.goods;
 import org.springframework.stereotype.Repository;
 
 import cn.m2c.ddd.common.port.adapter.persistence.hibernate.HibernateSupperRepository;
-import cn.m2c.goods.domain.classify.GoodsClassify;
-import cn.m2c.goods.domain.classify.GoodsClassifyRepository;
-import cn.m2c.goods.domain.dealer.Dealer;
-import cn.m2c.goods.domain.goods.Goods;
-import cn.m2c.goods.domain.goods.GoodsRepository;
+import cn.m2c.scm.domain.model.goods.classify.GoodsClassify;
+import cn.m2c.scm.domain.model.goods.classify.GoodsClassifyRepository;
 
 /**
  * @ClassName: HibernateGoodsClassifyRepository

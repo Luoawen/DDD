@@ -9,8 +9,8 @@ import cn.m2c.ddd.common.application.configuration.RabbitmqConfiguration;
 import cn.m2c.ddd.common.event.ConsumedEventStore;
 import cn.m2c.ddd.common.notification.NotificationReader;
 import cn.m2c.ddd.common.port.adapter.messaging.rabbitmq.ExchangeListener;
-import cn.m2c.goods.exception.NegativeException;
 import cn.m2c.scm.application.goods.goods.GoodsApplication;
+import cn.m2c.scm.domain.NegativeException;
 
 public class GoodFavoriteListener  extends ExchangeListener{
 	private static final Logger LOGGER = LoggerFactory.getLogger(GoodFavoriteListener.class);

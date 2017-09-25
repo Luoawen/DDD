@@ -3,8 +3,8 @@ package cn.m2c.scm.port.adapter.persistence.hibernate.goods;
 import org.springframework.stereotype.Repository;
 
 import cn.m2c.ddd.common.port.adapter.persistence.hibernate.HibernateSupperRepository;
-import cn.m2c.goods.domain.templet.TransportFee;
-import cn.m2c.goods.domain.templet.TransportFeeRepository;
+import cn.m2c.scm.domain.model.goods.templet.TransportFee;
+import cn.m2c.scm.domain.model.goods.templet.TransportFeeRepository;
 
 /**
  * @ClassName: HibernateDealerRepository

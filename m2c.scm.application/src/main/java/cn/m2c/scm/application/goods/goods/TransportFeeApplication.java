@@ -6,13 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import cn.m2c.goods.domain.dealer.Dealer;
-import cn.m2c.goods.domain.dealer.DealerRepository;
-import cn.m2c.goods.domain.templet.TransportFee;
-import cn.m2c.goods.domain.templet.TransportFeeRepository;
-import cn.m2c.goods.exception.NegativeCode;
-import cn.m2c.goods.exception.NegativeException;
 import cn.m2c.scm.application.goods.goods.command.TransportFeeAddOrUpdateCommand;
+import cn.m2c.scm.domain.NegativeCode;
+import cn.m2c.scm.domain.NegativeException;
+import cn.m2c.scm.domain.model.goods.dealer.Dealer;
+import cn.m2c.scm.domain.model.goods.dealer.DealerRepository;
+import cn.m2c.scm.domain.model.goods.templet.TransportFee;
+import cn.m2c.scm.domain.model.goods.templet.TransportFeeRepository;
 
 @Service
 @Transactional

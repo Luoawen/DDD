@@ -1,17 +1,17 @@
 package cn.m2c.scm.port.adapter.message.rabbitmq.goods;
 
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.orm.hibernate4.HibernateTransactionManager;
+
 import cn.m2c.ddd.common.application.configuration.RabbitmqConfiguration;
 import cn.m2c.ddd.common.event.ConsumedEventStore;
 import cn.m2c.ddd.common.notification.NotificationReader;
 import cn.m2c.ddd.common.port.adapter.messaging.rabbitmq.ExchangeListener;
 import cn.m2c.scm.application.goods.goods.SellerApplication;
 import cn.m2c.scm.application.goods.goods.command.StaffAddOrUpdateCmd;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.orm.hibernate4.HibernateTransactionManager;
 
 public class DealerStaffUpdateListener extends ExchangeListener {
 
