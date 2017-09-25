@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping default-access="field" default-cascade="all">
+	<class name="cn.m2c.goods.domain.seller.Seller" table="t_goods_dealer_seller" lazy="true" 
+	optimistic-lock="version" dynamic-insert="true" dynamic-update="true">
+		
+		<id name="id" column="id" type="long" unsaved-value="-1">
+			<generator class="native" />
+		</id>
+		<version name="concurrencyVersion" column="concurrency_version" type="int" />
+		<property name="createdDate" generated="insert" not-null="true">
+			<column name="created_date" sql-type="timestamp" default="CURRENT_TIMESTAMP"></column>
+		</property>
+		<property name="lastUpdatedDate" generated="always" not-null="true">
+			<column name="last_updated_date" sql-type="timestamp" default="CURRENT_TIMESTAMP"></column>
+		</property>
+
+		<property name="staffId" column="staff_id" type="string" />
+		<property name="userId" column="user_id" type="string" />
+		<property name="accNo" column="acc_no" type="string" />
+		<property name="staffName" column="staff_name" type="string" />
+		<property name="phone" column="phone" type="string" />
+		<property name="mail" column="mail" type="string" />
+		<property name="sex" column="sex" type="integer" />
+		<property name="age" column="age" type="integer" />
+		<property name="proCode" column="pro_code" type="string" />
+		<property name="cityCode" column="city_code" type="string" />
+		<property name="areaCode" column="area_code" type="string" />
+		<property name="proName" column="pro_name" type="string" />
+		<property name="cityName" column="city_name" type="string" />
+		<property name="areaName" column="area_name" type="string" />
+		<property name="regisDate" column="regis_date" type="long" />
+		<property name="orderNum" column="order_num" type="integer" />
+		<property name="isValid" column="is_valid" type="integer"/>
+	</class>
+</hibernate-mapping>

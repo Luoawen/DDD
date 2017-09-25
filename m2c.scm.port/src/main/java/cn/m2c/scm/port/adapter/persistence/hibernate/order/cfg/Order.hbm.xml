@@ -1,0 +1,97 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping default-access="field" default-cascade="all">
+	<class name="cn.m2c.order.domain.order.Order" table="t_order_order" lazy="true">
+		<id name="id" type="long" column="id" length="11">
+			<generator class="native" />
+		</id>
+		<version name="concurrencyVersion" column="concurrency_version" type="int" />
+		
+		<property name="orderId" column="order_id" type="string" />	
+		<property name="orderNo" column="order_no" type="string" />	
+		<property name="dispatchWay" column="dispatch_way" type="string" />		
+		<property name="invoiceType" column="invoice_type" type="int" />	
+		<property name="invoiceTitle" column="invoice_title" type="string" />	
+		<property name="taxIdenNum" column="tax_iden_num" type="string" />	
+		
+		<property name="orderPrice" column="order_price" type="long" />
+		<property name="freightPrice" column="freight_price" type="long" />
+		<property name="payPrice" column="pay_price" type="long" />	
+		<property name="payWay" column="pay_way" type="int" />
+		<property name="commitTime" column="commit_time" type="long" />
+		<property name="payStartTime" column="pay_start_time" type="long" />
+ 		<property name="payEndTime" column="pay_end_time" type="long" />
+ 		<property name="payTradeNo" column="pay_trade_no" type="string" />	
+ 		
+ 		<property name="buyerId" column="buyer_id" type="string" />	
+ 		<property name="buyerName" column="buyer_name" type="string" />	
+ 		<property name="buyerPhone" column="buyer_phone" type="string" />	
+ 		<property name="buyerMessage" column="buyer_message" type="string" />	
+ 		
+ 		<property name="goodsId" column="goods_id" type="string" />
+ 		<property name="goodsNo" column="goods_no" type="string" />
+		<property name="goodsName" column="goods_name" type="string" />
+		<property name="goodsIcon" column="goods_icon" type="string" />
+		<property name="propertyId" column="property_id" type="string" />
+		<property name="propertyDesc" column="property_desc" type="string" />
+ 		<property name="goodsUnitPrice" column="goods_unit_price" type="long" />
+ 		<property name="goodsMarketPrice" column="goods_market_price" type="long" />
+		<property name="goodsNum" column="goods_num" type="int" />	
+		<property name="goodsType" column="goods_type" type="int" />	
+		<property name="dealerUserId" column="dealer_user_id" type="string" />
+		<property name="dealerId" column="dealer_id" type="string" />
+		<property name="dealerName" column="dealer_name" type="string" />
+		<property name="dealerPhone" column="dealer_phone" type="string" />	
+		<property name="dealerStrategy" column="dealer_strategy" type="int" />
+		<property name="dealerPercent" column="dealer_percent" type="int" />
+	
+		<property name="mresId" column="mres_id" type="string" />
+		<property name="mresNo" column="mres_no" type="string" />
+
+		<property name="mresName" column="mres_name" type="string" />
+		<property name="mediaUserId" column="media_user_id" type="string" />
+		<property name="mediaId" column="media_id" type="string" />
+		<property name="mediaName" column="media_name" type="string" />
+		<property name="mediaPhone" column="media_phone" type="string" />	
+		<property name="mediaStrategy" column="media_strategy" type="int" />
+		<property name="mediaPercent" column="media_percent" type="int" />
+		<property name="salerUserId" column="saler_user_id" type="string" />
+		<property name="salerId" column="saler_id" type="string" />
+		<property name="salerName" column="saler_name" type="string" />
+		<property name="salerPhone" column="saler_phone" type="string" />	
+		<property name="salerStrategy" column="saler_strategy" type="int" />
+		<property name="salerPercent" column="saler_percent" type="int" />
+		
+		<property name="receiverId" column="receiver_id" type="string" />
+		<property name="receiverName" column="receiver_name" type="string" />
+		<property name="provinceCode" column="province_code" type="string" />
+		<property name="provinceName" column="province_name" type="string" />
+		<property name="cityCode" column="city_code" type="string" />
+		<property name="cityName" column="city_name" type="string" />
+		<property name="areaCode" column="area_code" type="string" />
+		<property name="areaName" column="area_name" type="string" />
+		<property name="receiverAddr" column="receiver_addr" type="string" />
+ 		<property name="receiverPhone" column="receiver_phone" type="string" />
+ 		<property name="receiverZipCode" column="receiver_zip_code" type="string" />
+
+ 		<property name="expCompanyCode" column="exp_company_code" type="string" />
+ 		<property name="expCompanyName" column="exp_company_name" type="string" />
+ 		<property name="waybillNo" column="waybill_no" type="string" />
+ 		<property name="commitWaybTime" column="commit_wayb_time" type="long" />
+ 		<property name="receiverTime" column="receiver_time" type="long" />
+ 		<property name="afterSalesValid" column="after_sales_valid" type="long" />
+ 		
+ 		<property name="orderStatus" column="order_status" type="int" />		
+ 		<property name="payStatus" column="pay_status" type="int" />
+ 		<property name="logisticsStatus" column="logistics_status" type="int" />
+ 		<property name="settleStatus" column="settle_status" type="int" />
+ 		<property name="afterSalesStatus" column="after_sales_status" type="int" />
+ 		<property name="commentStatus" column="comment_status" type="int" />
+ 		<property name="refundAmount" column="refund_amount" type="long" />
+ 		<property name="refundTime" column="refund_time" type="long" />
+ 		<property name="platformStrategy" column="platform_strategy" type="int" />
+ 		<property name="platformPercent" column="platform_percent" type="int" />
+		
+	</class>
+</hibernate-mapping>

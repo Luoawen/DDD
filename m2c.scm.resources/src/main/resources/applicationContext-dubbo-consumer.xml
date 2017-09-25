@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://code.alibabatech.com/schema/dubbo
+        http://code.alibabatech.com/schema/dubbo/dubbo.xsd
+        ">
+        
+	<dubbo:registry address="${dubbo.registry.url}" />
+	<dubbo:consumer check="false" reconnect="30000" timeout="10000" /> 
+	<!-- 开启监控 -->
+	<!-- <dubbo:monitor protocol="registry" /> -->
+	<dubbo:reference id="mediaService" check="false" interface="cn.m2c.media.interfaces.dubbo.MediaService" />
+	<dubbo:reference id="userService" check="false" interface="cn.m2c.users.interfaces.dubbo.UserService" />
+	<dubbo:reference id="settleRuleService" check="false" interface="cn.m2c.pay.interfaces.dubbo.SettleRuleService" />
+	<dubbo:reference id="pushService" check="false" interface="cn.m2c.support.interfaces.dubbo.PushService" />
+	<dubbo:reference id="tokenService" check="false" interface="cn.m2c.support.interfaces.dubbo.TokenService" />
+	<!-- 商品 -->
+	<dubbo:reference id="salerService" interface="cn.m2c.system.interfaces.SalerService" />
+	<dubbo:reference id="helpsService" interface="cn.m2c.helps.interfaces.dubbo.HelpsService" />
+	<dubbo:reference id="recognizeService" interface="cn.m2c.support.interfaces.dubbo.RecognizeService" /> 
+	<dubbo:reference id="accountService" interface="cn.m2c.pay.interfaces.dubbo.AccountService" /> 
+</beans>

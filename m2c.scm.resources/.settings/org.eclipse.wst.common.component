@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?><project-modules id="moduleCoreId" project-version="1.5.0">
+    <wb-module deploy-name="m2c.scm.resources">
+        <wb-resource deploy-path="/WEB-INF/web.xml" source-path="/src/main/webapp/WEB-INF/web.xml"/>
+        <wb-resource deploy-path="/" source-path="/target/m2e-wtp/web-resources"/>
+        <wb-resource deploy-path="/" source-path="/src/main/webapp" tag="defaultRootSource"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/java"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/resources"/>
+        <dependent-module archiveName="m2c.scm.domain-0.0.1-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/m2c.scm.domain/m2c.scm.domain">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="ddd.framework-1.1.0-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/ddd.framework/ddd.framework">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="m2c.scm.port-0.0.1-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/m2c.scm.port/m2c.scm.port">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="m2c.scm.application-0.0.1-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/m2c.scm.application/m2c.scm.application">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="m2c.scm.interfaces-0.0.1-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/m2c.scm.interfaces/m2c.scm.interfaces">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <property name="java-output-path" value="/m2c.scm.resources/target/classes"/>
+        <property name="context-root" value="mall.supply"/>
+        <property name="component.exclusion.patterns" value="%regex[WEB-INF/lib/(?!(.*?(interfaces|interface|disconf|msmq|service|utils|market|college|supply).*?)|cn.mljia|slf4j|log4j|dubbo).*.jar]"/>
+    </wb-module>
+</project-modules>
