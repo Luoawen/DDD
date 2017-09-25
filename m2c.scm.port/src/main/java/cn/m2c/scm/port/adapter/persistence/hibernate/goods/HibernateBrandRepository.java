@@ -3,11 +3,8 @@ package cn.m2c.scm.port.adapter.persistence.hibernate.goods;
 import org.springframework.stereotype.Repository;
 
 import cn.m2c.ddd.common.port.adapter.persistence.hibernate.HibernateSupperRepository;
-import cn.m2c.goods.domain.dealer.Dealer;
-import cn.m2c.goods.domain.dealer.DealerRepository;
-import cn.m2c.goods.domain.templet.Brand;
-import cn.m2c.goods.domain.templet.BrandRepository;
-import cn.m2c.goods.exception.NegativeException;
+import cn.m2c.scm.domain.model.goods.templet.Brand;
+import cn.m2c.scm.domain.model.goods.templet.BrandRepository;
 
 /**
  * @ClassName: HibernateDealerRepository

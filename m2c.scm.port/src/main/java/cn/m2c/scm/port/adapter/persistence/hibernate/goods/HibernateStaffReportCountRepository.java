@@ -3,9 +3,9 @@ package cn.m2c.scm.port.adapter.persistence.hibernate.goods;
 import org.springframework.stereotype.Repository;
 
 import cn.m2c.ddd.common.port.adapter.persistence.hibernate.HibernateSupperRepository;
-import cn.m2c.goods.domain.seller.StaffReportCount;
-import cn.m2c.goods.domain.seller.StaffReportCountRepository;
-import cn.m2c.goods.exception.NegativeException;
+import cn.m2c.scm.domain.NegativeException;
+import cn.m2c.scm.domain.model.goods.seller.StaffReportCount;
+import cn.m2c.scm.domain.model.goods.seller.StaffReportCountRepository;
 
 /**
  * @ClassName: HibernateSalerRepository

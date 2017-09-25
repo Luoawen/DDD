@@ -200,7 +200,7 @@
 					<artifactId>maven-war-plugin</artifactId>
 					<version>2.4</version>
 					<configuration>
-						<warName>toc.college</warName>
+						<warName>m2c.scm</warName>
 						<webXml>${project.basedir}/src/main/webapp/WEB-INF/web.xml</webXml>
 						<packagingExcludes>%regex[WEB-INF/lib/(?!(.*?(interfaces|interface|disconf|msmq|service|utils).*?)|cn.mljia|slf4j|log4j|dubbo).*.jar]</packagingExcludes>
 					</configuration>

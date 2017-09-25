@@ -15,9 +15,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import cn.m2c.common.MCode;
 import cn.m2c.common.MPager;
-import cn.m2c.goods.exception.NegativeException;
 import cn.m2c.scm.application.goods.goods.SellerApplication;
 import cn.m2c.scm.application.goods.goods.query.SpringJdbcSellerQuery;
+import cn.m2c.scm.domain.NegativeException;
 /**
  * 经销商业务员
  * @author ps

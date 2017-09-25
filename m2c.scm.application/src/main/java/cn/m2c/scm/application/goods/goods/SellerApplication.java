@@ -1,17 +1,6 @@
 package cn.m2c.scm.application.goods.goods;
 
-import cn.m2c.common.MCode;
-import cn.m2c.goods.domain.dealer.Dealer;
-import cn.m2c.goods.domain.dealer.DealerRepository;
-import cn.m2c.goods.domain.goods.Goods;
-import cn.m2c.goods.domain.goods.GoodsRepository;
-import cn.m2c.goods.domain.seller.Seller;
-import cn.m2c.goods.domain.seller.SellerRepository;
-import cn.m2c.goods.domain.seller.StaffReportCount;
-import cn.m2c.goods.domain.seller.StaffReportCountRepository;
-import cn.m2c.goods.exception.NegativeCode;
-import cn.m2c.goods.exception.NegativeException;
-import cn.m2c.scm.application.goods.goods.command.StaffAddOrUpdateCmd;
+import java.util.Date;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +8,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
+import cn.m2c.common.MCode;
+import cn.m2c.scm.application.goods.goods.command.StaffAddOrUpdateCmd;
+import cn.m2c.scm.domain.NegativeCode;
+import cn.m2c.scm.domain.NegativeException;
+import cn.m2c.scm.domain.model.goods.dealer.Dealer;
+import cn.m2c.scm.domain.model.goods.dealer.DealerRepository;
+import cn.m2c.scm.domain.model.goods.goods.Goods;
+import cn.m2c.scm.domain.model.goods.goods.GoodsRepository;
+import cn.m2c.scm.domain.model.goods.seller.Seller;
+import cn.m2c.scm.domain.model.goods.seller.SellerRepository;
+import cn.m2c.scm.domain.model.goods.seller.StaffReportCount;
+import cn.m2c.scm.domain.model.goods.seller.StaffReportCountRepository;
 
 @Service
 public class SellerApplication {

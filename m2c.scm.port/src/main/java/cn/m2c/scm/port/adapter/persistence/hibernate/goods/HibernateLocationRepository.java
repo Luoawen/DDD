@@ -3,8 +3,8 @@ package cn.m2c.scm.port.adapter.persistence.hibernate.goods;
 import org.springframework.stereotype.Repository;
 
 import cn.m2c.ddd.common.port.adapter.persistence.hibernate.HibernateSupperRepository;
-import cn.m2c.goods.domain.location.LocRepository;
-import cn.m2c.goods.domain.location.Location;
+import cn.m2c.scm.domain.model.goods.location.LocRepository;
+import cn.m2c.scm.domain.model.goods.location.Location;
 
 @Repository
 public class HibernateLocationRepository extends HibernateSupperRepository
