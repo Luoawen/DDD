@@ -1,16 +1,45 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>cn.m2c.scm</groupId>
-  <artifactId>m2c.scm</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
-  <packaging>pom</packaging>
-  <name>m2c.scm</name>
-  <description>m2c.scm</description>
-  <modules>
-  	<module>m2c.scm.application</module>
-  	<module>m2c.scm.domain</module>
-  	<module>m2c.scm.port</module>
-  	<module>m2c.scm.resources</module>
-  	<module>m2c.scm.interfaces</module>
-  </modules>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>cn.m2c.scm</groupId>
+	<artifactId>m2c.scm</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>pom</packaging>
+	<name>m2c.scm</name>
+	<description>m2c.scm</description>
+	<modules>
+		<module>m2c.scm.application</module>
+		<module>m2c.scm.domain</module>
+		<module>m2c.scm.port</module>
+		<module>m2c.scm.resources</module>
+		<module>m2c.scm.interfaces</module>
+	</modules>
+
+	<properties>
+		<output.dir>target</output.dir>
+	</properties>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+				<version>2.3.1</version>
+			</plugin>
+		</plugins>
+	</build>
+	<distributionManagement>
+		<repository>
+			<id>nexus-releases</id>
+			<url>http://139.159.232.26:9001/repository/maven-releases/</url>
+		</repository>
+		<snapshotRepository>
+			<id>nexus-snapshots</id>
+			<url>http://139.159.232.26:9001/repository/maven-snapshots/</url>
+		</snapshotRepository>
+	</distributionManagement>
 </project>

@@ -1,1 +1,9 @@
-/target/
+.settings
+*/.settings
+.project
+.svn
+*/.target
+*/target
+.target
+target
+.classpath
