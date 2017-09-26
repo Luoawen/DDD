@@ -62,11 +62,10 @@
 			<list>
 				<value>cn.m2c.ddd.common.event</value>
 				<value>cn.m2c.ddd.common.notification</value>
-				<value>cn.m2c.order.domain</value>
 			</list>
 		</property>
 		<property name="mappingLocations">
-			<value>classpath*:/cn/m2c/order/port/adapter/persistence/**/cfg/**/*.hbm.xml
+			<value>classpath*:/cn/m2c/scm/port/adapter/persistence/hibernate/**/cfg/*.hbm.xml
 			</value>
 		</property>
 	</bean>
