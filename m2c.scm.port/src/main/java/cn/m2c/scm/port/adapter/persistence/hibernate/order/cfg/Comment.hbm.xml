@@ -2,7 +2,7 @@
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 
 <hibernate-mapping default-access="field" default-cascade="all">
-	<class name="cn.m2c.order.domain.comment.Comment" table="t_order_comment" lazy="true">
+	<class name="cn.m2c.scm.domain.model.order.comment.Comment" table="t_order_comment" lazy="true">
 		<id name="id" type="long" column="id" length="11">
 			<generator class="native" />
 		</id>

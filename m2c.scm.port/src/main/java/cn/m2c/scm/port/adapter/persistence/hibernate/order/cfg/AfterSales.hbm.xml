@@ -2,7 +2,7 @@
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 
 <hibernate-mapping default-access="field" default-cascade="all">
-	<class name="cn.m2c.order.domain.fsales.AfterSales" table="t_order_after_sales" lazy="true">
+	<class name="cn.m2c.scm.domain.model.order.fsales.AfterSales" table="t_order_after_sales" lazy="true">
 		<id name="id" type="long" column="id" length="11">
 			<generator class="native" />
 		</id>
