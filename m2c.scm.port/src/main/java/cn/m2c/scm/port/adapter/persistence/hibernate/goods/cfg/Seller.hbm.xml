@@ -2,7 +2,7 @@
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 
 <hibernate-mapping default-access="field" default-cascade="all">
-	<class name="cn.m2c.goods.domain.seller.Seller" table="t_goods_dealer_seller" lazy="true" 
+	<class name="cn.m2c.scm.domain.model.goods.seller.Seller" table="t_goods_dealer_seller" lazy="true" 
 	optimistic-lock="version" dynamic-insert="true" dynamic-update="true">
 		
 		<id name="id" column="id" type="long" unsaved-value="-1">
