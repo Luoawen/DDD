@@ -11,7 +11,7 @@ import cn.m2c.ddd.common.domain.model.DomainEventPublisher;
 import cn.m2c.ddd.common.event.annotation.EventListener;
 import cn.m2c.operate.interfaces.system.SalerService;
 import cn.m2c.operate.interfaces.system.representation.Saler;
-import cn.m2c.pay.interfaces.dubbo.AccountService;
+import cn.m2c.trading.interfaces.dubbo.AccountService;
 import cn.m2c.scm.application.goods.goods.command.DealerAddOrUpdateCommand;
 import cn.m2c.scm.domain.NegativeCode;
 import cn.m2c.scm.domain.NegativeException;

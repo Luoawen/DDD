@@ -52,9 +52,9 @@
 		</dependency>
 
 		<dependency>
-			<groupId>m2c.pay</groupId>
-			<artifactId>m2c.pay.interfaces</artifactId>
-			<version>1.0.5</version>
+			<groupId>m2c.trading</groupId>
+			<artifactId>m2c.trading.interfaces</artifactId>
+			<version>1.0.0</version>
 		</dependency>
 
 		<dependency>

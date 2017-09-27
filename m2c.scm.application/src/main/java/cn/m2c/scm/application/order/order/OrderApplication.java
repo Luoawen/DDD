@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import cn.m2c.ddd.common.event.annotation.EventListener;
 import cn.m2c.media.interfaces.dubbo.MediaService;
-import cn.m2c.pay.interfaces.dubbo.SettleRuleService;
+import cn.m2c.trading.interfaces.dubbo.SettleRuleService;
 import cn.m2c.scm.application.order.order.command.CancelOrderCommand;
 import cn.m2c.scm.application.order.order.command.CommitOrderCommand;
 import cn.m2c.scm.application.order.order.command.CommitWaybillCommand;

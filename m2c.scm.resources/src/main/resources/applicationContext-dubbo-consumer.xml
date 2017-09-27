@@ -13,12 +13,12 @@
 	<!-- <dubbo:monitor protocol="registry" /> -->
 	<dubbo:reference id="mediaService" check="false" interface="cn.m2c.media.interfaces.dubbo.MediaService" />
 	<dubbo:reference id="userService" check="false" interface="cn.m2c.users.interfaces.dubbo.UserService" />
-	<dubbo:reference id="settleRuleService" check="false" interface="cn.m2c.pay.interfaces.dubbo.SettleRuleService" />
+	<dubbo:reference id="settleRuleService" check="false" interface="cn.m2c.trading.interfaces.dubbo.SettleRuleService" />
 	<dubbo:reference id="pushService" check="false" interface="cn.m2c.support.interfaces.dubbo.PushService" />
 	<dubbo:reference id="tokenService" check="false" interface="cn.m2c.support.interfaces.dubbo.TokenService" />
 	<!-- 商品 -->
-	<dubbo:reference id="salerService" interface="cn.m2c.system.interfaces.SalerService" />
-	<dubbo:reference id="helpsService" interface="cn.m2c.helps.interfaces.dubbo.HelpsService" />
+	<dubbo:reference id="salerService" interface="cn.m2c.operate.interfaces.SalerService" />
+	<dubbo:reference id="helpsService" interface="cn.m2c.operate.interfaces.dubbo.HelpsService" />
 	<dubbo:reference id="recognizeService" interface="cn.m2c.support.interfaces.dubbo.RecognizeService" /> 
-	<dubbo:reference id="accountService" interface="cn.m2c.pay.interfaces.dubbo.AccountService" /> 
+	<dubbo:reference id="accountService" interface="cn.m2c.trading.interfaces.dubbo.AccountService" /> 
 </beans>
