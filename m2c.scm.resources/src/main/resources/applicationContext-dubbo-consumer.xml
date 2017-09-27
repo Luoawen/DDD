@@ -17,8 +17,8 @@
 	<dubbo:reference id="pushService" check="false" interface="cn.m2c.support.interfaces.dubbo.PushService" />
 	<dubbo:reference id="tokenService" check="false" interface="cn.m2c.support.interfaces.dubbo.TokenService" />
 	<!-- 商品 -->
-	<dubbo:reference id="salerService" interface="cn.m2c.operate.interfaces.SalerService" />
-	<dubbo:reference id="helpsService" interface="cn.m2c.operate.interfaces.dubbo.HelpsService" />
+	<dubbo:reference id="salerService" interface="cn.m2c.operate.interfaces.system.SalerService" />
+	<dubbo:reference id="helpsService" interface="cn.m2c.operate.interfaces.helps.HelpsService" />
 	<dubbo:reference id="recognizeService" interface="cn.m2c.support.interfaces.dubbo.RecognizeService" /> 
 	<dubbo:reference id="accountService" interface="cn.m2c.trading.interfaces.dubbo.AccountService" /> 
 </beans>
