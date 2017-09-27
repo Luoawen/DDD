@@ -32,6 +32,12 @@
 			<artifactId>m2c.scm.interfaces</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>cn.m2c.operate</groupId>
+			<artifactId>m2c.operate.interfaces</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 
 		<dependency>
 			<groupId>m2c.media</groupId>
@@ -57,7 +63,7 @@
 			<version>1.1.1</version>
 		</dependency>
 
-		<dependency>
+		<!-- <dependency>
 			<groupId>m2c.system</groupId>
 			<artifactId>m2c.system.interfaces</artifactId>
 			<version>1.0.1</version>
@@ -68,7 +74,9 @@
 			<artifactId>m2c.helps.interfaces</artifactId>
 			<version>1.0.2</version>
 		</dependency>
-
+ 		-->
+ 		
+ 		
 	</dependencies>
 
 	<!-- 构建 -->
