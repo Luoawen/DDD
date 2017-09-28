@@ -198,7 +198,7 @@
 			<plugin>
 				<groupId>org.eclipse.jetty</groupId>
 				<artifactId>jetty-maven-plugin</artifactId>
-				<version>9.2.7.v20150116</version>
+				<version>9.4.7.v20170914</version>
 				<configuration>
 					<httpConnector>
 						<port>8079</port>
@@ -294,14 +294,6 @@
 						<webXml>${project.basedir}/src/main/webapp/WEB-INF/web.xml</webXml>
 						<packagingExcludes>%regex[WEB-INF/lib/(?!(.*?(interfaces|interface|disconf|msmq|service|utils|market|college|supply).*?)|cn.mljia|slf4j|log4j|dubbo).*.jar]</packagingExcludes>
 					</configuration>
-				</plugin>
-
-
-				<!-- embedded web servers -->
-				<plugin>
-					<groupId>org.mortbay.jetty</groupId>
-					<artifactId>maven-jetty-plugin</artifactId>
-					<version>6.1.10</version>
 				</plugin>
 
 				<plugin>
