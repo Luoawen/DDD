@@ -64,29 +64,10 @@
 		</dependency>
 
 		<dependency>
-			<groupId>m2c.pay</groupId>
-			<artifactId>m2c.pay.interfaces</artifactId>
-			<version>1.0.5</version>
-		</dependency>
-
-		<dependency>
 			<groupId>m2c.support</groupId>
 			<artifactId>m2c.support.interfaces</artifactId>
 			<version>1.1.1</version>
 		</dependency>
-
-		<dependency>
-			<groupId>m2c.system</groupId>
-			<artifactId>m2c.system.interfaces</artifactId>
-			<version>1.0.1</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>m2c.helps</groupId>
-			<artifactId>m2c.helps.interfaces</artifactId>
-			<version>1.0.2</version>
-		</dependency>
-
 	</dependencies>
 
 
