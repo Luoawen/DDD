@@ -292,7 +292,7 @@
 						<warName>m2c.scm</warName>
 						<outputDirectory>${output.dir}</outputDirectory>
 						<webXml>${project.basedir}/src/main/webapp/WEB-INF/web.xml</webXml>
-						<packagingExcludes>%regex[WEB-INF/lib/(?!(.*?(interfaces|interface|disconf|msmq|service|utils|market|college|supply).*?)|cn.mljia|slf4j|log4j|dubbo).*.jar]</packagingExcludes>
+						<packagingExcludes>%regex[WEB-INF/lib/(?!(.*?(interfaces|interface|disconf|msmq|service|utils|market|college|supply).*?)|m2c|ddd|slf4j|log4j|dubbo).*.jar]</packagingExcludes>
 					</configuration>
 				</plugin>
 
