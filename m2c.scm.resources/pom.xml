@@ -201,7 +201,7 @@
 				<version>9.4.7.v20170914</version>
 				<configuration>
 					<httpConnector>
-						<port>8079</port>
+						<port>8081</port>
 					</httpConnector>
 				</configuration>
 			</plugin>
