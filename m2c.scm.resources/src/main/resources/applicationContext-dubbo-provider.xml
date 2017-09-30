@@ -20,7 +20,7 @@
 	
 		<!-- 声明需要暴露的服务接口 -->
 		<dubbo:provider retries="0" >
-			<dubbo:service interface="cn.m2c.scm.order.interfaces.OrderService" ref="orderServiceImpl" />
-			<dubbo:service interface="cn.m2c.scm.goods.interfaces.GoodService" ref="goodServiceImpl" />
+			<!-- <dubbo:service interface="cn.m2c.scm.order.interfaces.OrderService" ref="orderServiceImpl" />
+			<dubbo:service interface="cn.m2c.scm.goods.interfaces.GoodService" ref="goodServiceImpl" /> -->
 		</dubbo:provider>
 </beans>
