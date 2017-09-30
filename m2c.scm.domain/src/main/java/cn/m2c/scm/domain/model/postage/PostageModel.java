@@ -65,7 +65,7 @@ public class PostageModel extends ConcurrencySafeEntity {
         this.modelDescription = modelDescription;
 
         //  模板规则
-        List<Map> ruleList = (List<Map>) JsonUtils.toMap(postageModelRule);
+        List<Map> ruleList = JsonUtils.toList(postageModelRule,Map.class);
         if (null != ruleList && ruleList.size() > 0) {
             for (Map map : ruleList) {
                 String address = GetMapValueUtils.getStringFromMapKey(map, "address");
