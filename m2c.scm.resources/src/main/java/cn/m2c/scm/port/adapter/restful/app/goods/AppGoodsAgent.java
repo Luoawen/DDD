@@ -22,7 +22,7 @@ import java.util.Map;
  * @author ps
  */
 @RestController
-@RequestMapping("/goods")
+@RequestMapping("/goods/app")
 public class AppGoodsAgent {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(AppGoodsAgent.class);
@@ -36,7 +36,7 @@ public class AppGoodsAgent {
      * @return
      */
     @RequestMapping(value = "/guess", method = RequestMethod.GET)
-    public ResponseEntity<MPager> goodsChoice(
+    public ResponseEntity<MPager> goodsGuess(
             @RequestParam(value = "totalNum", required = false) Integer totalNum,
             @RequestParam(value = "pageNum", required = false, defaultValue = "1") Integer pageNum,
             @RequestParam(value = "rows", required = false, defaultValue = "10") Integer rows) {
