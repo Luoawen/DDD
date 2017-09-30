@@ -18,7 +18,7 @@
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <property name="java-output-path" value="/m2c.scm.resources/target/classes"/>
-        <property name="component.exclusion.patterns" value="%regex[WEB-INF/lib/(?!(.*?(interfaces|interface|disconf|msmq|service|utils|market|college|supply).*?)|cn.mljia|slf4j|log4j|dubbo).*.jar]"/>
         <property name="context-root" value="m2c.scm"/>
+        <property name="component.exclusion.patterns" value="%regex[WEB-INF/lib/(?!(.*?(interfaces|interface|disconf|msmq|service|utils|market|college|supply).*?)|m2c|ddd|slf4j|log4j|dubbo).*.jar]"/>
     </wb-module>
 </project-modules>
