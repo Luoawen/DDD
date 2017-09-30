@@ -22,10 +22,11 @@ public abstract class IDGenerator {
 	public static final String DEALER_PREFIX_TITLE = "JXS";//经销商
 	public static final String SALE_PREFIX_TITLE = "YWY";//
 	public static final String GOODS_Property_PREFIX_TITLE = "14GP";//属性前缀
-	public static final String GOODS_TRANSPORT_FEE_PREFIX_TITLE = "14TF";//属性前缀
 	public static final String DEALER_SELLER_PREFIX_TITLE = "14DS";
 	public static final String REPORT_ID = "14RI";
 	public static final String LOCATION_ID = "14LI";
+	public static final String GOODS_POSTAGE_PREFIX_TITLE = "YF";//运费模板前缀
+	public static final String GOODS_POSTAGE_RULE_PREFIX_TITLE = "YFGZ";//运费模板规则前缀
 
 	/**
 	 * 生成序列ID

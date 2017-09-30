@@ -68,9 +68,25 @@ public class PostageModelRule extends IdentifiedValueObject {
     /**
      * 全国（默认运费），0：是，1：不是
      */
-    private Long defaultFlag;
+    private Integer defaultFlag;
 
     public PostageModelRule() {
         super();
+    }
+
+    public PostageModelRule(PostageModel postageModel, String ruleId, String address, String addressStructure, String cityCode,
+                            Float firstWeight, Integer firstPiece, Long firstPostage, Float continuedWeight, Integer continuedPiece, Long continuedPostage, Integer defaultFlag) {
+        this.postageModel = postageModel;
+        this.ruleId = ruleId;
+        this.address = address;
+        this.addressStructure = addressStructure;
+        this.cityCode = cityCode;
+        this.firstWeight = firstWeight;
+        this.firstPiece = firstPiece;
+        this.firstPostage = firstPostage;
+        this.continuedWeight = continuedWeight;
+        this.continuedPiece = continuedPiece;
+        this.continuedPostage = continuedPostage;
+        this.defaultFlag = defaultFlag;
     }
 }

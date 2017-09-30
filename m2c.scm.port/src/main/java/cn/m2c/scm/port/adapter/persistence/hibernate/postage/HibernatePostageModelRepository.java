@@ -4,15 +4,15 @@ import cn.m2c.ddd.common.port.adapter.persistence.hibernate.HibernateSupperRepos
 import cn.m2c.scm.domain.model.postage.PostageModel;
 import cn.m2c.scm.domain.model.postage.PostageModelRepository;
 import org.hibernate.Query;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
 
 /**
  * 运费模板
  */
-@Service
+@Repository
 public class HibernatePostageModelRepository extends HibernateSupperRepository implements PostageModelRepository {
     @Override
-    public PostageModel getPostageModel(String modelId) {
+    public PostageModel getPostageModelById(String modelId) {
         StringBuilder sql = new StringBuilder("select * from t_scm_postage_model where model_id =:model_id");
         Query query = this.session().createSQLQuery(sql.toString()).addEntity(PostageModel.class);
         query.setParameter("model_id", modelId);
