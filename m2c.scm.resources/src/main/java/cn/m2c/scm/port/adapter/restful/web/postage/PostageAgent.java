@@ -8,6 +8,7 @@ import cn.m2c.scm.application.postage.data.bean.PostageModelBean;
 import cn.m2c.scm.application.postage.data.bean.representation.PostageModelRepresentation;
 import cn.m2c.scm.application.postage.query.PostageModelQueryApplication;
 import cn.m2c.scm.domain.IDGenerator;
+import cn.m2c.scm.domain.NegativeException;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,34 +77,49 @@ public class PostageAgent {
             @RequestParam(value = "postageModelRules", required = false) String postageModelRules,
             @RequestParam(value = "modelDescription", required = false) String modelDescription) {
         MResult result = new MResult(MCode.V_1);
-
-        if (StringUtils.isEmpty(dealerId)) {
-            result = new MResult(MCode.V_1, "商家ID为空");
-            return new ResponseEntity<MResult>(result, HttpStatus.OK);
-        }
-        if (StringUtils.isEmpty(modelId)) {
-            result = new MResult(MCode.V_1, "运费模板ID为空");
-            return new ResponseEntity<MResult>(result, HttpStatus.OK);
-        }
-        if (StringUtils.isEmpty(modelName)) {
-            result = new MResult(MCode.V_1, "运费模板名称为空");
-            return new ResponseEntity<MResult>(result, HttpStatus.OK);
-        }
-        if (null == chargeType) {
-            result = new MResult(MCode.V_1, "运费模板计费方式为空");
-            return new ResponseEntity<MResult>(result, HttpStatus.OK);
-        }
-        if (StringUtils.isEmpty(postageModelRules)) {
-            result = new MResult(MCode.V_1, "运费模板规则为空");
-            return new ResponseEntity<MResult>(result, HttpStatus.OK);
-        }
         try {
             PostageModelCommand command = new PostageModelCommand(dealerId, modelId, modelName, chargeType, modelDescription, postageModelRules);
             postageModelApplication.addPostageModel(command);
             result.setStatus(MCode.V_200);
+        } catch (NegativeException ne) {
+            LOGGER.error("addPostageModel NegativeException e:", ne);
+            result = new MResult(ne.getStatus(), ne.getMessage());
         } catch (Exception e) {
             LOGGER.error("addPostageModel Exception e:", e);
             result = new MResult(MCode.V_400, "添加运费模板失败");
+        }
+        return new ResponseEntity<MResult>(result, HttpStatus.OK);
+    }
+
+    /**
+     * 修改运费模板
+     *
+     * @param modelId           模板ID
+     * @param modelName         模板名称
+     * @param chargeType        计费方式,0:按重量,1:按件数
+     * @param postageModelRules 模板规则,list的json字符串，格式：[{"address":"全国（默认运费）","addressStructure":"","cityCode":"123,456","continuedPiece":1,"continuedPostage":5000,"continuedWeight":1.0,"defaultFlag":1,"firstPiece":1,"firstPostage":10000,"firstWeight":2.0}]
+     * @param modelDescription  模板说明
+     * @return
+     */
+    @RequestMapping(value = "", method = RequestMethod.PUT)
+    public ResponseEntity<MResult> modifyPostageModel(
+            @RequestParam(value = "dealerId", required = false) String dealerId,
+            @RequestParam(value = "modelId", required = false) String modelId,
+            @RequestParam(value = "modelName", required = false) String modelName,
+            @RequestParam(value = "chargeType", required = false) Integer chargeType,
+            @RequestParam(value = "postageModelRules", required = false) String postageModelRules,
+            @RequestParam(value = "modelDescription", required = false) String modelDescription) {
+        MResult result = new MResult(MCode.V_1);
+        try {
+            PostageModelCommand command = new PostageModelCommand(dealerId, modelId, modelName, chargeType, modelDescription, postageModelRules);
+            postageModelApplication.modifyPostageModel(command);
+            result.setStatus(MCode.V_200);
+        } catch (NegativeException ne) {
+            LOGGER.error("modifyPostageModel NegativeException e:", ne);
+            result = new MResult(ne.getStatus(), ne.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("modifyPostageModel Exception e:", e);
+            result = new MResult(MCode.V_400, "修改运费模板失败");
         }
         return new ResponseEntity<MResult>(result, HttpStatus.OK);
     }

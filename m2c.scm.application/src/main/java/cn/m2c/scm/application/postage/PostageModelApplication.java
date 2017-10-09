@@ -1,5 +1,6 @@
 package cn.m2c.scm.application.postage;
 
+import cn.m2c.common.MCode;
 import cn.m2c.scm.application.postage.command.PostageModelCommand;
 import cn.m2c.scm.domain.NegativeException;
 import cn.m2c.scm.domain.model.postage.PostageModel;
@@ -30,9 +31,24 @@ public class PostageModelApplication {
     public void addPostageModel(PostageModelCommand command) {
         PostageModel postageModel = postageModelRepository.getPostageModelById(command.getModelId());
         if (null == postageModel) {
-            postageModel =new PostageModel(command.getDealerId(), command.getModelId(), command.getModelName(), command.getChargeType(),
+            postageModel = new PostageModel(command.getDealerId(), command.getModelId(), command.getModelName(), command.getChargeType(),
                     command.getModelDescription(), command.getPostageModelRule());
             postageModelRepository.save(postageModel);
         }
+    }
+
+    /**
+     * 修改运费模板
+     *
+     * @param command
+     */
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+    public void modifyPostageModel(PostageModelCommand command) throws NegativeException {
+        PostageModel postageModel = postageModelRepository.getPostageModelById(command.getModelId());
+        if (null == postageModel) {
+            throw new NegativeException(MCode.V_300, "运费模板不存在");
+        }
+        postageModel.modifyPostageModel(command.getDealerId(), command.getModelId(), command.getModelName(), command.getChargeType(),
+                command.getModelDescription(), command.getPostageModelRule());
     }
 }
