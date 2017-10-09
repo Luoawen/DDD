@@ -9,6 +9,7 @@
         <id name="id" column="id" type="long" unsaved-value="-1">
             <generator class="native"/>
         </id>
+        <version name="concurrencyVersion" column="concurrency_version" type="int"/>
         <property name="addressId" column="address_id" type="string"/>
         <property name="dealerId" column="dealer_id" type="string"/>
         <property name="proCode" column="pro_code" type="string"/>

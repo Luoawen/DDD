@@ -48,7 +48,7 @@ public class PostageAgent {
     public ResponseEntity<MResult> getPostageId() {
         MResult result = new MResult(MCode.V_1);
         try {
-            String id = IDGenerator.get(IDGenerator.GOODS_POSTAGE_PREFIX_TITLE);
+            String id = IDGenerator.get(IDGenerator.SCM_POSTAGE_PREFIX_TITLE);
             result.setContent(id);
             result.setStatus(MCode.V_200);
         } catch (Exception e) {

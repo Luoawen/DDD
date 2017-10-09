@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping default-access="field" default-cascade="all">
+    <class name="cn.m2c.scm.domain.model.brand.BrandApprove" table="t_scm_brand_approve" lazy="true"
+           optimistic-lock="version" dynamic-insert="true" dynamic-update="true">
+
+        <id name="id" column="id" type="long" unsaved-value="-1">
+            <generator class="native"/>
+        </id>
+        <version name="concurrencyVersion" column="concurrency_version" type="int"/>
+        <property name="approveId" column="approve_id" type="string"/>
+        <property name="brandId" column="brand_id" type="string"/>
+        <property name="brandName" column="brand_name" type="string"/>
+        <property name="brandNameEn" column="brand_name_en" type="string"/>
+        <property name="brandLogo" column="brand_logo" type="string"/>
+        <property name="firstAreaCode" column="first_area_code" type="string"/>
+        <property name="twoAreaCode" column="two_area_code" type="string"/>
+        <property name="threeAreaCode" column="three_area_code" type="string"/>
+        <property name="firstAreaName" column="first_area_name" type="string"/>
+        <property name="twoAreaName" column="two_area_name" type="string"/>
+        <property name="threeAreaName" column="three_area_name" type="string"/>
+        <property name="brandStatus" column="brand_status" type="int"/>
+        <property name="rejectReason" column="reject_reason" type="string"/>
+        <property name="dealerId" column="dealer_id" type="string"/>
+        <property name="createdDate" column="created_date" type="timestamp"/>
+    </class>
+</hibernate-mapping>

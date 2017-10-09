@@ -1,11 +1,11 @@
 package cn.m2c.scm.domain.model.address;
 
-import cn.m2c.ddd.common.domain.model.Entity;
+import cn.m2c.ddd.common.domain.model.ConcurrencySafeEntity;
 
 /**
  * 售后地址
  */
-public class AfterSaleAddress extends Entity {
+public class AfterSaleAddress extends ConcurrencySafeEntity {
     /**
      * 售后地址编号
      */

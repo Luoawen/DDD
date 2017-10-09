@@ -43,7 +43,7 @@ public class AfterSaleAddressAgent {
     public ResponseEntity<MResult> getAfterSaleAddressId() {
         MResult result = new MResult(MCode.V_1);
         try {
-            String id = IDGenerator.get(IDGenerator.AFTER_SALE_ADDRESS_PREFIX_TITLE);
+            String id = IDGenerator.get(IDGenerator.SCM_AFTER_SALE_ADDRESS_PREFIX_TITLE);
             result.setContent(id);
             result.setStatus(MCode.V_200);
         } catch (Exception e) {

@@ -1,0 +1,48 @@
+package cn.m2c.scm.application.brand;
+
+import cn.m2c.common.MCode;
+import cn.m2c.scm.application.brand.command.BrandCommand;
+import cn.m2c.scm.domain.NegativeException;
+import cn.m2c.scm.domain.model.brand.Brand;
+import cn.m2c.scm.domain.model.brand.BrandRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Date;
+import java.util.List;
+
+/**
+ * 品牌
+ */
+@Service
+public class BrandApplication {
+    private static final Logger LOGGER = LoggerFactory.getLogger(BrandApplication.class);
+
+    @Autowired
+    BrandRepository brandRepository;
+
+    /**
+     * 添加品牌信息（商家管理平台，无需审批）
+     *
+     * @param command
+     */
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+    public void addBrand(BrandCommand command) throws NegativeException {
+        LOGGER.info("addBrand command >>{}", command);
+        // 与当前品牌库中的不能重名
+        List<Brand> brands = brandRepository.getBrandByBrandName(command.getBrandName());
+        if (null != brands && brands.size() > 0) {
+            throw new NegativeException(MCode.V_301, "品牌名称已存在");
+        }
+        Brand brand = brandRepository.getBrandByBrandId(command.getBrandId());
+        if (null == brand) {
+            brand = new Brand(command.getBrandId(), command.getBrandName(), command.getBrandNameEn(), command.getBrandLogo(), command.getFirstAreaCode(),
+                    command.getTwoAreaCode(), command.getThreeAreaCode(), command.getFirstAreaName(), command.getTwoAreaName(),
+                    command.getThreeAreaName(), new Date(), null, 1);
+            brandRepository.save(brand);
+        }
+    }
+}
