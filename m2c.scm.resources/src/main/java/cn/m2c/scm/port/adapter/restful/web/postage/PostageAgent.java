@@ -61,6 +61,7 @@ public class PostageAgent {
     /**
      * 添加运费模板
      *
+     * @param dealerId          经销商ID
      * @param modelId           模板ID
      * @param modelName         模板名称
      * @param chargeType        计费方式,0:按重量,1:按件数
@@ -94,6 +95,7 @@ public class PostageAgent {
     /**
      * 修改运费模板
      *
+     * @param dealerId          经销商ID
      * @param modelId           模板ID
      * @param modelName         模板名称
      * @param chargeType        计费方式,0:按重量,1:按件数
@@ -120,6 +122,25 @@ public class PostageAgent {
         } catch (Exception e) {
             LOGGER.error("modifyPostageModel Exception e:", e);
             result = new MResult(MCode.V_400, "修改运费模板失败");
+        }
+        return new ResponseEntity<MResult>(result, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "", method = RequestMethod.DELETE)
+    public ResponseEntity<MResult> delPostageModel(
+            @RequestParam(value = "dealerId", required = false) String dealerId,
+            @RequestParam(value = "modelId", required = false) String modelId) {
+        MResult result = new MResult(MCode.V_1);
+        try {
+            PostageModelCommand command = new PostageModelCommand(dealerId, modelId);
+            postageModelApplication.delPostageModel(command);
+            result.setStatus(MCode.V_200);
+        } catch (NegativeException ne) {
+            LOGGER.error("delPostageModel NegativeException e:", ne);
+            result = new MResult(ne.getStatus(), ne.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("delPostageModel Exception e:", e);
+            result = new MResult(MCode.V_400, "删除运费模板失败");
         }
         return new ResponseEntity<MResult>(result, HttpStatus.OK);
     }

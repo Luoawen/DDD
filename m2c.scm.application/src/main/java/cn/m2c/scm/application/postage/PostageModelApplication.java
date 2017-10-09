@@ -29,6 +29,7 @@ public class PostageModelApplication {
      */
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
     public void addPostageModel(PostageModelCommand command) {
+        LOGGER.info("addPostageModel command >>{}", command);
         PostageModel postageModel = postageModelRepository.getPostageModelById(command.getModelId());
         if (null == postageModel) {
             postageModel = new PostageModel(command.getDealerId(), command.getModelId(), command.getModelName(), command.getChargeType(),
@@ -44,11 +45,27 @@ public class PostageModelApplication {
      */
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
     public void modifyPostageModel(PostageModelCommand command) throws NegativeException {
+        LOGGER.info("modifyPostageModel command >>{}", command);
         PostageModel postageModel = postageModelRepository.getPostageModelById(command.getModelId());
         if (null == postageModel) {
             throw new NegativeException(MCode.V_300, "运费模板不存在");
         }
         postageModel.modifyPostageModel(command.getDealerId(), command.getModelId(), command.getModelName(), command.getChargeType(),
                 command.getModelDescription(), command.getPostageModelRule());
+    }
+
+    /**
+     * 删除运费模板
+     *
+     * @param command
+     */
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+    public void delPostageModel(PostageModelCommand command) throws NegativeException {
+        LOGGER.info("delPostageModel command >>{}", command);
+        PostageModel postageModel = postageModelRepository.getPostageModelById(command.getModelId());
+        if (null == postageModel) {
+            throw new NegativeException(MCode.V_300, "运费模板不存在");
+        }
+        postageModel.deletePostageModel();
     }
 }

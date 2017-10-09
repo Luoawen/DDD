@@ -41,6 +41,17 @@ public class PostageModelCommand extends AssertionConcern implements Serializabl
      */
     private String postageModelRule;
 
+    public PostageModelCommand(String dealerId, String modelId) throws NegativeException {
+        if (StringUtils.isEmpty(dealerId)) {
+            throw new NegativeException(MCode.V_1, "商家ID为空");
+        }
+        if (StringUtils.isEmpty(modelId)) {
+            throw new NegativeException(MCode.V_1, "运费模板ID为空");
+        }
+        this.dealerId = dealerId;
+        this.modelId = modelId;
+    }
+
     public PostageModelCommand(String dealerId, String modelId, String modelName, Integer chargeType, String modelDescription, String postageModelRule) throws NegativeException {
         if (StringUtils.isEmpty(dealerId)) {
             throw new NegativeException(MCode.V_1, "商家ID为空");

@@ -73,24 +73,10 @@ public class PostageModel extends ConcurrencySafeEntity {
         List<Map> ruleList = JsonUtils.toList(postageModelRule, Map.class);
         if (null != ruleList && ruleList.size() > 0) {
             for (Map map : ruleList) {
-                String address = GetMapValueUtils.getStringFromMapKey(map, "address");
-                String addressStructure = GetMapValueUtils.getStringFromMapKey(map, "addressStructure");
-                String cityCode = GetMapValueUtils.getStringFromMapKey(map, "cityCode");
-                Float firstWeight = GetMapValueUtils.getFloatFromMapKey(map, "firstWeight");
-                Integer firstPiece = GetMapValueUtils.getIntFromMapKey(map, "firstPiece");
-                Long firstPostage = GetMapValueUtils.getLongFromMapKey(map, "firstPostage");
-                Float continuedWeight = GetMapValueUtils.getFloatFromMapKey(map, "continuedWeight");
-                Integer continuedPiece = GetMapValueUtils.getIntFromMapKey(map, "continuedPiece");
-                Long continuedPostage = GetMapValueUtils.getLongFromMapKey(map, "continuedPostage");
-                Integer defaultFlag = GetMapValueUtils.getIntFromMapKey(map, "defaultFlag");
-
-                PostageModelRule rule = new PostageModelRule(this, IDGenerator.get(IDGenerator.GOODS_POSTAGE_RULE_PREFIX_TITLE),
-                        address, addressStructure, cityCode,
-                        firstWeight, firstPiece, firstPostage, continuedWeight, continuedPiece, continuedPostage, defaultFlag);
                 if (null == this.postageModelRules) {
                     this.postageModelRules = new ArrayList<>();
                 }
-                this.postageModelRules.add(rule);
+                this.postageModelRules.add(createPostageModelRule(map));
             }
         }
     }
@@ -111,21 +97,29 @@ public class PostageModel extends ConcurrencySafeEntity {
             }
 
             for (Map map : ruleList) {
-                String address = GetMapValueUtils.getStringFromMapKey(map, "address");
-                String addressStructure = GetMapValueUtils.getStringFromMapKey(map, "addressStructure");
-                String cityCode = GetMapValueUtils.getStringFromMapKey(map, "cityCode");
-                Float firstWeight = GetMapValueUtils.getFloatFromMapKey(map, "firstWeight");
-                Integer firstPiece = GetMapValueUtils.getIntFromMapKey(map, "firstPiece");
-                Long firstPostage = GetMapValueUtils.getLongFromMapKey(map, "firstPostage");
-                Float continuedWeight = GetMapValueUtils.getFloatFromMapKey(map, "continuedWeight");
-                Integer continuedPiece = GetMapValueUtils.getIntFromMapKey(map, "continuedPiece");
-                Long continuedPostage = GetMapValueUtils.getLongFromMapKey(map, "continuedPostage");
-                Integer defaultFlag = GetMapValueUtils.getIntFromMapKey(map, "defaultFlag");
-                PostageModelRule rule = new PostageModelRule(this, IDGenerator.get(IDGenerator.GOODS_POSTAGE_RULE_PREFIX_TITLE),
-                        address, addressStructure, cityCode,
-                        firstWeight, firstPiece, firstPostage, continuedWeight, continuedPiece, continuedPostage, defaultFlag);
-                this.postageModelRules.add(rule);
+                this.postageModelRules.add(createPostageModelRule(map));
             }
         }
+    }
+
+    public void deletePostageModel() {
+        this.modelStatus = 2;
+    }
+
+    private PostageModelRule createPostageModelRule(Map map) {
+        String address = GetMapValueUtils.getStringFromMapKey(map, "address");
+        String addressStructure = GetMapValueUtils.getStringFromMapKey(map, "addressStructure");
+        String cityCode = GetMapValueUtils.getStringFromMapKey(map, "cityCode");
+        Float firstWeight = GetMapValueUtils.getFloatFromMapKey(map, "firstWeight");
+        Integer firstPiece = GetMapValueUtils.getIntFromMapKey(map, "firstPiece");
+        Long firstPostage = GetMapValueUtils.getLongFromMapKey(map, "firstPostage");
+        Float continuedWeight = GetMapValueUtils.getFloatFromMapKey(map, "continuedWeight");
+        Integer continuedPiece = GetMapValueUtils.getIntFromMapKey(map, "continuedPiece");
+        Long continuedPostage = GetMapValueUtils.getLongFromMapKey(map, "continuedPostage");
+        Integer defaultFlag = GetMapValueUtils.getIntFromMapKey(map, "defaultFlag");
+        PostageModelRule rule = new PostageModelRule(this, IDGenerator.get(IDGenerator.GOODS_POSTAGE_RULE_PREFIX_TITLE),
+                address, addressStructure, cityCode,
+                firstWeight, firstPiece, firstPostage, continuedWeight, continuedPiece, continuedPostage, defaultFlag);
+        return rule;
     }
 }
