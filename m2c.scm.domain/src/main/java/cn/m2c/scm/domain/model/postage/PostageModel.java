@@ -37,6 +37,11 @@ public class PostageModel extends ConcurrencySafeEntity {
     private Integer chargeType;
 
     /**
+     * 商品使用数量
+     */
+    private Integer goodsUserNum;
+
+    /**
      * 1:正常 2：删除
      */
     private Integer modelStatus;
@@ -65,7 +70,7 @@ public class PostageModel extends ConcurrencySafeEntity {
         this.modelDescription = modelDescription;
 
         //  模板规则
-        List<Map> ruleList = JsonUtils.toList(postageModelRule,Map.class);
+        List<Map> ruleList = JsonUtils.toList(postageModelRule, Map.class);
         if (null != ruleList && ruleList.size() > 0) {
             for (Map map : ruleList) {
                 String address = GetMapValueUtils.getStringFromMapKey(map, "address");

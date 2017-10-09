@@ -4,6 +4,9 @@ import cn.m2c.common.MCode;
 import cn.m2c.common.MResult;
 import cn.m2c.scm.application.postage.PostageModelApplication;
 import cn.m2c.scm.application.postage.command.PostageModelCommand;
+import cn.m2c.scm.application.postage.data.bean.PostageModelBean;
+import cn.m2c.scm.application.postage.data.bean.representation.PostageModelRepresentation;
+import cn.m2c.scm.application.postage.query.PostageModelQueryApplication;
 import cn.m2c.scm.domain.IDGenerator;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -15,6 +18,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 运费模板
@@ -29,6 +35,8 @@ public class PostageAgent {
 
     @Autowired
     PostageModelApplication postageModelApplication;
+    @Autowired
+    PostageModelQueryApplication postageModelQueryApplication;
 
     /**
      * 获取ID
@@ -68,27 +76,28 @@ public class PostageAgent {
             @RequestParam(value = "postageModelRules", required = false) String postageModelRules,
             @RequestParam(value = "modelDescription", required = false) String modelDescription) {
         MResult result = new MResult(MCode.V_1);
+
+        if (StringUtils.isEmpty(dealerId)) {
+            result = new MResult(MCode.V_1, "商家ID为空");
+            return new ResponseEntity<MResult>(result, HttpStatus.OK);
+        }
+        if (StringUtils.isEmpty(modelId)) {
+            result = new MResult(MCode.V_1, "运费模板ID为空");
+            return new ResponseEntity<MResult>(result, HttpStatus.OK);
+        }
+        if (StringUtils.isEmpty(modelName)) {
+            result = new MResult(MCode.V_1, "运费模板名称为空");
+            return new ResponseEntity<MResult>(result, HttpStatus.OK);
+        }
+        if (null == chargeType) {
+            result = new MResult(MCode.V_1, "运费模板计费方式为空");
+            return new ResponseEntity<MResult>(result, HttpStatus.OK);
+        }
+        if (StringUtils.isEmpty(postageModelRules)) {
+            result = new MResult(MCode.V_1, "运费模板规则为空");
+            return new ResponseEntity<MResult>(result, HttpStatus.OK);
+        }
         try {
-            if (StringUtils.isEmpty(dealerId)) {
-                result = new MResult(MCode.V_1, "商家ID为空");
-                return new ResponseEntity<MResult>(result, HttpStatus.OK);
-            }
-            if (StringUtils.isEmpty(modelId)) {
-                result = new MResult(MCode.V_1, "运费模板ID为空");
-                return new ResponseEntity<MResult>(result, HttpStatus.OK);
-            }
-            if (StringUtils.isEmpty(modelName)) {
-                result = new MResult(MCode.V_1, "运费模板名称为空");
-                return new ResponseEntity<MResult>(result, HttpStatus.OK);
-            }
-            if (null == chargeType) {
-                result = new MResult(MCode.V_1, "运费模板计费方式为空");
-                return new ResponseEntity<MResult>(result, HttpStatus.OK);
-            }
-            if (StringUtils.isEmpty(postageModelRules)) {
-                result = new MResult(MCode.V_1, "运费模板规则为空");
-                return new ResponseEntity<MResult>(result, HttpStatus.OK);
-            }
             PostageModelCommand command = new PostageModelCommand(dealerId, modelId, modelName, chargeType, modelDescription, postageModelRules);
             postageModelApplication.addPostageModel(command);
             result.setStatus(MCode.V_200);
@@ -99,5 +108,34 @@ public class PostageAgent {
         return new ResponseEntity<MResult>(result, HttpStatus.OK);
     }
 
-
+    /**
+     * 查询运费模板
+     *
+     * @param dealerId 经销商ID
+     * @return
+     */
+    @RequestMapping(value = "", method = RequestMethod.GET)
+    public ResponseEntity<MResult> getPostageModel(
+            @RequestParam(value = "dealerId", required = false) String dealerId) {
+        MResult result = new MResult(MCode.V_1);
+        if (StringUtils.isEmpty(dealerId)) {
+            result = new MResult(MCode.V_1, "商家ID为空");
+            return new ResponseEntity<MResult>(result, HttpStatus.OK);
+        }
+        try {
+            List<PostageModelBean> postageModels = postageModelQueryApplication.queryPostageModelsByDealerId(dealerId);
+            if (null != postageModels && postageModels.size() > 0) {
+                List<PostageModelRepresentation> list = new ArrayList<PostageModelRepresentation>();
+                for (PostageModelBean model : postageModels) {
+                    list.add(new PostageModelRepresentation(model));
+                }
+                result.setContent(list);
+            }
+            result.setStatus(MCode.V_200);
+        } catch (Exception e) {
+            LOGGER.error("getPostageModel Exception e:", e);
+            result = new MResult(MCode.V_400, "查询运费模板失败");
+        }
+        return new ResponseEntity<MResult>(result, HttpStatus.OK);
+    }
 }

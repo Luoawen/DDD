@@ -14,6 +14,7 @@
         <property name="modelId" column="model_id" type="string"/>
         <property name="modelName" column="model_name" type="string"/>
         <property name="chargeType" column="charge_type" type="int"/>
+        <property name="goodsUserNum" column="goods_user_num" type="int"/>
         <property name="modelStatus" column="model_status" type="int"/>
         <property name="modelDescription" column="model_description" type="string"/>
 
