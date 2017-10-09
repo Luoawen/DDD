@@ -10,7 +10,7 @@ public interface PostageModelRepository {
      * @param modelId
      * @return
      */
-    public PostageModel getPostageModel(String modelId);
+    public PostageModel getPostageModelById(String modelId);
 
     /**
      * 保存运费模板
