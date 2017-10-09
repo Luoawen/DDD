@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping default-access="field" default-cascade="all">
+	<class name="cn.m2c.scm.domain.model.dealer.Dealer" table="t_scm_dealer" lazy="true" 
+	optimistic-lock="version" dynamic-insert="true" dynamic-update="true">
+		
+		<id name="id" column="id" type="long" unsaved-value="-1">
+			<generator class="native" />
+		</id>
+		<version name="concurrencyVersion" column="concurrency_version" type="int" />
+		<property name="createdDate" generated="insert" not-null="true">
+			<column name="created_date" sql-type="timestamp" default="CURRENT_TIMESTAMP"></column>
+		</property>
+		<property name="lastUpdatedDate" generated="always" not-null="true">
+			<column name="last_updated_date" sql-type="timestamp" default="CURRENT_TIMESTAMP"></column>
+		</property>
+
+		<property name="dealerId" column="dealer_id" type="string" />
+		<property name="userId" column="user_id" type="string" />
+		<property name="userName" column="user_name" type="string" />
+		<property name="userPhone" column="user_phone" type="string" />
+		<property name="dealerName" column="dealer_name" type="string" />
+		<property name="dealerClassify" column="dealer_classify" type="string" />
+		<property name="startSignDate" column="start_sign_date" type="string" />
+		<property name="endSignDate" column="end_sign_date" type="string" />
+		<property name="cooperationMode" column="cooperation_mode" type="int" />
+		<property name="dealerProvince" column="dealer_province" type="string" />
+		<property name="dealerCity" column="dealer_city" type="string" />
+		<property name="dealerArea" column="dealer_area" type="string" />
+		<property name="dealerPcode" column="dealer_pcode" type="string" />
+		<property name="dealerCcode" column="dealer_ccode" type="string" />
+		<property name="dealerAcode" column="dealer_acode" type="string" />
+		<property name="dealerDetailAddress" column="dealer_detail_address" type="string" />
+		<property name="countMode" column="count_mode" type="int" />
+		<property name="deposit" column="deposit" type="long" />
+		<property name="isPayDeposit" column="is_pay_deposit" type="int" />
+		<property name="managerName" column="manager_name" type="string" />
+		<property name="managerPhone" column="manager_phone" type="string" />
+		<property name="managerqq" column="manager_qq" type="string" />
+		<property name="managerWechat" column="manager_wechat" type="string" />
+		<property name="managerEmail" column="manager_email" type="string" />
+		<property name="managerDepartment" column="manager_department" type="string" />
+		<property name="sellerId" column="seller_id" type="string"/>
+		<property name="sellerPhone" column="seller_phone" type="string"/>
+		<property name="sellerName" column="seller_name" type="string"/>
+		<property name="dealerStatus" column="dealer_status" type="int"/>
+	</class>
+</hibernate-mapping>

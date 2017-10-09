@@ -20,7 +20,10 @@ import cn.m2c.common.MPager;
 import cn.m2c.common.MResult;
 import cn.m2c.scm.application.dealer.DealerApplication;
 import cn.m2c.scm.application.dealer.command.DealerAddOrUpdateCommand;
+import cn.m2c.scm.application.dealer.data.bean.DealerBean;
+import cn.m2c.scm.application.dealer.query.DealerQuery;
 import cn.m2c.scm.domain.IDGenerator;
+import cn.m2c.scm.domain.model.dealer.Dealer;
 
 @RestController
 @RequestMapping("/dealer/sys")
@@ -30,9 +33,40 @@ public class DealerAgent {
 	@Autowired
 	DealerApplication application;
 	
+	@Autowired
+	DealerQuery dealerQuery;
+	/**
+	 * 新增经销商
+	 * @param userId
+	 * @param dealerName
+	 * @param dealerClassify
+	 * @param cooperationMode
+	 * @param startSignDate
+	 * @param endSignDate
+	 * @param dealerProvince
+	 * @param dealerCity
+	 * @param dealerarea
+	 * @param dealerPcode
+	 * @param dealerCcode
+	 * @param dealerAcode
+	 * @param dealerDetailAddress
+	 * @param countMode
+	 * @param deposit
+	 * @param isPayDeposit
+	 * @param managerName
+	 * @param managerPhone
+	 * @param managerqq
+	 * @param managerWechat
+	 * @param managerEmail
+	 * @param managerDepartment
+	 * @param sellerId
+	 * @return
+	 */
 	@RequestMapping(value="",method = RequestMethod.POST)
 	public ResponseEntity<MResult> add(
 			@RequestParam(value="userId",required=true)String userId,
+			@RequestParam(value="userName",required=true)String userName,
+			@RequestParam(value="userPhone",required=true)String userPhone,
 			@RequestParam(value="dealerName",required=true)String dealerName,
 			@RequestParam(value="dealerClassify",required=true)String dealerClassify,
 			@RequestParam(value="cooperationMode",required=true)Integer cooperationMode,
@@ -48,17 +82,19 @@ public class DealerAgent {
 			@RequestParam(value="countMode",required=true)Integer countMode,
 			@RequestParam(value="deposit",required=false,defaultValue="0")Long deposit,
 			@RequestParam(value="isPayDeposit",required=true,defaultValue="0")Integer isPayDeposit,
-			@RequestParam(value="managerName",required=true)String managerName,
-			@RequestParam(value="managerPhone",required=true)String managerPhone,
+			@RequestParam(value="managerName",required=false)String managerName,
+			@RequestParam(value="managerPhone",required=false)String managerPhone,
 			@RequestParam(value="managerqq",required=false)String managerqq,
 			@RequestParam(value="managerWechat",required=false)String managerWechat,
 			@RequestParam(value="managerEmail",required=false)String managerEmail,
 			@RequestParam(value="managerDepartment",required=false)String managerDepartment,
-			@RequestParam(value="sellerId",required=true)String sellerId){
+			@RequestParam(value="sellerId",required=true)String sellerId,
+			@RequestParam(value="sellerName",required=true)String sellerName,
+			@RequestParam(value="sellerPhone",required=true)String sellerPhone){
 			MResult result = new MResult(MCode.V_1);
 			try {
 				String dealerId = IDGenerator.get(IDGenerator.DEALER_PREFIX_TITLE);
-				DealerAddOrUpdateCommand command = new DealerAddOrUpdateCommand(dealerId,userId, dealerName, dealerClassify, cooperationMode, startSignDate, endSignDate, dealerProvince, dealerCity, dealerarea, dealerPcode, dealerCcode, dealerAcode, dealerDetailAddress, countMode, deposit, isPayDeposit, managerName, managerPhone, managerqq, managerWechat, managerEmail, managerDepartment, sellerId);
+				DealerAddOrUpdateCommand command = new DealerAddOrUpdateCommand(dealerId,userId,userName,userPhone, dealerName, dealerClassify, cooperationMode, startSignDate, endSignDate, dealerProvince, dealerCity, dealerarea, dealerPcode, dealerCcode, dealerAcode, dealerDetailAddress, countMode, deposit, isPayDeposit, managerName, managerPhone, managerqq, managerWechat, managerEmail, managerDepartment, sellerId,sellerName,sellerPhone);
 				application.addDealer(command);
 				result.setStatus(MCode.V_200);
 			} catch (Exception e) {
@@ -67,6 +103,101 @@ public class DealerAgent {
 			}
 			return new ResponseEntity<MResult>(result, HttpStatus.OK);
 	}
+	
+	
+	/**
+	 * 修改经销商
+	 * @param dealerId
+	 * @param userId
+	 * @param dealerName
+	 * @param dealerClassify
+	 * @param cooperationMode
+	 * @param startSignDate
+	 * @param endSignDate
+	 * @param dealerProvince
+	 * @param dealerCity
+	 * @param dealerarea
+	 * @param dealerPcode
+	 * @param dealerCcode
+	 * @param dealerAcode
+	 * @param dealerDetailAddress
+	 * @param countMode
+	 * @param deposit
+	 * @param isPayDeposit
+	 * @param managerName
+	 * @param managerPhone
+	 * @param managerqq
+	 * @param managerWechat
+	 * @param managerEmail
+	 * @param managerDepartment
+	 * @param sellerId
+	 * @return
+	 */
+	@RequestMapping(value="",method = RequestMethod.PUT)
+	public ResponseEntity<MResult> update(
+			@RequestParam(value="dealerId",required=true)String dealerId,
+			@RequestParam(value="userId",required=true)String userId,
+			@RequestParam(value="userName",required=true)String userName,
+			@RequestParam(value="userPhone",required=true)String userPhone,
+			@RequestParam(value="dealerName",required=true)String dealerName,
+			@RequestParam(value="dealerClassify",required=true)String dealerClassify,
+			@RequestParam(value="cooperationMode",required=true)Integer cooperationMode,
+			@RequestParam(value="startSignDate",required=true)String startSignDate,
+			@RequestParam(value="endSignDate",required=true)String endSignDate,
+			@RequestParam(value="dealerProvince",required=true)String dealerProvince,
+			@RequestParam(value="dealerCity",required=true)String dealerCity,
+			@RequestParam(value="dealerarea",required=true)String dealerarea,
+			@RequestParam(value="dealerPcode",required=true)String dealerPcode,
+			@RequestParam(value="dealerCcode",required=true)String dealerCcode,
+			@RequestParam(value="dealerAcode",required=true)String dealerAcode,
+			@RequestParam(value="dealerDetailAddress",required=false,defaultValue="")String dealerDetailAddress,
+			@RequestParam(value="countMode",required=true)Integer countMode,
+			@RequestParam(value="deposit",required=false,defaultValue="0")Long deposit,
+			@RequestParam(value="isPayDeposit",required=true)Integer isPayDeposit,
+			@RequestParam(value="managerName",required=false)String managerName,
+			@RequestParam(value="managerPhone",required=false)String managerPhone,
+			@RequestParam(value="managerqq",required=false)String managerqq,
+			@RequestParam(value="managerWechat",required=false)String managerWechat,
+			@RequestParam(value="managerEmail",required=false)String managerEmail,
+			@RequestParam(value="managerDepartment",required=false)String managerDepartment,
+			@RequestParam(value="sellerId",required=true)String sellerId,
+			@RequestParam(value="sellerName",required=true)String sellerName,
+			@RequestParam(value="sellerPhone",required=true)String sellerPhone){
+			MResult result = new MResult(MCode.V_1);
+			try {
+				DealerAddOrUpdateCommand command = new DealerAddOrUpdateCommand(dealerId,userId,userName,userPhone, dealerName, dealerClassify, cooperationMode, startSignDate, endSignDate, dealerProvince, dealerCity, dealerarea, dealerPcode, dealerCcode, dealerAcode, dealerDetailAddress, countMode, deposit, isPayDeposit, managerName, managerPhone, managerqq, managerWechat, managerEmail, managerDepartment, sellerId,sellerName,sellerPhone);
+				application.updateDealer(command);
+				result.setStatus(MCode.V_200);
+			} catch (Exception e) {
+				log.error("修改经销商出错" + e.getMessage(), e);
+	            result = new MResult(MCode.V_400, "服务器开小差了");
+			}
+			return new ResponseEntity<MResult>(result, HttpStatus.OK);
+	}
+	
+		@RequestMapping(value="/list",method = RequestMethod.GET)
+		public ResponseEntity<MResult> list(@RequestParam(value="dealerClassify",required=false)String dealerClassify,
+				@RequestParam(value="cooperationMode",required=false)Integer cooperationMode,
+				@RequestParam(value="countMode",required=false)Integer countMode,
+				@RequestParam(value="isPayDeposit",required=false)Integer isPayDeposit,
+				@RequestParam(value="dealerName",required=false)String dealerName,
+				@RequestParam(value="dealerId",required=false)String dealerId,
+				@RequestParam(value="userPhone",required=false)String userPhone,
+				@RequestParam(value="sellerPhone",required=false)String sellerPhone,
+				@RequestParam(value="startTime",required=false)String startTime,
+				@RequestParam(value="endTime",required=false)String endTime,
+				@RequestParam(value = "pageNum", required = false, defaultValue = "1") Integer pageNum,
+		        @RequestParam(value = "rows", required = false, defaultValue = "10") Integer rows
+				){
+			MResult result = new MResult(MCode.V_1);
+			try {
+				List<DealerBean> dealerList = dealerQuery.getDealerList(dealerClassify,cooperationMode,countMode,isPayDeposit,dealerName,dealerId,userPhone,sellerPhone,startTime,endTime,pageNum,rows);
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
+			return new ResponseEntity<MResult>(result, HttpStatus.OK);
+		}
+		
 	
 	/**
 	 * 查询店铺列表
