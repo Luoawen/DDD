@@ -9,6 +9,8 @@ public class DealerAddOrUpdateCommand extends AssertionConcern implements Serial
 	private static final long serialVersionUID = 70567638935920867L;
 	private String dealerId;
 	private String userId;
+	private String userName;
+	private String userPhone;
 	private String dealerName;
 	private String dealerClassify;
 	private Integer cooperationMode;
@@ -16,7 +18,7 @@ public class DealerAddOrUpdateCommand extends AssertionConcern implements Serial
 	private String endSignDate;
 	private String dealerProvince;
 	private String dealerCity;
-	private String dealerarea;
+	private String dealerArea;
 	private String dealerPcode;
 	private String dealerCcode;
 	private String dealerAcode;
@@ -31,24 +33,33 @@ public class DealerAddOrUpdateCommand extends AssertionConcern implements Serial
 	private String managerEmail;
 	private String managerDepartment;
 	private String sellerId;
+	private String sellerName;
+	private String sellerPhone;
 	
 	public DealerAddOrUpdateCommand() {
 		super();
 	}
 
 	
+
+
+
 	public DealerAddOrUpdateCommand(String dealerId, String userId,
-			String dealerName, String dealerClassify, Integer cooperationMode,
+			String userName, String userPhone, String dealerName,
+			String dealerClassify, Integer cooperationMode,
 			String startSignDate, String endSignDate, String dealerProvince,
-			String dealerCity, String dealerarea, String dealerPcode,
+			String dealerCity, String dealerArea, String dealerPcode,
 			String dealerCcode, String dealerAcode, String dealerDetailAddress,
 			Integer countMode, Long deposit, Integer isPayDeposit,
 			String managerName, String managerPhone, String managerqq,
 			String managerWechat, String managerEmail,
-			String managerDepartment, String sellerId) {
+			String managerDepartment, String sellerId, String sellerName,
+			String sellerPhone) {
 		super();
 		this.dealerId = dealerId;
 		this.userId = userId;
+		this.userName = userName;
+		this.userPhone = userPhone;
 		this.dealerName = dealerName;
 		this.dealerClassify = dealerClassify;
 		this.cooperationMode = cooperationMode;
@@ -56,7 +67,7 @@ public class DealerAddOrUpdateCommand extends AssertionConcern implements Serial
 		this.endSignDate = endSignDate;
 		this.dealerProvince = dealerProvince;
 		this.dealerCity = dealerCity;
-		this.dealerarea = dealerarea;
+		this.dealerArea = dealerArea;
 		this.dealerPcode = dealerPcode;
 		this.dealerCcode = dealerCcode;
 		this.dealerAcode = dealerAcode;
@@ -71,7 +82,10 @@ public class DealerAddOrUpdateCommand extends AssertionConcern implements Serial
 		this.managerEmail = managerEmail;
 		this.managerDepartment = managerDepartment;
 		this.sellerId = sellerId;
+		this.sellerName = sellerName;
+		this.sellerPhone = sellerPhone;
 	}
+
 
 
 	public String getDealerId() {
@@ -110,9 +124,11 @@ public class DealerAddOrUpdateCommand extends AssertionConcern implements Serial
 		return dealerCity;
 	}
 
-	public String getDealerarea() {
-		return dealerarea;
+
+	public String getDealerArea() {
+		return dealerArea;
 	}
+
 
 	public String getDealerPcode() {
 		return dealerPcode;
@@ -169,6 +185,23 @@ public class DealerAddOrUpdateCommand extends AssertionConcern implements Serial
 	public String getSellerId() {
 		return sellerId;
 	}
+	
+
+	public String getUserName() {
+		return userName;
+	}
+
+	public String getUserPhone() {
+		return userPhone;
+	}
+
+	public String getSellerName() {
+		return sellerName;
+	}
+
+	public String getSellerPhone() {
+		return sellerPhone;
+	}
 
 	@Override
 	public String toString() {
@@ -177,7 +210,7 @@ public class DealerAddOrUpdateCommand extends AssertionConcern implements Serial
 				+ dealerClassify + ", cooperationMode=" + cooperationMode
 				+ ", startSignDate=" + startSignDate + ", endSignDate="
 				+ endSignDate + ", dealerProvince=" + dealerProvince
-				+ ", dealerCity=" + dealerCity + ", dealerarea=" + dealerarea
+				+ ", dealerCity=" + dealerCity + ", dealerArea=" + dealerArea
 				+ ", dealerPcode=" + dealerPcode + ", dealerCcode="
 				+ dealerCcode + ", dealerAcode=" + dealerAcode
 				+ ", dealerDetailAddress=" + dealerDetailAddress
