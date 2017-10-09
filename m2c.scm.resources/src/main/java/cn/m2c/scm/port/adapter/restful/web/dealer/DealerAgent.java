@@ -69,7 +69,7 @@ public class DealerAgent {
 	}
 	
 	/**
-	 * 查询店铺详情
+	 * 查询店铺列表
 	 * @param dealerName
 	 * @param dealerClassify
 	 * @param dealerId
@@ -113,7 +113,7 @@ public class DealerAgent {
 	 
 	 
 	 /**
-		 * 查询店铺列表
+		 * 查询店铺详情
 		 * @param dealerName
 		 * @param dealerClassify
 		 * @param dealerId
