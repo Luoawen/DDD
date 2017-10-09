@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping default-access="field" default-cascade="all">
+    <class name="cn.m2c.scm.domain.model.address.AfterSaleAddress" table="t_scm_after_sale_address" lazy="true"
+           optimistic-lock="version" dynamic-insert="true" dynamic-update="true">
+
+        <id name="id" column="id" type="long" unsaved-value="-1">
+            <generator class="native"/>
+        </id>
+        <property name="addressId" column="address_id" type="string"/>
+        <property name="dealerId" column="dealer_id" type="string"/>
+        <property name="proCode" column="pro_code" type="string"/>
+        <property name="cityCode" column="city_code" type="string"/>
+        <property name="areaCode" column="area_code" type="string"/>
+        <property name="proName" column="pro_name" type="string"/>
+        <property name="cityName" column="city_name" type="string"/>
+        <property name="areaName" column="area_name" type="string"/>
+        <property name="address" column="address" type="string"/>
+        <property name="contactName" column="contact_name" type="string"/>
+        <property name="contactNumber" column="contact_number" type="string"/>
+    </class>
+</hibernate-mapping>

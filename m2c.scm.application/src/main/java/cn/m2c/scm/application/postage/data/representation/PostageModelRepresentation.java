@@ -1,4 +1,4 @@
-package cn.m2c.scm.application.postage.data.bean.representation;
+package cn.m2c.scm.application.postage.data.representation;
 
 import cn.m2c.scm.application.postage.data.bean.PostageModelBean;
 import cn.m2c.scm.application.postage.data.bean.PostageModelRuleBean;

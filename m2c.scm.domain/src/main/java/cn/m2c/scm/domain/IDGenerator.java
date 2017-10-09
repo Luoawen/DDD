@@ -27,6 +27,7 @@ public abstract class IDGenerator {
 	public static final String LOCATION_ID = "14LI";
 	public static final String GOODS_POSTAGE_PREFIX_TITLE = "YF";//运费模板前缀
 	public static final String GOODS_POSTAGE_RULE_PREFIX_TITLE = "YFGZ";//运费模板规则前缀
+	public static final String AFTER_SALE_ADDRESS_PREFIX_TITLE = "SHDZ";//售后地址前缀
 
 	/**
 	 * 生成序列ID

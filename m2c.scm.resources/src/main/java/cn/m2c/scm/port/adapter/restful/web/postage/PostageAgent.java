@@ -5,7 +5,7 @@ import cn.m2c.common.MResult;
 import cn.m2c.scm.application.postage.PostageModelApplication;
 import cn.m2c.scm.application.postage.command.PostageModelCommand;
 import cn.m2c.scm.application.postage.data.bean.PostageModelBean;
-import cn.m2c.scm.application.postage.data.bean.representation.PostageModelRepresentation;
+import cn.m2c.scm.application.postage.data.representation.PostageModelRepresentation;
 import cn.m2c.scm.application.postage.query.PostageModelQueryApplication;
 import cn.m2c.scm.domain.IDGenerator;
 import cn.m2c.scm.domain.NegativeException;
