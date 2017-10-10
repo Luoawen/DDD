@@ -23,7 +23,6 @@ import cn.m2c.scm.application.dealer.command.DealerAddOrUpdateCommand;
 import cn.m2c.scm.application.dealer.data.bean.DealerBean;
 import cn.m2c.scm.application.dealer.query.DealerQuery;
 import cn.m2c.scm.domain.IDGenerator;
-import cn.m2c.scm.domain.model.dealer.Dealer;
 
 @RestController
 @RequestMapping("/dealer/sys")
@@ -176,7 +175,7 @@ public class DealerAgent {
 	}
 	
 		@RequestMapping(value="/list",method = RequestMethod.GET)
-		public ResponseEntity<MResult> list(@RequestParam(value="dealerClassify",required=false)String dealerClassify,
+		public ResponseEntity<MPager> list(@RequestParam(value="dealerClassify",required=false)String dealerClassify,
 				@RequestParam(value="cooperationMode",required=false)Integer cooperationMode,
 				@RequestParam(value="countMode",required=false)Integer countMode,
 				@RequestParam(value="isPayDeposit",required=false)Integer isPayDeposit,
@@ -189,13 +188,18 @@ public class DealerAgent {
 				@RequestParam(value = "pageNum", required = false, defaultValue = "1") Integer pageNum,
 		        @RequestParam(value = "rows", required = false, defaultValue = "10") Integer rows
 				){
-			MResult result = new MResult(MCode.V_1);
+			MPager result = new MPager(MCode.V_1);
 			try {
 				List<DealerBean> dealerList = dealerQuery.getDealerList(dealerClassify,cooperationMode,countMode,isPayDeposit,dealerName,dealerId,userPhone,sellerPhone,startTime,endTime,pageNum,rows);
+				Integer count = dealerQuery.getDealerCount(dealerClassify,cooperationMode,countMode,isPayDeposit,dealerName,dealerId,userPhone,sellerPhone,startTime,endTime,pageNum,rows);
+				result.setPager(count, pageNum, rows);
+				result.setContent(dealerList);
+				result.setStatus(MCode.V_200);
 			} catch (Exception e) {
-				// TODO: handle exception
+				log.error("修改经销商出错" + e.getMessage(), e);
+	            result =  new MPager(MCode.V_400, "服务器开小差了");
 			}
-			return new ResponseEntity<MResult>(result, HttpStatus.OK);
+			return new ResponseEntity<MPager>(result, HttpStatus.OK);
 		}
 		
 	
