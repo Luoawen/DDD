@@ -1,5 +1,7 @@
 package cn.m2c.scm.domain.model.seller;
 
+import java.util.Date;
+
 import cn.m2c.ddd.common.domain.model.ConcurrencySafeEntity;
 
 public class Seller extends ConcurrencySafeEntity{
@@ -70,6 +72,12 @@ public class Seller extends ConcurrencySafeEntity{
 	 * 业务员备注
 	 */
 	private String sellerRemark;
+	
+	
+	private Date createdDate;
+	private Date lastUpdatedDate;
+	
+	private Integer sellerStatus=1;
 	
 	public Seller() {
 		super();

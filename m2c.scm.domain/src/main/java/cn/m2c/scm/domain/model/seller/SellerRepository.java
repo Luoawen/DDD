@@ -3,14 +3,14 @@ package cn.m2c.scm.domain.model.seller;
 
 public interface SellerRepository {
 	/**
-     * 获取经销商
+     * 获取业务员
      * @param modelId
      * @return
      */
     public Seller getSeller(String sellerId);
 
     /**
-     * 保存经销商
+     * 保存业务员
      * @param postageModel
      */
     public void save(Seller seller);

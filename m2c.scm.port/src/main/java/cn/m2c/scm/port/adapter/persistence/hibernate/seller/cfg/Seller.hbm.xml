@@ -31,5 +31,6 @@
 		<property name="sellerqq" column="seller_qq" type="string" />
 		<property name="sellerWechat" column="seller_wechat" type="string" />
 		<property name="sellerRemark" column="seller_remark" type="string" />
+		<property name="sellerStatus" column="seller_status" type="int" />
 	</class>
 </hibernate-mapping>

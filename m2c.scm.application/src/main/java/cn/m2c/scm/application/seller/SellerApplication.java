@@ -38,7 +38,6 @@ public class SellerApplication {
 		Seller seller = sellerRepository.getSeller(command.getSellerId());
 		if(seller==null)
 			throw new NegativeException(NegativeCode.SELLER_IS_NOT_EXIST, "此业务员不存在.");
-		seller = new Seller();
 		seller.update(command.getSellerName(),command.getSellerPhone(),command.getSellerSex(),command.getSellerNo(),command.getSellerConfirmPass(),command.getSellerProvince(),command.getSellerCity(),command.getSellerArea(),command.getSellerPcode(),command.getSellerCcode(),command.getSellerAcode(),command.getSellerqq(),command.getSellerWechat(),command.getSellerRemark());
 		sellerRepository.save(seller);
 	}
