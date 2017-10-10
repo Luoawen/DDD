@@ -1,4 +1,4 @@
-package cn.m2c.scm.port.adapter.persistence.hibernate.postage;
+package cn.m2c.scm.port.adapter.persistence.hibernate.dealer;
 
 import org.springframework.stereotype.Repository;
 
