@@ -4,8 +4,9 @@ import cn.m2c.common.MCode;
 import cn.m2c.common.MPager;
 import cn.m2c.common.MResult;
 import cn.m2c.scm.application.brand.BrandApproveApplication;
+import cn.m2c.scm.application.brand.command.BrandApproveAgreeCommand;
 import cn.m2c.scm.application.brand.command.BrandApproveCommand;
-import cn.m2c.scm.application.brand.command.BrandCommand;
+import cn.m2c.scm.application.brand.command.BrandApproveRejectCommand;
 import cn.m2c.scm.application.brand.data.bean.BrandApproveBean;
 import cn.m2c.scm.application.brand.data.representation.BrandApproveDetailRepresentation;
 import cn.m2c.scm.application.brand.data.representation.BrandApproveRepresentation;
@@ -27,7 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 品牌信息
+ * 品牌审核信息
  */
 @RestController
 @RequestMapping("/brand/approve")
@@ -60,7 +61,7 @@ public class BrandApproveAgent {
 
 
     /**
-     * 添加品牌信息/修改正式品牌信息（商家平台，需审批）
+     * 添加品牌/修改品牌库中品牌（商家平台，需审核）
      *
      * @param dealerId      经销商id
      * @param approveId     品牌id
@@ -92,7 +93,7 @@ public class BrandApproveAgent {
             @RequestParam(value = "threeAreaName", required = false) String threeAreaName) {
         MResult result = new MResult(MCode.V_1);
         try {
-            BrandCommand command = new BrandCommand(approveId, brandId, brandName, brandNameEn, brandLogo, firstAreaCode,
+            BrandApproveCommand command = new BrandApproveCommand(approveId, brandId, brandName, brandNameEn, brandLogo, firstAreaCode,
                     twoAreaCode, threeAreaCode, firstAreaName, twoAreaName, threeAreaName, dealerId, dealerName);
             brandApproveApplication.addBrandApprove(command);
             result.setStatus(MCode.V_200);
@@ -109,7 +110,6 @@ public class BrandApproveAgent {
     /**
      * 修改审批中的品牌信息（商家平台）
      *
-     * @param dealerId      经销商id
      * @param approveId     品牌id
      * @param brandName     品牌名称
      * @param brandNameEn   英文名称
@@ -122,11 +122,9 @@ public class BrandApproveAgent {
      * @param threeAreaName 三级区域名称
      * @return
      */
-    @RequestMapping(value = "", method = RequestMethod.PUT)
+    @RequestMapping(value = "/{approveId}", method = RequestMethod.PUT)
     public ResponseEntity<MResult> modifyBrandApprove(
-            @RequestParam(value = "dealerId", required = false) String dealerId,
-            @RequestParam(value = "dealerName", required = false) String dealerName,
-            @RequestParam(value = "approveId", required = false) String approveId,
+            @PathVariable("approveId") String approveId,
             @RequestParam(value = "brandName", required = false) String brandName,
             @RequestParam(value = "brandNameEn", required = false) String brandNameEn,
             @RequestParam(value = "brandLogo", required = false) String brandLogo,
@@ -138,8 +136,8 @@ public class BrandApproveAgent {
             @RequestParam(value = "threeAreaName", required = false) String threeAreaName) {
         MResult result = new MResult(MCode.V_1);
         try {
-            BrandCommand command = new BrandCommand(approveId, null, brandName, brandNameEn, brandLogo, firstAreaCode,
-                    twoAreaCode, threeAreaCode, firstAreaName, twoAreaName, threeAreaName, dealerId, dealerName);
+            BrandApproveCommand command = new BrandApproveCommand(approveId, brandName, brandNameEn, brandLogo, firstAreaCode,
+                    twoAreaCode, threeAreaCode, firstAreaName, twoAreaName, threeAreaName);
             brandApproveApplication.modifyBrandApprove(command);
             result.setStatus(MCode.V_200);
         } catch (NegativeException ne) {
@@ -155,19 +153,17 @@ public class BrandApproveAgent {
     /**
      * 商家管理平台审核同意
      *
-     * @param dealerId
      * @param approveId
      * @param brandId
      * @return
      */
     @RequestMapping(value = "/agree", method = RequestMethod.POST)
     public ResponseEntity<MResult> brandApproveAgree(
-            @RequestParam(value = "dealerId", required = false) String dealerId,
             @RequestParam(value = "approveId", required = false) String approveId,
             @RequestParam(value = "brandId", required = false) String brandId
     ) {
         MResult result = new MResult(MCode.V_1);
-        BrandApproveCommand command = new BrandApproveCommand(dealerId, brandId, approveId);
+        BrandApproveAgreeCommand command = new BrandApproveAgreeCommand(brandId, approveId);
         try {
             brandApproveApplication.agreeBrandApprove(command);
             result.setStatus(MCode.V_200);
@@ -184,19 +180,17 @@ public class BrandApproveAgent {
     /**
      * 商家管理平台审核拒绝
      *
-     * @param dealerId
      * @param approveId
      * @param rejectReason
      * @return
      */
     @RequestMapping(value = "/reject", method = RequestMethod.POST)
     public ResponseEntity<MResult> brandApproveReject(
-            @RequestParam(value = "dealerId", required = false) String dealerId,
             @RequestParam(value = "approveId", required = false) String approveId,
             @RequestParam(value = "rejectReason", required = false) String rejectReason
     ) {
         MResult result = new MResult(MCode.V_1);
-        BrandApproveCommand command = new BrandApproveCommand(approveId, rejectReason);
+        BrandApproveRejectCommand command = new BrandApproveRejectCommand(approveId, rejectReason);
         try {
             brandApproveApplication.rejectBrandApprove(command);
             result.setStatus(MCode.V_200);

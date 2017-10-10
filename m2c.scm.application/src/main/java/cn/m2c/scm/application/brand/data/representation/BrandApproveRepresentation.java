@@ -29,7 +29,7 @@ public class BrandApproveRepresentation {
     private String dealerName;
 
     /**
-     * 审核通过时间
+     * 申请时间
      */
     private String createTime;
 

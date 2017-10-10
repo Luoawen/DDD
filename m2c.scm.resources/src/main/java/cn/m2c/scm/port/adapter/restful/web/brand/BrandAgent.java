@@ -118,9 +118,9 @@ public class BrandAgent {
      * @param threeAreaName 三级区域名称
      * @return
      */
-    @RequestMapping(value = "", method = RequestMethod.PUT)
+    @RequestMapping(value = "/{brandId}", method = RequestMethod.PUT)
     public ResponseEntity<MResult> modifyBrand(
-            @RequestParam(value = "brandId", required = false) String brandId,
+            @PathVariable("brandId") String brandId,
             @RequestParam(value = "brandName", required = false) String brandName,
             @RequestParam(value = "brandNameEn", required = false) String brandNameEn,
             @RequestParam(value = "brandLogo", required = false) String brandLogo,
@@ -170,7 +170,7 @@ public class BrandAgent {
     }
 
     /**
-     * 查询品牌列表
+     * 查询品牌库列表
      *
      * @param dealerId  商家ID
      * @param brandName 品牌名称

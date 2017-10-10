@@ -29,7 +29,7 @@ public abstract class IDGenerator {
     public static final String SCM_POSTAGE_RULE_PREFIX_TITLE = "YFGZ";//运费模板规则前缀
     public static final String SCM_AFTER_SALE_ADDRESS_PREFIX_TITLE = "SHDZ";//售后地址前缀
     public static final String SCM_BRAND_PREFIX_TITLE = "PP";//品牌前缀
-    public static final String SCM_BRANDE_APPROVE_PREFIX_TITLE = "PPSP";//品牌审批前缀
+    public static final String SCM_BRANDE_APPROVE_PREFIX_TITLE = "PPSH";//品牌审核前缀
 
     /**
      * 生成序列ID

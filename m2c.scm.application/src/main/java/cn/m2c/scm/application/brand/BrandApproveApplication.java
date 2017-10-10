@@ -2,8 +2,9 @@ package cn.m2c.scm.application.brand;
 
 import cn.m2c.common.MCode;
 import cn.m2c.ddd.common.event.annotation.EventListener;
+import cn.m2c.scm.application.brand.command.BrandApproveAgreeCommand;
 import cn.m2c.scm.application.brand.command.BrandApproveCommand;
-import cn.m2c.scm.application.brand.command.BrandCommand;
+import cn.m2c.scm.application.brand.command.BrandApproveRejectCommand;
 import cn.m2c.scm.domain.NegativeException;
 import cn.m2c.scm.domain.model.brand.BrandApprove;
 import cn.m2c.scm.domain.model.brand.BrandApproveRepository;
@@ -32,7 +33,7 @@ public class BrandApproveApplication {
      * @param command
      */
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
-    public void addBrandApprove(BrandCommand command) throws NegativeException {
+    public void addBrandApprove(BrandApproveCommand command) throws NegativeException {
         LOGGER.info("addBrandApprove command >>{}", command);
         // 与当前品牌库中的不能重名
         if (brandRepository.brandNameIsRepeat(null, command.getBrandName())) {
@@ -53,7 +54,7 @@ public class BrandApproveApplication {
      * @param command
      */
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
-    public void modifyBrandApprove(BrandCommand command) throws NegativeException {
+    public void modifyBrandApprove(BrandApproveCommand command) throws NegativeException {
         LOGGER.info("addBrandApprove command >>{}", command);
         // 与当前品牌库中的不能重名
         if (brandRepository.brandNameIsRepeat(null, command.getBrandName())) {
@@ -75,7 +76,7 @@ public class BrandApproveApplication {
      */
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
     @EventListener(isListening = true)
-    public void agreeBrandApprove(BrandApproveCommand command) throws NegativeException {
+    public void agreeBrandApprove(BrandApproveAgreeCommand command) throws NegativeException {
         LOGGER.info("agreeBrandApprove command >>{}", command);
         BrandApprove brandApprove = brandApproveRepository.getBrandApproveByApproveId(command.getBrandApproveId());
         if (null == brandApprove) {
@@ -91,7 +92,7 @@ public class BrandApproveApplication {
      * @param command
      */
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
-    public void rejectBrandApprove(BrandApproveCommand command) throws NegativeException {
+    public void rejectBrandApprove(BrandApproveRejectCommand command) throws NegativeException {
         LOGGER.info("rejectBrandApprove command >>{}", command);
         BrandApprove brandApprove = brandApproveRepository.getBrandApproveByApproveId(command.getBrandApproveId());
         if (null == brandApprove) {

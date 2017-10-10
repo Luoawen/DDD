@@ -15,11 +15,6 @@ public class BrandCommand extends AssertionConcern implements Serializable {
     private String brandId;
 
     /**
-     * 品牌审批id
-     */
-    private String brandApproveId;
-
-    /**
      * 品牌名称
      */
     private String brandName;
@@ -86,7 +81,7 @@ public class BrandCommand extends AssertionConcern implements Serializable {
 
     public BrandCommand(String brandId, String brandName, String brandNameEn, String brandLogo, String firstAreaCode,
                         String twoAreaCode, String threeAreaCode, String firstAreaName, String twoAreaName,
-                        String threeAreaName, Date applyDate, String dealerId,String dealerName, Integer isSysAdd) {
+                        String threeAreaName, Date applyDate, String dealerId, String dealerName, Integer isSysAdd) {
         this.brandId = brandId;
         this.brandName = brandName;
         this.brandNameEn = brandNameEn;
@@ -99,7 +94,7 @@ public class BrandCommand extends AssertionConcern implements Serializable {
         this.threeAreaName = threeAreaName;
         this.applyDate = applyDate;
         this.dealerId = dealerId;
-        this.dealerName=dealerName;
+        this.dealerName = dealerName;
         this.isSysAdd = isSysAdd;
     }
 
@@ -116,25 +111,6 @@ public class BrandCommand extends AssertionConcern implements Serializable {
         this.firstAreaName = firstAreaName;
         this.twoAreaName = twoAreaName;
         this.threeAreaName = threeAreaName;
-    }
-
-
-    public BrandCommand(String brandApproveId, String brandId, String brandName, String brandNameEn, String brandLogo, String firstAreaCode,
-                        String twoAreaCode, String threeAreaCode, String firstAreaName, String twoAreaName,
-                        String threeAreaName, String dealerId,String dealerName) {
-        this.brandApproveId = brandApproveId;
-        this.brandId = brandId;
-        this.brandName = brandName;
-        this.brandNameEn = brandNameEn;
-        this.brandLogo = brandLogo;
-        this.firstAreaCode = firstAreaCode;
-        this.twoAreaCode = twoAreaCode;
-        this.threeAreaCode = threeAreaCode;
-        this.firstAreaName = firstAreaName;
-        this.twoAreaName = twoAreaName;
-        this.threeAreaName = threeAreaName;
-        this.dealerId = dealerId;
-        this.dealerName=dealerName;
     }
 
     public String getBrandId() {
@@ -183,10 +159,6 @@ public class BrandCommand extends AssertionConcern implements Serializable {
 
     public String getDealerId() {
         return dealerId;
-    }
-
-    public String getBrandApproveId() {
-        return brandApproveId;
     }
 
     public Integer getIsSysAdd() {
