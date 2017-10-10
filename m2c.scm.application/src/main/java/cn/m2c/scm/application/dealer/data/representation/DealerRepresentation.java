@@ -1,73 +1,74 @@
-package cn.m2c.scm.application.dealer.data.bean;
+package cn.m2c.scm.application.dealer.data.representation;
 
 import java.util.Date;
 
-import cn.m2c.ddd.common.persistence.orm.ColumnAlias;
+import cn.m2c.scm.application.dealer.data.bean.DealerBean;
 
-public class DealerBean {
 
-	 @ColumnAlias(value = "dealer_name")
-	 private String dealerName;
+public class DealerRepresentation {
+	
+
+	private String dealerName;
 	 
-	 @ColumnAlias(value = "dealer_id")
 	 private String dealerId;
 	 
-	 @ColumnAlias(value = "user_name")
 	 private String userName;
 	 
-	 @ColumnAlias(value = "user_phone")
 	 private String userPhone;
 	 
-	 @ColumnAlias(value = "user_id")
 	 private String userId;
 	 
-	 @ColumnAlias(value = "dealer_classify")
 	 private String dealerClassify;
 	 
-	 @ColumnAlias(value = "cooperation_mode")
 	 private Integer cooperationMode;
 	 
-	 @ColumnAlias(value = "count_mode")
 	 private Integer countMode;
 
-	 @ColumnAlias(value = "dealer_province")
 	 private String dealerProvince;
 	 
-	 @ColumnAlias(value = "dealer_city")
 	 private String dealerCity;
 	 
-	@ColumnAlias(value = "dealer_area")
 	private String dealerArea;
 	 
-	@ColumnAlias(value = "dealer_pcode")
 	private String dealerPcode;
 	 
-	@ColumnAlias(value = "dealer_ccode")
 	private String dealerCcode;
 	 
-	@ColumnAlias(value = "dealer_acode")
 	private String dealerAcode;
 	
-	@ColumnAlias(value = "seller_name")
 	private String sellerName;
 	
-	@ColumnAlias(value = "seller_phone")
 	private String sellerPhone;
 	
-	@ColumnAlias(value = "created_date")
 	private Date createdDate;
+	
+	
 
-	@ColumnAlias(value = "shop_name")
-	private String shopName;
+	public DealerRepresentation() {
+		super();
+	}
 	
-	@ColumnAlias(value = "shop_icon")
-	private String shopIcon;
-	
-	@ColumnAlias(value = "shop_introduce")
-	private String shopIntroduce;
-	
-	@ColumnAlias(value = "customer_service_tel")
-	private String customerServiceTel;
+
+	public DealerRepresentation(DealerBean model) {
+		this.dealerId = model.getDealerId();
+		this.dealerName = model.getDealerName();
+		this.userName = model.getUserName();
+		this.userPhone = model.getUserPhone();
+		this.userId = model.getUserId();
+		this.dealerClassify = model.getDealerClassify();
+		this.cooperationMode = model.getCooperationMode();
+		this.countMode = model.getCountMode();
+		this.dealerProvince = model.getDealerProvince();
+		this.dealerCity = model.getDealerCity();
+		this.dealerArea = model.getDealerArea();
+		this.dealerPcode = model.getDealerPcode();
+		this.dealerCcode = model.getDealerCcode();
+		this.dealerAcode = model.getDealerAcode();
+		this.sellerName = model.getSellerName();
+		this.sellerPhone = model.getSellerPhone();
+		this.createdDate = model.getCreatedDate();
+	}
+
 
 	public String getDealerName() {
 		return dealerName;
@@ -99,6 +100,14 @@ public class DealerBean {
 
 	public void setUserPhone(String userPhone) {
 		this.userPhone = userPhone;
+	}
+
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
 	}
 
 	public String getDealerClassify() {
@@ -195,46 +204,6 @@ public class DealerBean {
 
 	public void setCreatedDate(Date createdDate) {
 		this.createdDate = createdDate;
-	}
-
-	public String getUserId() {
-		return userId;
-	}
-
-	public void setUserId(String userId) {
-		this.userId = userId;
-	}
-
-	public String getShopName() {
-		return shopName;
-	}
-
-	public void setShopName(String shopName) {
-		this.shopName = shopName;
-	}
-
-	public String getShopIcon() {
-		return shopIcon;
-	}
-
-	public void setShopIcon(String shopIcon) {
-		this.shopIcon = shopIcon;
-	}
-
-	public String getShopIntroduce() {
-		return shopIntroduce;
-	}
-
-	public void setShopIntroduce(String shopIntroduce) {
-		this.shopIntroduce = shopIntroduce;
-	}
-
-	public String getCustomerServiceTel() {
-		return customerServiceTel;
-	}
-
-	public void setCustomerServiceTel(String customerServiceTel) {
-		this.customerServiceTel = customerServiceTel;
 	}
 	
 	
