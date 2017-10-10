@@ -73,7 +73,7 @@ public class DealerAgent {
 			@RequestParam(value="endSignDate",required=true)String endSignDate,
 			@RequestParam(value="dealerProvince",required=true)String dealerProvince,
 			@RequestParam(value="dealerCity",required=true)String dealerCity,
-			@RequestParam(value="dealerarea",required=true)String dealerarea,
+			@RequestParam(value="dealerArea",required=true)String dealerArea,
 			@RequestParam(value="dealerPcode",required=true)String dealerPcode,
 			@RequestParam(value="dealerCcode",required=true)String dealerCcode,
 			@RequestParam(value="dealerAcode",required=true)String dealerAcode,
@@ -93,7 +93,7 @@ public class DealerAgent {
 			MResult result = new MResult(MCode.V_1);
 			try {
 				String dealerId = IDGenerator.get(IDGenerator.DEALER_PREFIX_TITLE);
-				DealerAddOrUpdateCommand command = new DealerAddOrUpdateCommand(dealerId,userId,userName,userPhone, dealerName, dealerClassify, cooperationMode, startSignDate, endSignDate, dealerProvince, dealerCity, dealerarea, dealerPcode, dealerCcode, dealerAcode, dealerDetailAddress, countMode, deposit, isPayDeposit, managerName, managerPhone, managerqq, managerWechat, managerEmail, managerDepartment, sellerId,sellerName,sellerPhone);
+				DealerAddOrUpdateCommand command = new DealerAddOrUpdateCommand(dealerId,userId,userName,userPhone, dealerName, dealerClassify, cooperationMode, startSignDate, endSignDate, dealerProvince, dealerCity, dealerArea, dealerPcode, dealerCcode, dealerAcode, dealerDetailAddress, countMode, deposit, isPayDeposit, managerName, managerPhone, managerqq, managerWechat, managerEmail, managerDepartment, sellerId,sellerName,sellerPhone);
 				application.addDealer(command);
 				result.setStatus(MCode.V_200);
 			} catch (Exception e) {
@@ -145,7 +145,7 @@ public class DealerAgent {
 			@RequestParam(value="endSignDate",required=true)String endSignDate,
 			@RequestParam(value="dealerProvince",required=true)String dealerProvince,
 			@RequestParam(value="dealerCity",required=true)String dealerCity,
-			@RequestParam(value="dealerarea",required=true)String dealerarea,
+			@RequestParam(value="dealerArea",required=true)String dealerArea,
 			@RequestParam(value="dealerPcode",required=true)String dealerPcode,
 			@RequestParam(value="dealerCcode",required=true)String dealerCcode,
 			@RequestParam(value="dealerAcode",required=true)String dealerAcode,
@@ -164,7 +164,7 @@ public class DealerAgent {
 			@RequestParam(value="sellerPhone",required=true)String sellerPhone){
 			MResult result = new MResult(MCode.V_1);
 			try {
-				DealerAddOrUpdateCommand command = new DealerAddOrUpdateCommand(dealerId,userId,userName,userPhone, dealerName, dealerClassify, cooperationMode, startSignDate, endSignDate, dealerProvince, dealerCity, dealerarea, dealerPcode, dealerCcode, dealerAcode, dealerDetailAddress, countMode, deposit, isPayDeposit, managerName, managerPhone, managerqq, managerWechat, managerEmail, managerDepartment, sellerId,sellerName,sellerPhone);
+				DealerAddOrUpdateCommand command = new DealerAddOrUpdateCommand(dealerId,userId,userName,userPhone, dealerName, dealerClassify, cooperationMode, startSignDate, endSignDate, dealerProvince, dealerCity, dealerArea, dealerPcode, dealerCcode, dealerAcode, dealerDetailAddress, countMode, deposit, isPayDeposit, managerName, managerPhone, managerqq, managerWechat, managerEmail, managerDepartment, sellerId,sellerName,sellerPhone);
 				application.updateDealer(command);
 				result.setStatus(MCode.V_200);
 			} catch (Exception e) {
