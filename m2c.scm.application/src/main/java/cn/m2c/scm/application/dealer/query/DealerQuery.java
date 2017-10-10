@@ -82,12 +82,83 @@ public class DealerQuery {
 				params.add(rows*(pageNum - 1));
 				params.add(rows);
 				System.out.println("----查询经销商列表："+sql.toString());
+				dealerList =  this.supportJdbcTemplate.queryForBeanList(sql.toString(), DealerBean.class, params.toArray());
+				//-------------------循环bean获取商家分类
 				
 		} catch (Exception e) {
-			log.error("查询经销商列表出错");
+			log.error("查询经销商列表出错",e);
 			throw new NegativeException(500, "经销商查询出错");
 		}
 		return dealerList;
+	}
+
+
+	public Integer getDealerCount(String dealerClassify,
+			Integer cooperationMode, Integer countMode, Integer isPayDeposit,
+			String dealerName, String dealerId, String userPhone,
+			String sellerPhone, String startTime, String endTime,
+			Integer pageNum, Integer rows) throws NegativeException {
+		Integer result = 0;
+		try {
+			 StringBuilder sql = new StringBuilder();
+			 List<Object> params = new ArrayList<Object>();
+	            sql.append(" SELECT ");
+	            sql.append(" COUNT(*) ");
+	            sql.append(" FROM ");
+	            sql.append(" t_scm_dealer sd ");
+	            sql.append(" WHERE ");
+	            sql.append(" dealer_status = 1 ");
+	            if(dealerClassify!=null && !"".equals(dealerClassify)){
+	            	sql.append(" AND sd.dealer_classify LIKE concat('%', ?,'%') ");
+	            	params.add(dealerClassify);
+	            }
+	            if(cooperationMode!=null){
+	            	sql.append(" AND sd.cooperation_mode = ? ");
+	            	params.add(cooperationMode);
+	            }
+	            if(countMode!=null){
+	            	sql.append(" AND sd.count_mode = ? ");
+	            	params.add(countMode);
+	            }
+	            if(isPayDeposit!=null){
+	            	sql.append(" AND sd.is_pay_deposit = ? ");
+	            	params.add(isPayDeposit);
+	            }
+	            if(dealerName!=null && !"".equals(dealerName)){
+	            	sql.append(" AND sd.dealer_name LIKE concat('%', ?,'%')  ");
+	            	params.add(dealerName);
+	            }
+	            if(dealerId!=null && !"".equals(dealerId)){
+	            	sql.append(" AND sd.dealer_id LIKE concat('%', ?,'%')  ");
+	            	params.add(dealerId);
+	            }
+	            if(userPhone!=null && !"".equals(userPhone)){
+	            	sql.append(" AND sd.user_phone LIKE concat('%', ?,'%')  ");
+	            	params.add(userPhone);
+	            }
+	            if(sellerPhone!=null && !"".equals(sellerPhone)){
+	            	sql.append(" AND sd.seller_phone LIKE concat('%', ?,'%')  ");
+	            	params.add(sellerPhone);
+	            }
+	        	if(startTime !=null&&!"".equals(startTime)){
+					
+					sql.append(" AND sd.created_date>=?");
+					params.add(startTime);
+				}
+				if(endTime!=null&&!"".equals(endTime)){
+					
+					sql.append(" AND sd.created_date<=?");
+					params.add(endTime+" 23:59:59");
+				}
+				System.out.println("----查询经销商总数："+sql.toString());
+				result =  this.supportJdbcTemplate.jdbcTemplate().queryForObject(sql.toString(), Integer.class, params.toArray());
+				//-------------------循环bean获取商家分类
+				
+		} catch (Exception e) {
+			log.error("查询经销商总数出错",e);
+			throw new NegativeException(500, "经销商查询总数出错");
+		}
+		return result;
 	}
 
 }
