@@ -18,6 +18,9 @@ public class DealerBean {
 	 @ColumnAlias(value = "user_phone")
 	 private String userPhone;
 	 
+	 @ColumnAlias(value = "user_id")
+	 private String userId;
+	 
 	 @ColumnAlias(value = "dealer_classify")
 	 private String dealerClassify;
 	 
@@ -51,8 +54,8 @@ public class DealerBean {
 	@ColumnAlias(value = "seller_phone")
 	private String sellerPhone;
 	
-	@ColumnAlias(value = "createdDate")
-	private Date created_date;
+	@ColumnAlias(value = "created_date")
+	private Date createdDate;
 
 
 	public String getDealerName() {
@@ -175,14 +178,19 @@ public class DealerBean {
 		this.sellerPhone = sellerPhone;
 	}
 
-	public Date getCreated_date() {
-		return created_date;
+	public Date getCreatedDate() {
+		return createdDate;
 	}
 
-	public void setCreated_date(Date created_date) {
-		this.created_date = created_date;
+	public void setCreatedDate(Date createdDate) {
+		this.createdDate = createdDate;
 	}
 
-	
-	
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
 }
