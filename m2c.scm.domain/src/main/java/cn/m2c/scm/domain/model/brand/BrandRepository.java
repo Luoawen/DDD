@@ -1,7 +1,5 @@
 package cn.m2c.scm.domain.model.brand;
 
-import java.util.List;
-
 /**
  * 品牌
  */
@@ -20,7 +18,7 @@ public interface BrandRepository {
      * @param brandName
      * @return
      */
-    public List<Brand> getBrandByBrandName(String brandName);
+    public boolean brandNameIsRepeat(String brandId,String brandName);
 
     /**
      * 保存品牌信息

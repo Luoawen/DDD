@@ -1,9 +1,10 @@
 package cn.m2c.scm.application.brand;
 
 import cn.m2c.common.MCode;
+import cn.m2c.ddd.common.event.annotation.EventListener;
+import cn.m2c.scm.application.brand.command.BrandApproveCommand;
 import cn.m2c.scm.application.brand.command.BrandCommand;
 import cn.m2c.scm.domain.NegativeException;
-import cn.m2c.scm.domain.model.brand.Brand;
 import cn.m2c.scm.domain.model.brand.BrandApprove;
 import cn.m2c.scm.domain.model.brand.BrandApproveRepository;
 import cn.m2c.scm.domain.model.brand.BrandRepository;
@@ -12,8 +13,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 /**
  * 品牌审批
@@ -36,13 +35,12 @@ public class BrandApproveApplication {
     public void addBrandApprove(BrandCommand command) throws NegativeException {
         LOGGER.info("addBrandApprove command >>{}", command);
         // 与当前品牌库中的不能重名
-        List<Brand> brands = brandRepository.getBrandByBrandName(command.getBrandName());
-        if (null != brands && brands.size() > 0) {
+        if (brandRepository.brandNameIsRepeat(null, command.getBrandName())) {
             throw new NegativeException(MCode.V_301, "品牌名称已存在");
         }
         BrandApprove brandApprove = brandApproveRepository.getBrandApproveByApproveId(command.getBrandApproveId());
         if (null == brandApprove) {
-            brandApprove = new BrandApprove(command.getBrandApproveId(), command.getBrandName(), command.getBrandNameEn(), command.getBrandLogo(), command.getFirstAreaCode(),
+            brandApprove = new BrandApprove(command.getBrandApproveId(),command.getBrandId(), command.getBrandName(), command.getBrandNameEn(), command.getBrandLogo(), command.getFirstAreaCode(),
                     command.getTwoAreaCode(), command.getThreeAreaCode(), command.getFirstAreaName(), command.getTwoAreaName(),
                     command.getThreeAreaName(), command.getDealerId());
             brandApproveRepository.save(brandApprove);
@@ -50,18 +48,55 @@ public class BrandApproveApplication {
     }
 
     /**
-     * 同意添加品牌
+     * 修改审批中的品牌信息（商家平台）
      *
-     * @param approveId
+     * @param command
      */
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
-    public void agreeAddBrandApprove(String approveId) throws NegativeException {
-        LOGGER.info("agreeAddBrandApprove approveId >>{}", approveId);
-        BrandApprove brandApprove = brandApproveRepository.getBrandApproveByApproveId(approveId);
+    public void modifyBrandApprove(BrandCommand command) throws NegativeException {
+        LOGGER.info("addBrandApprove command >>{}", command);
+        // 与当前品牌库中的不能重名
+        if (brandRepository.brandNameIsRepeat(null, command.getBrandName())) {
+            throw new NegativeException(MCode.V_301, "品牌名称已存在");
+        }
+        BrandApprove brandApprove = brandApproveRepository.getBrandApproveByApproveId(command.getBrandApproveId());
         if (null == brandApprove) {
             throw new NegativeException(MCode.V_300, "待审批品牌不存在");
         }
-        brandApprove.agreeAddBrand();
+        brandApprove.modifyBrandApprove(command.getBrandName(), command.getBrandNameEn(), command.getBrandLogo(), command.getFirstAreaCode(),
+                command.getTwoAreaCode(), command.getThreeAreaCode(), command.getFirstAreaName(), command.getTwoAreaName(),
+                command.getThreeAreaName());
+    }
+
+    /**
+     * 同意
+     *
+     * @param command
+     */
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+    @EventListener(isListening = true)
+    public void agreeBrandApprove(BrandApproveCommand command) throws NegativeException {
+        LOGGER.info("agreeBrandApprove command >>{}", command);
+        BrandApprove brandApprove = brandApproveRepository.getBrandApproveByApproveId(command.getBrandApproveId());
+        if (null == brandApprove) {
+            throw new NegativeException(MCode.V_300, "待审批品牌不存在");
+        }
+        brandApprove.agree();
         brandApproveRepository.remove(brandApprove);
+    }
+
+    /**
+     * 拒绝
+     *
+     * @param command
+     */
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+    public void rejectBrandApprove(BrandApproveCommand command) throws NegativeException {
+        LOGGER.info("rejectBrandApprove command >>{}", command);
+        BrandApprove brandApprove = brandApproveRepository.getBrandApproveByApproveId(command.getBrandApproveId());
+        if (null == brandApprove) {
+            throw new NegativeException(MCode.V_300, "待审批品牌不存在");
+        }
+        brandApprove.reject(command.getRejectReason());
     }
 }

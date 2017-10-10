@@ -3,6 +3,7 @@ package cn.m2c.scm.port.adapter.persistence.hibernate.brand;
 import cn.m2c.ddd.common.port.adapter.persistence.hibernate.HibernateSupperRepository;
 import cn.m2c.scm.domain.model.brand.Brand;
 import cn.m2c.scm.domain.model.brand.BrandRepository;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Query;
 import org.springframework.stereotype.Repository;
 
@@ -22,11 +23,21 @@ public class HibernateBrandRepository extends HibernateSupperRepository implemen
     }
 
     @Override
-    public List<Brand> getBrandByBrandName(String brandName) {
+    public boolean brandNameIsRepeat(String brandId, String brandName) {
         StringBuilder sql = new StringBuilder("select * from t_scm_brand where brand_name =:brand_name");
+        if (StringUtils.isNotEmpty(brandId)) {
+            sql.append(" and brand_id <> :brand_id");
+        }
         Query query = this.session().createSQLQuery(sql.toString()).addEntity(Brand.class);
-        query.setParameter("brand_id", brandName);
-        return query.list();
+        query.setParameter("brand_name", brandName);
+        if (StringUtils.isNotEmpty(brandId)) {
+            query.setParameter("brand_id", brandId);
+        }
+        List<Brand> list = query.list();
+        if (null != list && list.size() > 0) {
+            return true;
+        }
+        return false;
     }
 
     @Override

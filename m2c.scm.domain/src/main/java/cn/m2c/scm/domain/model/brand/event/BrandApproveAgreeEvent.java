@@ -7,7 +7,11 @@ import java.util.Date;
 /**
  * 同意品牌添加
  */
-public class BrandApproveAgreeAddEvent implements DomainEvent {
+public class BrandApproveAgreeEvent implements DomainEvent {
+    /**
+     * 品牌id
+     */
+    private String brandId;
     /**
      * 品牌名称
      */
@@ -62,12 +66,19 @@ public class BrandApproveAgreeAddEvent implements DomainEvent {
      * 商户ID
      */
     private String dealerId;
+
+    /**
+     * 操作标识，1：品牌新增或待审批品牌修改，2：已审批品牌修改
+     */
+    private Integer optFlag;
+
     private Date occurredOn;
     private int eventVersion;
 
-    public BrandApproveAgreeAddEvent(String brandName, String brandNameEn, String brandLogo, String firstAreaCode,
-                                     String twoAreaCode, String threeAreaCode, String firstAreaName, String twoAreaName,
-                                     String threeAreaName, Date applyDate, String dealerId) {
+    public BrandApproveAgreeEvent(String brandId, String brandName, String brandNameEn, String brandLogo, String firstAreaCode,
+                                  String twoAreaCode, String threeAreaCode, String firstAreaName, String twoAreaName,
+                                  String threeAreaName, Date applyDate, String dealerId, Integer optFlag) {
+        this.brandId = brandId;
         this.brandName = brandName;
         this.brandNameEn = brandNameEn;
         this.brandLogo = brandLogo;
@@ -79,6 +90,7 @@ public class BrandApproveAgreeAddEvent implements DomainEvent {
         this.threeAreaName = threeAreaName;
         this.applyDate = applyDate;
         this.dealerId = dealerId;
+        this.optFlag = optFlag;
         this.occurredOn = new Date();
         this.eventVersion = 1;
     }

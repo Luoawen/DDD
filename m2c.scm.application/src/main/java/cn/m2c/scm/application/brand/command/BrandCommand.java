@@ -74,6 +74,29 @@ public class BrandCommand extends AssertionConcern implements Serializable {
      */
     private String dealerId;
 
+    /**
+     * 0:商家申请，需审批，1:商家管理平台添加，无需审批
+     */
+    private Integer isSysAdd;
+
+    public BrandCommand(String brandId, String brandName, String brandNameEn, String brandLogo, String firstAreaCode,
+                        String twoAreaCode, String threeAreaCode, String firstAreaName, String twoAreaName,
+                        String threeAreaName, Date applyDate, String dealerId, Integer isSysAdd) {
+        this.brandId = brandId;
+        this.brandName = brandName;
+        this.brandNameEn = brandNameEn;
+        this.brandLogo = brandLogo;
+        this.firstAreaCode = firstAreaCode;
+        this.twoAreaCode = twoAreaCode;
+        this.threeAreaCode = threeAreaCode;
+        this.firstAreaName = firstAreaName;
+        this.twoAreaName = twoAreaName;
+        this.threeAreaName = threeAreaName;
+        this.applyDate = applyDate;
+        this.dealerId = dealerId;
+        this.isSysAdd = isSysAdd;
+    }
+
     public BrandCommand(String brandId, String brandName, String brandNameEn, String brandLogo, String firstAreaCode,
                         String twoAreaCode, String threeAreaCode, String firstAreaName, String twoAreaName,
                         String threeAreaName) {
@@ -89,10 +112,12 @@ public class BrandCommand extends AssertionConcern implements Serializable {
         this.threeAreaName = threeAreaName;
     }
 
-    public BrandCommand(String brandApproveId, String brandName, String brandNameEn, String brandLogo, String firstAreaCode,
+
+    public BrandCommand(String brandApproveId, String brandId, String brandName, String brandNameEn, String brandLogo, String firstAreaCode,
                         String twoAreaCode, String threeAreaCode, String firstAreaName, String twoAreaName,
                         String threeAreaName, String dealerId) {
         this.brandApproveId = brandApproveId;
+        this.brandId = brandId;
         this.brandName = brandName;
         this.brandNameEn = brandNameEn;
         this.brandLogo = brandLogo;
@@ -155,5 +180,9 @@ public class BrandCommand extends AssertionConcern implements Serializable {
 
     public String getBrandApproveId() {
         return brandApproveId;
+    }
+
+    public Integer getIsSysAdd() {
+        return isSysAdd;
     }
 }

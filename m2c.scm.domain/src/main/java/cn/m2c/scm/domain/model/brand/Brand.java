@@ -94,4 +94,18 @@ public class Brand extends ConcurrencySafeEntity {
         this.dealerId = dealerId;
         this.isSysAdd = isSysAdd;
     }
+
+    public void modifyBrand(String brandName, String brandNameEn, String brandLogo, String firstAreaCode,
+                            String twoAreaCode, String threeAreaCode, String firstAreaName, String twoAreaName,
+                            String threeAreaName) {
+        this.brandName = brandName;
+        this.brandNameEn = brandNameEn;
+        this.brandLogo = brandLogo;
+        this.firstAreaCode = firstAreaCode;
+        this.twoAreaCode = twoAreaCode;
+        this.threeAreaCode = threeAreaCode;
+        this.firstAreaName = firstAreaName;
+        this.twoAreaName = twoAreaName;
+        this.threeAreaName = threeAreaName;
+    }
 }

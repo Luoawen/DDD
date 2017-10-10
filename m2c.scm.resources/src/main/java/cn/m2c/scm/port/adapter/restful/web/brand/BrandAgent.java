@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Date;
+
 /**
  * 品牌信息
  */
@@ -78,7 +80,7 @@ public class BrandAgent {
         try {
             BrandCommand command = new BrandCommand(brandId, brandName, brandNameEn, brandLogo, firstAreaCode,
                     twoAreaCode, threeAreaCode, firstAreaName, twoAreaName,
-                    threeAreaName);
+                    threeAreaName, new Date(), null, 1);
             brandApplication.addBrand(command);
             result.setStatus(MCode.V_200);
         } catch (NegativeException ne) {
@@ -87,6 +89,50 @@ public class BrandAgent {
         } catch (Exception e) {
             LOGGER.error("addBrand Exception e:", e);
             result = new MResult(MCode.V_400, "添加品牌失败");
+        }
+        return new ResponseEntity<MResult>(result, HttpStatus.OK);
+    }
+
+    /**
+     * 修改品牌信息（商家管理平台，无需审批）
+     *
+     * @param brandId       品牌id
+     * @param brandName     品牌名称
+     * @param brandNameEn   英文名称
+     * @param brandLogo     品牌logo
+     * @param firstAreaCode 一级区域编号
+     * @param twoAreaCode   二级区域编号
+     * @param threeAreaCode 三级区域编号
+     * @param firstAreaName 一级区域名称
+     * @param twoAreaName   二级区域名称
+     * @param threeAreaName 三级区域名称
+     * @return
+     */
+    @RequestMapping(value = "", method = RequestMethod.PUT)
+    public ResponseEntity<MResult> modifyBrand(
+            @RequestParam(value = "brandId", required = false) String brandId,
+            @RequestParam(value = "brandName", required = false) String brandName,
+            @RequestParam(value = "brandNameEn", required = false) String brandNameEn,
+            @RequestParam(value = "brandLogo", required = false) String brandLogo,
+            @RequestParam(value = "firstAreaCode", required = false) String firstAreaCode,
+            @RequestParam(value = "twoAreaCode", required = false) String twoAreaCode,
+            @RequestParam(value = "threeAreaCode", required = false) String threeAreaCode,
+            @RequestParam(value = "firstAreaName", required = false) String firstAreaName,
+            @RequestParam(value = "twoAreaName", required = false) String twoAreaName,
+            @RequestParam(value = "threeAreaName", required = false) String threeAreaName) {
+        MResult result = new MResult(MCode.V_1);
+        try {
+            BrandCommand command = new BrandCommand(brandId, brandName, brandNameEn, brandLogo, firstAreaCode,
+                    twoAreaCode, threeAreaCode, firstAreaName, twoAreaName,
+                    threeAreaName);
+            brandApplication.modifyBrand(command);
+            result.setStatus(MCode.V_200);
+        } catch (NegativeException ne) {
+            LOGGER.error("modifyBrand NegativeException e:", ne);
+            result = new MResult(ne.getStatus(), ne.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("modifyBrand Exception e:", e);
+            result = new MResult(MCode.V_400, "修改品牌失败");
         }
         return new ResponseEntity<MResult>(result, HttpStatus.OK);
     }
