@@ -293,7 +293,7 @@ public class DealerAgent {
 		            @RequestParam(value = "dealerId", required = true) String dealerId,
 		            @RequestParam(value = "shopName", required = true) String shopName,
 		            @RequestParam(value = "shopIcon", required = true) String shopIcon,
-		            @RequestParam(value = "shopIntroduce", required = true) String shopIntroduce,
+		            @RequestParam(value = "shopIntroduce", required = false) String shopIntroduce,
 		            @RequestParam(value = "customerServiceTel", required = true) String customerServiceTel
 		            ) {
 			 MResult result = new MResult(MCode.V_1);
