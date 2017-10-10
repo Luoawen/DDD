@@ -1,10 +1,15 @@
 package cn.m2c.scm.port.adapter.restful.web.brand;
 
 import cn.m2c.common.MCode;
+import cn.m2c.common.MPager;
 import cn.m2c.common.MResult;
 import cn.m2c.scm.application.brand.BrandApproveApplication;
 import cn.m2c.scm.application.brand.command.BrandApproveCommand;
 import cn.m2c.scm.application.brand.command.BrandCommand;
+import cn.m2c.scm.application.brand.data.bean.BrandApproveBean;
+import cn.m2c.scm.application.brand.data.representation.BrandApproveDetailRepresentation;
+import cn.m2c.scm.application.brand.data.representation.BrandApproveRepresentation;
+import cn.m2c.scm.application.brand.query.BrandApproveQueryApplication;
 import cn.m2c.scm.domain.IDGenerator;
 import cn.m2c.scm.domain.NegativeException;
 import org.slf4j.Logger;
@@ -12,10 +17,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 品牌信息
@@ -27,6 +36,8 @@ public class BrandApproveAgent {
 
     @Autowired
     BrandApproveApplication brandApproveApplication;
+    @Autowired
+    BrandApproveQueryApplication brandApproveQueryApplication;
 
     /**
      * 获取ID
@@ -67,6 +78,7 @@ public class BrandApproveAgent {
     @RequestMapping(value = "", method = RequestMethod.POST)
     public ResponseEntity<MResult> addBrandApprove(
             @RequestParam(value = "dealerId", required = false) String dealerId,
+            @RequestParam(value = "dealerName", required = false) String dealerName,
             @RequestParam(value = "approveId", required = false) String approveId,
             @RequestParam(value = "brandId", required = false) String brandId,
             @RequestParam(value = "brandName", required = false) String brandName,
@@ -81,7 +93,7 @@ public class BrandApproveAgent {
         MResult result = new MResult(MCode.V_1);
         try {
             BrandCommand command = new BrandCommand(approveId, brandId, brandName, brandNameEn, brandLogo, firstAreaCode,
-                    twoAreaCode, threeAreaCode, firstAreaName, twoAreaName, threeAreaName, dealerId);
+                    twoAreaCode, threeAreaCode, firstAreaName, twoAreaName, threeAreaName, dealerId, dealerName);
             brandApproveApplication.addBrandApprove(command);
             result.setStatus(MCode.V_200);
         } catch (NegativeException ne) {
@@ -113,6 +125,7 @@ public class BrandApproveAgent {
     @RequestMapping(value = "", method = RequestMethod.PUT)
     public ResponseEntity<MResult> modifyBrandApprove(
             @RequestParam(value = "dealerId", required = false) String dealerId,
+            @RequestParam(value = "dealerName", required = false) String dealerName,
             @RequestParam(value = "approveId", required = false) String approveId,
             @RequestParam(value = "brandName", required = false) String brandName,
             @RequestParam(value = "brandNameEn", required = false) String brandNameEn,
@@ -126,7 +139,7 @@ public class BrandApproveAgent {
         MResult result = new MResult(MCode.V_1);
         try {
             BrandCommand command = new BrandCommand(approveId, null, brandName, brandNameEn, brandLogo, firstAreaCode,
-                    twoAreaCode, threeAreaCode, firstAreaName, twoAreaName, threeAreaName, dealerId);
+                    twoAreaCode, threeAreaCode, firstAreaName, twoAreaName, threeAreaName, dealerId, dealerName);
             brandApproveApplication.modifyBrandApprove(command);
             result.setStatus(MCode.V_200);
         } catch (NegativeException ne) {
@@ -193,6 +206,95 @@ public class BrandApproveAgent {
         } catch (Exception e) {
             LOGGER.error("brandApproveReject Exception e:", e);
             result = new MResult(MCode.V_400, "拒绝待审批品牌");
+        }
+        return new ResponseEntity<MResult>(result, HttpStatus.OK);
+    }
+
+    /**
+     * 删除品牌审核信息
+     *
+     * @param approveId
+     * @return
+     */
+    @RequestMapping(value = "/{approveId}", method = RequestMethod.DELETE)
+    public ResponseEntity<MResult> deleteBrandApprove(
+            @PathVariable("approveId") String approveId) {
+        MResult result = new MResult(MCode.V_1);
+        try {
+            brandApproveApplication.delBrandApprove(approveId);
+        } catch (NegativeException ne) {
+            LOGGER.error("deleteBrandApprove NegativeException e:", ne);
+            result = new MResult(ne.getStatus(), ne.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("deleteBrandApprove Exception e:", e);
+            result = new MResult(MCode.V_400, "删除品牌审核信息失败");
+        }
+        return new ResponseEntity<MResult>(result, HttpStatus.OK);
+    }
+
+    /**
+     * 查询品牌审核列表
+     *
+     * @param dealerId  商家ID
+     * @param brandName 品牌名称
+     * @param condition 搜索条件
+     * @param startTime 开始时间
+     * @param endTime   结束时间
+     * @param pageNum   第几页
+     * @param rows      每页多少行
+     * @return
+     */
+    @RequestMapping(value = "", method = RequestMethod.GET)
+    public ResponseEntity<MPager> queryBrandApprove(
+            @RequestParam(value = "dealerId", required = false) String dealerId,
+            @RequestParam(value = "brandName", required = false) String brandName,
+            @RequestParam(value = "condition", required = false) String condition,
+            @RequestParam(value = "startTime", required = false) String startTime,
+            @RequestParam(value = "endTime", required = false) String endTime,
+            @RequestParam(value = "pageNum", required = false, defaultValue = "1") Integer pageNum,
+            @RequestParam(value = "rows", required = false, defaultValue = "10") Integer rows) {
+        MPager result = new MPager(MCode.V_1);
+        try {
+            Integer total = brandApproveQueryApplication.queryBrandApproveTotal(dealerId, brandName, condition, startTime,
+                    endTime);
+            if (total > 0) {
+                List<BrandApproveBean> brandBeans = brandApproveQueryApplication.queryBrandApproves(dealerId, brandName, condition, startTime,
+                        endTime, pageNum, rows);
+                if (null != brandBeans && brandBeans.size() > 0) {
+                    List<BrandApproveRepresentation> representations = new ArrayList<BrandApproveRepresentation>();
+                    for (BrandApproveBean bean : brandBeans) {
+                        representations.add(new BrandApproveRepresentation(bean));
+                    }
+                    result.setContent(representations);
+                }
+            }
+            result.setPager(total, pageNum, rows);
+            result.setStatus(MCode.V_200);
+        } catch (Exception e) {
+            LOGGER.error("查询品牌审核列表失败", e);
+            result = new MPager(MCode.V_400, "服务器开小差了，请稍后再试");
+        }
+        return new ResponseEntity<MPager>(result, HttpStatus.OK);
+    }
+
+    /**
+     * 品牌审核详情
+     *
+     * @param approveId
+     * @return
+     */
+    @RequestMapping(value = "/{approveId}", method = RequestMethod.GET)
+    public ResponseEntity<MResult> queryBrandApproveDetail(@PathVariable("approveId") String approveId) {
+        MResult result = new MResult(MCode.V_1);
+        try {
+            BrandApproveBean bean = brandApproveQueryApplication.queryBrandApprove(approveId);
+            if (null != bean) {
+                result.setContent(new BrandApproveDetailRepresentation(bean));
+            }
+            result.setStatus(MCode.V_200);
+        } catch (Exception e) {
+            LOGGER.error("查询品牌审核详情失败", e);
+            result = new MPager(MCode.V_400, "服务器开小差了，请稍后再试");
         }
         return new ResponseEntity<MResult>(result, HttpStatus.OK);
     }

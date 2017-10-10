@@ -68,6 +68,11 @@ public class BrandApproveAgreeEvent implements DomainEvent {
     private String dealerId;
 
     /**
+     * 商家名称
+     */
+    private String dealerName;
+
+    /**
      * 操作标识，1：品牌新增或待审批品牌修改，2：已审批品牌修改
      */
     private Integer optFlag;
@@ -77,7 +82,7 @@ public class BrandApproveAgreeEvent implements DomainEvent {
 
     public BrandApproveAgreeEvent(String brandId, String brandName, String brandNameEn, String brandLogo, String firstAreaCode,
                                   String twoAreaCode, String threeAreaCode, String firstAreaName, String twoAreaName,
-                                  String threeAreaName, Date applyDate, String dealerId, Integer optFlag) {
+                                  String threeAreaName, Date applyDate, String dealerId, String dealerName, Integer optFlag) {
         this.brandId = brandId;
         this.brandName = brandName;
         this.brandNameEn = brandNameEn;
@@ -90,6 +95,7 @@ public class BrandApproveAgreeEvent implements DomainEvent {
         this.threeAreaName = threeAreaName;
         this.applyDate = applyDate;
         this.dealerId = dealerId;
+        this.dealerName = dealerName;
         this.optFlag = optFlag;
         this.occurredOn = new Date();
         this.eventVersion = 1;

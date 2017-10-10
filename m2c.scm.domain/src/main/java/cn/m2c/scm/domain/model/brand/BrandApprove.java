@@ -69,7 +69,7 @@ public class BrandApprove extends ConcurrencySafeEntity {
     /**
      * 品牌审批状态，1：审批中，2：审批不通过
      */
-    private Integer brandStatus;
+    private Integer approveStatus;
 
     /**
      * 审批不通过原因
@@ -77,9 +77,19 @@ public class BrandApprove extends ConcurrencySafeEntity {
     private String rejectReason;
 
     /**
-     * 商户ID
+     * 商家ID
      */
     private String dealerId;
+
+    /**
+     * 商家名称
+     */
+    private String dealerName;
+
+    /**
+     * 品牌审批状态，1:正常 2：删除
+     */
+    private Integer status;
 
     /**
      * 创建时间
@@ -93,11 +103,11 @@ public class BrandApprove extends ConcurrencySafeEntity {
     /**
      * 添加品牌信息/修改正式品牌信息（商家平台，需审批）
      */
-    public BrandApprove(String approveId,String brandId, String brandName, String brandNameEn, String brandLogo, String firstAreaCode,
+    public BrandApprove(String approveId, String brandId, String brandName, String brandNameEn, String brandLogo, String firstAreaCode,
                         String twoAreaCode, String threeAreaCode, String firstAreaName, String twoAreaName,
                         String threeAreaName, String dealerId) {
         this.approveId = approveId;
-        this.brandId=brandId;
+        this.brandId = brandId;
         this.brandName = brandName;
         this.brandNameEn = brandNameEn;
         this.brandLogo = brandLogo;
@@ -107,7 +117,7 @@ public class BrandApprove extends ConcurrencySafeEntity {
         this.firstAreaName = firstAreaName;
         this.twoAreaName = twoAreaName;
         this.threeAreaName = threeAreaName;
-        this.brandStatus = 1;
+        this.approveStatus = 1;
         this.dealerId = dealerId;
         this.createdDate = new Date();
     }
@@ -143,14 +153,21 @@ public class BrandApprove extends ConcurrencySafeEntity {
                 .instance()
                 .publish(new BrandApproveAgreeEvent(this.brandId, this.brandName, this.brandNameEn, this.brandLogo, this.firstAreaCode,
                         this.twoAreaCode, this.threeAreaCode, this.firstAreaName, this.twoAreaName,
-                        this.threeAreaName, this.createdDate, this.dealerId, optFlag));
+                        this.threeAreaName, this.createdDate, this.dealerId, this.dealerName, optFlag));
     }
 
     /**
      * 商家管理平台审核拒绝
      */
     public void reject(String rejectReason) {
-        this.brandStatus = 2;
+        this.approveStatus = 2;
         this.rejectReason = rejectReason;
+    }
+
+    /**
+     * 删除
+     */
+    public void delete() {
+        this.status = 2;
     }
 }

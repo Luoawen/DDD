@@ -13,7 +13,7 @@ import org.springframework.stereotype.Repository;
 public class HibernateBrandApproveRepository extends HibernateSupperRepository implements BrandApproveRepository {
     @Override
     public BrandApprove getBrandApproveByApproveId(String approveId) {
-        StringBuilder sql = new StringBuilder("select * from t_scm_brand_approve where approve_id =:approve_id");
+        StringBuilder sql = new StringBuilder("select * from t_scm_brand_approve where approve_id =:approve_id and status = 1");
         Query query = this.session().createSQLQuery(sql.toString()).addEntity(BrandApprove.class);
         query.setParameter("approve_id", approveId);
         return (BrandApprove) query.uniqueResult();

@@ -69,9 +69,19 @@ public class Brand extends ConcurrencySafeEntity {
     private String dealerId;
 
     /**
+     * 商家名称
+     */
+    private String dealerName;
+
+    /**
      * 0:商家申请，需审批，1:商家管理平台添加，无需审批
      */
     private Integer isSysAdd;
+
+    /**
+     * 1:正常 2：删除
+     */
+    private Integer brandStatus;
 
     public Brand() {
         super();
@@ -95,7 +105,7 @@ public class Brand extends ConcurrencySafeEntity {
         this.isSysAdd = isSysAdd;
     }
 
-    public void modifyBrand(String brandName, String brandNameEn, String brandLogo, String firstAreaCode,
+    public void modify(String brandName, String brandNameEn, String brandLogo, String firstAreaCode,
                             String twoAreaCode, String threeAreaCode, String firstAreaName, String twoAreaName,
                             String threeAreaName) {
         this.brandName = brandName;
@@ -107,5 +117,9 @@ public class Brand extends ConcurrencySafeEntity {
         this.firstAreaName = firstAreaName;
         this.twoAreaName = twoAreaName;
         this.threeAreaName = threeAreaName;
+    }
+
+    public void delete() {
+        this.brandStatus = 2;
     }
 }

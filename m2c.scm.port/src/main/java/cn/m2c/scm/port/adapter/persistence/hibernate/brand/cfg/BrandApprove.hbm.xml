@@ -21,9 +21,11 @@
         <property name="firstAreaName" column="first_area_name" type="string"/>
         <property name="twoAreaName" column="two_area_name" type="string"/>
         <property name="threeAreaName" column="three_area_name" type="string"/>
-        <property name="brandStatus" column="brand_status" type="int"/>
+        <property name="approveStatus" column="approve_status" type="int"/>
         <property name="rejectReason" column="reject_reason" type="string"/>
         <property name="dealerId" column="dealer_id" type="string"/>
+        <property name="dealerName" column="dealer_name" type="string"/>
+        <property name="status" column="status" type="int"/>
         <property name="createdDate" column="created_date" type="timestamp"/>
     </class>
 </hibernate-mapping>

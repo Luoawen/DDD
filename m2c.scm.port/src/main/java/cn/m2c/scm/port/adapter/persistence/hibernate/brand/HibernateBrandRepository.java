@@ -16,7 +16,7 @@ import java.util.List;
 public class HibernateBrandRepository extends HibernateSupperRepository implements BrandRepository {
     @Override
     public Brand getBrandByBrandId(String brandId) {
-        StringBuilder sql = new StringBuilder("select * from t_scm_brand where brand_id =:brand_id");
+        StringBuilder sql = new StringBuilder("select * from t_scm_brand where brand_id =:brand_id and brand_status = 1");
         Query query = this.session().createSQLQuery(sql.toString()).addEntity(Brand.class);
         query.setParameter("brand_id", brandId);
         return (Brand) query.uniqueResult();
@@ -24,7 +24,7 @@ public class HibernateBrandRepository extends HibernateSupperRepository implemen
 
     @Override
     public boolean brandNameIsRepeat(String brandId, String brandName) {
-        StringBuilder sql = new StringBuilder("select * from t_scm_brand where brand_name =:brand_name");
+        StringBuilder sql = new StringBuilder("select * from t_scm_brand where brand_status = 1 AND brand_name =:brand_name");
         if (StringUtils.isNotEmpty(brandId)) {
             sql.append(" and brand_id <> :brand_id");
         }

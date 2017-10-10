@@ -22,6 +22,8 @@
         <property name="threeAreaName" column="three_area_name" type="string"/>
         <property name="applyDate" column="apply_date" type="timestamp"/>
         <property name="dealerId" column="dealer_id" type="string"/>
+        <property name="dealerName" column="dealer_name" type="string"/>
         <property name="isSysAdd" column="is_sys_add" type="int"/>
+        <property name="brandStatus" column="brand_status" type="int"/>
     </class>
 </hibernate-mapping>

@@ -43,6 +43,7 @@ public class BrandApproveAgreeListener extends ExchangeListener {
         String threeAreaName = reader.eventStringValue("threeAreaName");
         Date applyDate = reader.eventDateValue("applyDate");
         String dealerId = reader.eventStringValue("dealerId");
+        String dealerName = reader.eventStringValue("dealerName");
         // 操作标识，1：品牌新增或待审批品牌修改，2：已审批品牌修改
         Integer optFlag = reader.eventIntegerValue("optFlag");
 
@@ -51,7 +52,7 @@ public class BrandApproveAgreeListener extends ExchangeListener {
         }
         BrandCommand command = new BrandCommand(brandId, brandName, brandNameEn, brandLogo, firstAreaCode,
                 twoAreaCode, threeAreaCode, firstAreaName, twoAreaName,
-                threeAreaName, applyDate, dealerId, 0);
+                threeAreaName, applyDate, dealerId, dealerName, 0);
         if (optFlag == 1) {
             brandApplication.addBrand(command);
         } else {

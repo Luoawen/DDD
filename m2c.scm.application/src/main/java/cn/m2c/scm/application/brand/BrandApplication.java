@@ -58,8 +58,25 @@ public class BrandApplication {
         if (null == brand) {
             throw new NegativeException(MCode.V_300, "品牌不存在");
         }
-        brand.modifyBrand(command.getBrandName(), command.getBrandNameEn(), command.getBrandLogo(), command.getFirstAreaCode(),
+        brand.modify(command.getBrandName(), command.getBrandNameEn(), command.getBrandLogo(), command.getFirstAreaCode(),
                 command.getTwoAreaCode(), command.getThreeAreaCode(), command.getFirstAreaName(), command.getTwoAreaName(),
                 command.getThreeAreaName());
+    }
+
+    /**
+     * 删除品牌信息
+     *
+     * @param brandId
+     */
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+    public void delBrand(String brandId) throws NegativeException {
+        LOGGER.info("delBrand brandId >>{}", brandId);
+        Brand brand = brandRepository.getBrandByBrandId(brandId);
+        if (null == brand) {
+            throw new NegativeException(MCode.V_300, "品牌不存在");
+        }
+        //todo 判断品牌是否被使用
+
+        brand.delete();
     }
 }

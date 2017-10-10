@@ -75,13 +75,18 @@ public class BrandCommand extends AssertionConcern implements Serializable {
     private String dealerId;
 
     /**
+     * 商家名称
+     */
+    private String dealerName;
+
+    /**
      * 0:商家申请，需审批，1:商家管理平台添加，无需审批
      */
     private Integer isSysAdd;
 
     public BrandCommand(String brandId, String brandName, String brandNameEn, String brandLogo, String firstAreaCode,
                         String twoAreaCode, String threeAreaCode, String firstAreaName, String twoAreaName,
-                        String threeAreaName, Date applyDate, String dealerId, Integer isSysAdd) {
+                        String threeAreaName, Date applyDate, String dealerId,String dealerName, Integer isSysAdd) {
         this.brandId = brandId;
         this.brandName = brandName;
         this.brandNameEn = brandNameEn;
@@ -94,6 +99,7 @@ public class BrandCommand extends AssertionConcern implements Serializable {
         this.threeAreaName = threeAreaName;
         this.applyDate = applyDate;
         this.dealerId = dealerId;
+        this.dealerName=dealerName;
         this.isSysAdd = isSysAdd;
     }
 
@@ -115,7 +121,7 @@ public class BrandCommand extends AssertionConcern implements Serializable {
 
     public BrandCommand(String brandApproveId, String brandId, String brandName, String brandNameEn, String brandLogo, String firstAreaCode,
                         String twoAreaCode, String threeAreaCode, String firstAreaName, String twoAreaName,
-                        String threeAreaName, String dealerId) {
+                        String threeAreaName, String dealerId,String dealerName) {
         this.brandApproveId = brandApproveId;
         this.brandId = brandId;
         this.brandName = brandName;
@@ -128,6 +134,7 @@ public class BrandCommand extends AssertionConcern implements Serializable {
         this.twoAreaName = twoAreaName;
         this.threeAreaName = threeAreaName;
         this.dealerId = dealerId;
+        this.dealerName=dealerName;
     }
 
     public String getBrandId() {
@@ -184,5 +191,9 @@ public class BrandCommand extends AssertionConcern implements Serializable {
 
     public Integer getIsSysAdd() {
         return isSysAdd;
+    }
+
+    public String getDealerName() {
+        return dealerName;
     }
 }
