@@ -30,9 +30,9 @@ public class AppGoodsAgent {
     /**
      * 商品猜你喜欢
      *
-     * @param totalNum        总数
-     * @param pageNum         第几页
-     * @param rows            每页多少行
+     * @param totalNum 总数
+     * @param pageNum  第几页
+     * @param rows     每页多少行
      * @return
      */
     @RequestMapping(value = "/guess", method = RequestMethod.GET)
@@ -53,9 +53,21 @@ public class AppGoodsAgent {
             map1.put("goodsName", "儿童自行车");
             map1.put("goodsImageUrl", "http://dl.m2c2017.com/3pics/20170822/bx2L173127.jpg");
             map1.put("goodsPrice", 89900);
+            Map map3 = new HashMap<>();
+            map3.put("goodsId", "SP38C4D0B014E24B64B021EAC4D813A697");
+            map3.put("goodsName", "儿童自行车1");
+            map3.put("goodsImageUrl", "http://dl.m2c2017.com/3pics/20170822/bx2L173127.jpg");
+            map3.put("goodsPrice", 79900);
+            Map map4 = new HashMap<>();
+            map4.put("goodsId", "SP38C4D0B014E24B64B021EAC4D813A696");
+            map4.put("goodsName", "儿童自行车2");
+            map4.put("goodsImageUrl", "http://dl.m2c2017.com/3pics/20170822/bx2L173127.jpg");
+            map4.put("goodsPrice", 69900);
 
             goodsList.add(map);
             goodsList.add(map1);
+            goodsList.add(map3);
+            goodsList.add(map4);
             result.setContent(goodsList);
             result.setPager(totalNum, pageNum, rows);
             result.setStatus(MCode.V_200);

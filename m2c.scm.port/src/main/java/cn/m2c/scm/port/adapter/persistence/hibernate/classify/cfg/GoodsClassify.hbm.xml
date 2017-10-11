@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping default-access="field" default-cascade="all">
+    <class name="cn.m2c.scm.domain.model.classify.GoodsClassify" table="t_scm_goods_classify" lazy="true"
+           optimistic-lock="version" dynamic-insert="true" dynamic-update="true">
+
+        <id name="id" column="id" type="long" unsaved-value="-1">
+            <generator class="native"/>
+        </id>
+        <version name="concurrencyVersion" column="concurrency_version" type="int"/>
+        <property name="classifyId" column="classify_id" type="string"/>
+        <property name="classifyName" column="classify_name" type="string"/>
+        <property name="parentClassifyId" column="parent_classify_id" type="string"/>
+        <property name="serviceRate" column="service_rate" type="string"/>
+        <property name="status" column="status" type="int"/>
+    </class>
+</hibernate-mapping>
