@@ -80,11 +80,11 @@ public class GoodsClassifyAgent {
             goodsClassifyApplication.modifyGoodsClassifyName(command);
             result.setStatus(MCode.V_200);
         } catch (NegativeException ne) {
-            LOGGER.error("modifyGoodsClassify NegativeException e:", ne);
+            LOGGER.error("modifyGoodsClassifyName NegativeException e:", ne);
             result = new MResult(ne.getStatus(), ne.getMessage());
         } catch (Exception e) {
-            LOGGER.error("modifyGoodsClassify Exception e:", e);
-            result = new MResult(MCode.V_400, "修改商品分类失败");
+            LOGGER.error("modifyGoodsClassifyName Exception e:", e);
+            result = new MResult(MCode.V_400, "修改商品分类名称失败");
         }
         return new ResponseEntity<MResult>(result, HttpStatus.OK);
     }

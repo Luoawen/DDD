@@ -30,14 +30,14 @@ public class AppGoodsAgent {
     /**
      * 商品猜你喜欢
      *
-     * @param totalNum 总数
-     * @param pageNum  第几页
-     * @param rows     每页多少行
+     * @param positionType 猜你喜欢位置：1:首页2:购物车页面
+     * @param pageNum      第几页
+     * @param rows         每页多少行
      * @return
      */
     @RequestMapping(value = "/guess", method = RequestMethod.GET)
     public ResponseEntity<MPager> goodsGuess(
-            @RequestParam(value = "totalNum", required = false) Integer totalNum,
+            @RequestParam(value = "positionType", required = false) Integer positionType,
             @RequestParam(value = "pageNum", required = false, defaultValue = "1") Integer pageNum,
             @RequestParam(value = "rows", required = false, defaultValue = "10") Integer rows) {
         MPager result = new MPager(MCode.V_1);
@@ -69,6 +69,7 @@ public class AppGoodsAgent {
             goodsList.add(map3);
             goodsList.add(map4);
             result.setContent(goodsList);
+            Integer totalNum = 4;
             result.setPager(totalNum, pageNum, rows);
             result.setStatus(MCode.V_200);
         } catch (Exception e) {
