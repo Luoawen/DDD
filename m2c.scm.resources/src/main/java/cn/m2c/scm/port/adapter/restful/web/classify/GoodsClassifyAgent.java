@@ -40,7 +40,7 @@ public class GoodsClassifyAgent {
      * 增加商品分类
      *
      * @param parentClassifyName 一级分类名称(增加一级分类必传，二、三级分类不传)
-     * @param subClassifyNames   子分类名称list的json字符传,["短袖","裙子"]
+     * @param subClassifyNames   子分类名称list的json字符串,["短袖","裙子"]
      * @param parentClassifyId   子分类上级分类的id(增加二、三级分类必传，一级分类不传)
      * @return
      */
@@ -65,13 +65,13 @@ public class GoodsClassifyAgent {
     }
 
     /**
-     * 修改商品分类
+     * 修改商品分类名称
      *
      * @param classifyName
      * @return
      */
     @RequestMapping(value = "/{classifyId}/name", method = RequestMethod.PUT)
-    public ResponseEntity<MResult> modifyGoodsClassify(
+    public ResponseEntity<MResult> modifyGoodsClassifyName(
             @PathVariable("classifyId") String classifyId,
             @RequestParam(value = "classifyName", required = false) String classifyName) {
         MResult result = new MResult(MCode.V_1);
