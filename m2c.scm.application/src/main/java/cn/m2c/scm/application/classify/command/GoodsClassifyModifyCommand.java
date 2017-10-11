@@ -18,9 +18,19 @@ public class GoodsClassifyModifyCommand extends AssertionConcern implements Seri
      */
     private String classifyName;
 
+    /**
+     * 服务费率
+     */
+    private Float serviceRate;
+
     public GoodsClassifyModifyCommand(String classifyId, String classifyName) {
         this.classifyId = classifyId;
         this.classifyName = classifyName;
+    }
+
+    public GoodsClassifyModifyCommand(String classifyId, Float serviceRate) {
+        this.classifyId = classifyId;
+        this.serviceRate = serviceRate;
     }
 
     public String getClassifyId() {
@@ -29,5 +39,9 @@ public class GoodsClassifyModifyCommand extends AssertionConcern implements Seri
 
     public String getClassifyName() {
         return classifyName;
+    }
+
+    public Float getServiceRate() {
+        return serviceRate;
     }
 }

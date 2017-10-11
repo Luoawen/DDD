@@ -58,7 +58,18 @@ public class GoodsClassifyQueryApplication {
         sql.append(" FROM ");
         sql.append(" t_scm_goods_classify WHERE 1 = 1");
         sql.append(" AND parent_classify_id = ? AND status = 1");
-        List<GoodsClassifyBean> goodsClassifyBean = this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsClassifyBean.class, parentId);
+        List<GoodsClassifyBean> goodsClassifyBeans = this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsClassifyBean.class, parentId);
+        return goodsClassifyBeans;
+    }
+
+    public GoodsClassifyBean queryGoodsClassifiesById(String classifyId) {
+        StringBuilder sql = new StringBuilder();
+        sql.append(" SELECT ");
+        sql.append(" * ");
+        sql.append(" FROM ");
+        sql.append(" t_scm_goods_classify WHERE 1 = 1");
+        sql.append(" AND classify_id = ? AND status = 1");
+        GoodsClassifyBean goodsClassifyBean = this.getSupportJdbcTemplate().queryForBean(sql.toString(), GoodsClassifyBean.class, classifyId);
         return goodsClassifyBean;
     }
 }

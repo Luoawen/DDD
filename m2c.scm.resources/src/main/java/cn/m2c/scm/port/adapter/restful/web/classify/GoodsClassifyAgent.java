@@ -5,6 +5,8 @@ import cn.m2c.common.MResult;
 import cn.m2c.scm.application.classify.GoodsClassifyApplication;
 import cn.m2c.scm.application.classify.command.GoodsClassifyAddCommand;
 import cn.m2c.scm.application.classify.command.GoodsClassifyModifyCommand;
+import cn.m2c.scm.application.classify.data.bean.GoodsClassifyBean;
+import cn.m2c.scm.application.classify.data.representation.GoodsClassifyRepresentation;
 import cn.m2c.scm.application.classify.query.GoodsClassifyQueryApplication;
 import cn.m2c.scm.domain.NegativeException;
 import org.slf4j.Logger;
@@ -68,7 +70,7 @@ public class GoodsClassifyAgent {
      * @param classifyName
      * @return
      */
-    @RequestMapping(value = "/{classifyId}", method = RequestMethod.PUT)
+    @RequestMapping(value = "/{classifyId}/name", method = RequestMethod.PUT)
     public ResponseEntity<MResult> modifyGoodsClassify(
             @PathVariable("classifyId") String classifyId,
             @RequestParam(value = "classifyName", required = false) String classifyName) {
@@ -88,6 +90,31 @@ public class GoodsClassifyAgent {
     }
 
     /**
+     * 修改商品分类费率
+     *
+     * @param serviceRate
+     * @return
+     */
+    @RequestMapping(value = "/{classifyId}/service/rate", method = RequestMethod.PUT)
+    public ResponseEntity<MResult> modifyGoodsClassifyServiceRate(
+            @PathVariable("classifyId") String classifyId,
+            @RequestParam(value = "serviceRate", required = false) Float serviceRate) {
+        MResult result = new MResult(MCode.V_1);
+        try {
+            GoodsClassifyModifyCommand command = new GoodsClassifyModifyCommand(classifyId, serviceRate);
+            goodsClassifyApplication.modifyGoodsClassifyServiceRate(command);
+            result.setStatus(MCode.V_200);
+        } catch (NegativeException ne) {
+            LOGGER.error("modifyGoodsClassifyServiceRate NegativeException e:", ne);
+            result = new MResult(ne.getStatus(), ne.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("modifyGoodsClassifyServiceRate Exception e:", e);
+            result = new MResult(MCode.V_400, "修改商品分类费率失败");
+        }
+        return new ResponseEntity<MResult>(result, HttpStatus.OK);
+    }
+
+    /**
      * 删除商品分类
      *
      * @param classifyId
@@ -98,7 +125,7 @@ public class GoodsClassifyAgent {
             @PathVariable("classifyId") String classifyId) {
         MResult result = new MResult(MCode.V_1);
         try {
-            goodsClassifyApplication.deleteGoodsClassifyName(classifyId);
+            goodsClassifyApplication.deleteGoodsClassify(classifyId);
             result.setStatus(MCode.V_200);
         } catch (NegativeException ne) {
             LOGGER.error("deleteGoodsClassify NegativeException e:", ne);
@@ -138,12 +165,14 @@ public class GoodsClassifyAgent {
     public ResponseEntity<MResult> queryGoodsClassifyDetail(@PathVariable("classifyId") String classifyId) {
         MResult result = new MResult(MCode.V_1);
         try {
-            List<Map> list = goodsClassifyQueryApplication.recursionQueryGoodsClassifyTree("-1");
-            result.setContent(list);
+            GoodsClassifyBean bean = goodsClassifyQueryApplication.queryGoodsClassifiesById(classifyId);
+            if (null != bean) {
+                result.setContent(new GoodsClassifyRepresentation(bean));
+            }
             result.setStatus(MCode.V_200);
         } catch (Exception e) {
             LOGGER.error("queryGoodsClassifyDetail Exception e:", e);
-            result = new MResult(MCode.V_400, "删除商品分类失败");
+            result = new MResult(MCode.V_400, "查询商品分类详情失败");
         }
         return new ResponseEntity<MResult>(result, HttpStatus.OK);
     }

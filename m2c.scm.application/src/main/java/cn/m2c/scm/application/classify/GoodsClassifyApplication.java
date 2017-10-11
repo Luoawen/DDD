@@ -77,13 +77,28 @@ public class GoodsClassifyApplication {
     }
 
     /**
+     * 修改商品分类服务费率
+     *
+     * @param command
+     */
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+    public void modifyGoodsClassifyServiceRate(GoodsClassifyModifyCommand command) throws NegativeException {
+        LOGGER.info("modifyGoodsClassifyServiceRate command >>{}", command);
+        GoodsClassify goodsClassify = goodsClassifyRepository.getGoodsClassifyById(command.getClassifyId());
+        if (null == goodsClassify) {
+            throw new NegativeException(MCode.V_300, "商品分类不存在");
+        }
+        goodsClassify.modifyClassifyServiceRate(command.getServiceRate());
+    }
+
+    /**
      * 删除商品分类
      *
      * @param classifyId
      */
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
-    public void deleteGoodsClassifyName(String classifyId) throws NegativeException {
-        LOGGER.info("deleteGoodsClassifyName classifyId >>{}", classifyId);
+    public void deleteGoodsClassify(String classifyId) throws NegativeException {
+        LOGGER.info("deleteGoodsClassify classifyId >>{}", classifyId);
         GoodsClassify goodsClassify = goodsClassifyRepository.getGoodsClassifyById(classifyId);
         if (null == goodsClassify) {
             throw new NegativeException(MCode.V_300, "商品分类不存在");
