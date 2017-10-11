@@ -9,3 +9,5 @@ target
 .classpath
 .idea/
 *.iml
+m2c.scm.resources/disconf/download/redis.properties.lock
+m2c.scm.resources/disconf/download/ddd-cfg.properties

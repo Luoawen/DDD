@@ -58,7 +58,6 @@ public class SellerQuery {
 				params.add(rows);
 				System.out.println("----查询业务员列表："+sql.toString());
 				sellerList =  this.supportJdbcTemplate.queryForBeanList(sql.toString(), SellerBean.class, params.toArray());
-				//-------------------循环bean获取商家分类
 				
 		} catch (Exception e) {
 			log.error("查询经销商列表出错",e);

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import cn.m2c.ddd.common.port.adapter.persistence.springJdbc.SupportJdbcTemplate;
 import cn.m2c.scm.application.dealer.data.bean.DealerBean;
+import cn.m2c.scm.application.dealer.data.bean.DealerClassifyNameBean;
 import cn.m2c.scm.domain.NegativeException;
 
 @Repository
@@ -83,13 +84,32 @@ public class DealerQuery {
 				params.add(rows);
 				System.out.println("----查询经销商列表："+sql.toString());
 				dealerList =  this.supportJdbcTemplate.queryForBeanList(sql.toString(), DealerBean.class, params.toArray());
-				//-------------------循环bean获取商家分类
-				
+				//-----------处理bean
+				if(dealerList!=null && dealerList.size()>0){
+					for (DealerBean dealer : dealerList) {
+						dealer.setDealerClassifyBean(getDealerClassify(dealer.getDealerClassify()));
+					}
+				}
 		} catch (Exception e) {
 			log.error("查询经销商列表出错",e);
 			throw new NegativeException(500, "经销商查询出错");
 		}
 		return dealerList;
+	}
+
+
+	/**
+	 * 查询经销商分类信息
+	 * @param dealerClassify
+	 * @return
+	 */
+	private DealerClassifyNameBean getDealerClassify(String dealerClassify) {
+		String sql = "select secondc.dealerSecondClassifyName dealerSecondClassifyName,secondc.dealerClassifyId,firstc.dealer_classify_name dealerFirstClassifyName from"
+				+"(SELECT dealer_classify_id dealerClassifyId,dealer_classify_name dealerSecondClassifyName,parent_classify_id parentClassifyId FROM t_scm_dealer_classify WHERE 1 = 1 AND dealer_classify_id =?)"
+				+" secondc,t_scm_dealer_classify firstc where firstc.dealer_classify_id=secondc.parentClassifyId";
+		System.out.println("------------"+sql);
+		DealerClassifyNameBean bean = this.supportJdbcTemplate.queryForBean(sql, DealerClassifyNameBean.class,dealerClassify);
+		return bean;
 	}
 
 
