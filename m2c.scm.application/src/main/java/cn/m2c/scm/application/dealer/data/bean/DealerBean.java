@@ -68,6 +68,9 @@ public class DealerBean {
 	
 	@ColumnAlias(value = "customer_service_tel")
 	private String customerServiceTel;
+	
+	
+	private DealerClassifyNameBean dealerClassifyBean;
 
 	public String getDealerName() {
 		return dealerName;
@@ -235,6 +238,14 @@ public class DealerBean {
 
 	public void setCustomerServiceTel(String customerServiceTel) {
 		this.customerServiceTel = customerServiceTel;
+	}
+
+	public DealerClassifyNameBean getDealerClassifyBean() {
+		return dealerClassifyBean;
+	}
+
+	public void setDealerClassifyBean(DealerClassifyNameBean dealerClassifyBean) {
+		this.dealerClassifyBean = dealerClassifyBean;
 	}
 	
 	

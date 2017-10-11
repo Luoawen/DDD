@@ -20,6 +20,10 @@ public class DealerRepresentation {
 	 
 	 private String dealerClassify;
 	 
+	 private String dealerFristClassifyName;
+	 
+	 private String dealerSecondClassifyName;
+	 
 	 private Integer cooperationMode;
 	 
 	 private Integer countMode;
@@ -40,6 +44,7 @@ public class DealerRepresentation {
 	
 	private String sellerPhone;
 	
+	
 	private Date createdDate;
 	
 	
@@ -55,7 +60,6 @@ public class DealerRepresentation {
 		this.userName = model.getUserName();
 		this.userPhone = model.getUserPhone();
 		this.userId = model.getUserId();
-		this.dealerClassify = model.getDealerClassify();
 		this.cooperationMode = model.getCooperationMode();
 		this.countMode = model.getCountMode();
 		this.dealerProvince = model.getDealerProvince();
@@ -67,6 +71,9 @@ public class DealerRepresentation {
 		this.sellerName = model.getSellerName();
 		this.sellerPhone = model.getSellerPhone();
 		this.createdDate = model.getCreatedDate();
+		this.dealerClassify = model.getDealerClassify();
+		this.dealerFristClassifyName = model.getDealerClassifyBean().getDealerFirstClassifyName();
+		this.dealerSecondClassifyName = model.getDealerClassifyBean().getDealerSecondClassifyName();
 	}
 
 
@@ -204,6 +211,26 @@ public class DealerRepresentation {
 
 	public void setCreatedDate(Date createdDate) {
 		this.createdDate = createdDate;
+	}
+
+
+	public String getDealerFristClassifyName() {
+		return dealerFristClassifyName;
+	}
+
+
+	public void setDealerFristClassifyName(String dealerFristClassifyName) {
+		this.dealerFristClassifyName = dealerFristClassifyName;
+	}
+
+
+	public String getDealerSecondClassifyName() {
+		return dealerSecondClassifyName;
+	}
+
+
+	public void setDealerSecondClassifyName(String dealerSecondClassifyName) {
+		this.dealerSecondClassifyName = dealerSecondClassifyName;
 	}
 	
 	

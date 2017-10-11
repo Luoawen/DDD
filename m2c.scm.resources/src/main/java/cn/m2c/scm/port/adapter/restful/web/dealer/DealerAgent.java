@@ -24,6 +24,7 @@ import cn.m2c.scm.application.dealer.command.ShopInfoUpdateCommand;
 import cn.m2c.scm.application.dealer.data.bean.DealerBean;
 import cn.m2c.scm.application.dealer.data.representation.DealerRepresentation;
 import cn.m2c.scm.application.dealer.query.DealerQuery;
+import cn.m2c.scm.application.dealerclassify.query.DealerClassifyQuery;
 import cn.m2c.scm.domain.IDGenerator;
 
 @RestController
@@ -36,6 +37,9 @@ public class DealerAgent {
 	
 	@Autowired
 	DealerQuery dealerQuery;
+	
+	@Autowired
+	DealerClassifyQuery dealerClassifyQuery;
 	/**
 	 * 新增经销商
 	 * @param userId

@@ -36,7 +36,7 @@ public class SellerBean {
 	/**
 	 * 业务员所在区
 	 */
-	@ColumnAlias(value = "seller_acode")
+	@ColumnAlias(value = "seller_area")
 	private String sellerArea;
 	/**
 	 * 业务员所在省code

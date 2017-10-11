@@ -53,7 +53,7 @@ public abstract class IDGenerator {
 
 
     public static void main(String[] args) {
-        String testID = IDGenerator.get();
+        String testID = IDGenerator.get("SJFL");
         System.err.println(testID.length());
         System.err.println(testID);
     }
