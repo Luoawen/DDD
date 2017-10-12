@@ -138,20 +138,21 @@ public class GoodsClassifyAgent {
     }
 
     /**
-     * 查询商品分类
+     * 查询商品分类结构树
      *
      * @return
      */
-    @RequestMapping(value = "", method = RequestMethod.GET)
-    public ResponseEntity<MResult> queryGoodsClassify() {
+    @RequestMapping(value = "/tree", method = RequestMethod.GET)
+    public ResponseEntity<MResult> queryGoodsClassifyTree(
+            @RequestParam(value = "parentClassifyId", required = false) String parentClassifyId) {
         MResult result = new MResult(MCode.V_1);
         try {
-            List<Map> list = goodsClassifyQueryApplication.recursionQueryGoodsClassifyTree("-1");
+            List<Map> list = goodsClassifyQueryApplication.recursionQueryGoodsClassifyTree(parentClassifyId);
             result.setContent(list);
             result.setStatus(MCode.V_200);
         } catch (Exception e) {
             LOGGER.error("queryGoodsClassify Exception e:", e);
-            result = new MResult(MCode.V_400, "删除商品分类失败");
+            result = new MResult(MCode.V_400, "查询商品分类结构树失败");
         }
         return new ResponseEntity<MResult>(result, HttpStatus.OK);
     }
