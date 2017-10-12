@@ -1,6 +1,9 @@
 package cn.m2c.scm.application.address.command;
 
+import cn.m2c.common.MCode;
 import cn.m2c.ddd.common.AssertionConcern;
+import cn.m2c.scm.domain.NegativeException;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.Serializable;
 
@@ -64,7 +67,14 @@ public class AfterSaleAddressCommand extends AssertionConcern implements Seriali
     private String contactNumber;
 
     public AfterSaleAddressCommand(String addressId, String dealerId, String proCode, String cityCode, String areaCode,
-                                   String proName, String cityName, String areaName, String address, String contactName, String contactNumber) {
+                                   String proName, String cityName, String areaName, String address, String contactName, String contactNumber) throws NegativeException {
+
+        if (StringUtils.isEmpty(addressId)) {
+            throw new NegativeException(MCode.V_1, "售后地址ID为空");
+        }
+        if (StringUtils.isEmpty(dealerId)) {
+            throw new NegativeException(MCode.V_1, "商家ID为空");
+        }
         this.addressId = addressId;
         this.dealerId = dealerId;
         this.proCode = proCode;
