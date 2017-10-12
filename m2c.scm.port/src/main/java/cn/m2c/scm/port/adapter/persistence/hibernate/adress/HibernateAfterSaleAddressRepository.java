@@ -20,6 +20,14 @@ public class HibernateAfterSaleAddressRepository extends HibernateSupperReposito
     }
 
     @Override
+    public AfterSaleAddress getAfterSaleAddressByDealerId(String dealerId) {
+        StringBuilder sql = new StringBuilder("select * from t_scm_after_sale_address where dealer_id =:dealer_id");
+        Query query = this.session().createSQLQuery(sql.toString()).addEntity(AfterSaleAddress.class);
+        query.setParameter("dealer_id", dealerId);
+        return (AfterSaleAddress) query.uniqueResult();
+    }
+
+    @Override
     public void save(AfterSaleAddress afterSaleAddress) {
         this.session().save(afterSaleAddress);
     }
