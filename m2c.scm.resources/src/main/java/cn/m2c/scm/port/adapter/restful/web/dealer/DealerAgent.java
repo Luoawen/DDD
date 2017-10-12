@@ -23,9 +23,11 @@ import cn.m2c.scm.application.dealer.command.DealerAddOrUpdateCommand;
 import cn.m2c.scm.application.dealer.command.ShopInfoUpdateCommand;
 import cn.m2c.scm.application.dealer.data.bean.DealerBean;
 import cn.m2c.scm.application.dealer.data.representation.DealerRepresentation;
+import cn.m2c.scm.application.dealer.data.representation.DealerShopInfoRepresentation;
 import cn.m2c.scm.application.dealer.query.DealerQuery;
 import cn.m2c.scm.application.dealerclassify.query.DealerClassifyQuery;
 import cn.m2c.scm.domain.IDGenerator;
+import cn.m2c.scm.domain.model.dealer.Dealer;
 
 @RestController
 @RequestMapping("/dealer/sys")
@@ -306,11 +308,33 @@ public class DealerAgent {
 		        	application.updateShopInfo(command);
 		            result.setStatus(MCode.V_200);
 		        } catch (Exception e) {
+		        	log.error("修改店铺信息出错", e);
+		            result = new MPager(MCode.V_400, "服务器开小差了，请稍后再试");
+		        }
+		        return new ResponseEntity<MResult>(result, HttpStatus.OK);
+		    }
+		 /**
+		  * 查询店铺信息
+		  * @param dealerId
+		  * @return
+		  */
+		 @RequestMapping(value = "/shopInfo", method = RequestMethod.GET)
+		    public ResponseEntity<MResult> queryShopInfo(
+		            @RequestParam(value = "dealerId", required = true) String dealerId
+		            ) {
+			 MResult result = new MResult(MCode.V_1);
+		        try {
+		        	DealerBean dealer =  dealerQuery.getDealer(dealerId);
+		        	DealerShopInfoRepresentation resultData =  new DealerShopInfoRepresentation(dealer);
+		        	result.setContent(resultData);
+		            result.setStatus(MCode.V_200);
+		        } catch (Exception e) {
 		        	log.error("店铺详情出错", e);
 		            result = new MPager(MCode.V_400, "服务器开小差了，请稍后再试");
 		        }
 		        return new ResponseEntity<MResult>(result, HttpStatus.OK);
 		    }
+		 
 		 
 		 
 }

@@ -181,4 +181,24 @@ public class DealerQuery {
 		return result;
 	}
 
+
+	/**
+	 * 根据id查询商家详情
+	 * @param dealerId
+	 * @return
+	 * @throws NegativeException 
+	 */
+	public DealerBean getDealer(String dealerId) throws NegativeException {
+		DealerBean bean = null;
+		try {
+			
+			String sql =  " SELECT  *  FROM  t_scm_dealer sd  WHERE  dealer_status = 1 and dealer_id=?";
+			bean = this.supportJdbcTemplate.queryForBean(sql, DealerBean.class,dealerId);
+		} catch (Exception e) {
+			log.error("查询经销商详情出错",e);
+			throw new NegativeException(500, "经销商查询总数出错");
+		}
+		return bean;
+	}
+
 }
