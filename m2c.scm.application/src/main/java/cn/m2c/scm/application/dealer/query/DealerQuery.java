@@ -201,4 +201,38 @@ public class DealerQuery {
 		return bean;
 	}
 
+
+	/**
+	 * 根据多个dealerid获取经销商列表
+	 * @param dealerIds
+	 * @return
+	 * @throws NegativeException 
+	 */
+	public List<DealerBean> getDealers(String dealerIds) throws NegativeException {
+		List<DealerBean> result = null;
+		try {
+			StringBuffer sql = new StringBuffer( " SELECT  *  FROM  t_scm_dealer sd  WHERE  dealer_status = 1 and dealer_id in (");
+			String[] dealer = dealerIds.split(",");
+			for (int i = 0; i < dealer.length; i++) {
+				if(i==(dealer.length-1)){
+					sql.append("'");
+					sql.append(dealer[i]);
+					sql.append("'");
+				}else{
+					sql.append("'");
+					sql.append(dealer[i]);
+					sql.append("'");
+					sql.append(",");
+				}
+			}
+			sql.append(")");
+			System.out.println("sql==="+sql.toString());
+			result = this.supportJdbcTemplate.queryForBeanList(sql.toString(), DealerBean.class);
+		} catch (Exception e) {
+			log.error("查询经销商列表出错",e);
+			throw new NegativeException(500, "经销商查询列表出错");
+		}
+		return result;
+	}
+
 }

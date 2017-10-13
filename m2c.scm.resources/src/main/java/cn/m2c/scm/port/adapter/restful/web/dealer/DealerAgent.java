@@ -22,12 +22,12 @@ import cn.m2c.scm.application.dealer.DealerApplication;
 import cn.m2c.scm.application.dealer.command.DealerAddOrUpdateCommand;
 import cn.m2c.scm.application.dealer.command.ShopInfoUpdateCommand;
 import cn.m2c.scm.application.dealer.data.bean.DealerBean;
+import cn.m2c.scm.application.dealer.data.representation.DealerNameListRepresentation;
 import cn.m2c.scm.application.dealer.data.representation.DealerRepresentation;
 import cn.m2c.scm.application.dealer.data.representation.DealerShopInfoRepresentation;
 import cn.m2c.scm.application.dealer.query.DealerQuery;
 import cn.m2c.scm.application.dealerclassify.query.DealerClassifyQuery;
 import cn.m2c.scm.domain.IDGenerator;
-import cn.m2c.scm.domain.model.dealer.Dealer;
 
 @RestController
 @RequestMapping("/dealer/sys")
@@ -338,6 +338,30 @@ public class DealerAgent {
 		        return new ResponseEntity<MResult>(result, HttpStatus.OK);
 		    }
 		 
+		 /**
+		  * 查询供应商列表
+		  */
+		 @RequestMapping(value = "/dealers", method = RequestMethod.GET)
+		    public ResponseEntity<MResult> queryDealerList(
+		            @RequestParam(value = "dealerIds", required = true) String dealerIds
+		            ) {
+			 MResult result = new MResult(MCode.V_1);
+		        try {
+		        	List<DealerNameListRepresentation> list = new ArrayList<DealerNameListRepresentation>();
+		        	List<DealerBean> dealers =  dealerQuery.getDealers(dealerIds);
+		        	if(dealers!=null && dealers.size()>0){
+		        		for (DealerBean model : dealers) {
+		        			list.add(new DealerNameListRepresentation(model));
+						}
+		        	}
+		        	result.setContent(list);
+		            result.setStatus(MCode.V_200);
+		        } catch (Exception e) {
+		        	log.error("经销商列表出错", e);
+		            result = new MPager(MCode.V_400, "服务器开小差了，请稍后再试");
+		        }
+		        return new ResponseEntity<MResult>(result, HttpStatus.OK);
+		    }
 		 
 		 
 }
