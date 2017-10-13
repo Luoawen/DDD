@@ -117,6 +117,7 @@ public class GoodsApproveAgent {
                     goodsPostageId, goodsBarCode, goodsKeyWord, goodsGuarantee,
                     goodsMainImages, goodsDesc, goodsShelves, goodsSkuApproves, skuCodes);
             goodsApproveApplication.addGoodsApprove(command);
+            result.setStatus(MCode.V_200);
         } catch (NegativeException ne) {
             LOGGER.error("addGoodsApprove NegativeException e:", ne);
             result = new MResult(ne.getStatus(), ne.getMessage());
