@@ -13,7 +13,6 @@ public abstract class IDGenerator {
     public static final String USERS_PREFIX_TITLE = "HY";//会员中心前缀
     public static final String PAY_PREFIX_TITLE = "ZF";//支付中心前缀
     public static final String ORDER_PREFIX_TITLE = "DD";//订单前缀
-    public static final String GOODS_PREFIX_TITLE = "SP";//订单前缀
     public static final String GOODS_BRAND_PREFIX_TITLE = "14GB";//品牌前缀
     public static final String SYSTEM_USER_PREFIX_TITLE = "SYSU"; // 系统用户
     public static final String SYSTEM_ROLE_PREFIX_TITLE = "SYSR"; // 系统角色
@@ -31,6 +30,7 @@ public abstract class IDGenerator {
     public static final String SCM_BRAND_PREFIX_TITLE = "PP";//品牌前缀
     public static final String SCM_BRANDE_APPROVE_PREFIX_TITLE = "PPSP";//品牌审批前缀
     public static final String SCM_GOODS_CLASSIFY_PREFIX_TITLE = "SPFL";//商品分类前缀
+    public static final String SCM_GOODS_PREFIX_TITLE = "SP";//商品前缀
 
     /**
      * 生成序列ID

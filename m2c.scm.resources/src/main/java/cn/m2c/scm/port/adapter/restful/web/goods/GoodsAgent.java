@@ -2,6 +2,8 @@ package cn.m2c.scm.port.adapter.restful.web.goods;
 
 import cn.m2c.common.MCode;
 import cn.m2c.common.MPager;
+import cn.m2c.common.MResult;
+import cn.m2c.scm.domain.IDGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -130,5 +132,47 @@ public class GoodsAgent {
             result = new MPager(MCode.V_400, e.getMessage());
         }
         return new ResponseEntity<MPager>(result, HttpStatus.OK);
+    }
+
+    /**
+     * 获取ID
+     *
+     * @return
+     */
+    @RequestMapping(value = "/id", method = RequestMethod.GET)
+    public ResponseEntity<MResult> getGoodsId() {
+        MResult result = new MResult(MCode.V_1);
+        try {
+            String id = IDGenerator.get(IDGenerator.SCM_GOODS_PREFIX_TITLE);
+            result.setContent(id);
+            result.setStatus(MCode.V_200);
+        } catch (Exception e) {
+            LOGGER.error("getGoodsId Exception e:", e);
+            result = new MResult(MCode.V_400, e.getMessage());
+        }
+        return new ResponseEntity<MResult>(result, HttpStatus.OK);
+    }
+
+
+    @RequestMapping(value = "", method = RequestMethod.POST)
+    public ResponseEntity<MResult> addPostageModel(
+            @RequestParam(value = "goodsId", required = false) String goodsId,
+            @RequestParam(value = "dealerId", required = false) String dealerId,
+            @RequestParam(value = "dealerName", required = false) String dealerName,
+            @RequestParam(value = "goodsName", required = false) String goodsName,
+            @RequestParam(value = "goodsSubTitle", required = false) String goodsSubTitle,
+            @RequestParam(value = "goodsClassifyId", required = false) String goodsClassifyId,
+            @RequestParam(value = "goodsBrandId", required = false) String goodsBrandId,
+            @RequestParam(value = "goodsUnitId", required = false) String goodsUnitId,
+            @RequestParam(value = "goodsMinQuantity", required = false) Integer goodsMinQuantity,
+            @RequestParam(value = "goodsPostageId", required = false) String goodsPostageId,
+            @RequestParam(value = "goodsBarCode", required = false) String goodsBarCode,
+            @RequestParam(value = "goodsKeyWord", required = false) String goodsKeyWord,
+            @RequestParam(value = "goodsGuarantee", required = false) List goodsGuarantee,
+            @RequestParam(value = "goodsMainImages", required = false) List goodsMainImages,
+            @RequestParam(value = "goodsDesc", required = false) String goodsDesc,
+            @RequestParam(value = "goodsShelves", required = false) String goodsShelves) {
+        MResult result = new MResult(MCode.V_1);
+        return new ResponseEntity<MResult>(result, HttpStatus.OK);
     }
 }
