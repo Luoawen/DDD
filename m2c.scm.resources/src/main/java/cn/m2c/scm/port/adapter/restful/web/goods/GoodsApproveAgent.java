@@ -3,11 +3,11 @@ package cn.m2c.scm.port.adapter.restful.web.goods;
 import cn.m2c.common.JsonUtils;
 import cn.m2c.common.MCode;
 import cn.m2c.common.MResult;
+import cn.m2c.scm.application.CommonApplication;
 import cn.m2c.scm.application.goods.GoodsApproveApplication;
 import cn.m2c.scm.application.goods.command.GoodsApproveCommand;
 import cn.m2c.scm.domain.IDGenerator;
 import cn.m2c.scm.domain.NegativeException;
-import cn.m2c.scm.domain.service.DomainService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -35,7 +36,7 @@ public class GoodsApproveAgent {
     @Autowired
     GoodsApproveApplication goodsApproveApplication;
     @Autowired
-    DomainService domainService;
+    CommonApplication commonApplication;
 
     /**
      * 获取ID
@@ -99,11 +100,17 @@ public class GoodsApproveAgent {
             @RequestParam(value = "goodsSKUs", required = false) String goodsSkuApproves) {
         MResult result = new MResult(MCode.V_1);
 
+        List<Map> skuList = JsonUtils.toList(goodsSkuApproves, Map.class);
         try {
-            List<Map> skuList = JsonUtils.toList(goodsSkuApproves, Map.class);
-            List<String> skuCodes = null;
+            List<String> skuCodes = new ArrayList<>();
             if (null != skuList && skuList.size() > 0) {
-                skuCodes = domainService.generateGoodsSKUs(skuList.size());
+                for (int i = 0; i < skuList.size(); i++) {
+                    try {
+                        skuCodes.add(commonApplication.generateGoodsSku());
+                    } catch (Exception e) { //失败重新生成一次
+                        skuCodes.add(commonApplication.generateGoodsSku());
+                    }
+                }
             }
             GoodsApproveCommand command = new GoodsApproveCommand(approveId, dealerId, dealerName, goodsName, goodsSubTitle,
                     goodsClassifyId, goodsBrandId, goodsUnitId, goodsMinQuantity,

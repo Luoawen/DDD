@@ -16,11 +16,11 @@ public interface DomainService {
     List<Map> getGoodsTags(String goodsId);
 
     /**
-     * 生成商城SKU编码
+     * 生成单个商城SKU编码
      *
      * @return
      */
-    List<String> generateGoodsSKUs(Integer num);
+    String generateGoodsSku();
 
     /**
      * 生成编码记录
