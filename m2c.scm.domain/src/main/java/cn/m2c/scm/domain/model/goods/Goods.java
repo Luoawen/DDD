@@ -111,7 +111,7 @@ public class Goods extends ConcurrencySafeEntity {
     /**
      * 商品规格
      */
-    private List<GoodsSku> goodsSkuList;
+    private List<GoodsSku> goodsSKUs;
 
     public Goods() {
         super();

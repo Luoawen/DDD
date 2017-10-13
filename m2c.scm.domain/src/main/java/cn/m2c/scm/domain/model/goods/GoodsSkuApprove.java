@@ -60,4 +60,19 @@ public class GoodsSkuApprove extends IdentifiedValueObject {
     public GoodsSkuApprove() {
         super();
     }
+
+    public GoodsSkuApprove(GoodsApprove goodsApprove, String skuApproveId, String skuName, Integer availableNum,
+                           Float weight, Long photographPrice, Long marketPrice, Long supplyPrice, String goodsCode,
+                           Integer showStatus) {
+        this.goodsApprove = goodsApprove;
+        this.skuApproveId = skuApproveId;
+        this.skuName = skuName;
+        this.availableNum = availableNum;
+        this.weight = weight;
+        this.photographPrice = photographPrice;
+        this.marketPrice = marketPrice;
+        this.supplyPrice = supplyPrice;
+        this.goodsCode = goodsCode;
+        this.showStatus = showStatus;
+    }
 }
