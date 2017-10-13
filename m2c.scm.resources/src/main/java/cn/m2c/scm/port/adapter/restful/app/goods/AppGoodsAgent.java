@@ -48,6 +48,17 @@ public class AppGoodsAgent {
             map.put("goodsName", "跑步机");
             map.put("goodsImageUrl", "http://dl.m2c2017.com/3pics/20170822/W8bq135021.jpg");
             map.put("goodsPrice", 249000);
+
+            List<Map> tags = new ArrayList<>();
+            Map mapTags = new HashMap<>();
+            mapTags.put("backcolor", "#FE8D22");
+            mapTags.put("backcolorTmd", "254,145,34,5");
+            mapTags.put("name", "满减");
+            mapTags.put("wordcolor", "#FE8D22");
+            mapTags.put("wordcolorTmd", "254,145,34,100");
+            tags.add(mapTags);
+            map.put("goodsTags", tags);
+
             Map map1 = new HashMap<>();
             map1.put("goodsId", "SP38C4D0B014E24B64B021EAC4D813A696");
             map1.put("goodsName", "儿童自行车");

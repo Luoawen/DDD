@@ -61,7 +61,7 @@ public class BrandApproveAgent {
 
 
     /**
-     * 添加品牌/修改品牌库中品牌（商家平台，需审核）
+     * 添加品牌（商家平台，需审核）
      *
      * @param dealerId      经销商id
      * @param approveId     品牌id
@@ -103,6 +103,51 @@ public class BrandApproveAgent {
         } catch (Exception e) {
             LOGGER.error("addBrandApprove Exception e:", e);
             result = new MResult(MCode.V_400, "添加待审批品牌失败");
+        }
+        return new ResponseEntity<MResult>(result, HttpStatus.OK);
+    }
+
+    /**
+     * 修改品牌库中品牌（商家平台，需审核）
+     *
+     * @param dealerId      经销商id
+     * @param brandName     品牌名称
+     * @param brandNameEn   英文名称
+     * @param brandLogo     品牌logo
+     * @param firstAreaCode 一级区域编号
+     * @param twoAreaCode   二级区域编号
+     * @param threeAreaCode 三级区域编号
+     * @param firstAreaName 一级区域名称
+     * @param twoAreaName   二级区域名称
+     * @param threeAreaName 三级区域名称
+     * @return
+     */
+    @RequestMapping(value = "/{brandId}", method = RequestMethod.POST)
+    public ResponseEntity<MResult> modifyBrand(
+            @PathVariable("brandId") String brandId,
+            @RequestParam(value = "dealerId", required = false) String dealerId,
+            @RequestParam(value = "dealerName", required = false) String dealerName,
+            @RequestParam(value = "brandName", required = false) String brandName,
+            @RequestParam(value = "brandNameEn", required = false) String brandNameEn,
+            @RequestParam(value = "brandLogo", required = false) String brandLogo,
+            @RequestParam(value = "firstAreaCode", required = false) String firstAreaCode,
+            @RequestParam(value = "twoAreaCode", required = false) String twoAreaCode,
+            @RequestParam(value = "threeAreaCode", required = false) String threeAreaCode,
+            @RequestParam(value = "firstAreaName", required = false) String firstAreaName,
+            @RequestParam(value = "twoAreaName", required = false) String twoAreaName,
+            @RequestParam(value = "threeAreaName", required = false) String threeAreaName) {
+        MResult result = new MResult(MCode.V_1);
+        try {
+            BrandApproveCommand command = new BrandApproveCommand(null, brandId, brandName, brandNameEn, brandLogo, firstAreaCode,
+                    twoAreaCode, threeAreaCode, firstAreaName, twoAreaName, threeAreaName, dealerId, dealerName);
+            brandApproveApplication.modifyBrand(command);
+            result.setStatus(MCode.V_200);
+        } catch (NegativeException ne) {
+            LOGGER.error("modifyBrand NegativeException e:", ne);
+            result = new MResult(ne.getStatus(), ne.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("modifyBrand Exception e:", e);
+            result = new MResult(MCode.V_400, "修改品牌库中品牌失败");
         }
         return new ResponseEntity<MResult>(result, HttpStatus.OK);
     }

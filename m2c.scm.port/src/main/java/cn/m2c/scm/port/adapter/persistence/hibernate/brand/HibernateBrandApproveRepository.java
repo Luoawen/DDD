@@ -20,6 +20,14 @@ public class HibernateBrandApproveRepository extends HibernateSupperRepository i
     }
 
     @Override
+    public BrandApprove getBrandApproveByBrandId(String brandId) {
+        StringBuilder sql = new StringBuilder("select * from t_scm_brand_approve where brand_id =:brand_id and status = 1");
+        Query query = this.session().createSQLQuery(sql.toString()).addEntity(BrandApprove.class);
+        query.setParameter("brand_id", brandId);
+        return (BrandApprove) query.uniqueResult();
+    }
+
+    @Override
     public void save(BrandApprove brandApprove) {
         this.session().save(brandApprove);
     }

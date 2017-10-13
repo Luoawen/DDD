@@ -5,6 +5,7 @@ import cn.m2c.ddd.common.event.annotation.EventListener;
 import cn.m2c.scm.application.brand.command.BrandApproveAgreeCommand;
 import cn.m2c.scm.application.brand.command.BrandApproveCommand;
 import cn.m2c.scm.application.brand.command.BrandApproveRejectCommand;
+import cn.m2c.scm.domain.IDGenerator;
 import cn.m2c.scm.domain.NegativeException;
 import cn.m2c.scm.domain.model.brand.BrandApprove;
 import cn.m2c.scm.domain.model.brand.BrandApproveRepository;
@@ -45,6 +46,31 @@ public class BrandApproveApplication {
                     command.getTwoAreaCode(), command.getThreeAreaCode(), command.getFirstAreaName(), command.getTwoAreaName(),
                     command.getThreeAreaName(), command.getDealerId());
             brandApproveRepository.save(brandApprove);
+        }
+    }
+
+    /**
+     * 修改品牌库中品牌（商家平台，需审核）
+     *
+     * @param command
+     */
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+    public void modifyBrand(BrandApproveCommand command) throws NegativeException {
+        LOGGER.info("addBrandApprove command >>{}", command);
+        // 与当前品牌库中的不能重名
+        if (brandRepository.brandNameIsRepeat(command.getBrandId(), command.getBrandName())) {
+            throw new NegativeException(MCode.V_301, "品牌名称已存在");
+        }
+        BrandApprove brandApprove = brandApproveRepository.getBrandApproveByBrandId(command.getBrandId());
+        if (null == brandApprove) {//不存在审核记录，就增加一条审核记录
+            brandApprove = new BrandApprove(IDGenerator.get(IDGenerator.SCM_BRANDE_APPROVE_PREFIX_TITLE), command.getBrandId(), command.getBrandName(), command.getBrandNameEn(), command.getBrandLogo(), command.getFirstAreaCode(),
+                    command.getTwoAreaCode(), command.getThreeAreaCode(), command.getFirstAreaName(), command.getTwoAreaName(),
+                    command.getThreeAreaName(), command.getDealerId());
+            brandApproveRepository.save(brandApprove);
+        } else { //存在审核记录，就覆盖之前的
+            brandApprove.modifyBrandApprove(command.getBrandName(), command.getBrandNameEn(), command.getBrandLogo(), command.getFirstAreaCode(),
+                    command.getTwoAreaCode(), command.getThreeAreaCode(), command.getFirstAreaName(), command.getTwoAreaName(),
+                    command.getThreeAreaName());
         }
     }
 
