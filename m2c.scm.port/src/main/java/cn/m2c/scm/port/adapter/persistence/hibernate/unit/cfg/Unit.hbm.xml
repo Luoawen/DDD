@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping default-access="field"
+	default-cascade="all">
+	<class name="cn.m2c.scm.domain.model.unit.Unit" table="t_scm_unit"
+		lazy="true" optimistic-lock="version" dynamic-insert="true"
+		dynamic-update="true">
+		<id name="id" column="id" type="int" unsaved-value="-1">
+			<generator class="native" />
+		</id>
+		<version name="concurrencyVersion" column="concurrency_version" type="int" />
+		<property name="createdDate" generated="insert" not-null="true">
+			<column name="created_date" sql-type="timestamp" default="CURRENT_TIMESTAMP"></column>
+		</property>
+		<property name="lastUpdatedDate" generated="always" not-null="true">
+			<column name="last_update_date" sql-type="timestamp" default="CURRENT_TIMESTAMP"></column>
+		</property>
+		
+		<property name="unitId" column="unit_id" type="string"></property>
+		<property name="unitName" column="unit_name" type="string"></property>
+		<property name="unitStatus" column="unit_status" type="int"></property>
+	</class>
+</hibernate-mapping>
