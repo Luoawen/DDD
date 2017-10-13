@@ -13,5 +13,20 @@ public interface DomainService {
      * @param goodsId 商品ID
      * @return
      */
-    public List<Map> getGoodsTags(String goodsId);
+    List<Map> getGoodsTags(String goodsId);
+
+    /**
+     * 生成商城SKU编码
+     *
+     * @return
+     */
+    List<String> generateGoodsSKUs(Integer num);
+
+    /**
+     * 生成编码记录
+     *
+     * @param no   编号
+     * @param type 编号类型，1：订单号，2：商城sku
+     */
+    void saveGenerateNo(String no, Integer type);
 }

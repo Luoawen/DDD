@@ -2,13 +2,10 @@ package cn.m2c.scm.domain.model.goods;
 
 import cn.m2c.common.JsonUtils;
 import cn.m2c.ddd.common.domain.model.ConcurrencySafeEntity;
-import cn.m2c.scm.domain.IDGenerator;
 import cn.m2c.scm.domain.util.GetMapValueUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -129,7 +126,7 @@ public class GoodsApprove extends ConcurrencySafeEntity {
     public GoodsApprove(String approveId, String dealerId, String dealerName, String goodsName, String goodsSubTitle,
                         String goodsClassifyId, String goodsBrandId, String goodsUnitId, Integer goodsMinQuantity,
                         String goodsPostageId, String goodsBarCode, String goodsKeyWord, String goodsGuarantee,
-                        String goodsMainImages, String goodsDesc, Integer goodsShelves, String goodsSkuApproves) {
+                        String goodsMainImages, String goodsDesc, Integer goodsShelves, String goodsSkuApproves, List<String> skuCodes) {
         this.approveId = approveId;
         this.dealerId = dealerId;
         this.dealerName = dealerName;
@@ -147,7 +144,6 @@ public class GoodsApprove extends ConcurrencySafeEntity {
         this.goodsDesc = goodsDesc;
         this.goodsShelves = goodsShelves;
         this.approveStatus = 1;
-
         //商品规格格式：[{"skuApproveId":"SPSHA5BDED943A1D42CC9111B3723B0987BF","skuName":"L,红","supplyPrice":4000,
         // "weight":20.5,"availableNum":200,"goodsCode":"111111","marketPrice":6000,"photographPrice":5000,"showStatus":2}]
         if (null == this.goodsSkuApproves) {
@@ -157,22 +153,16 @@ public class GoodsApprove extends ConcurrencySafeEntity {
         }
         List<Map> skuList = JsonUtils.toList(goodsSkuApproves, Map.class);
         if (null != skuList && skuList.size() > 0) {
-            for (Map map : skuList) {
-                this.goodsSkuApproves.add(createGoodsSkuApprove(map));
+            for (int i = 0; i < skuList.size(); i++) {
+                this.goodsSkuApproves.add(createGoodsSkuApprove(skuList.get(i), skuCodes.get(i)));
             }
         }
     }
 
-    private GoodsSkuApprove createGoodsSkuApprove(Map map) {
+    private GoodsSkuApprove createGoodsSkuApprove(Map map, String skuCode) {
         String skuApproveId = GetMapValueUtils.getStringFromMapKey(map, "skuApproveId");
         if (StringUtils.isEmpty(skuApproveId)) {
-            skuApproveId = IDGenerator.get(IDGenerator.SCM_GOODS_SKU_PREFIX_TITLE);
-
-            SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmss");
-            String time = format.format(new Date());
-            // 6位随机数
-            Integer random = (int) ((Math.random() * 9 + 1) * 100000);
-
+            skuApproveId = skuCode;
         }
         String skuName = GetMapValueUtils.getStringFromMapKey(map, "skuName");
         Integer availableNum = GetMapValueUtils.getIntFromMapKey(map, "availableNum");
