@@ -137,6 +137,8 @@ public class BrandApprove extends ConcurrencySafeEntity {
         this.firstAreaName = firstAreaName;
         this.twoAreaName = twoAreaName;
         this.threeAreaName = threeAreaName;
+        this.approveStatus = 1;
+        this.rejectReason = null;
     }
 
 
