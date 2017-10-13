@@ -102,6 +102,7 @@ public class GoodsApproveAgent {
 
         List<Map> skuList = JsonUtils.toList(goodsSkuApproves, Map.class);
         try {
+            // 生成sku
             List<String> skuCodes = new ArrayList<>();
             if (null != skuList && skuList.size() > 0) {
                 for (int i = 0; i < skuList.size(); i++) {
@@ -111,6 +112,9 @@ public class GoodsApproveAgent {
                         skuCodes.add(commonApplication.generateGoodsSku());
                     }
                 }
+            } else {
+                result = new MResult(MCode.V_1, "商品规格为空");
+                return new ResponseEntity<MResult>(result, HttpStatus.OK);
             }
             GoodsApproveCommand command = new GoodsApproveCommand(approveId, dealerId, dealerName, goodsName, goodsSubTitle,
                     goodsClassifyId, goodsBrandId, goodsUnitId, goodsMinQuantity,
