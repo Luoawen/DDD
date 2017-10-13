@@ -324,8 +324,11 @@ public class DealerAgent {
 		            ) {
 			 MResult result = new MResult(MCode.V_1);
 		        try {
+		        	DealerShopInfoRepresentation resultData = null;
 		        	DealerBean dealer =  dealerQuery.getDealer(dealerId);
-		        	DealerShopInfoRepresentation resultData =  new DealerShopInfoRepresentation(dealer);
+		        	if(dealer!=null){
+		        		resultData =  new DealerShopInfoRepresentation(dealer);
+		        	}
 		        	result.setContent(resultData);
 		            result.setStatus(MCode.V_200);
 		        } catch (Exception e) {
