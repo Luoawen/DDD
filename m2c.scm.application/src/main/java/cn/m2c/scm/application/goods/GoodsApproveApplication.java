@@ -11,11 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
 /**
  * 商品审核
  */
@@ -37,19 +32,12 @@ public class GoodsApproveApplication {
         LOGGER.info("addGoodsApprove command >>{}", command);
         GoodsApprove goodsApprove = goodsApproveRepository.queryGoodsApproveById(command.getApproveId());
         if (null == goodsApprove) {
-            List<Map> skuList = JsonUtils.toList(command.getGoodsSkuApproves(), Map.class);
-            SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmss");
-            String time = format.format(new Date());
-            // 6位随机数
-            Integer random = (int) ((Math.random() * 9 + 1) * 100000);
-
-
             goodsApprove = new GoodsApprove(command.getApproveId(), command.getDealerId(), command.getDealerName(),
                     command.getGoodsName(), command.getGoodsSubTitle(), command.getGoodsClassifyId(),
                     command.getGoodsBrandId(), command.getGoodsUnitId(), command.getGoodsMinQuantity(),
                     command.getGoodsPostageId(), command.getGoodsBarCode(), command.getGoodsKeyWord(),
                     JsonUtils.toStr(command.getGoodsGuarantee()), JsonUtils.toStr(command.getGoodsMainImages()),
-                    command.getGoodsDesc(), command.getGoodsShelves(), command.getGoodsSkuApproves());
+                    command.getGoodsDesc(), command.getGoodsShelves(), command.getGoodsSkuApproves(),command.getSkuCodes());
             goodsApproveRepository.save(goodsApprove);
         }
     }

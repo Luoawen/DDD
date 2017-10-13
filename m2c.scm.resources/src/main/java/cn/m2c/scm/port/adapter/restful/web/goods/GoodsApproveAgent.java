@@ -1,11 +1,13 @@
 package cn.m2c.scm.port.adapter.restful.web.goods;
 
+import cn.m2c.common.JsonUtils;
 import cn.m2c.common.MCode;
 import cn.m2c.common.MResult;
 import cn.m2c.scm.application.goods.GoodsApproveApplication;
 import cn.m2c.scm.application.goods.command.GoodsApproveCommand;
 import cn.m2c.scm.domain.IDGenerator;
 import cn.m2c.scm.domain.NegativeException;
+import cn.m2c.scm.domain.service.DomainService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 商品审核
@@ -31,6 +34,8 @@ public class GoodsApproveAgent {
 
     @Autowired
     GoodsApproveApplication goodsApproveApplication;
+    @Autowired
+    DomainService domainService;
 
     /**
      * 获取ID
@@ -70,7 +75,7 @@ public class GoodsApproveAgent {
      * @param goodsMainImages  商品主图  存储类型是[“url1”,"url2"]
      * @param goodsDesc        商品描述
      * @param goodsShelves     1:手动上架,2:审核通过立即上架
-     * @param goodsSkuApproves        商品sku规格列表,格式：[{"availableNum":200,"goodsCode":"111111","marketPrice":6000,"photographPrice":5000,"showStatus":2,"skuApproveId":"SPSHA5BDED943A1D42CC9111B3723B0987BF","skuName":"L,红","supplyPrice":4000,"weight":20.5}]
+     * @param goodsSkuApproves 商品sku规格列表,格式：[{"availableNum":200,"goodsCode":"111111","marketPrice":6000,"photographPrice":5000,"showStatus":2,"skuApproveId":"SPSHA5BDED943A1D42CC9111B3723B0987BF","skuName":"L,红","supplyPrice":4000,"weight":20.5}]
      * @return
      */
     @RequestMapping(value = "", method = RequestMethod.POST)
@@ -93,13 +98,18 @@ public class GoodsApproveAgent {
             @RequestParam(value = "goodsShelves", required = false) Integer goodsShelves,
             @RequestParam(value = "goodsSKUs", required = false) String goodsSkuApproves) {
         MResult result = new MResult(MCode.V_1);
-        GoodsApproveCommand command = new GoodsApproveCommand(approveId, dealerId, dealerName, goodsName,goodsSubTitle,
-                goodsClassifyId, goodsBrandId, goodsUnitId, goodsMinQuantity,
-                goodsPostageId, goodsBarCode, goodsKeyWord, goodsGuarantee,
-                goodsMainImages, goodsDesc, goodsShelves, goodsSkuApproves);
+
         try {
+            List<Map> skuList = JsonUtils.toList(goodsSkuApproves, Map.class);
+            List<String> skuCodes = null;
+            if (null != skuList && skuList.size() > 0) {
+                skuCodes = domainService.generateGoodsSKUs(skuList.size());
+            }
+            GoodsApproveCommand command = new GoodsApproveCommand(approveId, dealerId, dealerName, goodsName, goodsSubTitle,
+                    goodsClassifyId, goodsBrandId, goodsUnitId, goodsMinQuantity,
+                    goodsPostageId, goodsBarCode, goodsKeyWord, goodsGuarantee,
+                    goodsMainImages, goodsDesc, goodsShelves, goodsSkuApproves, skuCodes);
             goodsApproveApplication.addGoodsApprove(command);
-            result.setStatus(MCode.V_200);
         } catch (NegativeException ne) {
             LOGGER.error("addGoodsApprove NegativeException e:", ne);
             result = new MResult(ne.getStatus(), ne.getMessage());

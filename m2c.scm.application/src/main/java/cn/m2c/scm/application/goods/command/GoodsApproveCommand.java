@@ -99,10 +99,15 @@ public class GoodsApproveCommand extends AssertionConcern implements Serializabl
      */
     private String goodsSkuApproves;
 
+    /**
+     * sku编码
+     */
+    private List<String> skuCodes;
+
     public GoodsApproveCommand(String approveId, String dealerId, String dealerName, String goodsName, String goodsSubTitle,
                                String goodsClassifyId, String goodsBrandId, String goodsUnitId, Integer goodsMinQuantity,
                                String goodsPostageId, String goodsBarCode, String goodsKeyWord, List goodsGuarantee,
-                               List goodsMainImages, String goodsDesc, Integer goodsShelves, String goodsSkuApproves) {
+                               List goodsMainImages, String goodsDesc, Integer goodsShelves, String goodsSkuApproves, List<String> skuCodes) {
         this.approveId = approveId;
         this.dealerId = dealerId;
         this.dealerName = dealerName;
@@ -120,6 +125,7 @@ public class GoodsApproveCommand extends AssertionConcern implements Serializabl
         this.goodsDesc = goodsDesc;
         this.goodsShelves = goodsShelves;
         this.goodsSkuApproves = goodsSkuApproves;
+        this.skuCodes = skuCodes;
     }
 
     public String getApproveId() {
@@ -192,5 +198,9 @@ public class GoodsApproveCommand extends AssertionConcern implements Serializabl
 
     public String getGoodsSkuApproves() {
         return goodsSkuApproves;
+    }
+
+    public List<String> getSkuCodes() {
+        return skuCodes;
     }
 }
