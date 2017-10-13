@@ -13,14 +13,13 @@ public abstract class IDGenerator {
     public static final String USERS_PREFIX_TITLE = "HY";//会员中心前缀
     public static final String PAY_PREFIX_TITLE = "ZF";//支付中心前缀
     public static final String ORDER_PREFIX_TITLE = "DD";//订单前缀
-    public static final String GOODS_PREFIX_TITLE = "SP";//订单前缀
     public static final String GOODS_BRAND_PREFIX_TITLE = "14GB";//品牌前缀
     public static final String SYSTEM_USER_PREFIX_TITLE = "SYSU"; // 系统用户
     public static final String SYSTEM_ROLE_PREFIX_TITLE = "SYSR"; // 系统角色
     public static final String SYSTEM_MENU_PREFIX_TITLE = "SYSM"; // 系统菜单
     public static final String SYSTEM_FORBID_PREFIX_TITLE = "SYSF"; // 系统禁用词汇
     public static final String DEALER_PREFIX_TITLE = "JXS";//经销商
-    public static final String SALE_PREFIX_TITLE = "YWY";//业务员
+    public static final String SALE_PREFIX_TITLE = "YWY";//
     public static final String GOODS_Property_PREFIX_TITLE = "14GP";//属性前缀
     public static final String DEALER_SELLER_PREFIX_TITLE = "14DS";
     public static final String REPORT_ID = "14RI";
@@ -29,9 +28,11 @@ public abstract class IDGenerator {
     public static final String SCM_POSTAGE_RULE_PREFIX_TITLE = "YFGZ";//运费模板规则前缀
     public static final String SCM_AFTER_SALE_ADDRESS_PREFIX_TITLE = "SHDZ";//售后地址前缀
     public static final String SCM_BRAND_PREFIX_TITLE = "PP";//品牌前缀
-    public static final String SCM_BRANDE_APPROVE_PREFIX_TITLE = "PPSH";//品牌审核前缀
-    public static final String SCM_STANTARD_PREFIX_TITLE="GG";//规格前缀
-    public static final String SCM_UNIT_PREFIX_TITLE="JLDW";//计量单位前缀
+    public static final String SCM_BRANDE_APPROVE_PREFIX_TITLE = "PPSP";//品牌审核前缀
+    public static final String SCM_GOODS_CLASSIFY_PREFIX_TITLE = "SPFL";//商品分类前缀
+    public static final String SCM_GOODS_PREFIX_TITLE = "SP";//商品前缀
+    public static final String SCM_GOODS_APPROVE_PREFIX_TITLE = "SPSH";//商品审核前缀
+    public static final String SCM_GOODS_SKU_PREFIX_TITLE = "SPGG";//商品规格前缀
 
     /**
      * 生成序列ID
@@ -55,7 +56,7 @@ public abstract class IDGenerator {
 
 
     public static void main(String[] args) {
-        String testID = IDGenerator.get();
+        String testID = IDGenerator.get("SJFL");
         System.err.println(testID.length());
         System.err.println(testID);
     }

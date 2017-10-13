@@ -28,10 +28,14 @@ public class AfterSaleAddressApplication {
      * @param command
      */
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
-    public void addAfterSaleAddress(AfterSaleAddressCommand command) {
+    public void addAfterSaleAddress(AfterSaleAddressCommand command) throws NegativeException {
         LOGGER.info("addAfterSaleAddress command >>{}", command);
         AfterSaleAddress afterSaleAddress = afterSaleAddressRepository.getAfterSaleAddressByAddressId(command.getAddressId());
         if (null == afterSaleAddress) {
+            afterSaleAddress = afterSaleAddressRepository.getAfterSaleAddressByDealerId(command.getDealerId());
+            if (null != afterSaleAddress) {
+                throw new NegativeException(MCode.V_301, "售后地址已存在");
+            }
             afterSaleAddress = new AfterSaleAddress(command.getAddressId(), command.getDealerId(), command.getProCode(), command.getCityCode(), command.getAreaCode(),
                     command.getProName(), command.getCityName(), command.getAreaName(), command.getAddress(), command.getContactName(), command.getContactNumber());
             afterSaleAddressRepository.save(afterSaleAddress);

@@ -20,9 +20,14 @@ import cn.m2c.common.MPager;
 import cn.m2c.common.MResult;
 import cn.m2c.scm.application.dealer.DealerApplication;
 import cn.m2c.scm.application.dealer.command.DealerAddOrUpdateCommand;
+import cn.m2c.scm.application.dealer.command.ShopInfoUpdateCommand;
 import cn.m2c.scm.application.dealer.data.bean.DealerBean;
+import cn.m2c.scm.application.dealer.data.representation.DealerRepresentation;
+import cn.m2c.scm.application.dealer.data.representation.DealerShopInfoRepresentation;
 import cn.m2c.scm.application.dealer.query.DealerQuery;
+import cn.m2c.scm.application.dealerclassify.query.DealerClassifyQuery;
 import cn.m2c.scm.domain.IDGenerator;
+import cn.m2c.scm.domain.model.dealer.Dealer;
 
 @RestController
 @RequestMapping("/dealer/sys")
@@ -34,6 +39,9 @@ public class DealerAgent {
 	
 	@Autowired
 	DealerQuery dealerQuery;
+	
+	@Autowired
+	DealerClassifyQuery dealerClassifyQuery;
 	/**
 	 * 新增经销商
 	 * @param userId
@@ -192,8 +200,14 @@ public class DealerAgent {
 			try {
 				List<DealerBean> dealerList = dealerQuery.getDealerList(dealerClassify,cooperationMode,countMode,isPayDeposit,dealerName,dealerId,userPhone,sellerPhone,startTime,endTime,pageNum,rows);
 				Integer count = dealerQuery.getDealerCount(dealerClassify,cooperationMode,countMode,isPayDeposit,dealerName,dealerId,userPhone,sellerPhone,startTime,endTime,pageNum,rows);
+				if(dealerList!=null && dealerList.size()>0){
+					List<DealerRepresentation> list = new ArrayList<DealerRepresentation>();
+					for (DealerBean model : dealerList) {
+						list.add(new DealerRepresentation(model));
+					}
+					result.setContent(list);
+				}
 				result.setPager(count, pageNum, rows);
-				result.setContent(dealerList);
 				result.setStatus(MCode.V_200);
 			} catch (Exception e) {
 				log.error("修改经销商出错" + e.getMessage(), e);
@@ -275,4 +289,55 @@ public class DealerAgent {
 		        }
 		        return new ResponseEntity<MResult>(result, HttpStatus.OK);
 		    }
+		 /**
+		  * 修改店铺信息
+		  * @param dealerId
+		  * @return
+		  */
+		 @RequestMapping(value = "/shopInfo", method = RequestMethod.PUT)
+		    public ResponseEntity<MResult> updateShopInfo(
+		            @RequestParam(value = "dealerId", required = true) String dealerId,
+		            @RequestParam(value = "shopName", required = true) String shopName,
+		            @RequestParam(value = "shopIcon", required = true) String shopIcon,
+		            @RequestParam(value = "shopIntroduce", required = false) String shopIntroduce,
+		            @RequestParam(value = "customerServiceTel", required = true) String customerServiceTel
+		            ) {
+			 MResult result = new MResult(MCode.V_1);
+		        try {
+		        	ShopInfoUpdateCommand command = new ShopInfoUpdateCommand(dealerId, shopName, shopIcon, shopIntroduce, customerServiceTel);
+		        	application.updateShopInfo(command);
+		            result.setStatus(MCode.V_200);
+		        } catch (Exception e) {
+		        	log.error("修改店铺信息出错", e);
+		            result = new MPager(MCode.V_400, "服务器开小差了，请稍后再试");
+		        }
+		        return new ResponseEntity<MResult>(result, HttpStatus.OK);
+		    }
+		 /**
+		  * 查询店铺信息
+		  * @param dealerId
+		  * @return
+		  */
+		 @RequestMapping(value = "/shopInfo", method = RequestMethod.GET)
+		    public ResponseEntity<MResult> queryShopInfo(
+		            @RequestParam(value = "dealerId", required = true) String dealerId
+		            ) {
+			 MResult result = new MResult(MCode.V_1);
+		        try {
+		        	DealerShopInfoRepresentation resultData = null;
+		        	DealerBean dealer =  dealerQuery.getDealer(dealerId);
+		        	if(dealer!=null){
+		        		resultData =  new DealerShopInfoRepresentation(dealer);
+		        	}
+		        	result.setContent(resultData);
+		            result.setStatus(MCode.V_200);
+		        } catch (Exception e) {
+		        	log.error("店铺详情出错", e);
+		            result = new MPager(MCode.V_400, "服务器开小差了，请稍后再试");
+		        }
+		        return new ResponseEntity<MResult>(result, HttpStatus.OK);
+		    }
+		 
+		 
+		 
 }

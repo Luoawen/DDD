@@ -8,6 +8,8 @@ import cn.m2c.scm.application.address.data.bean.AfterSaleAddressBean;
 import cn.m2c.scm.application.address.data.representation.AfterSaleAddressRepresentation;
 import cn.m2c.scm.application.address.query.AfterSaleAddressQueryApplication;
 import cn.m2c.scm.domain.IDGenerator;
+import cn.m2c.scm.domain.NegativeException;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -88,6 +90,9 @@ public class AfterSaleAddressAgent {
                     proName, cityName, areaName, address, contactName, contactNumber);
             afterSaleAddressApplication.addAfterSaleAddress(command);
             result.setStatus(MCode.V_200);
+        } catch (NegativeException ne) {
+            LOGGER.error("addAfterSaleAddress NegativeException e:", ne);
+            result = new MResult(ne.getStatus(), ne.getMessage());
         } catch (Exception e) {
             LOGGER.error("addAfterSaleAddress Exception e:", e);
             result = new MResult(MCode.V_400, "添加售后地址失败");
@@ -147,6 +152,10 @@ public class AfterSaleAddressAgent {
     public ResponseEntity<MResult> getAfterSaleAddress(
             @RequestParam(value = "dealerId", required = false) String dealerId) {
         MResult result = new MResult(MCode.V_1);
+        if (StringUtils.isEmpty(dealerId)) {
+            result = new MResult(MCode.V_1, "商家ID为空");
+            return new ResponseEntity<MResult>(result, HttpStatus.OK);
+        }
         try {
             AfterSaleAddressBean bean = afterSaleAddressQueryApplication.queryAfterSaleAddressByDealerId(dealerId);
             if (null != bean) {

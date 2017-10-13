@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping default-access="field" default-cascade="all">
+    <class name="cn.m2c.scm.domain.model.goods.GoodsSkuApprove" table="t_scm_goods_sku_approve" lazy="true"
+           optimistic-lock="version" dynamic-insert="true" dynamic-update="true">
+
+        <id name="id" column="id" type="long" unsaved-value="-1">
+            <generator class="native"/>
+        </id>
+        <property name="skuApproveId" column="sku_approve_id" type="string"/>
+        <property name="skuName" column="sku_name" type="string"/>
+        <property name="availableNum" column="available_num" type="int"/>
+        <property name="weight" column="weight" type="float"/>
+        <property name="photographPrice" column="photograph_price" type="long"/>
+        <property name="marketPrice" column="market_price" type="long"/>
+        <property name="supplyPrice" column="supply_price" type="long"/>
+        <property name="goodsCode" column="goods_code" type="string"/>
+        <property name="showStatus" column="show_status" type="int"/>
+        <many-to-one name="goodsApprove" column="approve_id" class="cn.m2c.scm.domain.model.goods.GoodsApprove"
+                     cascade="save-update" fetch="join"/>
+    </class>
+</hibernate-mapping>

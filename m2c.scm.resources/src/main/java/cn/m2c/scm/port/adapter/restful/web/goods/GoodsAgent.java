@@ -66,7 +66,7 @@ public class GoodsAgent {
             ruleMap2.put("goodsSkuPrice", 50000);
             ruleList1.add(ruleMap1);
             ruleList1.add(ruleMap2);
-            map.put("goodsSkuList",ruleList1);
+            map.put("goodsSkuList", ruleList1);
 
 
             Map map1 = new HashMap<>();
@@ -94,8 +94,7 @@ public class GoodsAgent {
             ruleMap4.put("goodsSkuPrice", 99900);
             ruleList2.add(ruleMap3);
             ruleList2.add(ruleMap4);
-            map1.put("goodsSkuList",ruleList2);
-
+            map1.put("goodsSkuList", ruleList2);
 
 
             result.setPager(2, pageNum, rows);
@@ -122,6 +121,9 @@ public class GoodsAgent {
             map.put("goodsName", "跑步机");
             map.put("goodsImageUrl", "http://dl.m2c2017.com/3pics/20170822/W8bq135021.jpg");
             map.put("goodsPrice", 249000);
+            map.put("goodsClassifyId", "SPFL449EF119C6974667B9F5881C080EE5D2");
+            map.put("dealerId", "SP449EF119C6974667B9F5881C080EE5D2");
+            map.put("dealerName", "飞鸽牌");
             result.setContent(map);
             result.setStatus(MCode.V_200);
         } catch (Exception e) {
