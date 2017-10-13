@@ -6,7 +6,9 @@ import cn.m2c.scm.domain.IDGenerator;
 import cn.m2c.scm.domain.util.GetMapValueUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -160,10 +162,17 @@ public class GoodsApprove extends ConcurrencySafeEntity {
             }
         }
     }
+
     private GoodsSkuApprove createGoodsSkuApprove(Map map) {
         String skuApproveId = GetMapValueUtils.getStringFromMapKey(map, "skuApproveId");
-        if (StringUtils.isEmpty(skuApproveId)){
-            skuApproveId =  IDGenerator.get(IDGenerator.SCM_GOODS_SKU_PREFIX_TITLE);
+        if (StringUtils.isEmpty(skuApproveId)) {
+            skuApproveId = IDGenerator.get(IDGenerator.SCM_GOODS_SKU_PREFIX_TITLE);
+
+            SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmss");
+            String time = format.format(new Date());
+            // 6位随机数
+            Integer random = (int) ((Math.random() * 9 + 1) * 100000);
+
         }
         String skuName = GetMapValueUtils.getStringFromMapKey(map, "skuName");
         Integer availableNum = GetMapValueUtils.getIntFromMapKey(map, "availableNum");

@@ -99,6 +99,7 @@ public class GoodsApproveAgent {
                 goodsMainImages, goodsDesc, goodsShelves, goodsSkuApproves);
         try {
             goodsApproveApplication.addGoodsApprove(command);
+            result.setStatus(MCode.V_200);
         } catch (NegativeException ne) {
             LOGGER.error("addGoodsApprove NegativeException e:", ne);
             result = new MResult(ne.getStatus(), ne.getMessage());
