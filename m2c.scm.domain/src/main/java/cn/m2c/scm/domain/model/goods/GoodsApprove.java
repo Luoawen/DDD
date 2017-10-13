@@ -1,8 +1,14 @@
 package cn.m2c.scm.domain.model.goods;
 
+import cn.m2c.common.JsonUtils;
 import cn.m2c.ddd.common.domain.model.ConcurrencySafeEntity;
+import cn.m2c.scm.domain.IDGenerator;
+import cn.m2c.scm.domain.util.GetMapValueUtils;
+import org.apache.commons.lang3.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 商品审核
@@ -116,5 +122,60 @@ public class GoodsApprove extends ConcurrencySafeEntity {
 
     public GoodsApprove() {
         super();
+    }
+
+    public GoodsApprove(String approveId, String dealerId, String dealerName, String goodsName, String goodsSubTitle,
+                        String goodsClassifyId, String goodsBrandId, String goodsUnitId, Integer goodsMinQuantity,
+                        String goodsPostageId, String goodsBarCode, String goodsKeyWord, String goodsGuarantee,
+                        String goodsMainImages, String goodsDesc, Integer goodsShelves, String goodsSkuApproves) {
+        this.approveId = approveId;
+        this.dealerId = dealerId;
+        this.dealerName = dealerName;
+        this.goodsName = goodsName;
+        this.goodsSubTitle = goodsSubTitle;
+        this.goodsClassifyId = goodsClassifyId;
+        this.goodsBrandId = goodsBrandId;
+        this.goodsUnitId = goodsUnitId;
+        this.goodsMinQuantity = goodsMinQuantity;
+        this.goodsPostageId = goodsPostageId;
+        this.goodsBarCode = goodsBarCode;
+        this.goodsKeyWord = goodsKeyWord;
+        this.goodsGuarantee = goodsGuarantee;
+        this.goodsMainImages = goodsMainImages;
+        this.goodsDesc = goodsDesc;
+        this.goodsShelves = goodsShelves;
+        this.approveStatus = 1;
+
+        //商品规格格式：[{"skuApproveId":"SPSHA5BDED943A1D42CC9111B3723B0987BF","skuName":"L,红","supplyPrice":4000,
+        // "weight":20.5,"availableNum":200,"goodsCode":"111111","marketPrice":6000,"photographPrice":5000,"showStatus":2}]
+        if (null == this.goodsSkuApproves) {
+            this.goodsSkuApproves = new ArrayList<>();
+        } else {
+            this.goodsSkuApproves.clear();
+        }
+        List<Map> skuList = JsonUtils.toList(goodsSkuApproves, Map.class);
+        if (null != skuList && skuList.size() > 0) {
+            for (Map map : skuList) {
+                this.goodsSkuApproves.add(createGoodsSkuApprove(map));
+            }
+        }
+    }
+    private GoodsSkuApprove createGoodsSkuApprove(Map map) {
+        String skuApproveId = GetMapValueUtils.getStringFromMapKey(map, "skuApproveId");
+        if (StringUtils.isEmpty(skuApproveId)){
+            skuApproveId =  IDGenerator.get(IDGenerator.SCM_GOODS_SKU_PREFIX_TITLE);
+        }
+        String skuName = GetMapValueUtils.getStringFromMapKey(map, "skuName");
+        Integer availableNum = GetMapValueUtils.getIntFromMapKey(map, "availableNum");
+        Float weight = GetMapValueUtils.getFloatFromMapKey(map, "weight");
+        Long photographPrice = GetMapValueUtils.getLongFromMapKey(map, "photographPrice");
+        Long marketPrice = GetMapValueUtils.getLongFromMapKey(map, "marketPrice");
+        Long supplyPrice = GetMapValueUtils.getLongFromMapKey(map, "supplyPrice");
+        String goodsCode = GetMapValueUtils.getStringFromMapKey(map, "goodsCode");
+        Integer showStatus = GetMapValueUtils.getIntFromMapKey(map, "showStatus");
+        GoodsSkuApprove goodsSkuApprove = new GoodsSkuApprove(this, skuApproveId, skuName, availableNum,
+                weight, photographPrice, marketPrice, supplyPrice, goodsCode,
+                showStatus);
+        return goodsSkuApprove;
     }
 }
