@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import cn.m2c.ddd.common.event.annotation.EventListener;
 import cn.m2c.scm.application.dealer.command.DealerAddOrUpdateCommand;
 import cn.m2c.scm.application.dealer.command.ShopInfoUpdateCommand;
 import cn.m2c.scm.domain.NegativeCode;
@@ -34,6 +35,7 @@ public class DealerApplication {
 	}
 	
 	@Transactional(rollbackFor = {Exception.class,RuntimeException.class,NegativeException.class})
+	@EventListener
 	public void updateDealer(DealerAddOrUpdateCommand command) throws NegativeException {
 		log.info("---修改经销商参数",command.toString());
 		Dealer dealer = dealerRepository.getDealer(command.getDealerId());

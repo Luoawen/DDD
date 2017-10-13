@@ -14,9 +14,28 @@ public class DealerUpdateEvent implements DomainEvent{
 	private String dealerId;
 	private String dealerName;
 	
-	private Date current;
+	private Date currentDate;
+	
+	
 
 	
+	public DealerUpdateEvent() {
+		super();
+	}
+
+	public DealerUpdateEvent(String oldUserId, String newUserId,
+			String userName, String userPhone, String dealerId,
+			String dealerName) {
+		super();
+		this.setOldUserId(oldUserId);
+		this.setNewUserId(newUserId);
+		this.setUserName(userName);
+		this.setUserPhone(userPhone);
+		this.setDealerId(dealerId);
+		this.setDealerName(dealerName);
+		this.setCurrentDate(new Date());
+	}
+
 	public String getOldUserId() {
 		return oldUserId;
 	}
@@ -65,6 +84,15 @@ public class DealerUpdateEvent implements DomainEvent{
 		this.dealerName = dealerName;
 	}
 
+	
+	public Date getCurrentDate() {
+		return currentDate;
+	}
+
+	public void setCurrentDate(Date currentDate) {
+		this.currentDate = currentDate;
+	}
+
 	@Override
 	public int eventVersion() {
 		// TODO Auto-generated method stub
@@ -74,7 +102,7 @@ public class DealerUpdateEvent implements DomainEvent{
 	@Override
 	public Date occurredOn() {
 		// TODO Auto-generated method stub
-		return null;
+		return this.getCurrentDate();
 	}
 
 }
