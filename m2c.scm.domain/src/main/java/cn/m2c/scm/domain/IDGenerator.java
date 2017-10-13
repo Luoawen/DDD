@@ -20,7 +20,7 @@ public abstract class IDGenerator {
     public static final String SYSTEM_MENU_PREFIX_TITLE = "SYSM"; // 系统菜单
     public static final String SYSTEM_FORBID_PREFIX_TITLE = "SYSF"; // 系统禁用词汇
     public static final String DEALER_PREFIX_TITLE = "JXS";//经销商
-    public static final String SALE_PREFIX_TITLE = "YWY";//
+    public static final String SALE_PREFIX_TITLE = "YWY";//业务员
     public static final String GOODS_Property_PREFIX_TITLE = "14GP";//属性前缀
     public static final String DEALER_SELLER_PREFIX_TITLE = "14DS";
     public static final String REPORT_ID = "14RI";
@@ -30,6 +30,8 @@ public abstract class IDGenerator {
     public static final String SCM_AFTER_SALE_ADDRESS_PREFIX_TITLE = "SHDZ";//售后地址前缀
     public static final String SCM_BRAND_PREFIX_TITLE = "PP";//品牌前缀
     public static final String SCM_BRANDE_APPROVE_PREFIX_TITLE = "PPSH";//品牌审核前缀
+    public static final String SCM_STANTARD_PREFIX_TITLE="GG";//规格前缀
+    public static final String SCM_UNIT_PREFIX_TITLE="JLDW";//计量单位前缀
 
     /**
      * 生成序列ID
