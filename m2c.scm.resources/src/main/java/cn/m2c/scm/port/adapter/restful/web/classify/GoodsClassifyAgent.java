@@ -151,7 +151,7 @@ public class GoodsClassifyAgent {
             result.setContent(list);
             result.setStatus(MCode.V_200);
         } catch (Exception e) {
-            LOGGER.error("queryGoodsClassify Exception e:", e);
+            LOGGER.error("queryGoodsClassifyTree Exception e:", e);
             result = new MResult(MCode.V_400, "查询商品分类结构树失败");
         }
         return new ResponseEntity<MResult>(result, HttpStatus.OK);
