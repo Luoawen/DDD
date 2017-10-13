@@ -39,6 +39,8 @@ public class DealerApplication {
 		Dealer dealer = dealerRepository.getDealer(command.getDealerId());
 		if(dealer==null)
 			throw new NegativeException(NegativeCode.DEALER_IS_NOT_EXIST, "此经销商不存在.");
+		//-----发送经销商更新事件
+		
 		dealer.update(command.getUserId(),command.getUserName(),command.getUserPhone(),command.getDealerName(),command.getDealerClassify(),command.getCooperationMode(),command.getStartSignDate(),command.getEndSignDate(),command.getDealerProvince(),command.getDealerCity(),command.getDealerArea(),command.getDealerPcode(),command.getDealerCcode(),command.getDealerAcode(),command.getDealerDetailAddress(),command.getCountMode(),command.getDeposit(),command.getIsPayDeposit(),command.getManagerName(),command.getManagerPhone(),command.getManagerqq(),command.getManagerWechat(),command.getManagerEmail(),command.getManagerDepartment(),command.getSellerId(),command.getSellerName(),command.getSellerPhone());
 		dealerRepository.save(dealer);
 	}
