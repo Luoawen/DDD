@@ -194,9 +194,12 @@ public class DealerQuery {
 			
 			String sql =  " SELECT  *  FROM  t_scm_dealer sd  WHERE  dealer_status = 1 and dealer_id=?";
 			bean = this.supportJdbcTemplate.queryForBean(sql, DealerBean.class,dealerId);
+			if(bean.getDealerClassify()!=null && !"".equals(bean.getDealerClassify())){
+				bean.setDealerClassifyBean(getDealerClassify(bean.getDealerClassify()));
+			}
 		} catch (Exception e) {
 			log.error("查询经销商详情出错",e);
-			throw new NegativeException(500, "经销商查询总数出错");
+			throw new NegativeException(500, "经销商查询不存在");
 		}
 		return bean;
 	}

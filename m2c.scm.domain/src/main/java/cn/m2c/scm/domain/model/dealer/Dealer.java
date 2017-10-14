@@ -3,6 +3,9 @@ package cn.m2c.scm.domain.model.dealer;
 import java.util.Date;
 
 import cn.m2c.ddd.common.domain.model.ConcurrencySafeEntity;
+import cn.m2c.ddd.common.domain.model.DomainEvent;
+import cn.m2c.ddd.common.domain.model.DomainEventPublisher;
+import cn.m2c.scm.domain.model.dealer.event.DealerUpdateEvent;
 
 public class Dealer extends ConcurrencySafeEntity{
 	private static final long serialVersionUID = -8935103789948109354L;
@@ -103,6 +106,8 @@ public class Dealer extends ConcurrencySafeEntity{
 			String managerWechat, String managerEmail,
 			String managerDepartment, String sellerId, String sellerName,
 			String sellerPhone) {
+		DomainEvent dealerUpdateEvent= new DealerUpdateEvent(this.userId,userId,userName,userPhone,dealerId,dealerName);
+		DomainEventPublisher.instance().publish(dealerUpdateEvent);
 		this.userId = userId;
 		this.userName = userName;
 		this.userPhone = userPhone;

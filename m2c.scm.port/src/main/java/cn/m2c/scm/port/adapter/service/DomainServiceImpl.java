@@ -42,4 +42,12 @@ public class DomainServiceImpl implements DomainService {
         String sql = "INSERT INTO `t_scm_generate_no` (`unique_no`, `type`) VALUES (?, ?)";
         this.getSupportJdbcTemplate().jdbcTemplate().update(sql, new Object[]{no, type});
     }
+    
+    @Override
+    public String generateOrderNo() {
+    	String orderNo = cn.m2c.scm.domain.util.DateUtils.getDateStr(cn.m2c.scm.domain.util.DateUtils.TYPE_0) 
+    			+ RandomUtils.toStrs4Upper(6);
+    	saveGenerateNo(orderNo, 1);
+    	return orderNo;
+    }
 }

@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -363,5 +364,26 @@ public class DealerAgent {
 		        return new ResponseEntity<MResult>(result, HttpStatus.OK);
 		    }
 		 
+		 
+		 /**
+		  * 
+		  * @param dealerId
+		  * @return
+		  */
+		 @RequestMapping(value = "/{dealerId}", method = RequestMethod.GET)
+		    public ResponseEntity<MResult> queryDealer(
+		            @PathVariable(value = "dealerId", required = true) String dealerId
+		            ) {
+			 MResult result = new MResult(MCode.V_1);
+		        try {
+		        	DealerBean dealer =  dealerQuery.getDealer(dealerId);
+		        	result.setContent(dealer);
+		            result.setStatus(MCode.V_200);
+		        } catch (Exception e) {
+		        	log.error("经销商列表出错", e);
+		            result = new MPager(MCode.V_400, "服务器开小差了，请稍后再试");
+		        }
+		        return new ResponseEntity<MResult>(result, HttpStatus.OK);
+		    }
 		 
 }

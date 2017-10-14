@@ -43,4 +43,11 @@
         <constructor-arg index="1" ref="transactionManager"/>
         <constructor-arg index="2" ref="consumedEventStore"/>
     </bean>
+
+    <!-- 订单操作日志监听器 -->
+    <bean class="cn.m2c.scm.port.adapter.messaging.rabbitmq.order.log.OrderOptLogListener">
+        <constructor-arg index="0" ref="rabbitmqConfiguration"/>
+        <constructor-arg index="1" ref="transactionManager"/>
+        <constructor-arg index="2" ref="consumedEventStore"/>
+    </bean>
 </beans>

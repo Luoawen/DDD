@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -151,6 +152,27 @@ public class SellerAgent {
 			Integer count = sellerQuery.getCount(sellerName,sellerPhone,startTime,endTime);
 			result.setPager(count, pageNum, rows);
 			result.setContent(sellerList);
+			result.setStatus(MCode.V_200);
+		} catch (Exception e) {
+			log.error("业务员列表出错" + e.getMessage(), e);
+            result = new MPager(MCode.V_400, "服务器开小差了");
+		}
+		return new ResponseEntity<MPager>(result, HttpStatus.OK);
+		
+	}
+	
+	/**
+	 * 业务员详情
+	 * @return
+	 */
+	@RequestMapping(value="/{sellerId}",method = RequestMethod.GET)
+	public ResponseEntity<MPager> getSellerDetail(
+			@PathVariable(name="sellerId",required=true) String sellerId
+			){
+		MPager result = new MPager(MCode.V_1);
+		try {
+			SellerBean seller = sellerQuery.getSeller(sellerId);
+			result.setContent(seller);
 			result.setStatus(MCode.V_200);
 		} catch (Exception e) {
 			log.error("业务员列表出错" + e.getMessage(), e);

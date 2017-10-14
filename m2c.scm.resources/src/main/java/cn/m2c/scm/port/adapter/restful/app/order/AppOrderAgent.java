@@ -3,9 +3,11 @@ package cn.m2c.scm.port.adapter.restful.app.order;
 import cn.m2c.common.MCode;
 import cn.m2c.common.MPager;
 import cn.m2c.common.MResult;
+import cn.m2c.scm.application.CommonApplication;
 import cn.m2c.scm.application.order.OrderApplication;
 import cn.m2c.scm.application.order.data.representation.OrderNo;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,17 +35,23 @@ public class AppOrderAgent {
 
     @Autowired
     OrderApplication orderApp;
+    
+    @Autowired
+    CommonApplication commonApp;
     /**
      * 获取订单号
      * @return
      */
-    @RequestMapping(value = "/id", method = RequestMethod.GET)
+    @RequestMapping(value = "/app/id", method = RequestMethod.GET)
     public ResponseEntity<MResult> getOrderNo() {
     	MResult result = new MResult(MCode.V_1);
         try {
-        	OrderNo orderId = orderApp.getOrderNo();
-        	if (orderId != null && orderId.getOrderId() != null) {
-        		result.setContent(orderId);
+        	String orderId = commonApp.generateOrderNo();
+        	
+        	if (!StringUtils.isEmpty(orderId)) {
+        		OrderNo orderNo = new OrderNo();
+            	orderNo.setOrderId(orderId);
+        		result.setContent(orderNo);
         		result.setStatus(MCode.V_200);
         	}
         	else {
@@ -100,10 +108,6 @@ public class AppOrderAgent {
     	MPager result = new MPager(MCode.V_1);
         try {
             Map<String, Object> map = new HashMap<>();
-            map.put("goodsName", "跑步机");
-            map.put("goodsImageUrl", "http://dl.m2c2017.com/3pics/20170822/W8bq135021.jpg");
-            map.put("goodsPrice", 249000);
-            
             
             List<Map<String, Object>> orderList = new ArrayList<>();
             orderList.add(map);

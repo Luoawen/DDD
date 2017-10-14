@@ -23,6 +23,11 @@ public class SellerBean {
 	@ColumnAlias(value = "seller_phone")
 	private String sellerPhone;
 	
+	@ColumnAlias(value = "seller_no")
+	private String sellerNo;
+	
+	@ColumnAlias(value = "seller_sex")
+	private Integer sellerSex;
 	/**
 	 * 业务员所在省
 	 */
@@ -53,6 +58,15 @@ public class SellerBean {
 	 */
 	@ColumnAlias(value = "seller_acode")
 	private String sellerAcode;
+	
+	@ColumnAlias(value = "seller_qq")
+	private String sellerqq;
+	
+	@ColumnAlias(value = "seller_wechat")
+	private String sellerWechat;
+	
+	@ColumnAlias(value = "seller_remark")
+	private String sellerRemark;
 	
 	@ColumnAlias(value = "created_date")
 	private Date createdDate;
@@ -136,5 +150,47 @@ public class SellerBean {
 	public void setCreatedDate(Date createdDate) {
 		this.createdDate = createdDate;
 	}
+
+	public String getSellerNo() {
+		return sellerNo;
+	}
+
+	public void setSellerNo(String sellerNo) {
+		this.sellerNo = sellerNo;
+	}
+
+
+	public Integer getSellerSex() {
+		return sellerSex;
+	}
+
+	public void setSellerSex(Integer sellerSex) {
+		this.sellerSex = sellerSex;
+	}
+
+	public String getSellerqq() {
+		return sellerqq;
+	}
+
+	public void setSellerqq(String sellerqq) {
+		this.sellerqq = sellerqq;
+	}
+
+	public String getSellerWechat() {
+		return sellerWechat;
+	}
+
+	public void setSellerWechat(String sellerWechat) {
+		this.sellerWechat = sellerWechat;
+	}
+
+	public String getSellerRemark() {
+		return sellerRemark;
+	}
+
+	public void setSellerRemark(String sellerRemark) {
+		this.sellerRemark = sellerRemark;
+	}
+	
 	
 }

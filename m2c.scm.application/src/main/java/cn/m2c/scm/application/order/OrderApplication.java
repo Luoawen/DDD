@@ -6,10 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import cn.m2c.scm.application.order.data.representation.OrderNo;
 import cn.m2c.scm.domain.NegativeException;
-import cn.m2c.scm.domain.model.order.OrderIDGenernor;
-import cn.m2c.scm.domain.model.order.OrderIDRepository;
+import cn.m2c.scm.domain.model.order.MainOrder;
+import cn.m2c.scm.domain.model.order.OrderRepository;
 
 /***
  * 订单应用服务类
@@ -22,14 +21,19 @@ public class OrderApplication {
 	private static final Logger LOGGER = LoggerFactory.getLogger(OrderApplication.class);
 	
 	@Autowired
-	OrderIDRepository orderIdRepository;
+	OrderRepository orderRepository;
 	
 	@Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
-	public OrderNo getOrderNo() {
-		OrderNo orderNo = new OrderNo();
-		OrderIDGenernor orderNoGen = new OrderIDGenernor();
-		orderNo.setOrderId(orderNoGen.getOrder());
-		orderIdRepository.save(orderNoGen.getTime(), orderNoGen.getStr());
-		return orderNo;
+	public void submitOrder() {
+		// 判断库存
+		// 锁定库存
+		// 拆单
+		// 优惠券
+		// 营销
+		// 计算
+		// 组织保存
+		MainOrder order = new MainOrder();
+		order.add();
+		orderRepository.save(order);
 	}
 }

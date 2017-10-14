@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping default-access="field" default-cascade="all">
+    <class name="cn.m2c.scm.domain.model.order.SimpleMarketing" table="t_scm_order_marketing_used" lazy="true"
+           dynamic-insert="true" dynamic-update="true">
+
+        <id name="id" column="id" type="long" unsaved-value="-1">
+            <generator class="native"/>
+        </id>
+        <!-- <property name="orderId" column="order_id" type="string"/> -->
+        <property name="marketingId" column="marketing_id" type="string"/>
+        <property name="status" column="_status" type="int"/>
+        
+        <many-to-one name="order" column="order_id" class="cn.m2c.scm.domain.model.order.MainOrder" fetch="join" cascade="save-update">
+        </many-to-one>        
+        
+    </class>
+</hibernate-mapping>
