@@ -29,4 +29,9 @@ public interface DomainService {
      * @param type 编号类型，1：订单号，2：商城sku
      */
     void saveGenerateNo(String no, Integer type);
+    /***
+     * 生成订单号
+     * @return
+     */
+    String generateOrderNo();
 }

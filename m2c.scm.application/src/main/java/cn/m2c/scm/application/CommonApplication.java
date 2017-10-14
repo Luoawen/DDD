@@ -23,4 +23,9 @@ public class CommonApplication {
     public String generateGoodsSku() {
         return domainService.generateGoodsSku();
     }
+    
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+    public String generateOrderNo() {
+        return domainService.generateOrderNo();
+    }
 }

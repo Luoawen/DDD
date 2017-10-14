@@ -14,7 +14,9 @@ public class DealerOrderDtl extends ConcurrencySafeEntity {
 
 	private String orderId;
 	
-	private String dealerOrderId;
+	private DealerOrder dealerOrder;
+	
+	//private String dealerOrderId;
 	/**订单状态 0待付款，1等发货，2待收货，3完成，4交易完成，5交易关闭，-1已取消*/
 	private Integer status;
 	
