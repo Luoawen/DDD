@@ -376,12 +376,8 @@ public class DealerAgent {
 		            ) {
 			 MResult result = new MResult(MCode.V_1);
 		        try {
-		        	DealerRepresentation resultData = null;
 		        	DealerBean dealer =  dealerQuery.getDealer(dealerId);
-		        	if(dealer!=null){
-		        		resultData =  new DealerRepresentation(dealer);
-		        	}
-		        	result.setContent(resultData);
+		        	result.setContent(dealer);
 		            result.setStatus(MCode.V_200);
 		        } catch (Exception e) {
 		        	log.error("经销商列表出错", e);
