@@ -105,6 +105,27 @@ public class SellerQuery {
 		}
 		return result;
 	}
+
+	/**
+	 * 根据id查询详情
+	 * @param sellerId
+	 * @return
+	 * @throws NegativeException 
+	 */
+
+	public SellerBean getSeller(String sellerId) throws NegativeException {
+		SellerBean result = null;
+		String sql = "SELECT * FROM t_scm_dealer_seller WHERE seller_status = 1 AND seller_id=?";
+		try {
+			result =  this.supportJdbcTemplate.queryForBean(sql.toString(), SellerBean.class, sellerId);
+		} catch (Exception e) {
+			log.error("查询业务员详情出错",e);
+			throw new NegativeException(500, "业务员详情出错");
+		}
+		return result;
+	}
+
+
 	
 	
 }
