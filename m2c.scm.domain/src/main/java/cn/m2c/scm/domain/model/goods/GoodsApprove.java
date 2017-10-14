@@ -156,6 +156,42 @@ public class GoodsApprove extends ConcurrencySafeEntity {
         }
     }
 
+
+    public GoodsApprove(String goodsId, String dealerId, String dealerName, String goodsName, String goodsSubTitle,
+                        String goodsClassifyId, String goodsBrandId, String goodsUnitId, Integer goodsMinQuantity,
+                        String goodsPostageId, String goodsBarCode, String goodsKeyWord, String goodsGuarantee,
+                        String goodsMainImages, String goodsDesc, String goodsSkuApproves) {
+        this.goodsId = goodsId;
+        this.dealerId = dealerId;
+        this.dealerName = dealerName;
+        this.goodsName = goodsName;
+        this.goodsSubTitle = goodsSubTitle;
+        this.goodsClassifyId = goodsClassifyId;
+        this.goodsBrandId = goodsBrandId;
+        this.goodsUnitId = goodsUnitId;
+        this.goodsMinQuantity = goodsMinQuantity;
+        this.goodsPostageId = goodsPostageId;
+        this.goodsBarCode = goodsBarCode;
+        this.goodsKeyWord = goodsKeyWord;
+        this.goodsGuarantee = goodsGuarantee;
+        this.goodsMainImages = goodsMainImages;
+        this.goodsDesc = goodsDesc;
+        this.approveStatus = 1;
+        //商品规格格式：[{"skuId":20171014125226158648","skuName":"L,红","supplyPrice":4000,
+        // "weight":20.5,"availableNum":200,"goodsCode":"111111","marketPrice":6000,"photographPrice":5000,"showStatus":2}]
+        if (null == this.goodsSkuApproves) {
+            this.goodsSkuApproves = new ArrayList<>();
+        } else {
+            this.goodsSkuApproves.clear();
+        }
+        List<Map> skuList = JsonUtils.toList(goodsSkuApproves, Map.class);
+        if (null != skuList && skuList.size() > 0) {
+            for (int i = 0; i < skuList.size(); i++) {
+                this.goodsSkuApproves.add(createGoodsSkuApprove(skuList.get(i), null));
+            }
+        }
+    }
+
     private GoodsSkuApprove createGoodsSkuApprove(Map map, String skuCode) {
         String skuId = GetMapValueUtils.getStringFromMapKey(map, "skuId");
         if (StringUtils.isEmpty(skuId)) {

@@ -29,7 +29,7 @@ public class GoodsApproveApplication {
     GoodsRepository goodsRepository;
 
     /**
-     * 添加商品审核
+     * 商家添加商品需审核
      *
      * @param command
      */
@@ -47,6 +47,29 @@ public class GoodsApproveApplication {
                     command.getGoodsPostageId(), command.getGoodsBarCode(), command.getGoodsKeyWord(),
                     JsonUtils.toStr(command.getGoodsGuarantee()), JsonUtils.toStr(command.getGoodsMainImages()),
                     command.getGoodsDesc(), command.getGoodsShelves(), command.getGoodsSkuApproves(), command.getSkuCodes());
+            goodsApproveRepository.save(goodsApprove);
+        }
+    }
+
+    /**
+     * 修改商品需审核信息，添加一条商品审核记录
+     *
+     * @param command
+     */
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+    public void addGoodsApproveForModifyGoods(GoodsApproveCommand command) throws NegativeException {
+        LOGGER.info("addGoodsApproveForModifyGoods command >>{}", command);
+        GoodsApprove goodsApprove = goodsApproveRepository.queryGoodsApproveById(command.getGoodsId());
+        if (null == goodsApprove) {
+            if (goodsRepository.goodsNameIsRepeat(command.getGoodsId(), command.getDealerId(), command.getGoodsName())) {
+                throw new NegativeException(MCode.V_300, "商品名称已存在");
+            }
+            goodsApprove = new GoodsApprove(command.getGoodsId(), command.getDealerId(), command.getDealerName(),
+                    command.getGoodsName(), command.getGoodsSubTitle(), command.getGoodsClassifyId(),
+                    command.getGoodsBrandId(), command.getGoodsUnitId(), command.getGoodsMinQuantity(),
+                    command.getGoodsPostageId(), command.getGoodsBarCode(), command.getGoodsKeyWord(),
+                    JsonUtils.toStr(command.getGoodsGuarantee()), JsonUtils.toStr(command.getGoodsMainImages()),
+                    command.getGoodsDesc(), command.getGoodsSkuApproves());
             goodsApproveRepository.save(goodsApprove);
         }
     }

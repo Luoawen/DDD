@@ -1,11 +1,11 @@
 package cn.m2c.scm.domain.model.goods;
 
-import cn.m2c.ddd.common.domain.model.IdentifiedValueObject;
+import cn.m2c.ddd.common.domain.model.ConcurrencySafeEntity;
 
 /**
  * 商品规格
  */
-public class GoodsSku extends IdentifiedValueObject {
+public class GoodsSku extends ConcurrencySafeEntity {
 
     /**
      * 商品
@@ -97,5 +97,19 @@ public class GoodsSku extends IdentifiedValueObject {
     public void modifyApprovePrice(Long photographPrice, Long supplyPrice) {
         this.photographPrice = photographPrice;
         this.supplyPrice = supplyPrice;
+    }
+
+    public void modifyNotApproveGoodsSku(Integer availableNum, Float weight, Long marketPrice, String goodsCode, Integer showStatus) {
+        this.availableNum = availableNum;
+        this.realNum = this.realNum + (availableNum - this.availableNum);
+        this.weight = weight;
+        this.marketPrice = marketPrice;
+        this.goodsCode = goodsCode;
+        this.showStatus = showStatus;
+    }
+
+
+    public boolean isModifyNeedApprovePrice(Long photographPrice, Long supplyPrice) {
+        return !this.photographPrice.equals(photographPrice) || !this.supplyPrice.equals(supplyPrice);
     }
 }

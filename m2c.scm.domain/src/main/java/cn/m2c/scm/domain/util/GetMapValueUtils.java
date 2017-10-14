@@ -15,7 +15,7 @@ public class GetMapValueUtils {
     public static Integer getIntFromMapKey(Map map, String key) {
         Integer intValue;
         try {
-            intValue = Integer.parseInt(map.get(key).toString());
+            intValue = new Double(map.get(key).toString()).intValue();
         } catch (Exception e) {
             return null;
         }

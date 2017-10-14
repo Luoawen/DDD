@@ -77,7 +77,7 @@ public class GoodsApproveAgent {
      * @param goodsMainImages  商品主图  存储类型是[“url1”,"url2"]
      * @param goodsDesc        商品描述
      * @param goodsShelves     1:手动上架,2:审核通过立即上架
-     * @param goodsSkuApproves 商品sku规格列表,格式：[{"availableNum":200,"goodsCode":"111111","marketPrice":6000,"photographPrice":5000,"showStatus":2,"skuId":"SPSHA5BDED943A1D42CC9111B3723B0987BF","skuName":"L,红","supplyPrice":4000,"weight":20.5}]
+     * @param goodsSkuApproves 商品sku规格列表,格式：[{"availableNum":200,"goodsCode":"111111","marketPrice":6000,"photographPrice":5000,"showStatus":2,"skuName":"L,红","supplyPrice":4000,"weight":20.5}]
      * @return
      */
     @RequestMapping(value = "", method = RequestMethod.POST)

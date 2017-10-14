@@ -1,7 +1,9 @@
 package cn.m2c.scm.domain.model.goods;
 
 import cn.m2c.ddd.common.domain.model.ConcurrencySafeEntity;
+import cn.m2c.ddd.common.domain.model.DomainEventPublisher;
 import cn.m2c.ddd.common.serializer.ObjectSerializer;
+import cn.m2c.scm.domain.model.goods.event.GoodsApproveAddEvent;
 import cn.m2c.scm.domain.util.GetMapValueUtils;
 
 import java.util.ArrayList;
@@ -217,5 +219,64 @@ public class Goods extends ConcurrencySafeEntity {
             }
         }
         return goodsSku;
+    }
+
+    /**
+     * 修改商品
+     */
+    public void modifyGoods(String goodsName, String goodsSubTitle,
+                            String goodsClassifyId, String goodsBrandId, String goodsUnitId, Integer goodsMinQuantity,
+                            String goodsPostageId, String goodsBarCode, String goodsKeyWord, String goodsGuarantee,
+                            String goodsMainImages, String goodsDesc, String goodsSKUs) {
+        this.goodsName = goodsName;
+        this.goodsSubTitle = goodsSubTitle;
+        this.goodsClassifyId = goodsClassifyId;
+        this.goodsBrandId = goodsBrandId;
+        this.goodsUnitId = goodsUnitId;
+        this.goodsMinQuantity = goodsMinQuantity;
+        this.goodsPostageId = goodsPostageId;
+        this.goodsBarCode = goodsBarCode;
+        this.goodsKeyWord = goodsKeyWord;
+        this.goodsGuarantee = goodsGuarantee;
+        this.goodsMainImages = goodsMainImages;
+        this.goodsDesc = goodsDesc;
+
+        List<Map> skuList = ObjectSerializer.instance().deserialize(goodsSKUs, List.class);
+        if (null != skuList && skuList.size() > 0) {
+            //修改供货价、拍获价、规格需要审批
+            boolean isNeedApprove = false;
+            for (Map map : skuList) {
+                String skuId = GetMapValueUtils.getStringFromMapKey(map, "skuId");
+                // 判断商品规格sku是否存在,存在就修改供货价和拍获价，不存在就增加商品sku
+                GoodsSku goodsSku = getGoodsSKU(skuId);
+                if (null == goodsSku) {// 增加了规格
+                    isNeedApprove = true;
+                } else {
+                    Integer availableNum = GetMapValueUtils.getIntFromMapKey(map, "availableNum");
+                    Float weight = GetMapValueUtils.getFloatFromMapKey(map, "weight");
+                    Long marketPrice = GetMapValueUtils.getLongFromMapKey(map, "marketPrice");
+                    String goodsCode = GetMapValueUtils.getStringFromMapKey(map, "goodsCode");
+                    Integer showStatus = GetMapValueUtils.getIntFromMapKey(map, "showStatus");
+                    // 修改商品规格不需要审批的信息
+                    goodsSku.modifyNotApproveGoodsSku(availableNum, weight, marketPrice, goodsCode, showStatus);
+
+                    // 判断供货价和拍获价是否修改
+                    Long photographPrice = GetMapValueUtils.getLongFromMapKey(map, "photographPrice");
+                    Long supplyPrice = GetMapValueUtils.getLongFromMapKey(map, "supplyPrice");
+                    if (goodsSku.isModifyNeedApprovePrice(photographPrice, supplyPrice)) { //修改了供货价和拍获价
+                        isNeedApprove = true;
+                    }
+                }
+            }
+            if (isNeedApprove) {//发布事件，增加一条待审核商品记录
+                DomainEventPublisher
+                        .instance()
+                        .publish(new GoodsApproveAddEvent(this.goodsId, this.dealerId, this.dealerName, this.goodsName,
+                                this.goodsSubTitle, this.goodsClassifyId, this.goodsBrandId, this.goodsUnitId,
+                                this.goodsMinQuantity, this.goodsPostageId, this.goodsBarCode,
+                                this.goodsKeyWord, this.goodsGuarantee, this.goodsMainImages, this.goodsDesc,
+                                goodsSKUs));
+            }
+        }
     }
 }
