@@ -2,6 +2,7 @@ package cn.m2c.scm.port.adapter.restful.web.goods;
 
 import cn.m2c.common.MCode;
 import cn.m2c.common.MPager;
+import cn.m2c.common.MResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -131,5 +132,36 @@ public class GoodsAgent {
             result = new MPager(MCode.V_400, e.getMessage());
         }
         return new ResponseEntity<MPager>(result, HttpStatus.OK);
+    }
+
+    /**
+     * 多个商品详情
+     *
+     * @param goodsIds 多个商品ID逗号分隔
+     * @return
+     */
+    @RequestMapping(value = "/detail/multiple", method = RequestMethod.GET)
+    public ResponseEntity<MResult> goodsDetails(
+            @RequestParam(value = "goodsIds", required = false) List goodsIds) {
+        MResult result = new MResult(MCode.V_1);
+        try {
+            List<Map<String, Object>> goodsList = new ArrayList<>();
+            Map map = new HashMap<>();
+            map.put("goodsId", "SP449EF119C6974667B9F5881C080EE5D2");
+            map.put("goodsName", "跑步机");
+            map.put("goodsImageUrl", "http://dl.m2c2017.com/3pics/20170822/W8bq135021.jpg");
+            Map map1 = new HashMap<>();
+            map1.put("goodsId", "SP38C4D0B014E24B64B021EAC4D813A696");
+            map1.put("goodsName", "儿童自行车");
+            map1.put("goodsImageUrl", "http://dl.m2c2017.com/3pics/20170822/bx2L173127.jpg");
+            goodsList.add(map);
+            goodsList.add(map1);
+            result.setContent(goodsList);
+            result.setStatus(MCode.V_200);
+        } catch (Exception e) {
+            LOGGER.error("goodsDetails Exception e:", e);
+            result = new MResult(MCode.V_400, e.getMessage());
+        }
+        return new ResponseEntity<MResult>(result, HttpStatus.OK);
     }
 }

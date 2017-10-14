@@ -7,7 +7,6 @@ import cn.m2c.scm.domain.util.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -29,19 +28,6 @@ public class DomainServiceImpl implements DomainService {
         return null;
     }
 
-    @Override
-    public List<String> generateGoodsSKUs(Integer num) {
-        List<String> skuList = new ArrayList<>();
-        for (int i = 0; i < num; i++) {
-            try {
-                skuList.add(generateGoodsSku());
-            } catch (Exception e) { //失败重新生成一次
-                skuList.add(generateGoodsSku());
-            }
-        }
-        return skuList;
-    }
-
     public String generateGoodsSku() {
         String time = DateUtils.getDateStr(DateUtils.TYPE_0);
         String random = RandomUtils.toNums(6);
@@ -55,5 +41,13 @@ public class DomainServiceImpl implements DomainService {
     public void saveGenerateNo(String no, Integer type) {
         String sql = "INSERT INTO `t_scm_generate_no` (`unique_no`, `type`) VALUES (?, ?)";
         this.getSupportJdbcTemplate().jdbcTemplate().update(sql, new Object[]{no, type});
+    }
+    
+    @Override
+    public String generateOrderNo() {
+    	String orderNo = cn.m2c.scm.domain.util.DateUtils.getDateStr(cn.m2c.scm.domain.util.DateUtils.TYPE_0) 
+    			+ RandomUtils.toStrs4Upper(6);
+    	saveGenerateNo(orderNo, 1);
+    	return orderNo;
     }
 }

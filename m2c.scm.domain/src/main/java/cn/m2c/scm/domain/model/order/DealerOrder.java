@@ -1,5 +1,7 @@
 package cn.m2c.scm.domain.model.order;
 
+import java.util.List;
+
 import cn.m2c.ddd.common.domain.model.ConcurrencySafeEntity;
 /**
  * 商家订单
@@ -10,7 +12,9 @@ public class DealerOrder extends ConcurrencySafeEntity {
 
 	private static final long serialVersionUID = 1L;
 
-	private String orderId;
+	private MainOrder order;
+	
+	//private String orderId;
 	
 	private String dealerOrderId;
 	
@@ -54,5 +58,7 @@ public class DealerOrder extends ConcurrencySafeEntity {
 	/**发票说明**/
 	private String invoiceDes;
 	/**结算方式**/
-	private String termOfPayment;
+	private String termOfPayment;	
+	/**订单明细*/
+	private List<DealerOrderDtl> orderDtls;
 }

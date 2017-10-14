@@ -1,6 +1,9 @@
 package cn.m2c.scm.application.goods.command;
 
+import cn.m2c.common.MCode;
 import cn.m2c.ddd.common.AssertionConcern;
+import cn.m2c.scm.domain.NegativeException;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.Serializable;
 import java.util.List;
@@ -107,7 +110,44 @@ public class GoodsApproveCommand extends AssertionConcern implements Serializabl
     public GoodsApproveCommand(String approveId, String dealerId, String dealerName, String goodsName, String goodsSubTitle,
                                String goodsClassifyId, String goodsBrandId, String goodsUnitId, Integer goodsMinQuantity,
                                String goodsPostageId, String goodsBarCode, String goodsKeyWord, List goodsGuarantee,
-                               List goodsMainImages, String goodsDesc, Integer goodsShelves, String goodsSkuApproves, List<String> skuCodes) {
+                               List goodsMainImages, String goodsDesc, Integer goodsShelves, String goodsSkuApproves, List<String> skuCodes) throws NegativeException {
+        if (StringUtils.isEmpty(approveId)) {
+            throw new NegativeException(MCode.V_1, "商品审核ID为空");
+        }
+        if (StringUtils.isEmpty(dealerId)) {
+            throw new NegativeException(MCode.V_1, "商家ID为空");
+        }
+        if (StringUtils.isEmpty(dealerName)) {
+            throw new NegativeException(MCode.V_1, "商家名称为空");
+        }
+        if (StringUtils.isEmpty(goodsName)) {
+            throw new NegativeException(MCode.V_1, "商品名称为空");
+        }
+        if (StringUtils.isEmpty(goodsClassifyId)) {
+            throw new NegativeException(MCode.V_1, "商品分类ID为空");
+        }
+        if (StringUtils.isEmpty(goodsBrandId)) {
+            throw new NegativeException(MCode.V_1, "商品品牌ID为空");
+        }
+        if (StringUtils.isEmpty(goodsUnitId)) {
+            throw new NegativeException(MCode.V_1, "商品计量单位ID为空");
+        }
+        if (null == goodsMinQuantity) {
+            throw new NegativeException(MCode.V_1, "商品最小起订量ID为空");
+        }
+        if (StringUtils.isEmpty(goodsPostageId)) {
+            throw new NegativeException(MCode.V_1, "商品运费模板ID为空");
+        }
+        if (null == goodsMainImages || goodsMainImages.size() == 0) {
+            throw new NegativeException(MCode.V_1, "商品主图为空");
+        }
+        if (null == goodsMainImages || goodsMainImages.size() == 0) {
+            throw new NegativeException(MCode.V_1, "商品主图为空");
+        }
+        if (StringUtils.isEmpty(goodsSkuApproves)) {
+            throw new NegativeException(MCode.V_1, "商品规格为空");
+        }
+
         this.approveId = approveId;
         this.dealerId = dealerId;
         this.dealerName = dealerName;

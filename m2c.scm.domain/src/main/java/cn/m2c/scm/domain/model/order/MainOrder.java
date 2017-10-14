@@ -4,6 +4,8 @@ import java.util.Date;
 import java.util.List;
 
 import cn.m2c.ddd.common.domain.model.ConcurrencySafeEntity;
+import cn.m2c.ddd.common.domain.model.DomainEventPublisher;
+import cn.m2c.scm.domain.model.order.log.event.OrderOptLogEvent;
 /***
  * 主订单实体
  * @author fanjc
@@ -54,5 +56,15 @@ public class MainOrder extends ConcurrencySafeEntity {
 	/**备注 留言*/
 	private String noted;
 	/**商家订单*/
-	//private List<DealerOrder> dealerOrders;
+	private List<DealerOrder> dealerOrders;
+	/**应用的优惠券*/
+	private List<SimpleCoupon> coupons;
+	/**应用的营销策略*/
+	private List<SimpleMarketing> marketings;
+	/**
+	 * 增加订单
+	 */
+	public void add() {
+		DomainEventPublisher.instance().publish(new OrderOptLogEvent(orderId, null, "订单创建", userId));
+	}
 }

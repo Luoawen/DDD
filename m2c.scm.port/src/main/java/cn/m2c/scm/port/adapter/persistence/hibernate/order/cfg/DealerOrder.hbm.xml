@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping default-access="field" default-cascade="all">
+    <class name="cn.m2c.scm.domain.model.order.DealerOrder" table="t_scm_order_dealer" lazy="true"
+           optimistic-lock="version" dynamic-insert="true" dynamic-update="true">
+
+        <id name="id" column="id" type="long" unsaved-value="-1">
+            <generator class="native"/>
+        </id>
+        <version name="concurrencyVersion" column="concurrency_version" type="int"/>
+        
+        <!-- <property name="orderId" column="order_id" type="string"/> -->
+        <property name="dealerOrderId" column="dealer_order_id" type="string"/>
+        <property name="dealerId" column="dealer_id" type="string"/>        
+        <property name="status" column="_status" type="int"/>
+        
+        <property name="province" column="province" type="string"/>
+        <property name="provinceCode" column="province_code" type="string"/>
+        <property name="city" column="city" type="string"/>
+        <property name="cityCode" column="city_code" type="string"/>
+        <property name="area" column="area" type="string"/>
+        <property name="areaCode" column="area_code" type="string"/>
+        <property name="street" column="street_addr" type="string"/>
+        <property name="revPerson" column="rev_person" type="string"/>
+        <property name="revPhone" column="rev_phone" type="string"/>
+        
+        <property name="goodsAmount" column="goods_amount" type="int"/>
+        <property name="orderFreight" column="order_freight" type="int"/>
+        <property name="plateformDiscount" column="plateform_discount" type="int"/>
+        <property name="dealerDiscount" column="dealer_discount" type="int"/>
+        <property name="noted" column="noted" type="string"/>
+        <property name="invoiceHeader" column="invoice_header" type="string"/>
+        <property name="invoiceName" column="invoice_name" type="string"/>
+        <property name="invoiceCode" column="invoice_code" type="string"/>
+        <property name="invoiceDes" column="describ" type="string"/>
+        <property name="termOfPayment" column="term_of_payment" type="string"/>
+        
+        <bag name="orderDtls" cascade="all-delete-orphan" lazy="false" inverse="true">
+        	<key column="dealer_order_id" />
+        	<one-to-many class="cn.m2c.scm.domain.model.order.DealerOrderDtl"/>
+        </bag>
+        <!-- query -->        
+        <many-to-one name="order" column="order_id" class="cn.m2c.scm.domain.model.order.MainOrder"
+                     cascade="save-update" fetch="join"/>
+    </class>
+</hibernate-mapping>
