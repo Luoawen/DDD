@@ -2,8 +2,6 @@ package cn.m2c.scm.domain.model.goods;
 
 import cn.m2c.ddd.common.domain.model.IdentifiedValueObject;
 
-import java.util.List;
-
 /**
  * 商品规格
  */
@@ -69,12 +67,35 @@ public class GoodsSku extends IdentifiedValueObject {
      */
     private Integer showStatus;
 
-    /**
-     * 商品规格
-     */
-    private List<GoodsSku> goodsSkuList;
+    public GoodsSku(Goods goods, String skuId, String skuName, Integer availableNum, Integer realNum, Float weight,
+                    Long photographPrice, Long marketPrice, Long supplyPrice, String goodsCode, Integer showStatus) {
+        this.goods = goods;
+        this.skuId = skuId;
+        this.skuName = skuName;
+        this.availableNum = availableNum;
+        this.realNum = realNum;
+        this.weight = weight;
+        this.photographPrice = photographPrice;
+        this.marketPrice = marketPrice;
+        this.supplyPrice = supplyPrice;
+        this.goodsCode = goodsCode;
+        this.showStatus = showStatus;
+    }
 
     public GoodsSku() {
         super();
+    }
+
+    public GoodsSku getGoodsSKU(String skuId) {
+        if (this.skuId.equals(skuId)) {
+            return this;
+        } else {
+            return null;
+        }
+    }
+
+    public void modifyApprovePrice(Long photographPrice, Long supplyPrice) {
+        this.photographPrice = photographPrice;
+        this.supplyPrice = supplyPrice;
     }
 }

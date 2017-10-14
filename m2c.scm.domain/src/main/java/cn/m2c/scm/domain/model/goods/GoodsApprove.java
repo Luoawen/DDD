@@ -2,6 +2,9 @@ package cn.m2c.scm.domain.model.goods;
 
 import cn.m2c.common.JsonUtils;
 import cn.m2c.ddd.common.domain.model.ConcurrencySafeEntity;
+import cn.m2c.ddd.common.domain.model.DomainEventPublisher;
+import cn.m2c.ddd.common.serializer.ObjectSerializer;
+import cn.m2c.scm.domain.model.goods.event.GoodsApproveAgreeEvent;
 import cn.m2c.scm.domain.util.GetMapValueUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -13,12 +16,6 @@ import java.util.Map;
  * 商品审核
  */
 public class GoodsApprove extends ConcurrencySafeEntity {
-
-    /**
-     * 商品审核id
-     */
-    private String approveId;
-
     /**
      * 商品id
      */
@@ -123,11 +120,11 @@ public class GoodsApprove extends ConcurrencySafeEntity {
         super();
     }
 
-    public GoodsApprove(String approveId, String dealerId, String dealerName, String goodsName, String goodsSubTitle,
+    public GoodsApprove(String goodsId, String dealerId, String dealerName, String goodsName, String goodsSubTitle,
                         String goodsClassifyId, String goodsBrandId, String goodsUnitId, Integer goodsMinQuantity,
                         String goodsPostageId, String goodsBarCode, String goodsKeyWord, String goodsGuarantee,
                         String goodsMainImages, String goodsDesc, Integer goodsShelves, String goodsSkuApproves, List<String> skuCodes) {
-        this.approveId = approveId;
+        this.goodsId = goodsId;
         this.dealerId = dealerId;
         this.dealerName = dealerName;
         this.goodsName = goodsName;
@@ -144,7 +141,7 @@ public class GoodsApprove extends ConcurrencySafeEntity {
         this.goodsDesc = goodsDesc;
         this.goodsShelves = goodsShelves;
         this.approveStatus = 1;
-        //商品规格格式：[{"skuApproveId":"SPSHA5BDED943A1D42CC9111B3723B0987BF","skuName":"L,红","supplyPrice":4000,
+        //商品规格格式：[{"skuName":"L,红","supplyPrice":4000,
         // "weight":20.5,"availableNum":200,"goodsCode":"111111","marketPrice":6000,"photographPrice":5000,"showStatus":2}]
         if (null == this.goodsSkuApproves) {
             this.goodsSkuApproves = new ArrayList<>();
@@ -160,9 +157,9 @@ public class GoodsApprove extends ConcurrencySafeEntity {
     }
 
     private GoodsSkuApprove createGoodsSkuApprove(Map map, String skuCode) {
-        String skuApproveId = GetMapValueUtils.getStringFromMapKey(map, "skuApproveId");
-        if (StringUtils.isEmpty(skuApproveId)) {
-            skuApproveId = skuCode;
+        String skuId = GetMapValueUtils.getStringFromMapKey(map, "skuId");
+        if (StringUtils.isEmpty(skuId)) {
+            skuId = skuCode;
         }
         String skuName = GetMapValueUtils.getStringFromMapKey(map, "skuName");
         Integer availableNum = GetMapValueUtils.getIntFromMapKey(map, "availableNum");
@@ -172,9 +169,38 @@ public class GoodsApprove extends ConcurrencySafeEntity {
         Long supplyPrice = GetMapValueUtils.getLongFromMapKey(map, "supplyPrice");
         String goodsCode = GetMapValueUtils.getStringFromMapKey(map, "goodsCode");
         Integer showStatus = GetMapValueUtils.getIntFromMapKey(map, "showStatus");
-        GoodsSkuApprove goodsSkuApprove = new GoodsSkuApprove(this, skuApproveId, skuName, availableNum,
+        GoodsSkuApprove goodsSkuApprove = new GoodsSkuApprove(this, skuId, skuName, availableNum,
                 weight, photographPrice, marketPrice, supplyPrice, goodsCode,
                 showStatus);
         return goodsSkuApprove;
+    }
+
+    /**
+     * 同意审核
+     */
+    public void agree() {
+        List<Map> goodsSkuMaps = new ArrayList<>();
+        for (GoodsSkuApprove goodsSkuApprove : this.goodsSkuApproves) {
+            goodsSkuMaps.add(goodsSkuApprove.convertToMap());
+        }
+        String goodsSKUs = ObjectSerializer.instance().serialize(goodsSkuMaps);
+        DomainEventPublisher
+                .instance()
+                .publish(new GoodsApproveAgreeEvent(this.goodsId, this.dealerId, this.dealerName, this.goodsName,
+                        this.goodsSubTitle, this.goodsClassifyId, this.goodsBrandId,
+                        this.goodsUnitId, this.goodsMinQuantity, this.goodsPostageId,
+                        this.goodsBarCode, this.goodsKeyWord, this.goodsGuarantee,
+                        this.goodsMainImages, this.goodsMainVideo, this.goodsDesc,
+                        this.goodsShelves, goodsSKUs));
+    }
+
+    /**
+     * 拒绝审核
+     *
+     * @param rejectReason
+     */
+    public void reject(String rejectReason) {
+        this.approveStatus = 2;
+        this.rejectReason = rejectReason;
     }
 }

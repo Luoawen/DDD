@@ -6,7 +6,7 @@ package cn.m2c.scm.domain.model.goods;
 public interface GoodsRepository {
     Goods queryGoodsById(String goodsId);
 
-    boolean goodsNameIsRepeat(String goodsId, String goodsName);
+    boolean goodsNameIsRepeat(String goodsId,String dealerId, String goodsName);
     
     void save(Goods goods);
 }

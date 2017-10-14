@@ -117,7 +117,7 @@ public class GetMapValueUtils {
     public static Long getLongFromMapKey(Map map, String key) {
         Long intValue;
         try {
-            intValue = Long.parseLong(map.get(key).toString());
+            intValue = new Double(map.get(key).toString()).longValue();
         } catch (Exception e) {
             return null;
         }

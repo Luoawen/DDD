@@ -1,17 +1,13 @@
 package cn.m2c.scm.application.goods.command;
 
-import cn.m2c.common.MCode;
 import cn.m2c.ddd.common.AssertionConcern;
-import cn.m2c.scm.domain.NegativeException;
-import org.apache.commons.lang3.StringUtils;
 
 import java.io.Serializable;
-import java.util.List;
 
 /**
  * 商品审核
  */
-public class GoodsApproveCommand extends AssertionConcern implements Serializable {
+public class GoodsCommand extends AssertionConcern implements Serializable {
     /**
      * 商品id
      */
@@ -75,12 +71,12 @@ public class GoodsApproveCommand extends AssertionConcern implements Serializabl
     /**
      * 商品保障
      */
-    private List goodsGuarantee;
+    private String goodsGuarantee;
 
     /**
      * 商品主图  存储类型是[“url1”,"url2"]
      */
-    private List goodsMainImages;
+    private String goodsMainImages;
 
     /**
      * 商品描述
@@ -91,58 +87,15 @@ public class GoodsApproveCommand extends AssertionConcern implements Serializabl
      * 1:手动上架,2:审核通过立即上架
      */
     private Integer goodsShelves;
-
     /**
-     * 商品規格
+     * 商品规格
      */
-    private String goodsSkuApproves;
+    private String goodsSKUs;
 
-    /**
-     * sku编码
-     */
-    private List<String> skuCodes;
-
-    public GoodsApproveCommand(String goodsId, String dealerId, String dealerName, String goodsName, String goodsSubTitle,
-                               String goodsClassifyId, String goodsBrandId, String goodsUnitId, Integer goodsMinQuantity,
-                               String goodsPostageId, String goodsBarCode, String goodsKeyWord, List goodsGuarantee,
-                               List goodsMainImages, String goodsDesc, Integer goodsShelves, String goodsSkuApproves, List<String> skuCodes) throws NegativeException {
-        if (StringUtils.isEmpty(goodsId)) {
-            throw new NegativeException(MCode.V_1, "商品ID为空");
-        }
-        if (StringUtils.isEmpty(dealerId)) {
-            throw new NegativeException(MCode.V_1, "商家ID为空");
-        }
-        if (StringUtils.isEmpty(dealerName)) {
-            throw new NegativeException(MCode.V_1, "商家名称为空");
-        }
-        if (StringUtils.isEmpty(goodsName)) {
-            throw new NegativeException(MCode.V_1, "商品名称为空");
-        }
-        if (StringUtils.isEmpty(goodsClassifyId)) {
-            throw new NegativeException(MCode.V_1, "商品分类ID为空");
-        }
-        if (StringUtils.isEmpty(goodsBrandId)) {
-            throw new NegativeException(MCode.V_1, "商品品牌ID为空");
-        }
-        if (StringUtils.isEmpty(goodsUnitId)) {
-            throw new NegativeException(MCode.V_1, "商品计量单位ID为空");
-        }
-        if (null == goodsMinQuantity) {
-            throw new NegativeException(MCode.V_1, "商品最小起订量ID为空");
-        }
-        if (StringUtils.isEmpty(goodsPostageId)) {
-            throw new NegativeException(MCode.V_1, "商品运费模板ID为空");
-        }
-        if (null == goodsMainImages || goodsMainImages.size() == 0) {
-            throw new NegativeException(MCode.V_1, "商品主图为空");
-        }
-        if (null == goodsMainImages || goodsMainImages.size() == 0) {
-            throw new NegativeException(MCode.V_1, "商品主图为空");
-        }
-        if (StringUtils.isEmpty(goodsSkuApproves)) {
-            throw new NegativeException(MCode.V_1, "商品规格为空");
-        }
-
+    public GoodsCommand(String goodsId, String dealerId, String dealerName, String goodsName, String goodsSubTitle,
+                        String goodsClassifyId, String goodsBrandId, String goodsUnitId, Integer goodsMinQuantity,
+                        String goodsPostageId, String goodsBarCode, String goodsKeyWord, String goodsGuarantee,
+                        String goodsMainImages, String goodsDesc, Integer goodsShelves, String goodsSKUs) {
         this.goodsId = goodsId;
         this.dealerId = dealerId;
         this.dealerName = dealerName;
@@ -159,8 +112,7 @@ public class GoodsApproveCommand extends AssertionConcern implements Serializabl
         this.goodsMainImages = goodsMainImages;
         this.goodsDesc = goodsDesc;
         this.goodsShelves = goodsShelves;
-        this.goodsSkuApproves = goodsSkuApproves;
-        this.skuCodes = skuCodes;
+        this.goodsSKUs = goodsSKUs;
     }
 
     public String getGoodsId() {
@@ -211,11 +163,11 @@ public class GoodsApproveCommand extends AssertionConcern implements Serializabl
         return goodsKeyWord;
     }
 
-    public List getGoodsGuarantee() {
+    public String getGoodsGuarantee() {
         return goodsGuarantee;
     }
 
-    public List getGoodsMainImages() {
+    public String getGoodsMainImages() {
         return goodsMainImages;
     }
 
@@ -227,11 +179,7 @@ public class GoodsApproveCommand extends AssertionConcern implements Serializabl
         return goodsShelves;
     }
 
-    public String getGoodsSkuApproves() {
-        return goodsSkuApproves;
-    }
-
-    public List<String> getSkuCodes() {
-        return skuCodes;
+    public String getGoodsSKUs() {
+        return goodsSKUs;
     }
 }

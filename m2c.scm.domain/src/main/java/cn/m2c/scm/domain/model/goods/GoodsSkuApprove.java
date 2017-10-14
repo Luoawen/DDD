@@ -2,6 +2,9 @@ package cn.m2c.scm.domain.model.goods;
 
 import cn.m2c.ddd.common.domain.model.IdentifiedValueObject;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * 商品规格审核
  */
@@ -13,9 +16,9 @@ public class GoodsSkuApprove extends IdentifiedValueObject {
     private GoodsApprove goodsApprove;
 
     /**
-     * 规格审核id
+     * 规格id
      */
-    private String skuApproveId;
+    private String skuId;
 
     /**
      * 规格名称
@@ -61,11 +64,11 @@ public class GoodsSkuApprove extends IdentifiedValueObject {
         super();
     }
 
-    public GoodsSkuApprove(GoodsApprove goodsApprove, String skuApproveId, String skuName, Integer availableNum,
+    public GoodsSkuApprove(GoodsApprove goodsApprove, String skuId, String skuName, Integer availableNum,
                            Float weight, Long photographPrice, Long marketPrice, Long supplyPrice, String goodsCode,
                            Integer showStatus) {
         this.goodsApprove = goodsApprove;
-        this.skuApproveId = skuApproveId;
+        this.skuId = skuId;
         this.skuName = skuName;
         this.availableNum = availableNum;
         this.weight = weight;
@@ -74,5 +77,19 @@ public class GoodsSkuApprove extends IdentifiedValueObject {
         this.supplyPrice = supplyPrice;
         this.goodsCode = goodsCode;
         this.showStatus = showStatus;
+    }
+
+    public Map convertToMap() {
+        Map map = new HashMap<>();
+        map.put("skuId", skuId);
+        map.put("skuName", skuName);
+        map.put("availableNum", availableNum);
+        map.put("weight", weight);
+        map.put("photographPrice", photographPrice);
+        map.put("marketPrice", marketPrice);
+        map.put("supplyPrice", supplyPrice);
+        map.put("goodsCode", goodsCode);
+        map.put("showStatus", showStatus);
+        return map;
     }
 }

@@ -12,15 +12,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class HibernateGoodsApproveRepository extends HibernateSupperRepository implements GoodsApproveRepository {
     @Override
-    public GoodsApprove queryGoodsApproveById(String approveId) {
-        StringBuilder sql = new StringBuilder("select * from t_scm_goods_approve where approve_id =:approve_id");
-        Query query = this.session().createSQLQuery(sql.toString()).addEntity(GoodsApprove.class);
-        query.setParameter("approve_id", approveId);
-        return (GoodsApprove) query.uniqueResult();
-    }
-
-    @Override
-    public GoodsApprove queryGoodsApproveByGoodsId(String goodsId) {
+    public GoodsApprove queryGoodsApproveById(String goodsId) {
         StringBuilder sql = new StringBuilder("select * from t_scm_goods_approve where goods_id =:goods_id");
         Query query = this.session().createSQLQuery(sql.toString()).addEntity(GoodsApprove.class);
         query.setParameter("goods_id", goodsId);
@@ -30,5 +22,10 @@ public class HibernateGoodsApproveRepository extends HibernateSupperRepository i
     @Override
     public void save(GoodsApprove goodsApprove) {
         this.session().save(goodsApprove);
+    }
+
+    @Override
+    public void remove(GoodsApprove goodsApprove) {
+        this.session().delete(goodsApprove);
     }
 }

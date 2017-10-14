@@ -9,7 +9,7 @@
         <id name="id" column="id" type="long" unsaved-value="-1">
             <generator class="native"/>
         </id>
-        <property name="skuApproveId" column="sku_approve_id" type="string"/>
+        <property name="skuId" column="sku_id" type="string"/>
         <property name="skuName" column="sku_name" type="string"/>
         <property name="availableNum" column="available_num" type="int"/>
         <property name="weight" column="weight" type="float"/>
@@ -18,7 +18,7 @@
         <property name="supplyPrice" column="supply_price" type="long"/>
         <property name="goodsCode" column="goods_code" type="string"/>
         <property name="showStatus" column="show_status" type="int"/>
-        <many-to-one name="goodsApprove" column="approve_id" class="cn.m2c.scm.domain.model.goods.GoodsApprove"
+        <many-to-one name="goodsApprove" column="goods_id" class="cn.m2c.scm.domain.model.goods.GoodsApprove"
                      cascade="save-update" fetch="join"/>
     </class>
 </hibernate-mapping>

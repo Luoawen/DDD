@@ -4,9 +4,9 @@ package cn.m2c.scm.domain.model.goods;
  * 商品审核
  */
 public interface GoodsApproveRepository {
-    GoodsApprove queryGoodsApproveById(String approveId);
-
-    GoodsApprove queryGoodsApproveByGoodsId(String goodsId);
+    GoodsApprove queryGoodsApproveById(String goodsId);
 
     void save(GoodsApprove goodsApprove);
+
+    void remove(GoodsApprove goodsApprove);
 }
