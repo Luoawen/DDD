@@ -97,15 +97,10 @@ public class GoodsApproveCommand extends AssertionConcern implements Serializabl
      */
     private String goodsSkuApproves;
 
-    /**
-     * sku编码
-     */
-    private List<String> skuCodes;
-
     public GoodsApproveCommand(String goodsId, String dealerId, String dealerName, String goodsName, String goodsSubTitle,
                                String goodsClassifyId, String goodsBrandId, String goodsUnitId, Integer goodsMinQuantity,
                                String goodsPostageId, String goodsBarCode, String goodsKeyWord, List goodsGuarantee,
-                               List goodsMainImages, String goodsDesc, Integer goodsShelves, String goodsSkuApproves, List<String> skuCodes) throws NegativeException {
+                               List goodsMainImages, String goodsDesc, Integer goodsShelves, String goodsSkuApproves) throws NegativeException {
         if (StringUtils.isEmpty(goodsId)) {
             throw new NegativeException(MCode.V_1, "商品ID为空");
         }
@@ -160,16 +155,36 @@ public class GoodsApproveCommand extends AssertionConcern implements Serializabl
         this.goodsDesc = goodsDesc;
         this.goodsShelves = goodsShelves;
         this.goodsSkuApproves = goodsSkuApproves;
-        this.skuCodes = skuCodes;
     }
 
     public GoodsApproveCommand(String goodsId, String dealerId, String dealerName, String goodsName, String goodsSubTitle,
                                String goodsClassifyId, String goodsBrandId, String goodsUnitId, Integer goodsMinQuantity,
                                String goodsPostageId, String goodsBarCode, String goodsKeyWord, List goodsGuarantee,
-                               List goodsMainImages, String goodsDesc,String goodsSkuApproves) throws NegativeException {
+                               List goodsMainImages, String goodsDesc, String goodsSkuApproves) {
         this.goodsId = goodsId;
         this.dealerId = dealerId;
         this.dealerName = dealerName;
+        this.goodsName = goodsName;
+        this.goodsSubTitle = goodsSubTitle;
+        this.goodsClassifyId = goodsClassifyId;
+        this.goodsBrandId = goodsBrandId;
+        this.goodsUnitId = goodsUnitId;
+        this.goodsMinQuantity = goodsMinQuantity;
+        this.goodsPostageId = goodsPostageId;
+        this.goodsBarCode = goodsBarCode;
+        this.goodsKeyWord = goodsKeyWord;
+        this.goodsGuarantee = goodsGuarantee;
+        this.goodsMainImages = goodsMainImages;
+        this.goodsDesc = goodsDesc;
+        this.goodsSkuApproves = goodsSkuApproves;
+    }
+
+    public GoodsApproveCommand(String goodsId, String dealerId, String goodsName, String goodsSubTitle,
+                               String goodsClassifyId, String goodsBrandId, String goodsUnitId, Integer goodsMinQuantity,
+                               String goodsPostageId, String goodsBarCode, String goodsKeyWord, List goodsGuarantee,
+                               List goodsMainImages, String goodsDesc, String goodsSkuApproves) {
+        this.goodsId = goodsId;
+        this.dealerId = dealerId;
         this.goodsName = goodsName;
         this.goodsSubTitle = goodsSubTitle;
         this.goodsClassifyId = goodsClassifyId;
@@ -251,9 +266,5 @@ public class GoodsApproveCommand extends AssertionConcern implements Serializabl
 
     public String getGoodsSkuApproves() {
         return goodsSkuApproves;
-    }
-
-    public List<String> getSkuCodes() {
-        return skuCodes;
     }
 }

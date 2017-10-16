@@ -178,7 +178,7 @@ public class GoodsAgent {
     }
 
     /**
-     * 增加商品
+     * 修改商品
      *
      * @param goodsId          商品id
      * @param dealerId         商家ID
@@ -218,19 +218,16 @@ public class GoodsAgent {
         try {
             List<Map> skuList = JsonUtils.toList(goodsSKUs, Map.class);
             // 生成sku
-            List<String> skuCodes = new ArrayList<>();
             if (null != skuList && skuList.size() > 0) {
                 for (Map map : skuList) {
                     String skuId = null != map.get("skuId") ? map.get("skuId").toString() : null;
                     if (StringUtils.isEmpty(skuId)) {
                         try {
                             skuId = commonApplication.generateGoodsSku();
-                            skuCodes.add(skuId);
                         } catch (Exception e) { //失败重新生成一次
                             skuId = commonApplication.generateGoodsSku();
-                            skuCodes.add(skuId);
                         }
-                        map.put("skuId",skuId);
+                        map.put("skuId", skuId);
                     }
                 }
                 goodsSKUs = JsonUtils.toStr(skuList);

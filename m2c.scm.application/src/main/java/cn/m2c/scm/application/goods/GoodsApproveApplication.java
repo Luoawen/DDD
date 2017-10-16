@@ -46,32 +46,38 @@ public class GoodsApproveApplication {
                     command.getGoodsBrandId(), command.getGoodsUnitId(), command.getGoodsMinQuantity(),
                     command.getGoodsPostageId(), command.getGoodsBarCode(), command.getGoodsKeyWord(),
                     JsonUtils.toStr(command.getGoodsGuarantee()), JsonUtils.toStr(command.getGoodsMainImages()),
-                    command.getGoodsDesc(), command.getGoodsShelves(), command.getGoodsSkuApproves(), command.getSkuCodes());
+                    command.getGoodsDesc(), command.getGoodsShelves(), command.getGoodsSkuApproves());
             goodsApproveRepository.save(goodsApprove);
         }
     }
 
     /**
      * 修改商品需审核信息，添加一条商品审核记录
+     * 如果存在审核记录则覆盖
      *
      * @param command
      */
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
     public void addGoodsApproveForModifyGoods(GoodsApproveCommand command) throws NegativeException {
         LOGGER.info("addGoodsApproveForModifyGoods command >>{}", command);
+        if (goodsRepository.goodsNameIsRepeat(command.getGoodsId(), command.getDealerId(), command.getGoodsName())) {
+            throw new NegativeException(MCode.V_300, "商品名称已存在");
+        }
         GoodsApprove goodsApprove = goodsApproveRepository.queryGoodsApproveById(command.getGoodsId());
         if (null == goodsApprove) {
-            if (goodsRepository.goodsNameIsRepeat(command.getGoodsId(), command.getDealerId(), command.getGoodsName())) {
-                throw new NegativeException(MCode.V_300, "商品名称已存在");
-            }
             goodsApprove = new GoodsApprove(command.getGoodsId(), command.getDealerId(), command.getDealerName(),
                     command.getGoodsName(), command.getGoodsSubTitle(), command.getGoodsClassifyId(),
                     command.getGoodsBrandId(), command.getGoodsUnitId(), command.getGoodsMinQuantity(),
                     command.getGoodsPostageId(), command.getGoodsBarCode(), command.getGoodsKeyWord(),
                     JsonUtils.toStr(command.getGoodsGuarantee()), JsonUtils.toStr(command.getGoodsMainImages()),
-                    command.getGoodsDesc(), command.getGoodsSkuApproves());
-            goodsApproveRepository.save(goodsApprove);
+                    command.getGoodsDesc(), null, command.getGoodsSkuApproves());
+        } else {
+            goodsApprove.modifyGoodsApprove(command.getGoodsName(), command.getGoodsSubTitle(),
+                    command.getGoodsClassifyId(), command.getGoodsBrandId(), command.getGoodsUnitId(), command.getGoodsMinQuantity(),
+                    command.getGoodsPostageId(), command.getGoodsBarCode(), command.getGoodsKeyWord(), JsonUtils.toStr(command.getGoodsGuarantee()),
+                    JsonUtils.toStr(command.getGoodsMainImages()), command.getGoodsDesc(), command.getGoodsSkuApproves());
         }
+        goodsApproveRepository.save(goodsApprove);
     }
 
     /**
@@ -85,7 +91,7 @@ public class GoodsApproveApplication {
         LOGGER.info("agreeGoodsApprove goodsId >>{}", goodsId);
         GoodsApprove goodsApprove = goodsApproveRepository.queryGoodsApproveById(goodsId);
         if (null == goodsApprove) {
-            throw new NegativeException(MCode.V_300, "商品审核不存在");
+            throw new NegativeException(MCode.V_300, "商品审核信息不存在");
         }
         goodsApprove.agree();
         goodsApproveRepository.remove(goodsApprove);
@@ -101,8 +107,21 @@ public class GoodsApproveApplication {
         LOGGER.info("rejectGoodsApprove command >>{}", command);
         GoodsApprove goodsApprove = goodsApproveRepository.queryGoodsApproveById(command.getGoodsId());
         if (null == goodsApprove) {
-            throw new NegativeException(MCode.V_300, "商品审核不存在");
+            throw new NegativeException(MCode.V_300, "商品审核信息不存在");
         }
         goodsApprove.reject(command.getRejectReason());
+    }
+
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+    public void modifyGoodsApprove(GoodsApproveCommand command) throws NegativeException {
+        LOGGER.info("modifyGoodsApprove command >>{}", command);
+        GoodsApprove goodsApprove = goodsApproveRepository.queryGoodsApproveById(command.getGoodsId());
+        if (null == goodsApprove) {
+            throw new NegativeException(MCode.V_300, "商品审核信息不存在");
+        }
+        goodsApprove.modifyGoodsApprove(command.getGoodsName(), command.getGoodsSubTitle(),
+                command.getGoodsClassifyId(), command.getGoodsBrandId(), command.getGoodsUnitId(), command.getGoodsMinQuantity(),
+                command.getGoodsPostageId(), command.getGoodsBarCode(), command.getGoodsKeyWord(), JsonUtils.toStr(command.getGoodsGuarantee()),
+                JsonUtils.toStr(command.getGoodsMainImages()), command.getGoodsDesc(), command.getGoodsSkuApproves());
     }
 }
