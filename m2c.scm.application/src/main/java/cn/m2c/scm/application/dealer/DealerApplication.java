@@ -1,5 +1,7 @@
 package cn.m2c.scm.application.dealer;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import cn.m2c.scm.application.dealer.command.DealerAddOrUpdateCommand;
 import cn.m2c.scm.application.dealer.command.ShopInfoUpdateCommand;
+import cn.m2c.scm.application.seller.command.SellerCommand;
 import cn.m2c.scm.domain.NegativeCode;
 import cn.m2c.scm.domain.NegativeException;
 import cn.m2c.scm.domain.model.dealer.Dealer;
@@ -47,13 +50,30 @@ public class DealerApplication {
 	
 	@Transactional(rollbackFor = {Exception.class,RuntimeException.class,NegativeException.class})
 	public void updateShopInfo(ShopInfoUpdateCommand command) throws NegativeException {
-		// TODO Auto-generated method stub
 		log.info("---修改经销商店铺信息");
 		Dealer dealer = dealerRepository.getDealer(command.getDealerId());
 		if(dealer==null)
 			throw new NegativeException(NegativeCode.DEALER_IS_NOT_EXIST, "此经销商不存在.");
 		dealer.updateShopInfo(command.getShopName(),command.getShopIntroduce(),command.getShopIcon(),command.getCustomerServiceTel());
 		dealerRepository.save(dealer);
+	}
+
+	
+	/**
+	 * 更新经销商中的业务员信息
+	 * @param command
+	 * @throws NegativeException 
+	 */
+	public void updateSeller(SellerCommand command) throws NegativeException {
+		//1sellerId 取出经销商列表
+		List<Dealer> sellerList = dealerRepository.getDealerListBySeller(command.getSellerId());
+		if (null == sellerList) {
+			throw new NegativeException(NegativeCode.DEALER_IS_NOT_EXIST, "此业务员对应的经销商不存在.");
+		}
+		//2循环经销商，把所有的业务员更新
+		for (Dealer dealer : sellerList) {
+			dealer.update(command.getSellerName(), command.getSellerPhone());
+		}
 	}
 	
 	

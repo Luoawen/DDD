@@ -132,6 +132,7 @@ public class Dealer extends ConcurrencySafeEntity{
 		this.sellerPhone = sellerPhone;
 	}
 
+	
 
 	public void updateShopInfo(String shopName, String shopIntroduce,
 			String shopIcon, String customerServiceTel) {
@@ -141,6 +142,20 @@ public class Dealer extends ConcurrencySafeEntity{
 		this.customerServiceTel = customerServiceTel;
 	}
 
+
+	
+	/**
+	 * 更新业务员信息
+	 * @param sellerName
+	 */
+	public void update(String sellerName,String sellerPhone) {
+		this.sellerName = sellerName;
+		this.sellerPhone = sellerPhone;
+	}
+
+
+	
+	
 	
 	
 	

@@ -12,6 +12,7 @@ public class HibernateSellerRepository extends HibernateSupperRepository impleme
 	public Seller getSeller(String sellerId) {
 		Seller seller = (Seller) this.session().createQuery(" FROM Seller WHERE  sellerId = :sellerId")
 				.setString("sellerId", sellerId).uniqueResult();
+		System.out.println("-------------执行到获取业务员");
 		return seller;
 	}
 

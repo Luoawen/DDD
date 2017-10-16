@@ -22,6 +22,7 @@ import cn.m2c.scm.application.unit.command.UnitCommand;
 import cn.m2c.scm.application.unit.query.UnitQuery;
 import cn.m2c.scm.domain.IDGenerator;
 import cn.m2c.scm.domain.NegativeException;
+import cn.m2c.scm.domain.model.unit.Unit;
 import cn.m2c.scm.port.adapter.restful.web.brand.BrandAgent;
 
 @RestController
@@ -127,6 +128,29 @@ public class UnitAgent {
             result = new MPager(MCode.V_400, "服务器开小差了");
 		}
 		return new ResponseEntity<MPager>(result,HttpStatus.OK);
-
 	}
+	
+	/**
+	 * 获取计量单位
+	 * @param unitId
+	 * @return
+	 */
+	@RequestMapping(value = "/get", method = RequestMethod.GET)
+	public ResponseEntity<MResult> getUnit(@RequestParam(value = "unitId", required = false) String unitId){
+		MResult result = new MResult(MCode.V_1);
+		try {
+			UnitBean unit = unitQuery.getUnitByUnitId(unitId);
+			System.out.println("获取到的数据----------------"+unit);
+			if (unit != null) {
+				result.setContent(unit);
+			}
+			result.setStatus(MCode.V_200);
+		} catch (Exception e) {
+			LOGGER.error("获取计量单位出错"  + e.getMessage());
+			result = new MResult(MCode.V_400, "服务器开小差了");
+		}
+		return new ResponseEntity<MResult>(result,HttpStatus.OK);
+		
+	}
+	
 }

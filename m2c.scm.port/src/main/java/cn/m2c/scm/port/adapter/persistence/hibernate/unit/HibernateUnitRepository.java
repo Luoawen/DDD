@@ -7,6 +7,7 @@ import org.hibernate.SQLQuery;
 import org.springframework.stereotype.Repository;
 
 import cn.m2c.ddd.common.port.adapter.persistence.hibernate.HibernateSupperRepository;
+import cn.m2c.scm.application.unit.bean.UnitBean;
 import cn.m2c.scm.domain.model.unit.Unit;
 import cn.m2c.scm.domain.model.unit.UnitRepository;
 
@@ -48,6 +49,18 @@ public class HibernateUnitRepository extends HibernateSupperRepository implement
 		Query query = this.session().createSQLQuery(sql.toString()).addEntity(Unit.class);
 		query.setParameter("unit_name", unitName);
 		return (Unit) query.uniqueResult();
+	}
+
+
+	/**
+	 * 通过unitId获取计量单位
+	 */
+	@Override
+	public UnitBean getUnitByUnitId(String unitId) {
+		StringBuffer sql = new StringBuffer("select * from t_scm_unit where unit_status = 1 AND unit_id = :unit_id");
+		Query query = this.session().createSQLQuery(sql.toString()).addEntity(Unit.class);
+		query.setParameter("unit_id", unitId);
+		return (UnitBean) query.uniqueResult();
 	}
 
 }

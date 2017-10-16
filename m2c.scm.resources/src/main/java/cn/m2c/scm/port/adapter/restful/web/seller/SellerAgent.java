@@ -16,7 +16,7 @@ import cn.m2c.common.MCode;
 import cn.m2c.common.MPager;
 import cn.m2c.common.MResult;
 import cn.m2c.scm.application.seller.SellerApplication;
-import cn.m2c.scm.application.seller.command.SellerAddOrUpdateCommand;
+import cn.m2c.scm.application.seller.command.SellerCommand;
 import cn.m2c.scm.application.seller.data.bean.SellerBean;
 import cn.m2c.scm.application.seller.query.SellerQuery;
 import cn.m2c.scm.domain.IDGenerator;
@@ -71,7 +71,7 @@ public class SellerAgent {
 		MResult result = new MResult(MCode.V_1);
 		try {
 			String sellerId = IDGenerator.get(IDGenerator.SALE_PREFIX_TITLE);
-			SellerAddOrUpdateCommand command = new SellerAddOrUpdateCommand(sellerId,sellerName,sellerPhone,sellerSex, sellerNo, sellerPass, sellerConfirmPass, sellerProvince, sellerCity, sellerArea, sellerPcode, sellerCcode, sellerAcode, sellerqq, sellerWechat, sellerRemark);
+			SellerCommand command = new SellerCommand(sellerId,sellerName,sellerPhone,sellerSex, sellerNo, sellerPass, sellerConfirmPass, sellerProvince, sellerCity, sellerArea, sellerPcode, sellerCcode, sellerAcode, sellerqq, sellerWechat, sellerRemark);
 			sellerApplication.addSeller(command);
 			result.setStatus(MCode.V_200);
 		} catch (Exception e) {
@@ -121,8 +121,9 @@ public class SellerAgent {
 			@RequestParam(value="sellerWechat",required=false)String sellerWechat,
 			@RequestParam(value="sellerRemark",required=false)String sellerRemark){
 		MResult result = new MResult(MCode.V_1);
+		System.out.println("--------------------请求到update方法");
 		try {
-			SellerAddOrUpdateCommand command = new SellerAddOrUpdateCommand(sellerId,sellerName,sellerPhone,sellerSex, sellerNo, sellerPass, sellerConfirmPass, sellerProvince, sellerCity, sellerArea, sellerPcode, sellerCcode, sellerAcode, sellerqq, sellerWechat, sellerRemark);
+			SellerCommand command = new SellerCommand(sellerId,sellerName,sellerPhone,sellerSex, sellerNo, sellerPass, sellerConfirmPass, sellerProvince, sellerCity, sellerArea, sellerPcode, sellerCcode, sellerAcode, sellerqq, sellerWechat, sellerRemark);
 			sellerApplication.update(command);
 			result.setStatus(MCode.V_200);
 		} catch (Exception e) {
@@ -143,6 +144,7 @@ public class SellerAgent {
 			@RequestParam(value = "pageNum", required = false, defaultValue = "1") Integer pageNum,
 	        @RequestParam(value = "rows", required = false, defaultValue = "10") Integer rows
 			){
+		System.out.println("----------请求到List方法");
 		MPager result = new MPager(MCode.V_1);
 		try {
 //			List<DealerBean> dealerList = dealerQuery.getDealerList(dealerClassify,cooperationMode,countMode,isPayDeposit,dealerName,dealerId,userPhone,sellerPhone,startTime,endTime,pageNum,rows);

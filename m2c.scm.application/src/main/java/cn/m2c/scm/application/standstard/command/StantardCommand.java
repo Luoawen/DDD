@@ -8,7 +8,7 @@ public class StantardCommand extends AssertionConcern implements Serializable {
 
 	private String stantardId;
 	private String stantardName;
-	private Integer stantardStatus;
+	private Integer stantardStatus = 1;
 
 	public String getStantardId() {
 		return stantardId;

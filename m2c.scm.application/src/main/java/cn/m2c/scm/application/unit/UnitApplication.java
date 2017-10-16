@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import cn.m2c.common.MCode;
+import cn.m2c.scm.application.unit.bean.UnitBean;
 import cn.m2c.scm.application.unit.command.UnitCommand;
 import cn.m2c.scm.domain.NegativeException;
 import cn.m2c.scm.domain.model.unit.Unit;
@@ -49,7 +50,6 @@ public class UnitApplication {
     @Transactional(rollbackFor = {Exception.class,RuntimeException.class,NegativeException.class})
     public void delUnit(String unitName) throws NegativeException{
     	LOGGER.info("delUnit unitName >>{}",unitName);
-    	
     	Unit unit = unitRepository.getUnitByUnitName(unitName);
     	if (null == unit) {
 			throw new NegativeException(MCode.V_300,"计量单位不存在");
