@@ -65,6 +65,11 @@ public class GoodsApplication {
                 command.getGoodsMainImages(), command.getGoodsDesc(), command.getGoodsSpecifications(), command.getGoodsSKUs());
     }
 
+    /**
+     * 删除商品
+     * @param goodsId
+     * @throws NegativeException
+     */
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
     @EventListener(isListening = true)
     public void deleteGoods(String goodsId) throws NegativeException {
@@ -83,7 +88,6 @@ public class GoodsApplication {
      * @throws NegativeException
      */
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
-    @EventListener(isListening = true)
     public void upShelfGoods(String goodsId) throws NegativeException {
         LOGGER.info("upShelfGoods goodsId >>{}", goodsId);
         Goods goods = goodsRepository.queryGoodsById(goodsId);
@@ -100,7 +104,6 @@ public class GoodsApplication {
      * @throws NegativeException
      */
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
-    @EventListener(isListening = true)
     public void offShelfGoods(String goodsId) throws NegativeException {
         LOGGER.info("offShelfGoods goodsId >>{}", goodsId);
         Goods goods = goodsRepository.queryGoodsById(goodsId);

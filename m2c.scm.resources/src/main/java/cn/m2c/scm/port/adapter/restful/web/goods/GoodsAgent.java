@@ -7,6 +7,8 @@ import cn.m2c.common.MResult;
 import cn.m2c.scm.application.CommonApplication;
 import cn.m2c.scm.application.goods.GoodsApplication;
 import cn.m2c.scm.application.goods.command.GoodsCommand;
+import cn.m2c.scm.application.goods.query.GoodsQueryApplication;
+import cn.m2c.scm.application.goods.query.data.bean.GoodsBean;
 import cn.m2c.scm.domain.NegativeException;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -40,6 +42,8 @@ public class GoodsAgent {
     GoodsApplication goodsApplication;
     @Autowired
     CommonApplication commonApplication;
+    @Autowired
+    GoodsQueryApplication goodsQueryApplication;
 
     /**
      * 商品筛选根据商品类别，名称、标题、编号筛选
@@ -315,5 +319,54 @@ public class GoodsAgent {
             result = new MResult(MCode.V_400, "商品下架失败");
         }
         return new ResponseEntity<MResult>(result, HttpStatus.OK);
+    }
+
+    /**
+     * 查询商品列表
+     *
+     * @param dealerId        商家ID
+     * @param goodsClassifyId 商品分类
+     * @param goodsStatus     商品状态，1：仓库中，2：出售中，3：已售罄
+     * @param condition       搜索条件
+     * @param brandId         品牌ID
+     * @param startTime       开始时间
+     * @param endTime         结束时间
+     * @param pageNum         第几页
+     * @param rows            每页多少行
+     * @return
+     */
+    @RequestMapping(value = "", method = RequestMethod.GET)
+    public ResponseEntity<MPager> queryBrand(
+            @RequestParam(value = "dealerId", required = false) String dealerId,
+            @RequestParam(value = "goodsClassifyId", required = false) String goodsClassifyId,
+            @RequestParam(value = "goodsStatus", required = false) Integer goodsStatus,
+            @RequestParam(value = "brandId", required = false) String brandId,
+            @RequestParam(value = "condition", required = false) String condition,
+            @RequestParam(value = "startTime", required = false) String startTime,
+            @RequestParam(value = "endTime", required = false) String endTime,
+            @RequestParam(value = "pageNum", required = false, defaultValue = "1") Integer pageNum,
+            @RequestParam(value = "rows", required = false, defaultValue = "10") Integer rows) {
+        MPager result = new MPager(MCode.V_1);
+        try {
+            Integer total = goodsQueryApplication.searchGoodsByConditionTotal(dealerId, goodsClassifyId, goodsStatus,
+                    brandId, condition, startTime, endTime);
+            if (total > 0) {
+                List<GoodsBean> goodsBeans = goodsQueryApplication.searchGoodsByCondition(dealerId, goodsClassifyId, goodsStatus,
+                        brandId, condition, startTime, endTime, pageNum, rows);
+                if (null != goodsBeans && goodsBeans.size() > 0) {
+                  /*  List<BrandRepresentation> representations = new ArrayList<BrandRepresentation>();
+                    for (BrandBean bean : brandBeans) {
+                        representations.add(new BrandRepresentation(bean));
+                    }*/
+                    result.setContent(goodsBeans);
+                }
+            }
+            result.setPager(total, pageNum, rows);
+            result.setStatus(MCode.V_200);
+        } catch (Exception e) {
+            LOGGER.error("查询商品列表失败", e);
+            result = new MPager(MCode.V_400, "服务器开小差了，请稍后再试");
+        }
+        return new ResponseEntity<MPager>(result, HttpStatus.OK);
     }
 }

@@ -72,4 +72,18 @@ public class GoodsClassifyQueryApplication {
         GoodsClassifyBean goodsClassifyBean = this.getSupportJdbcTemplate().queryForBean(sql.toString(), GoodsClassifyBean.class, classifyId);
         return goodsClassifyBean;
     }
+
+    public List<String> recursionQueryGoodsSubClassifyId(String parentClassifyId, List<String> resultList) {
+        List<GoodsClassifyBean> subGoodsClassifyBeans = queryGoodsClassifiesByParentId(parentClassifyId);
+        if (null != subGoodsClassifyBeans && subGoodsClassifyBeans.size() > 0) {
+            for (GoodsClassifyBean bean : subGoodsClassifyBeans) {
+                resultList.add(bean.getClassifyId());
+                List<String> subList = recursionQueryGoodsSubClassifyId(bean.getClassifyId(), resultList);
+                if (null != subList && subList.size() > 0) {
+                    resultList.addAll(subList);
+                }
+            }
+        }
+        return resultList;
+    }
 }
