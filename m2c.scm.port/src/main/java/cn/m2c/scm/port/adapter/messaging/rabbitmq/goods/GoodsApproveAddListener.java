@@ -50,12 +50,13 @@ public class GoodsApproveAddListener extends ExchangeListener {
         String goodsMainImages = reader.eventStringValue("goodsMainImages");
         List goodsMainImageList = JsonUtils.toList(goodsMainImages, String.class);
         String goodsDesc = reader.eventStringValue("goodsDesc");
+        String goodsSpecifications = reader.eventStringValue("goodsSpecifications");
         String goodsSkuApproves = reader.eventStringValue("goodsSkuApproves");
 
         GoodsApproveCommand command = new GoodsApproveCommand(goodsId, dealerId, dealerName, goodsName, goodsSubTitle,
                 goodsClassifyId, goodsBrandId, goodsUnitId, goodsMinQuantity,
                 goodsPostageId, goodsBarCode, goodsKeyWord, goodsGuarantees,
-                goodsMainImageList, goodsDesc, goodsSkuApproves);
+                goodsMainImageList, goodsDesc,goodsSpecifications, goodsSkuApproves);
         goodsApproveApplication.addGoodsApproveForModifyGoods(command);
     }
 

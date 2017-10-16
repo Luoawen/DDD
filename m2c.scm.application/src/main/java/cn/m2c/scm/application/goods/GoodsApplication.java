@@ -35,7 +35,7 @@ public class GoodsApplication {
             goods = new Goods(command.getGoodsId(), command.getDealerId(), command.getDealerName(), command.getGoodsName(), command.getGoodsSubTitle(),
                     command.getGoodsClassifyId(), command.getGoodsBrandId(), command.getGoodsUnitId(), command.getGoodsMinQuantity(),
                     command.getGoodsPostageId(), command.getGoodsBarCode(), command.getGoodsKeyWord(), command.getGoodsGuarantee(),
-                    command.getGoodsMainImages(), command.getGoodsDesc(), command.getGoodsShelves(), command.getGoodsSKUs());
+                    command.getGoodsMainImages(), command.getGoodsDesc(), command.getGoodsShelves(), command.getGoodsSpecifications(), command.getGoodsSKUs());
         } else {//修改商品审核：修改商品的拍获价，供货价，规格
             goods.modifyApproveGoodsSku(command.getGoodsSKUs());
         }
@@ -56,6 +56,6 @@ public class GoodsApplication {
         goods.modifyGoods(command.getGoodsName(), command.getGoodsSubTitle(),
                 command.getGoodsClassifyId(), command.getGoodsBrandId(), command.getGoodsUnitId(), command.getGoodsMinQuantity(),
                 command.getGoodsPostageId(), command.getGoodsBarCode(), command.getGoodsKeyWord(), command.getGoodsGuarantee(),
-                command.getGoodsMainImages(), command.getGoodsDesc(), command.getGoodsSKUs());
+                command.getGoodsMainImages(), command.getGoodsDesc(),command.getGoodsSpecifications(), command.getGoodsSKUs());
     }
 }

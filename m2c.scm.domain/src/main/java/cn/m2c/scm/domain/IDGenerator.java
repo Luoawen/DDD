@@ -31,7 +31,7 @@ public abstract class IDGenerator {
     public static final String SCM_BRANDE_APPROVE_PREFIX_TITLE = "PPSP";//鍝佺墝瀹℃牳鍓嶇紑
     public static final String SCM_GOODS_CLASSIFY_PREFIX_TITLE = "SPFL";//鍟嗗搧鍒嗙被鍓嶇紑
     public static final String SCM_GOODS_PREFIX_TITLE = "SP";//商品前缀
-    public static final String SCM_GOODS_SKU_PREFIX_TITLE = "SPGG";//鍟嗗搧瑙勬牸鍓嶇紑
+    public static final String SCM_GOODS_SPEC_VALUE_PREFIX_TITLE = "SPGG";//商品规格值
     public static final String SCM_STANTARD_PREFIX_TITLE="GG";//规格前缀
     public static final String SCM_UNIT_PREFIX_TITLE="JLDW";//计量单位前缀 
 

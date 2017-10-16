@@ -213,6 +213,7 @@ public class GoodsAgent {
             @RequestParam(value = "goodsGuarantee", required = false) List goodsGuarantee,
             @RequestParam(value = "goodsMainImages", required = false) List goodsMainImages,
             @RequestParam(value = "goodsDesc", required = false) String goodsDesc,
+            @RequestParam(value = "goodsSpecifications", required = false) String goodsSpecifications,
             @RequestParam(value = "goodsSKUs", required = false) String goodsSKUs) {
         MResult result = new MResult(MCode.V_1);
         try {
@@ -238,7 +239,7 @@ public class GoodsAgent {
             GoodsCommand command = new GoodsCommand(goodsId, dealerId, goodsName, goodsSubTitle,
                     goodsClassifyId, goodsBrandId, goodsUnitId, goodsMinQuantity,
                     goodsPostageId, goodsBarCode, goodsKeyWord, JsonUtils.toStr(goodsGuarantee),
-                    JsonUtils.toStr(goodsMainImages), goodsDesc, goodsSKUs);
+                    JsonUtils.toStr(goodsMainImages), goodsDesc, goodsSpecifications, goodsSKUs);
             goodsApplication.modifyGoods(command);
             result.setStatus(MCode.V_200);
         } catch (NegativeException ne) {

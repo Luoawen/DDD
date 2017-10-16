@@ -111,9 +111,19 @@ public class GoodsApprove extends ConcurrencySafeEntity {
     private String rejectReason;
 
     /**
+     * 商品规格,格式：[{"itemName":"尺寸","itemValue":["L","M"]},{"itemName":"颜色","itemValue":["蓝色","白色"]}]
+     */
+    private String goodsSpecifications;
+
+    /**
      * 商品规格
      */
     private List<GoodsSkuApprove> goodsSkuApproves;
+
+    /**
+     * 是否删除，1:正常，2：已删除
+     */
+    private Integer delStatus;
 
     public GoodsApprove() {
         super();
@@ -122,7 +132,7 @@ public class GoodsApprove extends ConcurrencySafeEntity {
     public GoodsApprove(String goodsId, String dealerId, String dealerName, String goodsName, String goodsSubTitle,
                         String goodsClassifyId, String goodsBrandId, String goodsUnitId, Integer goodsMinQuantity,
                         String goodsPostageId, String goodsBarCode, String goodsKeyWord, String goodsGuarantee,
-                        String goodsMainImages, String goodsDesc, Integer goodsShelves, String goodsSkuApproves) {
+                        String goodsMainImages, String goodsDesc, Integer goodsShelves, String goodsSpecifications, String goodsSkuApproves) {
         this.goodsId = goodsId;
         this.dealerId = dealerId;
         this.dealerName = dealerName;
@@ -142,6 +152,7 @@ public class GoodsApprove extends ConcurrencySafeEntity {
             this.goodsShelves = goodsShelves;
         }
         this.approveStatus = 1;
+        this.goodsSpecifications = goodsSpecifications;
         //商品规格格式：[{"skuId":20171014125226158648","skuName":"L,红","supplyPrice":4000,
         // "weight":20.5,"availableNum":200,"goodsCode":"111111","marketPrice":6000,"photographPrice":5000,"showStatus":2}]
         if (null == this.goodsSkuApproves) {
@@ -205,7 +216,7 @@ public class GoodsApprove extends ConcurrencySafeEntity {
     public void modifyGoodsApprove(String goodsName, String goodsSubTitle,
                                    String goodsClassifyId, String goodsBrandId, String goodsUnitId, Integer goodsMinQuantity,
                                    String goodsPostageId, String goodsBarCode, String goodsKeyWord, String goodsGuarantee,
-                                   String goodsMainImages, String goodsDesc, String goodsSkuApproves) {
+                                   String goodsMainImages, String goodsDesc, String goodsSpecifications, String goodsSkuApproves) {
         this.goodsName = goodsName;
         this.goodsSubTitle = goodsSubTitle;
         this.goodsClassifyId = goodsClassifyId;
@@ -220,6 +231,7 @@ public class GoodsApprove extends ConcurrencySafeEntity {
         this.goodsDesc = goodsDesc;
         this.approveStatus = 1;
         this.rejectReason = null;
+        this.goodsSpecifications = goodsSpecifications;
         //商品规格格式：[{"skuId":20171014125226158648","skuName":"L,红","supplyPrice":4000,
         // "weight":20.5,"availableNum":200,"goodsCode":"111111","marketPrice":6000,"photographPrice":5000,"showStatus":2}]
         if (null == this.goodsSkuApproves) {
@@ -233,5 +245,9 @@ public class GoodsApprove extends ConcurrencySafeEntity {
                 this.goodsSkuApproves.add(createGoodsSkuApprove(skuList.get(i)));
             }
         }
+    }
+
+    public void remove() {
+        this.delStatus = 2;
     }
 }

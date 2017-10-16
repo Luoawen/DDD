@@ -93,14 +93,16 @@ public class GoodsApproveCommand extends AssertionConcern implements Serializabl
     private Integer goodsShelves;
 
     /**
-     * 商品規格
+     * 商品規格sku列表
      */
     private String goodsSkuApproves;
+
+    private String goodsSpecifications;
 
     public GoodsApproveCommand(String goodsId, String dealerId, String dealerName, String goodsName, String goodsSubTitle,
                                String goodsClassifyId, String goodsBrandId, String goodsUnitId, Integer goodsMinQuantity,
                                String goodsPostageId, String goodsBarCode, String goodsKeyWord, List goodsGuarantee,
-                               List goodsMainImages, String goodsDesc, Integer goodsShelves, String goodsSkuApproves) throws NegativeException {
+                               List goodsMainImages, String goodsDesc, Integer goodsShelves, String goodsSpecifications, String goodsSkuApproves) throws NegativeException {
         if (StringUtils.isEmpty(goodsId)) {
             throw new NegativeException(MCode.V_1, "商品ID为空");
         }
@@ -134,8 +136,12 @@ public class GoodsApproveCommand extends AssertionConcern implements Serializabl
         if (null == goodsMainImages || goodsMainImages.size() == 0) {
             throw new NegativeException(MCode.V_1, "商品主图为空");
         }
-        if (StringUtils.isEmpty(goodsSkuApproves)) {
+        if (StringUtils.isEmpty(goodsSpecifications)) {
             throw new NegativeException(MCode.V_1, "商品规格为空");
+        }
+
+        if (StringUtils.isEmpty(goodsSkuApproves)) {
+            throw new NegativeException(MCode.V_1, "商品SKU为空");
         }
 
         this.goodsId = goodsId;
@@ -154,13 +160,14 @@ public class GoodsApproveCommand extends AssertionConcern implements Serializabl
         this.goodsMainImages = goodsMainImages;
         this.goodsDesc = goodsDesc;
         this.goodsShelves = goodsShelves;
+        this.goodsSpecifications = goodsSpecifications;
         this.goodsSkuApproves = goodsSkuApproves;
     }
 
     public GoodsApproveCommand(String goodsId, String dealerId, String dealerName, String goodsName, String goodsSubTitle,
                                String goodsClassifyId, String goodsBrandId, String goodsUnitId, Integer goodsMinQuantity,
                                String goodsPostageId, String goodsBarCode, String goodsKeyWord, List goodsGuarantee,
-                               List goodsMainImages, String goodsDesc, String goodsSkuApproves) {
+                               List goodsMainImages, String goodsDesc, String goodsSpecifications, String goodsSkuApproves) {
         this.goodsId = goodsId;
         this.dealerId = dealerId;
         this.dealerName = dealerName;
@@ -176,13 +183,14 @@ public class GoodsApproveCommand extends AssertionConcern implements Serializabl
         this.goodsGuarantee = goodsGuarantee;
         this.goodsMainImages = goodsMainImages;
         this.goodsDesc = goodsDesc;
+        this.goodsSpecifications = goodsSpecifications;
         this.goodsSkuApproves = goodsSkuApproves;
     }
 
     public GoodsApproveCommand(String goodsId, String dealerId, String goodsName, String goodsSubTitle,
                                String goodsClassifyId, String goodsBrandId, String goodsUnitId, Integer goodsMinQuantity,
                                String goodsPostageId, String goodsBarCode, String goodsKeyWord, List goodsGuarantee,
-                               List goodsMainImages, String goodsDesc, String goodsSkuApproves) {
+                               List goodsMainImages, String goodsDesc, String goodsSpecifications, String goodsSkuApproves) {
         this.goodsId = goodsId;
         this.dealerId = dealerId;
         this.goodsName = goodsName;
@@ -197,6 +205,7 @@ public class GoodsApproveCommand extends AssertionConcern implements Serializabl
         this.goodsGuarantee = goodsGuarantee;
         this.goodsMainImages = goodsMainImages;
         this.goodsDesc = goodsDesc;
+        this.goodsSpecifications = goodsSpecifications;
         this.goodsSkuApproves = goodsSkuApproves;
     }
 
@@ -266,5 +275,9 @@ public class GoodsApproveCommand extends AssertionConcern implements Serializabl
 
     public String getGoodsSkuApproves() {
         return goodsSkuApproves;
+    }
+
+    public String getGoodsSpecifications() {
+        return goodsSpecifications;
     }
 }

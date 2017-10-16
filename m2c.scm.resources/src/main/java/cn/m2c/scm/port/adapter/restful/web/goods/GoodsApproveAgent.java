@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -61,23 +63,24 @@ public class GoodsApproveAgent {
     /**
      * 增加商品
      *
-     * @param goodsId          商品id
-     * @param dealerId         商家ID
-     * @param dealerName       商家名称
-     * @param goodsName        商品名称
-     * @param goodsSubTitle    商品副标题
-     * @param goodsClassifyId  商品分类id
-     * @param goodsBrandId     商品品牌id
-     * @param goodsUnitId      商品计量单位id
-     * @param goodsMinQuantity 最小起订量
-     * @param goodsPostageId   运费模板id
-     * @param goodsBarCode     商品条形码
-     * @param goodsKeyWord     关键词
-     * @param goodsGuarantee   商品保障
-     * @param goodsMainImages  商品主图  存储类型是[“url1”,"url2"]
-     * @param goodsDesc        商品描述
-     * @param goodsShelves     1:手动上架,2:审核通过立即上架
-     * @param goodsSkuApproves 商品sku规格列表,格式：[{"availableNum":200,"goodsCode":"111111","marketPrice":6000,"photographPrice":5000,"showStatus":2,"skuName":"L,红","supplyPrice":4000,"weight":20.5}]
+     * @param goodsId             商品id
+     * @param dealerId            商家ID
+     * @param dealerName          商家名称
+     * @param goodsName           商品名称
+     * @param goodsSubTitle       商品副标题
+     * @param goodsClassifyId     商品分类id
+     * @param goodsBrandId        商品品牌id
+     * @param goodsUnitId         商品计量单位id
+     * @param goodsMinQuantity    最小起订量
+     * @param goodsPostageId      运费模板id
+     * @param goodsBarCode        商品条形码
+     * @param goodsKeyWord        关键词
+     * @param goodsGuarantee      商品保障
+     * @param goodsMainImages     商品主图  存储类型是[“url1”,"url2"]
+     * @param goodsDesc           商品描述
+     * @param goodsShelves        1:手动上架,2:审核通过立即上架
+     * @param goodsSpecifications 商品规格,格式：[{"itemName":"尺寸","itemValue":["L","M"]},{"itemName":"颜色","itemValue":["蓝色","白色"]}]
+     * @param goodsSkuApproves    商品sku规格列表,格式：[{"availableNum":200,"goodsCode":"111111","marketPrice":6000,"photographPrice":5000,"showStatus":2,"skuName":"L,红","supplyPrice":4000,"weight":20.5}]
      * @return
      */
     @RequestMapping(value = "", method = RequestMethod.POST)
@@ -98,6 +101,7 @@ public class GoodsApproveAgent {
             @RequestParam(value = "goodsMainImages", required = false) List goodsMainImages,
             @RequestParam(value = "goodsDesc", required = false) String goodsDesc,
             @RequestParam(value = "goodsShelves", required = false) Integer goodsShelves,
+            @RequestParam(value = "goodsSpecifications", required = false) String goodsSpecifications,
             @RequestParam(value = "goodsSKUs", required = false) String goodsSkuApproves) {
         MResult result = new MResult(MCode.V_1);
 
@@ -121,7 +125,7 @@ public class GoodsApproveAgent {
             GoodsApproveCommand command = new GoodsApproveCommand(goodsId, dealerId, dealerName, goodsName, goodsSubTitle,
                     goodsClassifyId, goodsBrandId, goodsUnitId, goodsMinQuantity,
                     goodsPostageId, goodsBarCode, goodsKeyWord, goodsGuarantee,
-                    goodsMainImages, goodsDesc, goodsShelves, goodsSkuApproves);
+                    goodsMainImages, goodsDesc, goodsShelves, goodsSpecifications, goodsSkuApproves);
             goodsApproveApplication.addGoodsApprove(command);
             result.setStatus(MCode.V_200);
         } catch (NegativeException ne) {
@@ -220,6 +224,7 @@ public class GoodsApproveAgent {
             @RequestParam(value = "goodsGuarantee", required = false) List goodsGuarantee,
             @RequestParam(value = "goodsMainImages", required = false) List goodsMainImages,
             @RequestParam(value = "goodsDesc", required = false) String goodsDesc,
+            @RequestParam(value = "goodsSpecifications", required = false) String goodsSpecifications,
             @RequestParam(value = "goodsSKUs", required = false) String goodsSKUs) {
         MResult result = new MResult(MCode.V_1);
         try {
@@ -245,7 +250,7 @@ public class GoodsApproveAgent {
             GoodsApproveCommand command = new GoodsApproveCommand(goodsId, dealerId, goodsName, goodsSubTitle,
                     goodsClassifyId, goodsBrandId, goodsUnitId, goodsMinQuantity,
                     goodsPostageId, goodsBarCode, goodsKeyWord, goodsGuarantee,
-                    goodsMainImages, goodsDesc, goodsSKUs);
+                    goodsMainImages, goodsDesc, goodsSpecifications, goodsSKUs);
             goodsApproveApplication.modifyGoodsApprove(command);
             result.setStatus(MCode.V_200);
         } catch (NegativeException ne) {
@@ -256,5 +261,29 @@ public class GoodsApproveAgent {
             result = new MResult(MCode.V_400, "修改商品审核失败");
         }
         return new ResponseEntity<MResult>(result, HttpStatus.OK);
+    }
+
+    public static void main(String[] args) {
+        //specifications
+        Map map = new HashMap<>();
+        map.put("itemName", "尺寸");
+        List<String> values = new ArrayList<>();
+        values.add("L");
+        values.add("M");
+        map.put("itemValue", values);
+
+        Map map1 = new HashMap<>();
+        map1.put("itemName", "颜色");
+        List<String> values1 = new ArrayList<>();
+        values1.add("蓝色");
+        values1.add("白色");
+        map1.put("itemValue", values1);
+
+        List<Map> list = new ArrayList<>();
+        list.add(map);
+        list.add(map1);
+
+        System.out.print(JsonUtils.toStr(list));
+
     }
 }
