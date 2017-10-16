@@ -54,6 +54,7 @@ public class StandstardApplication {
 				throw new NegativeException(MCode.V_300,"规格不存在");
 			}
 	    	stantard.delStanstard();
+	    	stantardRepository.saveStantard(stantard);
 	    }
 	 
 	 
@@ -74,5 +75,6 @@ public class StandstardApplication {
 				throw new NegativeException(MCode.V_300,"规格不存在");
 			}
 	    	stantard.modify(command.getStantardId(), command.getStantardName(), command.getStantardStatus());
+	    	stantardRepository.saveStantard(stantard);
 	    }
 }

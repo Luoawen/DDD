@@ -140,7 +140,7 @@ public class Seller extends ConcurrencySafeEntity {
 			optFlag = 2;
 		}
 		DomainEventPublisher.instance()
-				.publish(new SellerAddOrUpdateEvent(this.sellerId, this.sellerName, this.sellerPhone, optFlag));
+				.publish(new SellerAddOrUpdateEvent(this.sellerId, this.sellerName, this.sellerPhone));
 
 	}
 

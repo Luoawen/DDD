@@ -10,6 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import cn.m2c.scm.application.dealer.command.DealerAddOrUpdateCommand;
 import cn.m2c.scm.application.dealer.command.ShopInfoUpdateCommand;
+import cn.m2c.scm.application.dealer.data.bean.DealerBean;
+import cn.m2c.scm.application.dealer.query.DealerQuery;
 import cn.m2c.scm.application.seller.command.SellerCommand;
 import cn.m2c.scm.domain.NegativeCode;
 import cn.m2c.scm.domain.NegativeException;
@@ -24,6 +26,7 @@ public class DealerApplication {
 
 	@Autowired
 	DealerRepository dealerRepository;
+	
 	
 	@Transactional(rollbackFor = {Exception.class,RuntimeException.class,NegativeException.class})
 	public void addDealer(DealerAddOrUpdateCommand command) throws NegativeException {
@@ -64,16 +67,18 @@ public class DealerApplication {
 	 * @param command
 	 * @throws NegativeException 
 	 */
+	@Transactional(rollbackFor = {Exception.class,RuntimeException.class,NegativeException.class})
 	public void updateSeller(SellerCommand command) throws NegativeException {
+		log.info("---修改经业务员信息");
 		//1sellerId 取出经销商列表
-		List<Dealer> sellerList = dealerRepository.getDealerListBySeller(command.getSellerId());
-		if (null == sellerList) {
+		Dealer dealer = dealerRepository.getDealerBySellerId(command.getSellerId());
+		if (null == dealer) {
 			throw new NegativeException(NegativeCode.DEALER_IS_NOT_EXIST, "此业务员对应的经销商不存在.");
 		}
 		//2循环经销商，把所有的业务员更新
-		for (Dealer dealer : sellerList) {
-			dealer.update(command.getSellerName(), command.getSellerPhone());
-		}
+	
+		dealer.updateSellerInfo(command.getSellerName(), command.getSellerPhone());
+		
 	}
 	
 	

@@ -55,6 +55,7 @@ public class UnitApplication {
 			throw new NegativeException(MCode.V_300,"计量单位不存在");
 		}
     	unit.deleteUnit();
+    	unitRepository.saveUnit(unit);
     }
     
     /**
@@ -74,6 +75,7 @@ public class UnitApplication {
 			throw new NegativeException(MCode.V_300,"计量单位不存在");
 		}
     	unit.modify(command.getUnitId(),command.getUnitName(), command.getUnitStatus());
+    	unitRepository.saveUnit(unit);
     }
 
 }

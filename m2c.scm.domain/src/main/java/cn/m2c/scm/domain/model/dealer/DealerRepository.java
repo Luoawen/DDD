@@ -17,11 +17,6 @@ public interface DealerRepository {
      */
     public void save(Dealer dealer);
 
-    /**
-     * 通过业务员Id获取经销商
-     * @param sellerId
-     * @return
-     */
-	public List<Dealer> getDealerListBySeller(String sellerId);
+    public Dealer getDealerBySellerId(String sellerId);
 
 }

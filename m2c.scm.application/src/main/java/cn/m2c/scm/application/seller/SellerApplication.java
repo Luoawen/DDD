@@ -8,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import cn.m2c.common.MCode;
 import cn.m2c.ddd.common.event.annotation.EventListener;
-import cn.m2c.scm.application.seller.command.SellerAddOrUpdateCommand;
 import cn.m2c.scm.application.seller.command.SellerCommand;
 import cn.m2c.scm.domain.NegativeCode;
 import cn.m2c.scm.domain.NegativeException;
@@ -51,15 +50,6 @@ public class SellerApplication {
 		sellerRepository.save(seller);
 	}
 
-	/*@Transactional(rollbackFor = { Exception.class, RuntimeException.class, NegativeException.class })
-	public void addOrUpdate(SellerAddOrUpdateCommand command) throws NegativeException {
-		log.info("---添加或修改经销商业务员", command.toString());
-		Seller seller = sellerRepository.getSeller(command.getSellerId());
-		if (seller == null)
-			throw new NegativeException(NegativeCode.SELLER_IS_NOT_EXIST, "此业务员不存在.");
-		
-		sellerRepository.save(seller);
-	}*/
 	
 	/**
 	 * 业务员添加或者更新事件
@@ -69,7 +59,7 @@ public class SellerApplication {
 	@Transactional(rollbackFor = { Exception.class, RuntimeException.class, NegativeException.class })
 	@EventListener(isListening = true)
 	public void addOrUpdateSeller(SellerCommand command) throws NegativeException {
-		log.info("SellerAddOrUpdate command >>{}", command);
+		log.info("SellerUpdate command >>{}", command);
 		Seller seller = sellerRepository.getSeller(command.getSellerId());
 		if (null == seller) {
 			throw new NegativeException(MCode.V_300, "业务员不存在");

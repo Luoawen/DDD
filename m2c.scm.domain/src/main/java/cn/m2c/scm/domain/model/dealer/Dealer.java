@@ -148,7 +148,7 @@ public class Dealer extends ConcurrencySafeEntity{
 	 * 更新业务员信息
 	 * @param sellerName
 	 */
-	public void update(String sellerName,String sellerPhone) {
+	public void updateSellerInfo(String sellerName,String sellerPhone) {
 		this.sellerName = sellerName;
 		this.sellerPhone = sellerPhone;
 	}

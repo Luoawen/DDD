@@ -48,6 +48,10 @@ public class DealerBean {
 	@ColumnAlias(value = "dealer_acode")
 	private String dealerAcode;
 	
+	@ColumnAlias(value = "seller_id")
+	private String sellerId;
+	
+
 	@ColumnAlias(value = "seller_name")
 	private String sellerName;
 	
@@ -176,6 +180,14 @@ public class DealerBean {
 		this.dealerAcode = dealerAcode;
 	}
 
+	public String getSellerId() {
+		return sellerId;
+	}
+
+	public void setSellerId(String sellerId) {
+		this.sellerId = sellerId;
+	}
+	
 	public String getSellerName() {
 		return sellerName;
 	}
@@ -247,6 +259,6 @@ public class DealerBean {
 	public void setDealerClassifyBean(DealerClassifyNameBean dealerClassifyBean) {
 		this.dealerClassifyBean = dealerClassifyBean;
 	}
-	
+
 	
 }

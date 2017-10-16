@@ -140,7 +140,6 @@ public class UnitAgent {
 		MResult result = new MResult(MCode.V_1);
 		try {
 			UnitBean unit = unitQuery.getUnitByUnitId(unitId);
-			System.out.println("获取到的数据----------------"+unit);
 			if (unit != null) {
 				result.setContent(unit);
 			}
