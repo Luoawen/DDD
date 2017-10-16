@@ -1,4 +1,4 @@
-package cn.m2c.scm.application.dealer.command;
+package cn.m2c.scm.application.shop.command;
 
 import java.io.Serializable;
 
@@ -9,6 +9,7 @@ public class ShopInfoUpdateCommand extends AssertionConcern implements Serializa
 	private static final long serialVersionUID = 1310691939002417740L;
 	
 	private String dealerId;
+	private String shopId;
 	private String shopName;//店铺名
 	private String shopIcon;//店铺图标
 	private String shopIntroduce;//店铺介绍
@@ -18,10 +19,11 @@ public class ShopInfoUpdateCommand extends AssertionConcern implements Serializa
 		super();
 	}
 	
-	public ShopInfoUpdateCommand(String dealerId, String shopName,
+	public ShopInfoUpdateCommand(String dealerId, String shopId, String shopName,
 			String shopIcon, String shopIntroduce, String customerServiceTel) {
 		super();
 		this.dealerId = dealerId;
+		this.shopId = shopId;
 		this.shopName = shopName;
 		this.shopIcon = shopIcon;
 		this.shopIntroduce = shopIntroduce;
@@ -42,6 +44,10 @@ public class ShopInfoUpdateCommand extends AssertionConcern implements Serializa
 	}
 	public String getCustomerServiceTel() {
 		return customerServiceTel;
+	}
+
+	public String getShopId() {
+		return shopId;
 	}
 	
 }
