@@ -124,4 +124,15 @@ public class GoodsApproveApplication {
                 command.getGoodsPostageId(), command.getGoodsBarCode(), command.getGoodsKeyWord(), JsonUtils.toStr(command.getGoodsGuarantee()),
                 JsonUtils.toStr(command.getGoodsMainImages()), command.getGoodsDesc(), command.getGoodsSpecifications(), command.getGoodsSkuApproves());
     }
+
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+    @EventListener(isListening = true)
+    public void deleteGoodsApprove(String goodsId) throws NegativeException {
+        LOGGER.info("deleteGoodsApprove goodsId >>{}", goodsId);
+        GoodsApprove goodsApprove = goodsApproveRepository.queryGoodsApproveById(goodsId);
+        if (null == goodsApprove) {
+            throw new NegativeException(MCode.V_300, "商品审核信息不存在");
+        }
+        goodsApprove.remove();
+    }
 }

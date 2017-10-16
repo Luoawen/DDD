@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -258,7 +259,24 @@ public class GoodsApproveAgent {
             result = new MResult(ne.getStatus(), ne.getMessage());
         } catch (Exception e) {
             LOGGER.error("modifyGoodsApprove Exception e:", e);
-            result = new MResult(MCode.V_400, "修改商品审核失败");
+            result = new MResult(MCode.V_400, "修改商品审核信息失败");
+        }
+        return new ResponseEntity<MResult>(result, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/{goodsId}", method = RequestMethod.DELETE)
+    public ResponseEntity<MResult> delGoodsApprove(
+            @PathVariable("goodsId") String goodsId
+    ) {
+        MResult result = new MResult(MCode.V_1);
+        try {
+            goodsApproveApplication.deleteGoodsApprove(goodsId);
+        } catch (NegativeException ne) {
+            LOGGER.error("delGoodsApprove NegativeException e:", ne);
+            result = new MResult(ne.getStatus(), ne.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("delGoodsApprove Exception e:", e);
+            result = new MResult(MCode.V_400, "删除商品审核信息失败");
         }
         return new ResponseEntity<MResult>(result, HttpStatus.OK);
     }

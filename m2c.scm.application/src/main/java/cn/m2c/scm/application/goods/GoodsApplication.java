@@ -56,6 +56,17 @@ public class GoodsApplication {
         goods.modifyGoods(command.getGoodsName(), command.getGoodsSubTitle(),
                 command.getGoodsClassifyId(), command.getGoodsBrandId(), command.getGoodsUnitId(), command.getGoodsMinQuantity(),
                 command.getGoodsPostageId(), command.getGoodsBarCode(), command.getGoodsKeyWord(), command.getGoodsGuarantee(),
-                command.getGoodsMainImages(), command.getGoodsDesc(),command.getGoodsSpecifications(), command.getGoodsSKUs());
+                command.getGoodsMainImages(), command.getGoodsDesc(), command.getGoodsSpecifications(), command.getGoodsSKUs());
+    }
+
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+    @EventListener(isListening = true)
+    public void deleteGoods(String goodsId) throws NegativeException {
+        LOGGER.info("deleteGoods goodsId >>{}", goodsId);
+        Goods goods = goodsRepository.queryGoodsById(goodsId);
+        if (null == goods) {
+            throw new NegativeException(MCode.V_300, "商品不存在");
+        }
+        goods.remove();
     }
 }

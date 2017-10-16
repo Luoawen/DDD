@@ -4,6 +4,7 @@ import cn.m2c.ddd.common.domain.model.ConcurrencySafeEntity;
 import cn.m2c.ddd.common.domain.model.DomainEventPublisher;
 import cn.m2c.ddd.common.serializer.ObjectSerializer;
 import cn.m2c.scm.domain.model.goods.event.GoodsApproveAddEvent;
+import cn.m2c.scm.domain.model.goods.event.GoodsDeleteEvent;
 import cn.m2c.scm.domain.util.GetMapValueUtils;
 
 import java.util.ArrayList;
@@ -294,6 +295,8 @@ public class Goods extends ConcurrencySafeEntity {
 
     public void remove() {
         this.delStatus = 2;
-        this.goodsId = new StringBuffer("DEL_").append(this.goodsId).toString();
+        DomainEventPublisher
+                .instance()
+                .publish(new GoodsDeleteEvent(this.goodsId));
     }
 }

@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -250,6 +251,23 @@ public class GoodsAgent {
             result = new MResult(MCode.V_400, "修改商品失败");
         }
 
+        return new ResponseEntity<MResult>(result, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/{goodsId}", method = RequestMethod.DELETE)
+    public ResponseEntity<MResult> delGoods(
+            @PathVariable("goodsId") String goodsId
+    ) {
+        MResult result = new MResult(MCode.V_1);
+        try {
+            goodsApplication.deleteGoods(goodsId);
+        } catch (NegativeException ne) {
+            LOGGER.error("delGoods NegativeException e:", ne);
+            result = new MResult(ne.getStatus(), ne.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("delGoods Exception e:", e);
+            result = new MResult(MCode.V_400, "删除商品失败");
+        }
         return new ResponseEntity<MResult>(result, HttpStatus.OK);
     }
 }
