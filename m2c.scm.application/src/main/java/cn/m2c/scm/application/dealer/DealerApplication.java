@@ -8,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import cn.m2c.ddd.common.event.annotation.EventListener;
 import cn.m2c.scm.application.dealer.command.DealerAddOrUpdateCommand;
-import cn.m2c.scm.application.dealer.command.ShopInfoUpdateCommand;
 import cn.m2c.scm.domain.NegativeCode;
 import cn.m2c.scm.domain.NegativeException;
 import cn.m2c.scm.domain.model.dealer.Dealer;
@@ -47,16 +46,6 @@ public class DealerApplication {
 		dealerRepository.save(dealer);
 	}
 	
-	@Transactional(rollbackFor = {Exception.class,RuntimeException.class,NegativeException.class})
-	public void updateShopInfo(ShopInfoUpdateCommand command) throws NegativeException {
-		// TODO Auto-generated method stub
-		log.info("---修改经销商店铺信息");
-		Dealer dealer = dealerRepository.getDealer(command.getDealerId());
-		if(dealer==null)
-			throw new NegativeException(NegativeCode.DEALER_IS_NOT_EXIST, "此经销商不存在.");
-		dealer.updateShopInfo(command.getShopName(),command.getShopIntroduce(),command.getShopIcon(),command.getCustomerServiceTel());
-		dealerRepository.save(dealer);
-	}
 	
 	
 	

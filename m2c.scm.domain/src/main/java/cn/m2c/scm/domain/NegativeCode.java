@@ -321,5 +321,13 @@ public final class NegativeCode {
 	public static final Integer LOCATION_IS_NOT_EXIST = 140028;
 	
 	public static final Integer LOCATION_IS_EXIST = 140029;
+	/**
+	 * 经销商店铺不存在
+	 */
+	public static final Integer DEALER_SHOP_IS_NOT_EXIST = 140030;
+	/**
+	 * 店铺已存在
+	 */
 	
+	public static final Integer DEALER_SHOP_IS_EXIST = 140031;
 }
