@@ -78,7 +78,7 @@ public class DealerApplication {
 		//2循环经销商，把所有的业务员更新
 	
 		dealer.updateSellerInfo(command.getSellerName(), command.getSellerPhone());
-		
+		dealerRepository.save(dealer);
 	}
 	
 	
