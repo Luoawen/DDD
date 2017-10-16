@@ -270,4 +270,50 @@ public class GoodsAgent {
         }
         return new ResponseEntity<MResult>(result, HttpStatus.OK);
     }
+
+    /**
+     * 商品上架
+     *
+     * @param goodsId
+     * @return
+     */
+    @RequestMapping(value = "/up/shelf/{goodsId}", method = RequestMethod.PUT)
+    public ResponseEntity<MResult> upShelfGoods(
+            @PathVariable("goodsId") String goodsId
+    ) {
+        MResult result = new MResult(MCode.V_1);
+        try {
+            goodsApplication.upShelfGoods(goodsId);
+        } catch (NegativeException ne) {
+            LOGGER.error("upShelfGoods NegativeException e:", ne);
+            result = new MResult(ne.getStatus(), ne.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("upShelfGoods Exception e:", e);
+            result = new MResult(MCode.V_400, "商品上架失败");
+        }
+        return new ResponseEntity<MResult>(result, HttpStatus.OK);
+    }
+
+    /**
+     * 商品下架
+     *
+     * @param goodsId
+     * @return
+     */
+    @RequestMapping(value = "/off/shelf/{goodsId}", method = RequestMethod.PUT)
+    public ResponseEntity<MResult> offShelfGoods(
+            @PathVariable("goodsId") String goodsId
+    ) {
+        MResult result = new MResult(MCode.V_1);
+        try {
+            goodsApplication.offShelfGoods(goodsId);
+        } catch (NegativeException ne) {
+            LOGGER.error("offShelfGoods NegativeException e:", ne);
+            result = new MResult(ne.getStatus(), ne.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("offShelfGoods Exception e:", e);
+            result = new MResult(MCode.V_400, "商品下架失败");
+        }
+        return new ResponseEntity<MResult>(result, HttpStatus.OK);
+    }
 }

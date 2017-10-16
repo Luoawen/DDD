@@ -42,6 +42,12 @@ public class GoodsApplication {
         goodsRepository.save(goods);
     }
 
+    /**
+     * 修改商品
+     *
+     * @param command
+     * @throws NegativeException
+     */
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
     @EventListener(isListening = true)
     public void modifyGoods(GoodsCommand command) throws NegativeException {
@@ -68,5 +74,39 @@ public class GoodsApplication {
             throw new NegativeException(MCode.V_300, "商品不存在");
         }
         goods.remove();
+    }
+
+    /**
+     * 商品上架
+     *
+     * @param goodsId
+     * @throws NegativeException
+     */
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+    @EventListener(isListening = true)
+    public void upShelfGoods(String goodsId) throws NegativeException {
+        LOGGER.info("upShelfGoods goodsId >>{}", goodsId);
+        Goods goods = goodsRepository.queryGoodsById(goodsId);
+        if (null == goods) {
+            throw new NegativeException(MCode.V_300, "商品不存在");
+        }
+        goods.upShelf();
+    }
+
+    /**
+     * 商品下架
+     *
+     * @param goodsId
+     * @throws NegativeException
+     */
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+    @EventListener(isListening = true)
+    public void offShelfGoods(String goodsId) throws NegativeException {
+        LOGGER.info("offShelfGoods goodsId >>{}", goodsId);
+        Goods goods = goodsRepository.queryGoodsById(goodsId);
+        if (null == goods) {
+            throw new NegativeException(MCode.V_300, "商品不存在");
+        }
+        goods.offShelf();
     }
 }

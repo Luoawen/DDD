@@ -293,10 +293,27 @@ public class Goods extends ConcurrencySafeEntity {
         }
     }
 
+    /**
+     * 删除商品
+     */
     public void remove() {
         this.delStatus = 2;
         DomainEventPublisher
                 .instance()
                 .publish(new GoodsDeleteEvent(this.goodsId));
+    }
+
+    /**
+     * 上架,商品状态，1：仓库中，2：出售中，3：已售罄
+     */
+    public void upShelf() {
+        this.goodsStatus = 2;
+    }
+
+    /**
+     * 下架,商品状态，1：仓库中，2：出售中，3：已售罄
+     */
+    public void offShelf() {
+        this.goodsStatus = 1;
     }
 }
