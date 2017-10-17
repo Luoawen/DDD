@@ -17,6 +17,7 @@
         <property name="goodsSubTitle" column="goods_sub_title" type="string"/>
         <property name="goodsClassifyId" column="goods_classify_id" type="string"/>
         <property name="goodsBrandId" column="goods_brand_id" type="string"/>
+        <property name="goodsBrandName" column="goods_brand_name" type="string"/>
         <property name="goodsUnitId" column="goods_unit_id" type="string"/>
         <property name="goodsMinQuantity" column="goods_min_quantity" type="int"/>
         <property name="goodsPostageId" column="goods_postage_id" type="string"/>
@@ -31,8 +32,9 @@
         <property name="goodsStatus" column="goods_status" type="int"/>
         <property name="goodsSpecifications" column="goods_specifications" type="text"/>
         <property name="delStatus" column="del_status" type="int"/>
-        <bag name="goodsSKUs" lazy="false"  cascade="all-delete-orphan" inverse="true">
-            <key column="goods_id" />
+        <property name="createdDate" column="created_date" type="timestamp"/>
+        <bag name="goodsSKUs" lazy="false" cascade="all-delete-orphan" inverse="true">
+            <key column="goods_id"/>
             <one-to-many class="cn.m2c.scm.domain.model.goods.GoodsSku"/>
         </bag>
     </class>

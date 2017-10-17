@@ -35,6 +35,7 @@ public class GoodsApproveAgreeListener extends ExchangeListener {
         String goodsSubTitle = reader.eventStringValue("goodsSubTitle");
         String goodsClassifyId = reader.eventStringValue("goodsClassifyId");
         String goodsBrandId = reader.eventStringValue("goodsBrandId");
+        String goodsBrandName = reader.eventStringValue("goodsBrandName");
         String goodsUnitId = reader.eventStringValue("goodsUnitId");
         Integer goodsMinQuantity = reader.eventIntegerValue("goodsMinQuantity");
         String goodsPostageId = reader.eventStringValue("goodsPostageId");
@@ -46,7 +47,7 @@ public class GoodsApproveAgreeListener extends ExchangeListener {
         Integer goodsShelves = reader.eventIntegerValue("goodsShelves");
         String goodsSkuApproves = reader.eventStringValue("goodsSkuApproves");
         GoodsCommand command = new GoodsCommand(goodsId, dealerId, dealerName, goodsName, goodsSubTitle,
-                goodsClassifyId, goodsBrandId, goodsUnitId, goodsMinQuantity,
+                goodsClassifyId, goodsBrandId,goodsBrandName, goodsUnitId, goodsMinQuantity,
                 goodsPostageId, goodsBarCode, goodsKeyWord, goodsGuarantee,
                 goodsMainImages, goodsDesc, goodsShelves, goodsSkuApproves);
         goodsApplication.saveGoods(command);

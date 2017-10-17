@@ -21,6 +21,20 @@
         <property name="goodsCode" column="goods_code" type="string"/>
         <property name="sellerNum" column="seller_num" type="int"/>
         <property name="showStatus" column="show_status" type="int"/>
+        <property name="delStatus" column="del_status" type="int"/>
+        <component name="goodsSearchInfo">
+            <property name="dealerName" column="dealer_name" type="string"/>
+            <property name="goodsName" column="goods_name" type="string"/>
+            <property name="goodsSubTitle" column="goods_sub_title" type="string"/>
+            <property name="goodsClassifyId" column="goods_classify_id" type="string"/>
+            <property name="goodsBrandId" column="goods_brand_id" type="string"/>
+            <property name="goodsBrandName" column="goods_brand_name" type="string"/>
+            <property name="goodsBarCode" column="goods_bar_code" type="string"/>
+            <property name="goodsKeyWord" column="goods_key_word" type="string"/>
+            <property name="goodsDesc" column="goods_desc" type="text"/>
+            <property name="goodsStatus" column="goods_status" type="int"/>
+            <property name="goodsCreatedDate" column="goods_created_date" type="timestamp"/>
+        </component>
         <many-to-one name="goods" column="goods_id" class="cn.m2c.scm.domain.model.goods.Goods"
                      cascade="save-update" fetch="join"/>
     </class>

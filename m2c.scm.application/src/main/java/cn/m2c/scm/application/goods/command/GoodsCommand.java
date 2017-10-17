@@ -44,6 +44,11 @@ public class GoodsCommand extends AssertionConcern implements Serializable {
     private String goodsBrandId;
 
     /**
+     * 商品品牌名称
+     */
+    private String goodsBrandName;
+
+    /**
      * 商品计量单位id
      */
     private String goodsUnitId;
@@ -95,7 +100,7 @@ public class GoodsCommand extends AssertionConcern implements Serializable {
     private String goodsSpecifications;
 
     public GoodsCommand(String goodsId, String dealerId, String dealerName, String goodsName, String goodsSubTitle,
-                        String goodsClassifyId, String goodsBrandId, String goodsUnitId, Integer goodsMinQuantity,
+                        String goodsClassifyId, String goodsBrandId, String goodsBrandName, String goodsUnitId, Integer goodsMinQuantity,
                         String goodsPostageId, String goodsBarCode, String goodsKeyWord, String goodsGuarantee,
                         String goodsMainImages, String goodsDesc, Integer goodsShelves, String goodsSKUs) {
         this.goodsId = goodsId;
@@ -105,6 +110,7 @@ public class GoodsCommand extends AssertionConcern implements Serializable {
         this.goodsSubTitle = goodsSubTitle;
         this.goodsClassifyId = goodsClassifyId;
         this.goodsBrandId = goodsBrandId;
+        this.goodsBrandName = goodsBrandName;
         this.goodsUnitId = goodsUnitId;
         this.goodsMinQuantity = goodsMinQuantity;
         this.goodsPostageId = goodsPostageId;
@@ -118,7 +124,7 @@ public class GoodsCommand extends AssertionConcern implements Serializable {
     }
 
     public GoodsCommand(String goodsId, String dealerId, String goodsName, String goodsSubTitle,
-                        String goodsClassifyId, String goodsBrandId, String goodsUnitId, Integer goodsMinQuantity,
+                        String goodsClassifyId, String goodsBrandId,String goodsBrandName, String goodsUnitId, Integer goodsMinQuantity,
                         String goodsPostageId, String goodsBarCode, String goodsKeyWord, String goodsGuarantee,
                         String goodsMainImages, String goodsDesc, String goodsSpecifications, String goodsSKUs) {
         this.goodsId = goodsId;
@@ -127,6 +133,7 @@ public class GoodsCommand extends AssertionConcern implements Serializable {
         this.goodsSubTitle = goodsSubTitle;
         this.goodsClassifyId = goodsClassifyId;
         this.goodsBrandId = goodsBrandId;
+        this.goodsBrandName=goodsBrandName;
         this.goodsUnitId = goodsUnitId;
         this.goodsMinQuantity = goodsMinQuantity;
         this.goodsPostageId = goodsPostageId;
@@ -209,5 +216,9 @@ public class GoodsCommand extends AssertionConcern implements Serializable {
 
     public String getGoodsSpecifications() {
         return goodsSpecifications;
+    }
+
+    public String getGoodsBrandName() {
+        return goodsBrandName;
     }
 }

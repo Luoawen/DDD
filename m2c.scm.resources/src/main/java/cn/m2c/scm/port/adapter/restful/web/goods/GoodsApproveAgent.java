@@ -93,6 +93,7 @@ public class GoodsApproveAgent {
             @RequestParam(value = "goodsSubTitle", required = false) String goodsSubTitle,
             @RequestParam(value = "goodsClassifyId", required = false) String goodsClassifyId,
             @RequestParam(value = "goodsBrandId", required = false) String goodsBrandId,
+            @RequestParam(value = "goodsBrandName", required = false) String goodsBrandName,
             @RequestParam(value = "goodsUnitId", required = false) String goodsUnitId,
             @RequestParam(value = "goodsMinQuantity", required = false) Integer goodsMinQuantity,
             @RequestParam(value = "goodsPostageId", required = false) String goodsPostageId,
@@ -124,7 +125,7 @@ public class GoodsApproveAgent {
             }
             goodsSkuApproves = JsonUtils.toStr(skuList);
             GoodsApproveCommand command = new GoodsApproveCommand(goodsId, dealerId, dealerName, goodsName, goodsSubTitle,
-                    goodsClassifyId, goodsBrandId, goodsUnitId, goodsMinQuantity,
+                    goodsClassifyId, goodsBrandId, goodsBrandName, goodsUnitId, goodsMinQuantity,
                     goodsPostageId, goodsBarCode, goodsKeyWord, goodsGuarantee,
                     goodsMainImages, goodsDesc, goodsShelves, goodsSpecifications, goodsSkuApproves);
             goodsApproveApplication.addGoodsApprove(command);
@@ -217,6 +218,7 @@ public class GoodsApproveAgent {
             @RequestParam(value = "goodsSubTitle", required = false) String goodsSubTitle,
             @RequestParam(value = "goodsClassifyId", required = false) String goodsClassifyId,
             @RequestParam(value = "goodsBrandId", required = false) String goodsBrandId,
+            @RequestParam(value = "goodsBrandName", required = false) String goodsBrandName,
             @RequestParam(value = "goodsUnitId", required = false) String goodsUnitId,
             @RequestParam(value = "goodsMinQuantity", required = false) Integer goodsMinQuantity,
             @RequestParam(value = "goodsPostageId", required = false) String goodsPostageId,
@@ -249,7 +251,7 @@ public class GoodsApproveAgent {
                 return new ResponseEntity<MResult>(result, HttpStatus.OK);
             }
             GoodsApproveCommand command = new GoodsApproveCommand(goodsId, dealerId, goodsName, goodsSubTitle,
-                    goodsClassifyId, goodsBrandId, goodsUnitId, goodsMinQuantity,
+                    goodsClassifyId, goodsBrandId, goodsBrandName, goodsUnitId, goodsMinQuantity,
                     goodsPostageId, goodsBarCode, goodsKeyWord, goodsGuarantee,
                     goodsMainImages, goodsDesc, goodsSpecifications, goodsSKUs);
             goodsApproveApplication.modifyGoodsApprove(command);

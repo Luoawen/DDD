@@ -8,6 +8,7 @@ import cn.m2c.scm.domain.model.goods.event.GoodsDeleteEvent;
 import cn.m2c.scm.domain.util.GetMapValueUtils;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -49,6 +50,11 @@ public class Goods extends ConcurrencySafeEntity {
      * 商品品牌id
      */
     private String goodsBrandId;
+
+    /**
+     * 商品品牌名称
+     */
+    private String goodsBrandName;
 
     /**
      * 商品计量单位id
@@ -130,13 +136,18 @@ public class Goods extends ConcurrencySafeEntity {
      */
     private Integer delStatus;
 
+    /**
+     * 创建时间
+     */
+    private Date createdDate;
+
 
     public Goods() {
         super();
     }
 
     public Goods(String goodsId, String dealerId, String dealerName, String goodsName, String goodsSubTitle,
-                 String goodsClassifyId, String goodsBrandId, String goodsUnitId, Integer goodsMinQuantity,
+                 String goodsClassifyId, String goodsBrandId, String goodsBrandName, String goodsUnitId, Integer goodsMinQuantity,
                  String goodsPostageId, String goodsBarCode, String goodsKeyWord, String goodsGuarantee,
                  String goodsMainImages, String goodsDesc, Integer goodsShelves, String goodsSpecifications, String goodsSKUs) {
         this.goodsId = goodsId;
@@ -146,6 +157,7 @@ public class Goods extends ConcurrencySafeEntity {
         this.goodsSubTitle = goodsSubTitle;
         this.goodsClassifyId = goodsClassifyId;
         this.goodsBrandId = goodsBrandId;
+        this.goodsBrandName = goodsBrandName;
         this.goodsUnitId = goodsUnitId;
         this.goodsMinQuantity = goodsMinQuantity;
         this.goodsPostageId = goodsPostageId;
@@ -161,7 +173,7 @@ public class Goods extends ConcurrencySafeEntity {
             this.goodsStatus = 2;
         }
         this.goodsSpecifications = goodsSpecifications;
-
+        this.createdDate = new Date();
         if (null == this.goodsSKUs) {
             this.goodsSKUs = new ArrayList<>();
         } else {
@@ -185,8 +197,11 @@ public class Goods extends ConcurrencySafeEntity {
         Long supplyPrice = GetMapValueUtils.getLongFromMapKey(map, "supplyPrice");
         String goodsCode = GetMapValueUtils.getStringFromMapKey(map, "goodsCode");
         Integer showStatus = GetMapValueUtils.getIntFromMapKey(map, "showStatus");
+        GoodsSearchInfo goodsSearchInfo = new GoodsSearchInfo(this.dealerName, this.goodsName, this.goodsSubTitle, this.goodsClassifyId,
+                this.goodsBrandId, this.goodsBrandName, this.goodsBarCode, this.goodsDesc, this.goodsKeyWord,
+                this.goodsStatus, this.createdDate);
         GoodsSku goodsSku = new GoodsSku(this, skuId, skuName, availableNum, availableNum, weight,
-                photographPrice, marketPrice, supplyPrice, goodsCode, showStatus);
+                photographPrice, marketPrice, supplyPrice, goodsCode, showStatus, goodsSearchInfo);
         return goodsSku;
     }
 
@@ -238,13 +253,14 @@ public class Goods extends ConcurrencySafeEntity {
      * 修改商品
      */
     public void modifyGoods(String goodsName, String goodsSubTitle,
-                            String goodsClassifyId, String goodsBrandId, String goodsUnitId, Integer goodsMinQuantity,
+                            String goodsClassifyId, String goodsBrandId, String goodsBrandName, String goodsUnitId, Integer goodsMinQuantity,
                             String goodsPostageId, String goodsBarCode, String goodsKeyWord, String goodsGuarantee,
                             String goodsMainImages, String goodsDesc, String goodsSpecifications, String goodsSKUs) {
         this.goodsName = goodsName;
         this.goodsSubTitle = goodsSubTitle;
         this.goodsClassifyId = goodsClassifyId;
         this.goodsBrandId = goodsBrandId;
+        this.goodsBrandName = goodsBrandName;
         this.goodsUnitId = goodsUnitId;
         this.goodsMinQuantity = goodsMinQuantity;
         this.goodsPostageId = goodsPostageId;
@@ -271,7 +287,10 @@ public class Goods extends ConcurrencySafeEntity {
                     String goodsCode = GetMapValueUtils.getStringFromMapKey(map, "goodsCode");
                     Integer showStatus = GetMapValueUtils.getIntFromMapKey(map, "showStatus");
                     // 修改商品规格不需要审批的信息
-                    goodsSku.modifyNotApproveGoodsSku(availableNum, weight, marketPrice, goodsCode, showStatus);
+                    GoodsSearchInfo goodsSearchInfo = new GoodsSearchInfo(this.dealerName, this.goodsName, this.goodsSubTitle, this.goodsClassifyId,
+                            this.goodsBrandId, this.goodsBrandName, this.goodsBarCode, this.goodsDesc, this.goodsKeyWord,
+                            this.goodsStatus, this.createdDate);
+                    goodsSku.modifyNotApproveGoodsSku(availableNum, weight, marketPrice, goodsCode, showStatus, goodsSearchInfo);
 
                     // 判断供货价和拍获价是否修改
                     Long photographPrice = GetMapValueUtils.getLongFromMapKey(map, "photographPrice");
@@ -298,6 +317,9 @@ public class Goods extends ConcurrencySafeEntity {
      */
     public void remove() {
         this.delStatus = 2;
+        for (GoodsSku goodsSku : this.goodsSKUs) {
+            goodsSku.remove();
+        }
         DomainEventPublisher
                 .instance()
                 .publish(new GoodsDeleteEvent(this.goodsId));

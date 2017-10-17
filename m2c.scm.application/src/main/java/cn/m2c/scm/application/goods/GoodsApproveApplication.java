@@ -43,7 +43,7 @@ public class GoodsApproveApplication {
             }
             goodsApprove = new GoodsApprove(command.getGoodsId(), command.getDealerId(), command.getDealerName(),
                     command.getGoodsName(), command.getGoodsSubTitle(), command.getGoodsClassifyId(),
-                    command.getGoodsBrandId(), command.getGoodsUnitId(), command.getGoodsMinQuantity(),
+                    command.getGoodsBrandId(), command.getGoodsBrandName(), command.getGoodsUnitId(), command.getGoodsMinQuantity(),
                     command.getGoodsPostageId(), command.getGoodsBarCode(), command.getGoodsKeyWord(),
                     JsonUtils.toStr(command.getGoodsGuarantee()), JsonUtils.toStr(command.getGoodsMainImages()),
                     command.getGoodsDesc(), command.getGoodsShelves(), command.getGoodsSpecifications(), command.getGoodsSkuApproves());
@@ -67,13 +67,13 @@ public class GoodsApproveApplication {
         if (null == goodsApprove) {
             goodsApprove = new GoodsApprove(command.getGoodsId(), command.getDealerId(), command.getDealerName(),
                     command.getGoodsName(), command.getGoodsSubTitle(), command.getGoodsClassifyId(),
-                    command.getGoodsBrandId(), command.getGoodsUnitId(), command.getGoodsMinQuantity(),
+                    command.getGoodsBrandId(), command.getGoodsBrandName(), command.getGoodsUnitId(), command.getGoodsMinQuantity(),
                     command.getGoodsPostageId(), command.getGoodsBarCode(), command.getGoodsKeyWord(),
                     JsonUtils.toStr(command.getGoodsGuarantee()), JsonUtils.toStr(command.getGoodsMainImages()),
                     command.getGoodsDesc(), null, command.getGoodsSpecifications(), command.getGoodsSkuApproves());
         } else {
             goodsApprove.modifyGoodsApprove(command.getGoodsName(), command.getGoodsSubTitle(),
-                    command.getGoodsClassifyId(), command.getGoodsBrandId(), command.getGoodsUnitId(), command.getGoodsMinQuantity(),
+                    command.getGoodsClassifyId(), command.getGoodsBrandId(), command.getGoodsBrandName(), command.getGoodsUnitId(), command.getGoodsMinQuantity(),
                     command.getGoodsPostageId(), command.getGoodsBarCode(), command.getGoodsKeyWord(), JsonUtils.toStr(command.getGoodsGuarantee()),
                     JsonUtils.toStr(command.getGoodsMainImages()), command.getGoodsDesc(), command.getGoodsSpecifications(), command.getGoodsSkuApproves());
         }
@@ -120,7 +120,7 @@ public class GoodsApproveApplication {
             throw new NegativeException(MCode.V_300, "商品审核信息不存在");
         }
         goodsApprove.modifyGoodsApprove(command.getGoodsName(), command.getGoodsSubTitle(),
-                command.getGoodsClassifyId(), command.getGoodsBrandId(), command.getGoodsUnitId(), command.getGoodsMinQuantity(),
+                command.getGoodsClassifyId(), command.getGoodsBrandId(), command.getGoodsBrandName(), command.getGoodsUnitId(), command.getGoodsMinQuantity(),
                 command.getGoodsPostageId(), command.getGoodsBarCode(), command.getGoodsKeyWord(), JsonUtils.toStr(command.getGoodsGuarantee()),
                 JsonUtils.toStr(command.getGoodsMainImages()), command.getGoodsDesc(), command.getGoodsSpecifications(), command.getGoodsSkuApproves());
     }

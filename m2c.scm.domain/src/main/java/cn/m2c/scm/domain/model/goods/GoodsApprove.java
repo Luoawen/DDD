@@ -51,6 +51,11 @@ public class GoodsApprove extends ConcurrencySafeEntity {
     private String goodsBrandId;
 
     /**
+     * 商品品牌名称
+     */
+    private String goodsBrandName;
+
+    /**
      * 商品计量单位id
      */
     private String goodsUnitId;
@@ -130,7 +135,7 @@ public class GoodsApprove extends ConcurrencySafeEntity {
     }
 
     public GoodsApprove(String goodsId, String dealerId, String dealerName, String goodsName, String goodsSubTitle,
-                        String goodsClassifyId, String goodsBrandId, String goodsUnitId, Integer goodsMinQuantity,
+                        String goodsClassifyId, String goodsBrandId, String goodsBrandName, String goodsUnitId, Integer goodsMinQuantity,
                         String goodsPostageId, String goodsBarCode, String goodsKeyWord, String goodsGuarantee,
                         String goodsMainImages, String goodsDesc, Integer goodsShelves, String goodsSpecifications, String goodsSkuApproves) {
         this.goodsId = goodsId;
@@ -140,6 +145,7 @@ public class GoodsApprove extends ConcurrencySafeEntity {
         this.goodsSubTitle = goodsSubTitle;
         this.goodsClassifyId = goodsClassifyId;
         this.goodsBrandId = goodsBrandId;
+        this.goodsBrandName = goodsBrandName;
         this.goodsUnitId = goodsUnitId;
         this.goodsMinQuantity = goodsMinQuantity;
         this.goodsPostageId = goodsPostageId;
@@ -214,13 +220,14 @@ public class GoodsApprove extends ConcurrencySafeEntity {
     }
 
     public void modifyGoodsApprove(String goodsName, String goodsSubTitle,
-                                   String goodsClassifyId, String goodsBrandId, String goodsUnitId, Integer goodsMinQuantity,
+                                   String goodsClassifyId, String goodsBrandId, String goodsBrandName, String goodsUnitId, Integer goodsMinQuantity,
                                    String goodsPostageId, String goodsBarCode, String goodsKeyWord, String goodsGuarantee,
                                    String goodsMainImages, String goodsDesc, String goodsSpecifications, String goodsSkuApproves) {
         this.goodsName = goodsName;
         this.goodsSubTitle = goodsSubTitle;
         this.goodsClassifyId = goodsClassifyId;
         this.goodsBrandId = goodsBrandId;
+        this.goodsBrandName = goodsBrandName;
         this.goodsUnitId = goodsUnitId;
         this.goodsMinQuantity = goodsMinQuantity;
         this.goodsPostageId = goodsPostageId;

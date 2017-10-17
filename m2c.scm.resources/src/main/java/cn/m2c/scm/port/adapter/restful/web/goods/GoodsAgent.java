@@ -210,6 +210,7 @@ public class GoodsAgent {
             @RequestParam(value = "goodsSubTitle", required = false) String goodsSubTitle,
             @RequestParam(value = "goodsClassifyId", required = false) String goodsClassifyId,
             @RequestParam(value = "goodsBrandId", required = false) String goodsBrandId,
+            @RequestParam(value = "goodsBrandName", required = false) String goodsBrandName,
             @RequestParam(value = "goodsUnitId", required = false) String goodsUnitId,
             @RequestParam(value = "goodsMinQuantity", required = false) Integer goodsMinQuantity,
             @RequestParam(value = "goodsPostageId", required = false) String goodsPostageId,
@@ -242,7 +243,7 @@ public class GoodsAgent {
                 return new ResponseEntity<MResult>(result, HttpStatus.OK);
             }
             GoodsCommand command = new GoodsCommand(goodsId, dealerId, goodsName, goodsSubTitle,
-                    goodsClassifyId, goodsBrandId, goodsUnitId, goodsMinQuantity,
+                    goodsClassifyId, goodsBrandId, goodsBrandName, goodsUnitId, goodsMinQuantity,
                     goodsPostageId, goodsBarCode, goodsKeyWord, JsonUtils.toStr(goodsGuarantee),
                     JsonUtils.toStr(goodsMainImages), goodsDesc, goodsSpecifications, goodsSKUs);
             goodsApplication.modifyGoods(command);

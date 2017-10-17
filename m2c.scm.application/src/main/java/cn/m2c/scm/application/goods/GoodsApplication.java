@@ -33,7 +33,7 @@ public class GoodsApplication {
         Goods goods = goodsRepository.queryGoodsById(command.getGoodsId());
         if (null == goods) {//增加商品
             goods = new Goods(command.getGoodsId(), command.getDealerId(), command.getDealerName(), command.getGoodsName(), command.getGoodsSubTitle(),
-                    command.getGoodsClassifyId(), command.getGoodsBrandId(), command.getGoodsUnitId(), command.getGoodsMinQuantity(),
+                    command.getGoodsClassifyId(), command.getGoodsBrandId(), command.getGoodsBrandName(), command.getGoodsUnitId(), command.getGoodsMinQuantity(),
                     command.getGoodsPostageId(), command.getGoodsBarCode(), command.getGoodsKeyWord(), command.getGoodsGuarantee(),
                     command.getGoodsMainImages(), command.getGoodsDesc(), command.getGoodsShelves(), command.getGoodsSpecifications(), command.getGoodsSKUs());
         } else {//修改商品审核：修改商品的拍获价，供货价，规格
@@ -60,13 +60,14 @@ public class GoodsApplication {
             throw new NegativeException(MCode.V_300, "商品名称已存在");
         }
         goods.modifyGoods(command.getGoodsName(), command.getGoodsSubTitle(),
-                command.getGoodsClassifyId(), command.getGoodsBrandId(), command.getGoodsUnitId(), command.getGoodsMinQuantity(),
+                command.getGoodsClassifyId(), command.getGoodsBrandId(), command.getGoodsBrandName(), command.getGoodsUnitId(), command.getGoodsMinQuantity(),
                 command.getGoodsPostageId(), command.getGoodsBarCode(), command.getGoodsKeyWord(), command.getGoodsGuarantee(),
                 command.getGoodsMainImages(), command.getGoodsDesc(), command.getGoodsSpecifications(), command.getGoodsSKUs());
     }
 
     /**
      * 删除商品
+     *
      * @param goodsId
      * @throws NegativeException
      */
