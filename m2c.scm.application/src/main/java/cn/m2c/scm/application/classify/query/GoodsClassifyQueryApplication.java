@@ -79,10 +79,7 @@ public class GoodsClassifyQueryApplication {
         if (null != subGoodsClassifyBeans && subGoodsClassifyBeans.size() > 0) {
             for (GoodsClassifyBean bean : subGoodsClassifyBeans) {
                 resultList.add(bean.getClassifyId());
-                List<String> subList = recursionQueryGoodsSubClassifyId(bean.getClassifyId(), resultList);
-                if (null != subList && subList.size() > 0) {
-                    resultList.addAll(subList);
-                }
+                recursionQueryGoodsSubClassifyId(bean.getClassifyId(), resultList);
             }
         }
         return resultList;

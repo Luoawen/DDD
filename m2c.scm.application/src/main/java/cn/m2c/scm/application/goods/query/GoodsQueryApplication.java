@@ -64,17 +64,12 @@ public class GoodsQueryApplication {
         if (StringUtils.isNotEmpty(goodsClassifyId)) {
             List<String> goodsClassifyIds = goodsClassifyQueryApplication.recursionQueryGoodsSubClassifyId(goodsClassifyId, new ArrayList<String>());
             goodsClassifyIds.add(goodsClassifyId);
-            sql.append(" AND goods_classify_id in (?) ");
-            params.add(Utils.listParseString(goodsClassifyIds));
+            sql.append(" AND goods_classify_id in (" + Utils.listParseString(goodsClassifyIds) + ") ");
         }
         if (null != goodsStatus) {
             sql.append(" AND goods_status = ? ");
             params.add(goodsStatus);
         }
-      /*  if (StringUtils.isNotEmpty(brandId)) {
-            sql.append(" AND goods_brand_id = ? ");
-            params.add(brandId);
-        }*/
         if (StringUtils.isNotEmpty(condition)) {
             if (StringUtils.isNotEmpty(dealerId)) {//商家平台
                 sql.append(" AND (goods_name LIKE ? OR goods_bar_code LIKE ? OR goods_code LIKE ? OR goods_brand_name LIKE ?)");
@@ -128,17 +123,12 @@ public class GoodsQueryApplication {
         if (StringUtils.isNotEmpty(goodsClassifyId)) {
             List<String> goodsClassifyIds = goodsClassifyQueryApplication.recursionQueryGoodsSubClassifyId(goodsClassifyId, new ArrayList<String>());
             goodsClassifyIds.add(goodsClassifyId);
-            sql.append(" AND goods_classify_id in (?) ");
-            params.add(Utils.listParseString(goodsClassifyIds));
+            sql.append(" AND goods_classify_id in (" + Utils.listParseString(goodsClassifyIds) + ") ");
         }
         if (null != goodsStatus) {
             sql.append(" AND goods_status = ? ");
             params.add(goodsStatus);
         }
-    /*    if (StringUtils.isNotEmpty(brandId)) {
-            sql.append(" AND goods_brand_id = ? ");
-            params.add(brandId);
-        }*/
         if (StringUtils.isNotEmpty(condition)) {
             if (StringUtils.isNotEmpty(dealerId)) {//商家平台
                 sql.append(" AND (goods_name LIKE ? OR goods_bar_code LIKE ? OR goods_code LIKE ? OR goods_brand_name LIKE ?)");
@@ -199,14 +189,13 @@ public class GoodsQueryApplication {
         if (StringUtils.isNotEmpty(goodsClassifyId)) {
             List<String> goodsClassifyIds = goodsClassifyQueryApplication.recursionQueryGoodsSubClassifyId(goodsClassifyId, new ArrayList<String>());
             goodsClassifyIds.add(goodsClassifyId);
-            sql.append(" AND goods_classify_id in (?) ");
-            params.add(Utils.listParseString(goodsClassifyIds));
+            sql.append(" AND goods_classify_id in (" + Utils.listParseString(goodsClassifyIds) + ") ");
         }
         if (StringUtils.isNotEmpty(condition)) {
             sql.append(" AND goods_name like ? ");
             params.add("%" + condition + "%");
         }
-        sql.append(" AND del_status= 1 group by goods_id ORDER BY goods_created_date DESC ");
+        sql.append(" AND del_status= 1 group by goods_id ORDER BY goods_created_date desc,photograph_price desc ");
         sql.append(" LIMIT ?,?");
         params.add(rows * (pageNum - 1));
         params.add(rows);
@@ -231,8 +220,7 @@ public class GoodsQueryApplication {
         if (StringUtils.isNotEmpty(goodsClassifyId)) {
             List<String> goodsClassifyIds = goodsClassifyQueryApplication.recursionQueryGoodsSubClassifyId(goodsClassifyId, new ArrayList<String>());
             goodsClassifyIds.add(goodsClassifyId);
-            sql.append(" AND goods_classify_id in (?) ");
-            params.add(Utils.listParseString(goodsClassifyIds));
+            sql.append(" AND goods_classify_id in (" + Utils.listParseString(goodsClassifyIds) + ") ");
         }
         if (StringUtils.isNotEmpty(condition)) {
             sql.append(" AND goods_name like ? ");
