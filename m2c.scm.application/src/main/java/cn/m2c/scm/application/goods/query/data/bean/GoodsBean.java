@@ -1,6 +1,5 @@
 package cn.m2c.scm.application.goods.query.data.bean;
 
-import cn.m2c.ddd.common.domain.model.ConcurrencySafeEntity;
 import cn.m2c.ddd.common.persistence.orm.ColumnAlias;
 
 import java.util.List;
@@ -8,7 +7,7 @@ import java.util.List;
 /**
  * 商品
  */
-public class GoodsBean extends ConcurrencySafeEntity {
+public class GoodsBean {
     @ColumnAlias(value = "id")
     private Integer id;
 
@@ -53,6 +52,12 @@ public class GoodsBean extends ConcurrencySafeEntity {
      */
     @ColumnAlias(value = "goods_brand_id")
     private String goodsBrandId;
+
+    /**
+     * 商品品牌名称
+     */
+    @ColumnAlias(value = "goods_brand_name")
+    private String goodsBrandName;
 
     /**
      * 商品计量单位id
@@ -148,14 +153,6 @@ public class GoodsBean extends ConcurrencySafeEntity {
         this.id = id;
     }
 
-    public List<GoodsSkuBean> getGoodsSkuBeans() {
-        return goodsSkuBeans;
-    }
-
-    public void setGoodsSkuBeans(List<GoodsSkuBean> goodsSkuBeans) {
-        this.goodsSkuBeans = goodsSkuBeans;
-    }
-
     public String getGoodsId() {
         return goodsId;
     }
@@ -210,6 +207,14 @@ public class GoodsBean extends ConcurrencySafeEntity {
 
     public void setGoodsBrandId(String goodsBrandId) {
         this.goodsBrandId = goodsBrandId;
+    }
+
+    public String getGoodsBrandName() {
+        return goodsBrandName;
+    }
+
+    public void setGoodsBrandName(String goodsBrandName) {
+        this.goodsBrandName = goodsBrandName;
     }
 
     public String getGoodsUnitId() {
@@ -322,5 +327,13 @@ public class GoodsBean extends ConcurrencySafeEntity {
 
     public void setDelStatus(Integer delStatus) {
         this.delStatus = delStatus;
+    }
+
+    public List<GoodsSkuBean> getGoodsSkuBeans() {
+        return goodsSkuBeans;
+    }
+
+    public void setGoodsSkuBeans(List<GoodsSkuBean> goodsSkuBeans) {
+        this.goodsSkuBeans = goodsSkuBeans;
     }
 }

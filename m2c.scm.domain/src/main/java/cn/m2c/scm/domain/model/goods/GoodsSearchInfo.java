@@ -9,6 +9,10 @@ import java.util.Date;
  */
 public class GoodsSearchInfo extends ValueObject {
     /**
+     * 商家ID
+     */
+    private String dealerId;
+    /**
      * 商家名称
      */
     private String dealerName;
@@ -66,15 +70,16 @@ public class GoodsSearchInfo extends ValueObject {
         super();
     }
 
-    public GoodsSearchInfo(String dealerName, String goodsName, String goodsSubTitle, String goodsClassifyId,
+    public GoodsSearchInfo(String dealerId, String dealerName, String goodsName, String goodsSubTitle, String goodsClassifyId,
                            String goodsBrandId, String goodsBrandName, String goodsBarCode, String goodsDesc, String goodsKeyWord,
                            Integer goodsStatus, Date goodsCreatedDate) {
+        this.dealerId = dealerId;
         this.dealerName = dealerName;
         this.goodsName = goodsName;
         this.goodsSubTitle = goodsSubTitle;
         this.goodsClassifyId = goodsClassifyId;
         this.goodsBrandId = goodsBrandId;
-        this.goodsBrandName=goodsBrandName;
+        this.goodsBrandName = goodsBrandName;
         this.goodsBarCode = goodsBarCode;
         this.goodsDesc = goodsDesc;
         this.goodsKeyWord = goodsKeyWord;

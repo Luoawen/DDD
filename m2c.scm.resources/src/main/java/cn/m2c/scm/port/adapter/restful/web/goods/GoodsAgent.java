@@ -5,10 +5,14 @@ import cn.m2c.common.MCode;
 import cn.m2c.common.MPager;
 import cn.m2c.common.MResult;
 import cn.m2c.scm.application.CommonApplication;
+import cn.m2c.scm.application.classify.query.GoodsClassifyQueryApplication;
+import cn.m2c.scm.application.dealer.data.bean.DealerBean;
+import cn.m2c.scm.application.dealer.query.DealerQuery;
 import cn.m2c.scm.application.goods.GoodsApplication;
 import cn.m2c.scm.application.goods.command.GoodsCommand;
 import cn.m2c.scm.application.goods.query.GoodsQueryApplication;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsBean;
+import cn.m2c.scm.application.goods.query.data.representation.GoodsSearchRepresentation;
 import cn.m2c.scm.domain.NegativeException;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -44,6 +48,10 @@ public class GoodsAgent {
     CommonApplication commonApplication;
     @Autowired
     GoodsQueryApplication goodsQueryApplication;
+    @Autowired
+    DealerQuery dealerQuery;
+    @Autowired
+    GoodsClassifyQueryApplication goodsClassifyQueryApplication;
 
     /**
      * 商品筛选根据商品类别，名称、标题、编号筛选
@@ -266,6 +274,7 @@ public class GoodsAgent {
         MResult result = new MResult(MCode.V_1);
         try {
             goodsApplication.deleteGoods(goodsId);
+            result.setStatus(MCode.V_200);
         } catch (NegativeException ne) {
             LOGGER.error("delGoods NegativeException e:", ne);
             result = new MResult(ne.getStatus(), ne.getMessage());
@@ -289,6 +298,7 @@ public class GoodsAgent {
         MResult result = new MResult(MCode.V_1);
         try {
             goodsApplication.upShelfGoods(goodsId);
+            result.setStatus(MCode.V_200);
         } catch (NegativeException ne) {
             LOGGER.error("upShelfGoods NegativeException e:", ne);
             result = new MResult(ne.getStatus(), ne.getMessage());
@@ -312,6 +322,7 @@ public class GoodsAgent {
         MResult result = new MResult(MCode.V_1);
         try {
             goodsApplication.offShelfGoods(goodsId);
+            result.setStatus(MCode.V_200);
         } catch (NegativeException ne) {
             LOGGER.error("offShelfGoods NegativeException e:", ne);
             result = new MResult(ne.getStatus(), ne.getMessage());
@@ -329,7 +340,6 @@ public class GoodsAgent {
      * @param goodsClassifyId 商品分类
      * @param goodsStatus     商品状态，1：仓库中，2：出售中，3：已售罄
      * @param condition       搜索条件
-     * @param brandId         品牌ID
      * @param startTime       开始时间
      * @param endTime         结束时间
      * @param pageNum         第几页
@@ -337,11 +347,12 @@ public class GoodsAgent {
      * @return
      */
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public ResponseEntity<MPager> queryBrand(
+    public ResponseEntity<MPager> searchGoodsByCondition(
             @RequestParam(value = "dealerId", required = false) String dealerId,
+            @RequestParam(value = "dealerName", required = false) String dealerName,
             @RequestParam(value = "goodsClassifyId", required = false) String goodsClassifyId,
             @RequestParam(value = "goodsStatus", required = false) Integer goodsStatus,
-            @RequestParam(value = "brandId", required = false) String brandId,
+            @RequestParam(value = "brandName", required = false) String brandName,
             @RequestParam(value = "condition", required = false) String condition,
             @RequestParam(value = "startTime", required = false) String startTime,
             @RequestParam(value = "endTime", required = false) String endTime,
@@ -350,23 +361,29 @@ public class GoodsAgent {
         MPager result = new MPager(MCode.V_1);
         try {
             Integer total = goodsQueryApplication.searchGoodsByConditionTotal(dealerId, goodsClassifyId, goodsStatus,
-                    brandId, condition, startTime, endTime);
+                    condition, startTime, endTime);
             if (total > 0) {
                 List<GoodsBean> goodsBeans = goodsQueryApplication.searchGoodsByCondition(dealerId, goodsClassifyId, goodsStatus,
-                        brandId, condition, startTime, endTime, pageNum, rows);
+                        condition, startTime, endTime, pageNum, rows);
                 if (null != goodsBeans && goodsBeans.size() > 0) {
-                  /*  List<BrandRepresentation> representations = new ArrayList<BrandRepresentation>();
-                    for (BrandBean bean : brandBeans) {
-                        representations.add(new BrandRepresentation(bean));
-                    }*/
-                    result.setContent(goodsBeans);
+                    List<GoodsSearchRepresentation> representations = new ArrayList<GoodsSearchRepresentation>();
+                    for (GoodsBean bean : goodsBeans) {
+                        DealerBean dealerBean = dealerQuery.getDealer(bean.getDealerId());
+                        String dealerType = "";
+                        if (null != dealerBean) {
+                            dealerType = dealerBean.getDealerClassifyBean().getDealerSecondClassifyName();
+                        }
+                        String goodsClassify = goodsClassifyQueryApplication.getClassifyNames(bean.getGoodsClassifyId());
+                        representations.add(new GoodsSearchRepresentation(bean, goodsClassify, dealerType));
+                    }
+                    result.setContent(representations);
                 }
             }
             result.setPager(total, pageNum, rows);
             result.setStatus(MCode.V_200);
         } catch (Exception e) {
-            LOGGER.error("查询商品列表失败", e);
-            result = new MPager(MCode.V_400, "服务器开小差了，请稍后再试");
+            LOGGER.error("searchGoodsByCondition Exception e:", e);
+            result = new MPager(MCode.V_400, "查询商品列表失败");
         }
         return new ResponseEntity<MPager>(result, HttpStatus.OK);
     }
