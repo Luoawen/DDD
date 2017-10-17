@@ -12,6 +12,7 @@ public class ShopQuery {
 	private final static Logger log = LoggerFactory.getLogger(ShopQuery.class);
 	 @Resource
 	  SupportJdbcTemplate supportJdbcTemplate;
+	   
 	 
 	 
 	public ShopBean getShopInfoByDealerId(String dealerId) {
