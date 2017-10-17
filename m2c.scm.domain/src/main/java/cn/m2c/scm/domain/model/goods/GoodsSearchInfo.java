@@ -62,6 +62,10 @@ public class GoodsSearchInfo extends ValueObject {
      */
     private Date goodsCreatedDate;
 
+    public GoodsSearchInfo() {
+        super();
+    }
+
     public GoodsSearchInfo(String dealerName, String goodsName, String goodsSubTitle, String goodsClassifyId,
                            String goodsBrandId, String goodsBrandName, String goodsBarCode, String goodsDesc, String goodsKeyWord,
                            Integer goodsStatus, Date goodsCreatedDate) {
@@ -70,6 +74,7 @@ public class GoodsSearchInfo extends ValueObject {
         this.goodsSubTitle = goodsSubTitle;
         this.goodsClassifyId = goodsClassifyId;
         this.goodsBrandId = goodsBrandId;
+        this.goodsBrandName=goodsBrandName;
         this.goodsBarCode = goodsBarCode;
         this.goodsDesc = goodsDesc;
         this.goodsKeyWord = goodsKeyWord;

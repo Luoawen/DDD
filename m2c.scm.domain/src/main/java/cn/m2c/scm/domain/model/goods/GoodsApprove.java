@@ -202,11 +202,11 @@ public class GoodsApprove extends ConcurrencySafeEntity {
         DomainEventPublisher
                 .instance()
                 .publish(new GoodsApproveAgreeEvent(this.goodsId, this.dealerId, this.dealerName, this.goodsName,
-                        this.goodsSubTitle, this.goodsClassifyId, this.goodsBrandId,
+                        this.goodsSubTitle, this.goodsClassifyId, this.goodsBrandId, this.goodsBrandName,
                         this.goodsUnitId, this.goodsMinQuantity, this.goodsPostageId,
                         this.goodsBarCode, this.goodsKeyWord, this.goodsGuarantee,
                         this.goodsMainImages, this.goodsMainVideo, this.goodsDesc,
-                        this.goodsShelves, goodsSKUs));
+                        this.goodsShelves,this.goodsSpecifications, goodsSKUs));
     }
 
     /**

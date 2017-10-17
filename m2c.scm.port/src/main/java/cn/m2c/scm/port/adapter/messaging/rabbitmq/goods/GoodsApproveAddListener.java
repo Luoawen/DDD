@@ -38,6 +38,7 @@ public class GoodsApproveAddListener extends ExchangeListener {
         String goodsSubTitle = reader.eventStringValue("goodsSubTitle");
         String goodsClassifyId = reader.eventStringValue("goodsClassifyId");
         String goodsBrandId = reader.eventStringValue("goodsBrandId");
+        String goodsBrandName = reader.eventStringValue("goodsBrandName");
         String goodsUnitId = reader.eventStringValue("goodsUnitId");
         Integer goodsMinQuantity = reader.eventIntegerValue("goodsMinQuantity");
         String goodsPostageId = reader.eventStringValue("goodsPostageId");
@@ -54,7 +55,7 @@ public class GoodsApproveAddListener extends ExchangeListener {
         String goodsSkuApproves = reader.eventStringValue("goodsSkuApproves");
 
         GoodsApproveCommand command = new GoodsApproveCommand(goodsId, dealerId, dealerName, goodsName, goodsSubTitle,
-                goodsClassifyId, goodsBrandId, goodsUnitId, goodsMinQuantity,
+                goodsClassifyId, goodsBrandId,goodsBrandName, goodsUnitId, goodsMinQuantity,
                 goodsPostageId, goodsBarCode, goodsKeyWord, goodsGuarantees,
                 goodsMainImageList, goodsDesc,goodsSpecifications, goodsSkuApproves);
         goodsApproveApplication.addGoodsApproveForModifyGoods(command);

@@ -46,10 +46,11 @@ public class GoodsApproveAgreeListener extends ExchangeListener {
         String goodsDesc = reader.eventStringValue("goodsDesc");
         Integer goodsShelves = reader.eventIntegerValue("goodsShelves");
         String goodsSkuApproves = reader.eventStringValue("goodsSkuApproves");
+        String goodsSpecifications = reader.eventStringValue("goodsSpecifications");
         GoodsCommand command = new GoodsCommand(goodsId, dealerId, dealerName, goodsName, goodsSubTitle,
-                goodsClassifyId, goodsBrandId,goodsBrandName, goodsUnitId, goodsMinQuantity,
+                goodsClassifyId, goodsBrandId, goodsBrandName, goodsUnitId, goodsMinQuantity,
                 goodsPostageId, goodsBarCode, goodsKeyWord, goodsGuarantee,
-                goodsMainImages, goodsDesc, goodsShelves, goodsSkuApproves);
+                goodsMainImages, goodsDesc, goodsShelves, goodsSpecifications, goodsSkuApproves);
         goodsApplication.saveGoods(command);
     }
 

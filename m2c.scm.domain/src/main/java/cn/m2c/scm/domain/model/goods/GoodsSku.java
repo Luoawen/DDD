@@ -90,6 +90,7 @@ public class GoodsSku extends ConcurrencySafeEntity {
         this.supplyPrice = supplyPrice;
         this.goodsCode = goodsCode;
         this.showStatus = showStatus;
+        this.goodsSearchInfo=goodsSearchInfo;
     }
 
     public GoodsSku() {

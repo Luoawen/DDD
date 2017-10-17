@@ -44,6 +44,11 @@ public class GoodsApproveAgreeEvent implements DomainEvent {
     private String goodsBrandId;
 
     /**
+     * 商品品牌名称
+     */
+    private String goodsBrandName;
+
+    /**
      * 商品计量单位id
      */
     private String goodsUnitId;
@@ -98,15 +103,17 @@ public class GoodsApproveAgreeEvent implements DomainEvent {
      */
     private String goodsSkuApproves;
 
+    private String goodsSpecifications;
+
     private Date occurredOn;
     private int eventVersion;
 
     public GoodsApproveAgreeEvent(String goodsId, String dealerId, String dealerName, String goodsName,
-                                  String goodsSubTitle, String goodsClassifyId, String goodsBrandId,
+                                  String goodsSubTitle, String goodsClassifyId, String goodsBrandId,String goodsBrandName,
                                   String goodsUnitId, Integer goodsMinQuantity, String goodsPostageId,
                                   String goodsBarCode, String goodsKeyWord, String goodsGuarantee,
                                   String goodsMainImages, String goodsMainVideo, String goodsDesc,
-                                  Integer goodsShelves, String goodsSkuApproves) {
+                                  Integer goodsShelves,String goodsSpecifications, String goodsSkuApproves) {
         this.goodsId = goodsId;
         this.dealerId = dealerId;
         this.dealerName = dealerName;
@@ -114,6 +121,7 @@ public class GoodsApproveAgreeEvent implements DomainEvent {
         this.goodsSubTitle = goodsSubTitle;
         this.goodsClassifyId = goodsClassifyId;
         this.goodsBrandId = goodsBrandId;
+        this.goodsBrandName=goodsBrandName;
         this.goodsUnitId = goodsUnitId;
         this.goodsMinQuantity = goodsMinQuantity;
         this.goodsPostageId = goodsPostageId;
@@ -124,6 +132,7 @@ public class GoodsApproveAgreeEvent implements DomainEvent {
         this.goodsMainVideo = goodsMainVideo;
         this.goodsDesc = goodsDesc;
         this.goodsShelves = goodsShelves;
+        this.goodsSpecifications=goodsSpecifications;
         this.goodsSkuApproves = goodsSkuApproves;
         this.occurredOn = new Date();
         this.eventVersion = 1;

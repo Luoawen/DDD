@@ -102,7 +102,7 @@ public class GoodsCommand extends AssertionConcern implements Serializable {
     public GoodsCommand(String goodsId, String dealerId, String dealerName, String goodsName, String goodsSubTitle,
                         String goodsClassifyId, String goodsBrandId, String goodsBrandName, String goodsUnitId, Integer goodsMinQuantity,
                         String goodsPostageId, String goodsBarCode, String goodsKeyWord, String goodsGuarantee,
-                        String goodsMainImages, String goodsDesc, Integer goodsShelves, String goodsSKUs) {
+                        String goodsMainImages, String goodsDesc, Integer goodsShelves,String goodsSpecifications, String goodsSKUs) {
         this.goodsId = goodsId;
         this.dealerId = dealerId;
         this.dealerName = dealerName;
@@ -120,6 +120,7 @@ public class GoodsCommand extends AssertionConcern implements Serializable {
         this.goodsMainImages = goodsMainImages;
         this.goodsDesc = goodsDesc;
         this.goodsShelves = goodsShelves;
+        this.goodsSpecifications=goodsSpecifications;
         this.goodsSKUs = goodsSKUs;
     }
 
