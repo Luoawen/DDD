@@ -130,16 +130,7 @@ public class Dealer extends ConcurrencySafeEntity{
 		this.sellerPhone = sellerPhone;
 	}
 
-<<<<<<< HEAD
-	
 
-	public void updateShopInfo(String shopName, String shopIntroduce,
-			String shopIcon, String customerServiceTel) {
-		this.shopName = shopName;
-		this.shopIntroduce = shopIntroduce;
-		this.shopIcon = shopIcon;
-		this.customerServiceTel = customerServiceTel;
-	}
 
 
 	
@@ -156,8 +147,6 @@ public class Dealer extends ConcurrencySafeEntity{
 	
 	
 	
-	
-=======
->>>>>>> 6e6eacb61bb6e2aedf92459ebbce5891cd8dc023
+
 	
 }

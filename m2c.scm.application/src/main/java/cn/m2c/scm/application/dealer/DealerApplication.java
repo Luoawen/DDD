@@ -10,13 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import cn.m2c.ddd.common.event.annotation.EventListener;
 import cn.m2c.scm.application.dealer.command.DealerAddOrUpdateCommand;
-<<<<<<< HEAD
-import cn.m2c.scm.application.dealer.command.ShopInfoUpdateCommand;
-import cn.m2c.scm.application.dealer.data.bean.DealerBean;
-import cn.m2c.scm.application.dealer.query.DealerQuery;
 import cn.m2c.scm.application.seller.command.SellerCommand;
-=======
->>>>>>> 6e6eacb61bb6e2aedf92459ebbce5891cd8dc023
 import cn.m2c.scm.domain.NegativeCode;
 import cn.m2c.scm.domain.NegativeException;
 import cn.m2c.scm.domain.model.dealer.Dealer;
@@ -56,16 +50,6 @@ public class DealerApplication {
 		dealerRepository.save(dealer);
 	}
 	
-<<<<<<< HEAD
-	@Transactional(rollbackFor = {Exception.class,RuntimeException.class,NegativeException.class})
-	public void updateShopInfo(ShopInfoUpdateCommand command) throws NegativeException {
-		log.info("---修改经销商店铺信息");
-		Dealer dealer = dealerRepository.getDealer(command.getDealerId());
-		if(dealer==null)
-			throw new NegativeException(NegativeCode.DEALER_IS_NOT_EXIST, "此经销商不存在.");
-		dealer.updateShopInfo(command.getShopName(),command.getShopIntroduce(),command.getShopIcon(),command.getCustomerServiceTel());
-		dealerRepository.save(dealer);
-	}
 
 	
 	/**
@@ -86,8 +70,7 @@ public class DealerApplication {
 		dealer.updateSellerInfo(command.getSellerName(), command.getSellerPhone());
 		dealerRepository.save(dealer);
 	}
-=======
->>>>>>> 6e6eacb61bb6e2aedf92459ebbce5891cd8dc023
+
 	
 	
 	
