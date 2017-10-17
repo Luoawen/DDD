@@ -65,6 +65,20 @@ public class MainOrder extends ConcurrencySafeEntity {
 	 * 增加订单
 	 */
 	public void add() {
-		DomainEventPublisher.instance().publish(new OrderOptLogEvent(orderId, null, "订单创建", userId));
+		DomainEventPublisher.instance().publish(new OrderOptLogEvent(orderId, null, "订单创建成功", userId));
+	}
+	/***
+	 * 取消订单(用户主动操作，系统自动操作)
+	 */
+	public void cancel() {
+		// 检查是否可以取消，只有在未支付的状态下用户可以取消
+		
+		DomainEventPublisher.instance().publish(new OrderOptLogEvent(orderId, null, "取消订单成功", userId));
+	}
+	/***
+	 * 结算(可暂不做)
+	 */
+	public void checkout() {
+		// 判断是否可以结算
 	}
 }

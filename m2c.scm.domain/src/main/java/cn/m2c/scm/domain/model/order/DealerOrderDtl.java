@@ -63,7 +63,7 @@ public class DealerOrderDtl extends ConcurrencySafeEntity {
 	private String mediaResId;
 	/**促销员ID*/
 	private String salerUserId;
-	/**费率*/
+	/**分类费率*/
 	private Float rate;
 	/**商品id*/
 	private String goodsId;
@@ -85,6 +85,12 @@ public class DealerOrderDtl extends ConcurrencySafeEntity {
 	private Float sellNum;
 	/**市场价(单价)*/
 	private Integer price;
+	/**重量*/
+	private Float weight = 0f;
+	/**是否为换货商品 1是*/
+	private int isChange = 0;
+	/**换货价*/
+	private int changePrice;
 	/**供货价*/
 	private Integer supplyPrice;
 	/**拍获价(单价)*/
@@ -101,6 +107,14 @@ public class DealerOrderDtl extends ConcurrencySafeEntity {
 	private String noted;
 	/**订单总运费*/
 	private Integer freight;
+	/**应用的营销ID*/
+	private String marketingId;
+	/**媒体ID*/
+	private String mediaId;
+	/**广告位分成比例*/
+	private Float resRate = 0f;
+	/**BD专员的分成串*/
+	private String bdsRate;
 	/***
 	 * 计算商品金额
 	 * @return
