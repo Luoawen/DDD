@@ -18,8 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 import cn.m2c.common.MCode;
 import cn.m2c.common.MPager;
 import cn.m2c.common.MResult;
-import cn.m2c.scm.application.dealer.DealerApplication;
-import cn.m2c.scm.application.dealer.data.bean.DealerBean;
 import cn.m2c.scm.application.shop.ShopApplication;
 import cn.m2c.scm.application.shop.command.ShopInfoUpdateCommand;
 import cn.m2c.scm.application.shop.data.bean.ShopBean;
