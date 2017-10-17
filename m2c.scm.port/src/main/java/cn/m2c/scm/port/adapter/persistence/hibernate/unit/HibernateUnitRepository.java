@@ -7,6 +7,7 @@ import org.hibernate.SQLQuery;
 import org.springframework.stereotype.Repository;
 
 import cn.m2c.ddd.common.port.adapter.persistence.hibernate.HibernateSupperRepository;
+import cn.m2c.scm.application.unit.bean.UnitBean;
 import cn.m2c.scm.domain.model.unit.Unit;
 import cn.m2c.scm.domain.model.unit.UnitRepository;
 
@@ -49,5 +50,7 @@ public class HibernateUnitRepository extends HibernateSupperRepository implement
 		query.setParameter("unit_name", unitName);
 		return (Unit) query.uniqueResult();
 	}
+
+
 
 }

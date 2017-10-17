@@ -48,6 +48,10 @@ public class DealerBean {
 	@ColumnAlias(value = "dealer_acode")
 	private String dealerAcode;
 	
+	@ColumnAlias(value = "seller_id")
+	private String sellerId;
+	
+
 	@ColumnAlias(value = "seller_name")
 	private String sellerName;
 	
@@ -57,17 +61,6 @@ public class DealerBean {
 	@ColumnAlias(value = "created_date")
 	private Date createdDate;
 
-	@ColumnAlias(value = "shop_name")
-	private String shopName;
-	
-	@ColumnAlias(value = "shop_icon")
-	private String shopIcon;
-	
-	@ColumnAlias(value = "shop_introduce")
-	private String shopIntroduce;
-	
-	@ColumnAlias(value = "customer_service_tel")
-	private String customerServiceTel;
 	
 	
 	private DealerClassifyNameBean dealerClassifyBean;
@@ -176,6 +169,14 @@ public class DealerBean {
 		this.dealerAcode = dealerAcode;
 	}
 
+	public String getSellerId() {
+		return sellerId;
+	}
+
+	public void setSellerId(String sellerId) {
+		this.sellerId = sellerId;
+	}
+	
 	public String getSellerName() {
 		return sellerName;
 	}
@@ -208,37 +209,6 @@ public class DealerBean {
 		this.userId = userId;
 	}
 
-	public String getShopName() {
-		return shopName;
-	}
-
-	public void setShopName(String shopName) {
-		this.shopName = shopName;
-	}
-
-	public String getShopIcon() {
-		return shopIcon;
-	}
-
-	public void setShopIcon(String shopIcon) {
-		this.shopIcon = shopIcon;
-	}
-
-	public String getShopIntroduce() {
-		return shopIntroduce;
-	}
-
-	public void setShopIntroduce(String shopIntroduce) {
-		this.shopIntroduce = shopIntroduce;
-	}
-
-	public String getCustomerServiceTel() {
-		return customerServiceTel;
-	}
-
-	public void setCustomerServiceTel(String customerServiceTel) {
-		this.customerServiceTel = customerServiceTel;
-	}
 
 	public DealerClassifyNameBean getDealerClassifyBean() {
 		return dealerClassifyBean;
@@ -247,6 +217,6 @@ public class DealerBean {
 	public void setDealerClassifyBean(DealerClassifyNameBean dealerClassifyBean) {
 		this.dealerClassifyBean = dealerClassifyBean;
 	}
-	
+
 	
 }

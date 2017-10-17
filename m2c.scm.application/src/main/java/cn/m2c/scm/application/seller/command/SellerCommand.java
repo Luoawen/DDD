@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 import cn.m2c.ddd.common.AssertionConcern;
 
-public class SellerAddOrUpdateCommand extends AssertionConcern implements Serializable{
+public class SellerCommand extends AssertionConcern implements Serializable{
 
 	private static final long serialVersionUID = 8142409278133098063L;
 	
@@ -77,7 +77,7 @@ public class SellerAddOrUpdateCommand extends AssertionConcern implements Serial
 	 */
 	private String sellerRemark;
 	
-	public SellerAddOrUpdateCommand() {
+	public SellerCommand() {
 		super();
 	}
 
@@ -146,7 +146,16 @@ public class SellerAddOrUpdateCommand extends AssertionConcern implements Serial
 		return sellerPass;
 	}
 
-	public SellerAddOrUpdateCommand(String sellerId, String sellerName,
+	
+	
+	public SellerCommand(String sellerId, String sellerName, String sellerPhone) {
+		super();
+		this.sellerId = sellerId;
+		this.sellerName = sellerName;
+		this.sellerPhone = sellerPhone;
+	}
+
+	public SellerCommand(String sellerId, String sellerName,
 			String sellerPhone, Integer sellerSex, String sellerNo,
 			String sellerPass, String sellerConfirmPass, String sellerProvince,
 			String sellerCity, String sellerArea, String sellerPcode,

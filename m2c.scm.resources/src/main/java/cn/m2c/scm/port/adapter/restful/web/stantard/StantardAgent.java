@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -21,6 +22,7 @@ import cn.m2c.scm.application.standstard.command.StantardCommand;
 import cn.m2c.scm.application.standstard.query.StantardQuery;
 import cn.m2c.scm.domain.IDGenerator;
 import cn.m2c.scm.domain.NegativeException;
+import cn.m2c.scm.domain.model.stantard.Stantard;
 
 @Controller
 @RequestMapping("/stantard")
@@ -52,7 +54,7 @@ public class StantardAgent {
 			result = new MResult(ne.getStatus(), ne.getMessage());
 		}catch (Exception e) {
 			LOGGER.error("addStantard Exception e:", e);
-			result = new MResult(MCode.V_400, "添加规格s失败");
+			result = new MResult(MCode.V_400, "添加规格失败");
 		}
 		return new ResponseEntity<MResult>(result, HttpStatus.OK);
 	}
@@ -102,6 +104,12 @@ public class StantardAgent {
 		return new ResponseEntity<MResult>(result, HttpStatus.OK);
 	}
 	
+	/**
+	 * 获取stantardList
+	 * @param pageNum
+	 * @param rows
+	 * @return
+	 */
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	public ResponseEntity<MPager> list(
 			@RequestParam(value = "pageNum", required = false, defaultValue = "1") Integer pageNum,
@@ -121,5 +129,26 @@ public class StantardAgent {
 
 	}
 	
+	
+	/**
+	 * 获取stantard
+	 * @param stantardId
+	 * @return
+	 */
+	@RequestMapping(value = "/getStantard", method = RequestMethod.GET)
+	public ResponseEntity<MResult> getStantard(@RequestParam("stantardId") String stantardId) {
+		MResult result = new MResult(MCode.V_1);
+		try {
+			StantardBean stantard = stantardQuery.getStantardByStantardId(stantardId);
+			if (stantard != null) {
+				result.setContent(stantard);
+			}
+			result.setStatus(MCode.V_200);
+		}catch (Exception e) {
+			LOGGER.error("获取规格失败" + e.getMessage(), e);
+			result = new MResult(MCode.V_400,e.getMessage());
+		}
+		return new ResponseEntity<MResult>(result, HttpStatus.OK);
+	}
 	
 }
