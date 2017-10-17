@@ -57,10 +57,19 @@
         <property name="skuName" column="sku_name" type="string"/>
         <property name="sellNum" column="sell_num" type="float"/>
         
+        <property name="weight" column="weight" type="float"/>
+        <property name="isChange" column="is_change" type="int"/>
+        <property name="changePrice" column="change_price" type="int"/>
+        
         <property name="price" column="_price" type="int"/>
         <property name="supplyPrice" column="supply_price" type="int"/>
         <property name="discountPrice" column="discount_price" type="int"/>
         <property name="goodsIcon" column="goods_icon" type="string"/>
+        
+        <property name="resRate" column="res_rate" type="float"/>
+        <property name="marketingId" column="marketing_id" type="string"/>
+        <property name="mediaId" column="media_id" type="string"/>
+        <property name="bdsRate" column="bds_rate" type="string"/>
         
         <many-to-one name="dealerOrder" column="dealer_order_id" class="cn.m2c.scm.domain.model.order.DealerOrder"
                      cascade="save-update" fetch="join"/>
