@@ -10,7 +10,7 @@ public class ShopBean {
 	 @ColumnAlias(value = "shop_name")
 	 private String shopName;
 	 @ColumnAlias(value = "shop_icon")
-	 private String shopicon;
+	 private String shopIcon;
 	 @ColumnAlias(value = "shop_introduce")
 	 private String shopIntroduce;
 	 @ColumnAlias(value = "customer_service_tel")
@@ -33,12 +33,6 @@ public class ShopBean {
 	public void setShopName(String shopName) {
 		this.shopName = shopName;
 	}
-	public String getShopicon() {
-		return shopicon;
-	}
-	public void setShopicon(String shopicon) {
-		this.shopicon = shopicon;
-	}
 	public String getShopIntroduce() {
 		return shopIntroduce;
 	}
@@ -50,6 +44,12 @@ public class ShopBean {
 	}
 	public void setCustomerServiceTel(String customerServiceTel) {
 		this.customerServiceTel = customerServiceTel;
+	}
+	public String getShopIcon() {
+		return shopIcon;
+	}
+	public void setShopIcon(String shopIcon) {
+		this.shopIcon = shopIcon;
 	}
 	 
 	 
