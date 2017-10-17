@@ -3,6 +3,7 @@ package cn.m2c.scm.application.shop;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import cn.m2c.scm.application.shop.command.ShopInfoUpdateCommand;
@@ -11,6 +12,9 @@ import cn.m2c.scm.domain.NegativeException;
 import cn.m2c.scm.domain.model.shop.Shop;
 import cn.m2c.scm.domain.model.shop.ShopRepository;
 
+
+@Service
+@Transactional
 public class ShopApplication {
 	private static final Logger log = LoggerFactory.getLogger(ShopApplication.class);
 	
