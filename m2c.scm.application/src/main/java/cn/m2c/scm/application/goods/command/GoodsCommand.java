@@ -3,7 +3,6 @@ package cn.m2c.scm.application.goods.command;
 import cn.m2c.ddd.common.AssertionConcern;
 
 import java.io.Serializable;
-import java.util.List;
 
 /**
  * 商品审核
@@ -93,7 +92,7 @@ public class GoodsCommand extends AssertionConcern implements Serializable {
      */
     private String goodsSKUs;
 
-    private List<String> skuCodes;
+    private String goodsSpecifications;
 
     public GoodsCommand(String goodsId, String dealerId, String dealerName, String goodsName, String goodsSubTitle,
                         String goodsClassifyId, String goodsBrandId, String goodsUnitId, Integer goodsMinQuantity,
@@ -121,7 +120,7 @@ public class GoodsCommand extends AssertionConcern implements Serializable {
     public GoodsCommand(String goodsId, String dealerId, String goodsName, String goodsSubTitle,
                         String goodsClassifyId, String goodsBrandId, String goodsUnitId, Integer goodsMinQuantity,
                         String goodsPostageId, String goodsBarCode, String goodsKeyWord, String goodsGuarantee,
-                        String goodsMainImages, String goodsDesc, String goodsSKUs) {
+                        String goodsMainImages, String goodsDesc, String goodsSpecifications, String goodsSKUs) {
         this.goodsId = goodsId;
         this.dealerId = dealerId;
         this.goodsName = goodsName;
@@ -136,11 +135,8 @@ public class GoodsCommand extends AssertionConcern implements Serializable {
         this.goodsGuarantee = goodsGuarantee;
         this.goodsMainImages = goodsMainImages;
         this.goodsDesc = goodsDesc;
+        this.goodsSpecifications = goodsSpecifications;
         this.goodsSKUs = goodsSKUs;
-    }
-
-    public List<String> getSkuCodes() {
-        return skuCodes;
     }
 
     public String getGoodsId() {
@@ -209,5 +205,9 @@ public class GoodsCommand extends AssertionConcern implements Serializable {
 
     public String getGoodsSKUs() {
         return goodsSKUs;
+    }
+
+    public String getGoodsSpecifications() {
+        return goodsSpecifications;
     }
 }

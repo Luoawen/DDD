@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -178,7 +179,7 @@ public class GoodsAgent {
     }
 
     /**
-     * 增加商品
+     * 修改商品
      *
      * @param goodsId          商品id
      * @param dealerId         商家ID
@@ -213,24 +214,22 @@ public class GoodsAgent {
             @RequestParam(value = "goodsGuarantee", required = false) List goodsGuarantee,
             @RequestParam(value = "goodsMainImages", required = false) List goodsMainImages,
             @RequestParam(value = "goodsDesc", required = false) String goodsDesc,
+            @RequestParam(value = "goodsSpecifications", required = false) String goodsSpecifications,
             @RequestParam(value = "goodsSKUs", required = false) String goodsSKUs) {
         MResult result = new MResult(MCode.V_1);
         try {
             List<Map> skuList = JsonUtils.toList(goodsSKUs, Map.class);
             // 生成sku
-            List<String> skuCodes = new ArrayList<>();
             if (null != skuList && skuList.size() > 0) {
                 for (Map map : skuList) {
                     String skuId = null != map.get("skuId") ? map.get("skuId").toString() : null;
                     if (StringUtils.isEmpty(skuId)) {
                         try {
                             skuId = commonApplication.generateGoodsSku();
-                            skuCodes.add(skuId);
                         } catch (Exception e) { //失败重新生成一次
                             skuId = commonApplication.generateGoodsSku();
-                            skuCodes.add(skuId);
                         }
-                        map.put("skuId",skuId);
+                        map.put("skuId", skuId);
                     }
                 }
                 goodsSKUs = JsonUtils.toStr(skuList);
@@ -241,7 +240,7 @@ public class GoodsAgent {
             GoodsCommand command = new GoodsCommand(goodsId, dealerId, goodsName, goodsSubTitle,
                     goodsClassifyId, goodsBrandId, goodsUnitId, goodsMinQuantity,
                     goodsPostageId, goodsBarCode, goodsKeyWord, JsonUtils.toStr(goodsGuarantee),
-                    JsonUtils.toStr(goodsMainImages), goodsDesc, goodsSKUs);
+                    JsonUtils.toStr(goodsMainImages), goodsDesc, goodsSpecifications, goodsSKUs);
             goodsApplication.modifyGoods(command);
             result.setStatus(MCode.V_200);
         } catch (NegativeException ne) {
@@ -252,6 +251,69 @@ public class GoodsAgent {
             result = new MResult(MCode.V_400, "修改商品失败");
         }
 
+        return new ResponseEntity<MResult>(result, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/{goodsId}", method = RequestMethod.DELETE)
+    public ResponseEntity<MResult> delGoods(
+            @PathVariable("goodsId") String goodsId
+    ) {
+        MResult result = new MResult(MCode.V_1);
+        try {
+            goodsApplication.deleteGoods(goodsId);
+        } catch (NegativeException ne) {
+            LOGGER.error("delGoods NegativeException e:", ne);
+            result = new MResult(ne.getStatus(), ne.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("delGoods Exception e:", e);
+            result = new MResult(MCode.V_400, "删除商品失败");
+        }
+        return new ResponseEntity<MResult>(result, HttpStatus.OK);
+    }
+
+    /**
+     * 商品上架
+     *
+     * @param goodsId
+     * @return
+     */
+    @RequestMapping(value = "/up/shelf/{goodsId}", method = RequestMethod.PUT)
+    public ResponseEntity<MResult> upShelfGoods(
+            @PathVariable("goodsId") String goodsId
+    ) {
+        MResult result = new MResult(MCode.V_1);
+        try {
+            goodsApplication.upShelfGoods(goodsId);
+        } catch (NegativeException ne) {
+            LOGGER.error("upShelfGoods NegativeException e:", ne);
+            result = new MResult(ne.getStatus(), ne.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("upShelfGoods Exception e:", e);
+            result = new MResult(MCode.V_400, "商品上架失败");
+        }
+        return new ResponseEntity<MResult>(result, HttpStatus.OK);
+    }
+
+    /**
+     * 商品下架
+     *
+     * @param goodsId
+     * @return
+     */
+    @RequestMapping(value = "/off/shelf/{goodsId}", method = RequestMethod.PUT)
+    public ResponseEntity<MResult> offShelfGoods(
+            @PathVariable("goodsId") String goodsId
+    ) {
+        MResult result = new MResult(MCode.V_1);
+        try {
+            goodsApplication.offShelfGoods(goodsId);
+        } catch (NegativeException ne) {
+            LOGGER.error("offShelfGoods NegativeException e:", ne);
+            result = new MResult(ne.getStatus(), ne.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("offShelfGoods Exception e:", e);
+            result = new MResult(MCode.V_400, "商品下架失败");
+        }
         return new ResponseEntity<MResult>(result, HttpStatus.OK);
     }
 }

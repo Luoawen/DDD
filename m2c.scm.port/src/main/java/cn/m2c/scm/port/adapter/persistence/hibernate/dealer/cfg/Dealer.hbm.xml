@@ -45,9 +45,5 @@
 		<property name="sellerPhone" column="seller_phone" type="string"/>
 		<property name="sellerName" column="seller_name" type="string"/>
 		<property name="dealerStatus" column="dealer_status" type="int"/>
-	<property name="shopName" column="shop_name" type="string"/>
-	<property name="shopIcon" column="shop_icon" type="string"/>
-	<property name="shopIntroduce" column="shop_introduce" type="string"/>
-	<property name="customerServiceTel" column="customer_service_tel" type="string"/>
 	</class>
 </hibernate-mapping>

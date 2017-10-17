@@ -6,7 +6,6 @@ import cn.m2c.ddd.common.domain.model.DomainEventPublisher;
 import cn.m2c.ddd.common.serializer.ObjectSerializer;
 import cn.m2c.scm.domain.model.goods.event.GoodsApproveAgreeEvent;
 import cn.m2c.scm.domain.util.GetMapValueUtils;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -112,9 +111,19 @@ public class GoodsApprove extends ConcurrencySafeEntity {
     private String rejectReason;
 
     /**
+     * 商品规格,格式：[{"itemName":"尺寸","itemValue":["L","M"]},{"itemName":"颜色","itemValue":["蓝色","白色"]}]
+     */
+    private String goodsSpecifications;
+
+    /**
      * 商品规格
      */
     private List<GoodsSkuApprove> goodsSkuApproves;
+
+    /**
+     * 是否删除，1:正常，2：已删除
+     */
+    private Integer delStatus;
 
     public GoodsApprove() {
         super();
@@ -123,7 +132,7 @@ public class GoodsApprove extends ConcurrencySafeEntity {
     public GoodsApprove(String goodsId, String dealerId, String dealerName, String goodsName, String goodsSubTitle,
                         String goodsClassifyId, String goodsBrandId, String goodsUnitId, Integer goodsMinQuantity,
                         String goodsPostageId, String goodsBarCode, String goodsKeyWord, String goodsGuarantee,
-                        String goodsMainImages, String goodsDesc, Integer goodsShelves, String goodsSkuApproves, List<String> skuCodes) {
+                        String goodsMainImages, String goodsDesc, Integer goodsShelves, String goodsSpecifications, String goodsSkuApproves) {
         this.goodsId = goodsId;
         this.dealerId = dealerId;
         this.dealerName = dealerName;
@@ -139,44 +148,11 @@ public class GoodsApprove extends ConcurrencySafeEntity {
         this.goodsGuarantee = goodsGuarantee;
         this.goodsMainImages = goodsMainImages;
         this.goodsDesc = goodsDesc;
-        this.goodsShelves = goodsShelves;
-        this.approveStatus = 1;
-        //商品规格格式：[{"skuName":"L,红","supplyPrice":4000,
-        // "weight":20.5,"availableNum":200,"goodsCode":"111111","marketPrice":6000,"photographPrice":5000,"showStatus":2}]
-        if (null == this.goodsSkuApproves) {
-            this.goodsSkuApproves = new ArrayList<>();
-        } else {
-            this.goodsSkuApproves.clear();
+        if (null != goodsShelves) {
+            this.goodsShelves = goodsShelves;
         }
-        List<Map> skuList = JsonUtils.toList(goodsSkuApproves, Map.class);
-        if (null != skuList && skuList.size() > 0) {
-            for (int i = 0; i < skuList.size(); i++) {
-                this.goodsSkuApproves.add(createGoodsSkuApprove(skuList.get(i), skuCodes.get(i)));
-            }
-        }
-    }
-
-
-    public GoodsApprove(String goodsId, String dealerId, String dealerName, String goodsName, String goodsSubTitle,
-                        String goodsClassifyId, String goodsBrandId, String goodsUnitId, Integer goodsMinQuantity,
-                        String goodsPostageId, String goodsBarCode, String goodsKeyWord, String goodsGuarantee,
-                        String goodsMainImages, String goodsDesc, String goodsSkuApproves) {
-        this.goodsId = goodsId;
-        this.dealerId = dealerId;
-        this.dealerName = dealerName;
-        this.goodsName = goodsName;
-        this.goodsSubTitle = goodsSubTitle;
-        this.goodsClassifyId = goodsClassifyId;
-        this.goodsBrandId = goodsBrandId;
-        this.goodsUnitId = goodsUnitId;
-        this.goodsMinQuantity = goodsMinQuantity;
-        this.goodsPostageId = goodsPostageId;
-        this.goodsBarCode = goodsBarCode;
-        this.goodsKeyWord = goodsKeyWord;
-        this.goodsGuarantee = goodsGuarantee;
-        this.goodsMainImages = goodsMainImages;
-        this.goodsDesc = goodsDesc;
         this.approveStatus = 1;
+        this.goodsSpecifications = goodsSpecifications;
         //商品规格格式：[{"skuId":20171014125226158648","skuName":"L,红","supplyPrice":4000,
         // "weight":20.5,"availableNum":200,"goodsCode":"111111","marketPrice":6000,"photographPrice":5000,"showStatus":2}]
         if (null == this.goodsSkuApproves) {
@@ -187,16 +163,13 @@ public class GoodsApprove extends ConcurrencySafeEntity {
         List<Map> skuList = JsonUtils.toList(goodsSkuApproves, Map.class);
         if (null != skuList && skuList.size() > 0) {
             for (int i = 0; i < skuList.size(); i++) {
-                this.goodsSkuApproves.add(createGoodsSkuApprove(skuList.get(i), null));
+                this.goodsSkuApproves.add(createGoodsSkuApprove(skuList.get(i)));
             }
         }
     }
 
-    private GoodsSkuApprove createGoodsSkuApprove(Map map, String skuCode) {
+    private GoodsSkuApprove createGoodsSkuApprove(Map map) {
         String skuId = GetMapValueUtils.getStringFromMapKey(map, "skuId");
-        if (StringUtils.isEmpty(skuId)) {
-            skuId = skuCode;
-        }
         String skuName = GetMapValueUtils.getStringFromMapKey(map, "skuName");
         Integer availableNum = GetMapValueUtils.getIntFromMapKey(map, "availableNum");
         Float weight = GetMapValueUtils.getFloatFromMapKey(map, "weight");
@@ -238,5 +211,44 @@ public class GoodsApprove extends ConcurrencySafeEntity {
     public void reject(String rejectReason) {
         this.approveStatus = 2;
         this.rejectReason = rejectReason;
+    }
+
+    public void modifyGoodsApprove(String goodsName, String goodsSubTitle,
+                                   String goodsClassifyId, String goodsBrandId, String goodsUnitId, Integer goodsMinQuantity,
+                                   String goodsPostageId, String goodsBarCode, String goodsKeyWord, String goodsGuarantee,
+                                   String goodsMainImages, String goodsDesc, String goodsSpecifications, String goodsSkuApproves) {
+        this.goodsName = goodsName;
+        this.goodsSubTitle = goodsSubTitle;
+        this.goodsClassifyId = goodsClassifyId;
+        this.goodsBrandId = goodsBrandId;
+        this.goodsUnitId = goodsUnitId;
+        this.goodsMinQuantity = goodsMinQuantity;
+        this.goodsPostageId = goodsPostageId;
+        this.goodsBarCode = goodsBarCode;
+        this.goodsKeyWord = goodsKeyWord;
+        this.goodsGuarantee = goodsGuarantee;
+        this.goodsMainImages = goodsMainImages;
+        this.goodsDesc = goodsDesc;
+        this.approveStatus = 1;
+        this.rejectReason = null;
+        this.goodsSpecifications = goodsSpecifications;
+        //商品规格格式：[{"skuId":20171014125226158648","skuName":"L,红","supplyPrice":4000,
+        // "weight":20.5,"availableNum":200,"goodsCode":"111111","marketPrice":6000,"photographPrice":5000,"showStatus":2}]
+        if (null == this.goodsSkuApproves) {
+            this.goodsSkuApproves = new ArrayList<>();
+        } else {
+            this.goodsSkuApproves.clear();
+        }
+        List<Map> skuList = JsonUtils.toList(goodsSkuApproves, Map.class);
+        if (null != skuList && skuList.size() > 0) {
+            for (int i = 0; i < skuList.size(); i++) {
+                this.goodsSkuApproves.add(createGoodsSkuApprove(skuList.get(i)));
+            }
+        }
+    }
+
+    public void remove() {
+        this.delStatus = 2;
+        this.goodsId = new StringBuffer("DEL_").append(this.goodsId).toString();
     }
 }

@@ -39,13 +39,6 @@ public class Dealer extends ConcurrencySafeEntity{
 	private String sellerPhone;
 	private Integer dealerStatus=1;//1:正常 2：删除
 	
-	/**
-	 * 店铺信息的字段
-	 */
-	private String shopName;//店铺名
-	private String shopIcon;//店铺图标
-	private String shopIntroduce;//店铺介绍
-	private String customerServiceTel;//客服电话
 	private Date createdDate;
 	private Date lastUpdatedDate;
 	
@@ -137,6 +130,7 @@ public class Dealer extends ConcurrencySafeEntity{
 		this.sellerPhone = sellerPhone;
 	}
 
+<<<<<<< HEAD
 	
 
 	public void updateShopInfo(String shopName, String shopIntroduce,
@@ -163,5 +157,7 @@ public class Dealer extends ConcurrencySafeEntity{
 	
 	
 	
+=======
+>>>>>>> 6e6eacb61bb6e2aedf92459ebbce5891cd8dc023
 	
 }

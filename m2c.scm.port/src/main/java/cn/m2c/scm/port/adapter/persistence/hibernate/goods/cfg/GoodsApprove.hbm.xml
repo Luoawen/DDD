@@ -28,9 +28,10 @@
         <property name="goodsShelves" column="goods_shelves" type="int"/>
         <property name="approveStatus" column="approve_status" type="int"/>
         <property name="rejectReason" column="reject_reason" type="string"/>
-
-        <bag name="goodsSkuApproves" lazy="false"  cascade="all-delete-orphan" inverse="true">
-            <key column="goods_id" />
+        <property name="goodsSpecifications" column="goods_specifications" type="text"/>
+        <property name="delStatus" column="del_status" type="int"/>
+        <bag name="goodsSkuApproves" lazy="false" cascade="all-delete-orphan" inverse="true">
+            <key column="goods_id"/>
             <one-to-many class="cn.m2c.scm.domain.model.goods.GoodsSkuApprove"/>
         </bag>
     </class>

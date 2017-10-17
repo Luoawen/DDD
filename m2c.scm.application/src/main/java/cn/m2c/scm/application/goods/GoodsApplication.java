@@ -35,13 +35,19 @@ public class GoodsApplication {
             goods = new Goods(command.getGoodsId(), command.getDealerId(), command.getDealerName(), command.getGoodsName(), command.getGoodsSubTitle(),
                     command.getGoodsClassifyId(), command.getGoodsBrandId(), command.getGoodsUnitId(), command.getGoodsMinQuantity(),
                     command.getGoodsPostageId(), command.getGoodsBarCode(), command.getGoodsKeyWord(), command.getGoodsGuarantee(),
-                    command.getGoodsMainImages(), command.getGoodsDesc(), command.getGoodsShelves(), command.getGoodsSKUs());
+                    command.getGoodsMainImages(), command.getGoodsDesc(), command.getGoodsShelves(), command.getGoodsSpecifications(), command.getGoodsSKUs());
         } else {//修改商品审核：修改商品的拍获价，供货价，规格
             goods.modifyApproveGoodsSku(command.getGoodsSKUs());
         }
         goodsRepository.save(goods);
     }
 
+    /**
+     * 修改商品
+     *
+     * @param command
+     * @throws NegativeException
+     */
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
     @EventListener(isListening = true)
     public void modifyGoods(GoodsCommand command) throws NegativeException {
@@ -56,6 +62,51 @@ public class GoodsApplication {
         goods.modifyGoods(command.getGoodsName(), command.getGoodsSubTitle(),
                 command.getGoodsClassifyId(), command.getGoodsBrandId(), command.getGoodsUnitId(), command.getGoodsMinQuantity(),
                 command.getGoodsPostageId(), command.getGoodsBarCode(), command.getGoodsKeyWord(), command.getGoodsGuarantee(),
-                command.getGoodsMainImages(), command.getGoodsDesc(), command.getGoodsSKUs());
+                command.getGoodsMainImages(), command.getGoodsDesc(), command.getGoodsSpecifications(), command.getGoodsSKUs());
+    }
+
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+    @EventListener(isListening = true)
+    public void deleteGoods(String goodsId) throws NegativeException {
+        LOGGER.info("deleteGoods goodsId >>{}", goodsId);
+        Goods goods = goodsRepository.queryGoodsById(goodsId);
+        if (null == goods) {
+            throw new NegativeException(MCode.V_300, "商品不存在");
+        }
+        goods.remove();
+    }
+
+    /**
+     * 商品上架
+     *
+     * @param goodsId
+     * @throws NegativeException
+     */
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+    @EventListener(isListening = true)
+    public void upShelfGoods(String goodsId) throws NegativeException {
+        LOGGER.info("upShelfGoods goodsId >>{}", goodsId);
+        Goods goods = goodsRepository.queryGoodsById(goodsId);
+        if (null == goods) {
+            throw new NegativeException(MCode.V_300, "商品不存在");
+        }
+        goods.upShelf();
+    }
+
+    /**
+     * 商品下架
+     *
+     * @param goodsId
+     * @throws NegativeException
+     */
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+    @EventListener(isListening = true)
+    public void offShelfGoods(String goodsId) throws NegativeException {
+        LOGGER.info("offShelfGoods goodsId >>{}", goodsId);
+        Goods goods = goodsRepository.queryGoodsById(goodsId);
+        if (null == goods) {
+            throw new NegativeException(MCode.V_300, "商品不存在");
+        }
+        goods.offShelf();
     }
 }

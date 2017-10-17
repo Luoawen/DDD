@@ -4,6 +4,7 @@ import cn.m2c.ddd.common.domain.model.ConcurrencySafeEntity;
 import cn.m2c.ddd.common.domain.model.DomainEventPublisher;
 import cn.m2c.ddd.common.serializer.ObjectSerializer;
 import cn.m2c.scm.domain.model.goods.event.GoodsApproveAddEvent;
+import cn.m2c.scm.domain.model.goods.event.GoodsDeleteEvent;
 import cn.m2c.scm.domain.util.GetMapValueUtils;
 
 import java.util.ArrayList;
@@ -115,9 +116,20 @@ public class Goods extends ConcurrencySafeEntity {
     private Integer goodsStatus;
 
     /**
+     * 商品规格,格式：[{"itemName":"尺寸","itemValue":["L","M"]},{"itemName":"颜色","itemValue":["蓝色","白色"]}]
+     */
+    private String goodsSpecifications;
+
+    /**
      * 商品规格
      */
     private List<GoodsSku> goodsSKUs;
+
+    /**
+     * 是否删除，1:正常，2：已删除
+     */
+    private Integer delStatus;
+
 
     public Goods() {
         super();
@@ -126,7 +138,7 @@ public class Goods extends ConcurrencySafeEntity {
     public Goods(String goodsId, String dealerId, String dealerName, String goodsName, String goodsSubTitle,
                  String goodsClassifyId, String goodsBrandId, String goodsUnitId, Integer goodsMinQuantity,
                  String goodsPostageId, String goodsBarCode, String goodsKeyWord, String goodsGuarantee,
-                 String goodsMainImages, String goodsDesc, Integer goodsShelves, String goodsSKUs) {
+                 String goodsMainImages, String goodsDesc, Integer goodsShelves, String goodsSpecifications, String goodsSKUs) {
         this.goodsId = goodsId;
         this.dealerId = dealerId;
         this.dealerName = dealerName;
@@ -148,6 +160,7 @@ public class Goods extends ConcurrencySafeEntity {
         } else {
             this.goodsStatus = 2;
         }
+        this.goodsSpecifications = goodsSpecifications;
 
         if (null == this.goodsSKUs) {
             this.goodsSKUs = new ArrayList<>();
@@ -227,7 +240,7 @@ public class Goods extends ConcurrencySafeEntity {
     public void modifyGoods(String goodsName, String goodsSubTitle,
                             String goodsClassifyId, String goodsBrandId, String goodsUnitId, Integer goodsMinQuantity,
                             String goodsPostageId, String goodsBarCode, String goodsKeyWord, String goodsGuarantee,
-                            String goodsMainImages, String goodsDesc, String goodsSKUs) {
+                            String goodsMainImages, String goodsDesc, String goodsSpecifications, String goodsSKUs) {
         this.goodsName = goodsName;
         this.goodsSubTitle = goodsSubTitle;
         this.goodsClassifyId = goodsClassifyId;
@@ -274,9 +287,33 @@ public class Goods extends ConcurrencySafeEntity {
                         .publish(new GoodsApproveAddEvent(this.goodsId, this.dealerId, this.dealerName, this.goodsName,
                                 this.goodsSubTitle, this.goodsClassifyId, this.goodsBrandId, this.goodsUnitId,
                                 this.goodsMinQuantity, this.goodsPostageId, this.goodsBarCode,
-                                this.goodsKeyWord, this.goodsGuarantee, this.goodsMainImages, this.goodsDesc,
+                                this.goodsKeyWord, this.goodsGuarantee, this.goodsMainImages, this.goodsDesc, goodsSpecifications,
                                 goodsSKUs));
             }
         }
+    }
+
+    /**
+     * 删除商品
+     */
+    public void remove() {
+        this.delStatus = 2;
+        DomainEventPublisher
+                .instance()
+                .publish(new GoodsDeleteEvent(this.goodsId));
+    }
+
+    /**
+     * 上架,商品状态，1：仓库中，2：出售中，3：已售罄
+     */
+    public void upShelf() {
+        this.goodsStatus = 2;
+    }
+
+    /**
+     * 下架,商品状态，1：仓库中，2：出售中，3：已售罄
+     */
+    public void offShelf() {
+        this.goodsStatus = 1;
     }
 }
