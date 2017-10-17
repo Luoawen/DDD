@@ -106,7 +106,7 @@ public class GoodsQueryApplication {
         List<Integer> ids = supportJdbcTemplate.jdbcTemplate().queryForList(sql.toString(), params.toArray(), Integer.class);
         if (null != ids && ids.size() > 0) {
             for (Integer id : ids) {
-                goodsBeanList.add(queryGoodsByGoodsId(id));
+                goodsBeanList.add(queryGoodsById(id));
             }
         }
         return goodsBeanList;
@@ -175,16 +175,92 @@ public class GoodsQueryApplication {
         return this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsSkuBean.class, goodsId);
     }
 
-    public GoodsBean queryGoodsByGoodsId(Integer goodsId) {
+    public GoodsBean queryGoodsById(Integer id) {
         StringBuilder sql = new StringBuilder();
         sql.append(" SELECT ");
         sql.append(" * ");
         sql.append(" FROM ");
         sql.append(" t_scm_goods WHERE 1 = 1 AND id = ?");
-        GoodsBean goodsBean = this.getSupportJdbcTemplate().queryForBean(sql.toString(), GoodsBean.class, goodsId);
+        GoodsBean goodsBean = this.getSupportJdbcTemplate().queryForBean(sql.toString(), GoodsBean.class, id);
         if (null != goodsBean) {
-            goodsBean.setGoodsSkuBeans(queryGoodsSKUsByGoodsId(goodsId));
+            goodsBean.setGoodsSkuBeans(queryGoodsSKUsByGoodsId(id));
         }
         return goodsBean;
+    }
+
+    public List<GoodsBean> goodsChoice(String goodsClassifyId, String condition,
+                                       Integer pageNum, Integer rows) {
+        List<Object> params = new ArrayList<Object>();
+        StringBuilder sql = new StringBuilder();
+        sql.append(" SELECT ");
+        sql.append(" goods_id ");
+        sql.append(" FROM ");
+        sql.append(" t_scm_goods_sku WHERE 1 = 1");
+        if (StringUtils.isNotEmpty(goodsClassifyId)) {
+            List<String> goodsClassifyIds = goodsClassifyQueryApplication.recursionQueryGoodsSubClassifyId(goodsClassifyId, new ArrayList<String>());
+            goodsClassifyIds.add(goodsClassifyId);
+            sql.append(" AND goods_classify_id in (?) ");
+            params.add(Utils.listParseString(goodsClassifyIds));
+        }
+        if (StringUtils.isNotEmpty(condition)) {
+            sql.append(" AND goods_name like ? ");
+            params.add("%" + condition + "%");
+        }
+        sql.append(" AND del_status= 1 group by goods_id ORDER BY goods_created_date DESC ");
+        sql.append(" LIMIT ?,?");
+        params.add(rows * (pageNum - 1));
+        params.add(rows);
+
+        List<GoodsBean> goodsBeanList = new ArrayList<>();
+        List<Integer> ids = supportJdbcTemplate.jdbcTemplate().queryForList(sql.toString(), params.toArray(), Integer.class);
+        if (null != ids && ids.size() > 0) {
+            for (Integer id : ids) {
+                goodsBeanList.add(queryGoodsById(id));
+            }
+        }
+        return goodsBeanList;
+    }
+
+    public Integer goodsChoiceTotal(String goodsClassifyId, String condition) {
+        List<Object> params = new ArrayList<Object>();
+        StringBuilder sql = new StringBuilder();
+        sql.append(" SELECT ");
+        sql.append(" count(distinct goods_id) ");
+        sql.append(" FROM ");
+        sql.append(" t_scm_goods_sku WHERE 1 = 1");
+        if (StringUtils.isNotEmpty(goodsClassifyId)) {
+            List<String> goodsClassifyIds = goodsClassifyQueryApplication.recursionQueryGoodsSubClassifyId(goodsClassifyId, new ArrayList<String>());
+            goodsClassifyIds.add(goodsClassifyId);
+            sql.append(" AND goods_classify_id in (?) ");
+            params.add(Utils.listParseString(goodsClassifyIds));
+        }
+        if (StringUtils.isNotEmpty(condition)) {
+            sql.append(" AND goods_name like ? ");
+            params.add("%" + condition + "%");
+        }
+        sql.append(" AND del_status= 1");
+        return supportJdbcTemplate.jdbcTemplate().queryForObject(sql.toString(), params.toArray(), Integer.class);
+    }
+
+    public GoodsBean queryGoodsByGoodsId(String goodsId) {
+        StringBuilder sql = new StringBuilder();
+        sql.append(" SELECT ");
+        sql.append(" * ");
+        sql.append(" FROM ");
+        sql.append(" t_scm_goods WHERE 1 = 1 AND goods_id = ?");
+        GoodsBean goodsBean = this.getSupportJdbcTemplate().queryForBean(sql.toString(), GoodsBean.class, goodsId);
+        if (null != goodsBean) {
+            goodsBean.setGoodsSkuBeans(queryGoodsSKUsByGoodsId(goodsBean.getId()));
+        }
+        return goodsBean;
+    }
+
+    public List<GoodsBean> queryGoodsByGoodsIds(List<String> goodsIds) {
+        List<GoodsBean> goodsBeans = new ArrayList<>();
+        for (String goodsId : goodsIds) {
+            GoodsBean goodsBean = queryGoodsByGoodsId(goodsId);
+            goodsBeans.add(goodsBean);
+        }
+        return goodsBeans;
     }
 }
