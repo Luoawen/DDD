@@ -52,15 +52,5 @@ public class HibernateUnitRepository extends HibernateSupperRepository implement
 	}
 
 
-	/**
-	 * 通过unitId获取计量单位
-	 */
-	@Override
-	public UnitBean getUnitByUnitId(String unitId) {
-		StringBuffer sql = new StringBuffer("select * from t_scm_unit where unit_status = 1 AND unit_id = :unit_id");
-		Query query = this.session().createSQLQuery(sql.toString()).addEntity(Unit.class);
-		query.setParameter("unit_id", unitId);
-		return (UnitBean) query.uniqueResult();
-	}
 
 }
