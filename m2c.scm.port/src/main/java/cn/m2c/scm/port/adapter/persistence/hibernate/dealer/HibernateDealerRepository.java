@@ -1,5 +1,6 @@
 package cn.m2c.scm.port.adapter.persistence.hibernate.dealer;
 
+
 import org.springframework.stereotype.Repository;
 
 import cn.m2c.ddd.common.port.adapter.persistence.hibernate.HibernateSupperRepository;
@@ -25,5 +26,16 @@ public class HibernateDealerRepository extends HibernateSupperRepository impleme
 	public void save(Dealer dealer) {
 		this.session().saveOrUpdate(dealer);
 	}
+
+	/**
+	 * sellerId获取经销商
+	 */
+	@Override
+	public Dealer getDealerBySellerId(String sellerId) {
+		Dealer dealer = (Dealer) this.session().createSQLQuery("FROM Dealer WHERE sellerId = :sellerId")
+		.setString("sellerId", sellerId).uniqueResult();
+		return dealer;
+	}
+
 
 }

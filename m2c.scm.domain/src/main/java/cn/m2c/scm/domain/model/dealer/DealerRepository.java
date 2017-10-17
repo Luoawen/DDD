@@ -1,5 +1,6 @@
 package cn.m2c.scm.domain.model.dealer;
 
+import java.util.List;
 
 public interface DealerRepository {
 
@@ -15,5 +16,7 @@ public interface DealerRepository {
      * @param postageModel
      */
     public void save(Dealer dealer);
+
+    public Dealer getDealerBySellerId(String sellerId);
 
 }

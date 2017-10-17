@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import cn.m2c.ddd.common.port.adapter.persistence.springJdbc.SupportJdbcTemplate;
 import cn.m2c.scm.application.standstard.bean.StantardBean;
+import cn.m2c.scm.domain.model.stantard.Stantard;
 
 @Repository
 public class StantardQuery {
@@ -44,6 +45,20 @@ public class StantardQuery {
 		params.add(rows);
 		List<StantardBean> stantardList= this.supportJdbcTemplate.queryForBeanList(sql.toString(), StantardBean.class, params.toArray());
 		return stantardList;
+	}
+	
+	
+	/**
+	 * stantardId获取规格
+	 * @param stantardId
+	 * @return
+	 */
+	public StantardBean getStantardByStantardId(String stantardId) {
+		List<Object> params = new ArrayList<Object>();
+		StringBuilder sql = new StringBuilder("SELECT * FROM t_scm_stantard WHERE stantard_status = 1 AND stantard_id = ?");
+		params.add(stantardId);
+		StantardBean stantard = this.supportJdbcTemplate.queryForBean(sql.toString(), StantardBean.class,stantardId);
+		return stantard;
 	}
 
 }

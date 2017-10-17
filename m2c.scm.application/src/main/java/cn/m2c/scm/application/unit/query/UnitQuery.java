@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import cn.m2c.ddd.common.port.adapter.persistence.springJdbc.SupportJdbcTemplate;
+import cn.m2c.scm.application.standstard.bean.StantardBean;
 import cn.m2c.scm.application.unit.bean.UnitBean;
 
 @Repository
@@ -47,7 +48,12 @@ public class UnitQuery {
 	public Integer queryUnitTotal() {
 		StringBuilder sql = new StringBuilder("Select COUNT(*) from t_scm_unit where 1 = 1 AND unit_status = 1");
 		return this.supportJdbcTemplate.jdbcTemplate().queryForObject(sql.toString(), Integer.class);
-
 	}
 
+	
+	public UnitBean getUnitByUnitId(String unitId) {
+		StringBuilder sql = new StringBuilder("SELECT * FROM t_scm_unit WHERE unit_status = 1 AND unit_id = ?");
+		UnitBean unitBean = this.supportJdbcTemplate.queryForBean(sql.toString(), UnitBean.class,unitId);
+		return unitBean;
+	}
 }

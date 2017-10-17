@@ -237,5 +237,17 @@ public class DealerQuery {
 		}
 		return result;
 	}
+	
+	/**
+	 * 业务员Id获取经销商列表
+	 * @param sellerId
+	 * @return
+	 * @throws NegativeException
+	 */
+	public List<DealerBean> getDealerBySellerId(String sellerId) throws NegativeException {
+		StringBuffer sql = new StringBuffer("SELECT * FROM t_scm_dealer WHERE dealer_status = 1 AND seller_id = ?");
+		return this.supportJdbcTemplate.queryForBeanList(sql.toString(), DealerBean.class,sellerId);
+		
+	}
 
 }

@@ -1,5 +1,6 @@
 package cn.m2c.scm.domain.model.unit;
 
+import cn.m2c.scm.application.unit.bean.UnitBean;
 
 public interface UnitRepository {
 
@@ -22,4 +23,11 @@ public interface UnitRepository {
 	 * @param unit
 	 */
 	public void saveUnit(Unit unit);
+	
+	/**
+	 * 获取计量单位
+	 * @param unitId
+	 * @return
+	 */
+	public UnitBean getUnitByUnitId(String unitId);
 }
