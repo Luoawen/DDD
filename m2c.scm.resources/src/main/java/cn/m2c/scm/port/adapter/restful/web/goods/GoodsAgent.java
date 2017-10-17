@@ -73,12 +73,12 @@ public class GoodsAgent {
 
             List<Map<String, Object>> ruleList1 = new ArrayList<>();
             Map ruleMap1 = new HashMap<>();
-            ruleMap1.put("goodsSkuId", "SPGG449EF119C6974667B9F5881C080EE5D2");
+            ruleMap1.put("goodsSkuId", "SPGG449EF119C6974667B9F5881C080EE5D3");
             ruleMap1.put("goodsSkuName", "L,红色");
             ruleMap1.put("goodsSkuInventory", 400);
             ruleMap1.put("goodsSkuPrice", 249000);
             Map ruleMap2 = new HashMap<>();
-            ruleMap2.put("goodsSkuId", "SPGG449EF119C6974667B9F5881C080EE5D2");
+            ruleMap2.put("goodsSkuId", "SPGG449EF119C6974667B9F5881C080EE5D4");
             ruleMap2.put("goodsSkuName", "L,黄色");
             ruleMap2.put("goodsSkuInventory", 400);
             ruleMap2.put("goodsSkuPrice", 50000);
@@ -101,12 +101,12 @@ public class GoodsAgent {
 
             List<Map<String, Object>> ruleList2 = new ArrayList<>();
             Map ruleMap3 = new HashMap<>();
-            ruleMap3.put("goodsSkuId", "SPGG449EF119C6974667B9F5881C080EE5D2");
+            ruleMap3.put("goodsSkuId", "SPGG449EF119C6974667B9F5881C080EE5D5");
             ruleMap3.put("goodsSkuName", "L,蓝色");
             ruleMap3.put("goodsSkuInventory", 500);
             ruleMap3.put("goodsSkuPrice", 89900);
             Map ruleMap4 = new HashMap<>();
-            ruleMap4.put("goodsSkuId", "SPGG449EF119C6974667B9F5881C080EE5D2");
+            ruleMap4.put("goodsSkuId", "SPGG449EF119C6974667B9F5881C080EE5D6");
             ruleMap4.put("goodsSkuName", "L,白色");
             ruleMap4.put("goodsSkuInventory", 500);
             ruleMap4.put("goodsSkuPrice", 99900);
