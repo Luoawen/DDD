@@ -12,16 +12,16 @@ import java.util.Map;
 public interface OrderService {
 	/***
 	 * 判断商品sku库存
-	 * @param skus key:sku, val:sl
-	 * @return
+	 * @param skus key:skuId, val:num
+	 * @return 缺少库存的商品及数量
 	 */
-	public Map<String, Object> judgeStock(Map<String, Object> skus);
+	public Map<String, Object> judgeStock(Map<String, Float> skus);
 	/***
 	 * 锁定商品sku库存
-	 * @param skus key:sku, val:sl
+	 * @param skus key:skuId, val:num
 	 * @return
 	 */
-	public void lockStock(Map<String, Object> skus);
+	public void lockStock(Map<String, Float> skus);
 	/***
 	 * 解锁优惠券
 	 * @param couponsIds
@@ -54,12 +54,6 @@ public interface OrderService {
 	 * @return
 	 */
 	public List<Map<String, Object>> getShopCarGoods(String userId);
-	/***
-	 * 获取商品详情
-	 * @param skus key:sku, val:goodsId
-	 * @return
-	 */
-	public List<Map<String, Object>> getGoodsDtl(Map<String, Object> skus);
 	/***
 	 * 获取营销规则列表
 	 * @param goodsId, typeId, dealerId
