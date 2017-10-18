@@ -28,7 +28,9 @@ public class GoodsGuessRepresentation {
         if (null != goodsSkuBeans && goodsSkuBeans.size() > 0) {
             this.goodsPrice = goodsSkuBeans.get(0).getPhotographPrice();
         }
-        this.goodsTags = goodsTags;
+        if (null != goodsTags && goodsTags.size() > 0) {
+            this.goodsTags = goodsTags;
+        }
     }
 
     public String getGoodsId() {
