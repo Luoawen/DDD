@@ -23,6 +23,7 @@ public class GoodsApproveSearchRepresentation {
     private String dealerName;
     private String dealerType;
     private String dealerId;
+    private String rejectReason;
 
     public GoodsApproveSearchRepresentation(GoodsApproveBean bean, String goodsClassify, String dealerType) {
         List<String> mainImages = JsonUtils.toList(bean.getGoodsMainImages(), String.class);
@@ -62,6 +63,7 @@ public class GoodsApproveSearchRepresentation {
         this.dealerName = bean.getDealerName();
         this.dealerType = dealerType;
         this.dealerId = bean.getDealerId();
+        this.rejectReason = bean.getRejectReason();
     }
 
     public String getGoodsId() {
@@ -150,5 +152,13 @@ public class GoodsApproveSearchRepresentation {
 
     public void setDealerId(String dealerId) {
         this.dealerId = dealerId;
+    }
+
+    public String getRejectReason() {
+        return rejectReason;
+    }
+
+    public void setRejectReason(String rejectReason) {
+        this.rejectReason = rejectReason;
     }
 }

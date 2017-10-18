@@ -94,7 +94,7 @@ public class GoodsAgent {
             @RequestParam(value = "goodsMinQuantity", required = false) Integer goodsMinQuantity,
             @RequestParam(value = "goodsPostageId", required = false) String goodsPostageId,
             @RequestParam(value = "goodsBarCode", required = false) String goodsBarCode,
-            @RequestParam(value = "goodsKeyWord", required = false) List<String> goodsKeyWord,
+            @RequestParam(value = "goodsKeyWord", required = false) List goodsKeyWord,
             @RequestParam(value = "goodsGuarantee", required = false) List goodsGuarantee,
             @RequestParam(value = "goodsMainImages", required = false) List goodsMainImages,
             @RequestParam(value = "goodsDesc", required = false) String goodsDesc,
@@ -138,6 +138,11 @@ public class GoodsAgent {
         return new ResponseEntity<MResult>(result, HttpStatus.OK);
     }
 
+    /**
+     * 删除商品
+     * @param goodsId
+     * @return
+     */
     @RequestMapping(value = "/{goodsId}", method = RequestMethod.DELETE)
     public ResponseEntity<MResult> delGoods(
             @PathVariable("goodsId") String goodsId
@@ -220,7 +225,6 @@ public class GoodsAgent {
     @RequestMapping(value = "", method = RequestMethod.GET)
     public ResponseEntity<MPager> searchGoodsByCondition(
             @RequestParam(value = "dealerId", required = false) String dealerId,
-            @RequestParam(value = "dealerName", required = false) String dealerName,
             @RequestParam(value = "goodsClassifyId", required = false) String goodsClassifyId,
             @RequestParam(value = "goodsStatus", required = false) Integer goodsStatus,
             @RequestParam(value = "brandName", required = false) String brandName,

@@ -28,6 +28,7 @@ public class GoodsApproveDetailRepresentation {
     private List<String> goodsMainImages;
     private String goodsDesc;
     private Integer approveStatus;//审核状态，1：审核中，2：审核不通过
+    private String rejectReason;
 
     public GoodsApproveDetailRepresentation(GoodsApproveBean bean, String goodsClassify, List<String> goodsGuaranteeDesc, String goodsUnitName) {
         this.goodsName = bean.getGoodsName();
@@ -36,6 +37,7 @@ public class GoodsApproveDetailRepresentation {
         this.goodsClassify = goodsClassify;
         this.goodsBrandId = bean.getGoodsBrandId();
         this.goodsBrandName = bean.getGoodsBrandName();
+        this.goodsUnitId=bean.getGoodsUnitId();
         this.goodsUnitName = goodsUnitName;
         this.goodsMinQuantity = bean.getGoodsMinQuantity();
         this.goodsBarCode = bean.getGoodsBarCode();
@@ -47,6 +49,7 @@ public class GoodsApproveDetailRepresentation {
         this.goodsMainImages = JsonUtils.toList(bean.getGoodsMainImages(), String.class);
         this.goodsDesc = bean.getGoodsDesc();
         this.approveStatus = bean.getApproveStatus();
+        this.rejectReason = bean.getRejectReason();
     }
 
     public String getGoodsName() {
@@ -191,5 +194,13 @@ public class GoodsApproveDetailRepresentation {
 
     public void setApproveStatus(Integer approveStatus) {
         this.approveStatus = approveStatus;
+    }
+
+    public String getRejectReason() {
+        return rejectReason;
+    }
+
+    public void setRejectReason(String rejectReason) {
+        this.rejectReason = rejectReason;
     }
 }

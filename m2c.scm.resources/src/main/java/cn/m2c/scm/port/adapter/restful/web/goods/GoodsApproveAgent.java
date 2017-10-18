@@ -118,7 +118,7 @@ public class GoodsApproveAgent {
             @RequestParam(value = "goodsMinQuantity", required = false) Integer goodsMinQuantity,
             @RequestParam(value = "goodsPostageId", required = false) String goodsPostageId,
             @RequestParam(value = "goodsBarCode", required = false) String goodsBarCode,
-            @RequestParam(value = "goodsKeyWord", required = false) List<String> goodsKeyWord,
+            @RequestParam(value = "goodsKeyWord", required = false) List goodsKeyWord,
             @RequestParam(value = "goodsGuarantee", required = false) List goodsGuarantee,
             @RequestParam(value = "goodsMainImages", required = false) List goodsMainImages,
             @RequestParam(value = "goodsDesc", required = false) String goodsDesc,
@@ -187,17 +187,17 @@ public class GoodsApproveAgent {
     /**
      * 拒绝商品审核
      *
-     * @param approveId
+     * @param goodsId
      * @return
      */
     @RequestMapping(value = "/reject", method = RequestMethod.POST)
     public ResponseEntity<MResult> rejectGoodsApprove(
-            @RequestParam(value = "approveId", required = false) String approveId,
+            @RequestParam(value = "goodsId", required = false) String goodsId,
             @RequestParam(value = "rejectReason", required = false) String rejectReason
     ) {
         MResult result = new MResult(MCode.V_1);
         try {
-            GoodsApproveRejectCommand command = new GoodsApproveRejectCommand(approveId, rejectReason);
+            GoodsApproveRejectCommand command = new GoodsApproveRejectCommand(goodsId, rejectReason);
             goodsApproveApplication.rejectGoodsApprove(command);
             result.setStatus(MCode.V_200);
         } catch (NegativeException ne) {
@@ -243,7 +243,7 @@ public class GoodsApproveAgent {
             @RequestParam(value = "goodsMinQuantity", required = false) Integer goodsMinQuantity,
             @RequestParam(value = "goodsPostageId", required = false) String goodsPostageId,
             @RequestParam(value = "goodsBarCode", required = false) String goodsBarCode,
-            @RequestParam(value = "goodsKeyWord", required = false) String goodsKeyWord,
+            @RequestParam(value = "goodsKeyWord", required = false) List goodsKeyWord,
             @RequestParam(value = "goodsGuarantee", required = false) List goodsGuarantee,
             @RequestParam(value = "goodsMainImages", required = false) List goodsMainImages,
             @RequestParam(value = "goodsDesc", required = false) String goodsDesc,
@@ -272,7 +272,7 @@ public class GoodsApproveAgent {
             }
             GoodsApproveCommand command = new GoodsApproveCommand(goodsId, dealerId, goodsName, goodsSubTitle,
                     goodsClassifyId, goodsBrandId, goodsBrandName, goodsUnitId, goodsMinQuantity,
-                    goodsPostageId, goodsBarCode, goodsKeyWord, goodsGuarantee,
+                    goodsPostageId, goodsBarCode, JsonUtils.toStr(goodsKeyWord), goodsGuarantee,
                     goodsMainImages, goodsDesc, goodsSpecifications, goodsSKUs);
             goodsApproveApplication.modifyGoodsApprove(command);
             result.setStatus(MCode.V_200);
@@ -286,6 +286,11 @@ public class GoodsApproveAgent {
         return new ResponseEntity<MResult>(result, HttpStatus.OK);
     }
 
+    /**
+     * 删除商品审核信息
+     * @param goodsId
+     * @return
+     */
     @RequestMapping(value = "/{goodsId}", method = RequestMethod.DELETE)
     public ResponseEntity<MResult> delGoodsApprove(
             @PathVariable("goodsId") String goodsId
@@ -308,7 +313,7 @@ public class GoodsApproveAgent {
      *
      * @param dealerId        商家ID
      * @param goodsClassifyId 商品分类
-     * @param goodsStatus     商品状态，1：仓库中，2：出售中，3：已售罄
+     * @param approveStatus   审核状态，1：审核中，2：审核不通过
      * @param condition       搜索条件
      * @param startTime       开始时间
      * @param endTime         结束时间
@@ -319,9 +324,8 @@ public class GoodsApproveAgent {
     @RequestMapping(value = "", method = RequestMethod.GET)
     public ResponseEntity<MPager> searchGoodsApproveByCondition(
             @RequestParam(value = "dealerId", required = false) String dealerId,
-            @RequestParam(value = "dealerName", required = false) String dealerName,
             @RequestParam(value = "goodsClassifyId", required = false) String goodsClassifyId,
-            @RequestParam(value = "goodsStatus", required = false) Integer goodsStatus,
+            @RequestParam(value = "approveStatus", required = false) Integer approveStatus,
             @RequestParam(value = "brandName", required = false) String brandName,
             @RequestParam(value = "condition", required = false) String condition,
             @RequestParam(value = "startTime", required = false) String startTime,
@@ -330,10 +334,10 @@ public class GoodsApproveAgent {
             @RequestParam(value = "rows", required = false, defaultValue = "10") Integer rows) {
         MPager result = new MPager(MCode.V_1);
         try {
-            Integer total = goodsApproveQueryApplication.searchGoodsApproveByConditionTotal(dealerId, goodsClassifyId, goodsStatus,
+            Integer total = goodsApproveQueryApplication.searchGoodsApproveByConditionTotal(dealerId, goodsClassifyId, approveStatus,
                     condition, startTime, endTime);
             if (total > 0) {
-                List<GoodsApproveBean> goodsBeans = goodsApproveQueryApplication.searchGoodsApproveByCondition(dealerId, goodsClassifyId, goodsStatus,
+                List<GoodsApproveBean> goodsBeans = goodsApproveQueryApplication.searchGoodsApproveByCondition(dealerId, goodsClassifyId, approveStatus,
                         condition, startTime, endTime, pageNum, rows);
                 if (null != goodsBeans && goodsBeans.size() > 0) {
                     List<GoodsApproveSearchRepresentation> representations = new ArrayList<GoodsApproveSearchRepresentation>();
