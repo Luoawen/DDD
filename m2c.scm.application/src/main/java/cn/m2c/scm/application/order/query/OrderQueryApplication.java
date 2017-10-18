@@ -53,4 +53,13 @@ public class OrderQueryApplication {
     public List<OptLogBean> getDealerOrderOptLog(String dealerId) {
     	return null;
     }
+  
+	  /**
+     * 获取商家订单详情
+     * @param dealerOrderId
+     */
+	public DealerOrderBean getDealerOrder(String dealerOrderId) {
+		
+		return null;
+	}
 }
