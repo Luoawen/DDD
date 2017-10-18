@@ -23,7 +23,8 @@
 	<import resource="classpath*:applicationContext-common.xml" />
 	<import resource="classpath*:applicationContext-dubbo-consumer.xml" />
 	<import resource="classpath*:applicationContext-dubbo-provider.xml" />
-	<import resource="classpath*:applicationContext-listener.xml" />	
+	<import resource="classpath*:applicationContext-listener.xml" />
+	<import resource="classpath*:applicationContext-restful.xml" />
 	<!--  
 	<import resource="classpath*:applicationContext-quartz.xml" />
 	-->

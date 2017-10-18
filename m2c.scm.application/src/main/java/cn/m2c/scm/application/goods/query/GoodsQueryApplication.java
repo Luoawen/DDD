@@ -1,6 +1,7 @@
 package cn.m2c.scm.application.goods.query;
 
 import cn.m2c.common.JsonUtils;
+import cn.m2c.common.RedisUtil;
 import cn.m2c.ddd.common.port.adapter.persistence.springJdbc.SupportJdbcTemplate;
 import cn.m2c.scm.application.classify.query.GoodsClassifyQueryApplication;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsBean;
@@ -29,6 +30,9 @@ public class GoodsQueryApplication {
     public SupportJdbcTemplate getSupportJdbcTemplate() {
         return supportJdbcTemplate;
     }
+
+    @Autowired
+    RedisUtil redisUtil;
 
     @Autowired
     GoodsClassifyQueryApplication goodsClassifyQueryApplication;
@@ -285,5 +289,70 @@ public class GoodsQueryApplication {
             }
         }
         return keyWords;
+    }
+
+    public List<GoodsBean> queryGoodsGuessCache(Integer positionType) {
+        //猜你喜欢位置：1:首页(共32条，分页，每页8条，分4页)，2:购物车页面（共12条，不需分页），3:商品详情页（共12条，不需分页）
+        Integer number = 32;
+        if (positionType != 1) {
+            number = 12;
+        }
+
+        List<GoodsBean> goodsBeans = new ArrayList<>();
+        String key = "scm.goods.guess." + positionType;
+        String guess = redisUtil.getString(key); //从缓存中取数据
+        if (StringUtils.isNotEmpty(guess)) { // 缓存不为空
+            List<GoodsBean> guessInfoList = JsonUtils.toList(guess, GoodsBean.class);
+            if (guessInfoList.size() < number) { //随机取剩余部分
+                List<String> goodsIds = new ArrayList<>();
+                for (GoodsBean goodsBean : guessInfoList) {
+                    goodsIds.add(goodsBean.getGoodsId());
+                }
+                guessInfoList.addAll(queryGoodsGuess((number - guessInfoList.size()), positionType, goodsIds));
+                redisUtil.setString(key, 24 * 3600, JsonUtils.toStr(guessInfoList));
+            }
+            goodsBeans = guessInfoList;
+        } else {
+            goodsBeans = queryGoodsGuess(number, positionType, null);
+        }
+        return goodsBeans;
+    }
+
+    private List<GoodsBean> queryGoodsGuess(Integer number, Integer positionType, List<String> goodsIds) {
+        String key = "scm.goods.guess." + positionType;
+        StringBuilder sql = new StringBuilder();
+        sql.append(" SELECT ");
+        sql.append(" * ");
+        sql.append(" FROM ");
+        sql.append(" t_scm_goods where del_status= 1 ");
+        if (null != goodsIds && goodsIds.size() > 0) {
+            sql.append(" and goods_id not in (" + Utils.listParseString(goodsIds) + ")");
+        }
+        sql.append(" order by rand() limit 0,?");
+        List<GoodsBean> goodsBeans = this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsBean.class, number);
+        if (null == goodsIds) {
+            if (null != goodsBeans && goodsBeans.size() > 0) {
+                redisUtil.setString(key, 24 * 3600, JsonUtils.toStr(goodsBeans));
+            }
+        }
+        return goodsBeans;
+    }
+
+    /**
+     * list 分页
+     *
+     * @param pageNum
+     * @param rows
+     * @param goodsBeans
+     * @return
+     */
+    public List<GoodsBean> getPagedList(Integer pageNum, Integer rows, List<GoodsBean> goodsBeans) {
+        List<GoodsBean> goodsBeanPage = new ArrayList<GoodsBean>();
+        int currIdx = (pageNum > 1 ? (pageNum - 1) * rows : 0);
+        for (int i = 0; i < rows && i < goodsBeans.size() - currIdx; i++) {
+            GoodsBean memberArticleBean = goodsBeans.get(currIdx + i);
+            goodsBeanPage.add(memberArticleBean);
+        }
+        return goodsBeanPage;
     }
 }
