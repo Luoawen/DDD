@@ -108,4 +108,13 @@ public class GoodsClassifyQueryApplication {
         return null;
     }
 
+    public List<GoodsClassifyBean> queryGoodsClassifyRandom(Integer number) {
+        StringBuilder sql = new StringBuilder();
+        sql.append(" SELECT ");
+        sql.append(" * ");
+        sql.append(" FROM ");
+        sql.append(" t_scm_goods_classify where status= 1 order by rand() limit 0,?");
+        List<GoodsClassifyBean> goodsClassifyBeans = this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsClassifyBean.class, number);
+        return goodsClassifyBeans;
+    }
 }

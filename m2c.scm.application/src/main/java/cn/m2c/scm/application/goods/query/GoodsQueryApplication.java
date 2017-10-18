@@ -1,5 +1,6 @@
 package cn.m2c.scm.application.goods.query;
 
+import cn.m2c.common.JsonUtils;
 import cn.m2c.ddd.common.port.adapter.persistence.springJdbc.SupportJdbcTemplate;
 import cn.m2c.scm.application.classify.query.GoodsClassifyQueryApplication;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsBean;
@@ -250,5 +251,39 @@ public class GoodsQueryApplication {
             goodsBeans.add(goodsBean);
         }
         return goodsBeans;
+    }
+
+    public List<GoodsBean> queryGoodsRandom(Integer number) {
+        StringBuilder sql = new StringBuilder();
+        sql.append(" SELECT ");
+        sql.append(" * ");
+        sql.append(" FROM ");
+        sql.append(" t_scm_goods where del_status= 1 order by rand() limit 0,?");
+        List<GoodsBean> goodsBeans = this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsBean.class, number);
+        return goodsBeans;
+    }
+
+    public List<String> queryGoodsKeyWordRandom(Integer number) {
+        List<String> keyWords = new ArrayList<>();
+        StringBuilder sql = new StringBuilder();
+        sql.append(" SELECT ");
+        sql.append(" * ");
+        sql.append(" FROM ");
+        sql.append(" t_scm_goods where del_status= 1 and goods_key_word is not null order by rand() limit 0,?");
+        List<GoodsBean> goodsBeans = this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsBean.class, number);
+        List<String> tempList = new ArrayList<>();
+        if (null != goodsBeans && goodsBeans.size() > 0) {
+            for (GoodsBean goodsBean : goodsBeans) {
+                String keyWord = goodsBean.getGoodsKeyWord();
+                List<String> tempKeyWord = JsonUtils.toList(keyWord, String.class);
+                tempList.addAll(tempKeyWord);
+            }
+            if (tempList.size() > number) {
+                keyWords = tempList.subList(0, number);
+            } else {
+                keyWords = tempList;
+            }
+        }
+        return keyWords;
     }
 }

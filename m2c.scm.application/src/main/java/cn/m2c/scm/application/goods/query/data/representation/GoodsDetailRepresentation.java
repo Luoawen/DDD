@@ -20,7 +20,7 @@ public class GoodsDetailRepresentation {
     private String goodsUnitName;
     private Integer goodsMinQuantity;
     private String goodsBarCode;
-    private String goodsKeyWord;
+    private List<String> goodsKeyWord;
     private List<String> goodsGuaranteeIds;
     private List<String> goodsGuaranteeDesc;
     private List<Map> goodsSpecifications;
@@ -38,7 +38,7 @@ public class GoodsDetailRepresentation {
         this.goodsUnitName = goodsUnitName;
         this.goodsMinQuantity = bean.getGoodsMinQuantity();
         this.goodsBarCode = bean.getGoodsBarCode();
-        this.goodsKeyWord = bean.getGoodsKeyWord();
+        this.goodsKeyWord = JsonUtils.toList(bean.getGoodsKeyWord(), String.class);
         this.goodsGuaranteeIds = JsonUtils.toList(bean.getGoodsGuarantee(), String.class);
         this.goodsGuaranteeDesc = goodsGuaranteeDesc;
         this.goodsSpecifications = JsonUtils.toList(bean.getGoodsSpecifications(), Map.class);
@@ -127,11 +127,11 @@ public class GoodsDetailRepresentation {
         this.goodsBarCode = goodsBarCode;
     }
 
-    public String getGoodsKeyWord() {
+    public List<String> getGoodsKeyWord() {
         return goodsKeyWord;
     }
 
-    public void setGoodsKeyWord(String goodsKeyWord) {
+    public void setGoodsKeyWord(List<String> goodsKeyWord) {
         this.goodsKeyWord = goodsKeyWord;
     }
 

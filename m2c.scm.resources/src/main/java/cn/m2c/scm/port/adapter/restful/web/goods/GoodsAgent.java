@@ -94,7 +94,7 @@ public class GoodsAgent {
             @RequestParam(value = "goodsMinQuantity", required = false) Integer goodsMinQuantity,
             @RequestParam(value = "goodsPostageId", required = false) String goodsPostageId,
             @RequestParam(value = "goodsBarCode", required = false) String goodsBarCode,
-            @RequestParam(value = "goodsKeyWord", required = false) String goodsKeyWord,
+            @RequestParam(value = "goodsKeyWord", required = false) List<String> goodsKeyWord,
             @RequestParam(value = "goodsGuarantee", required = false) List goodsGuarantee,
             @RequestParam(value = "goodsMainImages", required = false) List goodsMainImages,
             @RequestParam(value = "goodsDesc", required = false) String goodsDesc,
@@ -123,7 +123,7 @@ public class GoodsAgent {
             }
             GoodsCommand command = new GoodsCommand(goodsId, dealerId, goodsName, goodsSubTitle,
                     goodsClassifyId, goodsBrandId, goodsBrandName, goodsUnitId, goodsMinQuantity,
-                    goodsPostageId, goodsBarCode, goodsKeyWord, JsonUtils.toStr(goodsGuarantee),
+                    goodsPostageId, goodsBarCode, JsonUtils.toStr(goodsKeyWord), JsonUtils.toStr(goodsGuarantee),
                     JsonUtils.toStr(goodsMainImages), goodsDesc, goodsSpecifications, goodsSKUs);
             goodsApplication.modifyGoods(command);
             result.setStatus(MCode.V_200);
