@@ -10,12 +10,15 @@ import cn.m2c.scm.application.dealer.data.bean.DealerBean;
 import cn.m2c.scm.application.dealer.query.DealerQuery;
 import cn.m2c.scm.application.goods.GoodsApplication;
 import cn.m2c.scm.application.goods.command.GoodsCommand;
+import cn.m2c.scm.application.goods.query.GoodsGuaranteeQueryApplication;
 import cn.m2c.scm.application.goods.query.GoodsQueryApplication;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsBean;
 import cn.m2c.scm.application.goods.query.data.representation.GoodsChoiceRepresentation;
 import cn.m2c.scm.application.goods.query.data.representation.GoodsDetailMultipleRepresentation;
 import cn.m2c.scm.application.goods.query.data.representation.GoodsDetailRepresentation;
 import cn.m2c.scm.application.goods.query.data.representation.GoodsSearchRepresentation;
+import cn.m2c.scm.application.goods.query.data.representation.GoodsSimpleDetailRepresentation;
+import cn.m2c.scm.application.unit.query.UnitQuery;
 import cn.m2c.scm.domain.NegativeException;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -54,6 +57,10 @@ public class GoodsAgent {
     DealerQuery dealerQuery;
     @Autowired
     GoodsClassifyQueryApplication goodsClassifyQueryApplication;
+    @Autowired
+    GoodsGuaranteeQueryApplication goodsGuaranteeQueryApplication;
+    @Autowired
+    UnitQuery unitQuery;
 
     /**
      * 商品筛选根据商品类别，名称、标题、编号筛选
@@ -106,7 +113,7 @@ public class GoodsAgent {
         try {
             GoodsBean goodsBean = goodsQueryApplication.queryGoodsByGoodsId(goodsId);
             if (null != goodsBean) {
-                GoodsDetailRepresentation representation = new GoodsDetailRepresentation(goodsBean);
+                GoodsSimpleDetailRepresentation representation = new GoodsSimpleDetailRepresentation(goodsBean);
                 result.setContent(representation);
             }
             result.setStatus(MCode.V_200);
@@ -340,5 +347,33 @@ public class GoodsAgent {
             result = new MPager(MCode.V_400, "查询商品列表失败");
         }
         return new ResponseEntity<MPager>(result, HttpStatus.OK);
+    }
+
+    /**
+     * 查询商品详情
+     *
+     * @param goodsId
+     * @return
+     */
+    @RequestMapping(value = "/{goodsId}", method = RequestMethod.GET)
+    public ResponseEntity<MResult> queryGoodsDetail(
+            @PathVariable("goodsId") String goodsId
+    ) {
+        MResult result = new MResult(MCode.V_1);
+        try {
+            GoodsBean goodsBean = goodsQueryApplication.queryGoodsByGoodsId(goodsId);
+            if (null != goodsBean) {
+                String goodsClassify = goodsClassifyQueryApplication.getClassifyNames(goodsBean.getGoodsClassifyId());
+                List<String> goodsGuarantee = goodsGuaranteeQueryApplication.getGoodsGuaranteeDesc(JsonUtils.toList(goodsBean.getGoodsGuarantee(), String.class));
+                String goodsUnitName = unitQuery.getUnitNameByUnitId(goodsBean.getGoodsUnitId());
+                GoodsDetailRepresentation representation = new GoodsDetailRepresentation(goodsBean, goodsClassify, goodsGuarantee, goodsUnitName);
+                result.setContent(representation);
+            }
+            result.setStatus(MCode.V_200);
+        } catch (Exception e) {
+            LOGGER.error("queryGoodsDetail Exception e:", e);
+            result = new MResult(MCode.V_400, "查询商品详情失败");
+        }
+        return new ResponseEntity<MResult>(result, HttpStatus.OK);
     }
 }
