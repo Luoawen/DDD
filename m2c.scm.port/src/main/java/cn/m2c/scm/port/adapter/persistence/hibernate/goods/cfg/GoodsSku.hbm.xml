@@ -23,6 +23,7 @@
         <property name="showStatus" column="show_status" type="int"/>
         <property name="delStatus" column="del_status" type="int"/>
         <component name="goodsSearchInfo">
+            <property name="dealerId" column="dealer_id" type="string"/>
             <property name="dealerName" column="dealer_name" type="string"/>
             <property name="goodsName" column="goods_name" type="string"/>
             <property name="goodsSubTitle" column="goods_sub_title" type="string"/>

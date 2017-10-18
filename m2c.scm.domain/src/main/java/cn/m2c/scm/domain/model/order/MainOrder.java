@@ -24,25 +24,9 @@ public class MainOrder extends ConcurrencySafeEntity {
 	private Date payTime;
 	
 	/**订单状态 0待付款，1等发货，2待收货，3完成，4交易完成，5交易关闭，-1已取消*/
-	private Integer status;
-	
-	private String province;
-	
-	private String provinceCode;
-	
-	private String city;
-	
-	private String cityCode;
-	
-	private String area;
-	
-	private String areaCode;
-	
-	private String street;
-	/**收货联系人*/
-	private String revPerson;
-	/**联系电话*/
-	private String revPhone;
+	private Integer status = 0;
+	/**收货人*/
+	ReceiveAddr addr;
 	/**以分为单位，商品金额*/
 	private Integer goodsAmount;
 	/**订单总运费*/
@@ -61,6 +45,26 @@ public class MainOrder extends ConcurrencySafeEntity {
 	private List<SimpleCoupon> coupons;
 	/**应用的营销策略*/
 	private List<SimpleMarketing> marketings;
+	
+	public MainOrder() {
+		super();
+	}
+	// String payNo, int payWay, Date payTime, 
+	public MainOrder(String orderId, ReceiveAddr addr, int goodsAmount, int orderFreight, int plateformDiscount
+			, int dealerDiscount, String userId, String noted, List<DealerOrder> dealerOrders
+			,List<SimpleCoupon> coupons, List<SimpleMarketing> marketings) {
+		this.orderId = orderId;
+		this.addr = addr;
+		this.goodsAmount = goodsAmount;
+		this.orderFreight = orderFreight;
+		this.plateformDiscount = plateformDiscount;
+		this.dealerDiscount = dealerDiscount;
+		this.userId = userId;
+		this.noted = noted;
+		this.dealerOrders = dealerOrders;
+		this.coupons = coupons;
+		this.marketings = marketings;
+	}
 	/**
 	 * 增加订单
 	 */
@@ -80,5 +84,11 @@ public class MainOrder extends ConcurrencySafeEntity {
 	 */
 	public void checkout() {
 		// 判断是否可以结算
+	}
+	/***
+	 * 支付成功 // 需要参数
+	 */
+	public void payed() {
+		status = 1;
 	}
 }

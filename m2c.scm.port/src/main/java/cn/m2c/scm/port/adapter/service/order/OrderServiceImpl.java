@@ -16,13 +16,13 @@ import cn.m2c.scm.domain.service.order.OrderService;
 public class OrderServiceImpl implements OrderService {
 
 	@Override
-	public Map<String, Object> judgeStock(Map<String, Object> skus) {
+	public Map<String, Object> judgeStock(Map<String, Float> skus) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public void lockStock(Map<String, Object> skus) {
+	public void lockStock(Map<String, Float> skus) {
 		// TODO Auto-generated method stub
 		// 抛出异常表示锁定不成功.
 	}
@@ -35,12 +35,6 @@ public class OrderServiceImpl implements OrderService {
 
 	@Override
 	public List<Map<String, Object>> getShopCarGoods(String userId) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<Map<String, Object>> getGoodsDtl(Map<String, Object> skus) {
 		// TODO Auto-generated method stub
 		return null;
 	}

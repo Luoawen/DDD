@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -78,12 +79,33 @@ public class GoodsClassifyQueryApplication {
         if (null != subGoodsClassifyBeans && subGoodsClassifyBeans.size() > 0) {
             for (GoodsClassifyBean bean : subGoodsClassifyBeans) {
                 resultList.add(bean.getClassifyId());
-                List<String> subList = recursionQueryGoodsSubClassifyId(bean.getClassifyId(), resultList);
-                if (null != subList && subList.size() > 0) {
-                    resultList.addAll(subList);
-                }
+                recursionQueryGoodsSubClassifyId(bean.getClassifyId(), resultList);
             }
         }
         return resultList;
     }
+
+    private List<String> recursionQueryGoodsUpClassifyName(String classifyId, List<String> classifyNames) {
+        GoodsClassifyBean bean = queryGoodsClassifiesById(classifyId);
+        if (null != bean) {
+            classifyNames.add(bean.getClassifyName());
+            if (!"-1".equals(bean.getParentClassifyId())) {
+                return recursionQueryGoodsUpClassifyName(bean.getParentClassifyId(), classifyNames);
+            }
+        }
+        return classifyNames;
+    }
+
+    public String getClassifyNames(String classifyId) {
+        List<String> goodsClassifies = recursionQueryGoodsUpClassifyName(classifyId, new ArrayList<>());
+        if (null != goodsClassifies && goodsClassifies.size() > 0) {
+            Collections.reverse(goodsClassifies);
+            String[] type = new String[goodsClassifies.size()];
+            String[] newGoodsClassify = (String[]) goodsClassifies.toArray(type);
+            String goodsClassify = String.join(",", newGoodsClassify);
+            return goodsClassify;
+        }
+        return null;
+    }
+
 }

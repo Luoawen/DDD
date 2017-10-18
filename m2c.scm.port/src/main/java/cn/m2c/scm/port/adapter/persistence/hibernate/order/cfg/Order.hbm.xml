@@ -16,13 +16,16 @@
         <property name="payTime" column="pay_time" type="date"/>
         <property name="status" column="_status" type="int"/>
         
-        <property name="province" column="province" type="string"/>
-        <property name="provinceCode" column="province_code" type="string"/>
-        <property name="city" column="city" type="string"/>
-        <property name="cityCode" column="city_code" type="string"/>
-        <property name="area" column="area" type="string"/>
-        <property name="areaCode" column="area_code" type="string"/>
-        <property name="street" column="street_addr" type="string"/>
+        <component name="addr">
+	        <property name="province" column="province" type="string"/>
+	        <property name="provinceCode" column="province_code" type="string"/>
+	        <property name="city" column="city" type="string"/>
+	        <property name="cityCode" column="city_code" type="string"/>
+	        <property name="area" column="area_county" type="string"/>
+	        <property name="areaCode" column="area_code" type="string"/>
+	        <property name="street" column="street_addr" type="string"/>
+        </component>
+        
         <property name="goodsAmount" column="goods_amount" type="int"/>
         <property name="orderFreight" column="order_freight" type="int"/>
         <property name="plateformDiscount" column="plateform_discount" type="int"/>

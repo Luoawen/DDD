@@ -9,8 +9,8 @@ import cn.m2c.ddd.common.domain.model.IdentifiedDomainObject;
 public class SimpleCoupon extends IdentifiedDomainObject {
 
 	/**订单ID*/
-	//private String orderId;
-	private MainOrder order;
+	private String orderId;
+	//private MainOrder order;
 	/**优惠券ID*/
 	private String couponId;
 	/**1可用，0不可用*/
@@ -20,9 +20,9 @@ public class SimpleCoupon extends IdentifiedDomainObject {
 		super();
 	}
 	
-	public SimpleCoupon(MainOrder order, String couponId) {
+	public SimpleCoupon(String orderId, String couponId) {
 		super();
-		this.order = order;
+		this.orderId = orderId;
 		this.couponId = couponId;
 	}
 	

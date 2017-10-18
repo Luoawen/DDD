@@ -1,12 +1,11 @@
 package cn.m2c.scm.application.goods.query.data.bean;
 
-import cn.m2c.ddd.common.domain.model.ConcurrencySafeEntity;
 import cn.m2c.ddd.common.persistence.orm.ColumnAlias;
 
 /**
  * 商品规格
  */
-public class GoodsSkuBean extends ConcurrencySafeEntity {
+public class GoodsSkuBean {
 
     /**
      * 商品

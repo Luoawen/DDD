@@ -126,6 +126,9 @@ public class GoodsApproveCommand extends AssertionConcern implements Serializabl
         if (StringUtils.isEmpty(goodsBrandId)) {
             throw new NegativeException(MCode.V_1, "商品品牌ID为空");
         }
+        if (StringUtils.isEmpty(goodsBrandName)) {
+            throw new NegativeException(MCode.V_1, "商品品牌名称为空");
+        }
         if (StringUtils.isEmpty(goodsUnitId)) {
             throw new NegativeException(MCode.V_1, "商品计量单位ID为空");
         }

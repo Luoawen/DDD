@@ -5,6 +5,7 @@ import cn.m2c.common.MPager;
 import cn.m2c.common.MResult;
 import cn.m2c.scm.application.CommonApplication;
 import cn.m2c.scm.application.order.OrderApplication;
+import cn.m2c.scm.application.order.command.OrderAddCommand;
 import cn.m2c.scm.application.order.data.representation.OrderNo;
 
 import org.apache.commons.lang3.StringUtils;
@@ -80,11 +81,8 @@ public class AppOrderAgent {
             ,@RequestParam(value = "coupons", required = false) String coupons) {
     	MResult result = new MResult(MCode.V_1);
         try {
-            Map map = new HashMap<>();
-            map.put("goodsName", "跑步机");
-            map.put("goodsImageUrl", "http://dl.m2c2017.com/3pics/20170822/W8bq135021.jpg");
-            map.put("goodsPrice", 249000);
-            result.setContent(map);
+        	OrderAddCommand cmd = new OrderAddCommand(orderId, userId, noted, goodses, invoice, addr, coupons);
+            result.setContent(orderApp.submitOrder(cmd));
             result.setStatus(MCode.V_200);
         } catch (Exception e) {
             LOGGER.error("goods Detail Exception e:", e);

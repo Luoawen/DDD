@@ -197,7 +197,7 @@ public class Goods extends ConcurrencySafeEntity {
         Long supplyPrice = GetMapValueUtils.getLongFromMapKey(map, "supplyPrice");
         String goodsCode = GetMapValueUtils.getStringFromMapKey(map, "goodsCode");
         Integer showStatus = GetMapValueUtils.getIntFromMapKey(map, "showStatus");
-        GoodsSearchInfo goodsSearchInfo = new GoodsSearchInfo(this.dealerName, this.goodsName, this.goodsSubTitle, this.goodsClassifyId,
+        GoodsSearchInfo goodsSearchInfo = new GoodsSearchInfo(this.dealerId,this.dealerName, this.goodsName, this.goodsSubTitle, this.goodsClassifyId,
                 this.goodsBrandId, this.goodsBrandName, this.goodsBarCode, this.goodsDesc, this.goodsKeyWord,
                 this.goodsStatus, this.createdDate);
         GoodsSku goodsSku = new GoodsSku(this, skuId, skuName, availableNum, availableNum, weight,
@@ -287,7 +287,7 @@ public class Goods extends ConcurrencySafeEntity {
                     String goodsCode = GetMapValueUtils.getStringFromMapKey(map, "goodsCode");
                     Integer showStatus = GetMapValueUtils.getIntFromMapKey(map, "showStatus");
                     // 修改商品规格不需要审批的信息
-                    GoodsSearchInfo goodsSearchInfo = new GoodsSearchInfo(this.dealerName, this.goodsName, this.goodsSubTitle, this.goodsClassifyId,
+                    GoodsSearchInfo goodsSearchInfo = new GoodsSearchInfo(this.dealerId,this.dealerName, this.goodsName, this.goodsSubTitle, this.goodsClassifyId,
                             this.goodsBrandId, this.goodsBrandName, this.goodsBarCode, this.goodsDesc, this.goodsKeyWord,
                             this.goodsStatus, this.createdDate);
                     goodsSku.modifyNotApproveGoodsSku(availableNum, weight, marketPrice, goodsCode, showStatus, goodsSearchInfo);

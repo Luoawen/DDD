@@ -9,8 +9,8 @@ import cn.m2c.ddd.common.domain.model.IdentifiedDomainObject;
 public class SimpleMarketing extends IdentifiedDomainObject {
 
 	/**订单ID*/
-	//private String orderId;
-	private MainOrder order;
+	private String orderId;
+	//private MainOrder order;
 	/**优惠券ID*/
 	private String marketingId;
 	/**1可用，0不可用*/
@@ -20,13 +20,13 @@ public class SimpleMarketing extends IdentifiedDomainObject {
 		super();
 	}
 	
-	public SimpleMarketing(MainOrder order, String marketingId) {
+	public SimpleMarketing(String order, String marketingId) {
 		super();
-		this.order = order;
+		this.orderId = order;
 		this.marketingId = marketingId;
 	}
 	
-	public void disenabled() {
+	public void disabled() {
 		status = 0;
 	}
 }
