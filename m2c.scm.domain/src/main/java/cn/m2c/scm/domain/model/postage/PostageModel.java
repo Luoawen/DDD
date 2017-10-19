@@ -108,7 +108,6 @@ public class PostageModel extends ConcurrencySafeEntity {
 
     private PostageModelRule createPostageModelRule(Map map) {
         String address = GetMapValueUtils.getStringFromMapKey(map, "address");
-        String addressStructure = GetMapValueUtils.getStringFromMapKey(map, "addressStructure");
         String cityCode = GetMapValueUtils.getStringFromMapKey(map, "cityCode");
         Float firstWeight = GetMapValueUtils.getFloatFromMapKey(map, "firstWeight");
         Integer firstPiece = GetMapValueUtils.getIntFromMapKey(map, "firstPiece");
@@ -118,8 +117,8 @@ public class PostageModel extends ConcurrencySafeEntity {
         Long continuedPostage = GetMapValueUtils.getLongFromMapKey(map, "continuedPostage");
         Integer defaultFlag = GetMapValueUtils.getIntFromMapKey(map, "defaultFlag");
         PostageModelRule rule = new PostageModelRule(this, IDGenerator.get(IDGenerator.SCM_POSTAGE_RULE_PREFIX_TITLE),
-                address, addressStructure, cityCode,
-                firstWeight, firstPiece, firstPostage, continuedWeight, continuedPiece, continuedPostage, defaultFlag);
+                address, cityCode,firstWeight, firstPiece, firstPostage, continuedWeight, continuedPiece,
+                continuedPostage, defaultFlag);
         return rule;
     }
 }

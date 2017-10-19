@@ -65,7 +65,7 @@ public class PostageAgent {
      * @param modelId           模板ID
      * @param modelName         模板名称
      * @param chargeType        计费方式,0:按重量,1:按件数
-     * @param postageModelRules 模板规则,list的json字符串，格式：[{"address":"全国（默认运费）","addressStructure":"","cityCode":"123,456","continuedPiece":1,"continuedPostage":5000,"continuedWeight":1.0,"defaultFlag":1,"firstPiece":1,"firstPostage":10000,"firstWeight":2.0}]
+     * @param postageModelRules 模板规则,list的json字符串，格式：[{"address":"全国（默认运费）","cityCode":"123,456","continuedPiece":1,"continuedPostage":5000,"continuedWeight":1.0,"defaultFlag":1,"firstPiece":1,"firstPostage":10000,"firstWeight":2.0}]
      * @param modelDescription  模板说明
      * @return
      */
@@ -99,7 +99,7 @@ public class PostageAgent {
      * @param modelId           模板ID
      * @param modelName         模板名称
      * @param chargeType        计费方式,0:按重量,1:按件数
-     * @param postageModelRules 模板规则,list的json字符串，格式：[{"address":"全国（默认运费）","addressStructure":"","cityCode":"123,456","continuedPiece":1,"continuedPostage":5000,"continuedWeight":1.0,"defaultFlag":1,"firstPiece":1,"firstPostage":10000,"firstWeight":2.0}]
+     * @param postageModelRules 模板规则,list的json字符串，格式：[{"address":"全国（默认运费）","cityCode":"123,456","continuedPiece":1,"continuedPostage":5000,"continuedWeight":1.0,"defaultFlag":1,"firstPiece":1,"firstPostage":10000,"firstWeight":2.0}]
      * @param modelDescription  模板说明
      * @return
      */

@@ -26,11 +26,6 @@ public class PostageModelRule extends IdentifiedValueObject {
     private String address;
 
     /**
-     * 配送地址结构（省市）
-     */
-    private String addressStructure;
-
-    /**
      * 配送地址城市编码
      */
     private String cityCode;
@@ -74,12 +69,11 @@ public class PostageModelRule extends IdentifiedValueObject {
         super();
     }
 
-    public PostageModelRule(PostageModel postageModel, String ruleId, String address, String addressStructure, String cityCode,
+    public PostageModelRule(PostageModel postageModel, String ruleId, String address, String cityCode,
                             Float firstWeight, Integer firstPiece, Long firstPostage, Float continuedWeight, Integer continuedPiece, Long continuedPostage, Integer defaultFlag) {
         this.postageModel = postageModel;
         this.ruleId = ruleId;
         this.address = address;
-        this.addressStructure = addressStructure;
         this.cityCode = cityCode;
         this.firstWeight = firstWeight;
         this.firstPiece = firstPiece;

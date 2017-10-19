@@ -20,12 +20,6 @@ public class PostageModelRuleBean {
     private String address;
 
     /**
-     * 配送地址结构（省市）
-     */
-    @ColumnAlias(value = "address_structure")
-    private String addressStructure;
-
-    /**
      * 配送地址城市编码
      */
     @ColumnAlias(value = "city_code")
@@ -87,14 +81,6 @@ public class PostageModelRuleBean {
 
     public void setAddress(String address) {
         this.address = address;
-    }
-
-    public String getAddressStructure() {
-        return addressStructure;
-    }
-
-    public void setAddressStructure(String addressStructure) {
-        this.addressStructure = addressStructure;
     }
 
     public String getCityCode() {

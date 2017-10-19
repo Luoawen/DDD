@@ -11,7 +11,6 @@
         </id>
         <property name="ruleId" column="rule_id" type="string"/>
         <property name="address" column="address" type="string"/>
-        <property name="addressStructure" column="address_structure" type="string"/>
         <property name="cityCode" column="city_code" type="string"/>
         <property name="firstWeight" column="first_weight" type="float"/>
         <property name="firstPiece" column="first_piece" type="int"/>
