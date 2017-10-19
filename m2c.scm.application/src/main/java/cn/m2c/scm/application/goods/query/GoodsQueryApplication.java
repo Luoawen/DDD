@@ -434,4 +434,6 @@ public class GoodsQueryApplication {
         }
         return null;
     }
+
+
 }

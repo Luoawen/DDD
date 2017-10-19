@@ -38,14 +38,20 @@ public class BrandApproveRepresentation {
      */
     private Integer approveStatus;
 
+    /**
+     * 拒绝原因
+     */
+    private String rejectReason;
+
     public BrandApproveRepresentation(BrandApproveBean bean) {
-        this.approveId=bean.getApproveId();
+        this.approveId = bean.getApproveId();
         this.brandId = bean.getBrandId();
         this.brandName = bean.getBrandName();
         this.dealerName = bean.getDealerName();
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         this.createTime = format.format(bean.getCreatedDate());
-        this.approveStatus=bean.getApproveStatus();
+        this.approveStatus = bean.getApproveStatus();
+        this.rejectReason = rejectReason;
     }
 
     public String getBrandId() {
@@ -94,5 +100,13 @@ public class BrandApproveRepresentation {
 
     public void setApproveStatus(Integer approveStatus) {
         this.approveStatus = approveStatus;
+    }
+
+    public String getRejectReason() {
+        return rejectReason;
+    }
+
+    public void setRejectReason(String rejectReason) {
+        this.rejectReason = rejectReason;
     }
 }
