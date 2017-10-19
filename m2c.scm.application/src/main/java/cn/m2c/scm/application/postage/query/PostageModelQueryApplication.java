@@ -84,20 +84,20 @@ public class PostageModelQueryApplication {
                                     if (codes.contains(cityCode)) {
                                         map.put(info.getSkuId(), bean);
                                         specialFlag = true;
+                                        break;
                                     }
                                 }
-                            }else{
+                            } else {
                                 defaultBean = bean;
                             }
                         }
-                        if(!specialFlag){
-
+                        if (!specialFlag && null != defaultBean) {
+                            map.put(info.getSkuId(), defaultBean);
                         }
                     }
 
                 }
             }
-
         }
         return map;
     }

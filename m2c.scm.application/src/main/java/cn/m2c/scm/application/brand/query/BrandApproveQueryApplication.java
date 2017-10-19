@@ -64,8 +64,8 @@ public class BrandApproveQueryApplication {
         }
         if (StringUtils.isNotEmpty(startTime) && StringUtils.isNotEmpty(endTime)) {
             sql.append(" AND created_date BETWEEN ? AND ?");
-            params.add(startTime);
-            params.add(endTime);
+            params.add(startTime + " 00:00:00");
+            params.add(endTime + " 23:59:59");
         }
         sql.append(" ORDER BY created_date DESC ");
         sql.append(" LIMIT ?,?");
@@ -101,8 +101,8 @@ public class BrandApproveQueryApplication {
         }
         if (StringUtils.isNotEmpty(startTime) && StringUtils.isNotEmpty(endTime)) {
             sql.append(" AND created_date BETWEEN ? AND ?");
-            params.add(startTime);
-            params.add(endTime);
+            params.add(startTime + " 00:00:00");
+            params.add(endTime + " 23:59:59");
         }
         return supportJdbcTemplate.jdbcTemplate().queryForObject(sql.toString(), params.toArray(), Integer.class);
     }
