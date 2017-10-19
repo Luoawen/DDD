@@ -87,6 +87,7 @@ public class PostageModelQueryApplication {
                                 if (StringUtils.isNotEmpty(bean.getCityCode())) {
                                     List<String> codes = Arrays.asList(bean.getCityCode().split(","));
                                     if (codes.contains(cityCode)) {
+                                        bean.setChargeType(postageModelBean.getChargeType());
                                         map.put(info.getSkuId(), bean);
                                         specialFlag = true;
                                         break;
@@ -97,6 +98,7 @@ public class PostageModelQueryApplication {
                             }
                         }
                         if (!specialFlag && null != defaultBean) {
+                            defaultBean.setChargeType(postageModelBean.getChargeType());
                             map.put(info.getSkuId(), defaultBean);
                         }
                     }
