@@ -133,8 +133,8 @@ public class OrderQueryApplication {
 		try {
 			orderList = this.supportJdbcTemplate.queryForBeanList(sql, OrderDetailBean.class, dealerOrderId);
 		} catch (Exception e) {
-			LOGGER.error("商家订单查询出错",e);
-			throw new NegativeException(500, "商家订单查询出错");
+			LOGGER.error("订单查询出错",e);
+			throw new NegativeException(500, "订单查询出错");
 		}
 		return orderList;
 	}
