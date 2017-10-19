@@ -36,14 +36,14 @@ public class DealerOrder extends ConcurrencySafeEntity {
 	private String noted;
 	/**发票信息*/
 	private InvoiceInfo invoice;
-	/**结算方式**/
-	private String termOfPayment;	
+	/**结算方式 1 按供货价， 2按服务费率**/
+	private Integer termOfPayment;	
 	/**订单明细*/
 	private List<DealerOrderDtl> orderDtls;
 	
 	public DealerOrder(String orderId, String dealerOrderId,
 			String dealerId, int goodsAmount, int orderFreight
-			,int plateformDiscount, int dealerDiscount, String noted, String termOfPayment
+			,int plateformDiscount, int dealerDiscount, String noted, Integer termOfPayment
 			, ReceiveAddr addr, InvoiceInfo invoice, List<DealerOrderDtl> orderDtl) {
 		this.orderId = orderId;
 		this.dealerId = dealerId;

@@ -24,6 +24,8 @@
 	        <property name="area" column="area_county" type="string"/>
 	        <property name="areaCode" column="area_code" type="string"/>
 	        <property name="street" column="street_addr" type="string"/>
+	        <property name="revPerson" column="rev_person" type="string"/>
+	        <property name="phone" column="rev_phone" type="string"/>
         </component>
         
         <property name="goodsAmount" column="goods_amount" type="int"/>

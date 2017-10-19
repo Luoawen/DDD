@@ -25,7 +25,7 @@ public class ReceiveAddr extends ValueObject {
 	/**收货联系人*/
 	private String revPerson;
 	/**联系电话*/
-	private String revPhone;
+	private String phone;
 	
 	public ReceiveAddr() {
 		super();
@@ -42,7 +42,7 @@ public class ReceiveAddr extends ValueObject {
 		this.areaCode = areaCode;
 		this.street = street;
 		revPerson = pName;
-		revPhone = phone;
+		this.phone = phone;
 	}
 	
 	public String getCityCode() {
