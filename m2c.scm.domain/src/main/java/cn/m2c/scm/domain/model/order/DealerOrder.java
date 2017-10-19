@@ -41,6 +41,13 @@ public class DealerOrder extends ConcurrencySafeEntity {
 	/**订单明细*/
 	private List<DealerOrderDtl> orderDtls;
 	
+	
+	
+	public DealerOrder() {
+		super();
+	}
+
+	
 	public DealerOrder(String orderId, String dealerOrderId,
 			String dealerId, int goodsAmount, int orderFreight
 			,int plateformDiscount, int dealerDiscount, String noted, Integer termOfPayment
@@ -74,5 +81,23 @@ public class DealerOrder extends ConcurrencySafeEntity {
 
 	public Integer getDealerDiscount() {
 		return dealerDiscount;
+	}
+
+	/**
+	 * 同步订单的物流信息
+	 * @param expressName
+	 * @param expressNo
+	 * @param expressNote
+	 * @param expressPerson
+	 * @param expressPhone
+	 * @param expressWay
+	 */
+	public void updateExpress(String expressName, String expressNo,
+			String expressNote, String expressPerson, String expressPhone,
+			Integer expressWay) {
+		List<DealerOrderDtl> orderDtls = this.orderDtls;
+		for (DealerOrderDtl dealerOrderDtl : orderDtls) {
+			dealerOrderDtl.updateOrderDetailExpress(expressName,expressNo,expressNote,expressPerson,expressPhone,expressWay);
+		}
 	}
 }

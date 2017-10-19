@@ -38,4 +38,23 @@ public class ExpressInfo extends ValueObject {
 	public ExpressInfo() {
 		super();
 	}
+	/**
+	 * 更新值对象的物流信息
+	 * @param expressName
+	 * @param expressNo
+	 * @param expressNote
+	 * @param expressPerson
+	 * @param expressPhone
+	 * @param expressWay
+	 */
+	public void updateExpress(String expressName, String expressNo,
+			String expressNote, String expressPerson, String expressPhone,
+			Integer expressWay) {
+		this.expressName = expressName;
+		this.expressNo = expressNo;
+		this.expressNote = expressNote;
+		this.expressPerson = expressPerson;
+		this.expressPhone = expressPhone;
+		this.expressWay = expressWay;
+	}
 }

@@ -96,4 +96,22 @@ public class DealerOrderDtl extends ConcurrencySafeEntity {
 		
 		return freight;
 	}
+	
+	
+	/**
+	 * 更新订单详情的物流信息
+	 * @param expressName
+	 * @param expressNo
+	 * @param expressNote
+	 * @param expressPerson
+	 * @param expressPhone
+	 * @param expressWay
+	 */
+	public void updateOrderDetailExpress(String expressName, String expressNo,
+			String expressNote, String expressPerson, String expressPhone,
+			Integer expressWay) {
+		this.expressInfo.updateExpress(expressName,expressNo,expressNote,expressPerson,expressPhone,expressWay);
+		this.status=2;
+	}
+	
 }
