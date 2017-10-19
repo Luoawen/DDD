@@ -5,8 +5,10 @@ import cn.m2c.common.MPager;
 import cn.m2c.common.MResult;
 import cn.m2c.scm.application.CommonApplication;
 import cn.m2c.scm.application.order.OrderApplication;
+import cn.m2c.scm.application.order.command.CancelOrderCmd;
 import cn.m2c.scm.application.order.command.OrderAddCommand;
 import cn.m2c.scm.application.order.data.representation.OrderNo;
+import cn.m2c.scm.domain.NegativeException;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -84,8 +86,12 @@ public class AppOrderAgent {
         	OrderAddCommand cmd = new OrderAddCommand(orderId, userId, noted, goodses, invoice, addr, coupons);
             result.setContent(orderApp.submitOrder(cmd));
             result.setStatus(MCode.V_200);
-        } catch (Exception e) {
-            LOGGER.error("goods Detail Exception e:", e);
+        } 
+        catch (NegativeException e) {
+        	result = new MResult(e.getStatus(), e.getMessage());
+        }
+        catch (Exception e) {
+            LOGGER.error("order add Exception e:", e);
             result = new MResult(MCode.V_400, e.getMessage());
         }
         return new ResponseEntity<MResult>(result, HttpStatus.OK);
@@ -118,5 +124,31 @@ public class AppOrderAgent {
             result = new MPager(MCode.V_400, e.getMessage());
         }
         return new ResponseEntity<MPager>(result, HttpStatus.OK);
+    }
+    
+    /**
+     * 提交订单     *
+     * @param goodsId 商品ID
+     * @return
+     */
+    @RequestMapping(value = "/app/cancel", method = RequestMethod.POST)
+    public ResponseEntity<MResult> cancelOrder(
+            @RequestParam(value = "userId", required = false) String userId
+            ,@RequestParam(value = "orderId", required = false) String orderId
+            ) {
+    	MResult result = new MResult(MCode.V_1);
+        try {
+        	CancelOrderCmd cmd = new CancelOrderCmd(orderId, userId);
+        	orderApp.cancelOrder(cmd);
+            result.setStatus(MCode.V_200);
+        } 
+        catch (NegativeException e) {
+        	result = new MResult(e.getStatus(), e.getMessage());
+        }
+        catch (Exception e) {
+            LOGGER.error("order cancel Exception e:", e);
+            result = new MResult(MCode.V_400, e.getMessage());
+        }
+        return new ResponseEntity<MResult>(result, HttpStatus.OK);
     }
 }

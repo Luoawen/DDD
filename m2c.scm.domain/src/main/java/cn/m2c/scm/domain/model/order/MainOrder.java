@@ -74,10 +74,15 @@ public class MainOrder extends ConcurrencySafeEntity {
 	/***
 	 * 取消订单(用户主动操作，系统自动操作)
 	 */
-	public void cancel() {
+	public boolean cancel() {
 		// 检查是否可以取消，只有在未支付的状态下用户可以取消
+		if (status != 0) {
+			return false;
+		}
+		status = -1;
 		
 		DomainEventPublisher.instance().publish(new OrderOptLogEvent(orderId, null, "取消订单成功", userId));
+		return true;
 	}
 	/***
 	 * 结算(可暂不做)
@@ -89,6 +94,7 @@ public class MainOrder extends ConcurrencySafeEntity {
 	 * 支付成功 // 需要参数
 	 */
 	public void payed() {
+		//payNo, payWay, Date payTime
 		status = 1;
 	}
 }
