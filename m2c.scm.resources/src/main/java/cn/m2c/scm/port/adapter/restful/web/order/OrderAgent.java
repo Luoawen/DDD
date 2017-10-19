@@ -17,7 +17,7 @@ import cn.m2c.common.MCode;
 import cn.m2c.common.MPager;
 import cn.m2c.common.MResult;
 import cn.m2c.scm.application.order.OrderApplication;
-import cn.m2c.scm.application.order.data.bean.DealerOrderBean;
+import cn.m2c.scm.application.order.data.bean.OrderDealerBean;
 import cn.m2c.scm.application.order.data.bean.DealerOrderDetailBean;
 import cn.m2c.scm.application.order.data.bean.mainOrderBean;
 import cn.m2c.scm.application.order.query.OrderQuery;

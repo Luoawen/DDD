@@ -38,7 +38,7 @@ public class mainOrderBean extends AssertionConcern implements Serializable {
 	/**
 	 * 商家订单列表
 	 */
-	private List<DealerOrderBean> dealerOrderBeans;
+	private List<OrderDealerBean> dealerOrderBeans;
 
 	public String getOrderId() {
 		return orderId;
@@ -68,7 +68,7 @@ public class mainOrderBean extends AssertionConcern implements Serializable {
 		return dealerDiscount;
 	}
 
-	public List<DealerOrderBean> getDealerOrderBeans() {
+	public List<OrderDealerBean> getDealerOrderBeans() {
 		return dealerOrderBeans;
 	}
 
@@ -100,7 +100,7 @@ public class mainOrderBean extends AssertionConcern implements Serializable {
 		this.dealerDiscount = dealerDiscount;
 	}
 
-	public void setDealerOrderBeans(List<DealerOrderBean> dealerOrderBeans) {
+	public void setDealerOrderBeans(List<OrderDealerBean> dealerOrderBeans) {
 		this.dealerOrderBeans = dealerOrderBeans;
 	}
 

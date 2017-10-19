@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import cn.m2c.ddd.common.port.adapter.persistence.springJdbc.SupportJdbcTemplate;
-import cn.m2c.scm.application.order.data.bean.DealerOrderBean;
+import cn.m2c.scm.application.order.data.bean.OrderDealerBean;
 import cn.m2c.scm.application.order.data.bean.DealerOrderDetailBean;
 import cn.m2c.scm.application.order.data.bean.GoodsInfoBean;
 import cn.m2c.scm.application.order.data.bean.mainOrderBean;
@@ -85,11 +85,11 @@ public class OrderQuery {
 		 */
 		List<mainOrderBean> mainOrderList = this.supportJdbcTemplate.queryForBeanList(sql.toString(),
 				mainOrderBean.class, params.toArray());
-		List<DealerOrderBean> dealerOrderList = dealerOrderListQuery(orderStatus, afterSaleStatus, startTime, endTime,
+		List<OrderDealerBean> dealerOrderList = dealerOrderListQuery(orderStatus, afterSaleStatus, startTime, endTime,
 				condition, payWay, pageNum, rows);
 		for (mainOrderBean mainOrder : mainOrderList) {
-			for (DealerOrderBean dealerOrder : dealerOrderList) {
-				List<DealerOrderBean> list = new ArrayList<DealerOrderBean>();
+			for (OrderDealerBean dealerOrder : dealerOrderList) {
+				List<OrderDealerBean> list = new ArrayList<OrderDealerBean>();
 				if (mainOrder.getOrderId() == dealerOrder.getOrderId()) {
 					list.add(dealerOrder);
 				}
@@ -112,7 +112,7 @@ public class OrderQuery {
 	 * @param rows
 	 * @return
 	 */
-	public List<DealerOrderBean> dealerOrderListQuery(Integer orderStatus, Integer afterSaleStatus, String startTime,
+	public List<OrderDealerBean> dealerOrderListQuery(Integer orderStatus, Integer afterSaleStatus, String startTime,
 			String endTime, String condition, Integer payWay, Integer pageNum, Integer rows) {
 		List<Object> params = new ArrayList<Object>();
 		StringBuilder sql = new StringBuilder();
@@ -151,7 +151,7 @@ public class OrderQuery {
 		sql.append(" AND odealer.dealer_id = dealer.dealer_id ");
 		
 		sql.append(" ORDER BY odealer.created_date DESC ");
-		return this.supportJdbcTemplate.queryForBeanList(sql.toString(), DealerOrderBean.class, params.toArray());
+		return this.supportJdbcTemplate.queryForBeanList(sql.toString(), OrderDealerBean.class, params.toArray());
 	}
 
 	/**
