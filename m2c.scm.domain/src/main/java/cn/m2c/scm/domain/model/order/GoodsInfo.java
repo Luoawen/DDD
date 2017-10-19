@@ -27,27 +27,27 @@ public class GoodsInfo extends ValueObject {
 	/**规格名称*/
 	private String skuName;
 	/**市场价(单价)*/
-	private Integer price;
+	private Long price;
 	/**重量*/
 	private Float weight = 0f;
 	/**供货价*/
-	private Integer supplyPrice;
+	private Long supplyPrice;
 	/**拍获价(单价)*/
-	private Integer discountPrice;
+	private Long discountPrice;
 	/**商品小图url*/
 	private String goodsIcon;
 	
-	private Float sellNum;
+	private Integer sellNum;
 	
-	private Integer freight;
+	private Long freight;
 	
 	private String marketingId;
 	
-	public Float getSellNum() {
+	public Integer getSellNum() {
 		return sellNum;
 	}
 
-	public Integer getFreight() {
+	public Long getFreight() {
 		return freight;
 	}
 
@@ -57,8 +57,8 @@ public class GoodsInfo extends ValueObject {
 	
 	public GoodsInfo(float rate, String goodsId, String goodsName, String goodsTitle
 			,String goodsType, String goodsTypeId, String goodsUnit, String skuId
-			,String skuName, int price, int supplyPrice, int discountPrice, String goodsIcon
-			,float weight, Float sellNum, Integer freight, String marketingId) {
+			,String skuName, long price, long supplyPrice, long discountPrice, String goodsIcon
+			,float weight, int sellNum, Long freight, String marketingId) {
 		this.rate = rate;
 		this.goodsId = goodsId;
 		this.goodsName = goodsName;
@@ -78,7 +78,7 @@ public class GoodsInfo extends ValueObject {
 		this.marketingId = marketingId;
 	}
 	
-	public int getDiscountPrice() {
+	public long getDiscountPrice() {
 		return discountPrice;
 	}
 }

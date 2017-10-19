@@ -15,4 +15,9 @@ public interface OrderRepository {
 	 * @param orderId 订单号
 	 */
 	public MainOrder getOrderById(String orderId);
+	/***
+	 * 主要用于更新订单状态
+	 * @param order
+	 */
+	public void updateMainOrder(MainOrder order);
 }

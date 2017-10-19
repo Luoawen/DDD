@@ -15,7 +15,7 @@ public interface OrderService {
 	 * @param skus key:skuId, val:num
 	 * @return 缺少库存的商品及数量
 	 */
-	public Map<String, Object> judgeStock(Map<String, Float> skus);
+	public Map<String, Object> judgeStock(Map<String, Integer> skus);
 	/***
 	 * 锁定商品sku库存
 	 * @param skus key:skuId, val:num

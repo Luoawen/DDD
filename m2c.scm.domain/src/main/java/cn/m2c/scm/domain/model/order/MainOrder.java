@@ -28,13 +28,13 @@ public class MainOrder extends ConcurrencySafeEntity {
 	/**收货人*/
 	ReceiveAddr addr;
 	/**以分为单位，商品金额*/
-	private Integer goodsAmount;
+	private Long goodsAmount;
 	/**订单总运费*/
-	private Integer orderFreight;
+	private Long orderFreight;
 	/**平台优惠*/
-	private Integer plateformDiscount;
+	private Long plateformDiscount;
 	/**商家优惠*/
-	private Integer dealerDiscount;
+	private Long dealerDiscount;
 	/**下单用户ID*/
 	private String userId;
 	/**备注 留言*/
@@ -50,8 +50,8 @@ public class MainOrder extends ConcurrencySafeEntity {
 		super();
 	}
 	// String payNo, int payWay, Date payTime, 
-	public MainOrder(String orderId, ReceiveAddr addr, int goodsAmount, int orderFreight, int plateformDiscount
-			, int dealerDiscount, String userId, String noted, List<DealerOrder> dealerOrders
+	public MainOrder(String orderId, ReceiveAddr addr, long goodsAmount, long orderFreight, long plateformDiscount
+			, long dealerDiscount, String userId, String noted, List<DealerOrder> dealerOrders
 			,List<SimpleCoupon> coupons, List<SimpleMarketing> marketings) {
 		this.orderId = orderId;
 		this.addr = addr;
@@ -69,7 +69,7 @@ public class MainOrder extends ConcurrencySafeEntity {
 	 * 增加订单
 	 */
 	public void add() {
-		DomainEventPublisher.instance().publish(new OrderOptLogEvent(orderId, null, "订单创建成功", userId));
+		DomainEventPublisher.instance().publish(new OrderOptLogEvent(orderId, null, "订单提交成功", userId));
 	}
 	/***
 	 * 取消订单(用户主动操作，系统自动操作)
@@ -81,7 +81,7 @@ public class MainOrder extends ConcurrencySafeEntity {
 		}
 		status = -1;
 		
-		DomainEventPublisher.instance().publish(new OrderOptLogEvent(orderId, null, "取消订单成功", userId));
+		DomainEventPublisher.instance().publish(new OrderOptLogEvent(orderId, null, "订单取消成功", userId));
 		return true;
 	}
 	/***
@@ -93,8 +93,25 @@ public class MainOrder extends ConcurrencySafeEntity {
 	/***
 	 * 支付成功 // 需要参数
 	 */
-	public void payed() {
+	public void paySuccess(String payNo, int payWay, Date payTime, String uId) {
 		//payNo, payWay, Date payTime
+		this.payNo = payNo;
+		this.payWay = payWay;
+		this.payTime = payTime;
 		status = 1;
+		DomainEventPublisher.instance().publish(new OrderOptLogEvent(orderId, null, "订单支付成功", uId));
+	}
+	/***
+	 * 获取订单编号
+	 * @return
+	 */
+	public String getOrderId() {
+		return orderId;
+	}
+	
+	public int getStatus() {
+		if (status != null)
+			return status.intValue();
+		return 0;
 	}
 }
