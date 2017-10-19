@@ -4,10 +4,12 @@ import javax.annotation.Resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Repository;
 
 import cn.m2c.ddd.common.port.adapter.persistence.springJdbc.SupportJdbcTemplate;
 import cn.m2c.scm.application.shop.data.bean.ShopBean;
 
+@Repository
 public class ShopQuery {
 	private final static Logger log = LoggerFactory.getLogger(ShopQuery.class);
 	 @Resource
