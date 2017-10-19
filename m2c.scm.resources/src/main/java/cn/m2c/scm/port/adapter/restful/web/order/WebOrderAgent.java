@@ -4,7 +4,7 @@ import cn.m2c.common.MCode;
 import cn.m2c.common.MPager;
 import cn.m2c.common.MResult;
 import cn.m2c.scm.application.order.DealerOrderApplication;
-import cn.m2c.scm.application.order.data.representation.DealerOrderBean;
+import cn.m2c.scm.application.order.data.bean.DealerOrderBean;
 import cn.m2c.scm.application.order.query.OrderQueryApplication;
 
 import org.slf4j.Logger;
@@ -138,13 +138,15 @@ public class WebOrderAgent {
     public ResponseEntity<MResult> sendOrder(
     		@RequestParam(value = "dealerOrderId", required = false) String dealerOrderId){
     	MResult result = new MResult(MCode.V_1);
-    	//1查询商家订单
-    	DealerOrderBean dealerOrder = orderQuery.getDealerOrder(dealerOrderId);
-    	//2根据商家订单查询订单详情
-    	
-    	//3封装成返回对象返回
-    	
-    	
+    	try {
+    		//1查询商家订单
+    		DealerOrderBean dealerOrder = orderQuery.getDealerOrder(dealerOrderId);
+    		//2根据商家订单查询订单详情
+    		
+    		//3封装成返回对象返回
+		} catch (Exception e) {
+			LOGGER.info("查询发货详情失败");
+		}
     	return new ResponseEntity<MResult>(result,HttpStatus.OK);
     }
 }
