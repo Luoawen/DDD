@@ -2,9 +2,11 @@ package cn.m2c.scm.application.order;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +18,8 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
 import cn.m2c.common.MCode;
+import cn.m2c.ddd.common.event.annotation.EventListener;
+import cn.m2c.scm.application.dealer.data.bean.DealerBean;
 import cn.m2c.scm.application.dealer.query.DealerQuery;
 import cn.m2c.scm.application.order.command.CancelOrderCmd;
 import cn.m2c.scm.application.order.command.OrderAddCommand;
@@ -55,6 +59,7 @@ public class OrderApplication {
 	 * @throws NegativeException 
 	 */
 	@Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+	@EventListener(isListening = true)
 	public OrderResult submitOrder(OrderAddCommand cmd) throws NegativeException {
 		
 		JSONArray gdes = cmd.getGoodses();
@@ -63,8 +68,8 @@ public class OrderApplication {
 		if (gdes == null || gdes.size() < 1) {
 			// 获取购物车数据
 			goodses = orderDomainService.getShopCarGoods(cmd.getUserId());
-			/*if (goodses == null)
-				throw new NegativeException(MCode.V_1, "购物车中的商品为空！");*/
+			if (goodses == null)
+				throw new NegativeException(MCode.V_1, "购物车中的商品为空！");
 			
 			for (Map<String, Object> it : goodses) {
 				skus.put(it.get("skuId").toString(), (Float)it.get("num"));
@@ -91,10 +96,11 @@ public class OrderApplication {
 		// 获取运费模板，计算运费
 		calFreight(skus, list, cmd.getAddr().getCityCode());
 		// 拆单 设置商品数量即按商家来拆分
-		Map<String, List<GoodsDto>> dealerOrderMap = splitOrder(list, skus);
+		Set<String> idsSet = new HashSet<String>();
+		Map<String, List<GoodsDto>> dealerOrderMap = splitOrder(list, skus, idsSet);
 		// 计算是否满足营销策略, 若满足选择最优
-		
-		List<DealerOrder> dealerOrders = trueSplit(dealerOrderMap, cmd);
+		Map<String, Integer> dealerCount = getDealerWay(idsSet);
+		List<DealerOrder> dealerOrders = trueSplit(dealerOrderMap, cmd, dealerCount);
 		
 		int goodsAmounts = 0;
 		int freight = 0;
@@ -122,11 +128,13 @@ public class OrderApplication {
 	 * @param sl
 	 * @return
 	 */
-	private Map<String, List<GoodsDto>> splitOrder(List<GoodsDto> ls, Map<String, Float> sl) {
+	private Map<String, List<GoodsDto>> splitOrder(List<GoodsDto> ls, Map<String, Float> sl
+			, Set<String> ids) {
 		Map<String, List<GoodsDto>> rs = new HashMap<String, List<GoodsDto>>();
 		List<GoodsDto> dtos = null;
 		for (GoodsDto bean : ls) {
 			dtos = rs.get(bean.getDealerId());
+			ids.add(bean.getDealerId());
 			if (dtos == null) {
 				dtos = new ArrayList<GoodsDto>();
 				rs.put(bean.getDealerId(), dtos);
@@ -143,9 +151,11 @@ public class OrderApplication {
 	 * 真实拆分订单到商家
 	 * @param dealerOrderMap
 	 * @param orderId
+	 * @param dc
 	 * @return
 	 */
-	private List<DealerOrder> trueSplit(Map<String, List<GoodsDto>> map, OrderAddCommand cmd) {
+	private List<DealerOrder> trueSplit(Map<String, List<GoodsDto>> map, OrderAddCommand cmd
+			, Map<String, Integer> dc) {
 		List<DealerOrder> rs = new ArrayList<DealerOrder>();
 		
 		Iterator<String> it = map.keySet().iterator();
@@ -159,7 +169,7 @@ public class OrderApplication {
 			int goodsAmount = 0;
 			int plateDiscount = 0;
 			int dealerDiscount = 0;
-			String termOfPayment = "1";
+			int termOfPayment = dc.get(dealerId);
 			String dealerOrderId = cmd.getOrderId() + c;
 			for (GoodsDto bean : dtos) {
 				float num = bean.getPurNum();
@@ -180,18 +190,25 @@ public class OrderApplication {
 	/***
 	 * 取消订单(只能取消未支付的)
 	 * @param cmd
+	 * @throws NegativeException 
 	 */
-	public void cancelOrder(CancelOrderCmd cmd) {
+	@Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+	@EventListener(isListening = true)
+	public void cancelOrder(CancelOrderCmd cmd) throws NegativeException {
 		
 		MainOrder order = orderRepository.getOrderById(cmd.getOrderId());
 		// 检查是否可取消,若不可取消抛出异常。
-		order.cancel();
-		// 可能是逻辑删除或是改成取消状态(全部要改)
-		orderRepository.save(order);
-		// 若订单中有优惠券则需要解锁
-		orderDomainService.unlockCoupons(null, "");
-		// 解锁库存
-		orderDomainService.unlockStock(null);
+		if (order.cancel()) {
+			// 可能是逻辑删除或是改成取消状态(全部要改)
+			orderRepository.save(order);
+			// 若订单中有优惠券则需要解锁
+			orderDomainService.unlockCoupons(queryApp.getCouponsByOrderId(cmd.getOrderId()), "");
+			// 解锁库存
+			orderDomainService.unlockStock(queryApp.getSkusByOrderId(cmd.getOrderId()));
+		}
+		else {
+			throw new NegativeException(MCode.V_1, "订单处于不可取消状态！");
+		}
 	}
 	
 	/***
@@ -204,5 +221,33 @@ public class OrderApplication {
 		for (GoodsDto bean : ls) {
 			bean.setFreight(1000);
 		}
+	}
+	
+	/***
+	 * 获取商家结算方式
+	 * @param ids
+	 * @return 商家对应的支付方式
+	 * @throws NegativeException 
+	 */
+	private Map<String, Integer> getDealerWay(Set<String> ids) throws NegativeException {
+		Iterator<String> it = ids.iterator();
+		StringBuilder dealerIds = new StringBuilder();
+		int c = 0;
+		while(it.hasNext()) {
+			if (c > 0)
+				dealerIds.append(",").append(it.next());
+			else
+				dealerIds.append(it.next());
+			c ++;
+		}
+		Map<String, Integer> rs = null;
+		List<DealerBean> beans = dealerQuery.getDealers(dealerIds.toString());
+		if (beans == null || beans.size() < 1)
+			return rs;
+		rs = new HashMap<String, Integer>();
+		for (DealerBean b : beans) {
+			rs.put(b.getDealerId(), b.getCountMode());
+		}
+		return rs;
 	}
 }

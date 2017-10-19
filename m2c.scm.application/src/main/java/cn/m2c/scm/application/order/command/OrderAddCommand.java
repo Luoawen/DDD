@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.google.gson.Gson;
 
 import cn.m2c.common.MCode;
 import cn.m2c.common.StringUtil;
@@ -58,16 +59,18 @@ public class OrderAddCommand extends AssertionConcern implements Serializable {
 			}
 		}
 		
-		checkInvoice(invoice);
+		Gson gson = new Gson();
 		
-		checkAddr(addr);
+		checkInvoice(invoice, gson);
+		
+		checkAddr(addr, gson);
 	}
 	/**
 	 * 检查商品参数
 	 * @param ges
 	 * @throws NegativeException
 	 */
-	private void checkInvoice(String ges) throws NegativeException {
+	private void checkInvoice(String ges, Gson gson) throws NegativeException {
 		if (StringUtil.isEmpty(ges)) {
 			return;
 		}
@@ -78,7 +81,7 @@ public class OrderAddCommand extends AssertionConcern implements Serializable {
 		catch (Exception e) {
 			throw new NegativeException(MCode.V_1, "发票参数格式不正确！");
 		}
-		checkInvoice(jsonObj);
+		checkInvoice(jsonObj, gson);
 	}
 	
 	/**
@@ -86,7 +89,7 @@ public class OrderAddCommand extends AssertionConcern implements Serializable {
 	 * @param ges
 	 * @throws NegativeException
 	 */
-	private void checkAddr(String ges) throws NegativeException {
+	private void checkAddr(String ges, Gson gson) throws NegativeException {
 		if (StringUtil.isEmpty(ges)) {
 			return;
 		}
@@ -138,7 +141,8 @@ public class OrderAddCommand extends AssertionConcern implements Serializable {
 			throw new NegativeException(MCode.V_1, "收货联系人电话为空！");
 		}
 		
-		this.addr = JSONObject.parseObject(ges, ReceiveAddr.class);
+		//this.addr = JSONObject.parseObject(ges, ReceiveAddr.class);
+		this.addr = gson.fromJson(ges, ReceiveAddr.class);
 	}
 	/**
 	 * 检查商品参数
@@ -186,18 +190,19 @@ public class OrderAddCommand extends AssertionConcern implements Serializable {
 	 * 检查发票
 	 * @throws NegativeException 
 	 */
-	private void checkInvoice(JSONObject invoice) throws NegativeException {
-		if (invoice == null)
+	private void checkInvoice(JSONObject invoice1, Gson gson) throws NegativeException {
+		if (invoice1 == null)
 			return;
-		String tmp = invoice.getString("header");
+		String tmp = invoice1.getString("header");
 		if (StringUtil.isEmpty(tmp)) {
 			throw new NegativeException(MCode.V_1, "发票抬头为空！");
 		}
-		tmp = invoice.getString("name");
+		tmp = invoice1.getString("name");
 		if (StringUtil.isEmpty(tmp)) {
 			throw new NegativeException(MCode.V_1, "开票的单位或名称为空！");
 		}
-		this.invoice = JSONObject.parseObject(invoice.toJSONString(), InvoiceInfo.class);
+		//this.invoice = JSONObject.parseObject(invoice1.toJSONString(), InvoiceInfo.class);
+		this.invoice = gson.fromJson(invoice1.toJSONString(), InvoiceInfo.class);
 	}
 
 	public String getOrderId() {

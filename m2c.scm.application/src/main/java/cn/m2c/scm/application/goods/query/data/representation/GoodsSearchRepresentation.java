@@ -12,7 +12,6 @@ import java.util.List;
  * 搜索结果展示
  */
 public class GoodsSearchRepresentation {
-    private String goodsId;
     private String goodsImageUrl;
     private String goodsName;
     private String goodsClassify;
@@ -30,7 +29,6 @@ public class GoodsSearchRepresentation {
         if (null != mainImages && mainImages.size() > 0) {
             this.goodsImageUrl = mainImages.get(0);
         }
-        this.goodsId=bean.getGoodsId();
         this.goodsName = bean.getGoodsName();
         this.goodsClassify = goodsClassify;
         this.brandName = bean.getGoodsBrandName();

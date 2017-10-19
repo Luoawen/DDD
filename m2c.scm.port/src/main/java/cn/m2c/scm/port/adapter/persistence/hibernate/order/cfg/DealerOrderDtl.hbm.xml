@@ -24,7 +24,7 @@
 	        <property name="areaCode" column="area_code" type="string"/>
 	        <property name="street" column="street_addr" type="string"/>
 	        <property name="revPerson" column="rev_person" type="string"/>
-	        <property name="revPhone" column="rev_phone" type="string"/>
+	        <property name="phone" column="rev_phone" type="string"/>
         </component>
         
         <property name="goodsAmount" column="goods_amount" type="int"/>
@@ -33,9 +33,9 @@
         <property name="noted" column="noted" type="string"/>
         
         <component name="invoice">
-	        <property name="invoiceHeader" column="invoice_header" type="string"/>
-	        <property name="invoiceName" column="invoice_name" type="string"/>
-	        <property name="invoiceCode" column="invoice_code" type="string"/>
+	        <property name="header" column="invoice_header" type="string"/>
+	        <property name="name" column="invoice_name" type="string"/>
+	        <property name="code" column="invoice_code" type="string"/>
 	        <!-- <property name="invoiceDes" column="describ" type="string"/> -->
         </component>
         

@@ -2,6 +2,9 @@ package cn.m2c.scm.port.adapter.restful.web.order;
 
 import cn.m2c.common.MCode;
 import cn.m2c.common.MPager;
+import cn.m2c.common.MResult;
+import cn.m2c.scm.application.order.DealerOrderApplication;
+import cn.m2c.scm.application.order.data.bean.DealerOrderBean;
 import cn.m2c.scm.application.order.query.OrderQueryApplication;
 
 import org.slf4j.Logger;
@@ -32,6 +35,14 @@ public class WebOrderAgent {
 
     @Autowired
     OrderQueryApplication orderApp;
+    
+    
+    @Autowired
+    DealerOrderApplication dealerOrderApplication;
+    
+    
+    @Autowired
+    OrderQueryApplication orderQuery;
     
     /**
      * 获取订单列表(管理平台)
@@ -118,5 +129,24 @@ public class WebOrderAgent {
             result = new MPager(MCode.V_400, e.getMessage());
         }
         return new ResponseEntity<MPager>(result, HttpStatus.OK);
+    }
+    
+    /**
+     * 订单发货详情
+     */
+    @RequestMapping(value="/dealer/sendOrderDetail", method = RequestMethod.GET)
+    public ResponseEntity<MResult> sendOrder(
+    		@RequestParam(value = "dealerOrderId", required = false) String dealerOrderId){
+    	MResult result = new MResult(MCode.V_1);
+    	try {
+    		//1查询商家订单
+    		DealerOrderBean dealerOrder = orderQuery.getDealerOrder(dealerOrderId);
+    		//2根据商家订单查询订单详情
+    		
+    		//3封装成返回对象返回
+		} catch (Exception e) {
+			LOGGER.info("查询发货详情失败");
+		}
+    	return new ResponseEntity<MResult>(result,HttpStatus.OK);
     }
 }

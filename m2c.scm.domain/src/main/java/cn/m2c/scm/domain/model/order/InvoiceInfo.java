@@ -9,11 +9,11 @@ import cn.m2c.ddd.common.domain.model.ValueObject;
  */
 public class InvoiceInfo extends ValueObject {
 	/**抬头**/
-	private String invoiceHeader;
+	private String header;
 	/**发票名称**/
-	private String invoiceName;
+	private String name;
 	/**纳税人识别码**/
-	private String invoiceCode;
+	private String code;
 	/**发票说明**/
 	private String invoiceDes;
 	
@@ -22,9 +22,9 @@ public class InvoiceInfo extends ValueObject {
 	}
 	
 	public InvoiceInfo(String header, String name, String code, String des) {
-		invoiceCode = code;
-		invoiceHeader = header;
-		invoiceName = name;
+		this.code = code;
+		this.header = header;
+		this.name = name;
 		invoiceDes = des;
 	}
 }

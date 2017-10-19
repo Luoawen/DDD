@@ -2,21 +2,11 @@ package cn.m2c.scm.port.adapter.restful.web.goods;
 
 import cn.m2c.common.JsonUtils;
 import cn.m2c.common.MCode;
-import cn.m2c.common.MPager;
 import cn.m2c.common.MResult;
 import cn.m2c.scm.application.CommonApplication;
-import cn.m2c.scm.application.classify.query.GoodsClassifyQueryApplication;
-import cn.m2c.scm.application.dealer.data.bean.DealerBean;
-import cn.m2c.scm.application.dealer.query.DealerQuery;
 import cn.m2c.scm.application.goods.GoodsApproveApplication;
 import cn.m2c.scm.application.goods.command.GoodsApproveCommand;
 import cn.m2c.scm.application.goods.command.GoodsApproveRejectCommand;
-import cn.m2c.scm.application.goods.query.GoodsApproveQueryApplication;
-import cn.m2c.scm.application.goods.query.GoodsGuaranteeQueryApplication;
-import cn.m2c.scm.application.goods.query.data.bean.GoodsApproveBean;
-import cn.m2c.scm.application.goods.query.data.representation.GoodsApproveDetailRepresentation;
-import cn.m2c.scm.application.goods.query.data.representation.GoodsApproveSearchRepresentation;
-import cn.m2c.scm.application.unit.query.UnitQuery;
 import cn.m2c.scm.domain.IDGenerator;
 import cn.m2c.scm.domain.NegativeException;
 import org.apache.commons.lang3.StringUtils;
@@ -32,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -50,17 +41,6 @@ public class GoodsApproveAgent {
     GoodsApproveApplication goodsApproveApplication;
     @Autowired
     CommonApplication commonApplication;
-    @Autowired
-    GoodsApproveQueryApplication goodsApproveQueryApplication;
-    @Autowired
-    DealerQuery dealerQuery;
-    @Autowired
-    GoodsClassifyQueryApplication goodsClassifyQueryApplication;
-    @Autowired
-    GoodsGuaranteeQueryApplication goodsGuaranteeQueryApplication;
-    @Autowired
-    UnitQuery unitQuery;
-
 
     /**
      * 获取ID
@@ -118,7 +98,7 @@ public class GoodsApproveAgent {
             @RequestParam(value = "goodsMinQuantity", required = false) Integer goodsMinQuantity,
             @RequestParam(value = "goodsPostageId", required = false) String goodsPostageId,
             @RequestParam(value = "goodsBarCode", required = false) String goodsBarCode,
-            @RequestParam(value = "goodsKeyWord", required = false) List goodsKeyWord,
+            @RequestParam(value = "goodsKeyWord", required = false) String goodsKeyWord,
             @RequestParam(value = "goodsGuarantee", required = false) List goodsGuarantee,
             @RequestParam(value = "goodsMainImages", required = false) List goodsMainImages,
             @RequestParam(value = "goodsDesc", required = false) String goodsDesc,
@@ -146,7 +126,7 @@ public class GoodsApproveAgent {
             goodsSkuApproves = JsonUtils.toStr(skuList);
             GoodsApproveCommand command = new GoodsApproveCommand(goodsId, dealerId, dealerName, goodsName, goodsSubTitle,
                     goodsClassifyId, goodsBrandId, goodsBrandName, goodsUnitId, goodsMinQuantity,
-                    goodsPostageId, goodsBarCode, JsonUtils.toStr(goodsKeyWord), goodsGuarantee,
+                    goodsPostageId, goodsBarCode, goodsKeyWord, goodsGuarantee,
                     goodsMainImages, goodsDesc, goodsShelves, goodsSpecifications, goodsSkuApproves);
             goodsApproveApplication.addGoodsApprove(command);
             result.setStatus(MCode.V_200);
@@ -187,17 +167,17 @@ public class GoodsApproveAgent {
     /**
      * 拒绝商品审核
      *
-     * @param goodsId
+     * @param approveId
      * @return
      */
     @RequestMapping(value = "/reject", method = RequestMethod.POST)
     public ResponseEntity<MResult> rejectGoodsApprove(
-            @RequestParam(value = "goodsId", required = false) String goodsId,
+            @RequestParam(value = "approveId", required = false) String approveId,
             @RequestParam(value = "rejectReason", required = false) String rejectReason
     ) {
         MResult result = new MResult(MCode.V_1);
         try {
-            GoodsApproveRejectCommand command = new GoodsApproveRejectCommand(goodsId, rejectReason);
+            GoodsApproveRejectCommand command = new GoodsApproveRejectCommand(approveId, rejectReason);
             goodsApproveApplication.rejectGoodsApprove(command);
             result.setStatus(MCode.V_200);
         } catch (NegativeException ne) {
@@ -243,7 +223,7 @@ public class GoodsApproveAgent {
             @RequestParam(value = "goodsMinQuantity", required = false) Integer goodsMinQuantity,
             @RequestParam(value = "goodsPostageId", required = false) String goodsPostageId,
             @RequestParam(value = "goodsBarCode", required = false) String goodsBarCode,
-            @RequestParam(value = "goodsKeyWord", required = false) List goodsKeyWord,
+            @RequestParam(value = "goodsKeyWord", required = false) String goodsKeyWord,
             @RequestParam(value = "goodsGuarantee", required = false) List goodsGuarantee,
             @RequestParam(value = "goodsMainImages", required = false) List goodsMainImages,
             @RequestParam(value = "goodsDesc", required = false) String goodsDesc,
@@ -272,7 +252,7 @@ public class GoodsApproveAgent {
             }
             GoodsApproveCommand command = new GoodsApproveCommand(goodsId, dealerId, goodsName, goodsSubTitle,
                     goodsClassifyId, goodsBrandId, goodsBrandName, goodsUnitId, goodsMinQuantity,
-                    goodsPostageId, goodsBarCode, JsonUtils.toStr(goodsKeyWord), goodsGuarantee,
+                    goodsPostageId, goodsBarCode, goodsKeyWord, goodsGuarantee,
                     goodsMainImages, goodsDesc, goodsSpecifications, goodsSKUs);
             goodsApproveApplication.modifyGoodsApprove(command);
             result.setStatus(MCode.V_200);
@@ -286,11 +266,6 @@ public class GoodsApproveAgent {
         return new ResponseEntity<MResult>(result, HttpStatus.OK);
     }
 
-    /**
-     * 删除商品审核信息
-     * @param goodsId
-     * @return
-     */
     @RequestMapping(value = "/{goodsId}", method = RequestMethod.DELETE)
     public ResponseEntity<MResult> delGoodsApprove(
             @PathVariable("goodsId") String goodsId
@@ -308,85 +283,27 @@ public class GoodsApproveAgent {
         return new ResponseEntity<MResult>(result, HttpStatus.OK);
     }
 
-    /**
-     * 查询商品审核列表
-     *
-     * @param dealerId        商家ID
-     * @param goodsClassifyId 商品分类
-     * @param approveStatus   审核状态，1：审核中，2：审核不通过
-     * @param condition       搜索条件
-     * @param startTime       开始时间
-     * @param endTime         结束时间
-     * @param pageNum         第几页
-     * @param rows            每页多少行
-     * @return
-     */
-    @RequestMapping(value = "", method = RequestMethod.GET)
-    public ResponseEntity<MPager> searchGoodsApproveByCondition(
-            @RequestParam(value = "dealerId", required = false) String dealerId,
-            @RequestParam(value = "goodsClassifyId", required = false) String goodsClassifyId,
-            @RequestParam(value = "approveStatus", required = false) Integer approveStatus,
-            @RequestParam(value = "brandName", required = false) String brandName,
-            @RequestParam(value = "condition", required = false) String condition,
-            @RequestParam(value = "startTime", required = false) String startTime,
-            @RequestParam(value = "endTime", required = false) String endTime,
-            @RequestParam(value = "pageNum", required = false, defaultValue = "1") Integer pageNum,
-            @RequestParam(value = "rows", required = false, defaultValue = "10") Integer rows) {
-        MPager result = new MPager(MCode.V_1);
-        try {
-            Integer total = goodsApproveQueryApplication.searchGoodsApproveByConditionTotal(dealerId, goodsClassifyId, approveStatus,
-                    condition, startTime, endTime);
-            if (total > 0) {
-                List<GoodsApproveBean> goodsBeans = goodsApproveQueryApplication.searchGoodsApproveByCondition(dealerId, goodsClassifyId, approveStatus,
-                        condition, startTime, endTime, pageNum, rows);
-                if (null != goodsBeans && goodsBeans.size() > 0) {
-                    List<GoodsApproveSearchRepresentation> representations = new ArrayList<GoodsApproveSearchRepresentation>();
-                    for (GoodsApproveBean bean : goodsBeans) {
-                        DealerBean dealerBean = dealerQuery.getDealer(bean.getDealerId());
-                        String dealerType = "";
-                        if (null != dealerBean) {
-                            dealerType = dealerBean.getDealerClassifyBean().getDealerSecondClassifyName();
-                        }
-                        String goodsClassify = goodsClassifyQueryApplication.getClassifyNames(bean.getGoodsClassifyId());
-                        representations.add(new GoodsApproveSearchRepresentation(bean, goodsClassify, dealerType));
-                    }
-                    result.setContent(representations);
-                }
-            }
-            result.setPager(total, pageNum, rows);
-            result.setStatus(MCode.V_200);
-        } catch (Exception e) {
-            LOGGER.error("searchGoodsApproveByCondition Exception e:", e);
-            result = new MPager(MCode.V_400, "查询商品审核列表失败");
-        }
-        return new ResponseEntity<MPager>(result, HttpStatus.OK);
-    }
+    public static void main(String[] args) {
+        //specifications
+        Map map = new HashMap<>();
+        map.put("itemName", "尺寸");
+        List<String> values = new ArrayList<>();
+        values.add("L");
+        values.add("M");
+        map.put("itemValue", values);
 
-    /**
-     * 查询商品审核详情
-     *
-     * @param goodsId
-     * @return
-     */
-    @RequestMapping(value = "/{goodsId}", method = RequestMethod.GET)
-    public ResponseEntity<MResult> queryGoodsApproveDetail(
-            @PathVariable("goodsId") String goodsId
-    ) {
-        MResult result = new MResult(MCode.V_1);
-        try {
-            GoodsApproveBean goodsBean = goodsApproveQueryApplication.queryGoodsApproveByGoodsId(goodsId);
-            if (null != goodsBean) {
-                String goodsClassify = goodsClassifyQueryApplication.getClassifyNames(goodsBean.getGoodsClassifyId());
-                List<String> goodsGuarantee = goodsGuaranteeQueryApplication.getGoodsGuaranteeDesc(JsonUtils.toList(goodsBean.getGoodsGuarantee(), String.class));
-                String goodsUnitName = unitQuery.getUnitNameByUnitId(goodsBean.getGoodsUnitId());
-                GoodsApproveDetailRepresentation representation = new GoodsApproveDetailRepresentation(goodsBean, goodsClassify, goodsGuarantee, goodsUnitName);
-                result.setContent(representation);
-            }
-            result.setStatus(MCode.V_200);
-        } catch (Exception e) {
-            LOGGER.error("queryGoodsDetail Exception e:", e);
-            result = new MResult(MCode.V_400, "查询商品审核详情失败");
-        }
-        return new ResponseEntity<MResult>(result, HttpStatus.OK);
+        Map map1 = new HashMap<>();
+        map1.put("itemName", "颜色");
+        List<String> values1 = new ArrayList<>();
+        values1.add("蓝色");
+        values1.add("白色");
+        map1.put("itemValue", values1);
+
+        List<Map> list = new ArrayList<>();
+        list.add(map);
+        list.add(map1);
+
+        System.out.print(JsonUtils.toStr(list));
+
     }
 }
