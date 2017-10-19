@@ -15,7 +15,7 @@ public class OrderDetailBean {
 	@ColumnAlias(value= "goods_icon")
 	private String goodsIcon;
 	@ColumnAlias(value= "sell_num")
-	private Float  sellNum;
+	private Integer  sellNum;
 	public String getDealerOrderId() {
 		return dealerOrderId;
 	}
@@ -46,10 +46,10 @@ public class OrderDetailBean {
 	public void setGoodsIcon(String goodsIcon) {
 		this.goodsIcon = goodsIcon;
 	}
-	public Float getSellNum() {
+	public Integer getSellNum() {
 		return sellNum;
 	}
-	public void setSellNum(Float sellNum) {
+	public void setSellNum(Integer sellNum) {
 		this.sellNum = sellNum;
 	}
 	
