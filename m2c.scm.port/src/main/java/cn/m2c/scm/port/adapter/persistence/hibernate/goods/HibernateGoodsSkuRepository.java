@@ -8,6 +8,8 @@ import org.hibernate.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * 商品sku
  */
@@ -33,7 +35,15 @@ public class HibernateGoodsSkuRepository extends HibernateSupperRepository imple
         StringBuilder sql = new StringBuilder("UPDATE `m2c_scm`.`t_scm_goods_sku`");
         sql.append(" SET `available_num`=`available_num`-?,concurrency_version = concurrency_version + 1");
         sql.append(" WHERE  `sku_id` = ? AND concurrency_version = ?");
-        int result = this.getSupportJdbcTemplate().jdbcTemplate().update(sql.toString(), new Object[]{num,skuId, concurrencyVersion});
+        int result = this.getSupportJdbcTemplate().jdbcTemplate().update(sql.toString(), new Object[]{num, skuId, concurrencyVersion});
         return result;
+    }
+
+    @Override
+    public List<GoodsSku> queryGoodsSkuByGoodsId(Integer goodsId) {
+        StringBuilder sql = new StringBuilder("select * from t_scm_goods_sku where goods_id =:goods_id and show_status = 2 and del_status = 1");
+        Query query = this.session().createSQLQuery(sql.toString()).addEntity(GoodsSku.class);
+        query.setParameter("goods_id", goodsId);
+        return query.list();
     }
 }

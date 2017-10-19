@@ -146,4 +146,8 @@ public class GoodsSku extends ConcurrencySafeEntity {
     public Integer availableNum() {
         return availableNum;
     }
+
+    public Goods goods() {
+        return goods;
+    }
 }

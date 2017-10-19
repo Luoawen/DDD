@@ -44,5 +44,13 @@ public class HibernateGoodsRepository extends HibernateSupperRepository implemen
         this.session().save(goods);
     }
 
+    @Override
+    public Goods queryGoodsById(Integer goodsId) {
+        StringBuilder sql = new StringBuilder("select * from t_scm_goods where id =:id and del_status = 1");
+        Query query = this.session().createSQLQuery(sql.toString()).addEntity(Goods.class);
+        query.setParameter("id", goodsId);
+        return (Goods) query.uniqueResult();
+    }
+
 
 }

@@ -161,6 +161,17 @@ public class GoodsApplication {
             if (result <= 0) {
                 throw new NegativeException(MCode.V_400, skuId);//400:扣库存失败
             }
+            Goods goods = goodsRepository.queryGoodsById(goodsSku.goods().getId());
+
+
+           /* List<GoodsSku> goodsSkuList = goodsSkuRepository.queryGoodsSkuByGoodsId(goodsSku.goods().getId());
+            Integer totalNum = 0;
+            for (GoodsSku sku : goodsSkuList) {
+                totalNum = totalNum + sku.availableNum();
+            }
+            if (totalNum <= 0) {
+               Goods goods = goodsRepository.queryGoodsById(goodsSku.goods().getId());
+            }*/
         }
     }
 }
