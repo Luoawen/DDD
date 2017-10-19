@@ -1,9 +1,9 @@
 package cn.m2c.scm.application.order.query;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.annotation.Resource;
 
@@ -18,7 +18,6 @@ import cn.m2c.scm.application.order.data.bean.OrderDetailBean;
 import cn.m2c.scm.application.order.data.bean.SkuNumBean;
 import cn.m2c.scm.application.order.data.representation.OptLogBean;
 import cn.m2c.scm.application.order.data.representation.OrderBean;
-import cn.m2c.scm.application.order.query.dto.GoodsDto;
 import cn.m2c.scm.domain.NegativeException;
 
 /**
@@ -116,7 +115,7 @@ public class OrderQueryApplication {
 		DealerOrderBean dealerOrderBean = null;
 		String sql = "SELECT * FROM t_scm_order_dealer WHERE 1=1 AND dealer_order_id=?";
 		try {
-			dealerOrderBean = supportJdbcTemplate.queryForBean(sql, DealerOrderBean.class);
+			dealerOrderBean = supportJdbcTemplate.queryForBean(sql, DealerOrderBean.class,dealerOrderId);
 			if(dealerOrderBean!=null){
 				dealerOrderBean.setOrderDtls(getOrderDetail(dealerOrderBean.getDealerOrderId()));
 			}
@@ -124,7 +123,7 @@ public class OrderQueryApplication {
 			LOGGER.error("商家订单查询出错",e);
 			throw new NegativeException(500, "商家订单查询出错");
 		}
-		return null;
+		return dealerOrderBean;
 	}
 	/**
 	 * 根据商家订单id获取
@@ -137,11 +136,42 @@ public class OrderQueryApplication {
 		String sql = "SELECT * FROM t_scm_order_detail WHERE 1=1 AND dealer_order_id=?";
 		try {
 			orderList = this.supportJdbcTemplate.queryForBeanList(sql, OrderDetailBean.class, dealerOrderId);
+			//去掉订单中的审核通过的退货单
+			if(orderList!=null && orderList.size()>0){
+				for (int i = 0; i < orderList.size(); i++) {
+					if(checkIsReturnOrder(orderList.get(i).getSkuId(),orderList.get(i).getDealerOrderId())){
+						orderList.remove(i);
+					}
+				}
+			}
 		} catch (Exception e) {
-			LOGGER.error("商家订单查询出错",e);
-			throw new NegativeException(500, "商家订单查询出错");
+			LOGGER.error("订单查询出错",e);
+			throw new NegativeException(500, "订单查询出错");
 		}
 		return orderList;
+	}
+	/**
+	 * 判断此sku是否走售后流程（如果售后流程就不显示出来）
+	 * @param skuId
+	 * @param dealerOrderId
+	 * @throws NegativeException 
+	 */
+	private boolean checkIsReturnOrder(String skuId, String dealerOrderId) throws NegativeException {
+		boolean isReturnOrder = false;
+		List<Object> param = new ArrayList<Object>();
+		try {
+			param.add(skuId);
+			param.add(dealerOrderId);
+			String sql = "SELECT count(*) FROM t_scm_order_after_sell WHERE _status=9 AND sku_id=? AND dealer_order_id=?";
+			Integer returnOrderCount =this.supportJdbcTemplate.jdbcTemplate().queryForObject(sql,Integer.class,param.toArray()); 
+			if(returnOrderCount!=null && returnOrderCount==1){
+				isReturnOrder =  true;
+			}
+		} catch (Exception e) {
+			LOGGER.error("---判断sku是否是售后单出错",e);
+			throw new NegativeException(500, "判断sku是否是售后单出错");
+		}
+		return isReturnOrder;
 	}
 }
 

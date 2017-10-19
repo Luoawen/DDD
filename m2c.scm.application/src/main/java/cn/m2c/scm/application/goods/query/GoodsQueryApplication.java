@@ -484,4 +484,6 @@ public class GoodsQueryApplication {
 			throw new NegativeException(500, "获取商品详情列表出错");
     	}
     }
+
 }
+

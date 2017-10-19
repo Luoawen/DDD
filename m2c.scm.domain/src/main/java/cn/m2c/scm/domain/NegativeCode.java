@@ -330,4 +330,8 @@ public final class NegativeCode {
 	 */
 	
 	public static final Integer DEALER_SHOP_IS_EXIST = 140031;
+	/**
+	 * 商家订单不存在
+	 */
+	public static final Integer DEALER_ORDER_IS_NOT_EXIST = 140032;
 }
