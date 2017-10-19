@@ -21,11 +21,14 @@ import cn.m2c.common.MCode;
 import cn.m2c.ddd.common.event.annotation.EventListener;
 import cn.m2c.scm.application.dealer.data.bean.DealerBean;
 import cn.m2c.scm.application.dealer.query.DealerQuery;
+import cn.m2c.scm.application.goods.GoodsApplication;
 import cn.m2c.scm.application.order.command.CancelOrderCmd;
 import cn.m2c.scm.application.order.command.OrderAddCommand;
 import cn.m2c.scm.application.order.command.PayOrderCmd;
 import cn.m2c.scm.application.order.query.OrderQueryApplication;
 import cn.m2c.scm.application.order.query.dto.GoodsDto;
+import cn.m2c.scm.application.postage.data.bean.PostageModelRuleBean;
+import cn.m2c.scm.application.postage.query.PostageModelQueryApplication;
 import cn.m2c.scm.domain.NegativeException;
 import cn.m2c.scm.domain.model.order.DealerOrder;
 import cn.m2c.scm.domain.model.order.DealerOrderDtl;
@@ -53,7 +56,12 @@ public class OrderApplication {
 	OrderQueryApplication queryApp;
 	
 	@Autowired
+	private GoodsApplication goodsApp;
+	
+	@Autowired
 	DealerQuery dealerQuery; // getDealers
+	@Autowired
+	PostageModelQueryApplication postApp;
 	/**
 	 * 提交订单
 	 * @param cmd
@@ -65,6 +73,7 @@ public class OrderApplication {
 		
 		JSONArray gdes = cmd.getGoodses();
 		List<Map<String, Object>> goodses = null;
+		// skuId, num
 		Map<String, Integer> skus = new HashMap<String, Integer>();
 		if (gdes == null || gdes.size() < 1) {
 			// 获取购物车数据
@@ -87,6 +96,12 @@ public class OrderApplication {
 		orderDomainService.judgeStock(skus);
 		// 锁定库存
 		orderDomainService.lockStock(null);
+		try {
+			goodsApp.outInventory(skus);
+		}
+		catch (NegativeException e) {
+			throw new NegativeException(MCode.V_100, e.getMessage() + "不存在或库存不够。");
+		}
 		// 满足优惠券后，修改优惠券(锁定)
 		//JSONArray coups = cmd.getCoupons();
 		//orderDomainService.lockCoupons(null);
@@ -98,7 +113,7 @@ public class OrderApplication {
 		calFreight(skus, list, cmd.getAddr().getCityCode());
 		// 拆单 设置商品数量即按商家来拆分
 		Set<String> idsSet = new HashSet<String>();
-		Map<String, List<GoodsDto>> dealerOrderMap = splitOrder(list, skus, idsSet);
+		Map<String, List<GoodsDto>> dealerOrderMap = splitOrder(list, idsSet);
 		// 计算是否满足营销策略, 若满足选择最优
 		Map<String, Integer> dealerCount = getDealerWay(idsSet);
 		List<DealerOrder> dealerOrders = trueSplit(dealerOrderMap, cmd, dealerCount);
@@ -126,11 +141,10 @@ public class OrderApplication {
 	/***
 	 * 订单拆分
 	 * @param ls
-	 * @param sl
+	 * @param ids
 	 * @return
 	 */
-	private Map<String, List<GoodsDto>> splitOrder(List<GoodsDto> ls, Map<String, Integer> sl
-			, Set<String> ids) {
+	private Map<String, List<GoodsDto>> splitOrder(List<GoodsDto> ls, Set<String> ids) {
 		Map<String, List<GoodsDto>> rs = new HashMap<String, List<GoodsDto>>();
 		List<GoodsDto> dtos = null;
 		for (GoodsDto bean : ls) {
@@ -140,11 +154,7 @@ public class OrderApplication {
 				dtos = new ArrayList<GoodsDto>();
 				rs.put(bean.getDealerId(), dtos);
 			}
-			Integer num = sl.get(bean.getSkuId());
-			if (num != null) {
-				bean.setPurNum(num);
-				dtos.add(bean);
-			}
+			dtos.add(bean);
 		}		
 		return rs;
 	}
@@ -219,11 +229,60 @@ public class OrderApplication {
 	 * @param cityCode
 	 */
 	private void calFreight(Map<String, Integer> skus, List<GoodsDto> ls, String cityCode) {
+		LOGGER.info("==fanjc==计算运费.");
+		Iterator<String> it = skus.keySet().iterator();
+		List<String> skuIds = new ArrayList<String>();
+		while(it.hasNext()) {
+			skuIds.add(it.next());
+		}
+		
+		Map<String, PostageModelRuleBean> postMap = postApp.getGoodsPostageRule(skuIds, cityCode);
+		
 		for (GoodsDto bean : ls) {
-			bean.setFreight(1000);
+			String skuId = bean.getSkuId();
+			bean.setPurNum(skus.get(skuId));
+			calFrt(bean, postMap.get(skuId));
+			// bean.setFreight(1000);
 		}
 	}
-	
+	/***
+	 * 计算单个物品运费
+	 * @param b
+	 * @param pb
+	 * @return
+	 */
+	private void calFrt(GoodsDto b, PostageModelRuleBean pb) {
+		if (pb == null) {
+			b.setFreight(0);
+			return ;
+		}
+		
+		if (pb.getChargeType() == 1) {//0:按重量,1:按件数
+			long ft = pb.getFirstPostage();
+			long ct = pb.getContinuedPostage();
+			int fpt = pb.getFirstPiece();
+			int cpt = pb.getContinuedPiece();
+			int ss = b.getPurNum() - fpt; // 续件
+			if (ss > 0) {
+				b.setFreight(ft + (ss/cpt + (ss%cpt >0 ? 1:0)) * ct);
+			}
+			else
+				b.setFreight(ft);
+		}
+		else {
+			long ft = pb.getFirstPostage();
+			long ct = pb.getContinuedPostage();
+			float fpt = pb.getFirstWeight();
+			float cpt = pb.getContinuedWeight();
+			float ss = b.getPurNum()*b.getWeight() - fpt; // 续件
+			if (ss > 0) {
+				int t = (int)(ss/cpt); //倍数
+				b.setFreight(ft + (t + (ss > (t * cpt) ? 1:0)) * ct);
+			}
+			else
+				b.setFreight(ft);
+		}
+	}
 	/***
 	 * 获取商家结算方式
 	 * @param ids

@@ -41,6 +41,9 @@ public class DealerOrder extends ConcurrencySafeEntity {
 	/**订单明细*/
 	private List<DealerOrderDtl> orderDtls;
 	
+	public DealerOrder() {
+		super();
+	}
 	public DealerOrder(String orderId, String dealerOrderId,
 			String dealerId, long goodsAmount, long orderFreight
 			,long plateformDiscount, long dealerDiscount, String noted, Integer termOfPayment
