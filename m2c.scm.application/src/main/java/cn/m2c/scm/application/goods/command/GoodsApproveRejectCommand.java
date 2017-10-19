@@ -5,7 +5,7 @@ package cn.m2c.scm.application.goods.command;
  */
 public class GoodsApproveRejectCommand {
     /**
-     * 品牌id
+     * 商品id
      */
     private String goodsId;
 

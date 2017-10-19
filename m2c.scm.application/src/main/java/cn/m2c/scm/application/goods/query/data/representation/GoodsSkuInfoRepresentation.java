@@ -1,7 +1,10 @@
 package cn.m2c.scm.application.goods.query.data.representation;
 
+import cn.m2c.common.JsonUtils;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsBean;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsSkuBean;
+
+import java.util.List;
 
 /**
  * 商品sku
@@ -62,6 +65,8 @@ public class GoodsSkuInfoRepresentation {
      */
     private Long photographPrice;
 
+    private String goodsImageUrl;
+
     public GoodsSkuInfoRepresentation(GoodsBean goodsBean, GoodsSkuBean bean) {
         this.goodsId = goodsBean.getGoodsId();
         this.goodsName = goodsBean.getGoodsName();
@@ -75,6 +80,10 @@ public class GoodsSkuInfoRepresentation {
         this.availableNum = bean.getAvailableNum();
         this.weight = bean.getWeight();
         this.photographPrice = bean.getPhotographPrice();
+        List<String> mainImages = JsonUtils.toList(goodsBean.getGoodsMainImages(), String.class);
+        if (null != mainImages && mainImages.size() > 0) {
+            this.goodsImageUrl = mainImages.get(0);
+        }
     }
 
     public String getGoodsId() {
@@ -171,5 +180,13 @@ public class GoodsSkuInfoRepresentation {
 
     public void setPhotographPrice(Long photographPrice) {
         this.photographPrice = photographPrice;
+    }
+
+    public String getGoodsImageUrl() {
+        return goodsImageUrl;
+    }
+
+    public void setGoodsImageUrl(String goodsImageUrl) {
+        this.goodsImageUrl = goodsImageUrl;
     }
 }

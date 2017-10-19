@@ -3,6 +3,7 @@ package cn.m2c.scm.application.goods;
 import cn.m2c.common.MCode;
 import cn.m2c.ddd.common.event.annotation.EventListener;
 import cn.m2c.scm.application.goods.command.GoodsCommand;
+import cn.m2c.scm.application.goods.command.GoodsRecognizedModifyCommand;
 import cn.m2c.scm.domain.NegativeException;
 import cn.m2c.scm.domain.model.goods.Goods;
 import cn.m2c.scm.domain.model.goods.GoodsRepository;
@@ -112,5 +113,21 @@ public class GoodsApplication {
             throw new NegativeException(MCode.V_300, "商品不存在");
         }
         goods.offShelf();
+    }
+
+    /**
+     * 修改商品识别图
+     *
+     * @param command
+     * @throws NegativeException
+     */
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+    public void modifyRecognized(GoodsRecognizedModifyCommand command) throws NegativeException {
+        LOGGER.info("modifyRecognized command >>{}", command);
+        Goods goods = goodsRepository.queryGoodsById(command.getGoodsId());
+        if (null == goods) {
+            throw new NegativeException(MCode.V_300, "商品不存在");
+        }
+        goods.modifyRecognized(command.getRecognizedId(), command.getRecognizedUrl());
     }
 }
