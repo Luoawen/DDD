@@ -204,7 +204,7 @@ public class OrderApplication {
 			// 若订单中有优惠券则需要解锁
 			orderDomainService.unlockCoupons(queryApp.getCouponsByOrderId(cmd.getOrderId()), "");
 			// 解锁库存
-			orderDomainService.unlockStock(null);
+			orderDomainService.unlockStock(queryApp.getSkusByOrderId(cmd.getOrderId()));
 		}
 		else {
 			throw new NegativeException(MCode.V_1, "订单处于不可取消状态！");

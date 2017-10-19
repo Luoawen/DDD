@@ -91,7 +91,7 @@ public class AppOrderAgent {
         	result = new MResult(e.getStatus(), e.getMessage());
         }
         catch (Exception e) {
-            LOGGER.error("goods Detail Exception e:", e);
+            LOGGER.error("order add Exception e:", e);
             result = new MResult(MCode.V_400, e.getMessage());
         }
         return new ResponseEntity<MResult>(result, HttpStatus.OK);
@@ -146,7 +146,7 @@ public class AppOrderAgent {
         	result = new MResult(e.getStatus(), e.getMessage());
         }
         catch (Exception e) {
-            LOGGER.error("goods Detail Exception e:", e);
+            LOGGER.error("order cancel Exception e:", e);
             result = new MResult(MCode.V_400, e.getMessage());
         }
         return new ResponseEntity<MResult>(result, HttpStatus.OK);

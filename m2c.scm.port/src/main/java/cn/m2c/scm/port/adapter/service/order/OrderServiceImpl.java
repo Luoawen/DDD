@@ -87,7 +87,7 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	@Override
-	public void unlockStock(Map<String, Object> skus) {
+	public void unlockStock(Map<String, Float> skus) {
 		// TODO Auto-generated method stub
 		
 	}

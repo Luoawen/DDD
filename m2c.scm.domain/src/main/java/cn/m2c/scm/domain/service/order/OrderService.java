@@ -34,7 +34,7 @@ public interface OrderService {
 	 * @param skus key:sku, val:sl
 	 * @return
 	 */
-	public void unlockStock(Map<String, Object> skus);
+	public void unlockStock(Map<String, Float> skus);
 	/***
 	 * 锁定优惠券
 	 * @param couponsIds

@@ -1,6 +1,8 @@
 package cn.m2c.scm.application.order.query;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Resource;
@@ -13,6 +15,7 @@ import cn.m2c.common.StringUtil;
 import cn.m2c.ddd.common.port.adapter.persistence.springJdbc.SupportJdbcTemplate;
 import cn.m2c.scm.application.order.data.bean.DealerOrderBean;
 import cn.m2c.scm.application.order.data.bean.OrderDetailBean;
+import cn.m2c.scm.application.order.data.bean.SkuNumBean;
 import cn.m2c.scm.application.order.data.representation.OptLogBean;
 import cn.m2c.scm.application.order.data.representation.OrderBean;
 import cn.m2c.scm.application.order.query.dto.GoodsDto;
@@ -133,11 +136,19 @@ public class OrderQueryApplication {
     		return null;
     	Map<String, Float> rs = null;
     	try {
-    		supportJdbcTemplate.queryForBeanList("select sku_id, sell_num from t_scm_order_detail where order_id=?", HashMap.class, orderId);
+    		List<SkuNumBean> ls = supportJdbcTemplate.queryForBeanList("select sku_id, sell_num from t_scm_order_detail where order_id=?", SkuNumBean.class, orderId);
+    		
+    		if (ls == null || ls.size() < 1)
+    			return rs;
+    		
+    		rs = new HashMap<String, Float>();
+    		for (SkuNumBean sb : ls) {
+    			rs.put(sb.getSkuId(), sb.getNum());
+    		}
     	}
     	catch (Exception e) {
-    		LOGGER.error("===fanjc==获取订单下的优惠券出错",e);
-			throw new NegativeException(500, "获取订单下的优惠券出错");
+    		LOGGER.error("===fanjc==获取订单下的SKU及数量出错",e);
+			throw new NegativeException(500, "获取订单下的SKU及数量出错");
     	}
     	return rs;
     }
