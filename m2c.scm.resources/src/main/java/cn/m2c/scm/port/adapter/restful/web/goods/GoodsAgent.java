@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -316,6 +317,23 @@ public class GoodsAgent {
             LOGGER.error("queryGoodsDetail Exception e:", e);
             result = new MResult(MCode.V_400, "查询商品详情失败");
         }
+        return new ResponseEntity<MResult>(result, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/test", method = RequestMethod.POST)
+    public ResponseEntity<MResult> outInventory(
+            @RequestParam(value = "skuId", required = false) String skuId,
+            @RequestParam(value = "num", required = false) Integer num
+    ) {
+        MResult result = new MResult(MCode.V_1);
+        Map<String, Integer> map = new HashMap<>();
+        map.put(skuId, num);
+        try {
+            goodsApplication.outInventory(map);
+        } catch (NegativeException e) {
+            e.printStackTrace();
+        }
+        result.setStatus(MCode.V_200);
         return new ResponseEntity<MResult>(result, HttpStatus.OK);
     }
 }

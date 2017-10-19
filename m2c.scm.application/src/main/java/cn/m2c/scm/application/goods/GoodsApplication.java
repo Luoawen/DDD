@@ -7,11 +7,15 @@ import cn.m2c.scm.application.goods.command.GoodsRecognizedModifyCommand;
 import cn.m2c.scm.domain.NegativeException;
 import cn.m2c.scm.domain.model.goods.Goods;
 import cn.m2c.scm.domain.model.goods.GoodsRepository;
+import cn.m2c.scm.domain.model.goods.GoodsSku;
+import cn.m2c.scm.domain.model.goods.GoodsSkuRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Map;
 
 /**
  * 商品
@@ -22,6 +26,8 @@ public class GoodsApplication {
     private static final Logger LOGGER = LoggerFactory.getLogger(GoodsApplication.class);
     @Autowired
     GoodsRepository goodsRepository;
+    @Autowired
+    GoodsSkuRepository goodsSkuRepository;
 
     /**
      * 商品审核同意,保存商品
@@ -129,5 +135,32 @@ public class GoodsApplication {
             throw new NegativeException(MCode.V_300, "商品不存在");
         }
         goods.modifyRecognized(command.getRecognizedId(), command.getRecognizedUrl());
+    }
+
+    /**
+     * 扣库存
+     *
+     * @param map
+     * @throws NegativeException
+     */
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+    public void outInventory(Map<String, Integer> map) throws NegativeException {
+        for (Map.Entry<String, Integer> entry : map.entrySet()) {
+            String skuId = entry.getKey();
+            Integer num = entry.getValue();
+            GoodsSku goodsSku = goodsSkuRepository.queryGoodsSkuById(skuId);
+            if (null == goodsSku) {
+                throw new NegativeException(MCode.V_300, skuId);//300:信息不存在
+            }
+            if (goodsSku.availableNum() < num) {
+                throw new NegativeException(MCode.V_301, skuId);//301:库存不足
+            }
+            // 版本号
+            Integer concurrencyVersion = goodsSku.concurrencyVersion();
+            int result = goodsSkuRepository.outInventory(skuId, num, concurrencyVersion);
+            if (result <= 0) {
+                throw new NegativeException(MCode.V_400, skuId);//400:扣库存失败
+            }
+        }
     }
 }

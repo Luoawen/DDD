@@ -84,12 +84,5 @@ public class AppGoodsAgent {
         return new ResponseEntity<MPager>(result, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/test", method = RequestMethod.GET)
-    public ResponseEntity<MResult> goodsGuess() {
-        MResult result = new MResult(MCode.V_1);
-        List<Map> list = goodsService.getGoodsTags("111", "aaaa", "222");
-        result.setContent(list);
-        result.setStatus(MCode.V_200);
-        return new ResponseEntity<MResult>(result, HttpStatus.OK);
-    }
+
 }

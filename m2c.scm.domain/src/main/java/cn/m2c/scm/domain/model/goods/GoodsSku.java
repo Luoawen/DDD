@@ -142,4 +142,8 @@ public class GoodsSku extends ConcurrencySafeEntity {
     public void offShelf() {
         this.goodsSearchInfo.offShelf();
     }
+
+    public Integer availableNum() {
+        return availableNum;
+    }
 }
