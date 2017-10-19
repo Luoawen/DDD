@@ -10,7 +10,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import cn.m2c.ddd.common.port.adapter.persistence.springJdbc.SupportJdbcTemplate;
-import cn.m2c.scm.application.order.data.representation.DealerOrderBean;
+import cn.m2c.scm.application.order.data.bean.DealerOrderBean;
+import cn.m2c.scm.application.order.data.bean.OrderDetailBean;
 import cn.m2c.scm.application.order.data.representation.OptLogBean;
 import cn.m2c.scm.application.order.data.representation.OrderBean;
 import cn.m2c.scm.application.order.query.dto.GoodsDto;
@@ -101,4 +102,40 @@ public class OrderQueryApplication {
 			throw new NegativeException(500, "获取商品详情列表出错");
     	}
     }
+    /**
+     * 获取商家订单详情
+     * @param dealerOrderId
+     * @throws NegativeException 
+     */
+	public DealerOrderBean getDealerOrder(String dealerOrderId) throws NegativeException {
+		DealerOrderBean dealerOrderBean = null;
+		String sql = "SELECT * FROM t_scm_order_dealer WHERE 1=1 AND dealer_order_id=?";
+		try {
+			dealerOrderBean = supportJdbcTemplate.queryForBean(sql, DealerOrderBean.class);
+			if(dealerOrderBean!=null){
+				dealerOrderBean.setOrderDtls(getOrderDetail(dealerOrderBean.getDealerOrderId()));
+			}
+		} catch (Exception e) {
+			LOGGER.error("商家订单查询出错",e);
+			throw new NegativeException(500, "商家订单查询出错");
+		}
+		return null;
+	}
+	/**
+	 * 根据商家订单id获取
+	 * @param dealerOrderId
+	 * @return
+	 * @throws NegativeException 
+	 */
+	private List<OrderDetailBean> getOrderDetail(String dealerOrderId) throws NegativeException {
+		List<OrderDetailBean> orderList = null;
+		String sql = "SELECT * FROM t_scm_order_detail WHERE 1=1 AND dealer_order_id=?";
+		try {
+			orderList = this.supportJdbcTemplate.queryForBeanList(sql, OrderDetailBean.class, dealerOrderId);
+		} catch (Exception e) {
+			LOGGER.error("商家订单查询出错",e);
+			throw new NegativeException(500, "商家订单查询出错");
+		}
+		return orderList;
+	}
 }
