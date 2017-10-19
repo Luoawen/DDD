@@ -28,23 +28,23 @@ public class DealerOrderDtl extends ConcurrencySafeEntity {
 	/**促销员ID*/
 	private String salerUserId;
 	/**购买数量*/
-	private Float sellNum;
+	private Integer sellNum;
 	/**是否为换货商品 1是*/
 	private int isChange = 0;
 	/**换货价*/
-	private int changePrice;
+	private long changePrice;
 	
 	private GoodsInfo goodsInfo;
 	/**以分为单位，商品金额*/
-	private Integer goodsAmount;
+	private Long goodsAmount;
 	/**平台优惠*/
-	private Integer plateformDiscount;
+	private Long plateformDiscount;
 	/**商家优惠*/
-	private Integer dealerDiscount;
+	private Long dealerDiscount;
 	/**备注 留言*/
 	private String noted;
 	/**订单总运费*/
-	private Integer freight;
+	private Long freight;
 	/**应用的营销ID*/
 	private String marketingId;
 	/**媒体ID*/
@@ -61,7 +61,7 @@ public class DealerOrderDtl extends ConcurrencySafeEntity {
 	public DealerOrderDtl(String orderId, String dealerOrderId, ReceiveAddr addr
 			,InvoiceInfo invoice, ExpressInfo expressInfo, String mediaResId, String salerUserId
 			,String bdsRate, float resRate, String mediaId, int isChange, int changePrice
-			, GoodsInfo goodsInfo, int plateformDiscount, int dealerDiscount, String noted) {
+			, GoodsInfo goodsInfo, long plateformDiscount, long dealerDiscount, String noted) {
 		this.orderId = orderId;
 		this.dealerOrderId = dealerOrderId;
 		this.addr = addr;
@@ -84,15 +84,15 @@ public class DealerOrderDtl extends ConcurrencySafeEntity {
 	 * 计算商品金额
 	 * @return
 	 */
-	public Integer calGoodsMoney() {
-		goodsAmount = (int)(goodsInfo.getDiscountPrice() * sellNum);
+	public Long calGoodsMoney() {
+		goodsAmount = (long)(goodsInfo.getDiscountPrice() * sellNum);
 		return goodsAmount;
 	}
 	/***
 	 * 计算运费
 	 * @return
 	 */
-	public Integer calFreight() {
+	public Long calFreight() {
 		
 		return freight;
 	}

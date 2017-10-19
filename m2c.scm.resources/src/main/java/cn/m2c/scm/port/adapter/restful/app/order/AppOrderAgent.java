@@ -7,6 +7,7 @@ import cn.m2c.scm.application.CommonApplication;
 import cn.m2c.scm.application.order.OrderApplication;
 import cn.m2c.scm.application.order.command.CancelOrderCmd;
 import cn.m2c.scm.application.order.command.OrderAddCommand;
+import cn.m2c.scm.application.order.command.PayOrderCmd;
 import cn.m2c.scm.application.order.data.representation.OrderNo;
 import cn.m2c.scm.domain.NegativeException;
 
@@ -127,11 +128,12 @@ public class AppOrderAgent {
     }
     
     /**
-     * 提交订单     *
-     * @param goodsId 商品ID
+     * 取消订单
+     * @param userId
+     * @param orderId
      * @return
      */
-    @RequestMapping(value = "/app/cancel", method = RequestMethod.POST)
+    @RequestMapping(value = "/app/cancel", method = RequestMethod.PUT)
     public ResponseEntity<MResult> cancelOrder(
             @RequestParam(value = "userId", required = false) String userId
             ,@RequestParam(value = "orderId", required = false) String orderId
@@ -147,6 +149,33 @@ public class AppOrderAgent {
         }
         catch (Exception e) {
             LOGGER.error("order cancel Exception e:", e);
+            result = new MResult(MCode.V_400, e.getMessage());
+        }
+        return new ResponseEntity<MResult>(result, HttpStatus.OK);
+    }
+    
+    /**
+     * 订单支付
+     * @param userId
+     * @param orderId
+     * @return
+     */
+    @RequestMapping(value = "/app/pay", method = RequestMethod.POST)
+    public ResponseEntity<MResult> payOrder(
+            @RequestParam(value = "userId", required = false) String userId
+            ,@RequestParam(value = "orderId", required = false) String orderId
+            ) {
+    	MResult result = new MResult(MCode.V_1);
+        try {
+        	PayOrderCmd cmd = new PayOrderCmd(orderId, userId);
+        	result.setContent(orderApp.payOrder(cmd));
+            result.setStatus(MCode.V_200);
+        } 
+        catch (NegativeException e) {
+        	result = new MResult(e.getStatus(), e.getMessage());
+        }
+        catch (Exception e) {
+            LOGGER.error("pay order Exception e:", e);
             result = new MResult(MCode.V_400, e.getMessage());
         }
         return new ResponseEntity<MResult>(result, HttpStatus.OK);

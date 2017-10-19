@@ -28,10 +28,10 @@
 	        <property name="phone" column="rev_phone" type="string"/>
         </component>
         
-        <property name="goodsAmount" column="goods_amount" type="int"/>
-        <property name="orderFreight" column="order_freight" type="int"/>
-        <property name="plateformDiscount" column="plateform_discount" type="int"/>
-        <property name="dealerDiscount" column="dealer_discount" type="int"/>
+        <property name="goodsAmount" column="goods_amount" type="long"/>
+        <property name="orderFreight" column="order_freight" type="long"/>
+        <property name="plateformDiscount" column="plateform_discount" type="long"/>
+        <property name="dealerDiscount" column="dealer_discount" type="long"/>
         <property name="noted" column="noted" type="string"/>
         <property name="termOfPayment" column="term_of_payment" type="int"/>
         
