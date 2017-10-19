@@ -1,6 +1,5 @@
 package cn.m2c.scm.port.adapter.restful.web.order;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;

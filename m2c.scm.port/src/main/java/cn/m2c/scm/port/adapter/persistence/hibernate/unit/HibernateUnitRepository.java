@@ -3,11 +3,9 @@ package cn.m2c.scm.port.adapter.persistence.hibernate.unit;
 import java.util.List;
 
 import org.hibernate.Query;
-import org.hibernate.SQLQuery;
 import org.springframework.stereotype.Repository;
 
 import cn.m2c.ddd.common.port.adapter.persistence.hibernate.HibernateSupperRepository;
-import cn.m2c.scm.application.unit.bean.UnitBean;
 import cn.m2c.scm.domain.model.unit.Unit;
 import cn.m2c.scm.domain.model.unit.UnitRepository;
 

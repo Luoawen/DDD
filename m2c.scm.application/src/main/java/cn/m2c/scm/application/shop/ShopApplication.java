@@ -12,9 +12,7 @@ import cn.m2c.scm.domain.NegativeException;
 import cn.m2c.scm.domain.model.shop.Shop;
 import cn.m2c.scm.domain.model.shop.ShopRepository;
 
-
 @Service
-@Transactional
 public class ShopApplication {
 	private static final Logger log = LoggerFactory.getLogger(ShopApplication.class);
 	
