@@ -169,4 +169,11 @@ public class GoodsQueryAgent {
         }
         return new ResponseEntity<MResult>(result, HttpStatus.OK);
     }
+
+    @RequestMapping(value = "/sku/id/multiple", method = RequestMethod.GET)
+    public ResponseEntity<MResult> queryGoodsBySkuIds(
+            @RequestParam(value = "skuIds", required = false) List<String> skuIds){
+        MResult result = new MResult(MCode.V_1);
+        return new ResponseEntity<MResult>(result, HttpStatus.OK);
+    }
 }
