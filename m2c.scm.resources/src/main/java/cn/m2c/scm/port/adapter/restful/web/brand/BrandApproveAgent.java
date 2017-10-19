@@ -296,10 +296,10 @@ public class BrandApproveAgent {
         MPager result = new MPager(MCode.V_1);
         try {
             Integer total = brandApproveQueryApplication.queryBrandApproveTotal(dealerId, brandName, condition, startTime,
-                    endTime);
+                    endTime, approveStatus);
             if (total > 0) {
                 List<BrandApproveBean> brandBeans = brandApproveQueryApplication.queryBrandApproves(dealerId, brandName, condition, startTime,
-                        endTime, pageNum, rows);
+                        endTime, pageNum, rows, approveStatus);
                 if (null != brandBeans && brandBeans.size() > 0) {
                     List<BrandApproveRepresentation> representations = new ArrayList<BrandApproveRepresentation>();
                     for (BrandApproveBean bean : brandBeans) {
