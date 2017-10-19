@@ -13,11 +13,8 @@ import cn.m2c.scm.application.goods.command.GoodsCommand;
 import cn.m2c.scm.application.goods.query.GoodsGuaranteeQueryApplication;
 import cn.m2c.scm.application.goods.query.GoodsQueryApplication;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsBean;
-import cn.m2c.scm.application.goods.query.data.representation.GoodsChoiceRepresentation;
-import cn.m2c.scm.application.goods.query.data.representation.GoodsDetailMultipleRepresentation;
 import cn.m2c.scm.application.goods.query.data.representation.GoodsDetailRepresentation;
 import cn.m2c.scm.application.goods.query.data.representation.GoodsSearchRepresentation;
-import cn.m2c.scm.application.goods.query.data.representation.GoodsSimpleDetailRepresentation;
 import cn.m2c.scm.application.unit.query.UnitQuery;
 import cn.m2c.scm.domain.NegativeException;
 import org.apache.commons.lang3.StringUtils;
@@ -62,94 +59,7 @@ public class GoodsAgent {
     @Autowired
     UnitQuery unitQuery;
 
-    /**
-     * 商品筛选根据商品类别，名称、标题、编号筛选
-     *
-     * @param goodsClassifyId 商品类别
-     * @param condition       名称、标题、编号
-     * @param pageNum         第几页
-     * @param rows            每页多少行
-     * @return
-     */
-    @RequestMapping(value = "/choice", method = RequestMethod.GET)
-    public ResponseEntity<MPager> goodsChoice(
-            @RequestParam(value = "goodsClassifyId", required = false) String goodsClassifyId,
-            @RequestParam(value = "condition", required = false) String condition,
-            @RequestParam(value = "pageNum", required = false, defaultValue = "1") Integer pageNum,
-            @RequestParam(value = "rows", required = false, defaultValue = "10") Integer rows) {
-        MPager result = new MPager(MCode.V_1);
-        try {
-            Integer total = goodsQueryApplication.goodsChoiceTotal(goodsClassifyId, condition);
-            if (total > 0) {
-                List<GoodsBean> goodsBeans = goodsQueryApplication.goodsChoice(goodsClassifyId,
-                        condition, pageNum, rows);
-                if (null != goodsBeans && goodsBeans.size() > 0) {
-                    List<GoodsChoiceRepresentation> representations = new ArrayList<GoodsChoiceRepresentation>();
-                    for (GoodsBean bean : goodsBeans) {
-                        representations.add(new GoodsChoiceRepresentation(bean));
-                    }
-                    result.setContent(representations);
-                }
-            }
-            result.setPager(total, pageNum, rows);
-            result.setStatus(MCode.V_200);
-        } catch (Exception e) {
-            LOGGER.error("goods choice Exception e:", e);
-            result = new MPager(MCode.V_400, e.getMessage());
-        }
-        return new ResponseEntity<MPager>(result, HttpStatus.OK);
-    }
 
-    /**
-     * 商品详情
-     *
-     * @param goodsId 商品ID
-     * @return
-     */
-    @RequestMapping(value = "/detail", method = RequestMethod.GET)
-    public ResponseEntity<MResult> goodsDetail(
-            @RequestParam(value = "goodsId", required = false) String goodsId) {
-        MResult result = new MResult(MCode.V_1);
-        try {
-            GoodsBean goodsBean = goodsQueryApplication.queryGoodsByGoodsId(goodsId);
-            if (null != goodsBean) {
-                GoodsSimpleDetailRepresentation representation = new GoodsSimpleDetailRepresentation(goodsBean);
-                result.setContent(representation);
-            }
-            result.setStatus(MCode.V_200);
-        } catch (Exception e) {
-            LOGGER.error("goods Detail Exception e:", e);
-            result = new MResult(MCode.V_400, e.getMessage());
-        }
-        return new ResponseEntity<MResult>(result, HttpStatus.OK);
-    }
-
-    /**
-     * 多个商品详情
-     *
-     * @param goodsIds 多个商品ID逗号分隔
-     * @return
-     */
-    @RequestMapping(value = "/detail/multiple", method = RequestMethod.GET)
-    public ResponseEntity<MResult> goodsDetails(
-            @RequestParam(value = "goodsIds", required = false) List goodsIds) {
-        MResult result = new MResult(MCode.V_1);
-        try {
-            List<GoodsBean> goodsBeanList = goodsQueryApplication.queryGoodsByGoodsIds(goodsIds);
-            if (null != goodsBeanList && goodsBeanList.size() > 0) {
-                List<GoodsDetailMultipleRepresentation> resultList = new ArrayList<>();
-                for (GoodsBean goodsBean : goodsBeanList) {
-                    resultList.add(new GoodsDetailMultipleRepresentation(goodsBean));
-                }
-                result.setContent(resultList);
-            }
-            result.setStatus(MCode.V_200);
-        } catch (Exception e) {
-            LOGGER.error("goodsDetails Exception e:", e);
-            result = new MResult(MCode.V_400, e.getMessage());
-        }
-        return new ResponseEntity<MResult>(result, HttpStatus.OK);
-    }
 
     /**
      * 修改商品
@@ -184,7 +94,7 @@ public class GoodsAgent {
             @RequestParam(value = "goodsMinQuantity", required = false) Integer goodsMinQuantity,
             @RequestParam(value = "goodsPostageId", required = false) String goodsPostageId,
             @RequestParam(value = "goodsBarCode", required = false) String goodsBarCode,
-            @RequestParam(value = "goodsKeyWord", required = false) String goodsKeyWord,
+            @RequestParam(value = "goodsKeyWord", required = false) List goodsKeyWord,
             @RequestParam(value = "goodsGuarantee", required = false) List goodsGuarantee,
             @RequestParam(value = "goodsMainImages", required = false) List goodsMainImages,
             @RequestParam(value = "goodsDesc", required = false) String goodsDesc,
@@ -213,7 +123,7 @@ public class GoodsAgent {
             }
             GoodsCommand command = new GoodsCommand(goodsId, dealerId, goodsName, goodsSubTitle,
                     goodsClassifyId, goodsBrandId, goodsBrandName, goodsUnitId, goodsMinQuantity,
-                    goodsPostageId, goodsBarCode, goodsKeyWord, JsonUtils.toStr(goodsGuarantee),
+                    goodsPostageId, goodsBarCode, JsonUtils.toStr(goodsKeyWord), JsonUtils.toStr(goodsGuarantee),
                     JsonUtils.toStr(goodsMainImages), goodsDesc, goodsSpecifications, goodsSKUs);
             goodsApplication.modifyGoods(command);
             result.setStatus(MCode.V_200);
@@ -228,6 +138,11 @@ public class GoodsAgent {
         return new ResponseEntity<MResult>(result, HttpStatus.OK);
     }
 
+    /**
+     * 删除商品
+     * @param goodsId
+     * @return
+     */
     @RequestMapping(value = "/{goodsId}", method = RequestMethod.DELETE)
     public ResponseEntity<MResult> delGoods(
             @PathVariable("goodsId") String goodsId
@@ -310,7 +225,6 @@ public class GoodsAgent {
     @RequestMapping(value = "", method = RequestMethod.GET)
     public ResponseEntity<MPager> searchGoodsByCondition(
             @RequestParam(value = "dealerId", required = false) String dealerId,
-            @RequestParam(value = "dealerName", required = false) String dealerName,
             @RequestParam(value = "goodsClassifyId", required = false) String goodsClassifyId,
             @RequestParam(value = "goodsStatus", required = false) Integer goodsStatus,
             @RequestParam(value = "brandName", required = false) String brandName,

@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:task="http://www.springframework.org/schema/task"
+	xsi:schemaLocation="
+        http://www.springframework.org/schema/beans     
+        http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context-4.1.xsd
+        http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/aop/spring-aop-4.1.xsd
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx-4.1.xsd
+         http://www.springframework.org/schema/task    
+    	http://www.springframework.org/schema/task/spring-task-4.1.xsd
+        http://www.springframework.org/schema/mvc 
+        http://www.springframework.org/schema/mvc/spring-mvc-4.1.xsd ">
+
+	<!-- 使用AspectJ方式配置AOP -->
+	<aop:aspectj-autoproxy proxy-target-class="true" />
+
+	<!-- 启动CGLIB动态代理 -->
+	<aop:config proxy-target-class="true" />
+
+	<!-- 激活Spring解驱动 -->
+	<context:annotation-config />
+
+	<!--使用httpclient的实现，带连接池 -->
+	<bean id="ky.pollingConnectionManager"
+		class="org.apache.http.impl.conn.PoolingHttpClientConnectionManager">
+		<!--整个连接池的并发 -->
+		<property name="maxTotal" value="1000" />
+		<!--每个主机的并发 -->
+		<property name="defaultMaxPerRoute" value="1000" />
+	</bean>
+
+	<bean id="ky.httpClientBuilder" class="org.apache.http.impl.client.HttpClientBuilder"
+		factory-method="create">
+		<property name="connectionManager" ref="ky.pollingConnectionManager" />
+		<!--开启重试 -->
+		<!-- 另外设置http client的重试次数，默认是3次；当前是禁用掉（如果项目量不到，这个默认即可） -->
+		<property name="retryHandler">
+			<bean class="org.apache.http.impl.client.DefaultHttpRequestRetryHandler">
+				<constructor-arg value="0" />
+				<constructor-arg value="false" />
+			</bean>
+		</property>
+		<property name="defaultHeaders">
+			<list>
+				<bean class="org.apache.http.message.BasicHeader">
+					<constructor-arg value="User-Agent" />
+					<constructor-arg value="Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/31.0.1650.16 Safari/537.36" />
+				</bean>
+				<bean class="org.apache.http.message.BasicHeader">
+					<constructor-arg value="Accept-Encoding" />
+					<constructor-arg value="gzip,deflate" />
+				</bean>
+				<bean class="org.apache.http.message.BasicHeader">
+					<constructor-arg value="Accept-Language" />
+					<constructor-arg value="zh-CN" />
+				</bean>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="ky.httpClient" factory-bean="ky.httpClientBuilder" factory-method="build" />
+
+	<bean id="ky.clientHttpRequestFactory"
+		class="org.springframework.http.client.HttpComponentsClientHttpRequestFactory">
+		<constructor-arg ref="ky.httpClient" />
+		<!--连接超时时间，毫秒 -->
+		<property name="connectTimeout" value="5000" />
+		<!--读写超时时间，毫秒 -->
+		<property name="readTimeout" value="10000" />
+	</bean>
+
+	<bean id="restTemplate" class="org.springframework.web.client.RestTemplate">
+		<constructor-arg ref="ky.clientHttpRequestFactory" />
+		<property name="errorHandler">
+			<bean class="org.springframework.web.client.DefaultResponseErrorHandler" />
+		</property>
+		<property name="messageConverters">
+			<list>
+				<bean class="org.springframework.http.converter.FormHttpMessageConverter" />
+				<!-- 配置Fastjson支持 -->
+			      <bean class="com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter">
+			         <property name="supportedMediaTypes">
+			            <list>
+			               <value>text/html;charset=UTF-8</value>
+			               <value>application/json</value>
+			            </list>
+			         </property>
+			         <property name="features">
+			            <list>
+			               <!-- 输出key时是否使用双引号 -->
+			               <value>QuoteFieldNames</value>
+			               <!-- 是否输出值为null的字段 -->
+			               <!-- <value>WriteMapNullValue</value> -->
+			               <!-- 数值字段如果为null,输出为0,而非null -->
+			               <value>WriteNullNumberAsZero</value>
+			               <!-- List字段如果为null,输出为[],而非null -->
+			               <value>WriteNullListAsEmpty</value>
+			               <!-- 字符类型字段如果为null,输出为"",而非null -->
+			               <value>WriteNullStringAsEmpty</value>
+			               <!-- Boolean字段如果为null,输出为false,而非null -->
+			               <value>WriteNullBooleanAsFalse</value>
+			               <!-- null String不输出  -->
+			               <value>WriteNullStringAsEmpty</value>
+			               <!-- null String也要输出  -->
+			               <!-- <value>WriteMapNullValue</value> -->
+			               
+			               <!-- Date的日期转换器 -->
+			               <value>WriteDateUseDateFormat</value>
+			            </list>
+			         </property>
+			      </bean>
+				<bean
+					class="org.springframework.http.converter.StringHttpMessageConverter">
+					<property name="supportedMediaTypes">
+						<list>
+							<value>text/plain;charset=UTF-8</value>
+						</list>
+					</property>
+				</bean>
+			</list>
+		</property>
+	</bean>
+
+
+</beans>
