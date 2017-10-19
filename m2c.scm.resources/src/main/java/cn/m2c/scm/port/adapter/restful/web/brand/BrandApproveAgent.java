@@ -285,6 +285,7 @@ public class BrandApproveAgent {
      */
     @RequestMapping(value = "", method = RequestMethod.GET)
     public ResponseEntity<MPager> queryBrandApprove(
+            @RequestParam(value = "approveStatus", required = false) Integer approveStatus,//品牌审批状态，1：审批中，2：审批不通过
             @RequestParam(value = "dealerId", required = false) String dealerId,
             @RequestParam(value = "brandName", required = false) String brandName,
             @RequestParam(value = "condition", required = false) String condition,

@@ -37,13 +37,17 @@ public class BrandApproveQueryApplication {
     }
 
     public List<BrandApproveBean> queryBrandApproves(String dealerId, String brandName, String condition, String startTime,
-                                                     String endTime, Integer pageNum, Integer rows) {
+                                                     String endTime, Integer pageNum, Integer rows, Integer approveStatus) {
         List<Object> params = new ArrayList<Object>();
         StringBuilder sql = new StringBuilder();
         sql.append(" SELECT ");
         sql.append(" * ");
         sql.append(" FROM ");
-        sql.append(" t_scm_brand_approve WHERE 1 = 1  AND brand_status = 1");
+        sql.append(" t_scm_brand_approve WHERE 1 = 1 ");
+        if (null != approveStatus) {
+            sql.append(" AND brand_status = ? ");
+            params.add(approveStatus);
+        }
         if (StringUtils.isNotEmpty(dealerId)) {
             sql.append(" AND dealer_id = ? ");
             params.add(dealerId);
@@ -70,13 +74,17 @@ public class BrandApproveQueryApplication {
         return this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), BrandApproveBean.class, params.toArray());
     }
 
-    public Integer queryBrandApproveTotal(String dealerId, String brandName, String condition, String startTime, String endTime) {
+    public Integer queryBrandApproveTotal(String dealerId, String brandName, String condition, String startTime, String endTime, Integer approveStatus) {
         List<Object> params = new ArrayList<Object>();
         StringBuilder sql = new StringBuilder();
         sql.append(" SELECT ");
         sql.append(" count(*) ");
         sql.append(" FROM ");
-        sql.append(" t_scm_brand_approve WHERE 1 = 1  AND brand_status = 1");
+        sql.append(" t_scm_brand_approve WHERE 1 = 1  ");
+        if (null != approveStatus) {
+            sql.append(" AND brand_status = ? ");
+            params.add(approveStatus);
+        }
         if (StringUtils.isNotEmpty(dealerId)) {
             sql.append(" AND dealer_id = ? ");
             params.add(dealerId);
