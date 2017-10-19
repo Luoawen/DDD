@@ -22,6 +22,7 @@ import cn.m2c.ddd.common.event.annotation.EventListener;
 import cn.m2c.scm.application.dealer.data.bean.DealerBean;
 import cn.m2c.scm.application.dealer.query.DealerQuery;
 import cn.m2c.scm.application.goods.GoodsApplication;
+import cn.m2c.scm.application.goods.query.GoodsQueryApplication;
 import cn.m2c.scm.application.order.command.CancelOrderCmd;
 import cn.m2c.scm.application.order.command.OrderAddCommand;
 import cn.m2c.scm.application.order.command.PayOrderCmd;
@@ -57,6 +58,9 @@ public class OrderApplication {
 	
 	@Autowired
 	private GoodsApplication goodsApp;
+	
+	@Autowired
+	private GoodsQueryApplication gQueryApp;
 	
 	@Autowired
 	DealerQuery dealerQuery; // getDealers
@@ -106,7 +110,7 @@ public class OrderApplication {
 		//JSONArray coups = cmd.getCoupons();
 		//orderDomainService.lockCoupons(null);
 		// 获取商品详情
-		List<GoodsDto> list = queryApp.getGoodsDtl(skus.keySet());
+		List<GoodsDto> list = gQueryApp.getGoodsDtl(skus.keySet());
 		//若有媒体信息则需要查询媒体信息
 		orderDomainService.getMediaBdByResIds(null);
 		// 获取运费模板，计算运费
