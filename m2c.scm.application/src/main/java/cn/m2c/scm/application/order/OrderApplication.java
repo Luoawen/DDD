@@ -23,6 +23,7 @@ import cn.m2c.scm.application.dealer.data.bean.DealerBean;
 import cn.m2c.scm.application.dealer.query.DealerQuery;
 import cn.m2c.scm.application.order.command.CancelOrderCmd;
 import cn.m2c.scm.application.order.command.OrderAddCommand;
+import cn.m2c.scm.application.order.command.PayOrderCmd;
 import cn.m2c.scm.application.order.query.OrderQueryApplication;
 import cn.m2c.scm.application.order.query.dto.GoodsDto;
 import cn.m2c.scm.domain.NegativeException;
@@ -64,7 +65,7 @@ public class OrderApplication {
 		
 		JSONArray gdes = cmd.getGoodses();
 		List<Map<String, Object>> goodses = null;
-		Map<String, Float> skus = new HashMap<String, Float>();
+		Map<String, Integer> skus = new HashMap<String, Integer>();
 		if (gdes == null || gdes.size() < 1) {
 			// 获取购物车数据
 			goodses = orderDomainService.getShopCarGoods(cmd.getUserId());
@@ -72,14 +73,14 @@ public class OrderApplication {
 				throw new NegativeException(MCode.V_1, "购物车中的商品为空！");
 			
 			for (Map<String, Object> it : goodses) {
-				skus.put(it.get("skuId").toString(), (Float)it.get("num"));
+				skus.put(it.get("skuId").toString(), (Integer)it.get("num"));
 			}
 		}
 		else {
 			int sz = gdes.size();
 			for (int i=0; i<sz; i++) {
 				JSONObject o = gdes.getJSONObject(i);
-				skus.put(o.getString("skuId"), o.getFloatValue("purNum"));
+				skus.put(o.getString("skuId"), o.getIntValue("purNum"));
 			}
 		}
 		// 判断库存
@@ -128,7 +129,7 @@ public class OrderApplication {
 	 * @param sl
 	 * @return
 	 */
-	private Map<String, List<GoodsDto>> splitOrder(List<GoodsDto> ls, Map<String, Float> sl
+	private Map<String, List<GoodsDto>> splitOrder(List<GoodsDto> ls, Map<String, Integer> sl
 			, Set<String> ids) {
 		Map<String, List<GoodsDto>> rs = new HashMap<String, List<GoodsDto>>();
 		List<GoodsDto> dtos = null;
@@ -139,7 +140,7 @@ public class OrderApplication {
 				dtos = new ArrayList<GoodsDto>();
 				rs.put(bean.getDealerId(), dtos);
 			}
-			Float num = sl.get(bean.getSkuId());
+			Integer num = sl.get(bean.getSkuId());
 			if (num != null) {
 				bean.setPurNum(num);
 				dtos.add(bean);
@@ -199,8 +200,8 @@ public class OrderApplication {
 		MainOrder order = orderRepository.getOrderById(cmd.getOrderId());
 		// 检查是否可取消,若不可取消抛出异常。
 		if (order.cancel()) {
-			// 可能是逻辑删除或是改成取消状态(全部要改)
-			orderRepository.save(order);
+			// 可能是逻辑删除或是改成取消状态(子订单也要改)
+			orderRepository.updateMainOrder(order);
 			// 若订单中有优惠券则需要解锁
 			orderDomainService.unlockCoupons(queryApp.getCouponsByOrderId(cmd.getOrderId()), "");
 			// 解锁库存
@@ -217,7 +218,7 @@ public class OrderApplication {
 	 * @param ls
 	 * @param cityCode
 	 */
-	private void calFreight(Map<String, Float> skus, List<GoodsDto> ls, String cityCode) {
+	private void calFreight(Map<String, Integer> skus, List<GoodsDto> ls, String cityCode) {
 		for (GoodsDto bean : ls) {
 			bean.setFreight(1000);
 		}
@@ -249,5 +250,22 @@ public class OrderApplication {
 			rs.put(b.getDealerId(), b.getCountMode());
 		}
 		return rs;
+	}
+	/**
+	 * 订单支付
+	 * @param cmd
+	 * @return
+	 */
+	public Object payOrder(PayOrderCmd cmd) {
+		MainOrder order = orderRepository.getOrderById(cmd.getOrderId());
+		// 获取订单所用营销策略
+		
+		// 获取营销策略详情看是否有变化
+		
+		// 若有变化则需要重新计算金额并更新
+		
+		// 请求发起支付
+		
+		return null;
 	}
 }

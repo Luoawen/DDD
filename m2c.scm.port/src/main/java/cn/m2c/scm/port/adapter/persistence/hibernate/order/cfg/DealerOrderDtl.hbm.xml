@@ -27,9 +27,9 @@
 	        <property name="phone" column="rev_phone" type="string"/>
         </component>
         
-        <property name="goodsAmount" column="goods_amount" type="int"/>
-        <property name="plateformDiscount" column="plateform_discount" type="int"/>
-        <property name="dealerDiscount" column="dealer_discount" type="int"/>
+        <property name="goodsAmount" column="goods_amount" type="long"/>
+        <property name="plateformDiscount" column="plateform_discount" type="long"/>
+        <property name="dealerDiscount" column="dealer_discount" type="long"/>
         <property name="noted" column="noted" type="string"/>
         
         <component name="invoice">
@@ -62,18 +62,18 @@
 	        <property name="skuId" column="sku_id" type="string"/>
 	        <property name="skuName" column="sku_name" type="string"/>
 	        <property name="weight" column="weight" type="float"/>
-	        <property name="price" column="_price" type="int"/>
-	        <property name="supplyPrice" column="supply_price" type="int"/>
-	        <property name="discountPrice" column="discount_price" type="int"/>
+	        <property name="price" column="_price" type="long"/>
+	        <property name="supplyPrice" column="supply_price" type="long"/>
+	        <property name="discountPrice" column="discount_price" type="long"/>
 	        <property name="goodsIcon" column="goods_icon" type="string"/>
-	        <property name="sellNum" column="sell_num" type="float"/>
+	        <property name="sellNum" column="sell_num" type="int"/>
 	        <property name="marketingId" column="marketing_id" type="string"/>
-	        <property name="freight" column="freight" type="int"/>
+	        <property name="freight" column="freight" type="long"/>
         </component>
         
         
         <property name="isChange" column="is_change" type="int"/>
-        <property name="changePrice" column="change_price" type="int"/>
+        <property name="changePrice" column="change_price" type="long"/>
         
         <property name="resRate" column="res_rate" type="float"/>
         <property name="mediaId" column="media_id" type="string"/>

@@ -16,7 +16,7 @@ import cn.m2c.scm.domain.service.order.OrderService;
 public class OrderServiceImpl implements OrderService {
 
 	@Override
-	public Map<String, Object> judgeStock(Map<String, Float> skus) {
+	public Map<String, Object> judgeStock(Map<String, Integer> skus) {
 		// TODO Auto-generated method stub
 		return null;
 	}

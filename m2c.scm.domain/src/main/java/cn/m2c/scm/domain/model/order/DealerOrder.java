@@ -25,13 +25,13 @@ public class DealerOrder extends ConcurrencySafeEntity {
 	private ReceiveAddr addr;
 	
 	/**以分为单位，商品金额*/
-	private Integer goodsAmount;
+	private Long goodsAmount;
 	/**订单总运费*/
-	private Integer orderFreight;
+	private Long orderFreight;
 	/**平台优惠*/
-	private Integer plateformDiscount;
+	private Long plateformDiscount;
 	/**商家优惠*/
-	private Integer dealerDiscount;
+	private Long dealerDiscount;
 	/**备注 留言*/
 	private String noted;
 	/**发票信息*/
@@ -42,8 +42,8 @@ public class DealerOrder extends ConcurrencySafeEntity {
 	private List<DealerOrderDtl> orderDtls;
 	
 	public DealerOrder(String orderId, String dealerOrderId,
-			String dealerId, int goodsAmount, int orderFreight
-			,int plateformDiscount, int dealerDiscount, String noted, Integer termOfPayment
+			String dealerId, long goodsAmount, long orderFreight
+			,long plateformDiscount, long dealerDiscount, String noted, Integer termOfPayment
 			, ReceiveAddr addr, InvoiceInfo invoice, List<DealerOrderDtl> orderDtl) {
 		this.orderId = orderId;
 		this.dealerId = dealerId;
@@ -60,19 +60,19 @@ public class DealerOrder extends ConcurrencySafeEntity {
 		this.termOfPayment = termOfPayment;
 	}
 	
-	public Integer getGoodsAmount() {
+	public Long getGoodsAmount() {
 		return goodsAmount;
 	}
 
-	public Integer getOrderFreight() {
+	public Long getOrderFreight() {
 		return orderFreight;
 	}
 
-	public Integer getPlateformDiscount() {
+	public Long getPlateformDiscount() {
 		return plateformDiscount;
 	}
 
-	public Integer getDealerDiscount() {
+	public Long getDealerDiscount() {
 		return dealerDiscount;
 	}
 }

@@ -28,30 +28,30 @@ public class GoodsDto {
 	/**规格名称*/
 	private String skuName;
 	/**市场价(单价)*/
-	private int price;
+	private long price;
 	/**重量*/
 	private float weight = 0;
 	/**供货价*/
-	private int supplyPrice;
+	private long supplyPrice;
 	/**拍获价(单价)*/
-	private int discountPrice;
+	private long discountPrice;
 	/**商品小图url*/
 	private String goodsIcon;
 	
 	private String dealerId;
 	
-	private int freight;
+	private long freight;
 	
 	private String marketingId;
 	
 	/**购买数量*/
-	private float purNum = 0;
+	private int purNum = 0;
 	
-	public int getFreight() {
+	public long getFreight() {
 		return freight;
 	}
 
-	public void setFreight(int freight) {
+	public void setFreight(long freight) {
 		this.freight = freight;
 	}
 
@@ -67,7 +67,7 @@ public class GoodsDto {
 		return purNum;
 	}
 	
-	public void setPurNum(float num) {
+	public void setPurNum(int num) {
 		purNum = num;
 	}
 	
@@ -131,10 +131,10 @@ public class GoodsDto {
 	public void setSkuName(String skuName) {
 		this.skuName = skuName;
 	}
-	public int getPrice() {
+	public long getPrice() {
 		return price;
 	}
-	public void setPrice(int price) {
+	public void setPrice(long price) {
 		this.price = price;
 	}
 	public float getWeight() {
@@ -143,16 +143,16 @@ public class GoodsDto {
 	public void setWeight(float weight) {
 		this.weight = weight;
 	}
-	public int getSupplyPrice() {
+	public long getSupplyPrice() {
 		return supplyPrice;
 	}
-	public void setSupplyPrice(int supplyPrice) {
+	public void setSupplyPrice(long supplyPrice) {
 		this.supplyPrice = supplyPrice;
 	}
-	public int getDiscountPrice() {
+	public long getDiscountPrice() {
 		return discountPrice;
 	}
-	public void setDiscountPrice(int discountPrice) {
+	public void setDiscountPrice(long discountPrice) {
 		this.discountPrice = discountPrice;
 	}
 	public String getGoodsIcon() {
