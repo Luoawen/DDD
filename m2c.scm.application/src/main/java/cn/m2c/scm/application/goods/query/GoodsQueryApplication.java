@@ -6,6 +6,7 @@ import cn.m2c.ddd.common.port.adapter.persistence.springJdbc.SupportJdbcTemplate
 import cn.m2c.scm.application.classify.query.GoodsClassifyQueryApplication;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsBean;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsSkuBean;
+import cn.m2c.scm.application.goods.query.data.representation.GoodsSkuInfoRepresentation;
 import cn.m2c.scm.application.utils.Utils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -15,6 +16,8 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -249,12 +252,12 @@ public class GoodsQueryApplication {
     }
 
     public List<GoodsBean> queryGoodsByGoodsIds(List<String> goodsIds) {
-        List<GoodsBean> goodsBeans = new ArrayList<>();
-        for (String goodsId : goodsIds) {
-            GoodsBean goodsBean = queryGoodsByGoodsId(goodsId);
-            goodsBeans.add(goodsBean);
-        }
-        return goodsBeans;
+        StringBuilder sql = new StringBuilder();
+        sql.append(" SELECT ");
+        sql.append(" * ");
+        sql.append(" FROM ");
+        sql.append(" t_scm_goods where goods_id in (" + Utils.listParseString(goodsIds) + ")");
+        return this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsBean.class);
     }
 
     public List<GoodsBean> queryGoodsRandom(Integer number) {
@@ -356,7 +359,14 @@ public class GoodsQueryApplication {
         return goodsBeanPage;
     }
 
-    public List<GoodsBean> queryGoodsBySkuIds(List<String> skuIds) {
+    /**
+     * 根据skuIds查询商品
+     *
+     * @param skuIds
+     * @return
+     */
+    public List<GoodsSkuInfoRepresentation> queryGoodsBySkuIds(List<String> skuIds) {
+        List<GoodsSkuInfoRepresentation> resultList = new ArrayList<>();
         StringBuilder sql = new StringBuilder();
         sql.append(" SELECT ");
         sql.append(" * ");
@@ -366,6 +376,60 @@ public class GoodsQueryApplication {
         if (null != goodsSkuBeans && goodsSkuBeans.size() > 0) {
             for (GoodsSkuBean goodsSkuBean : goodsSkuBeans) {
                 GoodsBean goodsBean = queryGoodsById(goodsSkuBean.getGoodsId());
+                if (null != goodsBean) {
+                    resultList.add(new GoodsSkuInfoRepresentation(goodsBean, goodsSkuBean));
+                }
+            }
+        }
+        return resultList;
+    }
+
+    /**
+     * 获取拍获价最高的商品
+     *
+     * @param goodsIds
+     * @return
+     */
+    public GoodsSkuInfoRepresentation queryMaxPriceGoodsByGoodsIds(List<String> goodsIds) {
+        List<GoodsBean> goodsBeans = queryGoodsByGoodsIds(goodsIds);
+        if (null != goodsBeans && goodsBeans.size() > 0) {
+            List<GoodsSkuInfoRepresentation> resultList = new ArrayList<>();
+            for (GoodsBean goodsBean : goodsBeans) {
+                List<GoodsSkuBean> goodsSkuBeans = queryGoodsSKUsByGoodsId(goodsBean.getId());
+                if (null != goodsSkuBeans && goodsSkuBeans.size() > 0) {
+                    //排序
+                    Collections.sort(goodsSkuBeans, new Comparator<GoodsSkuBean>() {
+                        public int compare(GoodsSkuBean bean1, GoodsSkuBean bean2) {
+                            Long price1 = bean1.getPhotographPrice();
+                            Long price2 = bean2.getPhotographPrice();
+                            if (price1 > price2) {
+                                return 1;
+                            } else if (price1 == price2) {
+                                return 0;
+                            } else {
+                                return -1;
+                            }
+                        }
+                    });
+                    resultList.add(new GoodsSkuInfoRepresentation(goodsBean, goodsSkuBeans.get(goodsSkuBeans.size() - 1)));
+                }
+            }
+            if (null != resultList && resultList.size() > 0) {
+                //排序
+                Collections.sort(resultList, new Comparator<GoodsSkuInfoRepresentation>() {
+                    public int compare(GoodsSkuInfoRepresentation bean1, GoodsSkuInfoRepresentation bean2) {
+                        Long price1 = bean1.getPhotographPrice();
+                        Long price2 = bean2.getPhotographPrice();
+                        if (price1 > price2) {
+                            return 1;
+                        } else if (price1 == price2) {
+                            return 0;
+                        } else {
+                            return -1;
+                        }
+                    }
+                });
+                return resultList.get(resultList.size() - 1);
             }
         }
         return null;

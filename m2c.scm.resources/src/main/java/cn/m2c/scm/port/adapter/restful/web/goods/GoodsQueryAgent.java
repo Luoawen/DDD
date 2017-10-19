@@ -9,6 +9,7 @@ import cn.m2c.scm.application.goods.query.data.representation.GoodsChoiceReprese
 import cn.m2c.scm.application.goods.query.data.representation.GoodsDetailMultipleRepresentation;
 import cn.m2c.scm.application.goods.query.data.representation.GoodsRandomRepresentation;
 import cn.m2c.scm.application.goods.query.data.representation.GoodsSimpleDetailRepresentation;
+import cn.m2c.scm.application.goods.query.data.representation.GoodsSkuInfoRepresentation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -170,10 +171,37 @@ public class GoodsQueryAgent {
         return new ResponseEntity<MResult>(result, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/sku/id/multiple", method = RequestMethod.GET)
+    @RequestMapping(value = "/sku/ids", method = RequestMethod.GET)
     public ResponseEntity<MResult> queryGoodsBySkuIds(
-            @RequestParam(value = "skuIds", required = false) List<String> skuIds){
+            @RequestParam(value = "skuIds", required = false) List<String> skuIds) {
         MResult result = new MResult(MCode.V_1);
+        try {
+            List<GoodsSkuInfoRepresentation> list = goodsQueryApplication.queryGoodsBySkuIds(skuIds);
+            if (null != list && list.size() > 0) {
+                result.setContent(list);
+            }
+            result.setStatus(MCode.V_200);
+        } catch (Exception e) {
+            LOGGER.error("queryGoodsBySkuIds Exception e:", e);
+            result = new MResult(MCode.V_400, "根据skuIds查询商品失败");
+        }
+        return new ResponseEntity<MResult>(result, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/max/price", method = RequestMethod.GET)
+    public ResponseEntity<MResult> queryMaxPriceGoodsByGoodsIds(
+            @RequestParam(value = "goodsIds", required = false) List<String> goodsIds) {
+        MResult result = new MResult(MCode.V_1);
+        try {
+            GoodsSkuInfoRepresentation representation = goodsQueryApplication.queryMaxPriceGoodsByGoodsIds(goodsIds);
+            if (null != representation) {
+                result.setContent(representation);
+            }
+            result.setStatus(MCode.V_200);
+        } catch (Exception e) {
+            LOGGER.error("queryMaxPriceGoodsByGoodsIds Exception e:", e);
+            result = new MResult(MCode.V_400, "查询拍获价最大的商品失败");
+        }
         return new ResponseEntity<MResult>(result, HttpStatus.OK);
     }
 }
