@@ -43,4 +43,6 @@ public class HibernateGoodsRepository extends HibernateSupperRepository implemen
     public void save(Goods goods) {
         this.session().save(goods);
     }
+
+
 }
