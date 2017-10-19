@@ -355,4 +355,19 @@ public class GoodsQueryApplication {
         }
         return goodsBeanPage;
     }
+
+    public List<GoodsBean> queryGoodsBySkuIds(List<String> skuIds) {
+        StringBuilder sql = new StringBuilder();
+        sql.append(" SELECT ");
+        sql.append(" * ");
+        sql.append(" FROM ");
+        sql.append(" t_scm_goods_sku where sku_id in (" + Utils.listParseString(skuIds) + ")");
+        List<GoodsSkuBean> goodsSkuBeans = this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsSkuBean.class);
+        if (null != goodsSkuBeans && goodsSkuBeans.size() > 0) {
+            for (GoodsSkuBean goodsSkuBean : goodsSkuBeans) {
+                GoodsBean goodsBean = queryGoodsById(goodsSkuBean.getGoodsId());
+            }
+        }
+        return null;
+    }
 }

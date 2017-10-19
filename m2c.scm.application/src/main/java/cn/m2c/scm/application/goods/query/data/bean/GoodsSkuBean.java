@@ -11,7 +11,7 @@ public class GoodsSkuBean {
      * 商品
      */
     @ColumnAlias(value = "goods_id")
-    private String goodsId;
+    private Integer goodsId;
 
     /**
      * 规格id
@@ -79,11 +79,11 @@ public class GoodsSkuBean {
     @ColumnAlias(value = "show_status")
     private Integer showStatus;
 
-    public String getGoodsId() {
+    public Integer getGoodsId() {
         return goodsId;
     }
 
-    public void setGoodsId(String goodsId) {
+    public void setGoodsId(Integer goodsId) {
         this.goodsId = goodsId;
     }
 
