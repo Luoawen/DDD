@@ -1,6 +1,5 @@
 package cn.m2c.scm.application.postage.query;
 
-import cn.m2c.common.JsonUtils;
 import cn.m2c.ddd.common.port.adapter.persistence.springJdbc.SupportJdbcTemplate;
 import cn.m2c.scm.application.goods.query.GoodsQueryApplication;
 import cn.m2c.scm.application.goods.query.data.representation.GoodsSkuInfoRepresentation;
@@ -13,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -63,7 +63,13 @@ public class PostageModelQueryApplication {
         return postageModelBean;
     }
 
-
+    /**
+     * 查询商品的运费规则
+     *
+     * @param skuIds
+     * @param cityCode
+     * @return
+     */
     public Map<String, PostageModelRuleBean> getGoodsPostageRule(List<String> skuIds, String cityCode) {
         Map<String, PostageModelRuleBean> map = new HashMap<>();
         List<GoodsSkuInfoRepresentation> goodsInfoList = goodsQueryApplication.queryGoodsBySkuIds(skuIds);
@@ -78,9 +84,8 @@ public class PostageModelQueryApplication {
                         for (PostageModelRuleBean bean : ruleBeans) {
                             Integer defaultFlag = bean.getDefaultFlag();//全国（默认运费），0：是，1：不是
                             if (defaultFlag == 1) { // 不是全国默认
-                                String code = bean.getCityCode();
-                                if (StringUtils.isNotEmpty(code)) {
-                                    List<String> codes = JsonUtils.toList(code, String.class);
+                                if (StringUtils.isNotEmpty(bean.getCityCode())) {
+                                    List<String> codes = Arrays.asList(bean.getCityCode().split(","));
                                     if (codes.contains(cityCode)) {
                                         map.put(info.getSkuId(), bean);
                                         specialFlag = true;
