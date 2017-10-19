@@ -51,3 +51,4 @@
                      cascade="save-update" fetch="join"/> -->
     </class>
 </hibernate-mapping>
+
