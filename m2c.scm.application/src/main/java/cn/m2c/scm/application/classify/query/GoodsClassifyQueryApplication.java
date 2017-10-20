@@ -128,4 +128,20 @@ public class GoodsClassifyQueryApplication {
         List<GoodsClassifyBean> goodsClassifyBeans = this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsClassifyBean.class, level);
         return goodsClassifyBeans;
     }
+
+    public Float queryServiceRateByClassifyId(String classifyId) {
+        GoodsClassifyBean bean = queryGoodsClassifiesById(classifyId);
+        if (null != bean) {
+            Float rate = bean.getServiceRate();
+            if (null == rate) {
+                if (!"-1".equals(bean.getParentClassifyId())) {//不是一级分类
+                    //找上级分类
+                    return queryServiceRateByClassifyId(bean.getParentClassifyId());
+                }
+            } else {
+                return rate;
+            }
+        }
+        return null;
+    }
 }

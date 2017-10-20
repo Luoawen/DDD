@@ -183,6 +183,7 @@ public class GoodsClassifyAgent {
 
     /**
      * 根据层级查询分类
+     *
      * @param level
      * @return
      */
@@ -203,6 +204,26 @@ public class GoodsClassifyAgent {
         } catch (Exception e) {
             LOGGER.error("queryGoodsClassifyByLevel Exception e:", e);
             result = new MResult(MCode.V_400, "根据层级查询分类失败");
+        }
+        return new ResponseEntity<MResult>(result, HttpStatus.OK);
+    }
+
+    /**
+     * 查询服务费率
+     * @param classifyId
+     * @return
+     */
+    @RequestMapping(value = "/service/rate", method = RequestMethod.GET)
+    public ResponseEntity<MResult> queryServiceRateByClassifyId(
+            @RequestParam(value = "classifyId", required = false) String classifyId) {
+        MResult result = new MResult(MCode.V_1);
+        try {
+            Float serviceRate = goodsClassifyQueryApplication.queryServiceRateByClassifyId(classifyId);
+            result.setContent(serviceRate);
+            result.setStatus(MCode.V_200);
+        } catch (Exception e) {
+            LOGGER.error("queryServiceRateByClassifyId Exception e:", e);
+            result = new MResult(MCode.V_400, "查询服务费率失败");
         }
         return new ResponseEntity<MResult>(result, HttpStatus.OK);
     }
