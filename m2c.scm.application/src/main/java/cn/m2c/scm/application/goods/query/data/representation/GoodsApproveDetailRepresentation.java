@@ -29,8 +29,12 @@ public class GoodsApproveDetailRepresentation {
     private String goodsDesc;
     private Integer approveStatus;//审核状态，1：审核中，2：审核不通过
     private String rejectReason;
+    private Integer settlementMode;//结算模式 1：按供货价 2：按服务费率
+    private Float serviceRate;//服务费率
 
-    public GoodsApproveDetailRepresentation(GoodsApproveBean bean, String goodsClassify, List<GoodsGuaranteeBean> goodsGuarantee, String goodsUnitName) {
+    public GoodsApproveDetailRepresentation(GoodsApproveBean bean, String goodsClassify,
+                                            List<GoodsGuaranteeBean> goodsGuarantee, String goodsUnitName,
+                                            Integer settlementMode, Float serviceRate) {
         this.goodsName = bean.getGoodsName();
         this.goodsSubTitle = bean.getGoodsSubTitle();
         this.goodsClassifyId = bean.getGoodsClassifyId();
@@ -49,6 +53,8 @@ public class GoodsApproveDetailRepresentation {
         this.goodsDesc = bean.getGoodsDesc();
         this.approveStatus = bean.getApproveStatus();
         this.rejectReason = bean.getRejectReason();
+        this.settlementMode = settlementMode;
+        this.serviceRate = serviceRate;
     }
 
     public String getGoodsName() {

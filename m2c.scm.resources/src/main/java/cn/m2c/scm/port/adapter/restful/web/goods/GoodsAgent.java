@@ -309,7 +309,14 @@ public class GoodsAgent {
                 String goodsClassify = goodsClassifyQueryApplication.getClassifyNames(goodsBean.getGoodsClassifyId());
                 List<GoodsGuaranteeBean> goodsGuarantee = goodsGuaranteeQueryApplication.queryGoodsGuaranteeByIds(JsonUtils.toList(goodsBean.getGoodsGuarantee(), String.class));
                 String goodsUnitName = unitQuery.getUnitNameByUnitId(goodsBean.getGoodsUnitId());
-                GoodsDetailRepresentation representation = new GoodsDetailRepresentation(goodsBean, goodsClassify, goodsGuarantee, goodsUnitName);
+                //结算模式 1：按供货价 2：按服务费率
+                Integer settlementMode = dealerQuery.getDealerCountMode(goodsBean.getDealerId());
+                Float serviceRate = null;
+                if (settlementMode == 2) {
+                    serviceRate = goodsClassifyQueryApplication.queryServiceRateByClassifyId(goodsBean.getGoodsClassifyId());
+                }
+                GoodsDetailRepresentation representation = new GoodsDetailRepresentation(goodsBean, goodsClassify,
+                        goodsGuarantee, goodsUnitName, settlementMode, serviceRate);
                 result.setContent(representation);
             }
             result.setStatus(MCode.V_200);
