@@ -203,7 +203,24 @@ public class DealerQuery {
 		}
 		return bean;
 	}
-
+	/**
+	 * 根据id查询商家结算方式
+	 * @param dealerId
+	 * @return -1 表示失败
+	 * @throws NegativeException 
+	 */
+	public Integer getDealerCountMode(String dealerId) throws NegativeException{
+		Integer defaultValue = -1;
+		DealerBean bean = null;
+		try {
+			String sql =  " SELECT  *  FROM  t_scm_dealer sd  WHERE  dealer_status = 1 and dealer_id=?";
+			bean = this.supportJdbcTemplate.queryForBean(sql, DealerBean.class,dealerId);
+		} catch (Exception e) {
+			log.error("查询经销商详情出错",e);
+			throw new NegativeException(500, "经销商查询不存在");
+		}
+		return bean==null?defaultValue:bean.getCountMode();
+	}
 
 	/**
 	 * 根据多个dealerid获取经销商列表

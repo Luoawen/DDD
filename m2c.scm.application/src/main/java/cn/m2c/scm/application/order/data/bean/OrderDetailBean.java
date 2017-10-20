@@ -1,5 +1,7 @@
 package cn.m2c.scm.application.order.data.bean;
 
+import java.util.Date;
+
 import cn.m2c.ddd.common.persistence.orm.ColumnAlias;
 
 public class OrderDetailBean {
@@ -16,6 +18,20 @@ public class OrderDetailBean {
 	private String goodsIcon;
 	@ColumnAlias(value= "sell_num")
 	private Integer  sellNum;
+	@ColumnAlias(value= "express_way")
+	private Integer  expressWay;
+	@ColumnAlias(value= "express_note")
+	private String expressNote;
+	@ColumnAlias(value= "express_phone")
+	private String expressPhone;
+	@ColumnAlias(value= "express_person")
+	private String expressPerson;
+	@ColumnAlias(value= "express_name")
+	private String expressName;
+	@ColumnAlias(value= "express_no")
+	private String expressNo;
+	@ColumnAlias(value= "express_time")
+	private Date expressTime;
 	public String getDealerOrderId() {
 		return dealerOrderId;
 	}
@@ -51,6 +67,48 @@ public class OrderDetailBean {
 	}
 	public void setSellNum(Integer sellNum) {
 		this.sellNum = sellNum;
+	}
+	public Integer getExpressWay() {
+		return expressWay;
+	}
+	public void setExpressWay(Integer expressWay) {
+		this.expressWay = expressWay;
+	}
+	public String getExpressNote() {
+		return expressNote;
+	}
+	public void setExpressNote(String expressNote) {
+		this.expressNote = expressNote;
+	}
+	public String getExpressPhone() {
+		return expressPhone;
+	}
+	public void setExpressPhone(String expressPhone) {
+		this.expressPhone = expressPhone;
+	}
+	public String getExpressPerson() {
+		return expressPerson;
+	}
+	public void setExpressPerson(String expressPerson) {
+		this.expressPerson = expressPerson;
+	}
+	public String getExpressName() {
+		return expressName;
+	}
+	public void setExpressName(String expressName) {
+		this.expressName = expressName;
+	}
+	public String getExpressNo() {
+		return expressNo;
+	}
+	public void setExpressNo(String expressNo) {
+		this.expressNo = expressNo;
+	}
+	public Date getExpressTime() {
+		return expressTime;
+	}
+	public void setExpressTime(Date expressTime) {
+		this.expressTime = expressTime;
 	}
 	
 	
