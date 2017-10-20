@@ -43,7 +43,7 @@
         </component>
         
         <bag name="orderDtls" cascade="all-delete-orphan" lazy="false" inverse="true">
-        	<key column="dealer_order_id" />
+        	<key column="dealer_order_id" property-ref="dealerOrderId"/>
         	<one-to-many class="cn.m2c.scm.domain.model.order.DealerOrderDtl"/>
         </bag>
         <!-- query -->        
@@ -51,3 +51,4 @@
                      cascade="save-update" fetch="join"/> -->
     </class>
 </hibernate-mapping>
+

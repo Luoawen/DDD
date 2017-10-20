@@ -81,6 +81,10 @@ public class MainOrder extends ConcurrencySafeEntity {
 		}
 		status = -1;
 		
+		for (DealerOrder d : dealerOrders) {
+			d.cancel();
+		}
+		
 		DomainEventPublisher.instance().publish(new OrderOptLogEvent(orderId, null, "订单取消成功", userId));
 		return true;
 	}

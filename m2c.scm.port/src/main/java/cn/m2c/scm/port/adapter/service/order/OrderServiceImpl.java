@@ -22,7 +22,7 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	@Override
-	public void lockStock(Map<String, Float> skus) {
+	public void lockStock(Map<String, Integer> skus) {
 		// TODO Auto-generated method stub
 		// 抛出异常表示锁定不成功.
 	}

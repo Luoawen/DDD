@@ -38,12 +38,12 @@ public class HibernateOrderRepository extends HibernateSupperRepository implemen
 	public void updateMainOrder(MainOrder order) {
 		Session s = this.session();
 		s.save(order);
-		int rs = s.createSQLQuery("update t_scm_order_dealer set _status=:status where order_id=:orderId")
+		/*int rs = s.createSQLQuery("update t_scm_order_dealer set _status=:status where order_id=:orderId")
 				.setParameter("status", order.getStatus()).setParameter("orderId", order.getOrderId()).executeUpdate();
 		LOGGER.info("===fanjc==更新商家订单状态成功条数:" + rs);
 		rs = s.createSQLQuery("update t_scm_order_detail set _status=:status where order_id=:orderId")
 				.setParameter("status", order.getStatus()).setParameter("orderId", order.getOrderId()).executeUpdate();
-		LOGGER.info("===fanjc==更新商家订单状态成功条数:" + rs);
+		LOGGER.info("===fanjc==更新商家订单状态成功条数:" + rs);*/
 	}
 
 }
