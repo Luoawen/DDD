@@ -162,16 +162,7 @@ public class GoodsApplication {
                 throw new NegativeException(MCode.V_400, skuId);//400:扣库存失败
             }
             Goods goods = goodsRepository.queryGoodsById(goodsSku.goods().getId());
-
-
-           /* List<GoodsSku> goodsSkuList = goodsSkuRepository.queryGoodsSkuByGoodsId(goodsSku.goods().getId());
-            Integer totalNum = 0;
-            for (GoodsSku sku : goodsSkuList) {
-                totalNum = totalNum + sku.availableNum();
-            }
-            if (totalNum <= 0) {
-               Goods goods = goodsRepository.queryGoodsById(goodsSku.goods().getId());
-            }*/
+            goods.soldOut();//如果售完则修改状态
         }
     }
 }

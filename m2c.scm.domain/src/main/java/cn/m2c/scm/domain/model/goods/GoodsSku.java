@@ -150,4 +150,8 @@ public class GoodsSku extends ConcurrencySafeEntity {
     public Goods goods() {
         return goods;
     }
+
+    public void soldOut() {
+        this.goodsSearchInfo.soldOut();
+    }
 }

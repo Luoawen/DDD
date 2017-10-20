@@ -360,4 +360,22 @@ public class Goods extends ConcurrencySafeEntity {
     public Integer getId() {
         return Integer.parseInt(String.valueOf(this.id()));
     }
+
+    /**
+     * 上架,商品状态，1：仓库中，2：出售中，3：已售罄
+     */
+    public void soldOut() {
+        if (this.goodsStatus == 2) {
+            Integer total = 0;
+            for (GoodsSku goodsSku : this.goodsSKUs) {
+                total = total + goodsSku.availableNum();
+            }
+            if (total <= 0) {
+                this.goodsStatus = 3;
+                for (GoodsSku goodsSku : this.goodsSKUs) {
+                    goodsSku.soldOut();
+                }
+            }
+        }
+    }
 }
