@@ -7,4 +7,6 @@ public interface GoodsClassifyRepository {
     GoodsClassify getGoodsClassifyById(String classifyId);
 
     void save(GoodsClassify goodsClassify);
+
+    boolean goodsClassifyNameIsRepeat(String classifyId, String classifyName);
 }

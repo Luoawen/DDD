@@ -261,6 +261,7 @@ public class BrandApproveAgent {
         MResult result = new MResult(MCode.V_1);
         try {
             brandApproveApplication.delBrandApprove(approveId);
+            result.setStatus(MCode.V_200);
         } catch (NegativeException ne) {
             LOGGER.error("deleteBrandApprove NegativeException e:", ne);
             result = new MResult(ne.getStatus(), ne.getMessage());
