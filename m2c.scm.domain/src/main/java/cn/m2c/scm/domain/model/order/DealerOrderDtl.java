@@ -114,4 +114,7 @@ public class DealerOrderDtl extends ConcurrencySafeEntity {
 		this.status=2;
 	}
 	
+	void cancel() {
+		status = -1;
+	}
 }

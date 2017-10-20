@@ -79,7 +79,12 @@ public class DealerOrder extends ConcurrencySafeEntity {
 		return dealerDiscount;
 	}
 	
-	
+	void cancel() {
+		status = -1;
+		for (DealerOrderDtl d : orderDtls) {
+			d.cancel();
+		}
+	}
 
 	/**
 	 * 同步订单的物流信息
