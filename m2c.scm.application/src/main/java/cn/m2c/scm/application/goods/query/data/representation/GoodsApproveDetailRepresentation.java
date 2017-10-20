@@ -2,6 +2,7 @@ package cn.m2c.scm.application.goods.query.data.representation;
 
 import cn.m2c.common.JsonUtils;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsApproveBean;
+import cn.m2c.scm.application.goods.query.data.bean.GoodsGuaranteeBean;
 
 import java.util.List;
 import java.util.Map;
@@ -20,9 +21,8 @@ public class GoodsApproveDetailRepresentation {
     private String goodsUnitName;
     private Integer goodsMinQuantity;
     private String goodsBarCode;
-    private String goodsKeyWord;
-    private List<String> goodsGuaranteeIds;
-    private List<String> goodsGuaranteeDesc;
+    private List<String> goodsKeyWord;
+    private List<Map> goodsGuarantee;
     private List<Map> goodsSpecifications;
     private List<Map> goodsSKUs;
     private List<String> goodsMainImages;
@@ -30,20 +30,19 @@ public class GoodsApproveDetailRepresentation {
     private Integer approveStatus;//审核状态，1：审核中，2：审核不通过
     private String rejectReason;
 
-    public GoodsApproveDetailRepresentation(GoodsApproveBean bean, String goodsClassify, List<String> goodsGuaranteeDesc, String goodsUnitName) {
+    public GoodsApproveDetailRepresentation(GoodsApproveBean bean, String goodsClassify, List<GoodsGuaranteeBean> goodsGuarantee, String goodsUnitName) {
         this.goodsName = bean.getGoodsName();
         this.goodsSubTitle = bean.getGoodsSubTitle();
         this.goodsClassifyId = bean.getGoodsClassifyId();
         this.goodsClassify = goodsClassify;
         this.goodsBrandId = bean.getGoodsBrandId();
         this.goodsBrandName = bean.getGoodsBrandName();
-        this.goodsUnitId=bean.getGoodsUnitId();
+        this.goodsUnitId = bean.getGoodsUnitId();
         this.goodsUnitName = goodsUnitName;
         this.goodsMinQuantity = bean.getGoodsMinQuantity();
         this.goodsBarCode = bean.getGoodsBarCode();
-        this.goodsKeyWord = bean.getGoodsKeyWord();
-        this.goodsGuaranteeIds = JsonUtils.toList(bean.getGoodsGuarantee(), String.class);
-        this.goodsGuaranteeDesc = goodsGuaranteeDesc;
+        this.goodsKeyWord = JsonUtils.toList(bean.getGoodsKeyWord(), String.class);
+        this.goodsGuarantee = JsonUtils.toList(JsonUtils.toStr(goodsGuarantee), Map.class);
         this.goodsSpecifications = JsonUtils.toList(bean.getGoodsSpecifications(), Map.class);
         this.goodsSKUs = JsonUtils.toList(JsonUtils.toStr(bean.getGoodsSkuApproves()), Map.class);
         this.goodsMainImages = JsonUtils.toList(bean.getGoodsMainImages(), String.class);
@@ -132,30 +131,6 @@ public class GoodsApproveDetailRepresentation {
         this.goodsBarCode = goodsBarCode;
     }
 
-    public String getGoodsKeyWord() {
-        return goodsKeyWord;
-    }
-
-    public void setGoodsKeyWord(String goodsKeyWord) {
-        this.goodsKeyWord = goodsKeyWord;
-    }
-
-    public List<String> getGoodsGuaranteeIds() {
-        return goodsGuaranteeIds;
-    }
-
-    public void setGoodsGuaranteeIds(List<String> goodsGuaranteeIds) {
-        this.goodsGuaranteeIds = goodsGuaranteeIds;
-    }
-
-    public List<String> getGoodsGuaranteeDesc() {
-        return goodsGuaranteeDesc;
-    }
-
-    public void setGoodsGuaranteeDesc(List<String> goodsGuaranteeDesc) {
-        this.goodsGuaranteeDesc = goodsGuaranteeDesc;
-    }
-
     public List<Map> getGoodsSpecifications() {
         return goodsSpecifications;
     }
@@ -202,5 +177,21 @@ public class GoodsApproveDetailRepresentation {
 
     public void setRejectReason(String rejectReason) {
         this.rejectReason = rejectReason;
+    }
+
+    public List<String> getGoodsKeyWord() {
+        return goodsKeyWord;
+    }
+
+    public void setGoodsKeyWord(List<String> goodsKeyWord) {
+        this.goodsKeyWord = goodsKeyWord;
+    }
+
+    public List<Map> getGoodsGuarantee() {
+        return goodsGuarantee;
+    }
+
+    public void setGoodsGuarantee(List<Map> goodsGuarantee) {
+        this.goodsGuarantee = goodsGuarantee;
     }
 }
