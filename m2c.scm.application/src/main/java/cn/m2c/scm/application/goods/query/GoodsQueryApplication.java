@@ -506,5 +506,33 @@ public class GoodsQueryApplication {
         sql.append(" t_scm_goods_sku WHERE 1 = 1 AND goods_id = ? AND show_status = 2");
         return this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsSkuBean.class, goodsId);
     }
+
+    public List<GoodsBean> appSearchGoods(String goodsClassifyId, String condition, Integer sortType,
+                                          Integer sort, Integer pageNum, Integer rows) {
+        List<Object> params = new ArrayList<Object>();
+        StringBuilder sql = new StringBuilder();
+        sql.append(" SELECT ");
+        sql.append(" g.* ");
+        sql.append(" FROM ");
+        sql.append(" t_scm_goods g,t_scm_goods_sku s WHERE g.id=s.goods_id");
+        if (StringUtils.isNotEmpty(goodsClassifyId)) {
+            // 查询所有一级分类的下级分类
+            List<String> goodsClassifyIds = goodsClassifyQueryApplication.recursionQueryGoodsSubClassifyId(goodsClassifyId, new ArrayList<String>());
+            goodsClassifyIds.add(goodsClassifyId);
+            sql.append(" AND goods_classify_id in (" + Utils.listParseString(goodsClassifyIds) + ") ");
+        }
+        if(StringUtils.isNotEmpty(condition)){
+            //商品标题、商品副标题、SKU、品牌、所属分类、商品关键词、商品图文详情文本内容
+            sql.append(" AND (g.goods_name LIKE ? or g.goods_sub_title LIKE ? or s.sku_id LIKE ? or g.goods_brand_name LIKE ? or g.goods_key_word LIKE ? or g.goods_desc LIKE ? or g.goods_classify_id in ?)");
+            params.add("%" + condition + "%");
+            params.add("%" + condition + "%");
+            params.add("%" + condition + "%");
+            params.add("%" + condition + "%");
+            params.add("%" + condition + "%");
+            params.add("%" + condition + "%");
+            //params.add("(" + Utils.listParseString(goodsClassifyIds) + ")");
+        }
+        return this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsBean.class, params.toArray());
+    }
 }
 

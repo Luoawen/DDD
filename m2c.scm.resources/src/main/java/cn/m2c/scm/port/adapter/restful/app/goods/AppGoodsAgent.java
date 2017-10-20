@@ -145,4 +145,28 @@ public class AppGoodsAgent {
         }
     }
 
+    /**
+     * 商品搜索
+     *
+     * @param goodsClassifyId 商品分类
+     * @param condition       条件
+     * @param sortType        排序类型：1：综合，2：价格
+     * @param sort            1：降序，2：升序
+     * @param pageNum         第几页
+     * @param rows            每页多少条
+     * @return
+     */
+    @RequestMapping(value = "", method = RequestMethod.GET)
+    public ResponseEntity<MPager> searchGoodsByCondition(
+            @RequestParam(value = "goodsClassifyId", required = false) String goodsClassifyId,
+            @RequestParam(value = "condition", required = false) String condition,
+            @RequestParam(value = "sortType", required = false) Integer sortType,
+            @RequestParam(value = "sort", required = false) Integer sort,
+            @RequestParam(value = "pageNum", required = false, defaultValue = "1") Integer pageNum,
+            @RequestParam(value = "rows", required = false, defaultValue = "10") Integer rows) {
+        MPager result = new MPager(MCode.V_1);
+        return new ResponseEntity<MPager>(result, HttpStatus.OK);
+    }
+
+
 }
