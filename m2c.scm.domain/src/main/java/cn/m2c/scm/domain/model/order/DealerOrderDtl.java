@@ -109,12 +109,45 @@ public class DealerOrderDtl extends ConcurrencySafeEntity {
 	 */
 	public void updateOrderDetailExpress(String expressName, String expressNo,
 			String expressNote, String expressPerson, String expressPhone,
-			Integer expressWay) {
-		this.expressInfo.updateExpress(expressName,expressNo,expressNote,expressPerson,expressPhone,expressWay);
+			Integer expressWay, String expressCode) {
+		this.expressInfo.updateExpress(expressName,expressNo,expressNote,expressPerson,expressPhone,expressWay
+				, expressCode);
 		this.status=2;
 	}
 	
 	void cancel() {
 		status = -1;
+	}
+	/***
+	 * 确认收货
+	 * @return
+	 */
+	public boolean confirmRev() {
+		if (status != 2) {
+			return false;
+		}
+		status = 3;
+		return true;
+	}
+	/***
+	 * 是否确认收货
+	 * @return
+	 */
+	public boolean isRecBB() {
+		return status >= 3;
+	}
+	
+	boolean isEqualSku(String skuId) {
+		return this.goodsInfo.getSkuId().equals(skuId);
+	}
+	
+	boolean isSameExpressNo(String no) {
+		if (no != null && no.equals(getExpressNo()))
+			return true;
+		return false;
+	}
+	
+	String getExpressNo() {
+		return expressInfo.getExpressNo();
 	}
 }

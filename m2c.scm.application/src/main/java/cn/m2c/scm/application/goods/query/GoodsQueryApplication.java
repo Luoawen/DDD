@@ -441,49 +441,98 @@ public class GoodsQueryApplication {
 
     /***
      * 获取商品列表
+     *
      * @param skuIds
      * @return
      */
     public List<GoodsDto> getGoodsDtl(Set<String> skuIds) throws NegativeException {
-    	if (skuIds == null || skuIds.size() < 1)
-    		return null;
-    	try {
-	    	StringBuilder sql = new StringBuilder(512);
-	    	sql.append("select a.goods_id as goodsId")
-	    	.append(", a.goods_name as goodsName")
-	    	.append(", a.goods_sub_title as goodsTitle")
-	    	.append(", a.goods_classify_id as goodsTypeId")
-	    	.append(", c.unit_name as goodsUnit")
-	    	.append(", b.sku_id as skuId")
-	    	.append(", b.sku_name as skuName")
-	    	.append(", a.goods_main_images as goodsIcon")
-	    	.append(", d.service_rate as rate")
-	    	.append(", d.classify_name as goodsType")
-	    	.append(", b.weight, b.dealer_id as dealerId")
-	    	.append(", b.supply_price as supplyPrice")
-	    	.append(", b.market_price as price")
-	    	.append(", b.photograph_price as discountPrice")
-	    	.append(" from t_scm_goods_sku b, t_scm_goods a")
-	    	.append(" left outer join t_scm_unit c on a.goods_unit_id=c.unit_id")
-	    	.append(" left outer join t_scm_goods_classify d on a.goods_classify_id=d.classify_id")
-	    	.append(" where a.id=b.goods_id ")
-	    	.append(" and b.sku_id in(");
-	    	int sz = skuIds.size();
-	    	for (int i=0; i< sz; i++) {
-	    		if (i > 0)
-	    			sql.append(",?");
-	    		else
-	    			sql.append("?");
-	    	}
-	    	sql.append(")");
-	    	Object[] args = new Object[skuIds.size()];
-	    	return supportJdbcTemplate.queryForBeanList(sql.toString(), GoodsDto.class, skuIds.toArray(args));
-    	}
-    	catch (Exception e) {
-    		LOGGER.error("===fanjc==订单获取商品详情出错",e);
-			throw new NegativeException(500, "获取商品详情列表出错");
-    	}
+        if (skuIds == null || skuIds.size() < 1)
+            return null;
+        try {
+            StringBuilder sql = new StringBuilder(512);
+            sql.append("select a.goods_id as goodsId")
+                    .append(", a.goods_name as goodsName")
+                    .append(", a.goods_sub_title as goodsTitle")
+                    .append(", a.goods_classify_id as goodsTypeId")
+                    .append(", c.unit_name as goodsUnit")
+                    .append(", b.sku_id as skuId")
+                    .append(", b.sku_name as skuName")
+                    .append(", a.goods_main_images as goodsIcon")
+                    .append(", d.service_rate as rate")
+                    .append(", d.classify_name as goodsType")
+                    .append(", b.weight, b.dealer_id as dealerId")
+                    .append(", b.supply_price as supplyPrice")
+                    .append(", b.market_price as price")
+                    .append(", b.photograph_price as discountPrice")
+                    .append(" from t_scm_goods_sku b, t_scm_goods a")
+                    .append(" left outer join t_scm_unit c on a.goods_unit_id=c.unit_id")
+                    .append(" left outer join t_scm_goods_classify d on a.goods_classify_id=d.classify_id")
+                    .append(" where a.id=b.goods_id ")
+                    .append(" and b.sku_id in(");
+            int sz = skuIds.size();
+            for (int i = 0; i < sz; i++) {
+                if (i > 0)
+                    sql.append(",?");
+                else
+                    sql.append("?");
+            }
+            sql.append(")");
+            Object[] args = new Object[skuIds.size()];
+            return supportJdbcTemplate.queryForBeanList(sql.toString(), GoodsDto.class, skuIds.toArray(args));
+        } catch (Exception e) {
+            LOGGER.error("===fanjc==订单获取商品详情出错", e);
+            throw new NegativeException(500, "获取商品详情列表出错");
+        }
     }
 
+    public GoodsBean appGoodsDetailByGoodsId(String goodsId) {
+        StringBuilder sql = new StringBuilder();
+        sql.append(" SELECT ");
+        sql.append(" * ");
+        sql.append(" FROM ");
+        sql.append(" t_scm_goods WHERE 1 = 1 AND goods_id = ?");
+        GoodsBean goodsBean = this.getSupportJdbcTemplate().queryForBean(sql.toString(), GoodsBean.class, goodsId);
+        if (null != goodsBean) {
+            goodsBean.setGoodsSkuBeans(queryShowGoodsSKUsByGoodsId(goodsBean.getId()));
+        }
+        return goodsBean;
+    }
+
+    public List<GoodsSkuBean> queryShowGoodsSKUsByGoodsId(Integer goodsId) {
+        StringBuilder sql = new StringBuilder();
+        sql.append(" SELECT ");
+        sql.append(" * ");
+        sql.append(" FROM ");
+        sql.append(" t_scm_goods_sku WHERE 1 = 1 AND goods_id = ? AND show_status = 2");
+        return this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsSkuBean.class, goodsId);
+    }
+
+    public List<GoodsBean> appSearchGoods(String goodsClassifyId, String condition, Integer sortType,
+                                          Integer sort, Integer pageNum, Integer rows) {
+        List<Object> params = new ArrayList<Object>();
+        StringBuilder sql = new StringBuilder();
+        sql.append(" SELECT ");
+        sql.append(" g.* ");
+        sql.append(" FROM ");
+        sql.append(" t_scm_goods g,t_scm_goods_sku s WHERE g.id=s.goods_id");
+        if (StringUtils.isNotEmpty(goodsClassifyId)) {
+            // 查询所有一级分类的下级分类
+            List<String> goodsClassifyIds = goodsClassifyQueryApplication.recursionQueryGoodsSubClassifyId(goodsClassifyId, new ArrayList<String>());
+            goodsClassifyIds.add(goodsClassifyId);
+            sql.append(" AND goods_classify_id in (" + Utils.listParseString(goodsClassifyIds) + ") ");
+        }
+        if(StringUtils.isNotEmpty(condition)){
+            //商品标题、商品副标题、SKU、品牌、所属分类、商品关键词、商品图文详情文本内容
+            sql.append(" AND (g.goods_name LIKE ? or g.goods_sub_title LIKE ? or s.sku_id LIKE ? or g.goods_brand_name LIKE ? or g.goods_key_word LIKE ? or g.goods_desc LIKE ? or g.goods_classify_id in ?)");
+            params.add("%" + condition + "%");
+            params.add("%" + condition + "%");
+            params.add("%" + condition + "%");
+            params.add("%" + condition + "%");
+            params.add("%" + condition + "%");
+            params.add("%" + condition + "%");
+            //params.add("(" + Utils.listParseString(goodsClassifyIds) + ")");
+        }
+        return this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsBean.class, params.toArray());
+    }
 }
 

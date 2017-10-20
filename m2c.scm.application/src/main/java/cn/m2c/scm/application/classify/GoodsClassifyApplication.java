@@ -35,7 +35,10 @@ public class GoodsClassifyApplication {
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
     public void addGoodsClassify(GoodsClassifyAddCommand command) throws NegativeException {
         LOGGER.info("addGoodsClassify command >>{}", command);
-
+        // 与当前分类中的不能重名
+        if (goodsClassifyRepository.goodsClassifyNameIsRepeat(null, command.getClassifyName())) {
+            throw new NegativeException(MCode.V_301, "商品分类名称已存在");
+        }
         // 父级分类id为-1，则增加一级分类
         String classifyId = IDGenerator.get(IDGenerator.SCM_GOODS_CLASSIFY_PREFIX_TITLE);
         GoodsClassify goodsClassify = goodsClassifyRepository.getGoodsClassifyById(classifyId);
@@ -49,6 +52,10 @@ public class GoodsClassifyApplication {
         List<String> subNames = JsonUtils.toList(command.getSubClassifyNames(), String.class);
         if (null != subNames && subNames.size() > 0) {
             for (String subName : subNames) {
+                // 与当前分类中的不能重名
+                if (goodsClassifyRepository.goodsClassifyNameIsRepeat(null, subName)) {
+                    throw new NegativeException(MCode.V_301, "商品分类名称已存在");
+                }
                 String subClassifyId = IDGenerator.get(IDGenerator.SCM_GOODS_CLASSIFY_PREFIX_TITLE);
                 GoodsClassify subGoodsClassify = goodsClassifyRepository.getGoodsClassifyById(subClassifyId);
                 if (null != subGoodsClassify) {
@@ -68,6 +75,10 @@ public class GoodsClassifyApplication {
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
     public void modifyGoodsClassifyName(GoodsClassifyModifyCommand command) throws NegativeException {
         LOGGER.info("modifyGoodsClassifyName command >>{}", command);
+        // 与当前分类中的不能重名
+        if (goodsClassifyRepository.goodsClassifyNameIsRepeat(command.getClassifyId(), command.getClassifyName())) {
+            throw new NegativeException(MCode.V_301, "商品分类名称已存在");
+        }
         GoodsClassify goodsClassify = goodsClassifyRepository.getGoodsClassifyById(command.getClassifyId());
         if (null == goodsClassify) {
             throw new NegativeException(MCode.V_300, "商品分类不存在");

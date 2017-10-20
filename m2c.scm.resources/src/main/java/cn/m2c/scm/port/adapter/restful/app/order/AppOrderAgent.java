@@ -6,6 +6,7 @@ import cn.m2c.common.MResult;
 import cn.m2c.scm.application.CommonApplication;
 import cn.m2c.scm.application.order.OrderApplication;
 import cn.m2c.scm.application.order.command.CancelOrderCmd;
+import cn.m2c.scm.application.order.command.ConfirmSkuCmd;
 import cn.m2c.scm.application.order.command.OrderAddCommand;
 import cn.m2c.scm.application.order.command.PayOrderCmd;
 import cn.m2c.scm.application.order.data.representation.OrderNo;
@@ -142,7 +143,10 @@ public class AppOrderAgent {
         try {
         	CancelOrderCmd cmd = new CancelOrderCmd(orderId, userId);
         	orderApp.cancelOrder(cmd);
-            result.setStatus(MCode.V_200);
+        	OrderNo orderNo = new OrderNo();
+        	orderNo.setOrderId(orderId);
+    		result.setContent(orderNo);
+    		result.setStatus(MCode.V_200);
         } 
         catch (NegativeException e) {
         	result = new MResult(e.getStatus(), e.getMessage());
@@ -164,6 +168,69 @@ public class AppOrderAgent {
     public ResponseEntity<MResult> payOrder(
             @RequestParam(value = "userId", required = false) String userId
             ,@RequestParam(value = "orderId", required = false) String orderId
+            ) {
+    	MResult result = new MResult(MCode.V_1);
+        try {
+        	PayOrderCmd cmd = new PayOrderCmd(orderId, userId);
+        	result.setContent(orderApp.payOrder(cmd));
+            result.setStatus(MCode.V_200);
+        } 
+        catch (NegativeException e) {
+        	result = new MResult(e.getStatus(), e.getMessage());
+        }
+        catch (Exception e) {
+            LOGGER.error("pay order Exception e:", e);
+            result = new MResult(MCode.V_400, e.getMessage());
+        }
+        return new ResponseEntity<MResult>(result, HttpStatus.OK);
+    }
+    
+    /**
+     * 确认收货
+     * @param userId
+     * @param orderId
+     * @param dealerOrderId
+     * @param skuId
+     * @return
+     */
+    @RequestMapping(value = "/app/confirm", method = RequestMethod.PUT)
+    public ResponseEntity<MResult> confirmReceive(
+            @RequestParam(value = "userId", required = false) String userId
+            ,@RequestParam(value = "orderId", required = false) String orderId
+            ,@RequestParam(value = "dealerOrderId", required = false) String dealerOrderId
+            ,@RequestParam(value = "skuId", required = false) String skuId
+            ) {
+    	MResult result = new MResult(MCode.V_1);
+        try {
+        	ConfirmSkuCmd cmd = new ConfirmSkuCmd(orderId, userId, skuId, dealerOrderId);
+        	//result.setContent(orderApp.confirmSku(cmd));
+        	orderApp.confirmSku(cmd);
+            result.setStatus(MCode.V_200);
+        } 
+        catch (NegativeException e) {
+        	result = new MResult(e.getStatus(), e.getMessage());
+        }
+        catch (Exception e) {
+            LOGGER.error("pay order Exception e:", e);
+            result = new MResult(MCode.V_400, e.getMessage());
+        }
+        return new ResponseEntity<MResult>(result, HttpStatus.OK);
+    }
+    
+    /**
+     * 申请售后
+     * @param userId
+     * @param orderId
+     * @return
+     */
+    @RequestMapping(value = "/app/aftersale", method = RequestMethod.POST)
+    public ResponseEntity<MResult> afterSale(
+            @RequestParam(value = "userId", required = false) String userId
+            ,@RequestParam(value = "orderId", required = false) String orderId
+            ,@RequestParam(value = "dealerOrderId", required = false) String dealerOrderId
+            ,@RequestParam(value = "skuId", required = false) String skuId
+            ,@RequestParam(value = "backOrderNo", required = false) String backOrderNo
+            ,@RequestParam(value = "type", required = false) int type
             ) {
     	MResult result = new MResult(MCode.V_1);
         try {

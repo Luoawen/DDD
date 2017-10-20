@@ -18,6 +18,8 @@ public class SendOrderCommand extends AssertionConcern{
 	private Integer expressWay;
 	/**配送说明*/
 	private String expressNote;
+	/**物流公司编码*/
+	private String expressCode;
 	
 	
 	public SendOrderCommand() {
@@ -27,7 +29,7 @@ public class SendOrderCommand extends AssertionConcern{
 	
 	public SendOrderCommand(String dealerOrderId, String expressNo,
 			String expressName, String expressPerson, String expressPhone,
-			Integer expressWay, String expressNote) {
+			Integer expressWay, String expressNote, String expressCode) {
 		super();
 		this.dealerOrderId = dealerOrderId;
 		this.expressNo = expressNo;
@@ -36,6 +38,7 @@ public class SendOrderCommand extends AssertionConcern{
 		this.expressPhone = expressPhone;
 		this.expressWay = expressWay;
 		this.expressNote = expressNote;
+		this.expressCode = expressCode;
 	}
 
 
@@ -82,6 +85,11 @@ public class SendOrderCommand extends AssertionConcern{
 		this.expressNote = expressNote;
 	}
 	
-	
+	public String getExpressCode() {
+		return expressCode;
+	}
+	public void setExpressCode(String expressNote) {
+		this.expressCode = expressNote;
+	}
 	
 }

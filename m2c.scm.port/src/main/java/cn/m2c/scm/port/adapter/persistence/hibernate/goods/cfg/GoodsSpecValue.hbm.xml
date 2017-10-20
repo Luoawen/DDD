@@ -9,9 +9,8 @@
         <id name="id" column="id" type="long" unsaved-value="-1">
             <generator class="native"/>
         </id>
-        <version name="concurrencyVersion" column="concurrency_version" type="int"/>
-        <property name="specId" column="spec_value_id" type="string"/>
+        <property name="specId" column="spec_id" type="string"/>
         <property name="dealerId" column="dealer_id" type="string"/>
-        <property name="specValue" column="spec_value" type="int"/>
+        <property name="specValue" column="spec_value" type="string"/>
     </class>
 </hibernate-mapping>

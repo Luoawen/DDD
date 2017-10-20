@@ -97,10 +97,34 @@ public class DealerOrder extends ConcurrencySafeEntity {
 	 */
 	public void updateExpress(String expressName, String expressNo,
 			String expressNote, String expressPerson, String expressPhone,
-			Integer expressWay) {
+			Integer expressWay, String expressCode) {
 		List<DealerOrderDtl> orderDtls = this.orderDtls;
 		for (DealerOrderDtl dealerOrderDtl : orderDtls) {
-			dealerOrderDtl.updateOrderDetailExpress(expressName,expressNo,expressNote,expressPerson,expressPhone,expressWay);
+			dealerOrderDtl.updateOrderDetailExpress(expressName,expressNo,expressNote,expressPerson
+					,expressPhone,expressWay, expressCode);
 		}
+	}
+	/***
+	 * 检查是否全部确认收货，除指定的sku外
+	 * @param sku
+	 * @return
+	 */
+	public boolean checkAllRev(String sku, DealerOrderDtl dll) {
+		for (DealerOrderDtl dtl : orderDtls) {
+			if (dtl.isEqualSku(sku) || dtl.isSameExpressNo(dll.getExpressNo())) {
+				dtl.confirmRev();
+			}
+			if (!dtl.isRecBB())
+				return false;
+		}
+		return true;
+	}
+	
+	public void confirmRev() {
+		
+		if (status != 2)
+			return;
+		status = 3;
+		
 	}
 }

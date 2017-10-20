@@ -27,8 +27,11 @@ public class GoodsDetailRepresentation {
     private List<Map> goodsSKUs;
     private List<String> goodsMainImages;
     private String goodsDesc;
+    private Integer settlementMode;//结算模式 1：按供货价 2：按服务费率
+    private Float serviceRate;//服务费率
 
-    public GoodsDetailRepresentation(GoodsBean bean, String goodsClassify, List<GoodsGuaranteeBean> goodsGuaranteeBeans, String goodsUnitName) {
+    public GoodsDetailRepresentation(GoodsBean bean, String goodsClassify, List<GoodsGuaranteeBean> goodsGuaranteeBeans,
+                                     String goodsUnitName, Integer settlementMode, Float serviceRate) {
         this.goodsName = bean.getGoodsName();
         this.goodsSubTitle = bean.getGoodsSubTitle();
         this.goodsClassifyId = bean.getGoodsClassifyId();
@@ -38,12 +41,15 @@ public class GoodsDetailRepresentation {
         this.goodsUnitName = goodsUnitName;
         this.goodsMinQuantity = bean.getGoodsMinQuantity();
         this.goodsBarCode = bean.getGoodsBarCode();
-        this.goodsKeyWord = JsonUtils.toList(bean.getGoodsKeyWord(), String.class);;
+        this.goodsKeyWord = JsonUtils.toList(bean.getGoodsKeyWord(), String.class);
+        ;
         this.goodsGuarantee = JsonUtils.toList(JsonUtils.toStr(goodsGuaranteeBeans), Map.class);
         this.goodsSpecifications = JsonUtils.toList(bean.getGoodsSpecifications(), Map.class);
         this.goodsSKUs = JsonUtils.toList(JsonUtils.toStr(bean.getGoodsSkuBeans()), Map.class);
         this.goodsMainImages = JsonUtils.toList(bean.getGoodsMainImages(), String.class);
         this.goodsDesc = bean.getGoodsDesc();
+        this.settlementMode = settlementMode;
+        this.serviceRate = serviceRate;
     }
 
     public String getGoodsName() {
@@ -172,5 +178,21 @@ public class GoodsDetailRepresentation {
 
     public void setGoodsGuarantee(List<Map> goodsGuarantee) {
         this.goodsGuarantee = goodsGuarantee;
+    }
+
+    public Integer getSettlementMode() {
+        return settlementMode;
+    }
+
+    public void setSettlementMode(Integer settlementMode) {
+        this.settlementMode = settlementMode;
+    }
+
+    public Float getServiceRate() {
+        return serviceRate;
+    }
+
+    public void setServiceRate(Float serviceRate) {
+        this.serviceRate = serviceRate;
     }
 }
