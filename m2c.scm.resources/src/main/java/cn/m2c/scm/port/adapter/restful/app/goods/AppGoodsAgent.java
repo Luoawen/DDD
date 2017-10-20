@@ -8,8 +8,9 @@ import cn.m2c.scm.application.goods.query.GoodsGuaranteeQueryApplication;
 import cn.m2c.scm.application.goods.query.GoodsQueryApplication;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsBean;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsGuaranteeBean;
-import cn.m2c.scm.application.goods.query.data.representation.GoodsGuessRepresentation;
 import cn.m2c.scm.application.goods.query.data.representation.app.AppGoodsDetailRepresentation;
+import cn.m2c.scm.application.goods.query.data.representation.app.AppGoodsGuessRepresentation;
+import cn.m2c.scm.application.goods.query.data.representation.app.AppGoodsSearchRepresentation;
 import cn.m2c.scm.application.unit.query.UnitQuery;
 import cn.m2c.scm.domain.service.goods.GoodsService;
 import org.slf4j.Logger;
@@ -70,18 +71,18 @@ public class AppGoodsAgent {
             if (null != goodsBeanList && goodsBeanList.size() > 0) {
                 if (positionType == 1) { //首页分页
                     List<GoodsBean> goodsBeans = goodsQueryApplication.getPagedList(pageNum, rows, goodsBeanList);
-                    List<GoodsGuessRepresentation> resultRepresentation = new ArrayList<>();
+                    List<AppGoodsGuessRepresentation> resultRepresentation = new ArrayList<>();
                     for (GoodsBean goodsBean : goodsBeans) {
                         List<Map> goodsTags = goodsService.getGoodsTags(goodsBean.getDealerId(), goodsBean.getGoodsId(), goodsBean.getGoodsClassifyId());
-                        resultRepresentation.add(new GoodsGuessRepresentation(goodsBean, goodsTags));
+                        resultRepresentation.add(new AppGoodsGuessRepresentation(goodsBean, goodsTags));
                     }
                     result.setContent(resultRepresentation);
                     result.setPager(goodsBeanList.size(), pageNum, rows);
                 } else {
-                    List<GoodsGuessRepresentation> resultRepresentation = new ArrayList<>();
+                    List<AppGoodsGuessRepresentation> resultRepresentation = new ArrayList<>();
                     for (GoodsBean goodsBean : goodsBeanList) {
                         List<Map> goodsTags = goodsService.getGoodsTags(goodsBean.getDealerId(), goodsBean.getGoodsId(), goodsBean.getGoodsClassifyId());
-                        resultRepresentation.add(new GoodsGuessRepresentation(goodsBean, goodsTags));
+                        resultRepresentation.add(new AppGoodsGuessRepresentation(goodsBean, goodsTags));
                     }
                     result.setContent(resultRepresentation);
                 }
@@ -157,7 +158,7 @@ public class AppGoodsAgent {
      * @return
      */
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public ResponseEntity<MPager> searchGoodsByCondition(
+    public ResponseEntity<MPager> appSearchGoods(
             @RequestParam(value = "goodsClassifyId", required = false) String goodsClassifyId,
             @RequestParam(value = "condition", required = false) String condition,
             @RequestParam(value = "sortType", required = false) Integer sortType,
@@ -165,6 +166,26 @@ public class AppGoodsAgent {
             @RequestParam(value = "pageNum", required = false, defaultValue = "1") Integer pageNum,
             @RequestParam(value = "rows", required = false, defaultValue = "10") Integer rows) {
         MPager result = new MPager(MCode.V_1);
+        try {
+            Integer total = goodsQueryApplication.appSearchGoodsTotal(goodsClassifyId, condition);
+            if (total > 0) {
+                List<GoodsBean> goodsBeans = goodsQueryApplication.appSearchGoods(goodsClassifyId, condition, sortType,
+                        sort, pageNum, rows);
+                if (null != goodsBeans && goodsBeans.size() > 0) {
+                    List<AppGoodsSearchRepresentation> representations = new ArrayList<AppGoodsSearchRepresentation>();
+                    for (GoodsBean goodsBean : goodsBeans) {
+                        List<Map> goodsTags = goodsService.getGoodsTags(goodsBean.getDealerId(), goodsBean.getGoodsId(), goodsBean.getGoodsClassifyId());
+                        representations.add(new AppGoodsSearchRepresentation(goodsBean, goodsTags));
+                    }
+                    result.setContent(representations);
+                }
+            }
+            result.setPager(total, pageNum, rows);
+            result.setStatus(MCode.V_200);
+        } catch (Exception e) {
+            LOGGER.error("searchGoodsByCondition Exception e:", e);
+            result = new MPager(MCode.V_400, "搜索商品列表失败");
+        }
         return new ResponseEntity<MPager>(result, HttpStatus.OK);
     }
 
