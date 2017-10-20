@@ -24,6 +24,7 @@ import cn.m2c.scm.application.dealer.query.DealerQuery;
 import cn.m2c.scm.application.goods.GoodsApplication;
 import cn.m2c.scm.application.goods.query.GoodsQueryApplication;
 import cn.m2c.scm.application.order.command.CancelOrderCmd;
+import cn.m2c.scm.application.order.command.ConfirmSkuCmd;
 import cn.m2c.scm.application.order.command.OrderAddCommand;
 import cn.m2c.scm.application.order.command.PayOrderCmd;
 import cn.m2c.scm.application.order.query.OrderQueryApplication;
@@ -319,16 +320,42 @@ public class OrderApplication {
 	 * @param cmd
 	 * @return
 	 */
+	@Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
 	public Object payOrder(PayOrderCmd cmd) {
 		MainOrder order = orderRepository.getOrderById(cmd.getOrderId());
 		// 获取订单所用营销策略
-		
+		List<String> mks = order.getMkIds();
 		// 获取营销策略详情看是否有变化
-		
+		orderDomainService.getMarketingsByIds(mks);
 		// 若有变化则需要重新计算金额并更新
 		
 		// 请求发起支付
-		
+		order.getActual();
+		// 调用restful接口;
 		return null;
+	}
+	
+	/***
+	 * 确认收货(只能取消未支付的)
+	 * @param cmd
+	 * @throws NegativeException 
+	 */
+	@Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+	public void confirmSku(ConfirmSkuCmd cmd) throws NegativeException {
+		
+		DealerOrderDtl dtl = orderRepository.getDealerOrderDtlBySku(cmd.getDealerOrderId(), cmd.getSkuId());
+		// 检查是否可确认收货
+		if (dtl.confirmRev()) {
+			// 可能是逻辑删除或是改成取消状态(子订单也要改)
+			//orderRepository.updateMainOrder(order);
+			DealerOrder order = orderRepository.getDealerOrderByNo(cmd.getDealerOrderId());
+			if (order.checkAllRev(cmd.getSkuId(), dtl)) // 同一个运单号一起确认收货
+				order.confirmRev();
+			
+			orderRepository.updateDealerOrder(order);
+		}
+		else {
+			throw new NegativeException(MCode.V_1, "确认收货出错！");
+		}
 	}
 }

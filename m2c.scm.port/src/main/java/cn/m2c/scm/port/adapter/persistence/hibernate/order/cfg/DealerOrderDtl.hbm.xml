@@ -46,6 +46,7 @@
 	        <property name="expressPhone" column="express_phone" type="string"/>
 	        <property name="expressWay" column="express_way" type="int"/>
 	        <property name="expressNote" column="express_note" type="string"/>
+	        <property name="expressCode" column="express_code" type="string"/>
         </component>
         
         <property name="mediaResId" column="media_res_id" type="date"/>

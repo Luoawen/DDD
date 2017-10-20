@@ -81,4 +81,8 @@ public class GoodsInfo extends ValueObject {
 	public long getDiscountPrice() {
 		return discountPrice;
 	}
+	
+	String getSkuId() {
+		return skuId;
+	}
 }

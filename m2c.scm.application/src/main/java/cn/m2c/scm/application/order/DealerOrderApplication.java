@@ -31,7 +31,8 @@ public class DealerOrderApplication {
 		DealerOrder dealerOrder = dealerOrderRepository.getDealerOrderById(command.getDealerOrderId());
 		if(dealerOrder==null)
 			throw new NegativeException(NegativeCode.DEALER_ORDER_IS_NOT_EXIST, "此商家订单不存在在.");
-		dealerOrder.updateExpress(command.getExpressName(),command.getExpressNo(),command.getExpressNote(),command.getExpressPerson(),command.getExpressPhone(),command.getExpressWay());
+		dealerOrder.updateExpress(command.getExpressName(),command.getExpressNo(),command.getExpressNote(),command.getExpressPerson()
+				,command.getExpressPhone(), command.getExpressWay(), command.getExpressCode());
 		dealerOrderRepository.save(dealerOrder);
 	}
 	
