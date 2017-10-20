@@ -206,7 +206,7 @@ public class DealerQuery {
 	/**
 	 * 根据id查询商家结算方式
 	 * @param dealerId
-	 * @return -1 表示失败
+	 * @return -1 表示失败    1：按供货价 2：按服务费率'
 	 * @throws NegativeException 
 	 */
 	public Integer getDealerCountMode(String dealerId) throws NegativeException{
