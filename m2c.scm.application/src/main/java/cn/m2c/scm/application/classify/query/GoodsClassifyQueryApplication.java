@@ -117,4 +117,15 @@ public class GoodsClassifyQueryApplication {
         List<GoodsClassifyBean> goodsClassifyBeans = this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsClassifyBean.class, number);
         return goodsClassifyBeans;
     }
+
+    public List<GoodsClassifyBean> queryGoodsClassifiesByLevel(Integer level) {
+        StringBuilder sql = new StringBuilder();
+        sql.append(" SELECT ");
+        sql.append(" * ");
+        sql.append(" FROM ");
+        sql.append(" t_scm_goods_classify WHERE 1 = 1");
+        sql.append(" AND level = ? AND status = 1");
+        List<GoodsClassifyBean> goodsClassifyBeans = this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsClassifyBean.class, level);
+        return goodsClassifyBeans;
+    }
 }
