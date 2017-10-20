@@ -180,4 +180,24 @@ public class WebOrderAgent {
     	
     	return new ResponseEntity<MResult>(result,HttpStatus.OK);
     }
+    
+    /**
+     * 商家管理平台订单发货物流详情
+     * 
+     */
+    @RequestMapping(value="/manage/sendOrderDetail", method = RequestMethod.GET)
+    public ResponseEntity<MResult> manageSendOrderDetail(
+    		@RequestParam(value = "dealerOrderId", required = true) String dealerOrderId
+    		){
+    	MResult result = new MResult(MCode.V_1);
+    	try {
+    		DealerOrderBean dealerOrder = orderQuery.getDealerOrder(dealerOrderId);
+    		result.setContent(dealerOrder);
+    		result.setStatus(MCode.V_200);
+		} catch (Exception e) {
+			LOGGER.info("查询发货详情失败");
+		}
+    	return new ResponseEntity<MResult>(result,HttpStatus.OK);
+    }
+    
 }
