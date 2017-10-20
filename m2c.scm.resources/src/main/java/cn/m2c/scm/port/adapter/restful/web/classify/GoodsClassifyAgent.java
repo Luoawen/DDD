@@ -39,19 +39,21 @@ public class GoodsClassifyAgent {
     /**
      * 增加商品分类
      *
-     * @param parentClassifyName 一级分类名称(增加一级分类必传，二、三级分类不传)
+     * @param classifyName 分类名称(增加一、二、三级分类必传)
      * @param subClassifyNames   子分类名称list的json字符串,["短袖","裙子"]
-     * @param parentClassifyId   子分类上级分类的id(增加二、三级分类必传，一级分类不传)
+     * @param parentClassifyId   子分类上级分类的id(增加一、二、三级分类必传，一级分类传-1)
+     * @param level   层级，1：一级分类,2：二级分类,3：三级分类...
      * @return
      */
     @RequestMapping(value = "", method = RequestMethod.POST)
     public ResponseEntity<MResult> addGoodsClassify(
-            @RequestParam(value = "parentClassifyName", required = false) String parentClassifyName,
+            @RequestParam(value = "classifyName", required = false) String classifyName,
             @RequestParam(value = "subClassifyNames", required = false) String subClassifyNames,
-            @RequestParam(value = "parentClassifyId", required = false) String parentClassifyId) {
+            @RequestParam(value = "parentClassifyId", required = false) String parentClassifyId,
+            @RequestParam(value = "level", required = false) Integer level) {
         MResult result = new MResult(MCode.V_1);
         try {
-            GoodsClassifyAddCommand command = new GoodsClassifyAddCommand(parentClassifyName, subClassifyNames, parentClassifyId);
+            GoodsClassifyAddCommand command = new GoodsClassifyAddCommand(classifyName, subClassifyNames, parentClassifyId,level);
             goodsClassifyApplication.addGoodsClassify(command);
             result.setStatus(MCode.V_200);
         } catch (NegativeException ne) {

@@ -51,7 +51,7 @@ public class BrandApproveRepresentation {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         this.createTime = format.format(bean.getCreatedDate());
         this.approveStatus = bean.getApproveStatus();
-        this.rejectReason = rejectReason;
+        this.rejectReason = bean.getRejectReason();
     }
 
     public String getBrandId() {

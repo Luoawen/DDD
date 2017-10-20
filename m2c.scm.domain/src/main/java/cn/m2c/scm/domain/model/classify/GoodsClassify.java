@@ -27,6 +27,11 @@ public class GoodsClassify extends ConcurrencySafeEntity {
     private Float serviceRate;
 
     /**
+     * 层级，1：一级分类,2：二级分类,3：三级分类...
+     */
+    private Integer level;
+
+    /**
      * 1:正常，2：删除
      */
     private Integer status;
@@ -35,10 +40,11 @@ public class GoodsClassify extends ConcurrencySafeEntity {
         super();
     }
 
-    public GoodsClassify(String classifyId, String classifyName, String parentClassifyId) {
+    public GoodsClassify(String classifyId, String classifyName, String parentClassifyId,Integer level) {
         this.classifyId = classifyId;
         this.classifyName = classifyName;
         this.parentClassifyId = parentClassifyId;
+        this.level=level;
     }
 
     public void modifyClassifyName(String classifyName) {

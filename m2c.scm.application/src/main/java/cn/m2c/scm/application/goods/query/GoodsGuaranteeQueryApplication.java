@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -33,16 +32,5 @@ public class GoodsGuaranteeQueryApplication {
         sql.append(" t_scm_goods_guarantee WHERE 1 = 1");
         sql.append(" AND guarantee_id in (" + Utils.listParseString(ids) + ") ");
         return this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsGuaranteeBean.class);
-    }
-
-    public List<String> getGoodsGuaranteeDesc(List<String> ids) {
-        List<String> descList = new ArrayList<>();
-        List<GoodsGuaranteeBean> beans = queryGoodsGuaranteeByIds(ids);
-        if (null != beans && beans.size() > 0) {
-            for (GoodsGuaranteeBean bean : beans) {
-                descList.add(bean.getGuaranteeDesc());
-            }
-        }
-        return descList;
     }
 }

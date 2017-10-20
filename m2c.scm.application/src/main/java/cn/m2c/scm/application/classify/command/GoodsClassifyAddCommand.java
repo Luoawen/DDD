@@ -1,8 +1,6 @@
 package cn.m2c.scm.application.classify.command;
 
 import cn.m2c.ddd.common.AssertionConcern;
-import cn.m2c.scm.domain.IDGenerator;
-import org.apache.commons.lang3.StringUtils;
 
 import java.io.Serializable;
 
@@ -11,9 +9,9 @@ import java.io.Serializable;
  */
 public class GoodsClassifyAddCommand extends AssertionConcern implements Serializable {
     /**
-     * 父级分类名称
+     * 分类名称
      */
-    private String parentClassifyName;
+    private String classifyName;
 
     /**
      * 子分类名称,list的json字符串
@@ -25,13 +23,13 @@ public class GoodsClassifyAddCommand extends AssertionConcern implements Seriali
      */
     private String parentClassifyId;
 
-    public GoodsClassifyAddCommand(String parentClassifyName, String subClassifyNames, String parentClassifyId) {
-        this.parentClassifyName = parentClassifyName;
+    private Integer level;
+
+    public GoodsClassifyAddCommand(String parentClassifyName, String subClassifyNames, String parentClassifyId, Integer level) {
+        this.classifyName = classifyName;
         this.subClassifyNames = subClassifyNames;
         this.parentClassifyId = parentClassifyId;
-        if (StringUtils.isNotEmpty(parentClassifyName)) {
-            this.parentClassifyId = IDGenerator.get(IDGenerator.SCM_GOODS_CLASSIFY_PREFIX_TITLE);
-        }
+        this.level = level;
     }
 
     public String getSubClassifyNames() {
@@ -42,7 +40,11 @@ public class GoodsClassifyAddCommand extends AssertionConcern implements Seriali
         return parentClassifyId;
     }
 
-    public String getParentClassifyName() {
-        return parentClassifyName;
+    public String getClassifyName() {
+        return classifyName;
+    }
+
+    public Integer getLevel() {
+        return level;
     }
 }

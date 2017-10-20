@@ -45,7 +45,7 @@ public class BrandApproveQueryApplication {
         sql.append(" FROM ");
         sql.append(" t_scm_brand_approve WHERE 1 = 1 ");
         if (null != approveStatus) {
-            sql.append(" AND brand_status = ? ");
+            sql.append(" AND approve_status = ? ");
             params.add(approveStatus);
         }
         if (StringUtils.isNotEmpty(dealerId)) {
@@ -82,7 +82,7 @@ public class BrandApproveQueryApplication {
         sql.append(" FROM ");
         sql.append(" t_scm_brand_approve WHERE 1 = 1  ");
         if (null != approveStatus) {
-            sql.append(" AND brand_status = ? ");
+            sql.append(" AND approve_status = ? ");
             params.add(approveStatus);
         }
         if (StringUtils.isNotEmpty(dealerId)) {
