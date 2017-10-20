@@ -6,6 +6,7 @@ import cn.m2c.common.MResult;
 import cn.m2c.scm.application.order.DealerOrderApplication;
 import cn.m2c.scm.application.order.command.SendOrderCommand;
 import cn.m2c.scm.application.order.data.bean.DealerOrderBean;
+import cn.m2c.scm.application.order.data.bean.OrderExpressBean;
 import cn.m2c.scm.application.order.query.OrderQueryApplication;
 import cn.m2c.scm.domain.NegativeException;
 
@@ -202,4 +203,38 @@ public class WebOrderAgent {
     	return new ResponseEntity<MResult>(result,HttpStatus.OK);
     }
     
+    /**
+     * 商家平台订单发货物流详情
+     * 
+     */
+    @RequestMapping(value="/dealer/sendDealerOrderDetail", method = RequestMethod.GET)
+    public ResponseEntity<MResult> sendDealerOrderDetail(
+    		@RequestParam(value = "dealerOrderId", required = true) String dealerOrderId
+    		){
+    	MResult result = new MResult(MCode.V_1);
+    	try {
+    		DealerOrderBean dealerOrder = orderQuery.getDealerOrder(dealerOrderId);
+    		result.setContent(dealerOrder);
+    		result.setStatus(MCode.V_200);
+		} catch (Exception e) {
+			LOGGER.info("查询商家平台失败");
+		}
+    	return new ResponseEntity<MResult>(result,HttpStatus.OK);
+    }
+    
+    /**
+     * 查询所有物流公司信息
+     */
+    @RequestMapping(value="/dealer/express", method = RequestMethod.GET)
+    public ResponseEntity<MResult> getAllExpress(){
+    	MResult result = new MResult(MCode.V_1);
+    	try {
+    		 List<OrderExpressBean> allExpress = orderQuery.getAllExpress();
+    		result.setContent(allExpress);
+    		result.setStatus(MCode.V_200);
+		} catch (Exception e) {
+			LOGGER.info("查询物流公司失败");
+		}
+    	return new ResponseEntity<MResult>(result,HttpStatus.OK);
+    }
 }

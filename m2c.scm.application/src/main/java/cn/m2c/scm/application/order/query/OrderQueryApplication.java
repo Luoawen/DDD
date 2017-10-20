@@ -15,6 +15,7 @@ import cn.m2c.common.StringUtil;
 import cn.m2c.ddd.common.port.adapter.persistence.springJdbc.SupportJdbcTemplate;
 import cn.m2c.scm.application.order.data.bean.DealerOrderBean;
 import cn.m2c.scm.application.order.data.bean.OrderDetailBean;
+import cn.m2c.scm.application.order.data.bean.OrderExpressBean;
 import cn.m2c.scm.application.order.data.bean.SkuNumBean;
 import cn.m2c.scm.application.order.data.representation.OptLogBean;
 import cn.m2c.scm.application.order.data.representation.OrderBean;
@@ -172,6 +173,22 @@ public class OrderQueryApplication {
 			throw new NegativeException(500, "判断sku是否是售后单出错");
 		}
 		return isReturnOrder;
+	}
+	/**
+	 * 查询所有的物流公司信息
+	 * @return
+	 * @throws NegativeException 
+	 */
+	public List<OrderExpressBean> getAllExpress() throws NegativeException {
+		List<OrderExpressBean> expressList = null;
+		try {
+			String sql = "SELECT * FROM t_scm_order_exp_company WHERE exp_status=1";
+			expressList = this.getSupportJdbcTemplate().queryForBeanList(sql, OrderExpressBean.class);
+		} catch (Exception e) {
+			LOGGER.error("---查询物流公司列表出错",e);
+			throw new NegativeException(500, "查询物流公司列表出错");
+		}
+		return expressList;
 	}
 }
 

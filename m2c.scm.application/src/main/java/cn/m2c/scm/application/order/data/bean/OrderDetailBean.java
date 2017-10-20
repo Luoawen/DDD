@@ -30,6 +30,8 @@ public class OrderDetailBean {
 	private String expressName;
 	@ColumnAlias(value= "express_no")
 	private String expressNo;
+	@ColumnAlias(value= "express_code")
+	private String expressCode;
 	@ColumnAlias(value= "express_time")
 	private Date expressTime;
 	public String getDealerOrderId() {
@@ -109,6 +111,12 @@ public class OrderDetailBean {
 	}
 	public void setExpressTime(Date expressTime) {
 		this.expressTime = expressTime;
+	}
+	public String getExpressCode() {
+		return expressCode;
+	}
+	public void setExpressCode(String expressCode) {
+		this.expressCode = expressCode;
 	}
 	
 	
