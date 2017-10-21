@@ -7,7 +7,7 @@ import cn.m2c.scm.application.utils.ExcelField;
 /**
  * 导出
  */
-public class GoodsSupplyPriceModel{
+public class GoodsSupplyPriceModel {
     @ExcelField(title = "商家名称")
     private String dealerName;
     @ExcelField(title = "商品名称")
@@ -33,7 +33,7 @@ public class GoodsSupplyPriceModel{
     @ExcelField(title = "商品销量")
     private Integer sellerNum;
     @ExcelField(title = "商品状态")
-    private Integer goodsStatus;
+    private String goodsStatus;
     @ExcelField(title = "运费模板")
     private String goodsPostageName;
 
@@ -50,7 +50,14 @@ public class GoodsSupplyPriceModel{
         this.photographPrice = goodsSkuBean.getPhotographPrice();
         this.availableNum = goodsSkuBean.getAvailableNum();
         this.sellerNum = goodsSkuBean.getSellerNum();
-        this.goodsStatus = goodsBean.getGoodsStatus();
+        //商品状态，1：仓库中，2：出售中，3：已售罄
+        if (goodsBean.getGoodsStatus() == 1) {
+            this.goodsStatus = "仓库中";
+        } else if (goodsBean.getGoodsStatus() == 2) {
+            this.goodsStatus = "出售中";
+        } else {
+            this.goodsStatus = "已售罄";
+        }
         this.goodsPostageName = goodsPostageName;
         this.supplyPrice = goodsSkuBean.getSupplyPrice();
     }

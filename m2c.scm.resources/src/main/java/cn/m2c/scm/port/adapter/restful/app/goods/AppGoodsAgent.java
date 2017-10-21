@@ -4,6 +4,8 @@ import cn.m2c.common.JsonUtils;
 import cn.m2c.common.MCode;
 import cn.m2c.common.MPager;
 import cn.m2c.common.MResult;
+import cn.m2c.scm.application.classify.data.bean.GoodsClassifyBean;
+import cn.m2c.scm.application.classify.query.GoodsClassifyQueryApplication;
 import cn.m2c.scm.application.goods.query.GoodsGuaranteeQueryApplication;
 import cn.m2c.scm.application.goods.query.GoodsQueryApplication;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsBean;
@@ -25,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -47,6 +50,8 @@ public class AppGoodsAgent {
     GoodsGuaranteeQueryApplication goodsGuaranteeQueryApplication;
     @Autowired
     UnitQuery unitQuery;
+    @Autowired
+    GoodsClassifyQueryApplication goodsClassifyQueryApplication;
 
     /**
      * 商品猜你喜欢
@@ -169,15 +174,32 @@ public class AppGoodsAgent {
         try {
             Integer total = goodsQueryApplication.appSearchGoodsTotal(goodsClassifyId, condition);
             if (total > 0) {
+                Map resultMap = new HashMap<>();
                 List<GoodsBean> goodsBeans = goodsQueryApplication.appSearchGoods(goodsClassifyId, condition, sortType,
                         sort, pageNum, rows);
                 if (null != goodsBeans && goodsBeans.size() > 0) {
                     List<AppGoodsSearchRepresentation> representations = new ArrayList<AppGoodsSearchRepresentation>();
+                    List<String> goodsClassifyIds = new ArrayList<>();
                     for (GoodsBean goodsBean : goodsBeans) {
+                        // 获取商品分类的一级大类
+                        goodsClassifyIds.add(goodsBean.getGoodsClassifyId());
                         List<Map> goodsTags = goodsService.getGoodsTags(goodsBean.getDealerId(), goodsBean.getGoodsId(), goodsBean.getGoodsClassifyId());
                         representations.add(new AppGoodsSearchRepresentation(goodsBean, goodsTags));
                     }
-                    result.setContent(representations);
+                    resultMap.put("goods", representations);
+
+                    // 获取商品分类的一级大类
+                    List<GoodsClassifyBean> goodsClassifyBeanList = goodsClassifyQueryApplication.getFirstClassifyByClassifyIds(goodsClassifyIds);
+                    List<Map> classifyMap = new ArrayList<>();
+                    for (GoodsClassifyBean bean : goodsClassifyBeanList) {
+                        Map map = new HashMap<>();
+                        map.put("classifyId", bean.getClassifyId());
+                        map.put("classifyName", bean.getClassifyName());
+                        classifyMap.add(map);
+                    }
+                    resultMap.put("goodsClassify", classifyMap);
+
+                    result.setContent(resultMap);
                 }
             }
             result.setPager(total, pageNum, rows);

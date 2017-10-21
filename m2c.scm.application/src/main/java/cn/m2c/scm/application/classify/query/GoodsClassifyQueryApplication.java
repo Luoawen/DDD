@@ -170,4 +170,26 @@ public class GoodsClassifyQueryApplication {
         }
         return subList;
     }
+
+    private GoodsClassifyBean getFirstClassifyByClassifyId(String classifyId) {
+        GoodsClassifyBean bean = queryGoodsClassifiesById(classifyId);
+        if (null != bean && "-1".equals(bean.getParentClassifyId())) {
+            return bean;
+        } else {
+            return getFirstClassifyByClassifyId(bean.getParentClassifyId());
+        }
+    }
+
+    public List<GoodsClassifyBean> getFirstClassifyByClassifyIds(List<String> classifyIds) {
+        List<GoodsClassifyBean> list = new ArrayList<>();
+        for (String classifyId : classifyIds) {
+            GoodsClassifyBean bean = queryGoodsClassifiesById(classifyId);
+            if (null != bean && "-1".equals(bean.getParentClassifyId())) {
+                list.add(bean);
+            } else {
+                list.add(getFirstClassifyByClassifyId(bean.getParentClassifyId()));
+            }
+        }
+        return list;
+    }
 }

@@ -11,7 +11,9 @@ import org.apache.poi.ss.usermodel.Workbook;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -61,7 +63,7 @@ public class ExcelUtil {
                 j++;
             }
         }
-        response.setHeader("Content-Disposition", "attachment;filename=" + Utils.urlEncode(fileName));
+        response.setHeader("Content-Disposition", "attachment;filename=" + urlEncode(fileName));
         response.setContentType("application/ms-excel");
         OutputStream ouPutStream = null;
         try {
@@ -95,5 +97,10 @@ public class ExcelUtil {
         Field[] fields = new Field[fieldList.size()];
         fieldList.toArray(fields);
         return fields;
+    }
+
+    //URL 编码, Encode默认为UTF-8.
+    public static final String urlEncode(String s) throws UnsupportedEncodingException {
+        return URLEncoder.encode(s, "UTF-8");
     }
 }

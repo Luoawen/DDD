@@ -28,12 +28,18 @@ public class BrandRepresentation {
      */
     private String createTime;
 
+    /**
+     * 0:商家申请，需审批，1:商家管理平台添加，无需审批
+     */
+    private Integer isSysAdd;
+
     public BrandRepresentation(BrandBean brandBean) {
         this.brandId = brandBean.getBrandId();
         this.brandName = brandBean.getBrandName();
         this.dealerName = brandBean.getDealerName();
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         this.createTime = format.format(brandBean.getCreateDate());
+        this.isSysAdd = brandBean.getIsSysAdd();
     }
 
     public String getBrandId() {
@@ -66,5 +72,13 @@ public class BrandRepresentation {
 
     public void setCreateTime(String createTime) {
         this.createTime = createTime;
+    }
+
+    public Integer getIsSysAdd() {
+        return isSysAdd;
+    }
+
+    public void setIsSysAdd(Integer isSysAdd) {
+        this.isSysAdd = isSysAdd;
     }
 }

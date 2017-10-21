@@ -81,6 +81,12 @@ public class BrandBean {
     private String dealerName;
 
     /**
+     * 0:商家申请，需审批，1:商家管理平台添加，无需审批
+     */
+    @ColumnAlias(value = "is_sys_add")
+    private Integer isSysAdd;
+
+    /**
      * 创建时间
      */
     @ColumnAlias(value = "created_date")
@@ -188,5 +194,13 @@ public class BrandBean {
 
     public void setDealerName(String dealerName) {
         this.dealerName = dealerName;
+    }
+
+    public Integer getIsSysAdd() {
+        return isSysAdd;
+    }
+
+    public void setIsSysAdd(Integer isSysAdd) {
+        this.isSysAdd = isSysAdd;
     }
 }
