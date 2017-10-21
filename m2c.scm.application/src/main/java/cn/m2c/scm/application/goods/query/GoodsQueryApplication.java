@@ -537,16 +537,16 @@ public class GoodsQueryApplication {
             }
             sql.append(")");
         }
-        sql.append(" AND del_status= 1 group by goods_id");
+        sql.append(" AND g.del_status= 1 group by g.goods_id");
 
         //sortType 排序类型：1：综合，2：价格
         //sort 1：降序，2：升序
-        if (sortType == 1) {//综合-以商品标题为第一优先级进行搜索结果展示；非该优先级的商品按创建时间降序排列，创建时间相同情况下按价格降序排序（默认综合）
+        if (null != sortType && sortType == 1) {//综合-以商品标题为第一优先级进行搜索结果展示；非该优先级的商品按创建时间降序排列，创建时间相同情况下按价格降序排序（默认综合）
             sql.append(" ORDER BY g.created_date desc,s.photograph_price desc ");
-        } else if (sortType == 2) {//价格-首次点击价格降序排列，价格相同创建时间早的优先；再次点击价格升序排列
-            if (sort == 1) {
+        } else if (null != sortType && sortType == 2) {//价格-首次点击价格降序排列，价格相同创建时间早的优先；再次点击价格升序排列
+            if (null != sort && sort == 1) {
                 sql.append(" ORDER BY s.photograph_price desc,g.created_date desc");
-            } else if (sort == 2) {
+            } else if (null != sort && sort == 2) {
                 sql.append(" ORDER BY s.photograph_price asc,g.created_date asc");
             }
         }
@@ -585,7 +585,7 @@ public class GoodsQueryApplication {
             }
             sql.append(")");
         }
-        sql.append(" AND del_status= 1");
+        sql.append(" AND g.del_status= 1");
         return supportJdbcTemplate.jdbcTemplate().queryForObject(sql.toString(), params.toArray(), Integer.class);
     }
 
