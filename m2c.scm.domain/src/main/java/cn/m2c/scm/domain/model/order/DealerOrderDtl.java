@@ -1,6 +1,8 @@
 package cn.m2c.scm.domain.model.order;
 
 import cn.m2c.ddd.common.domain.model.ConcurrencySafeEntity;
+import cn.m2c.ddd.common.domain.model.DomainEventPublisher;
+import cn.m2c.scm.domain.model.order.log.event.OrderOptLogEvent;
 /**
  * 商家订单明细
  * @author fanjc
@@ -53,6 +55,8 @@ public class DealerOrderDtl extends ConcurrencySafeEntity {
 	private Float resRate = 0f;
 	/**BD专员的分成串*/
 	private String bdsRate;
+	/**评论状态， 0 待评，1已评*/
+	private Integer commentStatus = 0;
 	
 	public DealerOrderDtl() {
 		super();
@@ -122,11 +126,21 @@ public class DealerOrderDtl extends ConcurrencySafeEntity {
 	 * 确认收货
 	 * @return
 	 */
-	public boolean confirmRev() {
+	boolean confirmRev() {
 		if (status != 2) {
 			return false;
 		}
 		status = 3;
+		return true;
+	}
+	
+	public boolean confirmRev(String userId) {
+		
+		if (status != 2) {
+			return false;
+		}
+		status = 3;
+		DomainEventPublisher.instance().publish(new OrderOptLogEvent(orderId, dealerOrderId, "用户确认收货成功", userId));
 		return true;
 	}
 	/***
@@ -149,5 +163,16 @@ public class DealerOrderDtl extends ConcurrencySafeEntity {
 	
 	String getExpressNo() {
 		return expressInfo.getExpressNo();
+	}
+	/***
+	 * 是否可以申请售后
+	 * @return
+	 */
+	public boolean canApplySaleAfter() {
+		return status >= 1 && status < 5;
+	}
+	
+	public void hasCommented() {
+		commentStatus = 1;
 	}
 }
