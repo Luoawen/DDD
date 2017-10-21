@@ -13,6 +13,7 @@ public class ShopInfoUpdateCommand extends AssertionConcern implements Serializa
 	private String shopName;//店铺名
 	private String shopIcon;//店铺图标
 	private String shopIntroduce;//店铺介绍
+	private String shopReceipt;//店铺介绍
 	private String customerServiceTel;//客服电话
 	
 	public ShopInfoUpdateCommand() {
@@ -20,13 +21,14 @@ public class ShopInfoUpdateCommand extends AssertionConcern implements Serializa
 	}
 	
 	public ShopInfoUpdateCommand(String dealerId, String shopId, String shopName,
-			String shopIcon, String shopIntroduce, String customerServiceTel) {
+			String shopIcon, String shopIntroduce, String shopReceipt ,String customerServiceTel) {
 		super();
 		this.dealerId = dealerId;
 		this.shopId = shopId;
 		this.shopName = shopName;
 		this.shopIcon = shopIcon;
 		this.shopIntroduce = shopIntroduce;
+		this.shopReceipt = shopReceipt;
 		this.customerServiceTel = customerServiceTel;
 	}
 
@@ -49,5 +51,10 @@ public class ShopInfoUpdateCommand extends AssertionConcern implements Serializa
 	public String getShopId() {
 		return shopId;
 	}
+
+	public String getShopReceipt() {
+		return shopReceipt;
+	}
+	
 	
 }
