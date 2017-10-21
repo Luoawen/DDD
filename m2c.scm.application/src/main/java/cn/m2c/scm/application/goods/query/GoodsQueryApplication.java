@@ -542,12 +542,12 @@ public class GoodsQueryApplication {
         //sortType 排序类型：1：综合，2：价格
         //sort 1：降序，2：升序
         if (sortType == 1) {//综合-以商品标题为第一优先级进行搜索结果展示；非该优先级的商品按创建时间降序排列，创建时间相同情况下按价格降序排序（默认综合）
-            sql.append(" AND ORDER BY g.created_date desc,s.photograph_price desc ");
+            sql.append(" ORDER BY g.created_date desc,s.photograph_price desc ");
         } else if (sortType == 2) {//价格-首次点击价格降序排列，价格相同创建时间早的优先；再次点击价格升序排列
             if (sort == 1) {
-                sql.append(" AND ORDER BY s.photograph_price desc,g.created_date desc");
+                sql.append(" ORDER BY s.photograph_price desc,g.created_date desc");
             } else if (sort == 2) {
-                sql.append(" AND ORDER BY s.photograph_price asc,g.created_date asc");
+                sql.append(" ORDER BY s.photograph_price asc,g.created_date asc");
             }
         }
         sql.append(" LIMIT ?,?");
@@ -634,7 +634,7 @@ public class GoodsQueryApplication {
             params.add(startTime);
             params.add(endTime);
         }
-        sql.append(" AND g.del_status= 1");
+        sql.append(" AND g.del_status= 1 group by goods_id");
         List<GoodsBean> goodsBeanList = this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsBean.class, params.toArray());
         if (null != goodsBeanList && goodsBeanList.size() > 0) {
             for (GoodsBean goodsBean : goodsBeanList) {

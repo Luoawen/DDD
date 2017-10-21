@@ -26,10 +26,6 @@ public class GoodsModel {
     private String goodsSkuName;
     @ExcelField(title = "拍获价/元")
     private Long photographPrice;
-    @ExcelField(title = "供货价/元")
-    private Long supplyPrice;
-    @ExcelField(title = "服务费率/%")
-    private Float serviceRate;
     @ExcelField(title = "商品库存")
     private Integer availableNum;
     @ExcelField(title = "商品销量")
@@ -39,8 +35,7 @@ public class GoodsModel {
     @ExcelField(title = "运费模板")
     private String goodsPostageName;
 
-    public GoodsModel(GoodsBean goodsBean, GoodsSkuBean goodsSkuBean, String goodsClassify,
-                      Float serviceRate, String goodsPostageName) {
+    public GoodsModel(GoodsBean goodsBean, GoodsSkuBean goodsSkuBean, String goodsClassify, String goodsPostageName) {
         this.dealerName = goodsBean.getDealerName();
         this.goodsName = goodsBean.getGoodsName();
         this.goodsBarCode = goodsBean.getGoodsBarCode();
@@ -50,8 +45,6 @@ public class GoodsModel {
         this.goodsSkuId = goodsSkuBean.getSkuId();
         this.goodsSkuName = goodsSkuBean.getSkuName();
         this.photographPrice = goodsSkuBean.getPhotographPrice();
-        this.supplyPrice = goodsSkuBean.getSupplyPrice();
-        this.serviceRate = serviceRate;
         this.availableNum = goodsSkuBean.getAvailableNum();
         this.sellerNum = goodsSkuBean.getSellerNum();
         this.goodsStatus = goodsBean.getGoodsStatus();

@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -20,9 +21,9 @@ import java.util.List;
  */
 public class ExcelUtil {
     //通用
-    public static <Q> void writeExcel(HttpServletResponse response, String fileName, List<Q> list, Class<Q> cls) throws IOException, IllegalArgumentException, IllegalAccessException {
+    public static <Q> void writeExcel(HttpServletResponse response, String fileName, List<Q> list, Class<Q> clazz) throws IOException, IllegalArgumentException, IllegalAccessException {
         HSSFWorkbook wb = new HSSFWorkbook();
-        Field[] fields = cls.getDeclaredFields();
+        Field[] fields = getAllFields(clazz);
         ArrayList<String> headList = new ArrayList<String>();
         for (Field f : fields) {
             ExcelField field = f.getAnnotation(ExcelField.class);
@@ -45,7 +46,7 @@ public class ExcelUtil {
         for (int i = 0; i < list.size(); i++) {
             Row rowData = sheet.createRow(i + 1);//创建数据行
             Q q = list.get(i);
-            Field[] ff = q.getClass().getDeclaredFields();
+            Field[] ff = getAllFields(q.getClass());
             int j = 0;
             for (Field f : ff) {
                 ExcelField field = f.getAnnotation(ExcelField.class);
@@ -85,4 +86,14 @@ public class ExcelUtil {
         return style;
     }
 
+    public static Field[] getAllFields(Class clazz) {
+        List<Field> fieldList = new ArrayList<>();
+        while (clazz != null) {
+            fieldList.addAll(new ArrayList<>(Arrays.asList(clazz.getDeclaredFields())));
+            clazz = clazz.getSuperclass();
+        }
+        Field[] fields = new Field[fieldList.size()];
+        fieldList.toArray(fields);
+        return fields;
+    }
 }
