@@ -16,28 +16,35 @@ public class Shop extends ConcurrencySafeEntity{
 	private String shopName;//店铺名
 	private String shopIcon;//店铺图标
 	private String shopIntroduce;//店铺介绍
+	private String shopReceipt;//发票信息
 	private String customerServiceTel;//客服电话
 	private Date createdDate;
 	private Date lastUpdatedDate;
 	
 	
 	public void updateShopInfo(String shopName, String shopIntroduce,
-			String shopIcon, String customerServiceTel) {
+			String shopIcon,String shopReceipt, String customerServiceTel) {
 		this.shopName = shopName;
 		this.shopIntroduce = shopIntroduce;
 		this.shopIcon = shopIcon;
+		this.shopReceipt = shopReceipt;
 		this.customerServiceTel = customerServiceTel;
 	}
 
 
-	public void addShopInfo(String dealerId, String shopId, String shopName,
-			String shopIntroduce, String shopIcon, String customerServiceTel) {
-		
-		this.dealerId = dealerId;
+
+
+	public Shop(String shopId, String dealerId, String shopName,
+			String shopIcon, String shopIntroduce, String shopReceipt,
+			String customerServiceTel) {
+		super();
 		this.shopId = shopId;
+		this.dealerId = dealerId;
 		this.shopName = shopName;
-		this.shopIntroduce = shopIntroduce;
 		this.shopIcon = shopIcon;
+		this.shopIntroduce = shopIntroduce;
+		this.shopReceipt = shopReceipt;
 		this.customerServiceTel = customerServiceTel;
 	}
+	
 }
