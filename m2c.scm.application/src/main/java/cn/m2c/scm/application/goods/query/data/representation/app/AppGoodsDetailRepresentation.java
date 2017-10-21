@@ -23,8 +23,9 @@ public class AppGoodsDetailRepresentation {
     private List<Map> goodsSpecifications;
     private List<AppGoodsSkuRepresentation> goodsSKUs;
     private List<String> goodsMainImages;
+    private String mresId;
 
-    public AppGoodsDetailRepresentation(GoodsBean bean, List<GoodsGuaranteeBean> goodsGuaranteeBeans, String goodsUnitName) {
+    public AppGoodsDetailRepresentation(GoodsBean bean, List<GoodsGuaranteeBean> goodsGuaranteeBeans, String goodsUnitName, String mresId) {
         this.goodsId = bean.getGoodsId();
         this.goodsName = bean.getGoodsName();
         this.goodsSubTitle = bean.getGoodsSubTitle();
@@ -42,6 +43,7 @@ public class AppGoodsDetailRepresentation {
             }
         }
         this.goodsMainImages = JsonUtils.toList(bean.getGoodsMainImages(), String.class);
+        this.mresId = mresId;
     }
 
     public String getGoodsName() {
@@ -122,5 +124,13 @@ public class AppGoodsDetailRepresentation {
 
     public void setGoodsId(String goodsId) {
         this.goodsId = goodsId;
+    }
+
+    public String getMresId() {
+        return mresId;
+    }
+
+    public void setMresId(String mresId) {
+        this.mresId = mresId;
     }
 }

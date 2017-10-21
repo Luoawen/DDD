@@ -10,7 +10,9 @@ import cn.m2c.scm.application.goods.query.data.representation.GoodsSkuInfoRepres
 import cn.m2c.scm.application.order.query.dto.GoodsDto;
 import cn.m2c.scm.application.utils.Utils;
 import cn.m2c.scm.domain.NegativeException;
-
+import cn.m2c.scm.domain.service.goods.GoodsService;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -40,9 +43,10 @@ public class GoodsQueryApplication {
 
     @Autowired
     RedisUtil redisUtil;
-
     @Autowired
     GoodsClassifyQueryApplication goodsClassifyQueryApplication;
+    @Resource(name = "goodsDubboService")
+    GoodsService goodsDubboService;
 
     /**
      * 搜索
@@ -258,7 +262,7 @@ public class GoodsQueryApplication {
         sql.append(" SELECT ");
         sql.append(" * ");
         sql.append(" FROM ");
-        sql.append(" t_scm_goods where goods_id in (" + Utils.listParseString(goodsIds) + ")");
+        sql.append(" t_scm_goods where goods_id in (" + Utils.listParseString(goodsIds) + ") AND del_status = 1");
         return this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsBean.class);
     }
 
@@ -634,6 +638,63 @@ public class GoodsQueryApplication {
         }
         sql.append(" AND g.del_status= 1 group by goods_id");
         List<GoodsBean> goodsBeanList = this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsBean.class, params.toArray());
+        if (null != goodsBeanList && goodsBeanList.size() > 0) {
+            for (GoodsBean goodsBean : goodsBeanList) {
+                goodsBean.setGoodsSkuBeans(queryGoodsSKUsByGoodsId(goodsBean.getId()));
+            }
+        }
+        return goodsBeanList;
+    }
+
+    public List<GoodsBean> recognizedGoods(String recognizedInfo, String location) {
+        //解析json
+        List<Map<String, Object>> recognizedList = new Gson().fromJson(recognizedInfo, new TypeToken<List<Map<String, Object>>>() {
+        }.getType());
+        List<Double> scoreList = new ArrayList<Double>();
+        List<String> recognizedIds = new ArrayList<String>();
+        //识别图片列表逻辑
+        if (null != recognizedList && recognizedList.size() > 0) {
+            for (Map<String, Object> map : recognizedList) {
+                Double score = (Double) map.get("score");
+                scoreList.add(score);
+            }
+            //判断识别率高低
+            Collections.sort(scoreList);//升序排序
+            Collections.reverse(scoreList);//倒序
+            if (scoreList.get(0) > 0.75) {
+                recognizedIds.add((String) recognizedList.get(0).get("recognizedId"));
+                return queryGoodsByRecognizedIds(recognizedIds);
+            } else if (scoreList.get(0) > 0.01) {
+                //取前10条
+                for (int j = 0; j < scoreList.size() && j < 10; j++) {
+                    if (scoreList.get(j) > 0.01)
+                        recognizedIds.add((String) recognizedList.get(j).get("recognizedId"));
+                }
+                return queryGoodsByRecognizedIds(recognizedIds);
+            }
+        }
+
+        Map<String, Object> locationInfo = new Gson().fromJson(location, new TypeToken<Map<String, Object>>() {
+        }.getType());
+        if (null != locationInfo) {
+            Double longitude = Double.parseDouble((String) locationInfo.get("longitude"));
+            Double latitude = Double.parseDouble((String) locationInfo.get("latitude"));
+            //根据经纬度坐标查询商品ID
+            List<String> goodsIdList = goodsDubboService.getGoodsIdByCoordinate(longitude, latitude);
+            if (null != goodsIdList && goodsIdList.size() > 0) {
+                return queryGoodsByGoodsIds(goodsIdList);
+            }
+        }
+        return null;
+    }
+
+    public List<GoodsBean> queryGoodsByRecognizedIds(List<String> recognizedIds) {
+        StringBuilder sql = new StringBuilder();
+        sql.append(" SELECT ");
+        sql.append(" * ");
+        sql.append(" FROM ");
+        sql.append(" t_scm_goods WHERE 1 = 1 AND goods_id IN (" + Utils.listParseString(recognizedIds) + ")");
+        List<GoodsBean> goodsBeanList = this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsBean.class);
         if (null != goodsBeanList && goodsBeanList.size() > 0) {
             for (GoodsBean goodsBean : goodsBeanList) {
                 goodsBean.setGoodsSkuBeans(queryGoodsSKUsByGoodsId(goodsBean.getId()));

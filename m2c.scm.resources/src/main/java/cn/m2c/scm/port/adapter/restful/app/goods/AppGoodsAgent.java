@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.Resource;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -44,14 +45,16 @@ public class AppGoodsAgent {
 
     @Autowired
     GoodsQueryApplication goodsQueryApplication;
-    @Autowired
-    GoodsService goodsService;
+    @Resource(name = "goodsRestService")
+    GoodsService goodsRestService;
     @Autowired
     GoodsGuaranteeQueryApplication goodsGuaranteeQueryApplication;
     @Autowired
     UnitQuery unitQuery;
     @Autowired
     GoodsClassifyQueryApplication goodsClassifyQueryApplication;
+    @Resource(name = "goodsDubboService")
+    GoodsService goodsDubboService;
 
     /**
      * 商品猜你喜欢
@@ -78,7 +81,7 @@ public class AppGoodsAgent {
                     List<GoodsBean> goodsBeans = goodsQueryApplication.getPagedList(pageNum, rows, goodsBeanList);
                     List<AppGoodsGuessRepresentation> resultRepresentation = new ArrayList<>();
                     for (GoodsBean goodsBean : goodsBeans) {
-                        List<Map> goodsTags = goodsService.getGoodsTags(goodsBean.getDealerId(), goodsBean.getGoodsId(), goodsBean.getGoodsClassifyId());
+                        List<Map> goodsTags = goodsRestService.getGoodsTags(goodsBean.getDealerId(), goodsBean.getGoodsId(), goodsBean.getGoodsClassifyId());
                         resultRepresentation.add(new AppGoodsGuessRepresentation(goodsBean, goodsTags));
                     }
                     result.setContent(resultRepresentation);
@@ -86,7 +89,7 @@ public class AppGoodsAgent {
                 } else {
                     List<AppGoodsGuessRepresentation> resultRepresentation = new ArrayList<>();
                     for (GoodsBean goodsBean : goodsBeanList) {
-                        List<Map> goodsTags = goodsService.getGoodsTags(goodsBean.getDealerId(), goodsBean.getGoodsId(), goodsBean.getGoodsClassifyId());
+                        List<Map> goodsTags = goodsRestService.getGoodsTags(goodsBean.getDealerId(), goodsBean.getGoodsId(), goodsBean.getGoodsClassifyId());
                         resultRepresentation.add(new AppGoodsGuessRepresentation(goodsBean, goodsTags));
                     }
                     result.setContent(resultRepresentation);
@@ -117,7 +120,7 @@ public class AppGoodsAgent {
                 List<GoodsGuaranteeBean> goodsGuarantee = goodsGuaranteeQueryApplication.queryGoodsGuaranteeByIds(JsonUtils.toList(goodsBean.getGoodsGuarantee(), String.class));
                 String goodsUnitName = unitQuery.getUnitNameByUnitId(goodsBean.getGoodsUnitId());
                 AppGoodsDetailRepresentation representation = new AppGoodsDetailRepresentation(goodsBean,
-                        goodsGuarantee, goodsUnitName);
+                        goodsGuarantee, goodsUnitName, null);
                 result.setContent(representation);
             }
             result.setStatus(MCode.V_200);
@@ -183,7 +186,7 @@ public class AppGoodsAgent {
                     for (GoodsBean goodsBean : goodsBeans) {
                         // 获取商品分类的一级大类
                         goodsClassifyIds.add(goodsBean.getGoodsClassifyId());
-                        List<Map> goodsTags = goodsService.getGoodsTags(goodsBean.getDealerId(), goodsBean.getGoodsId(), goodsBean.getGoodsClassifyId());
+                        List<Map> goodsTags = goodsRestService.getGoodsTags(goodsBean.getDealerId(), goodsBean.getGoodsId(), goodsBean.getGoodsClassifyId());
                         representations.add(new AppGoodsSearchRepresentation(goodsBean, goodsTags));
                     }
                     resultMap.put("goods", representations);
@@ -211,5 +214,57 @@ public class AppGoodsAgent {
         return new ResponseEntity<MPager>(result, HttpStatus.OK);
     }
 
-
+    /**
+     * APP拍照获取商品
+     *
+     * @param token
+     * @param recognizedInfo
+     * @param barNo
+     * @param location
+     * @param sn
+     * @param os
+     * @param appVersion
+     * @param osVersion
+     * @param triggerTime
+     * @param userId
+     * @param userName
+     * @return
+     */
+    @RequestMapping(value = "/app/recognized", method = RequestMethod.GET)
+    public ResponseEntity<MResult> recognizedPic(
+            @RequestParam(value = "token", required = true) String token,
+            @RequestParam(value = "recognizedInfo", required = false) String recognizedInfo,
+            @RequestParam(value = "barNo", required = false) String barNo,
+            @RequestParam(value = "location", required = false) String location,
+            @RequestParam(value = "sn", required = true) String sn,
+            @RequestParam(value = "os", required = true) String os,
+            @RequestParam(value = "appVersion", required = true) String appVersion,
+            @RequestParam(value = "osVersion", required = true) String osVersion,
+            @RequestParam(value = "triggerTime", required = true) long triggerTime,
+            @RequestParam(value = "userId", required = false, defaultValue = "") String userId,
+            @RequestParam(value = "userName", required = false, defaultValue = "") String userName
+    ) {
+        MResult result = new MResult(MCode.V_1);
+        Map mediaMap = goodsDubboService.getMediaResourceInfo(barNo);
+        String mresId = null == mediaMap ? "" : (String) mediaMap.get("mresId");
+        try {
+            List<GoodsBean> goodsBeans = goodsQueryApplication.recognizedGoods(recognizedInfo, location);
+            if (null != goodsBeans && goodsBeans.size() > 0) {
+                List<AppGoodsDetailRepresentation> representations = new ArrayList<>();
+                for (GoodsBean goodsBean : goodsBeans) {
+                    List<GoodsGuaranteeBean> goodsGuarantee = goodsGuaranteeQueryApplication.queryGoodsGuaranteeByIds(JsonUtils.toList(goodsBean.getGoodsGuarantee(), String.class));
+                    String goodsUnitName = unitQuery.getUnitNameByUnitId(goodsBean.getGoodsUnitId());
+                    AppGoodsDetailRepresentation representation = new AppGoodsDetailRepresentation(goodsBean,
+                            goodsGuarantee, goodsUnitName, mresId);
+                    representations.add(representation);
+                }
+                result.setContent(representations);
+            }
+            result.setStatus(MCode.V_200);
+        } catch (Exception e) {
+            LOGGER.error("recognizedPic Exception e:", e);
+            result = new MResult(MCode.V_400, "拍照获取商品失败");
+        }
+        return new ResponseEntity<MResult>(result, HttpStatus.OK);
+    }
 }
