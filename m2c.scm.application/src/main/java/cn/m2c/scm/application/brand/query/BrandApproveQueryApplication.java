@@ -43,7 +43,7 @@ public class BrandApproveQueryApplication {
         sql.append(" SELECT ");
         sql.append(" * ");
         sql.append(" FROM ");
-        sql.append(" t_scm_brand_approve WHERE 1 = 1 ");
+        sql.append(" t_scm_brand_approve WHERE 1 = 1  AND status=1 ");
         if (null != approveStatus) {
             sql.append(" AND approve_status = ? ");
             params.add(approveStatus);
@@ -80,7 +80,7 @@ public class BrandApproveQueryApplication {
         sql.append(" SELECT ");
         sql.append(" count(*) ");
         sql.append(" FROM ");
-        sql.append(" t_scm_brand_approve WHERE 1 = 1  ");
+        sql.append(" t_scm_brand_approve WHERE 1 = 1 AND status=1 ");
         if (null != approveStatus) {
             sql.append(" AND approve_status = ? ");
             params.add(approveStatus);
