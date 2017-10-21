@@ -65,32 +65,32 @@ public class GoodsQueryApplication {
         List<Object> params = new ArrayList<Object>();
         StringBuilder sql = new StringBuilder();
         sql.append(" SELECT ");
-        sql.append(" goods_id ");
+        sql.append(" g.* ");
         sql.append(" FROM ");
-        sql.append(" t_scm_goods_sku WHERE 1 = 1");
+        sql.append(" t_scm_goods g,t_scm_goods_sku s WHERE g.id=s.goods_id ");
         if (StringUtils.isNotEmpty(dealerId)) {
-            sql.append(" AND dealer_id = ? ");
+            sql.append(" AND g.dealer_id = ? ");
             params.add(dealerId);
         }
         // 根据商品分类id,找到所有下级分类ID
         if (StringUtils.isNotEmpty(goodsClassifyId)) {
             List<String> goodsClassifyIds = goodsClassifyQueryApplication.recursionQueryGoodsSubClassifyId(goodsClassifyId, new ArrayList<String>());
             goodsClassifyIds.add(goodsClassifyId);
-            sql.append(" AND goods_classify_id in (" + Utils.listParseString(goodsClassifyIds) + ") ");
+            sql.append(" AND g.goods_classify_id in (" + Utils.listParseString(goodsClassifyIds) + ") ");
         }
         if (null != goodsStatus) {
-            sql.append(" AND goods_status = ? ");
+            sql.append(" AND g.goods_status = ? ");
             params.add(goodsStatus);
         }
         if (StringUtils.isNotEmpty(condition)) {
             if (StringUtils.isNotEmpty(dealerId)) {//商家平台
-                sql.append(" AND (goods_name LIKE ? OR goods_bar_code LIKE ? OR goods_code LIKE ? OR goods_brand_name LIKE ?)");
+                sql.append(" AND (g.goods_name LIKE ? OR g.goods_bar_code LIKE ? OR s.goods_code LIKE ? OR g.goods_brand_name LIKE ?)");
                 params.add("%" + condition + "%");
                 params.add("%" + condition + "%");
                 params.add("%" + condition + "%");
                 params.add("%" + condition + "%");
             } else {//商家管理平台
-                sql.append(" AND (sku_id LIKE ? OR goods_name LIKE ? OR goods_bar_code LIKE ? OR goods_code LIKE ? OR dealer_name LIKE ? OR goods_brand_name LIKE ? )");
+                sql.append(" AND (s.sku_id LIKE ? OR g.goods_name LIKE ? OR g.goods_bar_code LIKE ? OR s.goods_code LIKE ? OR g.dealer_name LIKE ? OR g.goods_brand_name LIKE ? )");
                 params.add("%" + condition + "%");
                 params.add("%" + condition + "%");
                 params.add("%" + condition + "%");
@@ -100,20 +100,19 @@ public class GoodsQueryApplication {
             }
         }
         if (StringUtils.isNotEmpty(startTime) && StringUtils.isNotEmpty(endTime)) {
-            sql.append(" AND goods_created_date BETWEEN ? AND ?");
+            sql.append(" AND g.created_date BETWEEN ? AND ?");
             params.add(startTime);
             params.add(endTime);
         }
-        sql.append(" AND del_status= 1 group by goods_id ORDER BY goods_created_date DESC ");
+        sql.append(" AND g.del_status= 1 group by g.goods_id ORDER BY g.created_date DESC ");
         sql.append(" LIMIT ?,?");
         params.add(rows * (pageNum - 1));
         params.add(rows);
 
-        List<GoodsBean> goodsBeanList = new ArrayList<>();
-        List<Integer> ids = supportJdbcTemplate.jdbcTemplate().queryForList(sql.toString(), params.toArray(), Integer.class);
-        if (null != ids && ids.size() > 0) {
-            for (Integer id : ids) {
-                goodsBeanList.add(queryGoodsById(id));
+        List<GoodsBean> goodsBeanList = this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsBean.class, params.toArray());
+        if (null != goodsBeanList && goodsBeanList.size() > 0) {
+            for (GoodsBean goodsBean : goodsBeanList) {
+                goodsBean.setGoodsSkuBeans(queryGoodsSKUsByGoodsId(goodsBean.getId()));
             }
         }
         return goodsBeanList;
@@ -124,32 +123,32 @@ public class GoodsQueryApplication {
         List<Object> params = new ArrayList<Object>();
         StringBuilder sql = new StringBuilder();
         sql.append(" SELECT ");
-        sql.append(" count(distinct goods_id) ");
+        sql.append(" count(distinct g.goods_id) ");
         sql.append(" FROM ");
-        sql.append(" t_scm_goods_sku WHERE 1 = 1");
+        sql.append(" t_scm_goods g,t_scm_goods_sku s WHERE g.id=s.goods_id ");
         if (StringUtils.isNotEmpty(dealerId)) {
-            sql.append(" AND dealer_id = ? ");
+            sql.append(" AND g.dealer_id = ? ");
             params.add(dealerId);
         }
         // 根据商品分类id,找到所有下级分类ID
         if (StringUtils.isNotEmpty(goodsClassifyId)) {
             List<String> goodsClassifyIds = goodsClassifyQueryApplication.recursionQueryGoodsSubClassifyId(goodsClassifyId, new ArrayList<String>());
             goodsClassifyIds.add(goodsClassifyId);
-            sql.append(" AND goods_classify_id in (" + Utils.listParseString(goodsClassifyIds) + ") ");
+            sql.append(" AND g.goods_classify_id in (" + Utils.listParseString(goodsClassifyIds) + ") ");
         }
         if (null != goodsStatus) {
-            sql.append(" AND goods_status = ? ");
+            sql.append(" AND g.goods_status = ? ");
             params.add(goodsStatus);
         }
         if (StringUtils.isNotEmpty(condition)) {
             if (StringUtils.isNotEmpty(dealerId)) {//商家平台
-                sql.append(" AND (goods_name LIKE ? OR goods_bar_code LIKE ? OR goods_code LIKE ? OR goods_brand_name LIKE ?)");
+                sql.append(" AND (g.goods_name LIKE ? OR g.goods_bar_code LIKE ? OR s.goods_code LIKE ? OR g.goods_brand_name LIKE ?)");
                 params.add("%" + condition + "%");
                 params.add("%" + condition + "%");
                 params.add("%" + condition + "%");
                 params.add("%" + condition + "%");
             } else {//商家管理平台
-                sql.append(" AND (sku_id LIKE ? OR goods_name LIKE ? OR goods_bar_code LIKE ? OR goods_code LIKE ? OR dealer_name LIKE ? OR goods_brand_name LIKE ? )");
+                sql.append(" AND (s.sku_id LIKE ? OR g.goods_name LIKE ? OR g.goods_bar_code LIKE ? OR s.goods_code LIKE ? OR g.dealer_name LIKE ? OR g.goods_brand_name LIKE ? )");
                 params.add("%" + condition + "%");
                 params.add("%" + condition + "%");
                 params.add("%" + condition + "%");
@@ -159,11 +158,11 @@ public class GoodsQueryApplication {
             }
         }
         if (StringUtils.isNotEmpty(startTime) && StringUtils.isNotEmpty(endTime)) {
-            sql.append(" AND goods_created_date BETWEEN ? AND ?");
+            sql.append(" AND g.created_date BETWEEN ? AND ?");
             params.add(startTime);
             params.add(endTime);
         }
-        sql.append(" AND del_status= 1");
+        sql.append(" AND g.del_status= 1");
 
         return supportJdbcTemplate.jdbcTemplate().queryForObject(sql.toString(), params.toArray(), Integer.class);
     }
@@ -195,28 +194,27 @@ public class GoodsQueryApplication {
         List<Object> params = new ArrayList<Object>();
         StringBuilder sql = new StringBuilder();
         sql.append(" SELECT ");
-        sql.append(" goods_id ");
+        sql.append(" g.* ");
         sql.append(" FROM ");
-        sql.append(" t_scm_goods_sku WHERE 1 = 1");
+        sql.append(" t_scm_goods g,t_scm_goods_sku s WHERE g.id=s.goods_id");
         if (StringUtils.isNotEmpty(goodsClassifyId)) {
             List<String> goodsClassifyIds = goodsClassifyQueryApplication.recursionQueryGoodsSubClassifyId(goodsClassifyId, new ArrayList<String>());
             goodsClassifyIds.add(goodsClassifyId);
-            sql.append(" AND goods_classify_id in (" + Utils.listParseString(goodsClassifyIds) + ") ");
+            sql.append(" AND g.goods_classify_id in (" + Utils.listParseString(goodsClassifyIds) + ") ");
         }
         if (StringUtils.isNotEmpty(condition)) {
-            sql.append(" AND goods_name like ? ");
+            sql.append(" AND g.goods_name like ? ");
             params.add("%" + condition + "%");
         }
-        sql.append(" AND del_status= 1 group by goods_id ORDER BY goods_created_date desc,photograph_price desc ");
+        sql.append(" AND g.del_status= 1 group by g.goods_id ORDER BY g.created_date desc,s.photograph_price desc ");
         sql.append(" LIMIT ?,?");
         params.add(rows * (pageNum - 1));
         params.add(rows);
 
-        List<GoodsBean> goodsBeanList = new ArrayList<>();
-        List<Integer> ids = supportJdbcTemplate.jdbcTemplate().queryForList(sql.toString(), params.toArray(), Integer.class);
-        if (null != ids && ids.size() > 0) {
-            for (Integer id : ids) {
-                goodsBeanList.add(queryGoodsById(id));
+        List<GoodsBean> goodsBeanList = this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsBean.class, params.toArray());
+        if (null != goodsBeanList && goodsBeanList.size() > 0) {
+            for (GoodsBean goodsBean : goodsBeanList) {
+                goodsBean.setGoodsSkuBeans(queryGoodsSKUsByGoodsId(goodsBean.getId()));
             }
         }
         return goodsBeanList;
@@ -226,19 +224,19 @@ public class GoodsQueryApplication {
         List<Object> params = new ArrayList<Object>();
         StringBuilder sql = new StringBuilder();
         sql.append(" SELECT ");
-        sql.append(" count(distinct goods_id) ");
+        sql.append(" count(distinct g.goods_id) ");
         sql.append(" FROM ");
-        sql.append(" t_scm_goods_sku WHERE 1 = 1");
+        sql.append(" t_scm_goods g,t_scm_goods_sku s WHERE g.id=s.goods_id");
         if (StringUtils.isNotEmpty(goodsClassifyId)) {
             List<String> goodsClassifyIds = goodsClassifyQueryApplication.recursionQueryGoodsSubClassifyId(goodsClassifyId, new ArrayList<String>());
             goodsClassifyIds.add(goodsClassifyId);
-            sql.append(" AND goods_classify_id in (" + Utils.listParseString(goodsClassifyIds) + ") ");
+            sql.append(" AND g.goods_classify_id in (" + Utils.listParseString(goodsClassifyIds) + ") ");
         }
         if (StringUtils.isNotEmpty(condition)) {
-            sql.append(" AND goods_name like ? ");
+            sql.append(" AND g.goods_name like ? ");
             params.add("%" + condition + "%");
         }
-        sql.append(" AND del_status= 1");
+        sql.append(" AND g.del_status= 1");
         return supportJdbcTemplate.jdbcTemplate().queryForObject(sql.toString(), params.toArray(), Integer.class);
     }
 
