@@ -239,7 +239,7 @@ public class AfterSellOrderQuery {
 		Integer orderTotalPrice = 0;
 		
 		for (GoodsInfoBean goodsInfo : goodsInfoBeans) {
-			System.out.println(goodsInfo.getPlateformDiscount() + "---------------------------" + goodsInfo.getDealerDiscount());
+			//System.out.println(goodsInfo.getPlateformDiscount() + "---------------------------" + goodsInfo.getDealerDiscount());
 			totalPrice += (goodsInfo.getPrice() * goodsInfo.getSellNum() +  goodsInfo.getFreight());
 			goodsInfo.setTotalPrice(totalPrice);
 			orderTotalPrice += totalPrice;
