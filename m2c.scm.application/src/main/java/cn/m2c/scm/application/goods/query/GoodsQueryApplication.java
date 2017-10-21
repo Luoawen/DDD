@@ -521,18 +521,127 @@ public class GoodsQueryApplication {
             goodsClassifyIds.add(goodsClassifyId);
             sql.append(" AND goods_classify_id in (" + Utils.listParseString(goodsClassifyIds) + ") ");
         }
-        if(StringUtils.isNotEmpty(condition)){
+        if (StringUtils.isNotEmpty(condition)) {
             //商品标题、商品副标题、SKU、品牌、所属分类、商品关键词、商品图文详情文本内容
-            sql.append(" AND (g.goods_name LIKE ? or g.goods_sub_title LIKE ? or s.sku_id LIKE ? or g.goods_brand_name LIKE ? or g.goods_key_word LIKE ? or g.goods_desc LIKE ? or g.goods_classify_id in ?)");
+            sql.append(" AND (g.goods_name LIKE ? OR g.goods_sub_title LIKE ? OR s.sku_id LIKE ? OR g.goods_brand_name LIKE ? OR g.goods_key_word LIKE ? OR g.goods_desc LIKE ?");
             params.add("%" + condition + "%");
             params.add("%" + condition + "%");
             params.add("%" + condition + "%");
             params.add("%" + condition + "%");
             params.add("%" + condition + "%");
             params.add("%" + condition + "%");
-            //params.add("(" + Utils.listParseString(goodsClassifyIds) + ")");
+            List<String> goodsClassifyIds = goodsClassifyQueryApplication.getGoodsSubClassifyIdByName(condition);
+            if (null != goodsClassifyIds && goodsClassifyIds.size() > 0) {
+                sql.append("  OR g.goods_classify_id in ?");
+                params.add("(" + Utils.listParseString(goodsClassifyIds) + ")");
+            }
+            sql.append(")");
         }
+        sql.append(" AND del_status= 1 group by goods_id");
+
+        //sortType 排序类型：1：综合，2：价格
+        //sort 1：降序，2：升序
+        if (sortType == 1) {//综合-以商品标题为第一优先级进行搜索结果展示；非该优先级的商品按创建时间降序排列，创建时间相同情况下按价格降序排序（默认综合）
+            sql.append(" ORDER BY g.created_date desc,s.photograph_price desc ");
+        } else if (sortType == 2) {//价格-首次点击价格降序排列，价格相同创建时间早的优先；再次点击价格升序排列
+            if (sort == 1) {
+                sql.append(" ORDER BY s.photograph_price desc,g.created_date desc");
+            } else if (sort == 2) {
+                sql.append(" ORDER BY s.photograph_price asc,g.created_date asc");
+            }
+        }
+        sql.append(" LIMIT ?,?");
+        params.add(rows * (pageNum - 1));
+        params.add(rows);
         return this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsBean.class, params.toArray());
+    }
+
+    public Integer appSearchGoodsTotal(String goodsClassifyId, String condition) {
+        List<Object> params = new ArrayList<Object>();
+        StringBuilder sql = new StringBuilder();
+        sql.append(" SELECT ");
+        sql.append(" count(distinct g.goods_id) ");
+        sql.append(" FROM ");
+        sql.append(" t_scm_goods g,t_scm_goods_sku s WHERE g.id=s.goods_id");
+        if (StringUtils.isNotEmpty(goodsClassifyId)) {
+            // 查询所有一级分类的下级分类
+            List<String> goodsClassifyIds = goodsClassifyQueryApplication.recursionQueryGoodsSubClassifyId(goodsClassifyId, new ArrayList<String>());
+            goodsClassifyIds.add(goodsClassifyId);
+            sql.append(" AND goods_classify_id in (" + Utils.listParseString(goodsClassifyIds) + ") ");
+        }
+        if (StringUtils.isNotEmpty(condition)) {
+            //商品标题、商品副标题、SKU、品牌、所属分类、商品关键词、商品图文详情文本内容
+            sql.append(" AND (g.goods_name LIKE ? OR g.goods_sub_title LIKE ? OR s.sku_id LIKE ? OR g.goods_brand_name LIKE ? OR g.goods_key_word LIKE ? OR g.goods_desc LIKE ?");
+            params.add("%" + condition + "%");
+            params.add("%" + condition + "%");
+            params.add("%" + condition + "%");
+            params.add("%" + condition + "%");
+            params.add("%" + condition + "%");
+            params.add("%" + condition + "%");
+            List<String> goodsClassifyIds = goodsClassifyQueryApplication.getGoodsSubClassifyIdByName(condition);
+            if (null != goodsClassifyIds && goodsClassifyIds.size() > 0) {
+                sql.append("  OR g.goods_classify_id in ?");
+                params.add("(" + Utils.listParseString(goodsClassifyIds) + ")");
+            }
+            sql.append(")");
+        }
+        sql.append(" AND del_status= 1");
+        return supportJdbcTemplate.jdbcTemplate().queryForObject(sql.toString(), params.toArray(), Integer.class);
+    }
+
+
+    public List<GoodsBean> searchGoodsExport(String dealerId, String goodsClassifyId, Integer goodsStatus,
+                                             String condition, String startTime, String endTime) {
+        List<Object> params = new ArrayList<Object>();
+        StringBuilder sql = new StringBuilder();
+        sql.append(" SELECT ");
+        sql.append(" g.* ");
+        sql.append(" FROM ");
+        sql.append(" t_scm_goods g,t_scm_goods_sku s WHERE g.id=s.goods_id");
+        if (StringUtils.isNotEmpty(dealerId)) {
+            sql.append(" AND g.dealer_id = ? ");
+            params.add(dealerId);
+        }
+        // 根据商品分类id,找到所有下级分类ID
+        if (StringUtils.isNotEmpty(goodsClassifyId)) {
+            List<String> goodsClassifyIds = goodsClassifyQueryApplication.recursionQueryGoodsSubClassifyId(goodsClassifyId, new ArrayList<String>());
+            goodsClassifyIds.add(goodsClassifyId);
+            sql.append(" AND g.goods_classify_id in (" + Utils.listParseString(goodsClassifyIds) + ") ");
+        }
+        if (null != goodsStatus) {
+            sql.append(" AND g.goods_status = ? ");
+            params.add(goodsStatus);
+        }
+        if (StringUtils.isNotEmpty(condition)) {
+            if (StringUtils.isNotEmpty(dealerId)) {//商家平台
+                sql.append(" AND (g.goods_name LIKE ? OR g.goods_bar_code LIKE ? OR s.goods_code LIKE ? OR g.goods_brand_name LIKE ?)");
+                params.add("%" + condition + "%");
+                params.add("%" + condition + "%");
+                params.add("%" + condition + "%");
+                params.add("%" + condition + "%");
+            } else {//商家管理平台
+                sql.append(" AND (s.sku_id LIKE ? OR g.goods_name LIKE ? OR g.goods_bar_code LIKE ? OR s.goods_code LIKE ? OR g.dealer_name LIKE ? OR g.goods_brand_name LIKE ? )");
+                params.add("%" + condition + "%");
+                params.add("%" + condition + "%");
+                params.add("%" + condition + "%");
+                params.add("%" + condition + "%");
+                params.add("%" + condition + "%");
+                params.add("%" + condition + "%");
+            }
+        }
+        if (StringUtils.isNotEmpty(startTime) && StringUtils.isNotEmpty(endTime)) {
+            sql.append(" AND g.created_date BETWEEN ? AND ?");
+            params.add(startTime);
+            params.add(endTime);
+        }
+        sql.append(" AND g.del_status= 1 group by goods_id");
+        List<GoodsBean> goodsBeanList = this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsBean.class, params.toArray());
+        if (null != goodsBeanList && goodsBeanList.size() > 0) {
+            for (GoodsBean goodsBean : goodsBeanList) {
+                goodsBean.setGoodsSkuBeans(queryGoodsSKUsByGoodsId(goodsBean.getId()));
+            }
+        }
+        return goodsBeanList;
     }
 }
 

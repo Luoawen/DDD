@@ -144,4 +144,30 @@ public class GoodsClassifyQueryApplication {
         }
         return null;
     }
+
+    public List<GoodsClassifyBean> queryGoodsClassifiesByName(String classifyName) {
+        List<Object> params = new ArrayList<Object>();
+        StringBuilder sql = new StringBuilder();
+        sql.append(" SELECT ");
+        sql.append(" * ");
+        sql.append(" FROM ");
+        sql.append(" t_scm_goods_classify WHERE 1 = 1");
+        sql.append(" AND classify_name LIKE ? AND status = 1");
+        params.add("%" + classifyName + "%");
+        List<GoodsClassifyBean> goodsClassifyBeans = this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsClassifyBean.class, params.toArray());
+        return goodsClassifyBeans;
+    }
+
+    public List<String> getGoodsSubClassifyIdByName(String classifyName) {
+        List<String> subList = new ArrayList<>();
+        List<GoodsClassifyBean> list = queryGoodsClassifiesByName(classifyName);
+        if (null != list && list.size() > 0) {
+            for (GoodsClassifyBean bean : list) {
+                List<String> goodsClassifyIds = recursionQueryGoodsSubClassifyId(bean.getClassifyId(), new ArrayList<String>());
+                goodsClassifyIds.add(bean.getClassifyId());
+                subList.addAll(goodsClassifyIds);
+            }
+        }
+        return subList;
+    }
 }
