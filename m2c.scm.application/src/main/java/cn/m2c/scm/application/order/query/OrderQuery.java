@@ -14,7 +14,7 @@ import cn.m2c.ddd.common.port.adapter.persistence.springJdbc.SupportJdbcTemplate
 import cn.m2c.scm.application.order.data.bean.OrderDealerBean;
 import cn.m2c.scm.application.order.data.bean.DealerOrderDetailBean;
 import cn.m2c.scm.application.order.data.bean.GoodsInfoBean;
-import cn.m2c.scm.application.order.data.bean.mainOrderBean;
+import cn.m2c.scm.application.order.data.bean.MainOrderBean;
 
 @Repository
 public class OrderQuery {
@@ -37,7 +37,7 @@ public class OrderQuery {
 	 * @param rows 每页多少行
 	 * @return
 	 */
-	public List<mainOrderBean> mainOrderListQuery(Integer orderStatus, Integer afterSaleStatus, String startTime,
+	public List<MainOrderBean> mainOrderListQuery(Integer orderStatus, Integer afterSaleStatus, String startTime,
 			String endTime, String condition, Integer payWay, Integer pageNum, Integer rows) {
 		List<Object> params = new ArrayList<Object>();
 		StringBuilder sql = new StringBuilder();
@@ -83,11 +83,11 @@ public class OrderQuery {
 		/**
 		 * 将商家订单塞进对应的平台订单
 		 */
-		List<mainOrderBean> mainOrderList = this.supportJdbcTemplate.queryForBeanList(sql.toString(),
-				mainOrderBean.class, params.toArray());
+		List<MainOrderBean> mainOrderList = this.supportJdbcTemplate.queryForBeanList(sql.toString(),
+				MainOrderBean.class, params.toArray());
 		List<OrderDealerBean> dealerOrderList = dealerOrderListQuery(orderStatus, afterSaleStatus, startTime, endTime,
 				condition, payWay, pageNum, rows);
-		for (mainOrderBean mainOrder : mainOrderList) {
+		for (MainOrderBean mainOrder : mainOrderList) {
 			for (OrderDealerBean dealerOrder : dealerOrderList) {
 				List<OrderDealerBean> list = new ArrayList<OrderDealerBean>();
 				if (mainOrder.getOrderId() == dealerOrder.getOrderId()) {

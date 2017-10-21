@@ -69,7 +69,7 @@ public class DealerOrderDetailBean {
 	/**
 	 * 商家Id
 	 */
-	private String dealerInfo;
+	private String dealerId;
 	/**
 	 * 业务员姓名
 	 */
@@ -227,8 +227,8 @@ public class DealerOrderDetailBean {
 	}
 
 
-	public String getDealerInfo() {
-		return dealerInfo;
+	public String getdealerId() {
+		return dealerId;
 	}
 
 	public String getSellerName() {
@@ -281,8 +281,8 @@ public class DealerOrderDetailBean {
 		this.dealerClassify = dealerClassify;
 	}
 
-	public void setDealerInfo(String dealerInfo) {
-		this.dealerInfo = dealerInfo;
+	public void setdealerId(String dealerId) {
+		this.dealerId = dealerId;
 	}
 
 	public void setSellerName(String sellerName) {
@@ -299,7 +299,7 @@ public class DealerOrderDetailBean {
 				+ createdDate + ", payWay=" + payWay + ", payDate=" + payDate + ", payNo=" + payNo + ", revPerson="
 				+ revPerson + ", revPhone=" + revPhone + ", province=" + province + ", city=" + city + ", areaCounty="
 				+ areaCounty + ", streetAddr=" + streetAddr + ", dealerName=" + dealerName + ", dealerClassify="
-				+ dealerClassify + ", dealerInfo=" + dealerInfo + ", sellerName=" + sellerName + ", sellerPhone="
+				+ dealerClassify + ", dealerId=" + dealerId + ", sellerName=" + sellerName + ", sellerPhone="
 				+ sellerPhone + ", goodsInfoBeans=" + goodsInfoBeans + ", totalOrderPrice=" + totalOrderPrice
 				+ ", totalFreight=" + totalFreight + ", plateformDiscount=" + plateformDiscount + ", dealerDiscount="
 				+ dealerDiscount + ", orderPrice=" + orderPrice + "]";
