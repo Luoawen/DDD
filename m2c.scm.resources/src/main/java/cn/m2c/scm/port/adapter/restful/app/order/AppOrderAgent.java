@@ -5,6 +5,8 @@ import cn.m2c.common.MPager;
 import cn.m2c.common.MResult;
 import cn.m2c.scm.application.CommonApplication;
 import cn.m2c.scm.application.order.OrderApplication;
+import cn.m2c.scm.application.order.SaleAfterOrderApp;
+import cn.m2c.scm.application.order.command.AddSaleAfterCmd;
 import cn.m2c.scm.application.order.command.CancelOrderCmd;
 import cn.m2c.scm.application.order.command.ConfirmSkuCmd;
 import cn.m2c.scm.application.order.command.OrderAddCommand;
@@ -43,6 +45,9 @@ public class AppOrderAgent {
     
     @Autowired
     CommonApplication commonApp;
+    
+    @Autowired
+    SaleAfterOrderApp saleAfterApp;
     /**
      * 获取订单号
      * @return
@@ -230,12 +235,18 @@ public class AppOrderAgent {
             ,@RequestParam(value = "dealerOrderId", required = false) String dealerOrderId
             ,@RequestParam(value = "skuId", required = false) String skuId
             ,@RequestParam(value = "backOrderNo", required = false) String backOrderNo
-            ,@RequestParam(value = "type", required = false) int type
+            ,@RequestParam(value = "type", required = false, defaultValue = "-1") int type
+            ,@RequestParam(value = "goodsId", required = false) String goodsId
+            ,@RequestParam(value = "dealerId", required = false) String dealerId
+            ,@RequestParam(value = "backNum", required = false) int backNum
+            ,@RequestParam(value = "reason", required = false) String reason
+            ,@RequestParam(value = "reasonCode", required = false) int rCode
             ) {
     	MResult result = new MResult(MCode.V_1);
         try {
-        	PayOrderCmd cmd = new PayOrderCmd(orderId, userId);
-        	result.setContent(orderApp.payOrder(cmd));
+        	AddSaleAfterCmd cmd = new AddSaleAfterCmd(userId, orderId, dealerOrderId,
+        			skuId, backOrderNo, type, dealerId, goodsId, backNum, reason, rCode);
+        	saleAfterApp.createSaleAfterOrder(cmd);
             result.setStatus(MCode.V_200);
         } 
         catch (NegativeException e) {
