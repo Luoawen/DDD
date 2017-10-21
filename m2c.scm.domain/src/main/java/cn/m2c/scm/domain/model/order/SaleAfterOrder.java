@@ -1,6 +1,8 @@
 package cn.m2c.scm.domain.model.order;
 
 import cn.m2c.ddd.common.domain.model.ConcurrencySafeEntity;
+import cn.m2c.ddd.common.domain.model.DomainEventPublisher;
+import cn.m2c.scm.domain.model.order.log.event.OrderOptLogEvent;
 /***
  * 售后订单实体
  * @author fanjc
@@ -72,14 +74,17 @@ public class SaleAfterOrder extends ConcurrencySafeEntity {
 	/***
 	 * 同意售后申请
 	 */
-	public void agreeApply() {
+	public void agreeApply(String userId) {
 		if (status < 4 && status != 3)
 			status = 4;
+		else 
+			return;
+		DomainEventPublisher.instance().publish(new OrderOptLogEvent(saleAfterNo, null, "同意售后申请！", userId));
 	}
 	/***
 	 * 拒绝申请
 	 */
-	public boolean rejectSute(String r, int rCode) {
+	public boolean rejectSute(String r, int rCode, String userId) {
 		
 		if (status < 3)
 			status = 3;
@@ -87,6 +92,7 @@ public class SaleAfterOrder extends ConcurrencySafeEntity {
 			return false;
 		rejectReason = r;
 		rejectReasonCode = rCode;
+		DomainEventPublisher.instance().publish(new OrderOptLogEvent(saleAfterNo, null, "拒绝售后申请！", userId));
 		return true;
 	}
 	/**
@@ -94,10 +100,11 @@ public class SaleAfterOrder extends ConcurrencySafeEntity {
 	 * @param e
 	 * @return
 	 */
-	public boolean clientShip(ExpressInfo e) {
+	public boolean clientShip(ExpressInfo e, String userId) {
 		if (status != 4)
 			return false;
 		backExpress = e;
+		DomainEventPublisher.instance().publish(new OrderOptLogEvent(saleAfterNo, null, "客户退货！", userId));
 		return true;
 	}
 	
@@ -106,49 +113,64 @@ public class SaleAfterOrder extends ConcurrencySafeEntity {
 	 * @param e
 	 * @return
 	 */
-	public boolean dealerShip(ExpressInfo e) {
+	public boolean dealerShip(ExpressInfo e, String userId) {
 		if (status < 5)
 			return false;
 		sendExpress = e;
+		DomainEventPublisher.instance().publish(new OrderOptLogEvent(saleAfterNo, null, "商家换货发货！", userId));
 		return true;
 	}
 	/***
 	 * 商家确认收货
 	 */
-	public boolean dealerConfirmRev() {
+	public boolean dealerConfirmRev(String userId) {
 		if (status < 5)
 			return false;
 		status = 6;
+		DomainEventPublisher.instance().publish(new OrderOptLogEvent(saleAfterNo, null, "商家确认收货", userId));
 		return true;
 	}
 	
 	/***
 	 * 用户确认收货
 	 */
-	public boolean userConfirmRev() {
+	public boolean userConfirmRev(String userId) {
 		if (status < 7)
 			return false;
 		status = 8;
+		DomainEventPublisher.instance().publish(new OrderOptLogEvent(saleAfterNo, null, "确认收货", userId));
 		return true;
 	}
 	
 	/***
 	 * 同意退款
 	 */
-	public boolean agreeBackMoney() {
+	public boolean agreeBackMoney(String userId) {
 		if (status < 4)
 			return false;
 		status = 9;
+		DomainEventPublisher.instance().publish(new OrderOptLogEvent(saleAfterNo, null, "同意退款", userId));
 		return true;
 	}
 	
 	/***
 	 * 确认退款
 	 */
-	public boolean confirmBackMoney() {
+	public boolean confirmBackMoney(String userId) {
 		if (status < 9)
 			return false;
 		status = 10;
+		DomainEventPublisher.instance().publish(new OrderOptLogEvent(saleAfterNo, null, "确认退款", userId));
 		return true;
+	}
+	/***
+	 * 创建售后申请
+	 */
+	public void createApply() {
+		DomainEventPublisher.instance().publish(new OrderOptLogEvent(saleAfterNo, null, "创建售后申请成功", userId));
+	}
+	
+	public boolean isSame(String sku) {
+		return sku.equals(skuId);
 	}
 }

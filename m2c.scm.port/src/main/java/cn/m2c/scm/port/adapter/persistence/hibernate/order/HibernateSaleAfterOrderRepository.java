@@ -25,7 +25,6 @@ public class HibernateSaleAfterOrderRepository extends HibernateSupperRepository
 	public void save(SaleAfterOrder order) {
 		// TODO Auto-generated method stub
 		this.session().save(order);
-		LOGGER.info("保存售后单成功!");
 	}
 
 	@Override
@@ -61,5 +60,13 @@ public class HibernateSaleAfterOrderRepository extends HibernateSupperRepository
 		query.setParameter("skuId", skuId);
 		return (DealerOrderDtl)query.uniqueResult();
 	}
-	
+	@Override
+	public SaleAfterOrder getSaleAfterOrderByNo(String saleAfterNo, String dealerId) {
+		StringBuilder sql = new StringBuilder("select * from t_scm_order_after_sell where after_sell_order_id =:saleAfterNo");
+		sql.append(" and dealer_id=:dealerId");
+		Query query = this.session().createSQLQuery(sql.toString()).addEntity(SaleAfterOrder.class);
+		query.setParameter("saleAfterNo", saleAfterNo);
+		query.setParameter("dealerId", dealerId);
+		return (SaleAfterOrder)query.uniqueResult();
+	}
 }

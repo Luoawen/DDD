@@ -7,7 +7,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import cn.m2c.common.MCode;
+import cn.m2c.ddd.common.event.annotation.EventListener;
 import cn.m2c.scm.application.order.command.AddSaleAfterCmd;
+import cn.m2c.scm.application.order.command.AproveSaleAfterCmd;
+import cn.m2c.scm.application.order.command.SaleAfterCmd;
+import cn.m2c.scm.application.order.command.SaleAfterShipCmd;
 import cn.m2c.scm.domain.NegativeException;
 import cn.m2c.scm.domain.model.order.DealerOrderDtl;
 import cn.m2c.scm.domain.model.order.SaleAfterOrder;
@@ -30,6 +34,7 @@ public class SaleAfterOrderApp {
 	 * @param cmd
 	 */
 	@Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+	@EventListener(isListening=true)
 	public void createSaleAfterOrder(AddSaleAfterCmd cmd) throws NegativeException {
 		// 获取订单SKU详情看是否满足售后申请
 		DealerOrderDtl itemDtl = saleAfterRepository.getDealerOrderDtlBySku(cmd.getDealerOrderId(), 
@@ -53,6 +58,123 @@ public class SaleAfterOrderApp {
 	 */
 	public void applySaleAfter(AddSaleAfterCmd cmd) {
 		// 获取订单SKU详情看是否满足售后申请
-		// 生成售后单保存
+		// 计算需要退的金额
+	}
+	/***
+	 * 同意售后申请
+	 * @param cmd
+	 */
+	@Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+	@EventListener(isListening=true)
+	public void agreeApply(AproveSaleAfterCmd cmd) throws NegativeException {
+		SaleAfterOrder order = saleAfterRepository.getSaleAfterOrderByNo(cmd.getSaleAfterNo(), cmd.getDealerId());
+		if (order == null) {
+			throw new NegativeException(MCode.V_101, "无此售后单！");
+		}
+		order.agreeApply(cmd.getUserId());
+		saleAfterRepository.updateSaleAfterOrder(order);
+	}
+	
+	/***
+	 * 客户退货发货
+	 * @param cmd
+	 */
+	@Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+	@EventListener(isListening=true)
+	public void userShipGoods(SaleAfterShipCmd cmd) throws NegativeException {
+		SaleAfterOrder order = saleAfterRepository.getSaleAfterOrderByNo(cmd.getSaleAfterNo());
+		if (order == null || !order.isSame(cmd.getSkuId())) {
+			throw new NegativeException(MCode.V_101, "无此售后单！");
+		}
+		if (!order.clientShip(cmd.getExpressInfo(), cmd.getUserId())) {
+			throw new NegativeException(MCode.V_103, "状态不正确，不能进行发货操作！");
+		}
+		saleAfterRepository.updateSaleAfterOrder(order);
+	}
+	
+	/***
+	 * 商家换货发货
+	 * @param cmd
+	 */
+	@Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+	@EventListener(isListening=true)
+	public void dealerShipGoods(SaleAfterShipCmd cmd) throws NegativeException {
+		SaleAfterOrder order = saleAfterRepository.getSaleAfterOrderByNo(cmd.getSaleAfterNo());
+		if (order == null || !order.isSame(cmd.getSkuId())) {
+			throw new NegativeException(MCode.V_101, "无此售后单！");
+		}
+		if (!order.dealerShip(cmd.getSdExpressInfo(), cmd.getUserId())) {
+			throw new NegativeException(MCode.V_103, "状态不正确，不能进行发货操作！");
+		}
+		saleAfterRepository.updateSaleAfterOrder(order);
+	}
+	
+	
+	/***
+	 * 确认退款
+	 * @param cmd
+	 */
+	@Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+	@EventListener(isListening=true)
+	public void approveReturnMoney(SaleAfterCmd cmd) throws NegativeException {
+		SaleAfterOrder order = saleAfterRepository.getSaleAfterOrderByNo(cmd.getSaleAfterNo());
+		if (order == null || !order.isSame(cmd.getSkuId())) {
+			throw new NegativeException(MCode.V_101, "无此售后单！");
+		}
+		if (!order.confirmBackMoney(cmd.getUserId())) {
+			throw new NegativeException(MCode.V_103, "状态不正确，不能进行发货操作！");
+		}
+		saleAfterRepository.updateSaleAfterOrder(order);
+	}
+	
+	/***
+	 * 同意退款
+	 * @param cmd
+	 */
+	@Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+	@EventListener(isListening=true)
+	public void agreeBackMoney(SaleAfterCmd cmd) throws NegativeException {
+		SaleAfterOrder order = saleAfterRepository.getSaleAfterOrderByNo(cmd.getSaleAfterNo());
+		if (order == null || !order.isSame(cmd.getSkuId())) {
+			throw new NegativeException(MCode.V_101, "无此售后单！");
+		}
+		if (!order.agreeBackMoney(cmd.getUserId())) {
+			throw new NegativeException(MCode.V_103, "状态不正确，不能进行此操作！");
+		}
+		saleAfterRepository.updateSaleAfterOrder(order);
+	}
+	
+	/***
+	 * 用户确认收货
+	 * @param cmd
+	 */
+	@Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+	@EventListener(isListening=true)
+	public void userConfirmRev(SaleAfterCmd cmd) throws NegativeException {
+		SaleAfterOrder order = saleAfterRepository.getSaleAfterOrderByNo(cmd.getSaleAfterNo());
+		if (order == null || !order.isSame(cmd.getSkuId())) {
+			throw new NegativeException(MCode.V_101, "无此售后单！");
+		}
+		if (!order.userConfirmRev(cmd.getUserId())) {
+			throw new NegativeException(MCode.V_103, "状态不正确，不能进行收货操作！");
+		}
+		saleAfterRepository.updateSaleAfterOrder(order);
+	}
+	
+	/***
+	 * 商家确认收货
+	 * @param cmd
+	 */
+	@Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+	@EventListener(isListening=true)
+	public void dealerConfirmRev(SaleAfterCmd cmd) throws NegativeException {
+		SaleAfterOrder order = saleAfterRepository.getSaleAfterOrderByNo(cmd.getSaleAfterNo());
+		if (order == null || !order.isSame(cmd.getSkuId())) {
+			throw new NegativeException(MCode.V_101, "无此售后单！");
+		}
+		if (!order.dealerConfirmRev(cmd.getUserId())) {
+			throw new NegativeException(MCode.V_103, "状态不正确，不能进行收货操作！");
+		}
+		saleAfterRepository.updateSaleAfterOrder(order);
 	}
 }
