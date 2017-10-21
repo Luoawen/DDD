@@ -217,7 +217,7 @@ public class WebOrderAgent {
     		result.setContent(dealerOrder);
     		result.setStatus(MCode.V_200);
 		} catch (Exception e) {
-			LOGGER.info("查询商家平台失败");
+			LOGGER.info("查询商家平台订单详情失败");
 		}
     	return new ResponseEntity<MResult>(result,HttpStatus.OK);
     }
