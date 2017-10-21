@@ -38,6 +38,13 @@ public class ExpressInfo extends ValueObject {
 		expressTime = expTime;
 		this.expressCode = expressCode;
 	}
+	
+	public ExpressInfo(String no, String name, String expressCode) {
+		expressNo = no;
+		expressName = name;
+		this.expressCode = expressCode;
+	}
+	
 	public ExpressInfo() {
 		super();
 	}

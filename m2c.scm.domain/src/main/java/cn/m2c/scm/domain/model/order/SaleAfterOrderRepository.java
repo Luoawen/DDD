@@ -33,4 +33,11 @@ public interface SaleAfterOrderRepository {
 	 * @return
 	 */
 	public DealerOrderDtl getDealerOrderDtlBySku(String dealerOrderId, String skuId);
+	
+	/***
+	 * 获取售后单通过订单号
+	 * @param saleAfterNo 订单号
+	 * @param dealerId 商家ID
+	 */
+	public SaleAfterOrder getSaleAfterOrderByNo(String saleAfterNo, String dealerId);
 }

@@ -11,6 +11,8 @@ import cn.m2c.scm.application.order.command.CancelOrderCmd;
 import cn.m2c.scm.application.order.command.ConfirmSkuCmd;
 import cn.m2c.scm.application.order.command.OrderAddCommand;
 import cn.m2c.scm.application.order.command.PayOrderCmd;
+import cn.m2c.scm.application.order.command.SaleAfterCmd;
+import cn.m2c.scm.application.order.command.SaleAfterShipCmd;
 import cn.m2c.scm.application.order.data.representation.OrderNo;
 import cn.m2c.scm.domain.NegativeException;
 
@@ -234,7 +236,7 @@ public class AppOrderAgent {
             ,@RequestParam(value = "orderId", required = false) String orderId
             ,@RequestParam(value = "dealerOrderId", required = false) String dealerOrderId
             ,@RequestParam(value = "skuId", required = false) String skuId
-            ,@RequestParam(value = "backOrderNo", required = false) String backOrderNo
+            ,@RequestParam(value = "saleAfterNo", required = false) String saleAfterNo
             ,@RequestParam(value = "type", required = false, defaultValue = "-1") int type
             ,@RequestParam(value = "goodsId", required = false) String goodsId
             ,@RequestParam(value = "dealerId", required = false) String dealerId
@@ -245,7 +247,7 @@ public class AppOrderAgent {
     	MResult result = new MResult(MCode.V_1);
         try {
         	AddSaleAfterCmd cmd = new AddSaleAfterCmd(userId, orderId, dealerOrderId,
-        			skuId, backOrderNo, type, dealerId, goodsId, backNum, reason, rCode);
+        			skuId, saleAfterNo, type, dealerId, goodsId, backNum, reason, rCode);
         	saleAfterApp.createSaleAfterOrder(cmd);
             result.setStatus(MCode.V_200);
         } 
@@ -253,7 +255,67 @@ public class AppOrderAgent {
         	result = new MResult(e.getStatus(), e.getMessage());
         }
         catch (Exception e) {
-            LOGGER.error("pay order Exception e:", e);
+            LOGGER.error("Aplly after sale Exception e:", e);
+            result = new MResult(MCode.V_400, e.getMessage());
+        }
+        return new ResponseEntity<MResult>(result, HttpStatus.OK);
+    }
+    
+    /**
+     * 用户退货发货
+     * @param userId
+     * @param orderId
+     * @return
+     */
+    @RequestMapping(value = "/app/aftersale/ship", method = RequestMethod.PUT)
+    public ResponseEntity<MResult> afterSaleShip(
+            @RequestParam(value = "userId", required = false) String userId
+            ,@RequestParam(value = "expressNo", required = false) String expressNo
+            ,@RequestParam(value = "expressCode", required = false) String expressCode
+            ,@RequestParam(value = "skuId", required = false) String skuId
+            ,@RequestParam(value = "saleAfterNo", required = false) String saleAfterNo
+            ,@RequestParam(value = "expressName", required = false) String expressName
+            ) {
+    	MResult result = new MResult(MCode.V_1);
+        try {
+        	SaleAfterShipCmd cmd = new SaleAfterShipCmd(userId, saleAfterNo, skuId,
+        			expressNo, expressCode, expressName);
+        	saleAfterApp.userShipGoods(cmd);
+            result.setStatus(MCode.V_200);
+        } 
+        catch (NegativeException e) {
+        	result = new MResult(e.getStatus(), e.getMessage());
+        }
+        catch (Exception e) {
+            LOGGER.error("Aplly after sale Exception e:", e);
+            result = new MResult(MCode.V_400, e.getMessage());
+        }
+        return new ResponseEntity<MResult>(result, HttpStatus.OK);
+    }
+    
+    /**
+     * 用户确认收货
+     * @param userId
+     * @param orderId
+     * @return
+     */
+    @RequestMapping(value = "/app/aftersale/user-rev", method = RequestMethod.PUT)
+    public ResponseEntity<MResult> userConfirmRev(
+            @RequestParam(value = "userId", required = false) String userId
+            ,@RequestParam(value = "skuId", required = false) String skuId
+            ,@RequestParam(value = "saleAfterNo", required = false) String saleAfterNo
+            ) {
+    	MResult result = new MResult(MCode.V_1);
+        try {
+        	SaleAfterCmd cmd = new SaleAfterCmd(userId, saleAfterNo, skuId);
+        	saleAfterApp.userConfirmRev(cmd);
+            result.setStatus(MCode.V_200);
+        } 
+        catch (NegativeException e) {
+        	result = new MResult(e.getStatus(), e.getMessage());
+        }
+        catch (Exception e) {
+            LOGGER.error("Aplly after sale Exception e:", e);
             result = new MResult(MCode.V_400, e.getMessage());
         }
         return new ResponseEntity<MResult>(result, HttpStatus.OK);
