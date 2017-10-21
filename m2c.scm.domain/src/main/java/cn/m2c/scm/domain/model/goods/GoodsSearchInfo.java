@@ -100,4 +100,8 @@ public class GoodsSearchInfo extends ValueObject {
     public void offShelf() {
         this.goodsStatus = 1;
     }
+
+    public void soldOut() {
+        this.goodsStatus = 3;
+    }
 }

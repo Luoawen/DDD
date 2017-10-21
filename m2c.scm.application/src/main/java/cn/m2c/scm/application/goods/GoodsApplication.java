@@ -161,6 +161,8 @@ public class GoodsApplication {
             if (result <= 0) {
                 throw new NegativeException(MCode.V_400, skuId);//400:扣库存失败
             }
+            Goods goods = goodsRepository.queryGoodsById(goodsSku.goods().getId());
+            goods.soldOut();//如果售完则修改状态
         }
     }
 }

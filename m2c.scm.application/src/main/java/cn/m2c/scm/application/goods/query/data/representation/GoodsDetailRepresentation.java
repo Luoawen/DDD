@@ -2,6 +2,7 @@ package cn.m2c.scm.application.goods.query.data.representation;
 
 import cn.m2c.common.JsonUtils;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsBean;
+import cn.m2c.scm.application.goods.query.data.bean.GoodsGuaranteeBean;
 
 import java.util.List;
 import java.util.Map;
@@ -20,15 +21,17 @@ public class GoodsDetailRepresentation {
     private String goodsUnitName;
     private Integer goodsMinQuantity;
     private String goodsBarCode;
-    private String goodsKeyWord;
-    private List<String> goodsGuaranteeIds;
-    private List<String> goodsGuaranteeDesc;
+    private List<String> goodsKeyWord;
+    private List<Map> goodsGuarantee;
     private List<Map> goodsSpecifications;
     private List<Map> goodsSKUs;
     private List<String> goodsMainImages;
     private String goodsDesc;
+    private Integer settlementMode;//结算模式 1：按供货价 2：按服务费率
+    private Float serviceRate;//服务费率
 
-    public GoodsDetailRepresentation(GoodsBean bean, String goodsClassify, List<String> goodsGuaranteeDesc, String goodsUnitName) {
+    public GoodsDetailRepresentation(GoodsBean bean, String goodsClassify, List<GoodsGuaranteeBean> goodsGuaranteeBeans,
+                                     String goodsUnitName, Integer settlementMode, Float serviceRate) {
         this.goodsName = bean.getGoodsName();
         this.goodsSubTitle = bean.getGoodsSubTitle();
         this.goodsClassifyId = bean.getGoodsClassifyId();
@@ -38,13 +41,15 @@ public class GoodsDetailRepresentation {
         this.goodsUnitName = goodsUnitName;
         this.goodsMinQuantity = bean.getGoodsMinQuantity();
         this.goodsBarCode = bean.getGoodsBarCode();
-        this.goodsKeyWord = bean.getGoodsKeyWord();
-        this.goodsGuaranteeIds = JsonUtils.toList(bean.getGoodsGuarantee(), String.class);
-        this.goodsGuaranteeDesc = goodsGuaranteeDesc;
+        this.goodsKeyWord = JsonUtils.toList(bean.getGoodsKeyWord(), String.class);
+        ;
+        this.goodsGuarantee = JsonUtils.toList(JsonUtils.toStr(goodsGuaranteeBeans), Map.class);
         this.goodsSpecifications = JsonUtils.toList(bean.getGoodsSpecifications(), Map.class);
         this.goodsSKUs = JsonUtils.toList(JsonUtils.toStr(bean.getGoodsSkuBeans()), Map.class);
         this.goodsMainImages = JsonUtils.toList(bean.getGoodsMainImages(), String.class);
         this.goodsDesc = bean.getGoodsDesc();
+        this.settlementMode = settlementMode;
+        this.serviceRate = serviceRate;
     }
 
     public String getGoodsName() {
@@ -127,28 +132,12 @@ public class GoodsDetailRepresentation {
         this.goodsBarCode = goodsBarCode;
     }
 
-    public String getGoodsKeyWord() {
+    public List<String> getGoodsKeyWord() {
         return goodsKeyWord;
     }
 
-    public void setGoodsKeyWord(String goodsKeyWord) {
+    public void setGoodsKeyWord(List<String> goodsKeyWord) {
         this.goodsKeyWord = goodsKeyWord;
-    }
-
-    public List<String> getGoodsGuaranteeIds() {
-        return goodsGuaranteeIds;
-    }
-
-    public void setGoodsGuaranteeIds(List<String> goodsGuaranteeIds) {
-        this.goodsGuaranteeIds = goodsGuaranteeIds;
-    }
-
-    public List<String> getGoodsGuaranteeDesc() {
-        return goodsGuaranteeDesc;
-    }
-
-    public void setGoodsGuaranteeDesc(List<String> goodsGuaranteeDesc) {
-        this.goodsGuaranteeDesc = goodsGuaranteeDesc;
     }
 
     public List<Map> getGoodsSpecifications() {
@@ -181,5 +170,29 @@ public class GoodsDetailRepresentation {
 
     public void setGoodsDesc(String goodsDesc) {
         this.goodsDesc = goodsDesc;
+    }
+
+    public List<Map> getGoodsGuarantee() {
+        return goodsGuarantee;
+    }
+
+    public void setGoodsGuarantee(List<Map> goodsGuarantee) {
+        this.goodsGuarantee = goodsGuarantee;
+    }
+
+    public Integer getSettlementMode() {
+        return settlementMode;
+    }
+
+    public void setSettlementMode(Integer settlementMode) {
+        this.settlementMode = settlementMode;
+    }
+
+    public Float getServiceRate() {
+        return serviceRate;
+    }
+
+    public void setServiceRate(Float serviceRate) {
+        this.serviceRate = serviceRate;
     }
 }

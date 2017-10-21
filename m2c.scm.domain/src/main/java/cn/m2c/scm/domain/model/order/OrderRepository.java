@@ -20,4 +20,20 @@ public interface OrderRepository {
 	 * @param order
 	 */
 	public void updateMainOrder(MainOrder order);
+	/***
+	 * 获取商家订单
+	 * @param dealerOrderId
+	 * @return
+	 */
+	public DealerOrder getDealerOrderByNo(String dealerOrderId);
+	
+	/***
+	 * 获取商家订单中的某一详情
+	 * @param dealerOrderId
+	 * @param skuId
+	 * @return
+	 */
+	public DealerOrderDtl getDealerOrderDtlBySku(String dealerOrderId, String sku);
+	
+	public void updateDealerOrder(DealerOrder dealOrder);
 }

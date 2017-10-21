@@ -30,7 +30,7 @@ public class GoodsSpecValueQueryApplication {
         sql.append(" * ");
         sql.append(" FROM ");
         sql.append(" t_scm_goods_spec_value WHERE 1 = 1");
-        sql.append(" AND dealer_id = ? AND spec_value = ?");
+        sql.append(" AND dealer_id = ? AND spec_value like ?");
         params.add(dealerId);
         params.add("%" + specValue + "%");
         List<GoodsSpecValueBean> goodsClassifyBeans = this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsSpecValueBean.class, params.toArray());

@@ -4,9 +4,13 @@ import cn.m2c.common.MCode;
 import cn.m2c.common.MPager;
 import cn.m2c.common.MResult;
 import cn.m2c.scm.application.order.DealerOrderApplication;
+import cn.m2c.scm.application.order.command.SendOrderCommand;
 import cn.m2c.scm.application.order.data.bean.DealerOrderBean;
+import cn.m2c.scm.application.order.data.bean.OrderExpressBean;
 import cn.m2c.scm.application.order.query.OrderQueryApplication;
+import cn.m2c.scm.domain.NegativeException;
 
+import org.hibernate.type.TrueFalseType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -135,17 +139,101 @@ public class WebOrderAgent {
      * 订单发货详情
      */
     @RequestMapping(value="/dealer/sendOrderDetail", method = RequestMethod.GET)
-    public ResponseEntity<MResult> sendOrder(
+    public ResponseEntity<MResult> sendOrderDetail(
     		@RequestParam(value = "dealerOrderId", required = false) String dealerOrderId){
     	MResult result = new MResult(MCode.V_1);
     	try {
     		//1查询商家订单
     		DealerOrderBean dealerOrder = orderQuery.getDealerOrder(dealerOrderId);
-    		//2根据商家订单查询订单详情
-    		
-    		//3封装成返回对象返回
+    		result.setContent(dealerOrder);
+    		result.setStatus(MCode.V_200);
 		} catch (Exception e) {
 			LOGGER.info("查询发货详情失败");
+		}
+    	return new ResponseEntity<MResult>(result,HttpStatus.OK);
+    }
+    
+    /**
+     * 订单发货
+     * 1根据商家订单id更新物流信息
+      *2更新状态为已发货
+      *3发出已发货事件（先不做，后期需要再做）
+     */
+    @RequestMapping(value="/dealer/sendOrder", method = RequestMethod.POST)
+    public ResponseEntity<MResult> sendOrder(
+    		@RequestParam(value = "dealerOrderId", required = true) String dealerOrderId,
+    		@RequestParam(value = "expressNo", required = false) String expressNo,
+    		@RequestParam(value = "expressName", required = false) String expressName,
+    		@RequestParam(value = "expressNote", required = false) String expressNote,
+    		@RequestParam(value = "expressPerson", required = false) String expressPerson,
+    		@RequestParam(value = "expressPhone", required = false) String expressPhone,
+    		@RequestParam(value = "expressWay", required = true) Integer expressWay
+    		,@RequestParam(value = "expressCode", required = true) String expressCode
+    		){
+    	MResult result = new MResult(MCode.V_1);
+    	try {
+    		SendOrderCommand command = new SendOrderCommand(dealerOrderId, expressNo, expressName, expressPerson, expressPhone, 
+    				expressWay, expressNote, expressCode);
+    		dealerOrderApplication.updateExpress(command);
+    		result.setStatus(MCode.V_200);
+		} catch (NegativeException e) {
+			result.setStatus(MCode.V_400);
+			LOGGER.info("发货失败");
+		}
+    	
+    	return new ResponseEntity<MResult>(result,HttpStatus.OK);
+    }
+    
+    /**
+     * 商家管理平台订单发货物流详情
+     * 
+     */
+    @RequestMapping(value="/manage/sendOrderDetail", method = RequestMethod.GET)
+    public ResponseEntity<MResult> manageSendOrderDetail(
+    		@RequestParam(value = "dealerOrderId", required = true) String dealerOrderId
+    		){
+    	MResult result = new MResult(MCode.V_1);
+    	try {
+    		DealerOrderBean dealerOrder = orderQuery.getDealerOrder(dealerOrderId);
+    		result.setContent(dealerOrder);
+    		result.setStatus(MCode.V_200);
+		} catch (Exception e) {
+			LOGGER.info("查询发货详情失败");
+		}
+    	return new ResponseEntity<MResult>(result,HttpStatus.OK);
+    }
+    
+    /**
+     * 商家平台订单发货物流详情
+     * 
+     */
+    @RequestMapping(value="/dealer/sendDealerOrderDetail", method = RequestMethod.GET)
+    public ResponseEntity<MResult> sendDealerOrderDetail(
+    		@RequestParam(value = "dealerOrderId", required = true) String dealerOrderId
+    		){
+    	MResult result = new MResult(MCode.V_1);
+    	try {
+    		DealerOrderBean dealerOrder = orderQuery.getDealerOrder(dealerOrderId);
+    		result.setContent(dealerOrder);
+    		result.setStatus(MCode.V_200);
+		} catch (Exception e) {
+			LOGGER.info("查询商家平台订单详情失败");
+		}
+    	return new ResponseEntity<MResult>(result,HttpStatus.OK);
+    }
+    
+    /**
+     * 查询所有物流公司信息
+     */
+    @RequestMapping(value="/dealer/express", method = RequestMethod.GET)
+    public ResponseEntity<MResult> getAllExpress(){
+    	MResult result = new MResult(MCode.V_1);
+    	try {
+    		 List<OrderExpressBean> allExpress = orderQuery.getAllExpress();
+    		result.setContent(allExpress);
+    		result.setStatus(MCode.V_200);
+		} catch (Exception e) {
+			LOGGER.info("查询物流公司失败");
 		}
     	return new ResponseEntity<MResult>(result,HttpStatus.OK);
     }

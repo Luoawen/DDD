@@ -1,6 +1,8 @@
 package cn.m2c.scm.domain.model.order;
 
 import cn.m2c.ddd.common.domain.model.ConcurrencySafeEntity;
+import cn.m2c.ddd.common.domain.model.DomainEventPublisher;
+import cn.m2c.scm.domain.model.order.log.event.OrderOptLogEvent;
 /**
  * 商家订单明细
  * @author fanjc
@@ -53,6 +55,8 @@ public class DealerOrderDtl extends ConcurrencySafeEntity {
 	private Float resRate = 0f;
 	/**BD专员的分成串*/
 	private String bdsRate;
+	/**评论状态， 0 待评，1已评*/
+	private Integer commentStatus = 0;
 	
 	public DealerOrderDtl() {
 		super();
@@ -95,5 +99,80 @@ public class DealerOrderDtl extends ConcurrencySafeEntity {
 	public Long calFreight() {
 		
 		return freight;
+	}
+	
+	
+	/**
+	 * 更新订单详情的物流信息
+	 * @param expressName
+	 * @param expressNo
+	 * @param expressNote
+	 * @param expressPerson
+	 * @param expressPhone
+	 * @param expressWay
+	 */
+	public void updateOrderDetailExpress(String expressName, String expressNo,
+			String expressNote, String expressPerson, String expressPhone,
+			Integer expressWay, String expressCode) {
+		this.expressInfo.updateExpress(expressName,expressNo,expressNote,expressPerson,expressPhone,expressWay
+				, expressCode);
+		this.status=2;
+	}
+	
+	void cancel() {
+		status = -1;
+	}
+	/***
+	 * 确认收货
+	 * @return
+	 */
+	boolean confirmRev() {
+		if (status != 2) {
+			return false;
+		}
+		status = 3;
+		return true;
+	}
+	
+	public boolean confirmRev(String userId) {
+		
+		if (status != 2) {
+			return false;
+		}
+		status = 3;
+		DomainEventPublisher.instance().publish(new OrderOptLogEvent(orderId, dealerOrderId, "用户确认收货成功", userId));
+		return true;
+	}
+	/***
+	 * 是否确认收货
+	 * @return
+	 */
+	public boolean isRecBB() {
+		return status >= 3;
+	}
+	
+	boolean isEqualSku(String skuId) {
+		return this.goodsInfo.getSkuId().equals(skuId);
+	}
+	
+	boolean isSameExpressNo(String no) {
+		if (no != null && no.equals(getExpressNo()))
+			return true;
+		return false;
+	}
+	
+	String getExpressNo() {
+		return expressInfo.getExpressNo();
+	}
+	/***
+	 * 是否可以申请售后
+	 * @return
+	 */
+	public boolean canApplySaleAfter() {
+		return status >= 1 && status < 5;
+	}
+	
+	public void hasCommented() {
+		commentStatus = 1;
 	}
 }

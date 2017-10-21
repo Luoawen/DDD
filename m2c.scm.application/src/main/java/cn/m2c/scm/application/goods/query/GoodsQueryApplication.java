@@ -7,7 +7,12 @@ import cn.m2c.scm.application.classify.query.GoodsClassifyQueryApplication;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsBean;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsSkuBean;
 import cn.m2c.scm.application.goods.query.data.representation.GoodsSkuInfoRepresentation;
+import cn.m2c.scm.application.order.query.dto.GoodsDto;
 import cn.m2c.scm.application.utils.Utils;
+import cn.m2c.scm.domain.NegativeException;
+import cn.m2c.scm.domain.service.goods.GoodsService;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +24,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * 商品查询
@@ -36,9 +43,10 @@ public class GoodsQueryApplication {
 
     @Autowired
     RedisUtil redisUtil;
-
     @Autowired
     GoodsClassifyQueryApplication goodsClassifyQueryApplication;
+    @Resource(name = "goodsDubboService")
+    GoodsService goodsDubboService;
 
     /**
      * 搜索
@@ -61,32 +69,32 @@ public class GoodsQueryApplication {
         List<Object> params = new ArrayList<Object>();
         StringBuilder sql = new StringBuilder();
         sql.append(" SELECT ");
-        sql.append(" goods_id ");
+        sql.append(" g.* ");
         sql.append(" FROM ");
-        sql.append(" t_scm_goods_sku WHERE 1 = 1");
+        sql.append(" t_scm_goods g,t_scm_goods_sku s WHERE g.id=s.goods_id ");
         if (StringUtils.isNotEmpty(dealerId)) {
-            sql.append(" AND dealer_id = ? ");
+            sql.append(" AND g.dealer_id = ? ");
             params.add(dealerId);
         }
         // 根据商品分类id,找到所有下级分类ID
         if (StringUtils.isNotEmpty(goodsClassifyId)) {
             List<String> goodsClassifyIds = goodsClassifyQueryApplication.recursionQueryGoodsSubClassifyId(goodsClassifyId, new ArrayList<String>());
             goodsClassifyIds.add(goodsClassifyId);
-            sql.append(" AND goods_classify_id in (" + Utils.listParseString(goodsClassifyIds) + ") ");
+            sql.append(" AND g.goods_classify_id in (" + Utils.listParseString(goodsClassifyIds) + ") ");
         }
         if (null != goodsStatus) {
-            sql.append(" AND goods_status = ? ");
+            sql.append(" AND g.goods_status = ? ");
             params.add(goodsStatus);
         }
         if (StringUtils.isNotEmpty(condition)) {
             if (StringUtils.isNotEmpty(dealerId)) {//商家平台
-                sql.append(" AND (goods_name LIKE ? OR goods_bar_code LIKE ? OR goods_code LIKE ? OR goods_brand_name LIKE ?)");
+                sql.append(" AND (g.goods_name LIKE ? OR g.goods_bar_code LIKE ? OR s.goods_code LIKE ? OR g.goods_brand_name LIKE ?)");
                 params.add("%" + condition + "%");
                 params.add("%" + condition + "%");
                 params.add("%" + condition + "%");
                 params.add("%" + condition + "%");
             } else {//商家管理平台
-                sql.append(" AND (sku_id LIKE ? OR goods_name LIKE ? OR goods_bar_code LIKE ? OR goods_code LIKE ? OR dealer_name LIKE ? OR goods_brand_name LIKE ? )");
+                sql.append(" AND (s.sku_id LIKE ? OR g.goods_name LIKE ? OR g.goods_bar_code LIKE ? OR s.goods_code LIKE ? OR g.dealer_name LIKE ? OR g.goods_brand_name LIKE ? )");
                 params.add("%" + condition + "%");
                 params.add("%" + condition + "%");
                 params.add("%" + condition + "%");
@@ -96,20 +104,19 @@ public class GoodsQueryApplication {
             }
         }
         if (StringUtils.isNotEmpty(startTime) && StringUtils.isNotEmpty(endTime)) {
-            sql.append(" AND goods_created_date BETWEEN ? AND ?");
+            sql.append(" AND g.created_date BETWEEN ? AND ?");
             params.add(startTime);
             params.add(endTime);
         }
-        sql.append(" AND del_status= 1 group by goods_id ORDER BY goods_created_date DESC ");
+        sql.append(" AND g.del_status= 1 group by g.goods_id ORDER BY g.created_date DESC ");
         sql.append(" LIMIT ?,?");
         params.add(rows * (pageNum - 1));
         params.add(rows);
 
-        List<GoodsBean> goodsBeanList = new ArrayList<>();
-        List<Integer> ids = supportJdbcTemplate.jdbcTemplate().queryForList(sql.toString(), params.toArray(), Integer.class);
-        if (null != ids && ids.size() > 0) {
-            for (Integer id : ids) {
-                goodsBeanList.add(queryGoodsById(id));
+        List<GoodsBean> goodsBeanList = this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsBean.class, params.toArray());
+        if (null != goodsBeanList && goodsBeanList.size() > 0) {
+            for (GoodsBean goodsBean : goodsBeanList) {
+                goodsBean.setGoodsSkuBeans(queryGoodsSKUsByGoodsId(goodsBean.getId()));
             }
         }
         return goodsBeanList;
@@ -120,32 +127,32 @@ public class GoodsQueryApplication {
         List<Object> params = new ArrayList<Object>();
         StringBuilder sql = new StringBuilder();
         sql.append(" SELECT ");
-        sql.append(" count(distinct goods_id) ");
+        sql.append(" count(distinct g.goods_id) ");
         sql.append(" FROM ");
-        sql.append(" t_scm_goods_sku WHERE 1 = 1");
+        sql.append(" t_scm_goods g,t_scm_goods_sku s WHERE g.id=s.goods_id ");
         if (StringUtils.isNotEmpty(dealerId)) {
-            sql.append(" AND dealer_id = ? ");
+            sql.append(" AND g.dealer_id = ? ");
             params.add(dealerId);
         }
         // 根据商品分类id,找到所有下级分类ID
         if (StringUtils.isNotEmpty(goodsClassifyId)) {
             List<String> goodsClassifyIds = goodsClassifyQueryApplication.recursionQueryGoodsSubClassifyId(goodsClassifyId, new ArrayList<String>());
             goodsClassifyIds.add(goodsClassifyId);
-            sql.append(" AND goods_classify_id in (" + Utils.listParseString(goodsClassifyIds) + ") ");
+            sql.append(" AND g.goods_classify_id in (" + Utils.listParseString(goodsClassifyIds) + ") ");
         }
         if (null != goodsStatus) {
-            sql.append(" AND goods_status = ? ");
+            sql.append(" AND g.goods_status = ? ");
             params.add(goodsStatus);
         }
         if (StringUtils.isNotEmpty(condition)) {
             if (StringUtils.isNotEmpty(dealerId)) {//商家平台
-                sql.append(" AND (goods_name LIKE ? OR goods_bar_code LIKE ? OR goods_code LIKE ? OR goods_brand_name LIKE ?)");
+                sql.append(" AND (g.goods_name LIKE ? OR g.goods_bar_code LIKE ? OR s.goods_code LIKE ? OR g.goods_brand_name LIKE ?)");
                 params.add("%" + condition + "%");
                 params.add("%" + condition + "%");
                 params.add("%" + condition + "%");
                 params.add("%" + condition + "%");
             } else {//商家管理平台
-                sql.append(" AND (sku_id LIKE ? OR goods_name LIKE ? OR goods_bar_code LIKE ? OR goods_code LIKE ? OR dealer_name LIKE ? OR goods_brand_name LIKE ? )");
+                sql.append(" AND (s.sku_id LIKE ? OR g.goods_name LIKE ? OR g.goods_bar_code LIKE ? OR s.goods_code LIKE ? OR g.dealer_name LIKE ? OR g.goods_brand_name LIKE ? )");
                 params.add("%" + condition + "%");
                 params.add("%" + condition + "%");
                 params.add("%" + condition + "%");
@@ -155,11 +162,11 @@ public class GoodsQueryApplication {
             }
         }
         if (StringUtils.isNotEmpty(startTime) && StringUtils.isNotEmpty(endTime)) {
-            sql.append(" AND goods_created_date BETWEEN ? AND ?");
+            sql.append(" AND g.created_date BETWEEN ? AND ?");
             params.add(startTime);
             params.add(endTime);
         }
-        sql.append(" AND del_status= 1");
+        sql.append(" AND g.del_status= 1");
 
         return supportJdbcTemplate.jdbcTemplate().queryForObject(sql.toString(), params.toArray(), Integer.class);
     }
@@ -191,28 +198,27 @@ public class GoodsQueryApplication {
         List<Object> params = new ArrayList<Object>();
         StringBuilder sql = new StringBuilder();
         sql.append(" SELECT ");
-        sql.append(" goods_id ");
+        sql.append(" g.* ");
         sql.append(" FROM ");
-        sql.append(" t_scm_goods_sku WHERE 1 = 1");
+        sql.append(" t_scm_goods g,t_scm_goods_sku s WHERE g.id=s.goods_id");
         if (StringUtils.isNotEmpty(goodsClassifyId)) {
             List<String> goodsClassifyIds = goodsClassifyQueryApplication.recursionQueryGoodsSubClassifyId(goodsClassifyId, new ArrayList<String>());
             goodsClassifyIds.add(goodsClassifyId);
-            sql.append(" AND goods_classify_id in (" + Utils.listParseString(goodsClassifyIds) + ") ");
+            sql.append(" AND g.goods_classify_id in (" + Utils.listParseString(goodsClassifyIds) + ") ");
         }
         if (StringUtils.isNotEmpty(condition)) {
-            sql.append(" AND goods_name like ? ");
+            sql.append(" AND g.goods_name like ? ");
             params.add("%" + condition + "%");
         }
-        sql.append(" AND del_status= 1 group by goods_id ORDER BY goods_created_date desc,photograph_price desc ");
+        sql.append(" AND g.del_status= 1 group by g.goods_id ORDER BY g.created_date desc,s.photograph_price desc ");
         sql.append(" LIMIT ?,?");
         params.add(rows * (pageNum - 1));
         params.add(rows);
 
-        List<GoodsBean> goodsBeanList = new ArrayList<>();
-        List<Integer> ids = supportJdbcTemplate.jdbcTemplate().queryForList(sql.toString(), params.toArray(), Integer.class);
-        if (null != ids && ids.size() > 0) {
-            for (Integer id : ids) {
-                goodsBeanList.add(queryGoodsById(id));
+        List<GoodsBean> goodsBeanList = this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsBean.class, params.toArray());
+        if (null != goodsBeanList && goodsBeanList.size() > 0) {
+            for (GoodsBean goodsBean : goodsBeanList) {
+                goodsBean.setGoodsSkuBeans(queryGoodsSKUsByGoodsId(goodsBean.getId()));
             }
         }
         return goodsBeanList;
@@ -222,19 +228,19 @@ public class GoodsQueryApplication {
         List<Object> params = new ArrayList<Object>();
         StringBuilder sql = new StringBuilder();
         sql.append(" SELECT ");
-        sql.append(" count(distinct goods_id) ");
+        sql.append(" count(distinct g.goods_id) ");
         sql.append(" FROM ");
-        sql.append(" t_scm_goods_sku WHERE 1 = 1");
+        sql.append(" t_scm_goods g,t_scm_goods_sku s WHERE g.id=s.goods_id");
         if (StringUtils.isNotEmpty(goodsClassifyId)) {
             List<String> goodsClassifyIds = goodsClassifyQueryApplication.recursionQueryGoodsSubClassifyId(goodsClassifyId, new ArrayList<String>());
             goodsClassifyIds.add(goodsClassifyId);
-            sql.append(" AND goods_classify_id in (" + Utils.listParseString(goodsClassifyIds) + ") ");
+            sql.append(" AND g.goods_classify_id in (" + Utils.listParseString(goodsClassifyIds) + ") ");
         }
         if (StringUtils.isNotEmpty(condition)) {
-            sql.append(" AND goods_name like ? ");
+            sql.append(" AND g.goods_name like ? ");
             params.add("%" + condition + "%");
         }
-        sql.append(" AND del_status= 1");
+        sql.append(" AND g.del_status= 1");
         return supportJdbcTemplate.jdbcTemplate().queryForObject(sql.toString(), params.toArray(), Integer.class);
     }
 
@@ -256,7 +262,7 @@ public class GoodsQueryApplication {
         sql.append(" SELECT ");
         sql.append(" * ");
         sql.append(" FROM ");
-        sql.append(" t_scm_goods where goods_id in (" + Utils.listParseString(goodsIds) + ")");
+        sql.append(" t_scm_goods where goods_id in (" + Utils.listParseString(goodsIds) + ") AND del_status = 1");
         return this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsBean.class);
     }
 
@@ -435,5 +441,266 @@ public class GoodsQueryApplication {
         return null;
     }
 
+    /***
+     * 获取商品列表
+     *
+     * @param skuIds
+     * @return
+     */
+    public List<GoodsDto> getGoodsDtl(Set<String> skuIds) throws NegativeException {
+        if (skuIds == null || skuIds.size() < 1)
+            return null;
+        try {
+            StringBuilder sql = new StringBuilder(512);
+            sql.append("select a.goods_id as goodsId")
+                    .append(", a.goods_name as goodsName")
+                    .append(", a.goods_sub_title as goodsTitle")
+                    .append(", a.goods_classify_id as goodsTypeId")
+                    .append(", c.unit_name as goodsUnit")
+                    .append(", b.sku_id as skuId")
+                    .append(", b.sku_name as skuName")
+                    .append(", a.goods_main_images as goodsIcon")
+                    .append(", d.service_rate as rate")
+                    .append(", d.classify_name as goodsType")
+                    .append(", b.weight, b.dealer_id as dealerId")
+                    .append(", b.supply_price as supplyPrice")
+                    .append(", b.market_price as price")
+                    .append(", b.photograph_price as discountPrice")
+                    .append(" from t_scm_goods_sku b, t_scm_goods a")
+                    .append(" left outer join t_scm_unit c on a.goods_unit_id=c.unit_id")
+                    .append(" left outer join t_scm_goods_classify d on a.goods_classify_id=d.classify_id")
+                    .append(" where a.id=b.goods_id ")
+                    .append(" and b.sku_id in(");
+            int sz = skuIds.size();
+            for (int i = 0; i < sz; i++) {
+                if (i > 0)
+                    sql.append(",?");
+                else
+                    sql.append("?");
+            }
+            sql.append(")");
+            Object[] args = new Object[skuIds.size()];
+            return supportJdbcTemplate.queryForBeanList(sql.toString(), GoodsDto.class, skuIds.toArray(args));
+        } catch (Exception e) {
+            LOGGER.error("===fanjc==订单获取商品详情出错", e);
+            throw new NegativeException(500, "获取商品详情列表出错");
+        }
+    }
 
+    public GoodsBean appGoodsDetailByGoodsId(String goodsId) {
+        StringBuilder sql = new StringBuilder();
+        sql.append(" SELECT ");
+        sql.append(" * ");
+        sql.append(" FROM ");
+        sql.append(" t_scm_goods WHERE 1 = 1 AND goods_id = ?");
+        GoodsBean goodsBean = this.getSupportJdbcTemplate().queryForBean(sql.toString(), GoodsBean.class, goodsId);
+        if (null != goodsBean) {
+            goodsBean.setGoodsSkuBeans(queryShowGoodsSKUsByGoodsId(goodsBean.getId()));
+        }
+        return goodsBean;
+    }
+
+    public List<GoodsSkuBean> queryShowGoodsSKUsByGoodsId(Integer goodsId) {
+        StringBuilder sql = new StringBuilder();
+        sql.append(" SELECT ");
+        sql.append(" * ");
+        sql.append(" FROM ");
+        sql.append(" t_scm_goods_sku WHERE 1 = 1 AND goods_id = ? AND show_status = 2");
+        return this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsSkuBean.class, goodsId);
+    }
+
+    public List<GoodsBean> appSearchGoods(String goodsClassifyId, String condition, Integer sortType,
+                                          Integer sort, Integer pageNum, Integer rows) {
+        List<Object> params = new ArrayList<Object>();
+        StringBuilder sql = new StringBuilder();
+        sql.append(" SELECT ");
+        sql.append(" g.* ");
+        sql.append(" FROM ");
+        sql.append(" t_scm_goods g,t_scm_goods_sku s WHERE g.id=s.goods_id");
+        if (StringUtils.isNotEmpty(goodsClassifyId)) {
+            // 查询所有一级分类的下级分类
+            List<String> goodsClassifyIds = goodsClassifyQueryApplication.recursionQueryGoodsSubClassifyId(goodsClassifyId, new ArrayList<String>());
+            goodsClassifyIds.add(goodsClassifyId);
+            sql.append(" AND goods_classify_id in (" + Utils.listParseString(goodsClassifyIds) + ") ");
+        }
+        if (StringUtils.isNotEmpty(condition)) {
+            //商品标题、商品副标题、SKU、品牌、所属分类、商品关键词、商品图文详情文本内容
+            sql.append(" AND (g.goods_name LIKE ? OR g.goods_sub_title LIKE ? OR s.sku_id LIKE ? OR g.goods_brand_name LIKE ? OR g.goods_key_word LIKE ? OR g.goods_desc LIKE ?");
+            params.add("%" + condition + "%");
+            params.add("%" + condition + "%");
+            params.add("%" + condition + "%");
+            params.add("%" + condition + "%");
+            params.add("%" + condition + "%");
+            params.add("%" + condition + "%");
+            List<String> goodsClassifyIds = goodsClassifyQueryApplication.getGoodsSubClassifyIdByName(condition);
+            if (null != goodsClassifyIds && goodsClassifyIds.size() > 0) {
+                sql.append("  OR g.goods_classify_id in ?");
+                params.add("(" + Utils.listParseString(goodsClassifyIds) + ")");
+            }
+            sql.append(")");
+        }
+        sql.append(" AND g.del_status= 1 group by g.goods_id");
+
+        //sortType 排序类型：1：综合，2：价格
+        //sort 1：降序，2：升序
+        if (null != sortType && sortType == 1) {//综合-以商品标题为第一优先级进行搜索结果展示；非该优先级的商品按创建时间降序排列，创建时间相同情况下按价格降序排序（默认综合）
+            sql.append(" ORDER BY g.created_date desc,s.photograph_price desc ");
+        } else if (null != sortType && sortType == 2) {//价格-首次点击价格降序排列，价格相同创建时间早的优先；再次点击价格升序排列
+            if (null != sort && sort == 1) {
+                sql.append(" ORDER BY s.photograph_price desc,g.created_date desc");
+            } else if (null != sort && sort == 2) {
+                sql.append(" ORDER BY s.photograph_price asc,g.created_date asc");
+            }
+        }
+        sql.append(" LIMIT ?,?");
+        params.add(rows * (pageNum - 1));
+        params.add(rows);
+        return this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsBean.class, params.toArray());
+    }
+
+    public Integer appSearchGoodsTotal(String goodsClassifyId, String condition) {
+        List<Object> params = new ArrayList<Object>();
+        StringBuilder sql = new StringBuilder();
+        sql.append(" SELECT ");
+        sql.append(" count(distinct g.goods_id) ");
+        sql.append(" FROM ");
+        sql.append(" t_scm_goods g,t_scm_goods_sku s WHERE g.id=s.goods_id");
+        if (StringUtils.isNotEmpty(goodsClassifyId)) {
+            // 查询所有一级分类的下级分类
+            List<String> goodsClassifyIds = goodsClassifyQueryApplication.recursionQueryGoodsSubClassifyId(goodsClassifyId, new ArrayList<String>());
+            goodsClassifyIds.add(goodsClassifyId);
+            sql.append(" AND goods_classify_id in (" + Utils.listParseString(goodsClassifyIds) + ") ");
+        }
+        if (StringUtils.isNotEmpty(condition)) {
+            //商品标题、商品副标题、SKU、品牌、所属分类、商品关键词、商品图文详情文本内容
+            sql.append(" AND (g.goods_name LIKE ? OR g.goods_sub_title LIKE ? OR s.sku_id LIKE ? OR g.goods_brand_name LIKE ? OR g.goods_key_word LIKE ? OR g.goods_desc LIKE ?");
+            params.add("%" + condition + "%");
+            params.add("%" + condition + "%");
+            params.add("%" + condition + "%");
+            params.add("%" + condition + "%");
+            params.add("%" + condition + "%");
+            params.add("%" + condition + "%");
+            List<String> goodsClassifyIds = goodsClassifyQueryApplication.getGoodsSubClassifyIdByName(condition);
+            if (null != goodsClassifyIds && goodsClassifyIds.size() > 0) {
+                sql.append("  OR g.goods_classify_id in ?");
+                params.add("(" + Utils.listParseString(goodsClassifyIds) + ")");
+            }
+            sql.append(")");
+        }
+        sql.append(" AND g.del_status= 1");
+        return supportJdbcTemplate.jdbcTemplate().queryForObject(sql.toString(), params.toArray(), Integer.class);
+    }
+
+
+    public List<GoodsBean> searchGoodsExport(String dealerId, String goodsClassifyId, Integer goodsStatus,
+                                             String condition, String startTime, String endTime) {
+        List<Object> params = new ArrayList<Object>();
+        StringBuilder sql = new StringBuilder();
+        sql.append(" SELECT ");
+        sql.append(" g.* ");
+        sql.append(" FROM ");
+        sql.append(" t_scm_goods g,t_scm_goods_sku s WHERE g.id=s.goods_id");
+        if (StringUtils.isNotEmpty(dealerId)) {
+            sql.append(" AND g.dealer_id = ? ");
+            params.add(dealerId);
+        }
+        // 根据商品分类id,找到所有下级分类ID
+        if (StringUtils.isNotEmpty(goodsClassifyId)) {
+            List<String> goodsClassifyIds = goodsClassifyQueryApplication.recursionQueryGoodsSubClassifyId(goodsClassifyId, new ArrayList<String>());
+            goodsClassifyIds.add(goodsClassifyId);
+            sql.append(" AND g.goods_classify_id in (" + Utils.listParseString(goodsClassifyIds) + ") ");
+        }
+        if (null != goodsStatus) {
+            sql.append(" AND g.goods_status = ? ");
+            params.add(goodsStatus);
+        }
+        if (StringUtils.isNotEmpty(condition)) {
+            if (StringUtils.isNotEmpty(dealerId)) {//商家平台
+                sql.append(" AND (g.goods_name LIKE ? OR g.goods_bar_code LIKE ? OR s.goods_code LIKE ? OR g.goods_brand_name LIKE ?)");
+                params.add("%" + condition + "%");
+                params.add("%" + condition + "%");
+                params.add("%" + condition + "%");
+                params.add("%" + condition + "%");
+            } else {//商家管理平台
+                sql.append(" AND (s.sku_id LIKE ? OR g.goods_name LIKE ? OR g.goods_bar_code LIKE ? OR s.goods_code LIKE ? OR g.dealer_name LIKE ? OR g.goods_brand_name LIKE ? )");
+                params.add("%" + condition + "%");
+                params.add("%" + condition + "%");
+                params.add("%" + condition + "%");
+                params.add("%" + condition + "%");
+                params.add("%" + condition + "%");
+                params.add("%" + condition + "%");
+            }
+        }
+        if (StringUtils.isNotEmpty(startTime) && StringUtils.isNotEmpty(endTime)) {
+            sql.append(" AND g.created_date BETWEEN ? AND ?");
+            params.add(startTime);
+            params.add(endTime);
+        }
+        sql.append(" AND g.del_status= 1 group by goods_id");
+        List<GoodsBean> goodsBeanList = this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsBean.class, params.toArray());
+        if (null != goodsBeanList && goodsBeanList.size() > 0) {
+            for (GoodsBean goodsBean : goodsBeanList) {
+                goodsBean.setGoodsSkuBeans(queryGoodsSKUsByGoodsId(goodsBean.getId()));
+            }
+        }
+        return goodsBeanList;
+    }
+
+    public List<GoodsBean> recognizedGoods(String recognizedInfo, String location) {
+        //解析json
+        List<Map<String, Object>> recognizedList = new Gson().fromJson(recognizedInfo, new TypeToken<List<Map<String, Object>>>() {
+        }.getType());
+        List<Double> scoreList = new ArrayList<Double>();
+        List<String> recognizedIds = new ArrayList<String>();
+        //识别图片列表逻辑
+        if (null != recognizedList && recognizedList.size() > 0) {
+            for (Map<String, Object> map : recognizedList) {
+                Double score = (Double) map.get("score");
+                scoreList.add(score);
+            }
+            //判断识别率高低
+            Collections.sort(scoreList);//升序排序
+            Collections.reverse(scoreList);//倒序
+            if (scoreList.get(0) > 0.75) {
+                recognizedIds.add((String) recognizedList.get(0).get("recognizedId"));
+                return queryGoodsByRecognizedIds(recognizedIds);
+            } else if (scoreList.get(0) > 0.01) {
+                //取前10条
+                for (int j = 0; j < scoreList.size() && j < 10; j++) {
+                    if (scoreList.get(j) > 0.01)
+                        recognizedIds.add((String) recognizedList.get(j).get("recognizedId"));
+                }
+                return queryGoodsByRecognizedIds(recognizedIds);
+            }
+        }
+
+        Map<String, Object> locationInfo = new Gson().fromJson(location, new TypeToken<Map<String, Object>>() {
+        }.getType());
+        if (null != locationInfo) {
+            Double longitude = Double.parseDouble((String) locationInfo.get("longitude"));
+            Double latitude = Double.parseDouble((String) locationInfo.get("latitude"));
+            //根据经纬度坐标查询商品ID
+            List<String> goodsIdList = goodsDubboService.getGoodsIdByCoordinate(longitude, latitude);
+            if (null != goodsIdList && goodsIdList.size() > 0) {
+                return queryGoodsByGoodsIds(goodsIdList);
+            }
+        }
+        return null;
+    }
+
+    public List<GoodsBean> queryGoodsByRecognizedIds(List<String> recognizedIds) {
+        StringBuilder sql = new StringBuilder();
+        sql.append(" SELECT ");
+        sql.append(" * ");
+        sql.append(" FROM ");
+        sql.append(" t_scm_goods WHERE 1 = 1 AND goods_id IN (" + Utils.listParseString(recognizedIds) + ")");
+        List<GoodsBean> goodsBeanList = this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsBean.class);
+        if (null != goodsBeanList && goodsBeanList.size() > 0) {
+            for (GoodsBean goodsBean : goodsBeanList) {
+                goodsBean.setGoodsSkuBeans(queryGoodsSKUsByGoodsId(goodsBean.getId()));
+            }
+        }
+        return goodsBeanList;
+    }
 }
+

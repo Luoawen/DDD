@@ -16,4 +16,21 @@ public interface GoodsService {
      * @return
      */
     List<Map> getGoodsTags(String dealerId, String goodsId, String classifyId);
+
+    /**
+     * 根据条码获取商品媒体资源信息
+     *
+     * @param barNo
+     * @return
+     */
+    Map getMediaResourceInfo(String barNo);
+
+    /**
+     * 根据经纬度坐标查询商品ID
+     *
+     * @param longitude 经度
+     * @param latitude  纬度
+     * @return
+     */
+    List<String> getGoodsIdByCoordinate(Double longitude, Double latitude);
 }

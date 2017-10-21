@@ -10,5 +10,5 @@ public interface GoodsRepository {
 
     void save(Goods goods);
 
-
+    Goods queryGoodsById(Integer goodsId);
 }

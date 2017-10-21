@@ -1,4 +1,4 @@
-package cn.m2c.scm.application.goods.query.data.representation;
+package cn.m2c.scm.application.goods.query.data.representation.app;
 
 import cn.m2c.common.JsonUtils;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsBean;
@@ -8,16 +8,17 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 随机取商品
+ * app商品搜索
  */
-public class GoodsGuessRepresentation {
+public class AppGoodsSearchRepresentation {
     private String goodsId;
     private String goodsName;
     private String goodsImageUrl;
     private Long goodsPrice;
     private List<Map> goodsTags;
+    private List<Map> goodsClassifies;
 
-    public GoodsGuessRepresentation(GoodsBean bean, List<Map> goodsTags) {
+    public AppGoodsSearchRepresentation(GoodsBean bean, List<Map> goodsTags) {
         this.goodsId = bean.getGoodsId();
         this.goodsName = bean.getGoodsName();
         List<String> mainImages = JsonUtils.toList(bean.getGoodsMainImages(), String.class);

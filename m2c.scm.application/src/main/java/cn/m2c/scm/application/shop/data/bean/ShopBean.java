@@ -13,6 +13,8 @@ public class ShopBean {
 	 private String shopIcon;
 	 @ColumnAlias(value = "shop_introduce")
 	 private String shopIntroduce;
+	 @ColumnAlias(value = "shop_receipt")
+	 private String shopReceipt;
 	 @ColumnAlias(value = "customer_service_tel")
 	 private String customerServiceTel;
 	public String getDealerId() {
@@ -50,6 +52,12 @@ public class ShopBean {
 	}
 	public void setShopIcon(String shopIcon) {
 		this.shopIcon = shopIcon;
+	}
+	public String getShopReceipt() {
+		return shopReceipt;
+	}
+	public void setShopReceipt(String shopReceipt) {
+		this.shopReceipt = shopReceipt;
 	}
 	 
 	 

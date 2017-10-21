@@ -41,6 +41,9 @@ public class DealerOrder extends ConcurrencySafeEntity {
 	/**订单明细*/
 	private List<DealerOrderDtl> orderDtls;
 	
+	public DealerOrder() {
+		super();
+	}
 	public DealerOrder(String orderId, String dealerOrderId,
 			String dealerId, long goodsAmount, long orderFreight
 			,long plateformDiscount, long dealerDiscount, String noted, Integer termOfPayment
@@ -74,5 +77,54 @@ public class DealerOrder extends ConcurrencySafeEntity {
 
 	public Long getDealerDiscount() {
 		return dealerDiscount;
+	}
+	
+	void cancel() {
+		status = -1;
+		for (DealerOrderDtl d : orderDtls) {
+			d.cancel();
+		}
+	}
+
+	/**
+	 * 同步订单的物流信息
+	 * @param expressName
+	 * @param expressNo
+	 * @param expressNote
+	 * @param expressPerson
+	 * @param expressPhone
+	 * @param expressWay
+	 */
+	public void updateExpress(String expressName, String expressNo,
+			String expressNote, String expressPerson, String expressPhone,
+			Integer expressWay, String expressCode) {
+		List<DealerOrderDtl> orderDtls = this.orderDtls;
+		for (DealerOrderDtl dealerOrderDtl : orderDtls) {
+			dealerOrderDtl.updateOrderDetailExpress(expressName,expressNo,expressNote,expressPerson
+					,expressPhone,expressWay, expressCode);
+		}
+	}
+	/***
+	 * 检查是否全部确认收货，除指定的sku外
+	 * @param sku
+	 * @return
+	 */
+	public boolean checkAllRev(String sku, DealerOrderDtl dll) {
+		for (DealerOrderDtl dtl : orderDtls) {
+			if (dtl.isEqualSku(sku) || dtl.isSameExpressNo(dll.getExpressNo())) {
+				dtl.confirmRev();
+			}
+			if (!dtl.isRecBB())
+				return false;
+		}
+		return true;
+	}
+	
+	public void confirmRev() {
+		
+		if (status != 2)
+			return;
+		status = 3;
+		
 	}
 }

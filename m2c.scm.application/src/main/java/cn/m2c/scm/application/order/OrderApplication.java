@@ -21,11 +21,16 @@ import cn.m2c.common.MCode;
 import cn.m2c.ddd.common.event.annotation.EventListener;
 import cn.m2c.scm.application.dealer.data.bean.DealerBean;
 import cn.m2c.scm.application.dealer.query.DealerQuery;
+import cn.m2c.scm.application.goods.GoodsApplication;
+import cn.m2c.scm.application.goods.query.GoodsQueryApplication;
 import cn.m2c.scm.application.order.command.CancelOrderCmd;
+import cn.m2c.scm.application.order.command.ConfirmSkuCmd;
 import cn.m2c.scm.application.order.command.OrderAddCommand;
 import cn.m2c.scm.application.order.command.PayOrderCmd;
 import cn.m2c.scm.application.order.query.OrderQueryApplication;
 import cn.m2c.scm.application.order.query.dto.GoodsDto;
+import cn.m2c.scm.application.postage.data.bean.PostageModelRuleBean;
+import cn.m2c.scm.application.postage.query.PostageModelQueryApplication;
 import cn.m2c.scm.domain.NegativeException;
 import cn.m2c.scm.domain.model.order.DealerOrder;
 import cn.m2c.scm.domain.model.order.DealerOrderDtl;
@@ -53,7 +58,15 @@ public class OrderApplication {
 	OrderQueryApplication queryApp;
 	
 	@Autowired
+	private GoodsApplication goodsApp;
+	
+	@Autowired
+	private GoodsQueryApplication gQueryApp;
+	
+	@Autowired
 	DealerQuery dealerQuery; // getDealers
+	@Autowired
+	PostageModelQueryApplication postApp;
 	/**
 	 * 提交订单
 	 * @param cmd
@@ -65,6 +78,7 @@ public class OrderApplication {
 		
 		JSONArray gdes = cmd.getGoodses();
 		List<Map<String, Object>> goodses = null;
+		// skuId, num
 		Map<String, Integer> skus = new HashMap<String, Integer>();
 		if (gdes == null || gdes.size() < 1) {
 			// 获取购物车数据
@@ -87,18 +101,24 @@ public class OrderApplication {
 		orderDomainService.judgeStock(skus);
 		// 锁定库存
 		orderDomainService.lockStock(null);
+		try {
+			goodsApp.outInventory(skus);
+		}
+		catch (NegativeException e) {
+			throw new NegativeException(MCode.V_100, e.getMessage() + "不存在或库存不够。");
+		}
 		// 满足优惠券后，修改优惠券(锁定)
 		//JSONArray coups = cmd.getCoupons();
 		//orderDomainService.lockCoupons(null);
 		// 获取商品详情
-		List<GoodsDto> list = queryApp.getGoodsDtl(skus.keySet());
+		List<GoodsDto> list = gQueryApp.getGoodsDtl(skus.keySet());
 		//若有媒体信息则需要查询媒体信息
 		orderDomainService.getMediaBdByResIds(null);
 		// 获取运费模板，计算运费
 		calFreight(skus, list, cmd.getAddr().getCityCode());
 		// 拆单 设置商品数量即按商家来拆分
 		Set<String> idsSet = new HashSet<String>();
-		Map<String, List<GoodsDto>> dealerOrderMap = splitOrder(list, skus, idsSet);
+		Map<String, List<GoodsDto>> dealerOrderMap = splitOrder(list, idsSet);
 		// 计算是否满足营销策略, 若满足选择最优
 		Map<String, Integer> dealerCount = getDealerWay(idsSet);
 		List<DealerOrder> dealerOrders = trueSplit(dealerOrderMap, cmd, dealerCount);
@@ -126,11 +146,10 @@ public class OrderApplication {
 	/***
 	 * 订单拆分
 	 * @param ls
-	 * @param sl
+	 * @param ids
 	 * @return
 	 */
-	private Map<String, List<GoodsDto>> splitOrder(List<GoodsDto> ls, Map<String, Integer> sl
-			, Set<String> ids) {
+	private Map<String, List<GoodsDto>> splitOrder(List<GoodsDto> ls, Set<String> ids) {
 		Map<String, List<GoodsDto>> rs = new HashMap<String, List<GoodsDto>>();
 		List<GoodsDto> dtos = null;
 		for (GoodsDto bean : ls) {
@@ -140,11 +159,7 @@ public class OrderApplication {
 				dtos = new ArrayList<GoodsDto>();
 				rs.put(bean.getDealerId(), dtos);
 			}
-			Integer num = sl.get(bean.getSkuId());
-			if (num != null) {
-				bean.setPurNum(num);
-				dtos.add(bean);
-			}
+			dtos.add(bean);
 		}		
 		return rs;
 	}
@@ -219,11 +234,60 @@ public class OrderApplication {
 	 * @param cityCode
 	 */
 	private void calFreight(Map<String, Integer> skus, List<GoodsDto> ls, String cityCode) {
+		LOGGER.info("==fanjc==计算运费.");
+		Iterator<String> it = skus.keySet().iterator();
+		List<String> skuIds = new ArrayList<String>();
+		while(it.hasNext()) {
+			skuIds.add(it.next());
+		}
+		
+		Map<String, PostageModelRuleBean> postMap = postApp.getGoodsPostageRule(skuIds, cityCode);
+		
 		for (GoodsDto bean : ls) {
-			bean.setFreight(1000);
+			String skuId = bean.getSkuId();
+			bean.setPurNum(skus.get(skuId));
+			calFrt(bean, postMap.get(skuId));
+			// bean.setFreight(1000);
 		}
 	}
-	
+	/***
+	 * 计算单个物品运费
+	 * @param b
+	 * @param pb
+	 * @return
+	 */
+	private void calFrt(GoodsDto b, PostageModelRuleBean pb) {
+		if (pb == null) {
+			b.setFreight(0);
+			return ;
+		}
+		
+		if (pb.getChargeType() == 1) {//0:按重量,1:按件数
+			long ft = pb.getFirstPostage();
+			long ct = pb.getContinuedPostage();
+			int fpt = pb.getFirstPiece();
+			int cpt = pb.getContinuedPiece();
+			int ss = b.getPurNum() - fpt; // 续件
+			if (ss > 0) {
+				b.setFreight(ft + (ss/cpt + (ss%cpt >0 ? 1:0)) * ct);
+			}
+			else
+				b.setFreight(ft);
+		}
+		else {
+			long ft = pb.getFirstPostage();
+			long ct = pb.getContinuedPostage();
+			float fpt = pb.getFirstWeight();
+			float cpt = pb.getContinuedWeight();
+			float ss = b.getPurNum()*b.getWeight() - fpt; // 续件
+			if (ss > 0) {
+				int t = (int)(ss/cpt); //倍数
+				b.setFreight(ft + (t + (ss > (t * cpt) ? 1:0)) * ct);
+			}
+			else
+				b.setFreight(ft);
+		}
+	}
 	/***
 	 * 获取商家结算方式
 	 * @param ids
@@ -256,16 +320,42 @@ public class OrderApplication {
 	 * @param cmd
 	 * @return
 	 */
+	@Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
 	public Object payOrder(PayOrderCmd cmd) {
 		MainOrder order = orderRepository.getOrderById(cmd.getOrderId());
 		// 获取订单所用营销策略
-		
+		List<String> mks = order.getMkIds();
 		// 获取营销策略详情看是否有变化
-		
+		orderDomainService.getMarketingsByIds(mks);
 		// 若有变化则需要重新计算金额并更新
 		
 		// 请求发起支付
-		
+		order.getActual();
+		// 调用restful接口;
 		return null;
+	}
+	
+	/***
+	 * 确认收货(只能取消未支付的)
+	 * @param cmd
+	 * @throws NegativeException 
+	 */
+	@Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+	public void confirmSku(ConfirmSkuCmd cmd) throws NegativeException {
+		
+		DealerOrderDtl dtl = orderRepository.getDealerOrderDtlBySku(cmd.getDealerOrderId(), cmd.getSkuId());
+		// 检查是否可确认收货
+		if (dtl.confirmRev(cmd.getUserId())) {
+			// 可能是逻辑删除或是改成取消状态(子订单也要改)
+			DealerOrder order = orderRepository.getDealerOrderByNo(cmd.getDealerOrderId());
+			if (order.checkAllRev(cmd.getSkuId(), dtl)) { // 同一个运单号一起确认收货
+				order.confirmRev();
+				// 检查主订单下的所有商家订单是不是已经全部确认收货了
+			}			
+			orderRepository.updateDealerOrder(order);
+		}
+		else {
+			throw new NegativeException(MCode.V_1, "确认收货出错！");
+		}
 	}
 }

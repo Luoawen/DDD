@@ -36,6 +36,7 @@
 	        <property name="header" column="invoice_header" type="string"/>
 	        <property name="name" column="invoice_name" type="string"/>
 	        <property name="code" column="invoice_code" type="string"/>
+	        <property name="type" column="invoice_type" type="int"/>
 	        <!-- <property name="invoiceDes" column="describ" type="string"/> -->
         </component>
         
@@ -46,6 +47,7 @@
 	        <property name="expressPhone" column="express_phone" type="string"/>
 	        <property name="expressWay" column="express_way" type="int"/>
 	        <property name="expressNote" column="express_note" type="string"/>
+	        <property name="expressCode" column="express_code" type="string"/>
         </component>
         
         <property name="mediaResId" column="media_res_id" type="date"/>
@@ -78,6 +80,7 @@
         <property name="resRate" column="res_rate" type="float"/>
         <property name="mediaId" column="media_id" type="string"/>
         <property name="bdsRate" column="bds_rate" type="string"/>
+        <property name="commentStatus" column="comment_status" type="int"/>
         
         <!-- <many-to-one name="dealerOrder" column="dealer_order_id" class="cn.m2c.scm.domain.model.order.DealerOrder"
                      cascade="save-update" fetch="join"/> -->
