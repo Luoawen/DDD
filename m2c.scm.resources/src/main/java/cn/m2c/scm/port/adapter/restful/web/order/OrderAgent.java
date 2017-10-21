@@ -16,18 +16,16 @@ import cn.m2c.common.MCode;
 import cn.m2c.common.MPager;
 import cn.m2c.common.MResult;
 import cn.m2c.scm.application.order.OrderApplication;
-import cn.m2c.scm.application.order.data.bean.OrderDealerBean;
 import cn.m2c.scm.application.order.data.bean.DealerOrderDetailBean;
-import cn.m2c.scm.application.order.data.bean.mainOrderBean;
+import cn.m2c.scm.application.order.data.bean.MainOrderBean;
 import cn.m2c.scm.application.order.query.OrderQuery;
-import cn.m2c.scm.port.adapter.restful.web.brand.BrandAgent;
 
 
 @RestController
 @RequestMapping("/order")
 public class OrderAgent {
 	
-	private final static Logger LOGGER = LoggerFactory.getLogger(BrandAgent.class);
+	private final static Logger LOGGER = LoggerFactory.getLogger(OrderAgent.class);
 	
 	@Autowired
 	OrderApplication orderapplication;
@@ -61,7 +59,7 @@ public class OrderAgent {
 		MPager result = new MPager(MCode.V_1);
 		try {
 			Integer total = orderQuery.mainOrderQueryTotal(orderStatus, afterSellStatus, startTime, endTime, condition, payWay);
-			List<mainOrderBean> mainOrderList = orderQuery.mainOrderListQuery(orderStatus, afterSellStatus, startTime, endTime, condition, payWay, pageNum, rows);
+			List<MainOrderBean> mainOrderList = orderQuery.mainOrderListQuery(orderStatus, afterSellStatus, startTime, endTime, condition, payWay, pageNum, rows);
 			
 			result.setPager(total, pageNum, rows);
 			result.setContent(mainOrderList);
@@ -94,14 +92,5 @@ public class OrderAgent {
 		return new ResponseEntity<MResult>(result,HttpStatus.OK);
 	}
 	
-	/**
-	 * 
-	 */
-	@RequestMapping(value = "/dmanager/deliverdetail",method = RequestMethod.GET)
-	public ResponseEntity<MResult> deliverDetail(@RequestParam(value = "orderDetailId",required = false)String orderDetailId){
-		
-		return null;
-		
-	}
 	
 }
