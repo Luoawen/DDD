@@ -41,7 +41,7 @@ public class StantardAgent {
 	 * @param stantardName
 	 * @return
 	 */
-	@RequestMapping(value = "/", method = RequestMethod.POST)
+	@RequestMapping(value = "/{stantardName}", method = RequestMethod.POST)
 	public ResponseEntity<MResult> addStandart(@RequestParam(value = "stantardName",required = false) String stantardName){
 		MResult result = new MResult(MCode.V_1);
 		try {
