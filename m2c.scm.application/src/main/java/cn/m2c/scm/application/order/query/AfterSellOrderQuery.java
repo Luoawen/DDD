@@ -231,7 +231,6 @@ public class AfterSellOrderQuery {
 		sql.append(" AND after.dealer_id = dealer.dealer_id ");
 		sql.append(" AND after.dealer_order_id = detail.dealer_order_id  ");
 		sql.append("  AND detail.saler_user_id = seller.seller_id ");
-	//	System.out.println("Show SQL-------------------------------"+sql);
 		AfterSellOrderDetailBean bean = this.supportJdbcTemplate.queryForBean(sql.toString(), AfterSellOrderDetailBean.class, afterSellOrderId);
 		System.out.println("取出数据没有-------------------------------------"+bean);
 		List<GoodsInfoBean> goodsInfoBeans = aftetSellOrderDetailGoodsInfoQuery(afterSellOrderId);
@@ -239,10 +238,6 @@ public class AfterSellOrderQuery {
 		Integer orderTotalPrice = 0;
 		
 		for (GoodsInfoBean goodsInfo : goodsInfoBeans) {
-<<<<<<< HEAD
-=======
-			//System.out.println(goodsInfo.getPlateformDiscount() + "---------------------------" + goodsInfo.getDealerDiscount());
->>>>>>> 631035f3616602d916825af1de5f3430ab8ce496
 			totalPrice += (goodsInfo.getPrice() * goodsInfo.getSellNum() +  goodsInfo.getFreight());
 			goodsInfo.setTotalPrice(totalPrice);
 			orderTotalPrice += totalPrice;
