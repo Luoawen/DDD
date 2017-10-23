@@ -168,7 +168,7 @@ public class AppGoodsAgent {
      * @param rows            每页多少条
      * @return
      */
-    @RequestMapping(value = "", method = RequestMethod.GET)
+    @RequestMapping(value = "search", method = RequestMethod.GET)
     public ResponseEntity<MPager> appSearchGoods(
             @RequestParam(value = "sn", required = false) String sn,
             @RequestParam(value = "userId", required = false) String userId,
