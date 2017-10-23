@@ -32,7 +32,7 @@ public class StandstardApplication {
     	if (stantardRepository.stantardNameIsRepeat(command.getStantardName())) {
 			throw new NegativeException(MCode.V_301,"规格已存在");
 		}
-    	Stantard stantard = stantardRepository.getUnitByStantardName(command.getStantardName());
+    	Stantard stantard = stantardRepository.getStantardByStantardId(command.getStantardId());
     	if (null == stantard) {
     		stantard = new Stantard(command.getStantardId(), command.getStantardName(), command.getStantardStatus());
     	}
@@ -46,10 +46,11 @@ public class StandstardApplication {
 	 * @throws NegativeException
 	 */
 	 @Transactional(rollbackFor = {Exception.class,RuntimeException.class,NegativeException.class})
-	    public void delStantard(String stantardName) throws NegativeException{
-	    	LOGGER.info("delStantard stantardName >>{}",stantardName);
+	    public void delStantard(String stantardId) throws NegativeException{
+	    	LOGGER.info("delStantard stantardName >>{}",stantardId);
 	    	
-	    	Stantard stantard = stantardRepository.getUnitByStantardName(stantardName);
+	    	Stantard stantard = stantardRepository.getStantardByStantardId(stantardId);
+	    	System.out.println("取出的数据-----------------------------"+stantard.toString());
 	    	if (null == stantard) {
 				throw new NegativeException(MCode.V_300,"规格不存在");
 			}
@@ -70,7 +71,7 @@ public class StandstardApplication {
 	    	if (stantardRepository.stantardNameIsRepeat(command.getStantardName())) {
 				throw new NegativeException(MCode.V_301,"规格已存在");
 			}
-	    	Stantard stantard = stantardRepository.getUnitByStantardName(command.getStantardName());
+	    	Stantard stantard = stantardRepository.getStantardByStantardId(command.getStantardName());
 	    	if (null == stantard) {
 				throw new NegativeException(MCode.V_300,"规格不存在");
 			}

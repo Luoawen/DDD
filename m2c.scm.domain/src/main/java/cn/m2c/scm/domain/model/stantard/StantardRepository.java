@@ -1,6 +1,5 @@
 package cn.m2c.scm.domain.model.stantard;
 
-import cn.m2c.scm.domain.model.unit.Unit;
 
 public interface StantardRepository {
 	/**
@@ -15,7 +14,7 @@ public interface StantardRepository {
 	 * @param unitName
 	 * @return
 	 */
-	public Stantard getUnitByStantardName(String stantardName);
+	public Stantard getStantardByStantardId(String stantardId);
 	
 	/**
 	 * 保存

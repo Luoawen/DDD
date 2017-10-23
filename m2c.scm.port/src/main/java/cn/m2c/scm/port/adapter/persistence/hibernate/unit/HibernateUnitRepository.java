@@ -42,10 +42,10 @@ public class HibernateUnitRepository extends HibernateSupperRepository implement
 	 * 获取计量单位
 	 */
 	@Override
-	public Unit getUnitByUnitName(String unitName) {
-		StringBuffer sql = new StringBuffer("select u.unit_name from t_scm_unit u where unit_status = 1 AND unit_name =:unit_name");
+	public Unit getUnitByUnitId(String unitId) {
+		StringBuffer sql = new StringBuffer("select * from t_scm_unit  where unit_status = 1 AND unit_id =:unit_id");
 		Query query = this.session().createSQLQuery(sql.toString()).addEntity(Unit.class);
-		query.setParameter("unit_name", unitName);
+		query.setParameter("unit_id", unitId);
 		return (Unit) query.uniqueResult();
 	}
 

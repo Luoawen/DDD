@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -66,11 +67,12 @@ public class UnitAgent {
 	 * @param unitName
 	 * @return
 	 */
-	@RequestMapping(value = "/{unitName}", method = RequestMethod.DELETE)
-	public ResponseEntity<MResult> delUnit(@RequestParam(value = "unitName", required = false) String unitName) {
+	@RequestMapping(value = "", method = RequestMethod.DELETE)
+	public ResponseEntity<MResult> delUnit(@RequestParam(value = "unitId", required = false) String unitId) {
+		System.out.println("删除计量单位------------------------");
 		MResult result = new MResult(MCode.V_1);
 		try {
-			unitApplication.delUnit(unitName);
+			unitApplication.delUnit(unitId);
 		} catch (NegativeException ne) {
 			LOGGER.error("deleteUnit NegativeException e:", ne);
 			result = new MResult(ne.getStatus(), ne.getMessage());
