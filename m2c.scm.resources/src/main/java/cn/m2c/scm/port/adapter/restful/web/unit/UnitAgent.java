@@ -89,7 +89,7 @@ public class UnitAgent {
 	 * @param unitName
 	 * @return
 	 */
-	@RequestMapping(value = "/{unitName}", method = RequestMethod.PUT)
+	@RequestMapping(value = "", method = RequestMethod.PUT)
 	public ResponseEntity<MResult> updateUnit(
 			@RequestParam(value = "unitId", required = false) String unitId,
 			@RequestParam(value = "unitName", required = false) String unitName) {
@@ -114,7 +114,7 @@ public class UnitAgent {
 	 * @param rows
 	 * @return
 	 */
-	@RequestMapping(value = "/list", method = RequestMethod.GET)
+	@RequestMapping(value = "", method = RequestMethod.GET)
 	public ResponseEntity<MPager> list(
 			@RequestParam(value = "pageNum", required = false, defaultValue = "1") Integer pageNum,
 			@RequestParam(value = "rows", required = false, defaultValue = "10") Integer rows) {
@@ -137,7 +137,7 @@ public class UnitAgent {
 	 * @param unitId
 	 * @return
 	 */
-	@RequestMapping(value = "/get", method = RequestMethod.GET)
+	@RequestMapping(value = "/unit", method = RequestMethod.GET)
 	public ResponseEntity<MResult> getUnit(@RequestParam(value = "unitId", required = false) String unitId){
 		MResult result = new MResult(MCode.V_1);
 		try {
