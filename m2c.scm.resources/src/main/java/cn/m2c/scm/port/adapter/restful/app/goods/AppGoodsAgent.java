@@ -6,6 +6,8 @@ import cn.m2c.common.MPager;
 import cn.m2c.common.MResult;
 import cn.m2c.scm.application.classify.data.bean.GoodsClassifyBean;
 import cn.m2c.scm.application.classify.query.GoodsClassifyQueryApplication;
+import cn.m2c.scm.application.comment.query.GoodsCommentQueryApplication;
+import cn.m2c.scm.application.comment.query.data.bean.GoodsCommentBean;
 import cn.m2c.scm.application.goods.query.GoodsGuaranteeQueryApplication;
 import cn.m2c.scm.application.goods.query.GoodsQueryApplication;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsBean;
@@ -55,6 +57,8 @@ public class AppGoodsAgent {
     GoodsClassifyQueryApplication goodsClassifyQueryApplication;
     @Resource(name = "goodsDubboService")
     GoodsService goodsDubboService;
+    @Autowired
+    GoodsCommentQueryApplication goodsCommentQueryApplication;
 
     /**
      * 商品猜你喜欢
@@ -119,8 +123,14 @@ public class AppGoodsAgent {
             if (null != goodsBean) {
                 List<GoodsGuaranteeBean> goodsGuarantee = goodsGuaranteeQueryApplication.queryGoodsGuaranteeByIds(JsonUtils.toList(goodsBean.getGoodsGuarantee(), String.class));
                 String goodsUnitName = unitQuery.getUnitNameByUnitId(goodsBean.getGoodsUnitId());
+
+                Integer commentTotal = goodsCommentQueryApplication.queryGoodsCommentTotal(goodsId);
+                GoodsCommentBean goodsCommentBean = null;
+                if (commentTotal > 0) {
+                    goodsCommentBean = goodsCommentQueryApplication.queryGoodsDetailComment(goodsId);
+                }
                 AppGoodsDetailRepresentation representation = new AppGoodsDetailRepresentation(goodsBean,
-                        goodsGuarantee, goodsUnitName, null);
+                        goodsGuarantee, goodsUnitName, null, commentTotal, goodsCommentBean);
                 result.setContent(representation);
             }
             result.setStatus(MCode.V_200);
@@ -260,8 +270,14 @@ public class AppGoodsAgent {
                 for (GoodsBean goodsBean : goodsBeans) {
                     List<GoodsGuaranteeBean> goodsGuarantee = goodsGuaranteeQueryApplication.queryGoodsGuaranteeByIds(JsonUtils.toList(goodsBean.getGoodsGuarantee(), String.class));
                     String goodsUnitName = unitQuery.getUnitNameByUnitId(goodsBean.getGoodsUnitId());
+
+                    Integer commentTotal = goodsCommentQueryApplication.queryGoodsCommentTotal(goodsBean.getGoodsId());
+                    GoodsCommentBean goodsCommentBean = null;
+                    if (commentTotal > 0) {
+                        goodsCommentBean = goodsCommentQueryApplication.queryGoodsDetailComment(goodsBean.getGoodsId());
+                    }
                     AppGoodsDetailRepresentation representation = new AppGoodsDetailRepresentation(goodsBean,
-                            goodsGuarantee, goodsUnitName, mresId);
+                            goodsGuarantee, goodsUnitName, mresId, commentTotal, goodsCommentBean);
                     representations.add(representation);
                 }
                 result.setContent(representations);

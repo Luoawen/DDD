@@ -12,6 +12,7 @@ public class AddGoodsCommentCommand extends AssertionConcern implements Serializ
     private String orderId;
     private String skuId;
     private String skuName;
+    private Integer goodsNum;
     private String buyerId;
     private String buyerName;
     private String buyerPhoneNumber;
@@ -27,13 +28,14 @@ public class AddGoodsCommentCommand extends AssertionConcern implements Serializ
      */
     private Integer starLevel;
 
-    public AddGoodsCommentCommand(String commentId, String orderId, String skuId, String skuName, String buyerId, String buyerName,
+    public AddGoodsCommentCommand(String commentId, String orderId, String skuId, String skuName, Integer goodsNum, String buyerId, String buyerName,
                                   String buyerPhoneNumber, String buyerIcon, String commentContent, String commentImages,
                                   String goodsId, String goodsName, String dealerId, String dealerName, Integer starLevel) {
         this.commentId = commentId;
         this.orderId = orderId;
         this.skuId = skuId;
         this.skuName = skuName;
+        this.goodsNum = goodsNum;
         this.buyerId = buyerId;
         this.buyerName = buyerName;
         this.buyerPhoneNumber = buyerPhoneNumber;
@@ -105,5 +107,9 @@ public class AddGoodsCommentCommand extends AssertionConcern implements Serializ
 
     public Integer getStarLevel() {
         return starLevel;
+    }
+
+    public Integer getGoodsNum() {
+        return goodsNum;
     }
 }

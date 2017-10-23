@@ -35,7 +35,7 @@ public class GoodsCommentApplication {
         GoodsComment goodsComment = goodsCommentRepository.queryGoodsCommentById(command.getCommentId());
         if (null == goodsComment) {
             goodsComment = new GoodsComment(command.getCommentId(), command.getOrderId(), command.getGoodsId(),
-                    command.getSkuId(), command.getSkuName(), command.getGoodsName(),
+                    command.getSkuId(), command.getSkuName(), command.getGoodsNum(), command.getGoodsName(),
                     command.getDealerId(), command.getDealerName(), command.getBuyerId(), command.getBuyerName(),
                     command.getBuyerPhoneNumber(), command.getBuyerIcon(), command.getCommentContent(), command.getCommentImages(),
                     command.getStarLevel());

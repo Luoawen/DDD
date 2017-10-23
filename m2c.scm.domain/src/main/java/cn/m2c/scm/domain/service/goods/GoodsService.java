@@ -33,4 +33,14 @@ public interface GoodsService {
      * @return
      */
     List<String> getGoodsIdByCoordinate(Double longitude, Double latitude);
+
+    /**
+     * 获取商品满减信息
+     *
+     * @param dealerId   商家ID
+     * @param goodsId    商品ID
+     * @param classifyId 商品分类ID
+     * @return
+     */
+    List<Map> getGoodsFullCut(String dealerId, String goodsId, String classifyId);
 }
