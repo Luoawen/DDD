@@ -187,10 +187,7 @@ public class DealerAgent {
 				@RequestParam(value="cooperationMode",required=false)Integer cooperationMode,
 				@RequestParam(value="countMode",required=false)Integer countMode,
 				@RequestParam(value="isPayDeposit",required=false)Integer isPayDeposit,
-				@RequestParam(value="dealerName",required=false)String dealerName,
-				@RequestParam(value="dealerId",required=false)String dealerId,
-				@RequestParam(value="userPhone",required=false)String userPhone,
-				@RequestParam(value="sellerPhone",required=false)String sellerPhone,
+				@RequestParam(value="filter",required=false)String filter,
 				@RequestParam(value="startTime",required=false)String startTime,
 				@RequestParam(value="endTime",required=false)String endTime,
 				@RequestParam(value = "pageNum", required = false, defaultValue = "1") Integer pageNum,
@@ -198,8 +195,8 @@ public class DealerAgent {
 				){
 			MPager result = new MPager(MCode.V_1);
 			try {
-				List<DealerBean> dealerList = dealerQuery.getDealerList(dealerClassify,cooperationMode,countMode,isPayDeposit,dealerName,dealerId,userPhone,sellerPhone,startTime,endTime,pageNum,rows);
-				Integer count = dealerQuery.getDealerCount(dealerClassify,cooperationMode,countMode,isPayDeposit,dealerName,dealerId,userPhone,sellerPhone,startTime,endTime,pageNum,rows);
+				List<DealerBean> dealerList = dealerQuery.getDealerList(dealerClassify,cooperationMode,countMode,isPayDeposit,filter,startTime,endTime,pageNum,rows);
+				Integer count = dealerQuery.getDealerCount(dealerClassify,cooperationMode,countMode,isPayDeposit,filter,startTime,endTime,pageNum,rows);
 				if(dealerList!=null && dealerList.size()>0){
 					List<DealerRepresentation> list = new ArrayList<DealerRepresentation>();
 					for (DealerBean model : dealerList) {
