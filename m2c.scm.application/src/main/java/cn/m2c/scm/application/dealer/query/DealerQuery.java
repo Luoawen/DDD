@@ -23,8 +23,7 @@ public class DealerQuery {
 
 	public List<DealerBean> getDealerList(String dealerClassify,
 			Integer cooperationMode, Integer countMode, Integer isPayDeposit,
-			String dealerName, String dealerId, String userPhone,
-			String sellerPhone, String startTime, String endTime,
+			String filter, String startTime, String endTime,
 			Integer pageNum, Integer rows) throws NegativeException {
 		List<DealerBean> dealerList = null;
 		try {
@@ -52,21 +51,12 @@ public class DealerQuery {
 	            	sql.append(" AND sd.is_pay_deposit = ? ");
 	            	params.add(isPayDeposit);
 	            }
-	            if(dealerName!=null && !"".equals(dealerName)){
-	            	sql.append(" AND sd.dealer_name LIKE concat('%', ?,'%')  ");
-	            	params.add(dealerName);
-	            }
-	            if(dealerId!=null && !"".equals(dealerId)){
-	            	sql.append(" AND sd.dealer_id LIKE concat('%', ?,'%')  ");
-	            	params.add(dealerId);
-	            }
-	            if(userPhone!=null && !"".equals(userPhone)){
-	            	sql.append(" AND sd.user_phone LIKE concat('%', ?,'%')  ");
-	            	params.add(userPhone);
-	            }
-	            if(sellerPhone!=null && !"".equals(sellerPhone)){
-	            	sql.append(" AND sd.seller_phone LIKE concat('%', ?,'%')  ");
-	            	params.add(sellerPhone);
+	            if(filter!=null && !"".equals(filter)){
+	            	sql.append(" AND (sd.dealer_name LIKE concat('%', ?,'%') or sd.dealer_id LIKE concat('%', ?,'%') or  sd.user_phone LIKE concat('%', ?,'%') or  sd.seller_phone LIKE concat('%', ?,'%')) ");
+	            	params.add(filter);
+	            	params.add(filter);
+	            	params.add(filter);
+	            	params.add(filter);
 	            }
 	        	if(startTime !=null&&!"".equals(startTime)){
 					
@@ -115,8 +105,7 @@ public class DealerQuery {
 
 	public Integer getDealerCount(String dealerClassify,
 			Integer cooperationMode, Integer countMode, Integer isPayDeposit,
-			String dealerName, String dealerId, String userPhone,
-			String sellerPhone, String startTime, String endTime,
+			String filter, String startTime, String endTime,
 			Integer pageNum, Integer rows) throws NegativeException {
 		Integer result = 0;
 		try {
@@ -144,21 +133,12 @@ public class DealerQuery {
 	            	sql.append(" AND sd.is_pay_deposit = ? ");
 	            	params.add(isPayDeposit);
 	            }
-	            if(dealerName!=null && !"".equals(dealerName)){
-	            	sql.append(" AND sd.dealer_name LIKE concat('%', ?,'%')  ");
-	            	params.add(dealerName);
-	            }
-	            if(dealerId!=null && !"".equals(dealerId)){
-	            	sql.append(" AND sd.dealer_id LIKE concat('%', ?,'%')  ");
-	            	params.add(dealerId);
-	            }
-	            if(userPhone!=null && !"".equals(userPhone)){
-	            	sql.append(" AND sd.user_phone LIKE concat('%', ?,'%')  ");
-	            	params.add(userPhone);
-	            }
-	            if(sellerPhone!=null && !"".equals(sellerPhone)){
-	            	sql.append(" AND sd.seller_phone LIKE concat('%', ?,'%')  ");
-	            	params.add(sellerPhone);
+	            if(filter!=null && !"".equals(filter)){
+	            	sql.append(" AND (sd.dealer_name LIKE concat('%', ?,'%') or sd.dealer_id LIKE concat('%', ?,'%') or  sd.user_phone LIKE concat('%', ?,'%') or  sd.seller_phone LIKE concat('%', ?,'%') ) ");
+	            	params.add(filter);
+	            	params.add(filter);
+	            	params.add(filter);
+	            	params.add(filter);
 	            }
 	        	if(startTime !=null&&!"".equals(startTime)){
 					
