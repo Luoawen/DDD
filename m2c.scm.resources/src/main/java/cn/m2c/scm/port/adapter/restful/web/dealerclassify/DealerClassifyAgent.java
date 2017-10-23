@@ -1,5 +1,6 @@
 package cn.m2c.scm.port.adapter.restful.web.dealerclassify;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -16,6 +17,8 @@ import cn.m2c.common.MCode;
 import cn.m2c.common.MPager;
 import cn.m2c.common.MResult;
 import cn.m2c.scm.application.dealerclassify.data.bean.DealerClassifyBean;
+import cn.m2c.scm.application.dealerclassify.data.representation.DealerFirstClassifyRepresentation;
+import cn.m2c.scm.application.dealerclassify.data.representation.DealerSecondClassifyRepresentation;
 import cn.m2c.scm.application.dealerclassify.query.DealerClassifyQuery;
 
 @RestController
@@ -30,8 +33,12 @@ public class DealerClassifyAgent {
 	    public ResponseEntity<MResult> firstClassify() {
 		 MResult result = new MResult(MCode.V_1);
 	        try {
+	        	List<DealerFirstClassifyRepresentation> firstList = new ArrayList<DealerFirstClassifyRepresentation>();
 	        	List<DealerClassifyBean> firstClassifyBeanList = dealerClassifyQuery.getFirstClassifyList();
-	        	result.setContent(firstClassifyBeanList);
+	        	for (DealerClassifyBean dealerClassifyBean : firstClassifyBeanList) {
+	        		firstList.add(new DealerFirstClassifyRepresentation(dealerClassifyBean));
+				}
+	        	result.setContent(firstList);
 	            result.setStatus(MCode.V_200);
 	        } catch (Exception e) {
 	        	log.error("一级分类列表出错", e);
@@ -44,8 +51,12 @@ public class DealerClassifyAgent {
 	    public ResponseEntity<MResult> secondClassify(@RequestParam(value="dealerFirstClassifyId",required=true)String dealerFirstClassifyId) {
 		 MResult result = new MResult(MCode.V_1);
 	        try {
+	        	List<DealerSecondClassifyRepresentation> secondList = new ArrayList<DealerSecondClassifyRepresentation>();
 	        	List<DealerClassifyBean> secondClassifyBeanList = dealerClassifyQuery.getSecondClassifyList(dealerFirstClassifyId);
-	        	result.setContent(secondClassifyBeanList);
+	        	for (DealerClassifyBean dealerClassifyBean : secondClassifyBeanList) {
+	        		secondList.add(new DealerSecondClassifyRepresentation(dealerClassifyBean));
+				}
+	        	result.setContent(secondList);
 	            result.setStatus(MCode.V_200);
 	        } catch (Exception e) {
 	        	log.error("二级分类列表出错", e);

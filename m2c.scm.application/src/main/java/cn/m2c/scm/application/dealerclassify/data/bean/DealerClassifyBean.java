@@ -8,7 +8,7 @@ public class DealerClassifyBean {
 	private String dealerClassifyId;
 	
 	@ColumnAlias("dealer_level")
-	private String dealerLevel;
+	private Integer dealerLevel;
 	
 	@ColumnAlias("dealer_classify_name")
 	private String dealerClassifyName;
@@ -21,11 +21,11 @@ public class DealerClassifyBean {
 		this.dealerClassifyId = dealerClassifyId;
 	}
 
-	public String getDealerLevel() {
+	public Integer getDealerLevel() {
 		return dealerLevel;
 	}
 
-	public void setDealerLevel(String dealerLevel) {
+	public void setDealerLevel(Integer dealerLevel) {
 		this.dealerLevel = dealerLevel;
 	}
 
@@ -36,6 +36,7 @@ public class DealerClassifyBean {
 	public void setDealerClassifyName(String dealerClassifyName) {
 		this.dealerClassifyName = dealerClassifyName;
 	}
+
 	
 	
 	
