@@ -110,7 +110,13 @@ public class OrderAgent {
 		}
 		return new ResponseEntity<MResult>(result,HttpStatus.OK);
 	}
-	
+	/***
+	 * 商家同意售后申请
+	 * @param userId
+	 * @param saleAfterNo
+	 * @param dealerId
+	 * @return
+	 */
 	@RequestMapping(value="/dealer/agree-apply-sale", method=RequestMethod.PUT)
 	public ResponseEntity<MResult> agreeApplySaleAfter(@RequestParam(value = "userId", required = false) String userId
             ,@RequestParam(value = "saleAfterNo", required = false) String saleAfterNo
