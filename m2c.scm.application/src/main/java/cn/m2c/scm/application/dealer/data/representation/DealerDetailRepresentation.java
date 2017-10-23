@@ -48,7 +48,8 @@ public class DealerDetailRepresentation {
 		private String startSignDate;
 		private String endSignDate;
 		
-		
+		 private Integer isPayDeposit;
+		 private Long deposit;
 		private String managerName;//商家负责人姓名
 		private String managerPhone;//商家负责人手机
 		private String managerqq;//商家负责人qq
@@ -84,6 +85,8 @@ public class DealerDetailRepresentation {
 			this.managerDepartment = model.getManagerDepartment();
 			this.startSignDate = model.getStartSignDate();
 			this.endSignDate = model.getEndSignDate();
+			this.isPayDeposit = model.getIsPayDeposit();
+			this.deposit = model.getDeposit();
 		}
 		public String getDealerName() {
 			return dealerName;
@@ -252,6 +255,18 @@ public class DealerDetailRepresentation {
 		}
 		public void setEndSignDate(String endSignDate) {
 			this.endSignDate = endSignDate;
+		}
+		public Integer getIsPayDeposit() {
+			return isPayDeposit;
+		}
+		public void setIsPayDeposit(Integer isPayDeposit) {
+			this.isPayDeposit = isPayDeposit;
+		}
+		public Long getDeposit() {
+			return deposit;
+		}
+		public void setDeposit(Long deposit) {
+			this.deposit = deposit;
 		}
 		
 		
