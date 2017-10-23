@@ -157,6 +157,9 @@ public class AppGoodsAgent {
     /**
      * 商品搜索
      *
+     * @param sn              机器码
+     * @param userId          用户ID
+     * @param searchFrom      搜索来源HOT_KEYWORD,INPUT
      * @param goodsClassifyId 商品分类
      * @param condition       条件
      * @param sortType        排序类型：1：综合，2：价格
@@ -167,6 +170,9 @@ public class AppGoodsAgent {
      */
     @RequestMapping(value = "", method = RequestMethod.GET)
     public ResponseEntity<MPager> appSearchGoods(
+            @RequestParam(value = "sn", required = false) String sn,
+            @RequestParam(value = "userId", required = false) String userId,
+            @RequestParam(value = "searchFrom", required = false) String searchFrom,//HOT_KEYWORD,INPUT
             @RequestParam(value = "goodsClassifyId", required = false) String goodsClassifyId,
             @RequestParam(value = "condition", required = false) String condition,
             @RequestParam(value = "sortType", required = false) Integer sortType,
