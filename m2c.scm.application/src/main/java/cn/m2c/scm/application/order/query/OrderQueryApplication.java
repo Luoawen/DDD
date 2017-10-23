@@ -7,11 +7,11 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import cn.m2c.common.StringUtil;
 import cn.m2c.ddd.common.port.adapter.persistence.springJdbc.SupportJdbcTemplate;
 import cn.m2c.scm.application.order.data.bean.DealerOrderBean;
 import cn.m2c.scm.application.order.data.bean.OrderDetailBean;
@@ -68,7 +68,7 @@ public class OrderQueryApplication {
      * @return
      */
     public List<String> getCouponsByOrderId(String orderId) throws NegativeException {
-    	if (StringUtil.isEmpty(orderId))
+    	if (StringUtils.isEmpty(orderId))
     		return null;
     	List<String> rs = null;
     	try {
@@ -87,7 +87,7 @@ public class OrderQueryApplication {
      * @return
      */
     public Map<String, Float> getSkusByOrderId(String orderId) throws NegativeException {
-    	if (StringUtil.isEmpty(orderId))
+    	if (StringUtils.isEmpty(orderId))
     		return null;
     	Map<String, Float> rs = null;
     	try {
