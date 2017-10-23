@@ -40,6 +40,11 @@ public class GoodsComment extends ConcurrencySafeEntity {
     private String skuName;
 
     /**
+     * 商品数量
+     */
+    private Integer goodsNum;
+
+    /**
      * 商品名称
      */
     private String goodsName;
@@ -105,9 +110,9 @@ public class GoodsComment extends ConcurrencySafeEntity {
     private Integer starLevel;
 
     /**
-     * 回复状态 1未回复  2 已回复
+     * 评价类型 1：评价 2：回评
      */
-    private Integer replyStatus;
+    private Integer commentType;
 
     /**
      * 状态 1正常  2 删除
@@ -127,7 +132,7 @@ public class GoodsComment extends ConcurrencySafeEntity {
     /**
      * 买家增加评论
      */
-    public GoodsComment(String commentId, String orderId, String goodsId, String skuId, String skuName, String goodsName,
+    public GoodsComment(String commentId, String orderId, String goodsId, String skuId, String skuName, Integer goodsNum, String goodsName,
                         String dealerId, String dealerName, String buyerId, String buyerName,
                         String buyerPhoneNumber, String buyerIcon, String commentContent, String commentImages, Integer starLevel) {
         this.commentId = commentId;
@@ -135,6 +140,7 @@ public class GoodsComment extends ConcurrencySafeEntity {
         this.goodsId = goodsId;
         this.skuId = skuId;
         this.skuName = skuName;
+        this.goodsNum = goodsNum;
         this.goodsName = goodsName;
         this.dealerId = dealerId;
         this.dealerName = dealerName;
@@ -160,7 +166,7 @@ public class GoodsComment extends ConcurrencySafeEntity {
         } else {
             this.commentLevel = 3;
         }
-        this.replyStatus = 1;
+        this.commentType = 1;
         this.commentStatus = 1;
 
         Date date = new Date();

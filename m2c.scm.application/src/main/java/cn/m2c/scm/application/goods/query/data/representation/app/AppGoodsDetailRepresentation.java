@@ -1,12 +1,14 @@
 package cn.m2c.scm.application.goods.query.data.representation.app;
 
 import cn.m2c.common.JsonUtils;
+import cn.m2c.scm.application.comment.query.data.bean.GoodsCommentBean;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsBean;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsGuaranteeBean;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsSkuBean;
 import com.baidu.disconf.client.usertools.DisconfDataGetter;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -28,8 +30,11 @@ public class AppGoodsDetailRepresentation {
     private List<String> goodsMainImages;
     private String mresId;
     private String goodsDescUrl;
+    private Map goodsComment;
 
-    public AppGoodsDetailRepresentation(GoodsBean bean, List<GoodsGuaranteeBean> goodsGuaranteeBeans, String goodsUnitName, String mresId) {
+    public AppGoodsDetailRepresentation(GoodsBean bean, List<GoodsGuaranteeBean> goodsGuaranteeBeans,
+                                        String goodsUnitName, String mresId, Integer commentTotal,
+                                        GoodsCommentBean goodsCommentBean) {
         this.goodsId = bean.getGoodsId();
         this.goodsName = bean.getGoodsName();
         this.goodsSubTitle = bean.getGoodsSubTitle();
@@ -49,6 +54,20 @@ public class AppGoodsDetailRepresentation {
         this.goodsMainImages = JsonUtils.toList(bean.getGoodsMainImages(), String.class);
         this.mresId = mresId;
         this.goodsDescUrl = M2C_HOST_URL + "/m2c.scm/goods/app/desc?goodsId=" + this.goodsId;
+
+        if (null == this.goodsComment) {
+            this.goodsComment = new HashMap<>();
+        }
+        this.goodsComment.put("commentTotal", commentTotal);
+        if (null != goodsCommentBean) {
+            this.goodsComment.put("buyerIcon", goodsCommentBean.getBuyerIcon());
+            this.goodsComment.put("buyerPhoneNumber", goodsCommentBean.getBuyerPhoneNumber());
+            this.goodsComment.put("buyerName", goodsCommentBean.getBuyerName());
+            this.goodsComment.put("skuName", goodsCommentBean.getSkuName());
+            this.goodsComment.put("goodsNum", goodsCommentBean.getGoodsNum());
+            this.goodsComment.put("starLevel", goodsCommentBean.getStarLevel());
+        }
+
     }
 
     public String getGoodsName() {
@@ -145,5 +164,13 @@ public class AppGoodsDetailRepresentation {
 
     public void setGoodsDescUrl(String goodsDescUrl) {
         this.goodsDescUrl = goodsDescUrl;
+    }
+
+    public Map getGoodsComment() {
+        return goodsComment;
+    }
+
+    public void setGoodsComment(Map goodsComment) {
+        this.goodsComment = goodsComment;
     }
 }

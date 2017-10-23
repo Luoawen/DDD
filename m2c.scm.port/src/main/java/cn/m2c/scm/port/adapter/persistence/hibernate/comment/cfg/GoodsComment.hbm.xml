@@ -16,6 +16,7 @@
         <property name="skuId" column="sku_id" type="string"/>
         <property name="skuName" column="sku_name" type="string"/>
         <property name="goodsName" column="goods_name" type="string"/>
+        <property name="goodsNum" column="goods_num" type="int"/>
         <property name="dealerId" column="dealer_id" type="string"/>
         <property name="dealerName" column="dealer_name" type="string"/>
         <property name="buyerId" column="buyer_id" type="string"/>
@@ -28,7 +29,7 @@
         <property name="replyContent" column="reply_content" type="string"/>
         <property name="commentLevel" column="comment_level" type="int"/>
         <property name="starLevel" column="star_level" type="int"/>
-        <property name="replyStatus" column="reply_status" type="int"/>
+        <property name="commentType" column="comment_type" type="int"/>
         <property name="commentStatus" column="comment_status" type="int"/>
         <property name="commentTime" column="comment_time" type="java.math.BigInteger"/>
         <property name="replyTime" column="reply_time" type="java.math.BigInteger"/>

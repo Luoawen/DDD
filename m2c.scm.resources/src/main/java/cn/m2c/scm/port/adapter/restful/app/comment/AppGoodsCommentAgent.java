@@ -1,6 +1,7 @@
 package cn.m2c.scm.port.adapter.restful.app.comment;
 
 import cn.m2c.common.MCode;
+import cn.m2c.common.MPager;
 import cn.m2c.common.MResult;
 import cn.m2c.scm.application.comment.GoodsCommentApplication;
 import cn.m2c.scm.application.comment.command.AddGoodsCommentCommand;
@@ -42,6 +43,7 @@ public class AppGoodsCommentAgent {
     public ResponseEntity<MResult> addGoodsComment(
             @RequestParam(value = "orderId", required = false) String orderId,
             @RequestParam(value = "skuId", required = false) String skuId,
+            @RequestParam(value = "goodsNum", required = false) Integer goodsNum,
             @RequestParam(value = "buyerId", required = false) String buyerId,
             @RequestParam(value = "buyerName", required = false) String buyerName,
             @RequestParam(value = "buyerPhoneNumber", required = false) String buyerPhoneNumber,
@@ -59,7 +61,7 @@ public class AppGoodsCommentAgent {
             return new ResponseEntity<MResult>(result, HttpStatus.OK);
         }
         String id = IDGenerator.get(IDGenerator.SCM_GOODS_PREFIX_TITLE);
-        AddGoodsCommentCommand command = new AddGoodsCommentCommand(id, orderId, skuId, info.getSkuName(), buyerId, buyerName,
+        AddGoodsCommentCommand command = new AddGoodsCommentCommand(id, orderId, skuId, info.getSkuName(), goodsNum, buyerId, buyerName,
                 buyerPhoneNumber, buyerIcon, commentContent, commentImages,
                 info.getGoodsId(), info.getGoodsName(), info.getDealerId(), info.getDealerName(), starLevel);
         try {
@@ -73,5 +75,17 @@ public class AppGoodsCommentAgent {
             result = new MResult(MCode.V_400, "添加评论失败");
         }
         return new ResponseEntity<MResult>(result, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "list", method = RequestMethod.GET)
+    public ResponseEntity<MPager> appSearchGoods(
+            @RequestParam(value = "goodsId", required = false) String goodsId,
+            @RequestParam(value = "type", required = false) Integer type,//0:全部，1：有图
+            @RequestParam(value = "pageNum", required = false, defaultValue = "1") Integer pageNum,
+            @RequestParam(value = "rows", required = false, defaultValue = "10") Integer rows) {
+        MPager result = new MPager(MCode.V_1);
+
+
+        return new ResponseEntity<MPager>(result, HttpStatus.OK);
     }
 }

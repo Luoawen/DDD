@@ -132,7 +132,7 @@ public class GoodsBean {
     private Integer goodsStatus;
 
     /**
-     * 商品规格,格式：[{"itemName":"尺寸","itemValue":["L","M"]},{"itemName":"颜色","itemValue":["蓝色","白色"]}]
+     * 商品规格,格式：[{"itemName":"尺寸","itemValue":[{"spec_name":"L"},{"spec_name":"M"}]},{"itemName":"颜色","itemValue":[{"spec_name":"蓝色"},{"spec_name":"白色"}]}]
      */
     @ColumnAlias(value = "goods_specifications")
     private String goodsSpecifications;
