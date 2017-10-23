@@ -69,7 +69,7 @@ public class AfterSellOrderQuery {
 			params.add("%" + condition + "%");
 		}
 		if (StringUtils.isNotEmpty(endTime) && StringUtils.isNotEmpty(endTime)) {
-			sql.append(" AND omain.created_date BETWEEN ? AND ? ");
+			sql.append(" AND dealer.created_date BETWEEN ? AND ? ");
 			params.add(startTime);
 			params.add(endTime);
 		}
@@ -131,7 +131,7 @@ public class AfterSellOrderQuery {
 			params.add("%" + condition + "%");
 		}
 		if (StringUtils.isNotEmpty(endTime) && StringUtils.isNotEmpty(endTime)) {
-			sql.append(" AND omain.created_date BETWEEN ? AND ? ");
+			sql.append(" AND dealer.created_date BETWEEN ? AND ? ");
 			params.add(startTime);
 			params.add(endTime);
 		}
@@ -239,7 +239,6 @@ public class AfterSellOrderQuery {
 		Integer orderTotalPrice = 0;
 		
 		for (GoodsInfoBean goodsInfo : goodsInfoBeans) {
-			System.out.println(goodsInfo.getPlateformDiscount() + "---------------------------" + goodsInfo.getDealerDiscount());
 			totalPrice += (goodsInfo.getPrice() * goodsInfo.getSellNum() +  goodsInfo.getFreight());
 			goodsInfo.setTotalPrice(totalPrice);
 			orderTotalPrice += totalPrice;
