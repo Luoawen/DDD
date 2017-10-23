@@ -29,7 +29,13 @@ public class DealerBean {
 	 
 	 @ColumnAlias(value = "count_mode")
 	 private Integer countMode;
+	 @ColumnAlias(value = "is_pay_deposit")
+	 private Integer isPayDeposit;
+	 @ColumnAlias(value = "deposit")
+	 private Long deposit;
 
+	 
+	 
 	 @ColumnAlias(value = "dealer_province")
 	 private String dealerProvince;
 	 
@@ -298,6 +304,22 @@ public class DealerBean {
 
 	public void setEndSignDate(String endSignDate) {
 		this.endSignDate = endSignDate;
+	}
+
+	public Integer getIsPayDeposit() {
+		return isPayDeposit;
+	}
+
+	public void setIsPayDeposit(Integer isPayDeposit) {
+		this.isPayDeposit = isPayDeposit;
+	}
+
+	public Long getDeposit() {
+		return deposit;
+	}
+
+	public void setDeposit(Long deposit) {
+		this.deposit = deposit;
 	}
 
 	
