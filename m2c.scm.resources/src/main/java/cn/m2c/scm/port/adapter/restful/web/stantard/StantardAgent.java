@@ -135,8 +135,8 @@ public class StantardAgent {
 	 * @param stantardId
 	 * @return
 	 */
-	@RequestMapping(value = "/{stantardId}", method = RequestMethod.GET)
-	public ResponseEntity<MResult> getStantard(@PathVariable("stantardId") String stantardId) {
+	@RequestMapping(value = "/stantard", method = RequestMethod.GET)
+	public ResponseEntity<MResult> getStantard(@RequestParam("stantardId") String stantardId) {
 		MResult result = new MResult(MCode.V_1);
 		try {
 			StantardBean stantard = stantardQuery.getStantardByStantardId(stantardId);
