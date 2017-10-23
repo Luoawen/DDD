@@ -104,7 +104,7 @@ public class DealerQuery {
 	 * @return
 	 */
 	private DealerClassifyNameBean getDealerClassify(String dealerClassify) {
-		String sql = "select secondc.dealerSecondClassifyName dealerSecondClassifyName,secondc.dealerClassifyId,firstc.dealer_classify_name dealerFirstClassifyName from"
+		String sql = "select secondc.dealerSecondClassifyName dealerSecondClassifyName,secondc.parentClassifyId dealerClassifyId,firstc.dealer_classify_name dealerFirstClassifyName from"
 				+"(SELECT dealer_classify_id dealerClassifyId,dealer_classify_name dealerSecondClassifyName,parent_classify_id parentClassifyId FROM t_scm_dealer_classify WHERE 1 = 1 AND dealer_classify_id =?)"
 				+" secondc,t_scm_dealer_classify firstc where firstc.dealer_classify_id=secondc.parentClassifyId";
 		System.out.println("------------"+sql);
