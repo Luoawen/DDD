@@ -2,8 +2,9 @@ package cn.m2c.scm.application.order.command;
 
 import java.util.Date;
 
+import org.apache.commons.lang3.StringUtils;
+
 import cn.m2c.common.MCode;
-import cn.m2c.common.StringUtil;
 import cn.m2c.ddd.common.AssertionConcern;
 import cn.m2c.scm.domain.NegativeException;
 import cn.m2c.scm.domain.model.order.ExpressInfo;
@@ -37,27 +38,27 @@ public class SaleAfterShipCmd extends AssertionConcern {
 	public SaleAfterShipCmd(String userId, String saleAfterNo, String skuId, String expressNo
 			, String expressCode, String expressName) throws NegativeException {
 		
-		if (StringUtil.isEmpty(userId)) {
+		if (StringUtils.isEmpty(userId)) {
 			throw new NegativeException(MCode.V_1, "用户ID参数为空(userId)！");
 		}
 		
-		if (StringUtil.isEmpty(saleAfterNo)) {
+		if (StringUtils.isEmpty(saleAfterNo)) {
 			throw new NegativeException(MCode.V_1, "售后单号参数为空(saleAfterNo)！");
 		}
 		
-		if (StringUtil.isEmpty(expressNo)) {
+		if (StringUtils.isEmpty(expressNo)) {
 			throw new NegativeException(MCode.V_1, "快递单号参数为空(dealerId)！");
 		}
 		
-		if (StringUtil.isEmpty(expressCode)) {
+		if (StringUtils.isEmpty(expressCode)) {
 			throw new NegativeException(MCode.V_1, "快递公司编码为空(expressCode)！");
 		}
 		
-		if (StringUtil.isEmpty(skuId)) {
+		if (StringUtils.isEmpty(skuId)) {
 			throw new NegativeException(MCode.V_1, "售后商品sku参数为空(skuId)！");
 		}
 		
-		if (StringUtil.isEmpty(expressName)) {
+		if (StringUtils.isEmpty(expressName)) {
 			throw new NegativeException(MCode.V_1, "快递公司名称主空(expressName)！");
 		}
 		

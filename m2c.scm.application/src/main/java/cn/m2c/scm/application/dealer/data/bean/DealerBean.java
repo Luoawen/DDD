@@ -29,7 +29,13 @@ public class DealerBean {
 	 
 	 @ColumnAlias(value = "count_mode")
 	 private Integer countMode;
+	 @ColumnAlias(value = "is_pay_deposit")
+	 private Integer isPayDeposit;
+	 @ColumnAlias(value = "deposit")
+	 private Long deposit;
 
+	 
+	 
 	 @ColumnAlias(value = "dealer_province")
 	 private String dealerProvince;
 	 
@@ -48,12 +54,30 @@ public class DealerBean {
 	@ColumnAlias(value = "dealer_acode")
 	private String dealerAcode;
 	
+	@ColumnAlias(value = "manager_name")
+	private String managerName;
+	@ColumnAlias(value = "manager_phone")
+	private String managerPhone;
+	@ColumnAlias(value = "manager_qq")
+	private String managerqq;
+	@ColumnAlias(value = "manager_wechat")
+	private String managerWechat;
+	@ColumnAlias(value = "manager_email")
+	private String managerEmail;
+	@ColumnAlias(value = "manager_department")
+	private String managerDepartment;
+	@ColumnAlias(value = "start_sign_date")
+	private String startSignDate;
+	@ColumnAlias(value = "end_sign_date")
+	private String endSignDate;
+	
 	@ColumnAlias(value = "seller_id")
 	private String sellerId;
 	
 
 	@ColumnAlias(value = "seller_name")
 	private String sellerName;
+	
 	
 	@ColumnAlias(value = "seller_phone")
 	private String sellerPhone;
@@ -216,6 +240,86 @@ public class DealerBean {
 
 	public void setDealerClassifyBean(DealerClassifyNameBean dealerClassifyBean) {
 		this.dealerClassifyBean = dealerClassifyBean;
+	}
+
+	public String getManagerName() {
+		return managerName;
+	}
+
+	public void setManagerName(String managerName) {
+		this.managerName = managerName;
+	}
+
+	public String getManagerPhone() {
+		return managerPhone;
+	}
+
+	public void setManagerPhone(String managerPhone) {
+		this.managerPhone = managerPhone;
+	}
+
+	public String getManagerqq() {
+		return managerqq;
+	}
+
+	public void setManagerqq(String managerqq) {
+		this.managerqq = managerqq;
+	}
+
+	public String getManagerWechat() {
+		return managerWechat;
+	}
+
+	public void setManagerWechat(String managerWechat) {
+		this.managerWechat = managerWechat;
+	}
+
+	public String getManagerEmail() {
+		return managerEmail;
+	}
+
+	public void setManagerEmail(String managerEmail) {
+		this.managerEmail = managerEmail;
+	}
+
+	public String getManagerDepartment() {
+		return managerDepartment;
+	}
+
+	public void setManagerDepartment(String managerDepartment) {
+		this.managerDepartment = managerDepartment;
+	}
+
+	public String getStartSignDate() {
+		return startSignDate;
+	}
+
+	public void setStartSignDate(String startSignDate) {
+		this.startSignDate = startSignDate;
+	}
+
+	public String getEndSignDate() {
+		return endSignDate;
+	}
+
+	public void setEndSignDate(String endSignDate) {
+		this.endSignDate = endSignDate;
+	}
+
+	public Integer getIsPayDeposit() {
+		return isPayDeposit;
+	}
+
+	public void setIsPayDeposit(Integer isPayDeposit) {
+		this.isPayDeposit = isPayDeposit;
+	}
+
+	public Long getDeposit() {
+		return deposit;
+	}
+
+	public void setDeposit(Long deposit) {
+		this.deposit = deposit;
 	}
 
 	

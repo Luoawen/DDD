@@ -69,7 +69,7 @@ public class AfterSellOrderQuery {
 			params.add("%" + condition + "%");
 		}
 		if (StringUtils.isNotEmpty(endTime) && StringUtils.isNotEmpty(endTime)) {
-			sql.append(" AND omain.created_date BETWEEN ? AND ? ");
+			sql.append(" AND dealer.created_date BETWEEN ? AND ? ");
 			params.add(startTime);
 			params.add(endTime);
 		}
@@ -131,7 +131,7 @@ public class AfterSellOrderQuery {
 			params.add("%" + condition + "%");
 		}
 		if (StringUtils.isNotEmpty(endTime) && StringUtils.isNotEmpty(endTime)) {
-			sql.append(" AND omain.created_date BETWEEN ? AND ? ");
+			sql.append(" AND dealer.created_date BETWEEN ? AND ? ");
 			params.add(startTime);
 			params.add(endTime);
 		}
@@ -231,7 +231,6 @@ public class AfterSellOrderQuery {
 		sql.append(" AND after.dealer_id = dealer.dealer_id ");
 		sql.append(" AND after.dealer_order_id = detail.dealer_order_id  ");
 		sql.append("  AND detail.saler_user_id = seller.seller_id ");
-	//	System.out.println("Show SQL-------------------------------"+sql);
 		AfterSellOrderDetailBean bean = this.supportJdbcTemplate.queryForBean(sql.toString(), AfterSellOrderDetailBean.class, afterSellOrderId);
 		System.out.println("取出数据没有-------------------------------------"+bean);
 		List<GoodsInfoBean> goodsInfoBeans = aftetSellOrderDetailGoodsInfoQuery(afterSellOrderId);
@@ -239,7 +238,6 @@ public class AfterSellOrderQuery {
 		Integer orderTotalPrice = 0;
 		
 		for (GoodsInfoBean goodsInfo : goodsInfoBeans) {
-			//System.out.println(goodsInfo.getPlateformDiscount() + "---------------------------" + goodsInfo.getDealerDiscount());
 			totalPrice += (goodsInfo.getPrice() * goodsInfo.getSellNum() +  goodsInfo.getFreight());
 			goodsInfo.setTotalPrice(totalPrice);
 			orderTotalPrice += totalPrice;
