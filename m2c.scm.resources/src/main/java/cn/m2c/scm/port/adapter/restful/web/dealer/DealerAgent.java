@@ -22,6 +22,7 @@ import cn.m2c.common.MResult;
 import cn.m2c.scm.application.dealer.DealerApplication;
 import cn.m2c.scm.application.dealer.command.DealerAddOrUpdateCommand;
 import cn.m2c.scm.application.dealer.data.bean.DealerBean;
+import cn.m2c.scm.application.dealer.data.representation.DealerDetailRepresentation;
 import cn.m2c.scm.application.dealer.data.representation.DealerNameListRepresentation;
 import cn.m2c.scm.application.dealer.data.representation.DealerRepresentation;
 import cn.m2c.scm.application.dealer.query.DealerQuery;
@@ -255,7 +256,8 @@ public class DealerAgent {
 			 MResult result = new MResult(MCode.V_1);
 		        try {
 		        	DealerBean dealer =  dealerQuery.getDealer(dealerId);
-		        	result.setContent(dealer);
+		        	DealerDetailRepresentation representation = new DealerDetailRepresentation(dealer);
+		        	result.setContent(representation);
 		            result.setStatus(MCode.V_200);
 		        } catch (Exception e) {
 		        	log.error("经销商列表出错", e);

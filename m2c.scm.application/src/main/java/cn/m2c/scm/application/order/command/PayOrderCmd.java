@@ -1,7 +1,8 @@
 package cn.m2c.scm.application.order.command;
 
+import org.apache.commons.lang3.StringUtils;
+
 import cn.m2c.common.MCode;
-import cn.m2c.common.StringUtil;
 import cn.m2c.ddd.common.AssertionConcern;
 import cn.m2c.scm.domain.NegativeException;
 /***
@@ -22,11 +23,11 @@ public class PayOrderCmd extends AssertionConcern {
 		
 		this.userId = userId;
 		
-		if (StringUtil.isEmpty(orderId)) {
+		if (StringUtils.isEmpty(orderId)) {
 			throw new NegativeException(MCode.V_1, "订单号参数为空(orderId)！");
 		}
 		
-		if (StringUtil.isEmpty(userId)) {
+		if (StringUtils.isEmpty(userId)) {
 			throw new NegativeException(MCode.V_1, "用户ID参数为空(userId)！");
 		}
 	}

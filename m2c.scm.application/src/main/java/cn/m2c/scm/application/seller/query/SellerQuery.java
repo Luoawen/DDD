@@ -21,8 +21,7 @@ public class SellerQuery {
 	 SupportJdbcTemplate supportJdbcTemplate;
 	
 	
-	public List<SellerBean> getSellerList(String sellerName,
-			String sellerPhone, String startTime, String endTime,
+	public List<SellerBean> getSellerList(String filter, String startTime, String endTime,
 			Integer pageNum, Integer rows) throws NegativeException {
 		List<SellerBean> sellerList = null;
 		try {
@@ -34,13 +33,10 @@ public class SellerQuery {
 	            sql.append(" t_scm_dealer_seller sds ");
 	            sql.append(" WHERE ");
 	            sql.append(" sds.seller_status = 1 ");
-	            if(sellerName!=null && !"".equals(sellerName)){
-	            	sql.append(" AND sds.seller_name LIKE concat('%', ?,'%') ");
-	            	params.add(sellerName);
-	            }
-	            if(sellerPhone!=null && !"".equals(sellerPhone)){
-	            	sql.append(" AND sds.seller_phone LIKE concat('%', ?,'%') ");
-	            	params.add(sellerName);
+	            if(filter!=null && !"".equals(filter)){
+	            	sql.append(" AND (sds.seller_name LIKE concat('%', ?,'%') or sds.seller_phone LIKE concat('%', ?,'%'))");
+	            	params.add(filter);
+	            	params.add(filter);
 	            }
 	        	if(startTime !=null&&!"".equals(startTime)){
 					
@@ -67,7 +63,7 @@ public class SellerQuery {
 	}
 
 
-	public Integer getCount(String sellerName, String sellerPhone,
+	public Integer getCount(String filter,
 			String startTime, String endTime) throws NegativeException {
 		Integer result = 0;
 		try {
@@ -79,13 +75,10 @@ public class SellerQuery {
 	            sql.append(" t_scm_dealer_seller sds ");
 	            sql.append(" WHERE ");
 	            sql.append(" sds.seller_status = 1 ");
-	            if(sellerName!=null && !"".equals(sellerName)){
-	            	sql.append(" AND sds.seller_name LIKE concat('%', ?,'%') ");
-	            	params.add(sellerName);
-	            }
-	            if(sellerPhone!=null && !"".equals(sellerPhone)){
-	            	sql.append(" AND sds.seller_phone LIKE concat('%', ?,'%') ");
-	            	params.add(sellerName);
+	            if(filter!=null && !"".equals(filter)){
+	            	sql.append(" AND (sds.seller_name LIKE concat('%', ?,'%') or sds.seller_phone LIKE concat('%', ?,'%'))");
+	            	params.add(filter);
+	            	params.add(filter);
 	            }
 	        	if(startTime !=null&&!"".equals(startTime)){
 					
