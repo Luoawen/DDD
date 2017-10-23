@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,7 @@ import cn.m2c.scm.application.order.command.CancelOrderCmd;
 import cn.m2c.scm.application.order.command.ConfirmSkuCmd;
 import cn.m2c.scm.application.order.command.OrderAddCommand;
 import cn.m2c.scm.application.order.command.PayOrderCmd;
+import cn.m2c.scm.application.order.data.representation.OrderMoney;
 import cn.m2c.scm.application.order.query.OrderQueryApplication;
 import cn.m2c.scm.application.order.query.dto.GoodsDto;
 import cn.m2c.scm.application.postage.data.bean.PostageModelRuleBean;
@@ -341,6 +343,7 @@ public class OrderApplication {
 	 * @throws NegativeException 
 	 */
 	@Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+	@EventListener(isListening=true)
 	public void confirmSku(ConfirmSkuCmd cmd) throws NegativeException {
 		
 		DealerOrderDtl dtl = orderRepository.getDealerOrderDtlBySku(cmd.getDealerOrderId(), cmd.getSkuId());
@@ -357,5 +360,28 @@ public class OrderApplication {
 		else {
 			throw new NegativeException(MCode.V_1, "确认收货出错！");
 		}
+	}
+	/***
+	 * 获取订单及支付金额
+	 * @param orderNo
+	 * @return
+	 */
+	@Transactional(rollbackFor= {Exception.class, RuntimeException.class, NegativeException.class})
+	public OrderMoney getOrderMoney(String orderNo, String userId) throws NegativeException {
+		
+		if (StringUtils.isEmpty(orderNo)) {
+			throw new NegativeException(MCode.V_1, "订单号参数为空！");
+		}
+		
+		if (StringUtils.isEmpty(userId)) {
+			throw new NegativeException(MCode.V_1, "用户ID参数为空！");
+		}
+		
+		OrderMoney result = new OrderMoney();
+		MainOrder order = orderRepository.getOrderById(orderNo);
+		// 判断是否符合营销规则，不符合需要重新计算，保存
+		result.setAmountOfMoney(order.getActual());
+		result.setOrderNo(orderNo);
+		return result;
 	}
 }

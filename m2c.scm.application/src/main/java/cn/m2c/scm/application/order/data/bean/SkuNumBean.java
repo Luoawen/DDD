@@ -12,7 +12,7 @@ public class SkuNumBean {
 	@ColumnAlias(value = "sku_id")
 	private String skuId; //skuId
 	
-	@ColumnAlias(value = "sell_null")
+	@ColumnAlias(value = "sell_num")
 	private Float num; // 数量
 	
 	public String getSkuId() {
