@@ -15,7 +15,7 @@ public interface UnitRepository {
 	 * @param unitName
 	 * @return
 	 */
-	public Unit getUnitByUnitName(String unitName);
+	public Unit getUnitByUnitId(String unitId);
 	
 	/**
 	 * 保存

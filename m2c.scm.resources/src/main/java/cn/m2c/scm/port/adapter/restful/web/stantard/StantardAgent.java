@@ -41,7 +41,7 @@ public class StantardAgent {
 	 * @param stantardName
 	 * @return
 	 */
-	@RequestMapping(value = "/{stantardName}", method = RequestMethod.POST)
+	@RequestMapping(value = "", method = RequestMethod.POST)
 	public ResponseEntity<MResult> addStandart(@RequestParam(value = "stantardName",required = false) String stantardName){
 		MResult result = new MResult(MCode.V_1);
 		try {
@@ -64,11 +64,11 @@ public class StantardAgent {
 	 * @param stantardName
 	 * @return
 	 */
-	@RequestMapping(value = "/{stantardName}", method = RequestMethod.DELETE)
-	public ResponseEntity<MResult> delUnit(@RequestParam(value = "stantardName", required = false) String stantardName) {
+	@RequestMapping(value = "", method = RequestMethod.DELETE)
+	public ResponseEntity<MResult> delUnit(@RequestParam(value = "stantardId", required = false) String stantardId) {
 		MResult result = new MResult(MCode.V_1);
 		try {
-			stantardApplication.delStantard(stantardName);
+			stantardApplication.delStantard(stantardId);
 		} catch (NegativeException ne) {
 			LOGGER.error("delStantard NegativeException e:", ne);
 			result = new MResult(ne.getStatus(), ne.getMessage());
@@ -85,7 +85,7 @@ public class StantardAgent {
 	 * @param stantardName
 	 * @return
 	 */
-	@RequestMapping(value = "/{stantardName}", method = RequestMethod.PUT)
+	@RequestMapping(value = "", method = RequestMethod.PUT)
 	public ResponseEntity<MResult> updateUnit(
 			@RequestParam(value = "stantardId", required = false) String stantardId,
 			@RequestParam(value = "stantardName", required = false) String stantardName) {
@@ -110,7 +110,7 @@ public class StantardAgent {
 	 * @param rows
 	 * @return
 	 */
-	@RequestMapping(value = "/list", method = RequestMethod.GET)
+	@RequestMapping(value = "", method = RequestMethod.GET)
 	public ResponseEntity<MPager> list(
 			@RequestParam(value = "pageNum", required = false, defaultValue = "1") Integer pageNum,
 			@RequestParam(value = "rows", required = false, defaultValue = "10") Integer rows) {
@@ -135,8 +135,8 @@ public class StantardAgent {
 	 * @param stantardId
 	 * @return
 	 */
-	@RequestMapping(value = "/getStantard", method = RequestMethod.GET)
-	public ResponseEntity<MResult> getStantard(@RequestParam("stantardId") String stantardId) {
+	@RequestMapping(value = "/{stantardId}", method = RequestMethod.GET)
+	public ResponseEntity<MResult> getStantard(@PathVariable("stantardId") String stantardId) {
 		MResult result = new MResult(MCode.V_1);
 		try {
 			StantardBean stantard = stantardQuery.getStantardByStantardId(stantardId);

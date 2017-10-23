@@ -33,7 +33,7 @@ public class UnitApplication {
     	if (unitRepository.unitNameIsRepeat(command.getUnitName())) {
 			throw new NegativeException(MCode.V_301,"计量单位已存在");
 		}
-    	Unit unit = unitRepository.getUnitByUnitName(command.getUnitName());
+    	Unit unit = unitRepository.getUnitByUnitId(command.getUnitId());
     	if (null == unit) {
 			unit = new Unit(command.getUnitId(),command.getUnitName(), command.getUnitStatus());
 			unitRepository.saveUnit(unit);
@@ -48,13 +48,16 @@ public class UnitApplication {
      * @throws NegativeException
      */
     @Transactional(rollbackFor = {Exception.class,RuntimeException.class,NegativeException.class})
-    public void delUnit(String unitName) throws NegativeException{
-    	LOGGER.info("delUnit unitName >>{}",unitName);
-    	Unit unit = unitRepository.getUnitByUnitName(unitName);
+    public void delUnit(String unitId) throws NegativeException{
+    	LOGGER.info("delUnit unitName >>{}",unitId);
+    	System.out.println("传过去的数据----------------------------"+unitId);
+    	Unit unit = unitRepository.getUnitByUnitId(unitId);
+    	System.out.println("查询结果-------------------------------------"+unit.toString());
     	if (null == unit) {
 			throw new NegativeException(MCode.V_300,"计量单位不存在");
 		}
     	unit.deleteUnit();
+    	System.out.println("修改Status后---------------"+unitId.toString());
     	unitRepository.saveUnit(unit);
     }
     
@@ -70,7 +73,7 @@ public class UnitApplication {
     	if (unitRepository.unitNameIsRepeat(command.getUnitName())) {
 			throw new NegativeException(MCode.V_301,"计量单位已存在");
 		}
-    	Unit unit = unitRepository.getUnitByUnitName(command.getUnitName());
+    	Unit unit = unitRepository.getUnitByUnitId(command.getUnitId());
     	if (null == unit) {
 			throw new NegativeException(MCode.V_300,"计量单位不存在");
 		}

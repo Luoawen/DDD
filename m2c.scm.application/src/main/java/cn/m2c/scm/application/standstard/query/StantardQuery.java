@@ -54,9 +54,7 @@ public class StantardQuery {
 	 * @return
 	 */
 	public StantardBean getStantardByStantardId(String stantardId) {
-		List<Object> params = new ArrayList<Object>();
 		StringBuilder sql = new StringBuilder("SELECT * FROM t_scm_stantard WHERE stantard_status = 1 AND stantard_id = ?");
-		params.add(stantardId);
 		StantardBean stantard = this.supportJdbcTemplate.queryForBean(sql.toString(), StantardBean.class,stantardId);
 		return stantard;
 	}
