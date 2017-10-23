@@ -2,12 +2,13 @@ package cn.m2c.scm.application.order.command;
 
 import java.io.Serializable;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.gson.Gson;
 
 import cn.m2c.common.MCode;
-import cn.m2c.common.StringUtil;
 import cn.m2c.ddd.common.AssertionConcern;
 import cn.m2c.scm.domain.NegativeException;
 import cn.m2c.scm.domain.model.order.InvoiceInfo;
@@ -38,10 +39,10 @@ public class OrderAddCommand extends AssertionConcern implements Serializable {
 	public OrderAddCommand(String orderId, String userId, String noted
 			,String goodses, String invoice, String addr, String coupons) throws NegativeException {
 		// 检验必传参数, 若不符合条件则直接抛出异常
-		if (StringUtil.isEmpty(orderId)) {
+		if (StringUtils.isEmpty(orderId)) {
 			throw new NegativeException(MCode.V_1, "订单号为空(orderId)");
 		}
-		if (StringUtil.isEmpty(userId)) {
+		if (StringUtils.isEmpty(userId)) {
 			throw new NegativeException(MCode.V_1, "用户ID为空(userId)");
 		}
 		
@@ -50,7 +51,7 @@ public class OrderAddCommand extends AssertionConcern implements Serializable {
 		this.noted = noted;
 		checkGoodses(goodses);
 		
-		if (!StringUtil.isEmpty(coupons)) {
+		if (!StringUtils.isEmpty(coupons)) {
 			try {
 				this.coupons = JSONObject.parseArray(coupons);
 			}
@@ -71,7 +72,7 @@ public class OrderAddCommand extends AssertionConcern implements Serializable {
 	 * @throws NegativeException
 	 */
 	private void checkInvoice(String ges, Gson gson) throws NegativeException {
-		if (StringUtil.isEmpty(ges)) {
+		if (StringUtils.isEmpty(ges)) {
 			return;
 		}
 		JSONObject jsonObj;
@@ -90,7 +91,7 @@ public class OrderAddCommand extends AssertionConcern implements Serializable {
 	 * @throws NegativeException
 	 */
 	private void checkAddr(String ges, Gson gson) throws NegativeException {
-		if (StringUtil.isEmpty(ges)) {
+		if (StringUtils.isEmpty(ges)) {
 			return;
 		}
 		JSONObject addr;
@@ -102,42 +103,42 @@ public class OrderAddCommand extends AssertionConcern implements Serializable {
 		}
 		
 		String tmp = addr.getString("province");
-		if (StringUtil.isEmpty(tmp)) {
+		if (StringUtils.isEmpty(tmp)) {
 			throw new NegativeException(MCode.V_1, "收货地址省为空！");
 		}
 		
 		tmp = addr.getString("provinceCode");
-		if (StringUtil.isEmpty(tmp)) {
+		if (StringUtils.isEmpty(tmp)) {
 			throw new NegativeException(MCode.V_1, "收货地址省编码为空！");
 		}
 		
 		tmp = addr.getString("city");
-		if (StringUtil.isEmpty(tmp)) {
+		if (StringUtils.isEmpty(tmp)) {
 			throw new NegativeException(MCode.V_1, "收货地址市为空！");
 		}
 		
 		tmp = addr.getString("cityCode");
-		if (StringUtil.isEmpty(tmp)) {
+		if (StringUtils.isEmpty(tmp)) {
 			throw new NegativeException(MCode.V_1, "收货地址省为空！");
 		}
 		
 		tmp = addr.getString("area");
-		if (StringUtil.isEmpty(tmp)) {
+		if (StringUtils.isEmpty(tmp)) {
 			throw new NegativeException(MCode.V_1, "收货地址区或城镇为空！");
 		}
 		
 		tmp = addr.getString("street");
-		if (StringUtil.isEmpty(tmp)) {
+		if (StringUtils.isEmpty(tmp)) {
 			throw new NegativeException(MCode.V_1, "收货详细地址为空！");
 		}
 		
 		tmp = addr.getString("revPerson");
-		if (StringUtil.isEmpty(tmp)) {
+		if (StringUtils.isEmpty(tmp)) {
 			throw new NegativeException(MCode.V_1, "收货联系人为空！");
 		}
 		
 		tmp = addr.getString("phone");
-		if (StringUtil.isEmpty(tmp)) {
+		if (StringUtils.isEmpty(tmp)) {
 			throw new NegativeException(MCode.V_1, "收货联系人电话为空！");
 		}
 		
@@ -150,7 +151,7 @@ public class OrderAddCommand extends AssertionConcern implements Serializable {
 	 * @throws NegativeException
 	 */
 	private void checkGoodses(String ges) throws NegativeException {
-		if (StringUtil.isEmpty(ges)) {
+		if (StringUtils.isEmpty(ges)) {
 			return;
 		}
 		try {
@@ -167,11 +168,11 @@ public class OrderAddCommand extends AssertionConcern implements Serializable {
 		for (int i=0; i<sz; i++) {
 			JSONObject goods = goodses.getJSONObject(i);
 			String tmp = goods.getString("goodsId");
-			if (StringUtil.isEmpty(tmp)) {
+			if (StringUtils.isEmpty(tmp)) {
 				throw new NegativeException(MCode.V_1, "商品Id为空！");
 			}
 			tmp = goods.getString("skuId");
-			if (StringUtil.isEmpty(tmp)) {
+			if (StringUtils.isEmpty(tmp)) {
 				throw new NegativeException(MCode.V_1, "SKU Id为空！");
 			}
 			
@@ -181,7 +182,7 @@ public class OrderAddCommand extends AssertionConcern implements Serializable {
 			}
 			
 			/*tmp = goods.getString("unit");
-			if (StringUtil.isEmpty(tmp)) {
+			if (StringUtils.isEmpty(tmp)) {
 				throw new NegativeException(MCode.V_1, "商品计量单位为空！");
 			}*/
 		}
@@ -194,11 +195,11 @@ public class OrderAddCommand extends AssertionConcern implements Serializable {
 		if (invoice1 == null)
 			return;
 		String tmp = invoice1.getString("header");
-		if (StringUtil.isEmpty(tmp)) {
+		if (StringUtils.isEmpty(tmp)) {
 			throw new NegativeException(MCode.V_1, "发票抬头为空！");
 		}
 		tmp = invoice1.getString("name");
-		if (StringUtil.isEmpty(tmp)) {
+		if (StringUtils.isEmpty(tmp)) {
 			throw new NegativeException(MCode.V_1, "开票的单位或名称为空！");
 		}
 		//this.invoice = JSONObject.parseObject(invoice1.toJSONString(), InvoiceInfo.class);

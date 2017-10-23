@@ -1,7 +1,8 @@
 package cn.m2c.scm.application.order.command;
 
+import org.apache.commons.lang3.StringUtils;
+
 import cn.m2c.common.MCode;
-import cn.m2c.common.StringUtil;
 import cn.m2c.ddd.common.AssertionConcern;
 import cn.m2c.scm.domain.NegativeException;
 /**
@@ -38,27 +39,27 @@ public class AddSaleAfterCmd extends AssertionConcern {
 			String skuId, String saleAfterNo, int type, String dealerId,
 			String goodsId, int backNum, String reason, int reasonCode) throws NegativeException {
 		
-		if (StringUtil.isEmpty(orderId)) {
+		if (StringUtils.isEmpty(orderId)) {
 			throw new NegativeException(MCode.V_1, "订单号参数为空(orderId)！");
 		}
 		
-		if (StringUtil.isEmpty(userId)) {
+		if (StringUtils.isEmpty(userId)) {
 			throw new NegativeException(MCode.V_1, "用户ID参数为空(userId)！");
 		}
 		
-		if (StringUtil.isEmpty(dealerOrderId)) {
+		if (StringUtils.isEmpty(dealerOrderId)) {
 			throw new NegativeException(MCode.V_1, "商家订单号参数为空(dealerOrderId)！");
 		}
 		
-		if (StringUtil.isEmpty(skuId)) {
+		if (StringUtils.isEmpty(skuId)) {
 			throw new NegativeException(MCode.V_1, "申请售后商品sku参数为空(skuId)！");
 		}
 		
-		if (StringUtil.isEmpty(saleAfterNo)) {
+		if (StringUtils.isEmpty(saleAfterNo)) {
 			throw new NegativeException(MCode.V_1, "售后单号参数为空(saleAfterNo)！");
 		}
 		
-		if (StringUtil.isEmpty(saleAfterNo)) {
+		if (StringUtils.isEmpty(saleAfterNo)) {
 			throw new NegativeException(MCode.V_1, "售后单号参数为空(saleAfterNo)！");
 		}
 		
