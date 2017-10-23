@@ -36,6 +36,9 @@ public class GoodsClassifyBean {
     @ColumnAlias(value = "status")
     private Integer status;
 
+    @ColumnAlias(value = "level")
+    private Integer level;
+
     public String getClassifyId() {
         return classifyId;
     }
@@ -74,5 +77,13 @@ public class GoodsClassifyBean {
 
     public void setStatus(Integer status) {
         this.status = status;
+    }
+
+    public Integer getLevel() {
+        return level;
+    }
+
+    public void setLevel(Integer level) {
+        this.level = level;
     }
 }

@@ -15,4 +15,5 @@ public class Utils {
         idStr = idStr.substring(0, idStr.length() - 1);
         return idStr;
     }
+
 }

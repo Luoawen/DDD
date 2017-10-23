@@ -6,6 +6,9 @@ import cn.m2c.ddd.common.persistence.orm.ColumnAlias;
  * 商品保障
  */
 public class GoodsGuaranteeBean {
+    @ColumnAlias(value = "guarantee_id")
+    private String guaranteeId;
+
     @ColumnAlias(value = "guarantee_name")
     private String guaranteeName;
 
@@ -26,5 +29,13 @@ public class GoodsGuaranteeBean {
 
     public void setGuaranteeDesc(String guaranteeDesc) {
         this.guaranteeDesc = guaranteeDesc;
+    }
+
+    public String getGuaranteeId() {
+        return guaranteeId;
+    }
+
+    public void setGuaranteeId(String guaranteeId) {
+        this.guaranteeId = guaranteeId;
     }
 }

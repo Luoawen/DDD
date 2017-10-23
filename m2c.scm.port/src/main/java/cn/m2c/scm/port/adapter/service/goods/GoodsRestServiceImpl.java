@@ -17,8 +17,8 @@ import java.util.Map;
 /**
  * 商品
  */
-@Service
-public class GoodsServiceImpl implements GoodsService {
+@Service("goodsRestService")
+public class GoodsRestServiceImpl implements GoodsService {
     private static final String M2C_HOST_URL = DisconfDataGetter.getByFileItem("constants.properties", "m2c.host.url").toString().trim();
 
     @Autowired
@@ -57,5 +57,15 @@ public class GoodsServiceImpl implements GoodsService {
             }
         }
         return resultList;
+    }
+
+    @Override
+    public Map getMediaResourceInfo(String barNo) {
+        return null;
+    }
+
+    @Override
+    public List<String> getGoodsIdByCoordinate(Double longitude, Double latitude) {
+        return null;
     }
 }

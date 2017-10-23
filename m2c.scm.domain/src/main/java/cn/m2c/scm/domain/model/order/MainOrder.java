@@ -1,5 +1,6 @@
 package cn.m2c.scm.domain.model.order;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -81,6 +82,10 @@ public class MainOrder extends ConcurrencySafeEntity {
 		}
 		status = -1;
 		
+		for (DealerOrder d : dealerOrders) {
+			d.cancel();
+		}
+		
 		DomainEventPublisher.instance().publish(new OrderOptLogEvent(orderId, null, "订单取消成功", userId));
 		return true;
 	}
@@ -89,6 +94,8 @@ public class MainOrder extends ConcurrencySafeEntity {
 	 */
 	public void checkout() {
 		// 判断是否可以结算
+		if (status >=4)
+			return;
 	}
 	/***
 	 * 支付成功 // 需要参数
@@ -113,5 +120,28 @@ public class MainOrder extends ConcurrencySafeEntity {
 		if (status != null)
 			return status.intValue();
 		return 0;
+	}
+	/***
+	 * 获取应付金额
+	 * @return
+	 */
+	public long getActual() {
+		return (goodsAmount + orderFreight - plateformDiscount - dealerDiscount);
+	}
+	/**
+	 * 获取营销规则
+	 * @return
+	 */
+	public List<String> getMkIds() {
+		List<String> rs = null;
+		if (marketings == null || marketings.size()<1)
+			return rs;
+		rs = new ArrayList<String>();
+		for (SimpleMarketing mk : marketings) {
+			String mId = mk.getMarketingId();
+			if (mId != null)
+				rs.add(mId);
+		}
+		return rs;
 	}
 }

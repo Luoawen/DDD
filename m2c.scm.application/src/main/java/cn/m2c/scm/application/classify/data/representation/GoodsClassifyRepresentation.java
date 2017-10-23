@@ -26,11 +26,14 @@ public class GoodsClassifyRepresentation {
      */
     private Float serviceRate;
 
+    private Integer level;
+
     public GoodsClassifyRepresentation(GoodsClassifyBean bean) {
         this.classifyId = bean.getClassifyId();
         this.classifyName = bean.getClassifyName();
         this.parentClassifyId = bean.getParentClassifyId();
         this.serviceRate = bean.getServiceRate();
+        this.level=bean.getLevel();
     }
 
     public String getClassifyId() {
@@ -63,5 +66,13 @@ public class GoodsClassifyRepresentation {
 
     public void setServiceRate(Float serviceRate) {
         this.serviceRate = serviceRate;
+    }
+
+    public Integer getLevel() {
+        return level;
+    }
+
+    public void setLevel(Integer level) {
+        this.level = level;
     }
 }

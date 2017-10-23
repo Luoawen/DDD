@@ -138,8 +138,7 @@ public class SellerAgent {
 	
 	@RequestMapping(value="",method = RequestMethod.GET)
 	public ResponseEntity<MPager> list(
-			@RequestParam(value="sellerName",required=false)String sellerName,
-			@RequestParam(value="sellerPhone",required=false)String sellerPhone,
+			@RequestParam(value="filter",required=false)String filter,
 			@RequestParam(value="startTime",required=false)String startTime,
 			@RequestParam(value="endTime",required=false)String endTime,
 			@RequestParam(value = "pageNum", required = false, defaultValue = "1") Integer pageNum,
@@ -150,8 +149,8 @@ public class SellerAgent {
 		try {
 //			List<DealerBean> dealerList = dealerQuery.getDealerList(dealerClassify,cooperationMode,countMode,isPayDeposit,dealerName,dealerId,userPhone,sellerPhone,startTime,endTime,pageNum,rows);
 //			Integer count = dealerQuery.getDealerCount(dealerClassify,cooperationMode,countMode,isPayDeposit,dealerName,dealerId,userPhone,sellerPhone,startTime,endTime,pageNum,rows);
-			List<SellerBean> sellerList = sellerQuery.getSellerList(sellerName,sellerPhone,startTime,endTime,pageNum,rows);
-			Integer count = sellerQuery.getCount(sellerName,sellerPhone,startTime,endTime);
+			List<SellerBean> sellerList = sellerQuery.getSellerList(filter,startTime,endTime,pageNum,rows);
+			Integer count = sellerQuery.getCount(filter,startTime,endTime);
 			result.setPager(count, pageNum, rows);
 			result.setContent(sellerList);
 			result.setStatus(MCode.V_200);

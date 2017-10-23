@@ -33,7 +33,7 @@ public class HibernateGoodsSkuRepository extends HibernateSupperRepository imple
         StringBuilder sql = new StringBuilder("UPDATE `m2c_scm`.`t_scm_goods_sku`");
         sql.append(" SET `available_num`=`available_num`-?,concurrency_version = concurrency_version + 1");
         sql.append(" WHERE  `sku_id` = ? AND concurrency_version = ?");
-        int result = this.getSupportJdbcTemplate().jdbcTemplate().update(sql.toString(), new Object[]{num,skuId, concurrencyVersion});
+        int result = this.getSupportJdbcTemplate().jdbcTemplate().update(sql.toString(), new Object[]{num, skuId, concurrencyVersion});
         return result;
     }
 }

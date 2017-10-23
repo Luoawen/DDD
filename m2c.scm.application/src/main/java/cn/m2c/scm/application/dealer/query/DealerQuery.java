@@ -104,7 +104,7 @@ public class DealerQuery {
 	 * @return
 	 */
 	private DealerClassifyNameBean getDealerClassify(String dealerClassify) {
-		String sql = "select secondc.dealerSecondClassifyName dealerSecondClassifyName,secondc.dealerClassifyId,firstc.dealer_classify_name dealerFirstClassifyName from"
+		String sql = "select secondc.dealerSecondClassifyName dealerSecondClassifyName,secondc.parentClassifyId dealerClassifyId,firstc.dealer_classify_name dealerFirstClassifyName from"
 				+"(SELECT dealer_classify_id dealerClassifyId,dealer_classify_name dealerSecondClassifyName,parent_classify_id parentClassifyId FROM t_scm_dealer_classify WHERE 1 = 1 AND dealer_classify_id =?)"
 				+" secondc,t_scm_dealer_classify firstc where firstc.dealer_classify_id=secondc.parentClassifyId";
 		System.out.println("------------"+sql);
@@ -203,7 +203,24 @@ public class DealerQuery {
 		}
 		return bean;
 	}
-
+	/**
+	 * 根据id查询商家结算方式
+	 * @param dealerId
+	 * @return -1 表示失败    1：按供货价 2：按服务费率'
+	 * @throws NegativeException 
+	 */
+	public Integer getDealerCountMode(String dealerId) throws NegativeException{
+		Integer defaultValue = -1;
+		DealerBean bean = null;
+		try {
+			String sql =  " SELECT  *  FROM  t_scm_dealer sd  WHERE  dealer_status = 1 and dealer_id=?";
+			bean = this.supportJdbcTemplate.queryForBean(sql, DealerBean.class,dealerId);
+		} catch (Exception e) {
+			log.error("查询经销商详情出错",e);
+			throw new NegativeException(500, "经销商查询不存在");
+		}
+		return bean==null?defaultValue:bean.getCountMode();
+	}
 
 	/**
 	 * 根据多个dealerid获取经销商列表

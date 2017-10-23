@@ -9,6 +9,8 @@ import cn.m2c.scm.domain.NegativeException;
 import cn.m2c.scm.domain.model.goods.GoodsApprove;
 import cn.m2c.scm.domain.model.goods.GoodsApproveRepository;
 import cn.m2c.scm.domain.model.goods.GoodsRepository;
+import cn.m2c.scm.domain.model.shop.Shop;
+import cn.m2c.scm.domain.model.shop.ShopRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +29,8 @@ public class GoodsApproveApplication {
     GoodsApproveRepository goodsApproveRepository;
     @Autowired
     GoodsRepository goodsRepository;
+    @Autowired
+    ShopRepository shopRepository;
 
     /**
      * 商家添加商品需审核
@@ -36,6 +40,10 @@ public class GoodsApproveApplication {
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
     public void addGoodsApprove(GoodsApproveCommand command) throws NegativeException {
         LOGGER.info("addGoodsApprove command >>{}", command);
+        Shop shop = shopRepository.getShop(command.getDealerId());
+        if (null == shop) {
+            throw new NegativeException(MCode.V_300, "店铺信息不存在，不能增加商品");
+        }
         GoodsApprove goodsApprove = goodsApproveRepository.queryGoodsApproveById(command.getGoodsId());
         if (null == goodsApprove) {
             if (goodsRepository.goodsNameIsRepeat(null, command.getDealerId(), command.getGoodsName())) {

@@ -2,11 +2,22 @@ package cn.m2c.scm.port.adapter.restful.web.goods;
 
 import cn.m2c.common.JsonUtils;
 import cn.m2c.common.MCode;
+import cn.m2c.common.MPager;
 import cn.m2c.common.MResult;
 import cn.m2c.scm.application.CommonApplication;
+import cn.m2c.scm.application.classify.query.GoodsClassifyQueryApplication;
+import cn.m2c.scm.application.dealer.data.bean.DealerBean;
+import cn.m2c.scm.application.dealer.query.DealerQuery;
 import cn.m2c.scm.application.goods.GoodsApproveApplication;
 import cn.m2c.scm.application.goods.command.GoodsApproveCommand;
 import cn.m2c.scm.application.goods.command.GoodsApproveRejectCommand;
+import cn.m2c.scm.application.goods.query.GoodsApproveQueryApplication;
+import cn.m2c.scm.application.goods.query.GoodsGuaranteeQueryApplication;
+import cn.m2c.scm.application.goods.query.data.bean.GoodsApproveBean;
+import cn.m2c.scm.application.goods.query.data.bean.GoodsGuaranteeBean;
+import cn.m2c.scm.application.goods.query.data.representation.GoodsApproveDetailRepresentation;
+import cn.m2c.scm.application.goods.query.data.representation.GoodsApproveSearchRepresentation;
+import cn.m2c.scm.application.unit.query.UnitQuery;
 import cn.m2c.scm.domain.IDGenerator;
 import cn.m2c.scm.domain.NegativeException;
 import org.apache.commons.lang3.StringUtils;
@@ -22,7 +33,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -41,6 +51,16 @@ public class GoodsApproveAgent {
     GoodsApproveApplication goodsApproveApplication;
     @Autowired
     CommonApplication commonApplication;
+    @Autowired
+    GoodsApproveQueryApplication goodsApproveQueryApplication;
+    @Autowired
+    GoodsClassifyQueryApplication goodsClassifyQueryApplication;
+    @Autowired
+    GoodsGuaranteeQueryApplication goodsGuaranteeQueryApplication;
+    @Autowired
+    UnitQuery unitQuery;
+    @Autowired
+    DealerQuery dealerQuery;
 
     /**
      * 获取ID
@@ -283,27 +303,92 @@ public class GoodsApproveAgent {
         return new ResponseEntity<MResult>(result, HttpStatus.OK);
     }
 
-    public static void main(String[] args) {
-        //specifications
-        Map map = new HashMap<>();
-        map.put("itemName", "尺寸");
-        List<String> values = new ArrayList<>();
-        values.add("L");
-        values.add("M");
-        map.put("itemValue", values);
-
-        Map map1 = new HashMap<>();
-        map1.put("itemName", "颜色");
-        List<String> values1 = new ArrayList<>();
-        values1.add("蓝色");
-        values1.add("白色");
-        map1.put("itemValue", values1);
-
-        List<Map> list = new ArrayList<>();
-        list.add(map);
-        list.add(map1);
-
-        System.out.print(JsonUtils.toStr(list));
-
+    /**
+     * 查询商品审核列表
+     *
+     * @param dealerId        商家ID
+     * @param goodsClassifyId 商品分类
+     * @param goodsStatus     商品状态，1：仓库中，2：出售中，3：已售罄
+     * @param condition       搜索条件
+     * @param startTime       开始时间
+     * @param endTime         结束时间
+     * @param pageNum         第几页
+     * @param rows            每页多少行
+     * @return
+     */
+    @RequestMapping(value = "", method = RequestMethod.GET)
+    public ResponseEntity<MPager> searchGoodsApproveByCondition(
+            @RequestParam(value = "dealerId", required = false) String dealerId,
+            @RequestParam(value = "goodsClassifyId", required = false) String goodsClassifyId,
+            @RequestParam(value = "goodsStatus", required = false) Integer goodsStatus,
+            @RequestParam(value = "condition", required = false) String condition,
+            @RequestParam(value = "startTime", required = false) String startTime,
+            @RequestParam(value = "endTime", required = false) String endTime,
+            @RequestParam(value = "pageNum", required = false, defaultValue = "1") Integer pageNum,
+            @RequestParam(value = "rows", required = false, defaultValue = "10") Integer rows) {
+        MPager result = new MPager(MCode.V_1);
+        try {
+            Integer total = goodsApproveQueryApplication.searchGoodsApproveByConditionTotal(dealerId, goodsClassifyId, goodsStatus,
+                    condition, startTime, endTime);
+            if (total > 0) {
+                List<GoodsApproveBean> goodsBeans = goodsApproveQueryApplication.searchGoodsApproveByCondition(dealerId, goodsClassifyId, goodsStatus,
+                        condition, startTime, endTime, pageNum, rows);
+                if (null != goodsBeans && goodsBeans.size() > 0) {
+                    List<GoodsApproveSearchRepresentation> representations = new ArrayList<GoodsApproveSearchRepresentation>();
+                    for (GoodsApproveBean bean : goodsBeans) {
+                        DealerBean dealerBean = dealerQuery.getDealer(bean.getDealerId());
+                        String dealerType = "";
+                        if (null != dealerBean) {
+                            dealerType = dealerBean.getDealerClassifyBean().getDealerSecondClassifyName();
+                        }
+                        String goodsClassify = goodsClassifyQueryApplication.getClassifyNames(bean.getGoodsClassifyId());
+                        representations.add(new GoodsApproveSearchRepresentation(bean, goodsClassify, dealerType));
+                    }
+                    result.setContent(representations);
+                }
+            }
+            result.setPager(total, pageNum, rows);
+            result.setStatus(MCode.V_200);
+        } catch (Exception e) {
+            LOGGER.error("searchGoodsApproveByCondition Exception e:", e);
+            result = new MPager(MCode.V_400, "查询商品审核列表失败");
+        }
+        return new ResponseEntity<MPager>(result, HttpStatus.OK);
     }
+
+    /**
+     * 查询商品审核详情
+     *
+     * @param goodsId
+     * @return
+     */
+    @RequestMapping(value = "/{goodsId}", method = RequestMethod.GET)
+    public ResponseEntity<MResult> queryGoodsApproveDetail(
+            @PathVariable("goodsId") String goodsId
+    ) {
+        MResult result = new MResult(MCode.V_1);
+        try {
+            GoodsApproveBean goodsBean = goodsApproveQueryApplication.queryGoodsApproveByGoodsId(goodsId);
+            if (null != goodsBean) {
+                String goodsClassify = goodsClassifyQueryApplication.getClassifyNames(goodsBean.getGoodsClassifyId());
+                List<GoodsGuaranteeBean> goodsGuarantee = goodsGuaranteeQueryApplication.queryGoodsGuaranteeByIds(JsonUtils.toList(goodsBean.getGoodsGuarantee(), String.class));
+                String goodsUnitName = unitQuery.getUnitNameByUnitId(goodsBean.getGoodsUnitId());
+                //结算模式 1：按供货价 2：按服务费率
+                Integer settlementMode = dealerQuery.getDealerCountMode(goodsBean.getDealerId());
+                Float serviceRate = null;
+                if (settlementMode == 2) {
+                    serviceRate = goodsClassifyQueryApplication.queryServiceRateByClassifyId(goodsBean.getGoodsClassifyId());
+                }
+                GoodsApproveDetailRepresentation representation = new GoodsApproveDetailRepresentation(goodsBean,
+                        goodsClassify, goodsGuarantee, goodsUnitName, settlementMode, serviceRate);
+                result.setContent(representation);
+            }
+            result.setStatus(MCode.V_200);
+        } catch (Exception e) {
+            LOGGER.error("queryGoodsDetail Exception e:", e);
+            result = new MResult(MCode.V_400, "查询商品审核详情失败");
+        }
+        return new ResponseEntity<MResult>(result, HttpStatus.OK);
+    }
+
 }

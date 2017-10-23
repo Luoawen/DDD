@@ -67,18 +67,8 @@ public class GoodsSku extends ConcurrencySafeEntity {
      */
     private Integer showStatus;
 
-    /**
-     * 搜索条件
-     */
-    private GoodsSearchInfo goodsSearchInfo;
-
-    /**
-     * 是否删除，1:正常，2：已删除
-     */
-    private Integer delStatus;
-
     public GoodsSku(Goods goods, String skuId, String skuName, Integer availableNum, Integer realNum, Float weight,
-                    Long photographPrice, Long marketPrice, Long supplyPrice, String goodsCode, Integer showStatus, GoodsSearchInfo goodsSearchInfo) {
+                    Long photographPrice, Long marketPrice, Long supplyPrice, String goodsCode, Integer showStatus) {
         this.goods = goods;
         this.skuId = skuId;
         this.skuName = skuName;
@@ -90,7 +80,6 @@ public class GoodsSku extends ConcurrencySafeEntity {
         this.supplyPrice = supplyPrice;
         this.goodsCode = goodsCode;
         this.showStatus = showStatus;
-        this.goodsSearchInfo=goodsSearchInfo;
     }
 
     public GoodsSku() {
@@ -110,14 +99,13 @@ public class GoodsSku extends ConcurrencySafeEntity {
         this.supplyPrice = supplyPrice;
     }
 
-    public void modifyNotApproveGoodsSku(Integer availableNum, Float weight, Long marketPrice, String goodsCode, Integer showStatus, GoodsSearchInfo goodsSearchInfo) {
+    public void modifyNotApproveGoodsSku(Integer availableNum, Float weight, Long marketPrice, String goodsCode, Integer showStatus) {
         this.availableNum = availableNum;
         this.realNum = this.realNum + (availableNum - this.availableNum);
         this.weight = weight;
         this.marketPrice = marketPrice;
         this.goodsCode = goodsCode;
         this.showStatus = showStatus;
-        this.goodsSearchInfo = goodsSearchInfo;
     }
 
 
@@ -125,25 +113,11 @@ public class GoodsSku extends ConcurrencySafeEntity {
         return !this.photographPrice.equals(photographPrice) || !this.supplyPrice.equals(supplyPrice);
     }
 
-    public void remove() {
-        this.delStatus = 2;
-    }
-
-    /**
-     * 上架,商品状态，1：仓库中，2：出售中，3：已售罄
-     */
-    public void upShelf() {
-        this.goodsSearchInfo.upShelf();
-    }
-
-    /**
-     * 下架,商品状态，1：仓库中，2：出售中，3：已售罄
-     */
-    public void offShelf() {
-        this.goodsSearchInfo.offShelf();
-    }
-
     public Integer availableNum() {
         return availableNum;
+    }
+
+    public Goods goods() {
+        return goods;
     }
 }

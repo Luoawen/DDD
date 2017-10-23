@@ -12,12 +12,12 @@ public class GoodsInfoBean {
 	/**
 	 * 商品信息<图片>
 	 */
-	@ColumnAlias(value = "goods_main_images")
+	@ColumnAlias(value="goods_main_images")
 	private String goodsImage;
 	/**
 	 * 商品信息<名称>
 	 */
-	@ColumnAlias(value = "goods_name")
+	@ColumnAlias(value="goods_name")
 	private String goodsName;
 	/**
 	 * 商品信息<规格>
@@ -53,21 +53,6 @@ public class GoodsInfoBean {
 	 */
 	@ColumnAlias(value = "freight")
 	private Integer freight;
-	/**
-	 * 平台优惠
-	 */
-	@ColumnAlias(value = "plateform_discount")
-	private Integer plateformDiscount;
-	/**
-	 * 商家优惠
-	 */
-	@ColumnAlias(value = "dealer_discount")
-	private Integer dealerDiscount;
-	/**
-	 * 售后金额
-	 */
-	@ColumnAlias(value = "back_money")
-	private Integer backMoney;
 
 	public String getGoodsImage() {
 		return goodsImage;
@@ -83,31 +68,6 @@ public class GoodsInfoBean {
 
 	public String getMediaResId() {
 		return mediaResId;
-	}
-
-	public Integer getPlateformDiscount() {
-		return plateformDiscount;
-	}
-
-	
-	public Integer getBackMoney() {
-		return backMoney;
-	}
-
-	public void setBackMoney(Integer backMoney) {
-		this.backMoney = backMoney;
-	}
-
-	public void setPlateformDiscount(Integer plateformDiscount) {
-		this.plateformDiscount = plateformDiscount;
-	}
-
-	public Integer getDealerDiscount() {
-		return dealerDiscount;
-	}
-
-	public void setDealerDiscount(Integer dealerDiscount) {
-		this.dealerDiscount = dealerDiscount;
 	}
 
 	public Integer getSellNum() {

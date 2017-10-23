@@ -197,11 +197,8 @@ public class Goods extends ConcurrencySafeEntity {
         Long supplyPrice = GetMapValueUtils.getLongFromMapKey(map, "supplyPrice");
         String goodsCode = GetMapValueUtils.getStringFromMapKey(map, "goodsCode");
         Integer showStatus = GetMapValueUtils.getIntFromMapKey(map, "showStatus");
-        GoodsSearchInfo goodsSearchInfo = new GoodsSearchInfo(this.dealerId, this.dealerName, this.goodsName, this.goodsSubTitle, this.goodsClassifyId,
-                this.goodsBrandId, this.goodsBrandName, this.goodsBarCode, this.goodsDesc, this.goodsKeyWord,
-                this.goodsStatus, this.createdDate);
         GoodsSku goodsSku = new GoodsSku(this, skuId, skuName, availableNum, availableNum, weight,
-                photographPrice, marketPrice, supplyPrice, goodsCode, showStatus, goodsSearchInfo);
+                photographPrice, marketPrice, supplyPrice, goodsCode, showStatus);
         return goodsSku;
     }
 
@@ -269,7 +266,9 @@ public class Goods extends ConcurrencySafeEntity {
         this.goodsGuarantee = goodsGuarantee;
         this.goodsMainImages = goodsMainImages;
         this.goodsDesc = goodsDesc;
-
+        if (this.goodsStatus == 3) {
+            this.goodsStatus = 2;
+        }
         List<Map> skuList = ObjectSerializer.instance().deserialize(goodsSKUs, List.class);
         if (null != skuList && skuList.size() > 0) {
             //修改供货价、拍获价、规格需要审批
@@ -286,11 +285,9 @@ public class Goods extends ConcurrencySafeEntity {
                     Long marketPrice = GetMapValueUtils.getLongFromMapKey(map, "marketPrice");
                     String goodsCode = GetMapValueUtils.getStringFromMapKey(map, "goodsCode");
                     Integer showStatus = GetMapValueUtils.getIntFromMapKey(map, "showStatus");
+
                     // 修改商品规格不需要审批的信息
-                    GoodsSearchInfo goodsSearchInfo = new GoodsSearchInfo(this.dealerId, this.dealerName, this.goodsName, this.goodsSubTitle, this.goodsClassifyId,
-                            this.goodsBrandId, this.goodsBrandName, this.goodsBarCode, this.goodsDesc, this.goodsKeyWord,
-                            this.goodsStatus, this.createdDate);
-                    goodsSku.modifyNotApproveGoodsSku(availableNum, weight, marketPrice, goodsCode, showStatus, goodsSearchInfo);
+                    goodsSku.modifyNotApproveGoodsSku(availableNum, weight, marketPrice, goodsCode, showStatus);
 
                     // 判断供货价和拍获价是否修改
                     Long photographPrice = GetMapValueUtils.getLongFromMapKey(map, "photographPrice");
@@ -317,9 +314,6 @@ public class Goods extends ConcurrencySafeEntity {
      */
     public void remove() {
         this.delStatus = 2;
-        for (GoodsSku goodsSku : this.goodsSKUs) {
-            goodsSku.remove();
-        }
         DomainEventPublisher
                 .instance()
                 .publish(new GoodsDeleteEvent(this.goodsId));
@@ -330,6 +324,13 @@ public class Goods extends ConcurrencySafeEntity {
      */
     public void upShelf() {
         this.goodsStatus = 2;
+        Integer total = 0;
+        for (GoodsSku goodsSku : this.goodsSKUs) {
+            total = total + goodsSku.availableNum();
+        }
+        if (total <= 0) {
+            this.goodsStatus = 3;
+        }
     }
 
     /**
@@ -345,5 +346,24 @@ public class Goods extends ConcurrencySafeEntity {
     public void modifyRecognized(String recognizedId, String recognizedUrl) {
         this.recognizedId = recognizedId;
         this.recognizedUrl = recognizedUrl;
+    }
+
+    public Integer getId() {
+        return Integer.parseInt(String.valueOf(this.id()));
+    }
+
+    /**
+     * 上架,商品状态，1：仓库中，2：出售中，3：已售罄
+     */
+    public void soldOut() {
+        if (this.goodsStatus == 2) {
+            Integer total = 0;
+            for (GoodsSku goodsSku : this.goodsSKUs) {
+                total = total + goodsSku.availableNum();
+            }
+            if (total <= 0) {
+                this.goodsStatus = 3;
+            }
+        }
     }
 }

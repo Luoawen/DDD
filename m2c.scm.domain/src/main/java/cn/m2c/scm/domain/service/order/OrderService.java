@@ -21,7 +21,7 @@ public interface OrderService {
 	 * @param skus key:skuId, val:num
 	 * @return
 	 */
-	public void lockStock(Map<String, Float> skus);
+	public void lockStock(Map<String, Integer> skus);
 	/***
 	 * 解锁优惠券
 	 * @param couponsIds

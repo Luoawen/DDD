@@ -69,7 +69,7 @@ public class DealerOrderDetailBean {
 	/**
 	 * 商家Id
 	 */
-	private String dealerId;
+	private String dealerInfo;
 	/**
 	 * 业务员姓名
 	 */
@@ -102,18 +102,7 @@ public class DealerOrderDetailBean {
 	 * 订单总额(订单商品总额 - 平台优惠券 - 商家优惠券)
 	 */
 	private Integer orderPrice;
-	/**
-	 * 单位名称
-	 */
-	private String invoiceName;
-	/**
-	 * 纳税人识别号
-	 */
-	private String invoiceCode;
-	/**
-	 * 发票类型（发票抬头）
-	 */
-	private Integer invoiceType;
+
 
 	public Integer getOrderStatus() {
 		return orderStatus;
@@ -137,38 +126,6 @@ public class DealerOrderDetailBean {
 
 	public Integer getPlateformDiscount() {
 		return plateformDiscount;
-	}
-
-	public String getDealerId() {
-		return dealerId;
-	}
-
-	public String getInvoiceName() {
-		return invoiceName;
-	}
-
-	public String getInvoiceCode() {
-		return invoiceCode;
-	}
-
-	public Integer getInvoiceType() {
-		return invoiceType;
-	}
-
-	public void setDealerId(String dealerId) {
-		this.dealerId = dealerId;
-	}
-
-	public void setInvoiceName(String invoiceName) {
-		this.invoiceName = invoiceName;
-	}
-
-	public void setInvoiceCode(String invoiceCode) {
-		this.invoiceCode = invoiceCode;
-	}
-
-	public void setInvoiceType(Integer invoiceType) {
-		this.invoiceType = invoiceType;
 	}
 
 	public Integer getDealerDiscount() {
@@ -259,6 +216,8 @@ public class DealerOrderDetailBean {
 		return revPhone;
 	}
 
+
+
 	public String getDealerName() {
 		return dealerName;
 	}
@@ -267,8 +226,9 @@ public class DealerOrderDetailBean {
 		return dealerClassify;
 	}
 
-	public String getdealerId() {
-		return dealerId;
+
+	public String getDealerInfo() {
+		return dealerInfo;
 	}
 
 	public String getSellerName() {
@@ -311,6 +271,8 @@ public class DealerOrderDetailBean {
 		this.revPhone = revPhone;
 	}
 
+
+
 	public void setDealerName(String dealerName) {
 		this.dealerName = dealerName;
 	}
@@ -319,8 +281,8 @@ public class DealerOrderDetailBean {
 		this.dealerClassify = dealerClassify;
 	}
 
-	public void setdealerId(String dealerId) {
-		this.dealerId = dealerId;
+	public void setDealerInfo(String dealerInfo) {
+		this.dealerInfo = dealerInfo;
 	}
 
 	public void setSellerName(String sellerName) {
@@ -337,10 +299,12 @@ public class DealerOrderDetailBean {
 				+ createdDate + ", payWay=" + payWay + ", payDate=" + payDate + ", payNo=" + payNo + ", revPerson="
 				+ revPerson + ", revPhone=" + revPhone + ", province=" + province + ", city=" + city + ", areaCounty="
 				+ areaCounty + ", streetAddr=" + streetAddr + ", dealerName=" + dealerName + ", dealerClassify="
-				+ dealerClassify + ", dealerId=" + dealerId + ", sellerName=" + sellerName + ", sellerPhone="
+				+ dealerClassify + ", dealerInfo=" + dealerInfo + ", sellerName=" + sellerName + ", sellerPhone="
 				+ sellerPhone + ", goodsInfoBeans=" + goodsInfoBeans + ", totalOrderPrice=" + totalOrderPrice
 				+ ", totalFreight=" + totalFreight + ", plateformDiscount=" + plateformDiscount + ", dealerDiscount="
 				+ dealerDiscount + ", orderPrice=" + orderPrice + "]";
 	}
+	
+	
 
 }

@@ -14,6 +14,7 @@ import cn.m2c.scm.application.goods.command.GoodsRecognizedModifyCommand;
 import cn.m2c.scm.application.goods.query.GoodsGuaranteeQueryApplication;
 import cn.m2c.scm.application.goods.query.GoodsQueryApplication;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsBean;
+import cn.m2c.scm.application.goods.query.data.bean.GoodsGuaranteeBean;
 import cn.m2c.scm.application.goods.query.data.representation.GoodsDetailRepresentation;
 import cn.m2c.scm.application.goods.query.data.representation.GoodsSearchRepresentation;
 import cn.m2c.scm.application.unit.query.UnitQuery;
@@ -31,7 +32,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -275,7 +275,7 @@ public class GoodsAgent {
                         DealerBean dealerBean = dealerQuery.getDealer(bean.getDealerId());
                         String dealerType = "";
                         if (null != dealerBean) {
-                            dealerType = dealerBean.getDealerClassifyBean().getDealerSecondClassifyName();
+                            dealerType = null != dealerBean.getDealerClassifyBean() ? dealerBean.getDealerClassifyBean().getDealerSecondClassifyName() : "";
                         }
                         String goodsClassify = goodsClassifyQueryApplication.getClassifyNames(bean.getGoodsClassifyId());
                         representations.add(new GoodsSearchRepresentation(bean, goodsClassify, dealerType));
@@ -307,9 +307,16 @@ public class GoodsAgent {
             GoodsBean goodsBean = goodsQueryApplication.queryGoodsByGoodsId(goodsId);
             if (null != goodsBean) {
                 String goodsClassify = goodsClassifyQueryApplication.getClassifyNames(goodsBean.getGoodsClassifyId());
-                List<String> goodsGuarantee = goodsGuaranteeQueryApplication.getGoodsGuaranteeDesc(JsonUtils.toList(goodsBean.getGoodsGuarantee(), String.class));
+                List<GoodsGuaranteeBean> goodsGuarantee = goodsGuaranteeQueryApplication.queryGoodsGuaranteeByIds(JsonUtils.toList(goodsBean.getGoodsGuarantee(), String.class));
                 String goodsUnitName = unitQuery.getUnitNameByUnitId(goodsBean.getGoodsUnitId());
-                GoodsDetailRepresentation representation = new GoodsDetailRepresentation(goodsBean, goodsClassify, goodsGuarantee, goodsUnitName);
+                //结算模式 1：按供货价 2：按服务费率
+                Integer settlementMode = dealerQuery.getDealerCountMode(goodsBean.getDealerId());
+                Float serviceRate = null;
+                if (settlementMode == 2) {
+                    serviceRate = goodsClassifyQueryApplication.queryServiceRateByClassifyId(goodsBean.getGoodsClassifyId());
+                }
+                GoodsDetailRepresentation representation = new GoodsDetailRepresentation(goodsBean, goodsClassify,
+                        goodsGuarantee, goodsUnitName, settlementMode, serviceRate);
                 result.setContent(representation);
             }
             result.setStatus(MCode.V_200);
@@ -317,23 +324,6 @@ public class GoodsAgent {
             LOGGER.error("queryGoodsDetail Exception e:", e);
             result = new MResult(MCode.V_400, "查询商品详情失败");
         }
-        return new ResponseEntity<MResult>(result, HttpStatus.OK);
-    }
-
-    @RequestMapping(value = "/test", method = RequestMethod.POST)
-    public ResponseEntity<MResult> outInventory(
-            @RequestParam(value = "skuId", required = false) String skuId,
-            @RequestParam(value = "num", required = false) Integer num
-    ) {
-        MResult result = new MResult(MCode.V_1);
-        Map<String, Integer> map = new HashMap<>();
-        map.put(skuId, num);
-        try {
-            goodsApplication.outInventory(map);
-        } catch (NegativeException e) {
-            e.printStackTrace();
-        }
-        result.setStatus(MCode.V_200);
         return new ResponseEntity<MResult>(result, HttpStatus.OK);
     }
 }

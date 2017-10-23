@@ -116,12 +116,13 @@ public class ShopAgent {
 		            @RequestParam(value = "shopId", required = true) String shopId,
 		            @RequestParam(value = "shopName", required = true) String shopName,
 		            @RequestParam(value = "shopIcon", required = true) String shopIcon,
+		            @RequestParam(value = "shopReceipt", required = false) String shopReceipt,
 		            @RequestParam(value = "shopIntroduce", required = false) String shopIntroduce,
 		            @RequestParam(value = "customerServiceTel", required = true) String customerServiceTel
 		            ) {
 			 MResult result = new MResult(MCode.V_1);
 		        try {
-		        	ShopInfoUpdateCommand command = new ShopInfoUpdateCommand(dealerId,shopId, shopName, shopIcon, shopIntroduce, customerServiceTel);
+		        	ShopInfoUpdateCommand command = new ShopInfoUpdateCommand(dealerId,shopId, shopName, shopIcon, shopIntroduce,shopReceipt, customerServiceTel);
 		        	shopApplication.updateShopInfo(command);
 		            result.setStatus(MCode.V_200);
 		        } catch (Exception e) {
@@ -143,12 +144,13 @@ public class ShopAgent {
 		            @RequestParam(value = "shopName", required = true) String shopName,
 		            @RequestParam(value = "shopIcon", required = true) String shopIcon,
 		            @RequestParam(value = "shopIntroduce", required = false) String shopIntroduce,
+		            @RequestParam(value = "shopReceipt", required = false) String shopReceipt,
 		            @RequestParam(value = "customerServiceTel", required = true) String customerServiceTel
 		            ) {
 			 MResult result = new MResult(MCode.V_1);
 		        try {
 		        	String shopId = IDGenerator.get(IDGenerator.SHOP_PREFIX_TITLE);
-		        	ShopInfoUpdateCommand command = new ShopInfoUpdateCommand(dealerId,shopId, shopName, shopIcon, shopIntroduce, customerServiceTel);
+		        	ShopInfoUpdateCommand command = new ShopInfoUpdateCommand(dealerId,shopId, shopName, shopIcon, shopIntroduce, shopReceipt,customerServiceTel);
 		        	shopApplication.addShopInfo(command);
 		            result.setStatus(MCode.V_200);
 		        } catch (Exception e) {

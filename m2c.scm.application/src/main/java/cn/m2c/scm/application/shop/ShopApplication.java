@@ -30,7 +30,7 @@ public class ShopApplication {
 		Shop shop = shopRepository.getShop(command.getDealerId());
 		if(shop==null)
 			throw new NegativeException(NegativeCode.DEALER_SHOP_IS_NOT_EXIST, "此经销商店铺不存在.");
-		shop.updateShopInfo(command.getShopName(),command.getShopIntroduce(),command.getShopIcon(),command.getCustomerServiceTel());
+		shop.updateShopInfo(command.getShopName(),command.getShopIntroduce(),command.getShopIcon(),command.getShopReceipt(),command.getCustomerServiceTel());
 		shopRepository.save(shop);
 	}
 
@@ -38,13 +38,14 @@ public class ShopApplication {
 	 * 新增店铺
 	 * @param command
 	 */
-		public void addShopInfo(ShopInfoUpdateCommand command) throws NegativeException {
+	@Transactional(rollbackFor = {Exception.class,RuntimeException.class,NegativeException.class})
+	public void addShopInfo(ShopInfoUpdateCommand command) throws NegativeException {
 			// TODO Auto-generated method stub
 			log.info("---新增经销商店铺信息");
 			Shop shop = shopRepository.getShopByShopID(command.getShopId());
 			if(shop!=null)
 				throw new NegativeException(NegativeCode.DEALER_SHOP_IS_EXIST, "此经销商店铺已存在.");
-			shop.addShopInfo(command.getDealerId(),command.getShopId(),command.getShopName(),command.getShopIntroduce(),command.getShopIcon(),command.getCustomerServiceTel());
+			shop = new Shop(command.getShopId(),command.getDealerId(),command.getShopName(),command.getShopIntroduce(),command.getShopIcon(),command.getShopReceipt(),command.getCustomerServiceTel());
 			shopRepository.save(shop);
 		}
 

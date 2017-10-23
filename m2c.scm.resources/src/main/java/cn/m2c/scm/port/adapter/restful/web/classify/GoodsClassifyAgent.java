@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -39,19 +40,21 @@ public class GoodsClassifyAgent {
     /**
      * 增加商品分类
      *
-     * @param parentClassifyName 一级分类名称(增加一级分类必传，二、三级分类不传)
-     * @param subClassifyNames   子分类名称list的json字符串,["短袖","裙子"]
-     * @param parentClassifyId   子分类上级分类的id(增加二、三级分类必传，一级分类不传)
+     * @param classifyName     分类名称(增加一、二、三级分类必传)
+     * @param subClassifyNames 子分类名称list的json字符串,["短袖","裙子"]
+     * @param parentClassifyId 子分类上级分类的id(增加一、二、三级分类必传，一级分类传-1)
+     * @param level            层级，1：一级分类,2：二级分类,3：三级分类...
      * @return
      */
     @RequestMapping(value = "", method = RequestMethod.POST)
     public ResponseEntity<MResult> addGoodsClassify(
-            @RequestParam(value = "parentClassifyName", required = false) String parentClassifyName,
+            @RequestParam(value = "classifyName", required = false) String classifyName,
             @RequestParam(value = "subClassifyNames", required = false) String subClassifyNames,
-            @RequestParam(value = "parentClassifyId", required = false) String parentClassifyId) {
+            @RequestParam(value = "parentClassifyId", required = false) String parentClassifyId,
+            @RequestParam(value = "level", required = false) Integer level) {
         MResult result = new MResult(MCode.V_1);
         try {
-            GoodsClassifyAddCommand command = new GoodsClassifyAddCommand(parentClassifyName, subClassifyNames, parentClassifyId);
+            GoodsClassifyAddCommand command = new GoodsClassifyAddCommand(classifyName, subClassifyNames, parentClassifyId, level);
             goodsClassifyApplication.addGoodsClassify(command);
             result.setStatus(MCode.V_200);
         } catch (NegativeException ne) {
@@ -174,6 +177,53 @@ public class GoodsClassifyAgent {
         } catch (Exception e) {
             LOGGER.error("queryGoodsClassifyDetail Exception e:", e);
             result = new MResult(MCode.V_400, "查询商品分类详情失败");
+        }
+        return new ResponseEntity<MResult>(result, HttpStatus.OK);
+    }
+
+    /**
+     * 根据层级查询分类
+     *
+     * @param level
+     * @return
+     */
+    @RequestMapping(value = "/level", method = RequestMethod.GET)
+    public ResponseEntity<MResult> queryGoodsClassifyByLevel(
+            @RequestParam(value = "level", required = false) Integer level) {
+        MResult result = new MResult(MCode.V_1);
+        try {
+            List<GoodsClassifyBean> beans = goodsClassifyQueryApplication.queryGoodsClassifiesByLevel(level);
+            if (null != beans && beans.size() > 0) {
+                List<GoodsClassifyRepresentation> representations = new ArrayList<>();
+                for (GoodsClassifyBean bean : beans) {
+                    representations.add(new GoodsClassifyRepresentation(bean));
+                }
+                result.setContent(representations);
+            }
+            result.setStatus(MCode.V_200);
+        } catch (Exception e) {
+            LOGGER.error("queryGoodsClassifyByLevel Exception e:", e);
+            result = new MResult(MCode.V_400, "根据层级查询分类失败");
+        }
+        return new ResponseEntity<MResult>(result, HttpStatus.OK);
+    }
+
+    /**
+     * 查询服务费率
+     * @param classifyId
+     * @return
+     */
+    @RequestMapping(value = "/service/rate", method = RequestMethod.GET)
+    public ResponseEntity<MResult> queryServiceRateByClassifyId(
+            @RequestParam(value = "classifyId", required = false) String classifyId) {
+        MResult result = new MResult(MCode.V_1);
+        try {
+            Float serviceRate = goodsClassifyQueryApplication.queryServiceRateByClassifyId(classifyId);
+            result.setContent(serviceRate);
+            result.setStatus(MCode.V_200);
+        } catch (Exception e) {
+            LOGGER.error("queryServiceRateByClassifyId Exception e:", e);
+            result = new MResult(MCode.V_400, "查询服务费率失败");
         }
         return new ResponseEntity<MResult>(result, HttpStatus.OK);
     }

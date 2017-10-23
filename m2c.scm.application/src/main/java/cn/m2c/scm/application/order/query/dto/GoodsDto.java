@@ -63,7 +63,7 @@ public class GoodsDto {
 		this.marketingId = marketingId;
 	}
 
-	public float getPurNum() {
+	public int getPurNum() {
 		return purNum;
 	}
 	

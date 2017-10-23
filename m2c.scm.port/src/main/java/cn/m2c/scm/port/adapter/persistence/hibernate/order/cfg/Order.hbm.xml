@@ -36,17 +36,17 @@
         <property name="noted" column="noted" type="string"/>
         
         <bag name="dealerOrders" cascade="all-delete-orphan" lazy="false" inverse="true">
-        	<key column="order_id" />
-        	<one-to-many class="cn.m2c.scm.domain.model.order.DealerOrder"/>
+        	<key column="order_id" property-ref="orderId"/>
+        	<one-to-many class="cn.m2c.scm.domain.model.order.DealerOrder" />
         </bag>
         
         <bag name="coupons" cascade="all-delete-orphan" lazy="false" inverse="true">
-        	<key column="order_id" />
+        	<key column="order_id" property-ref="orderId"/>
         	<one-to-many class="cn.m2c.scm.domain.model.order.SimpleCoupon"/>
         </bag>
         
         <bag name="marketings" cascade="all-delete-orphan" lazy="false" inverse="true">
-        	<key column="order_id" />
+        	<key column="order_id" property-ref="orderId"/>
         	<one-to-many class="cn.m2c.scm.domain.model.order.SimpleMarketing"/>
         </bag>
     </class>

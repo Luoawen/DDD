@@ -117,4 +117,79 @@ public class GoodsClassifyQueryApplication {
         List<GoodsClassifyBean> goodsClassifyBeans = this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsClassifyBean.class, number);
         return goodsClassifyBeans;
     }
+
+    public List<GoodsClassifyBean> queryGoodsClassifiesByLevel(Integer level) {
+        StringBuilder sql = new StringBuilder();
+        sql.append(" SELECT ");
+        sql.append(" * ");
+        sql.append(" FROM ");
+        sql.append(" t_scm_goods_classify WHERE 1 = 1");
+        sql.append(" AND level = ? AND status = 1");
+        List<GoodsClassifyBean> goodsClassifyBeans = this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsClassifyBean.class, level);
+        return goodsClassifyBeans;
+    }
+
+    public Float queryServiceRateByClassifyId(String classifyId) {
+        GoodsClassifyBean bean = queryGoodsClassifiesById(classifyId);
+        if (null != bean) {
+            Float rate = bean.getServiceRate();
+            if (null == rate) {
+                if (!"-1".equals(bean.getParentClassifyId())) {//不是一级分类
+                    //找上级分类
+                    return queryServiceRateByClassifyId(bean.getParentClassifyId());
+                }
+            } else {
+                return rate;
+            }
+        }
+        return null;
+    }
+
+    public List<GoodsClassifyBean> queryGoodsClassifiesByName(String classifyName) {
+        List<Object> params = new ArrayList<Object>();
+        StringBuilder sql = new StringBuilder();
+        sql.append(" SELECT ");
+        sql.append(" * ");
+        sql.append(" FROM ");
+        sql.append(" t_scm_goods_classify WHERE 1 = 1");
+        sql.append(" AND classify_name LIKE ? AND status = 1");
+        params.add("%" + classifyName + "%");
+        List<GoodsClassifyBean> goodsClassifyBeans = this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsClassifyBean.class, params.toArray());
+        return goodsClassifyBeans;
+    }
+
+    public List<String> getGoodsSubClassifyIdByName(String classifyName) {
+        List<String> subList = new ArrayList<>();
+        List<GoodsClassifyBean> list = queryGoodsClassifiesByName(classifyName);
+        if (null != list && list.size() > 0) {
+            for (GoodsClassifyBean bean : list) {
+                List<String> goodsClassifyIds = recursionQueryGoodsSubClassifyId(bean.getClassifyId(), new ArrayList<String>());
+                goodsClassifyIds.add(bean.getClassifyId());
+                subList.addAll(goodsClassifyIds);
+            }
+        }
+        return subList;
+    }
+
+    private GoodsClassifyBean getFirstClassifyByClassifyId(String classifyId) {
+        GoodsClassifyBean bean = queryGoodsClassifiesById(classifyId);
+        if (null != bean && "-1".equals(bean.getParentClassifyId())) {
+            return bean;
+        } else {
+            return getFirstClassifyByClassifyId(bean.getParentClassifyId());
+        }
+    }
+
+    public List<GoodsClassifyBean> getFirstClassifyByClassifyIds(List<String> classifyIds) {
+        List<GoodsClassifyBean> list = new ArrayList<>();
+        for (String classifyId : classifyIds) {
+            GoodsClassifyBean bean = queryGoodsClassifiesById(classifyId);
+            if (null != bean && "-1".equals(bean.getParentClassifyId())) {
+                list.add(bean);
+            } else {
+                list.add(getFirstClassifyByClassifyId(bean.getParentClassifyId()));
+            }
+        }
+        return list;
+    }
 }

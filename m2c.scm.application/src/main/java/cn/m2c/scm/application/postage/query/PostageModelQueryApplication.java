@@ -63,6 +63,11 @@ public class PostageModelQueryApplication {
         return postageModelBean;
     }
 
+    public String getPostageModelNameByModelId(String modelId) {
+        PostageModelBean bean = queryPostageModelsByModelId(modelId);
+        return null != bean ? bean.getModelName() : "";
+    }
+
     /**
      * 查询商品的运费规则
      *

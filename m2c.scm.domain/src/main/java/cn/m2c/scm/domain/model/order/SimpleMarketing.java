@@ -29,4 +29,10 @@ public class SimpleMarketing extends IdentifiedDomainObject {
 	public void disabled() {
 		status = 0;
 	}
+	
+	String getMarketingId() {
+		if (status > 0)
+			return marketingId;
+		return null;
+	}
 }

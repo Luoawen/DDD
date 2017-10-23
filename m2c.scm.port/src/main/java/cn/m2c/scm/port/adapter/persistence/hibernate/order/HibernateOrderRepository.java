@@ -7,6 +7,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import cn.m2c.ddd.common.port.adapter.persistence.hibernate.HibernateSupperRepository;
+import cn.m2c.scm.domain.model.order.DealerOrder;
+import cn.m2c.scm.domain.model.order.DealerOrderDtl;
 import cn.m2c.scm.domain.model.order.MainOrder;
 import cn.m2c.scm.domain.model.order.OrderRepository;
 /**
@@ -38,12 +40,36 @@ public class HibernateOrderRepository extends HibernateSupperRepository implemen
 	public void updateMainOrder(MainOrder order) {
 		Session s = this.session();
 		s.save(order);
-		int rs = s.createSQLQuery("update t_scm_order_dealer set _status=:status where order_id=:orderId")
+		/*int rs = s.createSQLQuery("update t_scm_order_dealer set _status=:status where order_id=:orderId")
 				.setParameter("status", order.getStatus()).setParameter("orderId", order.getOrderId()).executeUpdate();
 		LOGGER.info("===fanjc==更新商家订单状态成功条数:" + rs);
 		rs = s.createSQLQuery("update t_scm_order_detail set _status=:status where order_id=:orderId")
 				.setParameter("status", order.getStatus()).setParameter("orderId", order.getOrderId()).executeUpdate();
-		LOGGER.info("===fanjc==更新商家订单状态成功条数:" + rs);
+		LOGGER.info("===fanjc==更新商家订单状态成功条数:" + rs);*/
 	}
 
+	@Override
+	public DealerOrder getDealerOrderByNo(String dealerOrderId) {
+		// TODO Auto-generated method stub
+		StringBuilder sql = new StringBuilder("select * from t_scm_order_dealer where dealer_order_id =:dealerOrderId");
+		Query query = this.session().createSQLQuery(sql.toString()).addEntity(DealerOrder.class);
+		query.setParameter("dealerOrderId", dealerOrderId);
+		return (DealerOrder)query.uniqueResult();
+	}
+
+	@Override
+	public DealerOrderDtl getDealerOrderDtlBySku(String dealerOrderId, String sku) {
+		// TODO Auto-generated method stub
+		StringBuilder sql = new StringBuilder("select * from t_scm_order_detail where dealer_order_id =:dealerOrderId and sku_id=:skuId");
+		Query query = this.session().createSQLQuery(sql.toString()).addEntity(DealerOrderDtl.class);
+		query.setParameter("dealerOrderId", dealerOrderId);
+		query.setParameter("skuId", sku);
+		return (DealerOrderDtl)query.uniqueResult();
+	}
+
+	@Override
+	public void updateDealerOrder(DealerOrder dealOrder) {
+		// TODO Auto-generated method stub
+		this.session().save(dealOrder);
+	}
 }
