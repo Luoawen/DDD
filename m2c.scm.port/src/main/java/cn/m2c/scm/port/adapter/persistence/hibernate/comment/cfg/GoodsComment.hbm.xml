@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping default-access="field" default-cascade="all">
+    <class name="cn.m2c.scm.domain.model.comment.GoodsComment" table="t_scm_goods_comment" lazy="true"
+           optimistic-lock="version" dynamic-insert="true" dynamic-update="true">
+
+        <id name="id" column="id" type="long" unsaved-value="-1">
+            <generator class="native"/>
+        </id>
+        <version name="concurrencyVersion" column="concurrency_version" type="int"/>
+        <property name="commentId" column="comment_id" type="string"/>
+        <property name="orderId" column="order_id" type="string"/>
+        <property name="goodsId" column="goods_id" type="string"/>
+        <property name="skuId" column="sku_id" type="string"/>
+        <property name="skuName" column="sku_name" type="string"/>
+        <property name="goodsName" column="goods_name" type="string"/>
+        <property name="dealerId" column="dealer_id" type="string"/>
+        <property name="dealerName" column="dealer_name" type="string"/>
+        <property name="buyerId" column="buyer_id" type="string"/>
+        <property name="buyerName" column="buyer_name" type="string"/>
+        <property name="buyerPhoneNumber" column="buyer_phone_number" type="string"/>
+        <property name="buyerIcon" column="buyer_icon" type="string"/>
+        <property name="commentContent" column="comment_content" type="string"/>
+        <property name="commentImages" column="comment_images" type="string"/>
+        <property name="imageStatus" column="image_status" type="string"/>
+        <property name="replyContent" column="reply_content" type="string"/>
+        <property name="commentLevel" column="comment_level" type="int"/>
+        <property name="starLevel" column="star_level" type="int"/>
+        <property name="replyStatus" column="reply_status" type="int"/>
+        <property name="commentStatus" column="comment_status" type="int"/>
+        <property name="commentTime" column="comment_time" type="java.math.BigInteger"/>
+        <property name="replyTime" column="reply_time" type="java.math.BigInteger"/>
+    </class>
+</hibernate-mapping>

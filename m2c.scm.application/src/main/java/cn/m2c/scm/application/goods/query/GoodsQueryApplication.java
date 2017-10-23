@@ -702,5 +702,28 @@ public class GoodsQueryApplication {
         }
         return goodsBeanList;
     }
+
+    /**
+     * 根据skuId查询商品
+     *
+     * @param skuId
+     * @return
+     */
+    public GoodsSkuInfoRepresentation queryGoodsBySkuId(String skuId) {
+        List<GoodsSkuInfoRepresentation> resultList = new ArrayList<>();
+        StringBuilder sql = new StringBuilder();
+        sql.append(" SELECT ");
+        sql.append(" * ");
+        sql.append(" FROM ");
+        sql.append(" t_scm_goods_sku where sku_id = ?");
+        GoodsSkuBean goodsSkuBean = this.getSupportJdbcTemplate().queryForBean(sql.toString(), GoodsSkuBean.class, skuId);
+        if (null != goodsSkuBean) {
+            GoodsBean goodsBean = queryGoodsById(goodsSkuBean.getGoodsId());
+            if (null != goodsBean) {
+                return new GoodsSkuInfoRepresentation(goodsBean, goodsSkuBean);
+            }
+        }
+        return null;
+    }
 }
 

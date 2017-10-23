@@ -23,7 +23,7 @@ public abstract class IDGenerator {
     public static final String SALE_PREFIX_TITLE = "YWY";//
     public static final String GOODS_Property_PREFIX_TITLE = "14GP";//灞炴�у墠缂�
     public static final String DEALER_SELLER_PREFIX_TITLE = "14DS";
-    public static final String REPORT_ID = "14RI";    
+    public static final String REPORT_ID = "14RI";
     public static final String LOCATION_ID = "14LI";
     public static final String SCM_POSTAGE_PREFIX_TITLE = "YF";//杩愯垂妯℃澘鍓嶇紑
     public static final String SCM_POSTAGE_RULE_PREFIX_TITLE = "YFGZ";//杩愯垂妯℃澘瑙勫垯鍓嶇紑
@@ -33,8 +33,9 @@ public abstract class IDGenerator {
     public static final String SCM_GOODS_CLASSIFY_PREFIX_TITLE = "SPFL";//鍟嗗搧鍒嗙被鍓嶇紑
     public static final String SCM_GOODS_PREFIX_TITLE = "SP";//商品前缀
     public static final String SCM_GOODS_SPEC_VALUE_PREFIX_TITLE = "SPGG";//商品规格值
-    public static final String SCM_STANTARD_PREFIX_TITLE="GG";//规格前缀
-    public static final String SCM_UNIT_PREFIX_TITLE="JLDW";//计量单位前缀 
+    public static final String SCM_STANTARD_PREFIX_TITLE = "GG";//规格前缀
+    public static final String SCM_UNIT_PREFIX_TITLE = "JLDW";//计量单位前缀
+    public static final String SCM_GOODS_COMMENT_PREFIX_TITLE = "SPPL";//商品前缀
 
     /**
      * 鐢熸垚搴忓垪ID
