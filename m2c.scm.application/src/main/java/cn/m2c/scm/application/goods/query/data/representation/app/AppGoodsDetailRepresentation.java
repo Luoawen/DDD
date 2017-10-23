@@ -4,6 +4,7 @@ import cn.m2c.common.JsonUtils;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsBean;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsGuaranteeBean;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsSkuBean;
+import com.baidu.disconf.client.usertools.DisconfDataGetter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +14,8 @@ import java.util.Map;
  * app商品详情
  */
 public class AppGoodsDetailRepresentation {
+    private static final String M2C_HOST_URL = DisconfDataGetter.getByFileItem("constants.properties", "m2c.host.url").toString().trim();
+
     private String goodsId;
     private String goodsName;
     private String goodsSubTitle;
@@ -24,6 +27,7 @@ public class AppGoodsDetailRepresentation {
     private List<AppGoodsSkuRepresentation> goodsSKUs;
     private List<String> goodsMainImages;
     private String mresId;
+    private String goodsDescUrl;
 
     public AppGoodsDetailRepresentation(GoodsBean bean, List<GoodsGuaranteeBean> goodsGuaranteeBeans, String goodsUnitName, String mresId) {
         this.goodsId = bean.getGoodsId();
@@ -44,6 +48,7 @@ public class AppGoodsDetailRepresentation {
         }
         this.goodsMainImages = JsonUtils.toList(bean.getGoodsMainImages(), String.class);
         this.mresId = mresId;
+        this.goodsDescUrl = M2C_HOST_URL + "/m2c.scm/goods/app/desc?goodsId=" + this.goodsId;
     }
 
     public String getGoodsName() {
@@ -132,5 +137,13 @@ public class AppGoodsDetailRepresentation {
 
     public void setMresId(String mresId) {
         this.mresId = mresId;
+    }
+
+    public String getGoodsDescUrl() {
+        return goodsDescUrl;
+    }
+
+    public void setGoodsDescUrl(String goodsDescUrl) {
+        this.goodsDescUrl = goodsDescUrl;
     }
 }
