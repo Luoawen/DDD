@@ -60,6 +60,10 @@ public class DealerBean {
 	private String managerEmail;
 	@ColumnAlias(value = "manager_department")
 	private String managerDepartment;
+	@ColumnAlias(value = "start_sign_date")
+	private String startSignDate;
+	@ColumnAlias(value = "end_sign_date")
+	private String endSignDate;
 	
 	@ColumnAlias(value = "seller_id")
 	private String sellerId;
@@ -278,6 +282,22 @@ public class DealerBean {
 
 	public void setManagerDepartment(String managerDepartment) {
 		this.managerDepartment = managerDepartment;
+	}
+
+	public String getStartSignDate() {
+		return startSignDate;
+	}
+
+	public void setStartSignDate(String startSignDate) {
+		this.startSignDate = startSignDate;
+	}
+
+	public String getEndSignDate() {
+		return endSignDate;
+	}
+
+	public void setEndSignDate(String endSignDate) {
+		this.endSignDate = endSignDate;
 	}
 
 	

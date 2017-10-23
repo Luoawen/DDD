@@ -1,5 +1,6 @@
 package cn.m2c.scm.application.dealer.data.representation;
 
+import cn.m2c.ddd.common.persistence.orm.ColumnAlias;
 import cn.m2c.scm.application.dealer.data.bean.DealerBean;
 
 public class DealerDetailRepresentation {
@@ -44,6 +45,9 @@ public class DealerDetailRepresentation {
 		
 		private String sellerPhone;
 		
+		private String startSignDate;
+		private String endSignDate;
+		
 		
 		private String managerName;//商家负责人姓名
 		private String managerPhone;//商家负责人手机
@@ -78,6 +82,8 @@ public class DealerDetailRepresentation {
 			this.managerWechat = model.getManagerWechat();
 			this.managerEmail = model.getManagerEmail();
 			this.managerDepartment = model.getManagerDepartment();
+			this.startSignDate = model.getStartSignDate();
+			this.endSignDate = model.getEndSignDate();
 		}
 		public String getDealerName() {
 			return dealerName;
@@ -234,6 +240,18 @@ public class DealerDetailRepresentation {
 		}
 		public void setManagerDepartment(String managerDepartment) {
 			this.managerDepartment = managerDepartment;
+		}
+		public String getStartSignDate() {
+			return startSignDate;
+		}
+		public void setStartSignDate(String startSignDate) {
+			this.startSignDate = startSignDate;
+		}
+		public String getEndSignDate() {
+			return endSignDate;
+		}
+		public void setEndSignDate(String endSignDate) {
+			this.endSignDate = endSignDate;
 		}
 		
 		
