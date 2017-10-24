@@ -3,6 +3,7 @@ package cn.m2c.scm.application.comment.query;
 import cn.m2c.ddd.common.port.adapter.persistence.springJdbc.SupportJdbcTemplate;
 import cn.m2c.scm.application.comment.query.data.bean.GoodsCommentBean;
 import cn.m2c.scm.application.comment.query.data.bean.GoodsReplyCommentBean;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -109,7 +110,7 @@ public class GoodsCommentQueryApplication {
         if (type == 1) {
             sql.append(" AND image_status=2");
         }
-        sql.append(" LIMIT ?,? order by comment_time desc");
+        sql.append(" order by comment_time desc LIMIT ?,? ");
         params.add(rows * (pageNum - 1));
         params.add(rows);
         List<GoodsCommentBean> goodsCommentBeans = this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsCommentBean.class, params.toArray());
@@ -134,7 +135,7 @@ public class GoodsCommentQueryApplication {
         List<Object> params = new ArrayList<Object>();
         StringBuilder sql = new StringBuilder();
         sql.append(" SELECT ");
-        sql.append(" * ");
+        sql.append(" count(*) ");
         sql.append(" FROM ");
         sql.append(" t_scm_goods_comment WHERE 1 = 1 AND goods_id = ? AND comment_status = 1");
         params.add(goodsId);
@@ -152,5 +153,92 @@ public class GoodsCommentQueryApplication {
         sql.append(" FROM ");
         sql.append(" t_scm_goods_comment_reply WHERE 1 = 1 AND comment_id = ?");
         return this.getSupportJdbcTemplate().queryForBean(sql.toString(), GoodsReplyCommentBean.class, commentId);
+    }
+
+    public List<GoodsCommentBean> searchGoodsComment(String dealerId, Integer replyStatus, Integer starLevel,
+                                                     String startTime, String endTime, String condition, Integer imageStatus,
+                                                     Integer pageNum, Integer rows) {
+        List<Object> params = new ArrayList<Object>();
+        StringBuilder sql = new StringBuilder();
+        sql.append(" SELECT ");
+        sql.append(" * ");
+        sql.append(" FROM ");
+        sql.append(" t_scm_goods_comment WHERE 1 = 1");
+        if (StringUtils.isNotEmpty(dealerId)) {
+            sql.append(" AND dealer_id = ? ");
+            params.add(dealerId);
+        }
+        if (null != replyStatus) {
+            sql.append(" AND reply_status = ? ");
+            params.add(replyStatus);
+        }
+        if (null != starLevel) {
+            sql.append(" AND star_level = ? ");
+            params.add(starLevel);
+        }
+        if (StringUtils.isNotEmpty(startTime) && StringUtils.isNotEmpty(endTime)) {
+
+        }
+        if (StringUtils.isNotEmpty(condition)) {
+            sql.append(" AND (goods_name LIKE ? OR order_id LIKE ? OR buyer_name LIKE ? OR buyer_phone_number LIKE ?)");
+            params.add("%" + condition + "%");
+            params.add("%" + condition + "%");
+            params.add("%" + condition + "%");
+            params.add("%" + condition + "%");
+        }
+        if (null != imageStatus) {
+            sql.append(" AND image_status = ? ");
+            params.add(imageStatus);
+        }
+        sql.append(" order by comment_time desc LIMIT ?,? ");
+        params.add(rows * (pageNum - 1));
+        params.add(rows);
+        List<GoodsCommentBean> goodsCommentBeans = this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsCommentBean.class, params.toArray());
+        if (null != goodsCommentBeans && goodsCommentBeans.size() > 0) {
+            for (GoodsCommentBean bean : goodsCommentBeans) {
+                GoodsReplyCommentBean replyBean = queryGoodsReplyCommentById(bean.getId());
+                if (null != replyBean) {
+                    bean.setGoodsReplyCommentBean(replyBean);
+                }
+            }
+        }
+        return goodsCommentBeans;
+    }
+
+    public Integer searchGoodsCommentTotal(String dealerId, Integer replyStatus, Integer starLevel,
+                                           String startTime, String endTime, String condition, Integer imageStatus) {
+        List<Object> params = new ArrayList<Object>();
+        StringBuilder sql = new StringBuilder();
+        sql.append(" SELECT ");
+        sql.append(" count(*) ");
+        sql.append(" FROM ");
+        sql.append(" t_scm_goods_comment WHERE 1 = 1");
+        if (StringUtils.isNotEmpty(dealerId)) {
+            sql.append(" AND dealer_id = ? ");
+            params.add(dealerId);
+        }
+        if (null != replyStatus) {
+            sql.append(" AND reply_status = ? ");
+            params.add(replyStatus);
+        }
+        if (null != starLevel) {
+            sql.append(" AND star_level = ? ");
+            params.add(starLevel);
+        }
+        if (StringUtils.isNotEmpty(startTime) && StringUtils.isNotEmpty(endTime)) {
+
+        }
+        if (StringUtils.isNotEmpty(condition)) {
+            sql.append(" AND (goods_name LIKE ? OR order_id LIKE ? OR buyer_name LIKE ? OR buyer_phone_number LIKE ?)");
+            params.add("%" + condition + "%");
+            params.add("%" + condition + "%");
+            params.add("%" + condition + "%");
+            params.add("%" + condition + "%");
+        }
+        if (null != imageStatus) {
+            sql.append(" AND image_status = ? ");
+            params.add(imageStatus);
+        }
+        return supportJdbcTemplate.jdbcTemplate().queryForObject(sql.toString(), params.toArray(), Integer.class);
     }
 }

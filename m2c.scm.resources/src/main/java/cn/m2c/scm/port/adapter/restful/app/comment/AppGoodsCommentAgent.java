@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -88,7 +89,7 @@ public class AppGoodsCommentAgent {
     }
 
     @RequestMapping(value = "list", method = RequestMethod.GET)
-    public ResponseEntity<MPager> appSearchGoods(
+    public ResponseEntity<MPager> queryAppGoodsComment(
             @RequestParam(value = "goodsId", required = false) String goodsId,
             @RequestParam(value = "type", required = false) Integer type,//0:全部，1：有图
             @RequestParam(value = "pageNum", required = false, defaultValue = "1") Integer pageNum,
@@ -115,16 +116,16 @@ public class AppGoodsCommentAgent {
             // 有图评论数
             Integer imageCommentTotal = goodsCommentQueryApplication.queryGoodsImageCommentTotal(goodsId);
             // 好评度
-            Integer highCommentRate = 0 == commentTotal ? 0 : highCommentTotal / commentTotal;
-
+            Float highCommentRate = 0 == commentTotal ? 0 : highCommentTotal / Float.parseFloat(commentTotal.toString());
+            Integer highCommentRateInt = new Double(Double.parseDouble(new DecimalFormat("#.00").format(highCommentRate)) * 100).intValue();
             resultMap.put("commentTotal", commentTotal);
             resultMap.put("imageCommentTotal", imageCommentTotal);
-            resultMap.put("highCommentRate", highCommentRate);
+            resultMap.put("highCommentRate", highCommentRateInt);
             result.setContent(resultMap);
             result.setPager(total, pageNum, rows);
             result.setStatus(MCode.V_200);
         } catch (Exception e) {
-            LOGGER.error("addGoodsComment Exception e:", e);
+            LOGGER.error("queryAppGoodsComment Exception e:", e);
             result = new MPager(MCode.V_400, "查询评论失败");
         }
         return new ResponseEntity<MPager>(result, HttpStatus.OK);

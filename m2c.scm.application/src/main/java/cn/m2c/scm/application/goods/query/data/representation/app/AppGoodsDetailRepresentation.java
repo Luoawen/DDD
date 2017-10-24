@@ -31,10 +31,11 @@ public class AppGoodsDetailRepresentation {
     private String mresId;
     private String goodsDescUrl;
     private Map goodsComment;
+    private List<Map> fullCuts;
 
     public AppGoodsDetailRepresentation(GoodsBean bean, List<GoodsGuaranteeBean> goodsGuaranteeBeans,
                                         String goodsUnitName, String mresId, Integer commentTotal,
-                                        GoodsCommentBean goodsCommentBean) {
+                                        GoodsCommentBean goodsCommentBean, List<Map> fullCuts) {
         this.goodsId = bean.getGoodsId();
         this.goodsName = bean.getGoodsName();
         this.goodsSubTitle = bean.getGoodsSubTitle();
@@ -71,8 +72,14 @@ public class AppGoodsDetailRepresentation {
             String images = goodsCommentBean.getCommentImages();
             List<String> imageList = JsonUtils.toList(images, String.class);
             this.goodsComment.put("commentImages", imageList);
-        }
 
+            String replyCommentContent = "";
+            if (null != goodsCommentBean.getGoodsReplyCommentBean()) {
+                replyCommentContent = goodsCommentBean.getGoodsReplyCommentBean().getReplyContent();
+            }
+            this.goodsComment.put("replyCommentContent", replyCommentContent);
+        }
+        this.fullCuts = fullCuts;
     }
 
     public String getGoodsName() {
@@ -177,5 +184,13 @@ public class AppGoodsDetailRepresentation {
 
     public void setGoodsComment(Map goodsComment) {
         this.goodsComment = goodsComment;
+    }
+
+    public List<Map> getFullCuts() {
+        return fullCuts;
+    }
+
+    public void setFullCuts(List<Map> fullCuts) {
+        this.fullCuts = fullCuts;
     }
 }

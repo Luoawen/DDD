@@ -2,6 +2,7 @@ package cn.m2c.scm.port.adapter.service.goods;
 
 import cn.m2c.ddd.common.port.adapter.persistence.springJdbc.SupportJdbcTemplate;
 import cn.m2c.scm.domain.service.goods.GoodsService;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baidu.disconf.client.usertools.DisconfDataGetter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,17 +63,26 @@ public class GoodsRestServiceImpl implements GoodsService {
     @Override
     public List<Map> getGoodsFullCut(String dealerId, String goodsId, String classifyId) {
         List<Map> resultList = new ArrayList<>();
-        String url = M2C_HOST_URL + "/m2c.market/market/fullcut/list?dealer_id={0}&goods_id={1}&classify_id={2}";
+        String url = M2C_HOST_URL + "/m2c.market/fullcut/list?dealer_id={0}&goods_id={1}&classify_id={2}";
         String result = restTemplate.getForObject(url, String.class, dealerId, goodsId, classifyId);
         JSONObject json = JSONObject.parseObject(result);
         if (json.getInteger("status") == 200) {
-           /* JSONObject contentObject = json.getJSONObject("content");
-            String fullCutType = (String) contentObject.get("fullCutType");//满减形式，1：减钱，2：打折，3：换购
-            String thresholdType = (String) contentObject.get("thresholdType");//门槛类型，1：金额，2：件数
-            Iterator<Object> it = contentObject.getJSONArray("typeList").iterator();
-            while (it.hasNext()) {
-                Map jo = (Map) it.next();
-            }*/
+            JSONArray contents = json.getJSONArray("content");
+            if (null != contents) {
+                Iterator<Object> contentJsons = contents.iterator();
+                while (contentJsons.hasNext()) {
+                    Object contentJson = contentJsons.next();
+                    JSONObject contentObject = JSONObject.parseObject(JSONObject.toJSONString(contentJson));
+                    Iterator<Object> it = contentObject.getJSONArray("itemList").iterator();
+                    while (it.hasNext()) {
+                        Map jo = (Map) it.next();
+                        String itemName = (String) jo.get("content");
+                        Map map = new HashMap<>();
+                        map.put("itemName", itemName);
+                        resultList.add(map);
+                    }
+                }
+            }
         }
         return resultList;
     }
