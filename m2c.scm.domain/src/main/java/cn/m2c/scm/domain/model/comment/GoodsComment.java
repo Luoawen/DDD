@@ -95,9 +95,9 @@ public class GoodsComment extends ConcurrencySafeEntity {
     private Integer imageStatus;
 
     /**
-     * 回复
+     * 回复,1:否 2：有
      */
-    private String replyContent;
+    private Integer replyStatus;
 
     /**
      * 评论级别 1好 2中 3差
@@ -110,11 +110,6 @@ public class GoodsComment extends ConcurrencySafeEntity {
     private Integer starLevel;
 
     /**
-     * 评价类型 1：评价 2：回评
-     */
-    private Integer commentType;
-
-    /**
      * 状态 1正常  2 删除
      */
     private Integer commentStatus;
@@ -125,9 +120,13 @@ public class GoodsComment extends ConcurrencySafeEntity {
     private BigInteger commentTime;
 
     /**
-     * 回复时间
+     * 回评
      */
-    private BigInteger replyTime;
+    private GoodsReplyComment goodsReplyComment;
+
+    public GoodsComment() {
+        super();
+    }
 
     /**
      * 买家增加评论
@@ -166,7 +165,7 @@ public class GoodsComment extends ConcurrencySafeEntity {
         } else {
             this.commentLevel = 3;
         }
-        this.commentType = 1;
+        this.replyStatus = 1;
         this.commentStatus = 1;
 
         Date date = new Date();

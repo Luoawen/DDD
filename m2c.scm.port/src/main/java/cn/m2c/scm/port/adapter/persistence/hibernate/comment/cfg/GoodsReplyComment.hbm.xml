@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping default-access="field" default-cascade="all">
+    <class name="cn.m2c.scm.domain.model.comment.GoodsReplyComment" table="t_scm_goods_comment_reply" lazy="true"
+           optimistic-lock="version" dynamic-insert="true" dynamic-update="true">
+
+        <id name="id" column="id" type="long" unsaved-value="-1">
+            <generator class="native"/>
+        </id>
+        <property name="replyId" column="reply_id" type="string"/>
+        <property name="replyContent" column="reply_content" type="string"/>
+        <property name="replyTime" column="reply_time" type="string"/>
+
+        <many-to-one name="commentId" cascade="all" class="cn.m2c.scm.domain.model.comment.GoodsComment"
+                     column="comment_id" unique="true"/>
+    </class>
+</hibernate-mapping>

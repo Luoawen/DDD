@@ -63,7 +63,7 @@ public class AppGoodsAgent {
     /**
      * 商品猜你喜欢
      *
-     * @param positionType 猜你喜欢位置：1:首页(共32条，分页，每页8条，分4页)，2:购物车页面（共12条，不需分页），3:商品详情页（共12条，不需分页）
+     * @param positionType 猜你喜欢位置：1:首页(共32条，分页，每页8条，分4页) 2:购物车页面（共12条，不需分页）3:商品详情页（共16条，不需分页）4:搜索结果页(共32条，分页，每页8条，分4页)
      * @param pageNum      第几页
      * @param rows         每页多少行
      * @return
@@ -81,7 +81,7 @@ public class AppGoodsAgent {
             }
             List<GoodsBean> goodsBeanList = goodsQueryApplication.queryGoodsGuessCache(positionType);
             if (null != goodsBeanList && goodsBeanList.size() > 0) {
-                if (positionType == 1) { //首页分页
+                if (positionType == 1 || positionType == 4) { //首页分页
                     List<GoodsBean> goodsBeans = goodsQueryApplication.getPagedList(pageNum, rows, goodsBeanList);
                     List<AppGoodsGuessRepresentation> resultRepresentation = new ArrayList<>();
                     for (GoodsBean goodsBean : goodsBeans) {

@@ -301,10 +301,13 @@ public class GoodsQueryApplication {
     }
 
     public List<GoodsBean> queryGoodsGuessCache(Integer positionType) {
-        //猜你喜欢位置：1:首页(共32条，分页，每页8条，分4页)，2:购物车页面（共12条，不需分页），3:商品详情页（共12条，不需分页）
+        //猜你喜欢位置：1:首页(共32条，分页，每页8条，分4页) 2:购物车页面（共12条，不需分页）3:商品详情页（共16条，不需分页）4:搜索结果页(共32条，分页，每页8条，分4页)
         Integer number = 32;
-        if (positionType != 1) {
+        if (positionType == 2) {
             number = 12;
+        }
+        if (positionType == 3) {
+            number = 16;
         }
 
         List<GoodsBean> goodsBeans = new ArrayList<>();

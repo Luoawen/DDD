@@ -26,12 +26,12 @@
         <property name="commentContent" column="comment_content" type="string"/>
         <property name="commentImages" column="comment_images" type="string"/>
         <property name="imageStatus" column="image_status" type="string"/>
-        <property name="replyContent" column="reply_content" type="string"/>
         <property name="commentLevel" column="comment_level" type="int"/>
         <property name="starLevel" column="star_level" type="int"/>
-        <property name="commentType" column="comment_type" type="int"/>
+        <property name="replyStatus" column="comment_type" type="int"/>
         <property name="commentStatus" column="comment_status" type="int"/>
         <property name="commentTime" column="comment_time" type="java.math.BigInteger"/>
-        <property name="replyTime" column="reply_time" type="java.math.BigInteger"/>
+        <one-to-one name="goodsReplyComment" class="cn.m2c.scm.domain.model.comment.GoodsReplyComment"
+                    property-ref="commentId" lazy="false"></one-to-one>
     </class>
 </hibernate-mapping>
