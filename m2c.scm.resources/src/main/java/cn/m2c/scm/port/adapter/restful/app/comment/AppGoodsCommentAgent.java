@@ -95,33 +95,38 @@ public class AppGoodsCommentAgent {
             @RequestParam(value = "rows", required = false, defaultValue = "10") Integer rows) {
         MPager result = new MPager(MCode.V_1);
         Map resultMap = new HashMap<>();
-        Integer total = goodsCommentQueryApplication.queryAppGoodCommentTotal(goodsId, type);
-        if (total > 0) {
-            List<GoodsCommentBean> beans = goodsCommentQueryApplication.queryAppGoodComment(goodsId, type, pageNum, rows);
-            if (null != beans && beans.size() > 0) {
-                List<AppCommentRepresentation> representations = new ArrayList<>();
-                for (GoodsCommentBean bean : beans) {
-                    representations.add(new AppCommentRepresentation(bean));
+        try {
+            Integer total = goodsCommentQueryApplication.queryAppGoodCommentTotal(goodsId, type);
+            if (total > 0) {
+                List<GoodsCommentBean> beans = goodsCommentQueryApplication.queryAppGoodComment(goodsId, type, pageNum, rows);
+                if (null != beans && beans.size() > 0) {
+                    List<AppCommentRepresentation> representations = new ArrayList<>();
+                    for (GoodsCommentBean bean : beans) {
+                        representations.add(new AppCommentRepresentation(bean));
+                    }
+                    resultMap.put("goodsComments", representations);
                 }
-                resultMap.put("goodsComments", representations);
             }
+
+            // 好评数
+            Integer highCommentTotal = goodsCommentQueryApplication.queryGoodsHighCommentTotal(goodsId);
+            // 总评数
+            Integer commentTotal = goodsCommentQueryApplication.queryGoodsCommentTotal(goodsId);
+            // 有图评论数
+            Integer imageCommentTotal = goodsCommentQueryApplication.queryGoodsImageCommentTotal(goodsId);
+            // 好评度
+            Integer highCommentRate = 0 == commentTotal ? 0 : highCommentTotal / commentTotal;
+
+            resultMap.put("commentTotal", commentTotal);
+            resultMap.put("imageCommentTotal", imageCommentTotal);
+            resultMap.put("highCommentRate", highCommentRate);
+            result.setContent(resultMap);
+            result.setPager(total, pageNum, rows);
+            result.setStatus(MCode.V_200);
+        } catch (Exception e) {
+            LOGGER.error("addGoodsComment Exception e:", e);
+            result = new MPager(MCode.V_400, "查询评论失败");
         }
-
-        // 好评数
-        Integer highCommentTotal = goodsCommentQueryApplication.queryGoodsHighCommentTotal(goodsId);
-        // 总评数
-        Integer commentTotal = goodsCommentQueryApplication.queryGoodsCommentTotal(goodsId);
-        // 有图评论数
-        Integer imageCommentTotal = goodsCommentQueryApplication.queryGoodsImageCommentTotal(goodsId);
-        // 好评度
-        Integer highCommentRate = 0 == commentTotal ? 0 : highCommentTotal / commentTotal;
-
-        resultMap.put("commentTotal", commentTotal);
-        resultMap.put("imageCommentTotal", imageCommentTotal);
-        resultMap.put("highCommentRate", highCommentRate);
-        result.setContent(resultMap);
-        result.setPager(total, pageNum, rows);
-        result.setStatus(MCode.V_200);
         return new ResponseEntity<MPager>(result, HttpStatus.OK);
     }
 }
