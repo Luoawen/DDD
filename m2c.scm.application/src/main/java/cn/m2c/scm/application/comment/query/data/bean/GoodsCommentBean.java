@@ -2,6 +2,8 @@ package cn.m2c.scm.application.comment.query.data.bean;
 
 import cn.m2c.ddd.common.persistence.orm.ColumnAlias;
 
+import java.util.Date;
+
 /**
  * 商品评论
  */
@@ -132,8 +134,8 @@ public class GoodsCommentBean {
     /**
      * 评论时间
      */
-    @ColumnAlias(value = "comment_time")
-    private String commentTime;
+    @ColumnAlias(value = "created_date")
+    private Date createdDate;
 
     private GoodsReplyCommentBean goodsReplyCommentBean;
 
@@ -305,12 +307,12 @@ public class GoodsCommentBean {
         this.commentStatus = commentStatus;
     }
 
-    public String getCommentTime() {
-        return commentTime;
+    public Date getCreatedDate() {
+        return createdDate;
     }
 
-    public void setCommentTime(String commentTime) {
-        this.commentTime = commentTime;
+    public void setCreatedDate(Date createdDate) {
+        this.createdDate = createdDate;
     }
 
     public Integer getId() {

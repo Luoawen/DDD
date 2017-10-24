@@ -30,7 +30,7 @@
         <property name="starLevel" column="star_level" type="int"/>
         <property name="replyStatus" column="comment_type" type="int"/>
         <property name="commentStatus" column="comment_status" type="int"/>
-        <property name="commentTime" column="comment_time" type="java.math.BigInteger"/>
+        <property name="delayedFlag" column="delayed_flag" type="int"/>
         <one-to-one name="goodsReplyComment" class="cn.m2c.scm.domain.model.comment.GoodsReplyComment"
                     property-ref="commentId" lazy="false"></one-to-one>
     </class>
