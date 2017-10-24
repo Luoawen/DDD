@@ -7,7 +7,7 @@ import cn.m2c.scm.application.comment.GoodsCommentApplication;
 import cn.m2c.scm.application.comment.command.AddGoodsCommentCommand;
 import cn.m2c.scm.application.comment.query.GoodsCommentQueryApplication;
 import cn.m2c.scm.application.comment.query.data.bean.GoodsCommentBean;
-import cn.m2c.scm.application.comment.query.data.representation.AppCommentRepresentation;
+import cn.m2c.scm.application.comment.query.data.representation.app.AppCommentRepresentation;
 import cn.m2c.scm.application.goods.query.GoodsQueryApplication;
 import cn.m2c.scm.application.goods.query.data.representation.GoodsSkuInfoRepresentation;
 import cn.m2c.scm.domain.IDGenerator;

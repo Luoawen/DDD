@@ -2,6 +2,8 @@ package cn.m2c.scm.application.comment.query.data.bean;
 
 import cn.m2c.ddd.common.persistence.orm.ColumnAlias;
 
+import java.util.Date;
+
 /**
  * 商品评论
  */
@@ -22,7 +24,7 @@ public class GoodsReplyCommentBean {
      * 回复时间
      */
     @ColumnAlias(value = "created_date")
-    private String createdDate;
+    private Date createdDate;
 
     public String getCommentId() {
         return commentId;
@@ -40,11 +42,11 @@ public class GoodsReplyCommentBean {
         this.replyContent = replyContent;
     }
 
-    public String getCreatedDate() {
+    public Date getCreatedDate() {
         return createdDate;
     }
 
-    public void setCreatedDate(String createdDate) {
+    public void setCreatedDate(Date createdDate) {
         this.createdDate = createdDate;
     }
 }
