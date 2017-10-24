@@ -29,6 +29,8 @@ public class DealerOrderDtl extends ConcurrencySafeEntity {
 	private String mediaResId;
 	/**促销员ID*/
 	private String salerUserId;
+	/**促销员分成比例*/
+	private String salerUserRate;
 	/**购买数量*/
 	private Integer sellNum;
 	/**是否为换货商品 1是*/
@@ -52,7 +54,7 @@ public class DealerOrderDtl extends ConcurrencySafeEntity {
 	/**媒体ID*/
 	private String mediaId;
 	/**广告位分成比例*/
-	private Float resRate = 0f;
+	private String resRate = "0";
 	/**BD专员的分成串*/
 	private String bdsRate;
 	/**评论状态， 0 待评，1已评*/
@@ -64,8 +66,9 @@ public class DealerOrderDtl extends ConcurrencySafeEntity {
 	
 	public DealerOrderDtl(String orderId, String dealerOrderId, ReceiveAddr addr
 			,InvoiceInfo invoice, ExpressInfo expressInfo, String mediaResId, String salerUserId
-			,String bdsRate, float resRate, String mediaId, int isChange, int changePrice
-			, GoodsInfo goodsInfo, long plateformDiscount, long dealerDiscount, String noted) {
+			,String bdsRate, String resRate, String mediaId, int isChange, int changePrice
+			, GoodsInfo goodsInfo, long plateformDiscount, long dealerDiscount, String noted
+			, String salerUserRate) {
 		this.orderId = orderId;
 		this.dealerOrderId = dealerOrderId;
 		this.addr = addr;
@@ -83,6 +86,7 @@ public class DealerOrderDtl extends ConcurrencySafeEntity {
 		this.plateformDiscount = plateformDiscount;
 		this.dealerDiscount = dealerDiscount;
 		this.noted = noted;
+		this.salerUserRate = salerUserRate;
 	}
 	/***
 	 * 计算商品金额
@@ -121,6 +125,10 @@ public class DealerOrderDtl extends ConcurrencySafeEntity {
 	
 	void cancel() {
 		status = -1;
+	}
+	
+	void payed() {
+		status = 1;
 	}
 	/***
 	 * 确认收货
@@ -174,5 +182,21 @@ public class DealerOrderDtl extends ConcurrencySafeEntity {
 	
 	public void hasCommented() {
 		commentStatus = 1;
+	}
+	
+	String getSkuId() {
+		return goodsInfo.getSkuId();
+	}
+	
+	Integer getSaleNum() {
+		return goodsInfo.getSellNum();
+	}
+	
+	String getMediaResId() {
+		return mediaResId;
+	}
+	
+	String getBdsRate() {
+		return bdsRate;
 	}
 }

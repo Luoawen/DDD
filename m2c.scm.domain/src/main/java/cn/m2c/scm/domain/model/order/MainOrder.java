@@ -6,6 +6,10 @@ import java.util.List;
 
 import cn.m2c.ddd.common.domain.model.ConcurrencySafeEntity;
 import cn.m2c.ddd.common.domain.model.DomainEventPublisher;
+import cn.m2c.scm.domain.model.order.event.MediaResEvent;
+import cn.m2c.scm.domain.model.order.event.SaleNumEvent;
+import cn.m2c.scm.domain.model.order.event.SimpleMediaRes;
+import cn.m2c.scm.domain.model.order.event.SimpleSale;
 import cn.m2c.scm.domain.model.order.log.event.OrderOptLogEvent;
 /***
  * 主订单实体
@@ -100,13 +104,29 @@ public class MainOrder extends ConcurrencySafeEntity {
 	/***
 	 * 支付成功 // 需要参数
 	 */
-	public void paySuccess(String payNo, int payWay, Date payTime, String uId) {
+	public boolean paySuccess(String payNo, int payWay, Date payTime, String uId) {
 		//payNo, payWay, Date payTime
+		if (status > 0)
+			return false;
 		this.payNo = payNo;
 		this.payWay = payWay;
 		this.payTime = payTime;
 		status = 1;
+		List<SimpleSale> allSales = new ArrayList<SimpleSale>();
+		List<SimpleMediaRes> allRes = new ArrayList<SimpleMediaRes>();
+		for (DealerOrder d : dealerOrders) {
+			d.payed();
+			allSales.addAll(d.getSaleNums());
+			allRes.addAll(d.getAllMediaRes());
+		}
 		DomainEventPublisher.instance().publish(new OrderOptLogEvent(orderId, null, "订单支付成功", uId));
+		
+		DomainEventPublisher.instance().publish(new SaleNumEvent(allSales));
+		
+		if (allRes.size() > 1)
+			DomainEventPublisher.instance().publish(new MediaResEvent(orderId, orderFreight, 
+				goodsAmount - plateformDiscount - dealerDiscount, allRes));
+		return true;
 	}
 	/***
 	 * 获取订单编号

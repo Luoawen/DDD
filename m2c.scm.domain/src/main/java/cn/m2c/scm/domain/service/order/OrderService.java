@@ -64,6 +64,7 @@ public interface OrderService {
 	/***
 	 * 获取营销规则列表通过营销ID
 	 * @param marketingIds
+	 * @param time 下单时间
 	 * @return
 	 */
 	public Map<String, Object> getMarketingsByIds(List<String> marketingIds);
@@ -80,6 +81,6 @@ public interface OrderService {
 	 * @param resIds
 	 * @return
 	 */
-	public Map<String, Object> getMediaBdByResIds(List<String> resIds);
+	public Map<String, Object> getMediaBdByResIds(List<String> resIds, long time);
 	
 }

@@ -27,7 +27,9 @@ import cn.m2c.scm.application.goods.query.GoodsQueryApplication;
 import cn.m2c.scm.application.order.command.CancelOrderCmd;
 import cn.m2c.scm.application.order.command.ConfirmSkuCmd;
 import cn.m2c.scm.application.order.command.OrderAddCommand;
+import cn.m2c.scm.application.order.command.OrderPayedCmd;
 import cn.m2c.scm.application.order.command.PayOrderCmd;
+import cn.m2c.scm.application.order.data.bean.MediaResBean;
 import cn.m2c.scm.application.order.data.representation.OrderMoney;
 import cn.m2c.scm.application.order.query.OrderQueryApplication;
 import cn.m2c.scm.application.order.query.dto.GoodsDto;
@@ -82,6 +84,8 @@ public class OrderApplication {
 		List<Map<String, Object>> goodses = null;
 		// skuId, num
 		Map<String, Integer> skus = new HashMap<String, Integer>();
+		List<String> mediaResIds = new ArrayList<String>();
+		Map<String, String> skuMedia = new HashMap<String, String>();
 		if (gdes == null || gdes.size() < 1) {
 			// 获取购物车数据
 			goodses = orderDomainService.getShopCarGoods(cmd.getUserId());
@@ -89,7 +93,13 @@ public class OrderApplication {
 				throw new NegativeException(MCode.V_1, "购物车中的商品为空！");
 			
 			for (Map<String, Object> it : goodses) {
-				skus.put(it.get("skuId").toString(), (Integer)it.get("num"));
+				String sku = it.get("skuId").toString();
+				skus.put(sku, (Integer)it.get("num"));
+				String mResId = (String)it.get("mediaResId");
+				if (!StringUtils.isEmpty(mResId) && !mediaResIds.contains(mResId)) {
+					mediaResIds.add(mResId);
+				}
+				skuMedia.put(sku, mResId);
 			}
 		}
 		else {
@@ -97,6 +107,9 @@ public class OrderApplication {
 			for (int i=0; i<sz; i++) {
 				JSONObject o = gdes.getJSONObject(i);
 				skus.put(o.getString("skuId"), o.getIntValue("purNum"));
+				String mResId = o.getString("mediaResId");
+				if (!StringUtils.isEmpty(mResId) && !mediaResIds.contains(mResId))
+					mediaResIds.add(mResId);
 			}
 		}
 		// 判断库存
@@ -109,13 +122,15 @@ public class OrderApplication {
 		catch (NegativeException e) {
 			throw new NegativeException(MCode.V_100, e.getMessage() + "不存在或库存不够。");
 		}
+		
+		long orderTime = System.currentTimeMillis();
 		// 满足优惠券后，修改优惠券(锁定)
 		//JSONArray coups = cmd.getCoupons();
 		//orderDomainService.lockCoupons(null);
 		// 获取商品详情
 		List<GoodsDto> list = gQueryApp.getGoodsDtl(skus.keySet());
 		//若有媒体信息则需要查询媒体信息
-		orderDomainService.getMediaBdByResIds(null);
+		Map<String, Object> resMap = orderDomainService.getMediaBdByResIds(mediaResIds, orderTime);
 		// 获取运费模板，计算运费
 		calFreight(skus, list, cmd.getAddr().getCityCode());
 		// 拆单 设置商品数量即按商家来拆分
@@ -123,7 +138,8 @@ public class OrderApplication {
 		Map<String, List<GoodsDto>> dealerOrderMap = splitOrder(list, idsSet);
 		// 计算是否满足营销策略, 若满足选择最优
 		Map<String, Integer> dealerCount = getDealerWay(idsSet);
-		List<DealerOrder> dealerOrders = trueSplit(dealerOrderMap, cmd, dealerCount);
+		List<DealerOrder> dealerOrders = trueSplit(dealerOrderMap, cmd, dealerCount,
+				resMap, skuMedia);
 		
 		int goodsAmounts = 0;
 		int freight = 0;
@@ -167,13 +183,14 @@ public class OrderApplication {
 	}
 	/***
 	 * 真实拆分订单到商家
-	 * @param dealerOrderMap
-	 * @param orderId
-	 * @param dc
+	 * @param map
+	 * @param cmd
+	 * @param dc 商家结算方式
+	 * @param medias 媒体信息
 	 * @return
 	 */
 	private List<DealerOrder> trueSplit(Map<String, List<GoodsDto>> map, OrderAddCommand cmd
-			, Map<String, Integer> dc) {
+			, Map<String, Integer> dc, Map<String, Object> medias, Map<String, String> skuMedia) {
 		List<DealerOrder> rs = new ArrayList<DealerOrder>();
 		
 		Iterator<String> it = map.keySet().iterator();
@@ -193,10 +210,22 @@ public class OrderApplication {
 				float num = bean.getPurNum();
 				freight += bean.getFreight();
 				goodsAmount += (int)(num * bean.getDiscountPrice());
+				String resId = skuMedia.get(bean.getSkuId());
+				MediaResBean mb = null;
+				if (!StringUtils.isEmpty(resId))
+					mb = (MediaResBean)medias.get(resId);
 				
-				dtls.add(new DealerOrderDtl(cmd.getOrderId(), dealerOrderId, cmd.getAddr(), 
-						cmd.getInvoice(), null, null, null, null, 0, "mediaId",
-						0, 0, bean.toGoodsInfo(), 0, 0, cmd.getNoted()));
+				if (mb == null) {
+					dtls.add(new DealerOrderDtl(cmd.getOrderId(), dealerOrderId, cmd.getAddr(), 
+							cmd.getInvoice(), null, null, null, null, "0", "",
+							0, 0, bean.toGoodsInfo(), 0, 0, cmd.getNoted(), "0"));
+				}
+				else {
+					dtls.add(new DealerOrderDtl(cmd.getOrderId(), dealerOrderId, cmd.getAddr(), 
+							cmd.getInvoice(), null, mb.getMresId(), mb.getSalesmanId(), mb.getBdStaffRatio(), 
+							mb.getMediaRatio(), mb.getMediaId(),
+							0, 0, bean.toGoodsInfo(), 0, 0, cmd.getNoted(), mb.getSalesmanRatio()));
+				}
 			}
 			rs.add(new DealerOrder(cmd.getOrderId(), dealerOrderId, dealerId, goodsAmount, freight,
 					plateDiscount, dealerDiscount, cmd.getNoted(), termOfPayment
@@ -383,5 +412,17 @@ public class OrderApplication {
 		result.setAmountOfMoney(order.getActual());
 		result.setOrderNo(orderNo);
 		return result;
+	}
+	/***
+	 * 订单支付成功
+	 * @param cmd
+	 */
+	@Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+	@EventListener(isListening=true)
+	public void orderPayed(OrderPayedCmd cmd) {
+		MainOrder order = orderRepository.getOrderById(cmd.getOrderId());
+		if (order.paySuccess(cmd.getPayNo(), cmd.getPayWay(), cmd.getPayTime(), cmd.getUserId()))
+			orderRepository.updateMainOrder(order);
+		return ;
 	}
 }

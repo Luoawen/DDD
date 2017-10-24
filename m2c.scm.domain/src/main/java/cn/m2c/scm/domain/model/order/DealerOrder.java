@@ -1,8 +1,13 @@
 package cn.m2c.scm.domain.model.order;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
 import cn.m2c.ddd.common.domain.model.ConcurrencySafeEntity;
+import cn.m2c.scm.domain.model.order.event.SimpleMediaRes;
+import cn.m2c.scm.domain.model.order.event.SimpleSale;
 /**
  * 商家订单
  * @author fanjc
@@ -85,6 +90,13 @@ public class DealerOrder extends ConcurrencySafeEntity {
 			d.cancel();
 		}
 	}
+	
+	void payed() {
+		status = 1;
+		for (DealerOrderDtl d : orderDtls) {
+			d.payed();
+		}
+	}
 
 	/**
 	 * 同步订单的物流信息
@@ -107,6 +119,7 @@ public class DealerOrder extends ConcurrencySafeEntity {
 	/***
 	 * 检查是否全部确认收货，除指定的sku外
 	 * @param sku
+	 * @param dll
 	 * @return
 	 */
 	public boolean checkAllRev(String sku, DealerOrderDtl dll) {
@@ -125,6 +138,30 @@ public class DealerOrder extends ConcurrencySafeEntity {
 		if (status != 2)
 			return;
 		status = 3;
-		
+	}
+	/**
+	 * 获取销量
+	 * @return
+	 */
+	List<SimpleSale> getSaleNums() {
+		List<SimpleSale> arr = new ArrayList<SimpleSale>();
+		for (DealerOrderDtl dtl : orderDtls) {
+			arr.add(new SimpleSale(dtl.getSkuId(), (dtl.getSaleNum() == null ? 0: dtl.getSaleNum())));
+		}
+		return arr;
+	}
+	
+	/**
+	 * 获取销量
+	 * @return
+	 */
+	List<SimpleMediaRes> getAllMediaRes() {
+		List<SimpleMediaRes> arr = new ArrayList<SimpleMediaRes>();
+		for (DealerOrderDtl dtl : orderDtls) {
+			String mres = dtl.getMediaResId();
+			if (!StringUtils.isEmpty(mres))
+				arr.add(new SimpleMediaRes(mres, dtl.getBdsRate()));
+		}
+		return arr;
 	}
 }

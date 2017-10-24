@@ -171,7 +171,7 @@ public class AppOrderAgent {
      * @param orderId
      * @return
      */
-    @RequestMapping(value = "/app/pay", method = RequestMethod.POST)
+    @RequestMapping(value = "/app/pay__", method = RequestMethod.POST)
     public ResponseEntity<MResult> payOrder(
             @RequestParam(value = "userId", required = false) String userId
             ,@RequestParam(value = "orderId", required = false) String orderId
