@@ -6,6 +6,9 @@ import cn.m2c.ddd.common.persistence.orm.ColumnAlias;
  * 商品评论
  */
 public class GoodsCommentBean {
+
+    @ColumnAlias(value = "id")
+    private Integer id;
     /**
      * 评论编号
      */
@@ -103,12 +106,6 @@ public class GoodsCommentBean {
     private Integer imageStatus;
 
     /**
-     * 回复
-     */
-    @ColumnAlias(value = "reply_content")
-    private String replyContent;
-
-    /**
      * 评论级别 1好 2中 3差
      */
     @ColumnAlias(value = "comment_level")
@@ -138,11 +135,15 @@ public class GoodsCommentBean {
     @ColumnAlias(value = "comment_time")
     private String commentTime;
 
-    /**
-     * 回复时间
-     */
-    @ColumnAlias(value = "reply_time")
-    private String replyTime;
+    private GoodsReplyCommentBean goodsReplyCommentBean;
+
+    public GoodsReplyCommentBean getGoodsReplyCommentBean() {
+        return goodsReplyCommentBean;
+    }
+
+    public void setGoodsReplyCommentBean(GoodsReplyCommentBean goodsReplyCommentBean) {
+        this.goodsReplyCommentBean = goodsReplyCommentBean;
+    }
 
     public String getCommentId() {
         return commentId;
@@ -272,14 +273,6 @@ public class GoodsCommentBean {
         this.imageStatus = imageStatus;
     }
 
-    public String getReplyContent() {
-        return replyContent;
-    }
-
-    public void setReplyContent(String replyContent) {
-        this.replyContent = replyContent;
-    }
-
     public Integer getCommentLevel() {
         return commentLevel;
     }
@@ -320,11 +313,11 @@ public class GoodsCommentBean {
         this.commentTime = commentTime;
     }
 
-    public String getReplyTime() {
-        return replyTime;
+    public Integer getId() {
+        return id;
     }
 
-    public void setReplyTime(String replyTime) {
-        this.replyTime = replyTime;
+    public void setId(Integer id) {
+        this.id = id;
     }
 }

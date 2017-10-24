@@ -5,6 +5,9 @@ import cn.m2c.common.MPager;
 import cn.m2c.common.MResult;
 import cn.m2c.scm.application.comment.GoodsCommentApplication;
 import cn.m2c.scm.application.comment.command.AddGoodsCommentCommand;
+import cn.m2c.scm.application.comment.query.GoodsCommentQueryApplication;
+import cn.m2c.scm.application.comment.query.data.bean.GoodsCommentBean;
+import cn.m2c.scm.application.comment.query.data.representation.AppCommentRepresentation;
 import cn.m2c.scm.application.goods.query.GoodsQueryApplication;
 import cn.m2c.scm.application.goods.query.data.representation.GoodsSkuInfoRepresentation;
 import cn.m2c.scm.domain.IDGenerator;
@@ -19,6 +22,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * 商品评论
  */
@@ -32,6 +40,8 @@ public class AppGoodsCommentAgent {
     GoodsQueryApplication goodsQueryApplication;
     @Autowired
     GoodsCommentApplication goodsCommentApplication;
+    @Autowired
+    GoodsCommentQueryApplication goodsCommentQueryApplication;
 
     /**
      * 发布评价
@@ -84,8 +94,34 @@ public class AppGoodsCommentAgent {
             @RequestParam(value = "pageNum", required = false, defaultValue = "1") Integer pageNum,
             @RequestParam(value = "rows", required = false, defaultValue = "10") Integer rows) {
         MPager result = new MPager(MCode.V_1);
+        Map resultMap = new HashMap<>();
+        Integer total = goodsCommentQueryApplication.queryAppGoodCommentTotal(goodsId, type);
+        if (total > 0) {
+            List<GoodsCommentBean> beans = goodsCommentQueryApplication.queryAppGoodComment(goodsId, type, pageNum, rows);
+            if (null != beans && beans.size() > 0) {
+                List<AppCommentRepresentation> representations = new ArrayList<>();
+                for (GoodsCommentBean bean : beans) {
+                    representations.add(new AppCommentRepresentation(bean));
+                }
+                resultMap.put("goodsComments", representations);
+            }
+        }
 
+        // 好评数
+        Integer highCommentTotal = goodsCommentQueryApplication.queryGoodsHighCommentTotal(goodsId);
+        // 总评数
+        Integer commentTotal = goodsCommentQueryApplication.queryGoodsCommentTotal(goodsId);
+        // 有图评论数
+        Integer imageCommentTotal = goodsCommentQueryApplication.queryGoodsImageCommentTotal(goodsId);
+        // 好评度
+        Integer highCommentRate = 0 == commentTotal ? 0 : highCommentTotal / commentTotal;
 
+        resultMap.put("commentTotal", commentTotal);
+        resultMap.put("imageCommentTotal", imageCommentTotal);
+        resultMap.put("highCommentRate", highCommentRate);
+        result.setContent(resultMap);
+        result.setPager(total, pageNum, rows);
+        result.setStatus(MCode.V_200);
         return new ResponseEntity<MPager>(result, HttpStatus.OK);
     }
 }

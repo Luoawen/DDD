@@ -2,6 +2,7 @@ package cn.m2c.scm.application.comment.query;
 
 import cn.m2c.ddd.common.port.adapter.persistence.springJdbc.SupportJdbcTemplate;
 import cn.m2c.scm.application.comment.query.data.bean.GoodsCommentBean;
+import cn.m2c.scm.application.comment.query.data.bean.GoodsReplyCommentBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -92,12 +93,12 @@ public class GoodsCommentQueryApplication {
     }
 
     /**
-     * 查询评论
+     * app查询评论
      *
      * @param goodsId
      * @return
      */
-    public List<GoodsCommentBean> queryGoodComment(String goodsId, Integer type, Integer pageNum, Integer rows) {
+    public List<GoodsCommentBean> queryAppGoodComment(String goodsId, Integer type, Integer pageNum, Integer rows) {
         List<Object> params = new ArrayList<Object>();
         StringBuilder sql = new StringBuilder();
         sql.append(" SELECT ");
@@ -114,15 +115,42 @@ public class GoodsCommentQueryApplication {
         List<GoodsCommentBean> goodsCommentBeans = this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsCommentBean.class, params.toArray());
         if (null != goodsCommentBeans && goodsCommentBeans.size() > 0) {
             for (GoodsCommentBean bean : goodsCommentBeans) {
-                StringBuilder replySql = new StringBuilder();
-                replySql.append(" SELECT ");
-                replySql.append(" * ");
-                replySql.append(" FROM ");
-                replySql.append(" t_scm_goods_comment WHERE 1 = 1 AND goods_id = ? AND sku_id =? AND reply_status =1 and comment_status = 1");
-                params.add(goodsId);
+                GoodsReplyCommentBean replyBean = queryGoodsReplyCommentById(bean.getId());
+                if (null != replyBean) {
+                    bean.setGoodsReplyCommentBean(replyBean);
+                }
             }
         }
+        return goodsCommentBeans;
+    }
 
-        return null;
+    /**
+     * app查询评论总数
+     *
+     * @param goodsId
+     * @return
+     */
+    public Integer queryAppGoodCommentTotal(String goodsId, Integer type) {
+        List<Object> params = new ArrayList<Object>();
+        StringBuilder sql = new StringBuilder();
+        sql.append(" SELECT ");
+        sql.append(" * ");
+        sql.append(" FROM ");
+        sql.append(" t_scm_goods_comment WHERE 1 = 1 AND goods_id = ? AND comment_status = 1");
+        params.add(goodsId);
+        if (type == 1) {
+            sql.append(" AND image_status=2");
+        }
+        return supportJdbcTemplate.jdbcTemplate().queryForObject(sql.toString(), new Object[]{goodsId}, Integer.class);
+    }
+
+    public GoodsReplyCommentBean queryGoodsReplyCommentById(Integer commentId) {
+        List<Object> params = new ArrayList<Object>();
+        StringBuilder sql = new StringBuilder();
+        sql.append(" SELECT ");
+        sql.append(" * ");
+        sql.append(" FROM ");
+        sql.append(" t_scm_goods_comment_reply WHERE 1 = 1 AND comment_id = ?");
+        return this.getSupportJdbcTemplate().queryForBean(sql.toString(), GoodsReplyCommentBean.class, commentId);
     }
 }

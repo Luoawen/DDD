@@ -66,6 +66,11 @@ public class AppGoodsDetailRepresentation {
             this.goodsComment.put("skuName", goodsCommentBean.getSkuName());
             this.goodsComment.put("goodsNum", goodsCommentBean.getGoodsNum());
             this.goodsComment.put("starLevel", goodsCommentBean.getStarLevel());
+            this.goodsComment.put("commentContent", goodsCommentBean.getCommentContent());
+
+            String images = goodsCommentBean.getCommentImages();
+            List<String> imageList = JsonUtils.toList(images, String.class);
+            this.goodsComment.put("commentImages", imageList);
         }
 
     }
