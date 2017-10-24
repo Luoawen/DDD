@@ -129,8 +129,11 @@ public class AppGoodsAgent {
                 if (commentTotal > 0) {
                     goodsCommentBean = goodsCommentQueryApplication.queryGoodsDetailComment(goodsId);
                 }
+
+                List<Map> fullCut = goodsRestService.getGoodsFullCut(goodsBean.getDealerId(), goodsBean.getGoodsId(), goodsBean.getGoodsClassifyId());
+
                 AppGoodsDetailRepresentation representation = new AppGoodsDetailRepresentation(goodsBean,
-                        goodsGuarantee, goodsUnitName, null, commentTotal, goodsCommentBean);
+                        goodsGuarantee, goodsUnitName, null, commentTotal, goodsCommentBean, fullCut);
                 result.setContent(representation);
             }
             result.setStatus(MCode.V_200);
@@ -276,8 +279,11 @@ public class AppGoodsAgent {
                     if (commentTotal > 0) {
                         goodsCommentBean = goodsCommentQueryApplication.queryGoodsDetailComment(goodsBean.getGoodsId());
                     }
+
+                    List<Map> fullCut = goodsRestService.getGoodsFullCut(goodsBean.getDealerId(), goodsBean.getGoodsId(), goodsBean.getGoodsClassifyId());
+
                     AppGoodsDetailRepresentation representation = new AppGoodsDetailRepresentation(goodsBean,
-                            goodsGuarantee, goodsUnitName, mresId, commentTotal, goodsCommentBean);
+                            goodsGuarantee, goodsUnitName, mresId, commentTotal, goodsCommentBean, fullCut);
                     representations.add(representation);
                 }
                 result.setContent(representations);
@@ -289,4 +295,34 @@ public class AppGoodsAgent {
         }
         return new ResponseEntity<MResult>(result, HttpStatus.OK);
     }
+
+
+    @RequestMapping(value = "query/by/dealer", method = RequestMethod.GET)
+    public ResponseEntity<MPager> appQueryGoodsByDealerId(
+            @RequestParam(value = "dealerId", required = false) String dealerId,
+            @RequestParam(value = "pageNum", required = false, defaultValue = "1") Integer pageNum,
+            @RequestParam(value = "rows", required = false, defaultValue = "10") Integer rows) {
+        MPager result = new MPager(MCode.V_1);
+        try {
+            Integer total = goodsQueryApplication.queryGoodsByDealerIdTotal(dealerId);
+            if (total > 0) {
+                List<GoodsBean> goodsBeans = goodsQueryApplication.queryGoodsByDealerId(dealerId, pageNum, rows);
+                if (null != goodsBeans && goodsBeans.size() > 0) {
+                    List<AppGoodsSearchRepresentation> representations = new ArrayList<AppGoodsSearchRepresentation>();
+                    for (GoodsBean goodsBean : goodsBeans) {
+                        List<Map> goodsTags = goodsRestService.getGoodsTags(goodsBean.getDealerId(), goodsBean.getGoodsId(), goodsBean.getGoodsClassifyId());
+                        representations.add(new AppGoodsSearchRepresentation(goodsBean, goodsTags));
+                    }
+                    result.setContent(representations);
+                }
+            }
+            result.setPager(total, pageNum, rows);
+            result.setStatus(MCode.V_200);
+        } catch (Exception e) {
+            LOGGER.error("searchGoodsByCondition Exception e:", e);
+            result = new MPager(MCode.V_400, "查询商家商品列表失败");
+        }
+        return new ResponseEntity<MPager>(result, HttpStatus.OK);
+    }
+
 }
