@@ -6,8 +6,6 @@ import cn.m2c.ddd.common.domain.model.DomainEventPublisher;
 import cn.m2c.scm.domain.model.comment.event.GoodsCommentAddEvent;
 import org.apache.commons.lang3.StringUtils;
 
-import java.math.BigInteger;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -115,9 +113,9 @@ public class GoodsComment extends ConcurrencySafeEntity {
     private Integer commentStatus;
 
     /**
-     * 评论时间
+     * 差评延时24h展示，1否 2是
      */
-    private BigInteger commentTime;
+    private Integer delayedFlag;
 
     /**
      * 回评
@@ -164,12 +162,10 @@ public class GoodsComment extends ConcurrencySafeEntity {
             this.commentLevel = 2;
         } else {
             this.commentLevel = 3;
+            this.delayedFlag = 2;
         }
         this.replyStatus = 1;
         this.commentStatus = 1;
-
-        Date date = new Date();
-        this.commentTime = new BigInteger(String.valueOf(date.getTime()));
 
         DomainEventPublisher
                 .instance()

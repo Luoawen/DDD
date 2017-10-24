@@ -32,24 +32,24 @@ public class GoodsCommentQueryApplication {
      */
     public GoodsCommentBean queryGoodsDetailComment(String goodsId) {
         //1.拉取一条评论超过40个字的五星好评
-        String oneSql = "select * from t_scm_goods_comment where goods_id = ? and comment_status = 1 and star_level = 5 and LENGTH(comment_content) > 40  order by comment_time desc";
+        String oneSql = "select * from t_scm_goods_comment where goods_id = ? and comment_status = 1 and star_level = 5 and LENGTH(comment_content) > 40  order by created_date desc";
         List<GoodsCommentBean> goodsComments = this.getSupportJdbcTemplate().queryForBeanList(oneSql, GoodsCommentBean.class, goodsId);
         if (null != goodsComments && goodsComments.size() > 0) {
             return goodsComments.get(0);
         } else {
             //2.拉取最新的一条好评
-            String twoSql = "select * from t_scm_goods_comment where goods_id = ? and comment_status = 1 and comment_level = 1 order by comment_time desc";
+            String twoSql = "select * from t_scm_goods_comment where goods_id = ? and comment_status = 1 and comment_level = 1 order by created_date desc";
             goodsComments = this.getSupportJdbcTemplate().queryForBeanList(twoSql, GoodsCommentBean.class, goodsId);
             if (null != goodsComments && goodsComments.size() > 0) {
                 return goodsComments.get(0);
             } else {
                 //3.拉取一条非一星评论
-                String threeSql = "select * from t_scm_goods_comment where goods_id = ? and comment_status = 1 and star_level <> 1 order by comment_time desc";
+                String threeSql = "select * from t_scm_goods_comment where goods_id = ? and comment_status = 1 and star_level <> 1 order by created_date desc";
                 goodsComments = this.getSupportJdbcTemplate().queryForBeanList(threeSql, GoodsCommentBean.class, goodsId);
                 if (null != goodsComments && goodsComments.size() > 0) {
                     return goodsComments.get(0);
                 } else {
-                    String lastSql = "select * from t_scm_goods_comment where goods_id = ? and comment_status = 1 order by comment_time desc";
+                    String lastSql = "select * from t_scm_goods_comment where goods_id = ? and comment_status = 1 order by created_date desc";
                     goodsComments = this.getSupportJdbcTemplate().queryForBeanList(lastSql, GoodsCommentBean.class, goodsId);
                     if (null != goodsComments && goodsComments.size() > 0) {
                         return goodsComments.get(0);
@@ -110,7 +110,7 @@ public class GoodsCommentQueryApplication {
         if (type == 1) {
             sql.append(" AND image_status=2");
         }
-        sql.append(" order by comment_time desc LIMIT ?,? ");
+        sql.append(" order by created_date desc LIMIT ?,? ");
         params.add(rows * (pageNum - 1));
         params.add(rows);
         List<GoodsCommentBean> goodsCommentBeans = this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsCommentBean.class, params.toArray());
@@ -190,7 +190,7 @@ public class GoodsCommentQueryApplication {
             sql.append(" AND image_status = ? ");
             params.add(imageStatus);
         }
-        sql.append(" order by comment_time desc LIMIT ?,? ");
+        sql.append(" order by created_date desc LIMIT ?,? ");
         params.add(rows * (pageNum - 1));
         params.add(rows);
         List<GoodsCommentBean> goodsCommentBeans = this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsCommentBean.class, params.toArray());

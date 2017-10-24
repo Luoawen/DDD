@@ -2,7 +2,6 @@ package cn.m2c.scm.application.comment.query.data.representation;
 
 import cn.m2c.common.JsonUtils;
 import cn.m2c.scm.application.comment.query.data.bean.GoodsCommentBean;
-import cn.m2c.scm.application.utils.Utils;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -39,7 +38,7 @@ public class AppCommentRepresentation {
         }
 
         SimpleDateFormat yyyMMddFormat = new SimpleDateFormat("yyyy-MM-dd");
-        this.commentTime = Utils.stampToDate(bean.getCommentTime(), yyyMMddFormat);
+        this.commentTime = yyyMMddFormat.format(bean.getCreatedDate());
     }
 
     public String getBuyerIcon() {

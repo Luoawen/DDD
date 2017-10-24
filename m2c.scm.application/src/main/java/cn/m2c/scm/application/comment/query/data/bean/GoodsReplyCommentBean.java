@@ -21,8 +21,8 @@ public class GoodsReplyCommentBean {
     /**
      * 回复时间
      */
-    @ColumnAlias(value = "reply_time")
-    private String replyTime;
+    @ColumnAlias(value = "created_date")
+    private String createdDate;
 
     public String getCommentId() {
         return commentId;
@@ -40,11 +40,11 @@ public class GoodsReplyCommentBean {
         this.replyContent = replyContent;
     }
 
-    public String getReplyTime() {
-        return replyTime;
+    public String getCreatedDate() {
+        return createdDate;
     }
 
-    public void setReplyTime(String replyTime) {
-        this.replyTime = replyTime;
+    public void setCreatedDate(String createdDate) {
+        this.createdDate = createdDate;
     }
 }
