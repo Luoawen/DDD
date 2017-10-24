@@ -27,6 +27,7 @@ public class DealerApplication {
 	
 	
 	@Transactional(rollbackFor = {Exception.class,RuntimeException.class,NegativeException.class})
+	@EventListener
 	public void addDealer(DealerAddOrUpdateCommand command) throws NegativeException {
 		log.info("---添加经销商参数",command.toString());
 		Dealer dealer = dealerRepository.getDealer(command.getDealerId());

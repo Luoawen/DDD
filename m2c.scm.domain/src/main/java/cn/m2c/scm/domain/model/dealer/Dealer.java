@@ -5,6 +5,7 @@ import java.util.Date;
 import cn.m2c.ddd.common.domain.model.ConcurrencySafeEntity;
 import cn.m2c.ddd.common.domain.model.DomainEvent;
 import cn.m2c.ddd.common.domain.model.DomainEventPublisher;
+import cn.m2c.scm.domain.model.dealer.event.DealerAddEvent;
 import cn.m2c.scm.domain.model.dealer.event.DealerUpdateEvent;
 
 public class Dealer extends ConcurrencySafeEntity{
@@ -58,6 +59,8 @@ public class Dealer extends ConcurrencySafeEntity{
 			String managerWechat, String managerEmail,
 			String managerDepartment, String sellerId, String sellerName,
 			String sellerPhone) {
+		DomainEvent dealerAddEvent= new DealerAddEvent(userId,userName,userPhone,dealerId,dealerName);
+		DomainEventPublisher.instance().publish(dealerAddEvent);
 		this.dealerId = dealerId;
 		this.userId = userId;
 		this.userName = userName;
