@@ -88,13 +88,13 @@ public class OrderQuery {
 		List<OrderDealerBean> dealerOrderList = dealerOrderListQuery(orderStatus, afterSaleStatus, startTime, endTime,
 				condition, payWay, pageNum, rows);
 		for (MainOrderBean mainOrder : mainOrderList) {
+			List<OrderDealerBean> list = new ArrayList<OrderDealerBean>();
 			for (OrderDealerBean dealerOrder : dealerOrderList) {
-				List<OrderDealerBean> list = new ArrayList<OrderDealerBean>();
 				if (mainOrder.getOrderId() == dealerOrder.getOrderId()) {
 					list.add(dealerOrder);
 				}
-				mainOrder.setDealerOrderBeans(list);
 			}
+			mainOrder.setDealerOrderBeans(list);
 		}
 		return mainOrderList;
 	}
@@ -121,7 +121,7 @@ public class OrderQuery {
 		sql.append("  ,odealer.goods_amount  goodsAmount  ,odealer.order_freight  orderFreight  ,odealer.plateform_discount  plateformDiscount ");
 		sql.append("  ,odealer.dealer_discount  dealerDiscount");
 		sql.append(" FROM t_scm_order_dealer odealer");
-		sql.append(" RIGHT JOIN t_scm_order_after_sell oafter ");
+		sql.append(" LEFT JOIN t_scm_order_after_sell oafter ");
 		sql.append(" ON odealer.dealer_order_id = oafter.dealer_order_id ");
 		sql.append(" INNER JOIN t_scm_dealer dealer ");
 		sql.append(" WHERE 1=1 ");
@@ -151,6 +151,7 @@ public class OrderQuery {
 		sql.append(" AND odealer.dealer_id = dealer.dealer_id ");
 		
 		sql.append(" ORDER BY odealer.created_date DESC ");
+		System.out.println("Show SQL---------------------------------"+sql);
 		return this.supportJdbcTemplate.queryForBeanList(sql.toString(), OrderDealerBean.class, params.toArray());
 	}
 
@@ -226,8 +227,8 @@ public class OrderQuery {
 		sql.append(" AND t2.goods_id = t5.goods_id ");
 		sql.append(" AND t2.saler_user_id  = t6.seller_id ");
 		DealerOrderDetailBean dealerOrderDetailBean = this.supportJdbcTemplate.queryForBean(sql.toString(), DealerOrderDetailBean.class, dealerOrderId);
-		Integer totalPrice = 0; // 商品总价格
-		Integer totalFrieght = 0; // 运费总价格
+		long totalPrice = 0; // 商品总价格
+		long totalFrieght = 0; // 运费总价格
 		List<GoodsInfoBean> goodsInfoList = getGoodsInfoList(dealerOrderId);
 		dealerOrderDetailBean.setGoodsInfoBeans(goodsInfoList);
 		for (GoodsInfoBean goodsInfo : dealerOrderDetailBean.getGoodsInfoBeans()) {

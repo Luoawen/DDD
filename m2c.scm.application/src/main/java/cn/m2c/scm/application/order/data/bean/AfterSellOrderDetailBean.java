@@ -32,7 +32,7 @@ public class AfterSellOrderDetailBean {
 	 * 售后总额
 	 */
 	@ColumnAlias(value = "back_money")
-	private Integer backMoney;
+	private long backMoney;
 	/**
 	 * 申请原因
 	 */
@@ -61,7 +61,7 @@ public class AfterSellOrderDetailBean {
 	/**
 	 * 订单总额
 	 */
-	private Integer orderTotalMoney;
+	private long orderTotalMoney;
 	/**
 	 * 业务员信息<业务员姓名>
 	 */
@@ -89,7 +89,7 @@ public class AfterSellOrderDetailBean {
 		return afterSellOrderId;
 	}
 
-	public Integer getBackMoney() {
+	public long getBackMoney() {
 		return backMoney;
 	}
 
@@ -121,7 +121,7 @@ public class AfterSellOrderDetailBean {
 		return dealerClassify;
 	}
 
-	public Integer getOrderTotalMoney() {
+	public long getOrderTotalMoney() {
 		return orderTotalMoney;
 	}
 
@@ -169,8 +169,8 @@ public class AfterSellOrderDetailBean {
 		this.dealerClassify = dealerClassify;
 	}
 
-	public void setOrderTotalMoney(Integer orderTotalMoney) {
-		this.orderTotalMoney = orderTotalMoney;
+	public void setOrderTotalMoney(long orderTotalPrice) {
+		this.orderTotalMoney = orderTotalPrice;
 	}
 
 	public void setSellerName(String sellerName) {

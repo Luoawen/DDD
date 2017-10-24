@@ -12,12 +12,12 @@ public class GoodsInfoBean {
 	/**
 	 * 商品信息<图片>
 	 */
-	@ColumnAlias(value="goods_main_images")
+	@ColumnAlias(value = "goods_main_images")
 	private String goodsImage;
 	/**
 	 * 商品信息<名称>
 	 */
-	@ColumnAlias(value="goods_name")
+	@ColumnAlias(value = "goods_name")
 	private String goodsName;
 	/**
 	 * 商品信息<规格>
@@ -37,8 +37,8 @@ public class GoodsInfoBean {
 	/**
 	 * 单价
 	 */
-	@ColumnAlias(value = "_price")
-	private Integer price;
+	@ColumnAlias(value = "discount_price")
+	private long price;
 	/**
 	 * 单位
 	 */
@@ -47,12 +47,12 @@ public class GoodsInfoBean {
 	/**
 	 * 商品金额(单价 * 数量)
 	 */
-	private Integer totalPrice;
+	private long totalPrice;
 	/**
 	 * 运费
 	 */
 	@ColumnAlias(value = "freight")
-	private Integer freight;
+	private long freight;
 
 	public String getGoodsImage() {
 		return goodsImage;
@@ -74,7 +74,7 @@ public class GoodsInfoBean {
 		return sellNum;
 	}
 
-	public Integer getPrice() {
+	public long getPrice() {
 		return price;
 	}
 
@@ -82,11 +82,11 @@ public class GoodsInfoBean {
 		return unitName;
 	}
 
-	public Integer getTotalPrice() {
+	public long getTotalPrice() {
 		return totalPrice;
 	}
 
-	public Integer getFreight() {
+	public long getFreight() {
 		return freight;
 	}
 
@@ -110,7 +110,7 @@ public class GoodsInfoBean {
 		this.sellNum = sellNum;
 	}
 
-	public void setPrice(Integer price) {
+	public void setPrice(long price) {
 		this.price = price;
 	}
 
@@ -118,11 +118,11 @@ public class GoodsInfoBean {
 		this.unitName = unitName;
 	}
 
-	public void setTotalPrice(Integer totalPrice) {
+	public void setTotalPrice(long totalPrice) {
 		this.totalPrice = totalPrice;
 	}
 
-	public void setFreight(Integer freight) {
+	public void setFreight(long freight) {
 		this.freight = freight;
 	}
 
