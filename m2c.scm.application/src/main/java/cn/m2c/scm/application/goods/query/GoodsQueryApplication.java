@@ -736,7 +736,7 @@ public class GoodsQueryApplication {
         sql.append(" * ");
         sql.append(" FROM ");
         sql.append(" t_scm_goods WHERE ");
-        sql.append(" AND dealer_id = ? ");
+        sql.append(" dealer_id = ? ");
         sql.append(" AND del_status= 1 ORDER BY created_date DESC ");
         sql.append(" LIMIT ?,?");
         params.add(dealerId);
@@ -759,7 +759,7 @@ public class GoodsQueryApplication {
         sql.append(" count(*) ");
         sql.append(" FROM ");
         sql.append(" t_scm_goods WHERE ");
-        sql.append(" AND dealer_id = ? ");
+        sql.append(" dealer_id = ? ");
         sql.append(" AND del_status= 1");
         params.add(dealerId);
 
@@ -778,7 +778,7 @@ public class GoodsQueryApplication {
         sql.append(" SELECT ");
         sql.append(" count(*) ");
         sql.append(" FROM ");
-        sql.append(" t_scm_goods WHERE AND dealer_id = ?");
+        sql.append(" t_scm_goods WHERE dealer_id = ?");
         sql.append(" AND goods_status = 2 AND del_status= 1");
         return supportJdbcTemplate.jdbcTemplate().queryForObject(sql.toString(), params.toArray(), Integer.class);
     }

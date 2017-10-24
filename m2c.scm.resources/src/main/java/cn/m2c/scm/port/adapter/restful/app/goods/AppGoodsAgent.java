@@ -299,7 +299,7 @@ public class AppGoodsAgent {
 
     @RequestMapping(value = "query/by/dealer", method = RequestMethod.GET)
     public ResponseEntity<MPager> appQueryGoodsByDealerId(
-            @RequestParam(value = "sn", required = false) String dealerId,
+            @RequestParam(value = "dealerId", required = false) String dealerId,
             @RequestParam(value = "pageNum", required = false, defaultValue = "1") Integer pageNum,
             @RequestParam(value = "rows", required = false, defaultValue = "10") Integer rows) {
         MPager result = new MPager(MCode.V_1);
