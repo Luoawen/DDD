@@ -1,6 +1,7 @@
 package cn.m2c.scm.application.dealerorder.data.bean;
 
 import java.util.Date;
+import java.util.List;
 
 import cn.m2c.ddd.common.persistence.orm.ColumnAlias;
 
@@ -23,8 +24,13 @@ public class ShippingOrderBean {
 	/**
 	 * 下单时间
 	 */
-	@ColumnAlias(value = "creared_date")
+	@ColumnAlias(value = "created_date")
 	private Date createdDate;
+	/**
+	 * 运费
+	 */
+	@ColumnAlias(value = "order_freight")
+	private long orderFreight;
 	/**
 	 * 订单总额
 	 */
@@ -63,6 +69,18 @@ public class ShippingOrderBean {
 	 */
 	@ColumnAlias(value = "dealer_name")
 	private String dealerName;
+	/**
+	 * 商家优惠金额
+	 */
+	@ColumnAlias(value = "dealer_discount")
+	private long dealerDiscount;
+	/**
+	 * 平台优惠金额
+	 */
+	@ColumnAlias(value = "plateform_discount")
+	private long plateformDiscount;
+
+	private List<DealerOrderGoodsInfo> goodsInfos;
 
 	public String getRevPerson() {
 		return revPerson;
@@ -76,12 +94,44 @@ public class ShippingOrderBean {
 		return dealerOrderId;
 	}
 
+	public List<DealerOrderGoodsInfo> getGoodsInfos() {
+		return goodsInfos;
+	}
+
+	public void setGoodsInfos(List<DealerOrderGoodsInfo> goodsInfos) {
+		this.goodsInfos = goodsInfos;
+	}
+
 	public Date getCreatedDate() {
 		return createdDate;
 	}
 
 	public long getTotalOrderMoney() {
 		return totalOrderMoney;
+	}
+
+	public long getOrderFreight() {
+		return orderFreight;
+	}
+
+	public long getDealerDiscount() {
+		return dealerDiscount;
+	}
+
+	public long getPlateformDiscount() {
+		return plateformDiscount;
+	}
+
+	public void setOrderFreight(long orderFreight) {
+		this.orderFreight = orderFreight;
+	}
+
+	public void setDealerDiscount(long dealerDiscount) {
+		this.dealerDiscount = dealerDiscount;
+	}
+
+	public void setPlateformDiscount(long plateformDiscount) {
+		this.plateformDiscount = plateformDiscount;
 	}
 
 	public long getDiscountMoney() {
@@ -163,9 +213,11 @@ public class ShippingOrderBean {
 	@Override
 	public String toString() {
 		return "ShippingOrderBean [revPerson=" + revPerson + ", revPhone=" + revPhone + ", dealerOrderId="
-				+ dealerOrderId + ", createdDate=" + createdDate + ", totalOrderMoney=" + totalOrderMoney
-				+ ", discountMoney=" + discountMoney + ", province=" + province + ", city=" + city + ", areaCounty="
-				+ areaCounty + ", streetAddr=" + streetAddr + ", noted=" + noted + ", dealerName=" + dealerName + "]";
+				+ dealerOrderId + ", createdDate=" + createdDate + ", orderFreight=" + orderFreight
+				+ ", totalOrderMoney=" + totalOrderMoney + ", discountMoney=" + discountMoney + ", province=" + province
+				+ ", city=" + city + ", areaCounty=" + areaCounty + ", streetAddr=" + streetAddr + ", noted=" + noted
+				+ ", dealerName=" + dealerName + ", dealerDiscount=" + dealerDiscount + ", plateformDiscount="
+				+ plateformDiscount + "]";
 	}
 
 }
