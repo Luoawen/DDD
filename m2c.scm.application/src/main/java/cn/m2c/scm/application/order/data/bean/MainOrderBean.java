@@ -4,36 +4,48 @@ import java.io.Serializable;
 import java.util.List;
 
 import cn.m2c.ddd.common.AssertionConcern;
+import cn.m2c.ddd.common.persistence.orm.ColumnAlias;
 
 public class MainOrderBean extends AssertionConcern implements Serializable {
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	/**
 	 * 主订单号
 	 */
+	@ColumnAlias(value = "ordde_id")
 	private String orderId;
 	/**
 	 * 支付单号
 	 */
+	@ColumnAlias(value = "pay_no")
 	private String payNo;
 	/**
 	 * 下单时间
 	 */
+	@ColumnAlias(value = "created_date")
 	private String createDate;
 	/**
 	 * 订单商品金额
 	 */
+	@ColumnAlias(value = "goods_amount")
 	private int goodAmount;
 	/**
 	 * 订单运费
 	 */
+	@ColumnAlias(value = "order_freight")
 	private int oderFreight;
 	/**
 	 * 平台优惠
 	 */
+	@ColumnAlias(value = "plateform_discount")
 	private int plateFormDiscount;
 	/**
 	 * 商家优惠
 	 */
+	@ColumnAlias(value = "dealer_discount")
 	private int dealerDiscount;
 	/**
 	 * 商家订单列表

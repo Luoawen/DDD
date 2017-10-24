@@ -95,7 +95,7 @@ public class OrderAgent {
 	 * @param dealerOrderId
 	 * @return
 	 */
-	@RequestMapping(value = "/manager/orderDetail",method = RequestMethod.GET)
+	@RequestMapping(value = "/manager/orderdetail",method = RequestMethod.GET)
 	public ResponseEntity<MResult> getOrderDetail(@RequestParam(value = "dealerOrderId",required = false)String dealerOrderId){
 		MResult result = new MResult(MCode.V_1);
 		try {

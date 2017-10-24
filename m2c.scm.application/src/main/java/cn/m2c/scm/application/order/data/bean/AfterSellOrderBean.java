@@ -1,6 +1,7 @@
 package cn.m2c.scm.application.order.data.bean;
 
 import java.util.Date;
+import java.util.List;
 
 import cn.m2c.ddd.common.persistence.orm.ColumnAlias;
 
@@ -37,53 +38,78 @@ public class AfterSellOrderBean {
 	@ColumnAlias(value = "created_date")
 	private Date createDate;
 
+	private List<GoodsInfoBean> goodsInfo;
+
+
 	public String getAfterSellOrderId() {
 		return afterSellOrderId;
 	}
+
 
 	public String getOrderType() {
 		return orderType;
 	}
 
+
 	public Integer getBackMoney() {
 		return backMoney;
 	}
+
 
 	public Integer getStatus() {
 		return status;
 	}
 
+
 	public String getDealerInfo() {
 		return dealerInfo;
 	}
+
 
 	public Date getCreateDate() {
 		return createDate;
 	}
 
+
+	public List<GoodsInfoBean> getGoodsInfo() {
+		return goodsInfo;
+	}
+
+
 	public void setAfterSellOrderId(String afterSellOrderId) {
 		this.afterSellOrderId = afterSellOrderId;
 	}
+
 
 	public void setOrderType(String orderType) {
 		this.orderType = orderType;
 	}
 
+
 	public void setBackMoney(Integer backMoney) {
 		this.backMoney = backMoney;
 	}
+
 
 	public void setStatus(Integer status) {
 		this.status = status;
 	}
 
+
 	public void setDealerInfo(String dealerInfo) {
 		this.dealerInfo = dealerInfo;
 	}
 
+
 	public void setCreateDate(Date createDate) {
 		this.createDate = createDate;
 	}
+
+
+	public void setGoodsInfo(List<GoodsInfoBean> goodsInfo) {
+		this.goodsInfo = goodsInfo;
+	}
+
 
 	@Override
 	public String toString() {
