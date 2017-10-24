@@ -1,4 +1,4 @@
-package cn.m2c.scm.application.comment.query.data.representation;
+package cn.m2c.scm.application.comment.query.data.representation.app;
 
 import cn.m2c.common.JsonUtils;
 import cn.m2c.scm.application.comment.query.data.bean.GoodsCommentBean;

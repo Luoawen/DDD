@@ -171,4 +171,14 @@ public class GoodsComment extends ConcurrencySafeEntity {
                 .instance()
                 .publish(new GoodsCommentAddEvent(this.orderId, this.skuId));
     }
+
+    /**
+     * 回评
+     *
+     * @param replyContent
+     */
+    public void replyComment(String replyContent) {
+        this.replyStatus = 2;
+        this.goodsReplyComment = new GoodsReplyComment(this, replyContent);
+    }
 }
