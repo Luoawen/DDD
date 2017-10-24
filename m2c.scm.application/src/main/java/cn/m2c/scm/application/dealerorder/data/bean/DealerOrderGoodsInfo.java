@@ -16,7 +16,7 @@ public class DealerOrderGoodsInfo {
 	/**
 	 * 商品信息<规格>
 	 */
-	@ColumnAlias(value = "stantard_name")
+	@ColumnAlias(value = "goods_specifications")
 	private String stantardName;
 	/**
 	 * 商品数量
@@ -31,7 +31,12 @@ public class DealerOrderGoodsInfo {
 	/**
 	 * 商品总额
 	 */
+	@ColumnAlias(value = "goods_amount")
 	private long totalPrice;
+	/**
+	 * 商品金额
+	 */
+	private long goodsMoney;
 	/**
 	 * 售后状态
 	 */
@@ -60,6 +65,14 @@ public class DealerOrderGoodsInfo {
 
 	public Integer getSellNum() {
 		return sellNum;
+	}
+
+	public long getGoodsMoney() {
+		return goodsMoney;
+	}
+
+	public void setGoodsMoney(long goodsMoney) {
+		this.goodsMoney = goodsMoney;
 	}
 
 	public long getPrice() {
