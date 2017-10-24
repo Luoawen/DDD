@@ -23,4 +23,13 @@ public class ShopQuery {
 		ShopBean bean = this.supportJdbcTemplate.queryForBean(sql, ShopBean.class,dealerId);
 		return bean;
 	}
+
+
+
+	public ShopBean getAppShopInfo(String dealerId) {
+		String sql = "SELECT * FROM t_scm_dealer_shop WHERE dealer_id=?";
+		System.out.println("------------"+sql);
+		ShopBean bean = this.supportJdbcTemplate.queryForBean(sql, ShopBean.class,dealerId);
+		return bean;
+	}
 }
