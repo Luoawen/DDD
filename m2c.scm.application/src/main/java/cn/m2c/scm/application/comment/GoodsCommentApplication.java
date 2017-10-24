@@ -56,4 +56,17 @@ public class GoodsCommentApplication {
         }
         goodsComment.replyComment(command.getReplyContent());
     }
+
+
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+    @EventListener(isListening = true)
+    public void delGoodsComment(ReplyGoodsCommentCommand command) throws NegativeException {
+        LOGGER.info("delGoodsComment command >>{}", command);
+        // 查询评论信息
+        GoodsComment goodsComment = goodsCommentRepository.queryGoodsCommentById(command.getCommentId());
+        if (null == goodsComment) {
+            throw new NegativeException(MCode.V_300, "评论信息不存在");
+        }
+        goodsComment.replyComment(command.getReplyContent());
+    }
 }

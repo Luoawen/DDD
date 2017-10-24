@@ -181,4 +181,11 @@ public class GoodsComment extends ConcurrencySafeEntity {
         this.replyStatus = 2;
         this.goodsReplyComment = new GoodsReplyComment(this, replyContent);
     }
+
+    /**
+     * 删除
+     */
+    public void remove() {
+        this.commentStatus = 2;
+    }
 }

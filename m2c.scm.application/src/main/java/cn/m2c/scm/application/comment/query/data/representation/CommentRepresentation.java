@@ -10,6 +10,7 @@ import java.util.List;
  * 评论展示
  */
 public class CommentRepresentation {
+    private String commentId;
     private String buyerIcon;
     private String buyerPhoneNumber;
     private String buyerName;
@@ -123,5 +124,29 @@ public class CommentRepresentation {
 
     public void setCommentTime(String commentTime) {
         this.commentTime = commentTime;
+    }
+
+    public String getCommentId() {
+        return commentId;
+    }
+
+    public void setCommentId(String commentId) {
+        this.commentId = commentId;
+    }
+
+    public String getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(String orderId) {
+        this.orderId = orderId;
+    }
+
+    public String getReplyTime() {
+        return replyTime;
+    }
+
+    public void setReplyTime(String replyTime) {
+        this.replyTime = replyTime;
     }
 }
