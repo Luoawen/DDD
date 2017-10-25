@@ -46,7 +46,8 @@ public class GoodsApproveApplication {
         }
         GoodsApprove goodsApprove = goodsApproveRepository.queryGoodsApproveById(command.getGoodsId());
         if (null == goodsApprove) {
-            if (goodsRepository.goodsNameIsRepeat(null, command.getDealerId(), command.getGoodsName())) {
+            if (goodsRepository.goodsNameIsRepeat(null, command.getDealerId(), command.getGoodsName()) ||
+                    goodsApproveRepository.goodsNameIsRepeat(null, command.getDealerId(), command.getGoodsName())) {
                 throw new NegativeException(MCode.V_300, "商品名称已存在");
             }
             goodsApprove = new GoodsApprove(command.getGoodsId(), command.getDealerId(), command.getDealerName(),
@@ -68,7 +69,8 @@ public class GoodsApproveApplication {
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
     public void addGoodsApproveForModifyGoods(GoodsApproveCommand command) throws NegativeException {
         LOGGER.info("addGoodsApproveForModifyGoods command >>{}", command);
-        if (goodsRepository.goodsNameIsRepeat(command.getGoodsId(), command.getDealerId(), command.getGoodsName())) {
+        if (goodsRepository.goodsNameIsRepeat(command.getGoodsId(), command.getDealerId(), command.getGoodsName())
+                || goodsApproveRepository.goodsNameIsRepeat(command.getGoodsId(), command.getDealerId(), command.getGoodsName())) {
             throw new NegativeException(MCode.V_300, "商品名称已存在");
         }
         GoodsApprove goodsApprove = goodsApproveRepository.queryGoodsApproveById(command.getGoodsId());

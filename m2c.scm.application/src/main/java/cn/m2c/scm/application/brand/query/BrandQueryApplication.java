@@ -49,8 +49,8 @@ public class BrandQueryApplication {
             params.add(dealerId);
         }
         if (StringUtils.isNotEmpty(brandName)) {
-            sql.append(" AND brand_name = ? ");
-            params.add(brandName);
+            sql.append(" AND brand_name LIKE ? ");
+            params.add("%" + brandName + "%");
         }
         if (StringUtils.isNotEmpty(condition)) {
             sql.append(" AND dealer_id = ? OR dealer_name LIKE ? OR brand_name LIKE ?");
@@ -82,8 +82,8 @@ public class BrandQueryApplication {
             params.add(dealerId);
         }
         if (StringUtils.isNotEmpty(brandName)) {
-            sql.append(" AND brand_name = ? ");
-            params.add(brandName);
+            sql.append(" AND brand_name LIKE ? ");
+            params.add("%" + brandName + "%");
         }
         if (StringUtils.isNotEmpty(condition)) {
             sql.append(" AND dealer_id = ? OR dealer_name LIKE ? OR brand_name LIKE ?");
@@ -97,5 +97,20 @@ public class BrandQueryApplication {
             params.add(endTime + " 23:59:59");
         }
         return supportJdbcTemplate.jdbcTemplate().queryForObject(sql.toString(), params.toArray(), Integer.class);
+    }
+
+    public List<BrandBean> queryBrandByName(String brandName) {
+        List<Object> params = new ArrayList<Object>();
+        StringBuilder sql = new StringBuilder();
+        sql.append(" SELECT ");
+        sql.append(" * ");
+        sql.append(" FROM ");
+        sql.append(" t_scm_brand WHERE 1 = 1  AND brand_status = 1");
+        if (StringUtils.isNotEmpty(brandName)) {
+            sql.append(" AND brand_name LIKE ? ");
+            params.add("%" + brandName + "%");
+        }
+        sql.append(" ORDER BY created_date DESC ");
+        return this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), BrandBean.class, params.toArray());
     }
 }

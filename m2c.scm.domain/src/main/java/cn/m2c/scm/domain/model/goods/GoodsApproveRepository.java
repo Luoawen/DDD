@@ -9,4 +9,8 @@ public interface GoodsApproveRepository {
     void save(GoodsApprove goodsApprove);
 
     void remove(GoodsApprove goodsApprove);
+
+    boolean goodsNameIsRepeat(String goodsId, String dealerId, String goodsName);
+
+    boolean brandIsUser(String brandId);
 }

@@ -34,10 +34,7 @@ public class HibernateBrandRepository extends HibernateSupperRepository implemen
             query.setParameter("brand_id", brandId);
         }
         List<Brand> list = query.list();
-        if (null != list && list.size() > 0) {
-            return true;
-        }
-        return false;
+        return null != list && list.size() > 0;
     }
 
     @Override

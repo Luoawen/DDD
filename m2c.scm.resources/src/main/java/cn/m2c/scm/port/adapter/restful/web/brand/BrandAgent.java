@@ -6,6 +6,7 @@ import cn.m2c.common.MResult;
 import cn.m2c.scm.application.brand.BrandApplication;
 import cn.m2c.scm.application.brand.command.BrandCommand;
 import cn.m2c.scm.application.brand.data.bean.BrandBean;
+import cn.m2c.scm.application.brand.data.representation.BrandChoiceRepresentation;
 import cn.m2c.scm.application.brand.data.representation.BrandDetailRepresentation;
 import cn.m2c.scm.application.brand.data.representation.BrandRepresentation;
 import cn.m2c.scm.application.brand.query.BrandQueryApplication;
@@ -216,6 +217,7 @@ public class BrandAgent {
 
     /**
      * 品牌详情
+     *
      * @param brandId
      * @return
      */
@@ -231,6 +233,27 @@ public class BrandAgent {
         } catch (Exception e) {
             LOGGER.error("查询品牌详情失败", e);
             result = new MPager(MCode.V_400, "服务器开小差了，请稍后再试");
+        }
+        return new ResponseEntity<MResult>(result, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/choice", method = RequestMethod.GET)
+    public ResponseEntity<MResult> queryBrandChoice(
+            @RequestParam(value = "brandName", required = false) String brandName) {
+        MResult result = new MResult(MCode.V_1);
+        try {
+            List<BrandBean> beans = brandQueryApplication.queryBrandByName(brandName);
+            if (null != beans && beans.size() > 0) {
+                List<BrandChoiceRepresentation> representations = new ArrayList<>();
+                for (BrandBean bean : beans) {
+                    representations.add(new BrandChoiceRepresentation(bean));
+                }
+                result.setContent(representations);
+            }
+            result.setStatus(MCode.V_200);
+        } catch (Exception e) {
+            LOGGER.error("查询品牌失败", e);
+            result = new MPager(MCode.V_400, "查询品牌失败");
         }
         return new ResponseEntity<MResult>(result, HttpStatus.OK);
     }
