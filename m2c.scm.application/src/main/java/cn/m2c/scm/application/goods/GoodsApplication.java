@@ -1,5 +1,6 @@
 package cn.m2c.scm.application.goods;
 
+import cn.m2c.common.JsonUtils;
 import cn.m2c.common.MCode;
 import cn.m2c.ddd.common.event.annotation.EventListener;
 import cn.m2c.scm.application.goods.command.GoodsCommand;
@@ -16,6 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -149,16 +152,28 @@ public class GoodsApplication {
      */
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
     public void outInventory(Map<String, Integer> map) throws NegativeException {
+        List<String> skuIds = new ArrayList<>();
         for (Map.Entry<String, Integer> entry : map.entrySet()) {
             String skuId = entry.getKey();
             Integer num = entry.getValue();
             GoodsSku goodsSku = goodsSkuRepository.queryGoodsSkuById(skuId);
-            if (null == goodsSku) {
-                throw new NegativeException(MCode.V_300, skuId);//300:信息不存在
+            if (null == goodsSku) {//信息不存在
+                skuIds.add(skuId);
+                continue;
             }
-            if (goodsSku.availableNum() < num) {
-                throw new NegativeException(MCode.V_301, skuId);//301:库存不足
+            if (goodsSku.availableNum() < num) {//库存不足
+                skuIds.add(skuId);
+                continue;
             }
+        }
+        if (null != skuIds && skuIds.size() > 0) {
+            throw new NegativeException(MCode.V_301, JsonUtils.toStr(skuIds));//301:库存不足
+        }
+
+        for (Map.Entry<String, Integer> entry : map.entrySet()) {
+            String skuId = entry.getKey();
+            Integer num = entry.getValue();
+            GoodsSku goodsSku = goodsSkuRepository.queryGoodsSkuById(skuId);
             // 版本号
             Integer concurrencyVersion = goodsSku.concurrencyVersion();
             int result = goodsSkuRepository.outInventory(skuId, num, concurrencyVersion);

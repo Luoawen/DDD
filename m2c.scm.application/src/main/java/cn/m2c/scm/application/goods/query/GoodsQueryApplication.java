@@ -537,8 +537,7 @@ public class GoodsQueryApplication {
             params.add("%" + condition + "%");
             List<String> goodsClassifyIds = goodsClassifyQueryApplication.getGoodsSubClassifyIdByName(condition);
             if (null != goodsClassifyIds && goodsClassifyIds.size() > 0) {
-                sql.append("  OR g.goods_classify_id in ?");
-                params.add("(" + Utils.listParseString(goodsClassifyIds) + ")");
+                sql.append("  OR g.goods_classify_id in (" + Utils.listParseString(goodsClassifyIds) + ")");
             }
             sql.append(")");
         }
