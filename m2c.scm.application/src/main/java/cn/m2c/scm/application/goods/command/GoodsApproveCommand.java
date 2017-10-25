@@ -1,12 +1,18 @@
 package cn.m2c.scm.application.goods.command;
 
+import cn.m2c.common.JsonUtils;
 import cn.m2c.common.MCode;
 import cn.m2c.ddd.common.AssertionConcern;
 import cn.m2c.scm.domain.NegativeException;
+import cn.m2c.scm.domain.util.GetMapValueUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * 商品审核
@@ -104,6 +110,8 @@ public class GoodsApproveCommand extends AssertionConcern implements Serializabl
 
     private String goodsSpecifications;
 
+    private List<String> goodsCodes;
+
     public GoodsApproveCommand(String goodsId, String dealerId, String dealerName, String goodsName, String goodsSubTitle,
                                String goodsClassifyId, String goodsBrandId, String goodsBrandName, String goodsUnitId, Integer goodsMinQuantity,
                                String goodsPostageId, String goodsBarCode, List goodsKeyWord, List goodsGuarantee,
@@ -152,6 +160,23 @@ public class GoodsApproveCommand extends AssertionConcern implements Serializabl
             throw new NegativeException(MCode.V_1, "商品SKU为空");
         }
 
+        List<Map> skuList = JsonUtils.toList(goodsSkuApproves, Map.class);
+        List<String> goodsCodes = new ArrayList<>();
+        if (null != skuList && skuList.size() > 0) {
+            for (Map map : skuList) {
+                String goodsCode = GetMapValueUtils.getStringFromMapKey(map, "goodsCode");
+                if (StringUtils.isNotEmpty(goodsCode)) {
+                    goodsCodes.add(goodsCode);
+                }
+            }
+        }
+        if (null != goodsCodes && goodsCodes.size() > 0) {
+            Set codeSet = new HashSet<>();
+            codeSet.addAll(goodsCodes);
+            if (goodsCodes.size() != codeSet.size()) {
+                throw new NegativeException(MCode.V_1, "商品编码重复");
+            }
+        }
         this.goodsId = goodsId;
         this.dealerId = dealerId;
         this.dealerName = dealerName;
@@ -171,6 +196,7 @@ public class GoodsApproveCommand extends AssertionConcern implements Serializabl
         this.goodsShelves = goodsShelves;
         this.goodsSpecifications = goodsSpecifications;
         this.goodsSkuApproves = goodsSkuApproves;
+        this.goodsCodes = goodsCodes;
     }
 
     public GoodsApproveCommand(String goodsId, String dealerId, String dealerName, String goodsName, String goodsSubTitle,
@@ -198,7 +224,7 @@ public class GoodsApproveCommand extends AssertionConcern implements Serializabl
     }
 
     public GoodsApproveCommand(String goodsId, String dealerId, String goodsName, String goodsSubTitle,
-                               String goodsClassifyId, String goodsBrandId,String goodsBrandName, String goodsUnitId, Integer goodsMinQuantity,
+                               String goodsClassifyId, String goodsBrandId, String goodsBrandName, String goodsUnitId, Integer goodsMinQuantity,
                                String goodsPostageId, String goodsBarCode, List goodsKeyWord, List goodsGuarantee,
                                List goodsMainImages, String goodsDesc, String goodsSpecifications, String goodsSkuApproves) {
         this.goodsId = goodsId;
@@ -294,5 +320,9 @@ public class GoodsApproveCommand extends AssertionConcern implements Serializabl
 
     public String getGoodsBrandName() {
         return goodsBrandName;
+    }
+
+    public List<String> getGoodsCodes() {
+        return goodsCodes;
     }
 }
