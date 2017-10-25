@@ -8,6 +8,7 @@ import cn.m2c.scm.application.classify.data.bean.GoodsClassifyBean;
 import cn.m2c.scm.application.classify.query.GoodsClassifyQueryApplication;
 import cn.m2c.scm.application.comment.query.GoodsCommentQueryApplication;
 import cn.m2c.scm.application.comment.query.data.bean.GoodsCommentBean;
+import cn.m2c.scm.application.goods.GoodsApplication;
 import cn.m2c.scm.application.goods.query.GoodsGuaranteeQueryApplication;
 import cn.m2c.scm.application.goods.query.GoodsQueryApplication;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsBean;
@@ -59,6 +60,8 @@ public class AppGoodsAgent {
     GoodsService goodsDubboService;
     @Autowired
     GoodsCommentQueryApplication goodsCommentQueryApplication;
+    @Autowired
+    GoodsApplication goodsApplication;
 
     /**
      * 商品猜你喜欢
@@ -226,6 +229,9 @@ public class AppGoodsAgent {
             }
             result.setPager(total, pageNum, rows);
             result.setStatus(MCode.V_200);
+
+            // 发送事件统计
+            goodsApplication.goodsAppSearchMD(sn, userId, searchFrom, condition);
         } catch (Exception e) {
             LOGGER.error("searchGoodsByCondition Exception e:", e);
             result = new MPager(MCode.V_400, "搜索商品列表失败");
@@ -265,7 +271,12 @@ public class AppGoodsAgent {
     ) {
         MResult result = new MResult(MCode.V_1);
         Map mediaMap = goodsDubboService.getMediaResourceInfo(barNo);
+        String mediaId = null == mediaMap ? "" : (String) mediaMap.get("mediaId");
+        String mediaName = null == mediaMap ? "" : (String) mediaMap.get("mediaName");
         String mresId = null == mediaMap ? "" : (String) mediaMap.get("mresId");
+        String mresName = null == mediaMap ? "" : (String) mediaMap.get("mresName");
+
+
         try {
             List<GoodsBean> goodsBeans = goodsQueryApplication.recognizedGoods(recognizedInfo, location);
             if (null != goodsBeans && goodsBeans.size() > 0) {
@@ -287,6 +298,12 @@ public class AppGoodsAgent {
                     representations.add(representation);
                 }
                 result.setContent(representations);
+
+                // 埋点
+                goodsApplication.goodsAppCapturedMD(sn, os, appVersion,
+                        osVersion, triggerTime, userId, userName,
+                        goodsBeans.get(0).getGoodsId(), goodsBeans.get(0).getGoodsName(), mresId, mediaName,
+                        mresId, mresName);
             }
             result.setStatus(MCode.V_200);
         } catch (Exception e) {

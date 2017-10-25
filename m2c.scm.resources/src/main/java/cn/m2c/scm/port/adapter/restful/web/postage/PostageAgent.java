@@ -5,6 +5,7 @@ import cn.m2c.common.MResult;
 import cn.m2c.scm.application.postage.PostageModelApplication;
 import cn.m2c.scm.application.postage.command.PostageModelCommand;
 import cn.m2c.scm.application.postage.data.bean.PostageModelBean;
+import cn.m2c.scm.application.postage.data.representation.PostageModelDetailRepresentation;
 import cn.m2c.scm.application.postage.data.representation.PostageModelRepresentation;
 import cn.m2c.scm.application.postage.query.PostageModelQueryApplication;
 import cn.m2c.scm.domain.IDGenerator;
@@ -15,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -172,6 +174,23 @@ public class PostageAgent {
         } catch (Exception e) {
             LOGGER.error("getPostageModel Exception e:", e);
             result = new MResult(MCode.V_400, "查询运费模板失败");
+        }
+        return new ResponseEntity<MResult>(result, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "{modelId}", method = RequestMethod.GET)
+    public ResponseEntity<MResult> postageModelDetail(
+            @PathVariable("modelId") String modelId) {
+        MResult result = new MResult(MCode.V_1);
+        try {
+            PostageModelBean bean = postageModelQueryApplication.queryPostageModelsByModelId(modelId);
+            if (null != bean) {
+                result.setContent(new PostageModelDetailRepresentation(bean));
+            }
+            result.setStatus(MCode.V_200);
+        } catch (Exception e) {
+            LOGGER.error("postageModelDetail Exception e:", e);
+            result = new MResult(MCode.V_400, "查询运费模板详情失败");
         }
         return new ResponseEntity<MResult>(result, HttpStatus.OK);
     }
