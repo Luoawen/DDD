@@ -6,6 +6,7 @@ import cn.m2c.scm.application.goods.command.GoodsCommand;
 import cn.m2c.scm.application.goods.command.GoodsRecognizedModifyCommand;
 import cn.m2c.scm.domain.NegativeException;
 import cn.m2c.scm.domain.model.goods.Goods;
+import cn.m2c.scm.domain.model.goods.GoodsApproveRepository;
 import cn.m2c.scm.domain.model.goods.GoodsRepository;
 import cn.m2c.scm.domain.model.goods.GoodsSku;
 import cn.m2c.scm.domain.model.goods.GoodsSkuRepository;
@@ -28,6 +29,8 @@ public class GoodsApplication {
     GoodsRepository goodsRepository;
     @Autowired
     GoodsSkuRepository goodsSkuRepository;
+    @Autowired
+    GoodsApproveRepository goodsApproveRepository;
 
     /**
      * 商品审核同意,保存商品
@@ -63,7 +66,8 @@ public class GoodsApplication {
         if (null == goods) {
             throw new NegativeException(MCode.V_300, "商品不存在");
         }
-        if (goodsRepository.goodsNameIsRepeat(command.getGoodsId(), command.getDealerId(), command.getGoodsName())) {
+        if (goodsRepository.goodsNameIsRepeat(command.getGoodsId(), command.getDealerId(), command.getGoodsName()) ||
+                goodsApproveRepository.goodsNameIsRepeat(command.getGoodsId(), command.getDealerId(), command.getGoodsName())) {
             throw new NegativeException(MCode.V_300, "商品名称已存在");
         }
         goods.modifyGoods(command.getGoodsName(), command.getGoodsSubTitle(),

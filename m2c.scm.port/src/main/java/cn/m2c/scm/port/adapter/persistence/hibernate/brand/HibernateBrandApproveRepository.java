@@ -3,8 +3,11 @@ package cn.m2c.scm.port.adapter.persistence.hibernate.brand;
 import cn.m2c.ddd.common.port.adapter.persistence.hibernate.HibernateSupperRepository;
 import cn.m2c.scm.domain.model.brand.BrandApprove;
 import cn.m2c.scm.domain.model.brand.BrandApproveRepository;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Query;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 /**
  * 品牌审批信息
@@ -35,5 +38,20 @@ public class HibernateBrandApproveRepository extends HibernateSupperRepository i
     @Override
     public void remove(BrandApprove brandApprove) {
         this.session().delete(brandApprove);
+    }
+
+    @Override
+    public boolean brandNameIsRepeat(String brandId, String brandName) {
+        StringBuilder sql = new StringBuilder("select * from t_scm_brand_approve where status = 1 AND brand_name =:brand_name");
+        if (StringUtils.isNotEmpty(brandId)) {
+            sql.append(" and brand_id <> :brand_id");
+        }
+        Query query = this.session().createSQLQuery(sql.toString()).addEntity(BrandApprove.class);
+        query.setParameter("brand_name", brandName);
+        if (StringUtils.isNotEmpty(brandId)) {
+            query.setParameter("brand_id", brandId);
+        }
+        List<BrandApprove> list = query.list();
+        return null != list && list.size() > 0;
     }
 }

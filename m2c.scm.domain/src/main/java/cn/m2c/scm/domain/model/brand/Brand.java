@@ -1,6 +1,8 @@
 package cn.m2c.scm.domain.model.brand;
 
 import cn.m2c.ddd.common.domain.model.ConcurrencySafeEntity;
+import cn.m2c.ddd.common.domain.model.DomainEventPublisher;
+import cn.m2c.scm.domain.model.brand.event.BrandDeleteEvent;
 
 import java.util.Date;
 
@@ -106,8 +108,8 @@ public class Brand extends ConcurrencySafeEntity {
     }
 
     public void modify(String brandName, String brandNameEn, String brandLogo, String firstAreaCode,
-                            String twoAreaCode, String threeAreaCode, String firstAreaName, String twoAreaName,
-                            String threeAreaName) {
+                       String twoAreaCode, String threeAreaCode, String firstAreaName, String twoAreaName,
+                       String threeAreaName) {
         this.brandName = brandName;
         this.brandNameEn = brandNameEn;
         this.brandLogo = brandLogo;
@@ -121,5 +123,8 @@ public class Brand extends ConcurrencySafeEntity {
 
     public void delete() {
         this.brandStatus = 2;
+        DomainEventPublisher
+                .instance()
+                .publish(new BrandDeleteEvent(this.brandId));
     }
 }

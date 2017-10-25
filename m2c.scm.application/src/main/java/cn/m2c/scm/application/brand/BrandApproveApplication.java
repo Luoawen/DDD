@@ -141,4 +141,19 @@ public class BrandApproveApplication {
         }
         brandApprove.delete();
     }
+
+    /**
+     * 删除品牌审核信息
+     *
+     * @param brandId
+     */
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+    public void delBrandApproveByBrandId(String brandId) throws NegativeException {
+        LOGGER.info("delBrandApproveByBrandId brandId >>{}", brandId);
+        BrandApprove brandApprove = brandApproveRepository.getBrandApproveByBrandId(brandId);
+        if (null == brandApprove) {
+            throw new NegativeException(MCode.V_300, "审核品牌信息不存在");
+        }
+        brandApprove.delete();
+    }
 }

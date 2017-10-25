@@ -1,7 +1,6 @@
 package cn.m2c.scm.port.adapter.persistence.hibernate.goods;
 
 import cn.m2c.ddd.common.port.adapter.persistence.hibernate.HibernateSupperRepository;
-import cn.m2c.scm.domain.model.brand.Brand;
 import cn.m2c.scm.domain.model.goods.Goods;
 import cn.m2c.scm.domain.model.goods.GoodsRepository;
 import org.apache.commons.lang3.StringUtils;
@@ -35,7 +34,7 @@ public class HibernateGoodsRepository extends HibernateSupperRepository implemen
         if (StringUtils.isNotEmpty(goodsId)) {
             query.setParameter("goods_id", goodsId);
         }
-        List<Brand> list = query.list();
+        List<Goods> list = query.list();
         return null != list && list.size() > 0;
     }
 
@@ -50,6 +49,15 @@ public class HibernateGoodsRepository extends HibernateSupperRepository implemen
         Query query = this.session().createSQLQuery(sql.toString()).addEntity(Goods.class);
         query.setParameter("id", goodsId);
         return (Goods) query.uniqueResult();
+    }
+
+    @Override
+    public boolean brandIsUser(String brandId) {
+        StringBuilder sql = new StringBuilder("select * from t_scm_goods where goods_brand_id=:goods_brand_id AND del_status = 1 ");
+        Query query = this.session().createSQLQuery(sql.toString()).addEntity(Goods.class);
+        query.setParameter("goods_brand_id", brandId);
+        List<Goods> list = query.list();
+        return null != list && list.size() > 0;
     }
 
 

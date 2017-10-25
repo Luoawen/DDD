@@ -98,4 +98,28 @@ public class GoodsCommentAgent {
         }
         return new ResponseEntity<MResult>(result, HttpStatus.OK);
     }
+
+    /**
+     * 删除评论
+     *
+     * @param commentId
+     * @return
+     */
+    @RequestMapping(value = "", method = RequestMethod.DELETE)
+    public ResponseEntity<MResult> delComment(
+            @RequestParam(value = "commentId", required = false) String commentId
+    ) {
+        MResult result = new MResult(MCode.V_1);
+        try {
+            goodsCommentApplication.delGoodsComment(commentId);
+            result.setStatus(MCode.V_200);
+        } catch (NegativeException ne) {
+            LOGGER.error("delComment NegativeException e:", ne);
+            result = new MResult(ne.getStatus(), ne.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("delComment Exception e:", e);
+            result = new MResult(MCode.V_400, "删除商品评论失败");
+        }
+        return new ResponseEntity<MResult>(result, HttpStatus.OK);
+    }
 }
