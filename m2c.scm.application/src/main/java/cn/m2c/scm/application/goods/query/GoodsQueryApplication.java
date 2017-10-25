@@ -780,5 +780,15 @@ public class GoodsQueryApplication {
         sql.append(" AND goods_status = 2 AND del_status= 1");
         return supportJdbcTemplate.jdbcTemplate().queryForObject(sql.toString(), params.toArray(), Integer.class);
     }
+
+    public List<GoodsBean> appQueryGoodsByGoodsIds(List goodsIds) {
+        List<GoodsBean> goodsBeanList = queryGoodsByGoodsIds(goodsIds);
+        if (null != goodsBeanList && goodsBeanList.size() > 0) {
+            for (GoodsBean goodsBean : goodsBeanList) {
+                goodsBean.setGoodsSkuBeans(queryGoodsSKUsByGoodsId(goodsBean.getId()));
+            }
+        }
+        return goodsBeanList;
+    }
 }
 
