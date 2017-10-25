@@ -2,6 +2,7 @@ package cn.m2c.scm.application.goods;
 
 import cn.m2c.common.JsonUtils;
 import cn.m2c.common.MCode;
+import cn.m2c.ddd.common.domain.model.DomainEventPublisher;
 import cn.m2c.ddd.common.event.annotation.EventListener;
 import cn.m2c.scm.application.goods.command.GoodsCommand;
 import cn.m2c.scm.application.goods.command.GoodsRecognizedModifyCommand;
@@ -11,6 +12,8 @@ import cn.m2c.scm.domain.model.goods.GoodsApproveRepository;
 import cn.m2c.scm.domain.model.goods.GoodsRepository;
 import cn.m2c.scm.domain.model.goods.GoodsSku;
 import cn.m2c.scm.domain.model.goods.GoodsSkuRepository;
+import cn.m2c.scm.domain.model.goods.event.GoodsAppSearchMDEvent;
+import cn.m2c.scm.domain.model.goods.event.GoodsAppCapturedMDEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -183,5 +186,34 @@ public class GoodsApplication {
             Goods goods = goodsRepository.queryGoodsById(goodsSku.goods().getId());
             goods.soldOut();//如果售完则修改状态
         }
+    }
+
+    /**
+     * app搜索埋点
+     */
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+    @EventListener(isListening = true)
+    public void goodsAppSearchMD(String sn, String userId, String searchFrom, String keyWord) throws NegativeException {
+        DomainEventPublisher
+                .instance()
+                .publish(new GoodsAppSearchMDEvent(sn, userId, searchFrom, keyWord));
+    }
+
+
+    /**
+     * app拍获埋点
+     */
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+    @EventListener(isListening = true)
+    public void goodsAppCapturedMD(String sn, String os, String appVersion,
+                                   String osVersion, Long triggerTime, String userId, String userName,
+                                   String goodsId, String goodsName, String mediaId, String mediaName,
+                                   String mresId, String mresName) throws NegativeException {
+        DomainEventPublisher
+                .instance()
+                .publish(new GoodsAppCapturedMDEvent(sn, os, appVersion,
+                        osVersion, triggerTime, userId, userName,
+                        goodsId, goodsName, mediaId, mediaName,
+                        mresId, mresName));
     }
 }
