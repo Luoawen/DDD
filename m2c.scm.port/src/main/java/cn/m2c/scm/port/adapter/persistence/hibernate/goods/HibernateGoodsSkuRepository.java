@@ -86,8 +86,8 @@ public class HibernateGoodsSkuRepository extends HibernateSupperRepository imple
         approveSql.append(" AND s.sku_id <> :sku_id ");
         Query approveQuery = this.session().createSQLQuery(approveSql.toString()).addEntity(GoodsSkuApprove.class);
         approveQuery.setParameter("dealer_id", dealerId);
-        query.setParameter("goods_code", code);
-        query.setParameter("sku_id", skuId);
+        approveQuery.setParameter("goods_code", code);
+        approveQuery.setParameter("sku_id", skuId);
         List<GoodsSkuApprove> approveList = approveQuery.list();
         if (null != approveList && approveList.size() > 0) {
             return true;
