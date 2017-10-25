@@ -137,6 +137,10 @@ public class GoodsApproveAgent {
                     } catch (Exception e) { //失败重新生成一次
                         skuId = commonApplication.generateGoodsSku();
                     }
+                    if(StringUtils.isEmpty(skuId)){
+                        result = new MResult(MCode.V_1, "商品SKU生成失败");
+                        return new ResponseEntity<MResult>(result, HttpStatus.OK);
+                    }
                     map.put("skuId", skuId);
                 }
             } else {

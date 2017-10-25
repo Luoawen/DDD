@@ -9,6 +9,7 @@ import cn.m2c.scm.domain.NegativeException;
 import cn.m2c.scm.domain.model.goods.GoodsApprove;
 import cn.m2c.scm.domain.model.goods.GoodsApproveRepository;
 import cn.m2c.scm.domain.model.goods.GoodsRepository;
+import cn.m2c.scm.domain.model.goods.GoodsSkuRepository;
 import cn.m2c.scm.domain.model.shop.Shop;
 import cn.m2c.scm.domain.model.shop.ShopRepository;
 import org.slf4j.Logger;
@@ -33,6 +34,8 @@ public class GoodsApproveApplication {
     GoodsRepository goodsRepository;
     @Autowired
     ShopRepository shopRepository;
+    @Autowired
+    GoodsSkuRepository goodsSkuRepository;
 
     /**
      * 商家添加商品需审核
@@ -51,6 +54,11 @@ public class GoodsApproveApplication {
             if (goodsRepository.goodsNameIsRepeat(null, command.getDealerId(), command.getGoodsName()) ||
                     goodsApproveRepository.goodsNameIsRepeat(null, command.getDealerId(), command.getGoodsName())) {
                 throw new NegativeException(MCode.V_300, "商品名称已存在");
+            }
+            if (null != command.getGoodsCodes() && command.getGoodsCodes().size() > 0) {
+                if (goodsSkuRepository.goodsCodeIsRepeat(command.getDealerId(), command.getGoodsCodes())) {
+                    throw new NegativeException(MCode.V_300, "商品编码已存在");
+                }
             }
             goodsApprove = new GoodsApprove(command.getGoodsId(), command.getDealerId(), command.getDealerName(),
                     command.getGoodsName(), command.getGoodsSubTitle(), command.getGoodsClassifyId(),

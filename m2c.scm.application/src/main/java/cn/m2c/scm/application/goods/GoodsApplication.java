@@ -12,8 +12,8 @@ import cn.m2c.scm.domain.model.goods.GoodsApproveRepository;
 import cn.m2c.scm.domain.model.goods.GoodsRepository;
 import cn.m2c.scm.domain.model.goods.GoodsSku;
 import cn.m2c.scm.domain.model.goods.GoodsSkuRepository;
-import cn.m2c.scm.domain.model.goods.event.GoodsAppSearchMDEvent;
 import cn.m2c.scm.domain.model.goods.event.GoodsAppCapturedMDEvent;
+import cn.m2c.scm.domain.model.goods.event.GoodsAppSearchMDEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,6 +76,19 @@ public class GoodsApplication {
                 goodsApproveRepository.goodsNameIsRepeat(command.getGoodsId(), command.getDealerId(), command.getGoodsName())) {
             throw new NegativeException(MCode.V_300, "商品名称已存在");
         }
+
+        // 判断商品编码是否存在
+        Map<String, String> codesMap = command.getCodeMap();
+        if (null != codesMap && codesMap.size() > 0) {
+            for (Map.Entry<String, String> entry : codesMap.entrySet()) {
+                String skuId = entry.getKey();
+                String goodsCode = entry.getValue();
+                if (goodsSkuRepository.goodsCodeIsRepeat(command.getDealerId(), skuId, goodsCode)) {
+                    throw new NegativeException(MCode.V_300, "商品编码已存在");
+                }
+            }
+        }
+
         goods.modifyGoods(command.getGoodsName(), command.getGoodsSubTitle(),
                 command.getGoodsClassifyId(), command.getGoodsBrandId(), command.getGoodsBrandName(), command.getGoodsUnitId(), command.getGoodsMinQuantity(),
                 command.getGoodsPostageId(), command.getGoodsBarCode(), command.getGoodsKeyWord(), command.getGoodsGuarantee(),
