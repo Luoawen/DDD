@@ -366,4 +366,18 @@ public class Goods extends ConcurrencySafeEntity {
             }
         }
     }
+
+    /**
+     * 修改商品品牌名称
+     */
+    public void modifyBrandName(String brandName) {
+        this.goodsBrandName = brandName;
+    }
+
+    /**
+     * 修改商品供应商名称
+     */
+    public void modifyDealerName(String dealerName) {
+        this.dealerName = dealerName;
+    }
 }

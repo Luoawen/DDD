@@ -50,10 +50,23 @@ public class HibernateGoodsApproveRepository extends HibernateSupperRepository i
 
     @Override
     public boolean brandIsUser(String brandId) {
+        List<GoodsApprove> list = queryGoodsApproveByBrandId(brandId);
+        return null != list && list.size() > 0;
+    }
+
+    @Override
+    public List<GoodsApprove> queryGoodsApproveByBrandId(String brandId) {
         StringBuilder sql = new StringBuilder("select * from t_scm_goods_approve where goods_brand_id=:goods_brand_id AND del_status = 1 ");
         Query query = this.session().createSQLQuery(sql.toString()).addEntity(GoodsApprove.class);
         query.setParameter("goods_brand_id", brandId);
-        List<GoodsApprove> list = query.list();
-        return null != list && list.size() > 0;
+        return query.list();
+    }
+
+    @Override
+    public List<GoodsApprove> queryGoodsApproveByDealerId(String dealerId) {
+        StringBuilder sql = new StringBuilder("select * from t_scm_goods_approve where dealer_id=:dealer_id AND del_status = 1 ");
+        Query query = this.session().createSQLQuery(sql.toString()).addEntity(GoodsApprove.class);
+        query.setParameter("dealer_id", dealerId);
+        return query.list();
     }
 }

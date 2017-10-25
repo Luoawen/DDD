@@ -59,6 +59,7 @@ public class BrandApplication {
      * @param command
      */
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+    @EventListener(isListening = true)
     public void modifyBrand(BrandCommand command) throws NegativeException {
         LOGGER.info("modifyBrand command >>{}", command);
         // 与当前品牌库中的不能重名

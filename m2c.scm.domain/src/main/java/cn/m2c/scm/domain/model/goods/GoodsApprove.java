@@ -258,4 +258,18 @@ public class GoodsApprove extends ConcurrencySafeEntity {
         this.delStatus = 2;
         this.goodsId = new StringBuffer("DEL_").append(this.goodsId).toString();
     }
+
+    /**
+     * 修改商品品牌名称
+     */
+    public void modifyBrandName(String brandName) {
+        this.goodsBrandName = brandName;
+    }
+
+    /**
+     * 修改商品供应商名称
+     */
+    public void modifyDealerName(String dealerName) {
+        this.dealerName = dealerName;
+    }
 }

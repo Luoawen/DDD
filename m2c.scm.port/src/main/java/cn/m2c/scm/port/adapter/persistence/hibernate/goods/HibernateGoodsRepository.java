@@ -53,12 +53,23 @@ public class HibernateGoodsRepository extends HibernateSupperRepository implemen
 
     @Override
     public boolean brandIsUser(String brandId) {
-        StringBuilder sql = new StringBuilder("select * from t_scm_goods where goods_brand_id=:goods_brand_id AND del_status = 1 ");
-        Query query = this.session().createSQLQuery(sql.toString()).addEntity(Goods.class);
-        query.setParameter("goods_brand_id", brandId);
-        List<Goods> list = query.list();
+        List<Goods> list = queryGoodsByBrandId(brandId);
         return null != list && list.size() > 0;
     }
 
+    @Override
+    public List<Goods> queryGoodsByBrandId(String brandId) {
+        StringBuilder sql = new StringBuilder("select * from t_scm_goods where goods_brand_id=:goods_brand_id AND del_status = 1 ");
+        Query query = this.session().createSQLQuery(sql.toString()).addEntity(Goods.class);
+        query.setParameter("goods_brand_id", brandId);
+        return query.list();
+    }
 
+    @Override
+    public List<Goods> queryGoodsByDealerId(String dealerId) {
+        StringBuilder sql = new StringBuilder("select * from t_scm_goods where dealer_id=:dealer_id AND del_status = 1 ");
+        Query query = this.session().createSQLQuery(sql.toString()).addEntity(Goods.class);
+        query.setParameter("dealer_id", dealerId);
+        return query.list();
+    }
 }
