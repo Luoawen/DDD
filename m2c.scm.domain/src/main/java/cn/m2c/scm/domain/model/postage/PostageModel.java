@@ -117,8 +117,16 @@ public class PostageModel extends ConcurrencySafeEntity {
         Long continuedPostage = GetMapValueUtils.getLongFromMapKey(map, "continuedPostage");
         Integer defaultFlag = GetMapValueUtils.getIntFromMapKey(map, "defaultFlag");
         PostageModelRule rule = new PostageModelRule(this, IDGenerator.get(IDGenerator.SCM_POSTAGE_RULE_PREFIX_TITLE),
-                address, cityCode,firstWeight, firstPiece, firstPostage, continuedWeight, continuedPiece,
+                address, cityCode, firstWeight, firstPiece, firstPostage, continuedWeight, continuedPiece,
                 continuedPostage, defaultFlag);
         return rule;
+    }
+
+    public void addGoodsUserNum() {
+        this.goodsUserNum = this.goodsUserNum + 1;
+    }
+
+    public void outGoodsUserNum() {
+        this.goodsUserNum = this.goodsUserNum - 1;
     }
 }

@@ -5,6 +5,8 @@ import cn.m2c.ddd.common.domain.model.DomainEventPublisher;
 import cn.m2c.ddd.common.serializer.ObjectSerializer;
 import cn.m2c.scm.domain.model.goods.event.GoodsApproveAddEvent;
 import cn.m2c.scm.domain.model.goods.event.GoodsDeleteEvent;
+import cn.m2c.scm.domain.model.goods.event.GoodsOffShelfEvent;
+import cn.m2c.scm.domain.model.goods.event.GoodsUpShelfEvent;
 import cn.m2c.scm.domain.util.GetMapValueUtils;
 
 import java.util.ArrayList;
@@ -331,6 +333,9 @@ public class Goods extends ConcurrencySafeEntity {
         if (total <= 0) {
             this.goodsStatus = 3;
         }
+        DomainEventPublisher
+                .instance()
+                .publish(new GoodsUpShelfEvent(this.goodsId,this.goodsPostageId));
     }
 
     /**
@@ -338,6 +343,9 @@ public class Goods extends ConcurrencySafeEntity {
      */
     public void offShelf() {
         this.goodsStatus = 1;
+        DomainEventPublisher
+                .instance()
+                .publish(new GoodsOffShelfEvent(this.goodsId,this.goodsPostageId));
     }
 
     /**
