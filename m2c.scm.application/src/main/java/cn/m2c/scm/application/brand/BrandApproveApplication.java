@@ -37,7 +37,8 @@ public class BrandApproveApplication {
     public void addBrandApprove(BrandApproveCommand command) throws NegativeException {
         LOGGER.info("addBrandApprove command >>{}", command);
         // 与当前品牌库中的不能重名
-        if (brandRepository.brandNameIsRepeat(null, command.getBrandName())) {
+        if (brandRepository.brandNameIsRepeat(null, command.getBrandName()) ||
+                brandApproveRepository.brandNameIsRepeat(null, command.getBrandName())) {
             throw new NegativeException(MCode.V_301, "品牌名称已存在");
         }
         BrandApprove brandApprove = brandApproveRepository.getBrandApproveByApproveId(command.getBrandApproveId());
@@ -58,7 +59,8 @@ public class BrandApproveApplication {
     public void modifyBrand(BrandApproveCommand command) throws NegativeException {
         LOGGER.info("addBrandApprove command >>{}", command);
         // 与当前品牌库中的不能重名
-        if (brandRepository.brandNameIsRepeat(command.getBrandId(), command.getBrandName())) {
+        if (brandRepository.brandNameIsRepeat(command.getBrandId(), command.getBrandName()) ||
+                brandApproveRepository.brandNameIsRepeat(command.getBrandId(), command.getBrandName())) {
             throw new NegativeException(MCode.V_301, "品牌名称已存在");
         }
         BrandApprove brandApprove = brandApproveRepository.getBrandApproveByBrandId(command.getBrandId());
@@ -83,7 +85,8 @@ public class BrandApproveApplication {
     public void modifyBrandApprove(BrandApproveCommand command) throws NegativeException {
         LOGGER.info("addBrandApprove command >>{}", command);
         // 与当前品牌库中的不能重名
-        if (brandRepository.brandNameIsRepeat(null, command.getBrandName())) {
+        if (brandRepository.brandNameIsRepeat(null, command.getBrandName()) ||
+                brandApproveRepository.brandNameIsRepeat(null, command.getBrandName())) {
             throw new NegativeException(MCode.V_301, "品牌名称已存在");
         }
         BrandApprove brandApprove = brandApproveRepository.getBrandApproveByApproveId(command.getBrandApproveId());
