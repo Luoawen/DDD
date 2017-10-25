@@ -216,4 +216,41 @@ public class GoodsApplication {
                         goodsId, goodsName, mediaId, mediaName,
                         mresId, mresName));
     }
+
+
+    /**
+     * 修改商品品牌名称
+     *
+     * @param brandId
+     * @param brandName
+     * @throws NegativeException
+     */
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+    public void modifyGoodsBrandName(String brandId, String brandName) throws NegativeException {
+        LOGGER.info("modifyGoodsBrandName brandId >>{}", brandId);
+        List<Goods> goodsList = goodsRepository.queryGoodsByBrandId(brandId);
+        if (null != goodsList) {
+            for (Goods goods : goodsList) {
+                goods.modifyBrandName(brandName);
+            }
+        }
+    }
+
+    /**
+     * 修改商品供应商名称
+     *
+     * @param dealerId
+     * @param dealerName
+     * @throws NegativeException
+     */
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+    public void modifyGoodsDealerName(String dealerId, String dealerName) throws NegativeException {
+        LOGGER.info("modifyGoodsDealerName dealerId >>{}", dealerId);
+        List<Goods> goodsList = goodsRepository.queryGoodsByDealerId(dealerId);
+        if (null != goodsList) {
+            for (Goods goods : goodsList) {
+                goods.modifyDealerName(dealerName);
+            }
+        }
+    }
 }

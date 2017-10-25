@@ -3,6 +3,7 @@ package cn.m2c.scm.domain.model.brand;
 import cn.m2c.ddd.common.domain.model.ConcurrencySafeEntity;
 import cn.m2c.ddd.common.domain.model.DomainEventPublisher;
 import cn.m2c.scm.domain.model.brand.event.BrandDeleteEvent;
+import cn.m2c.scm.domain.model.brand.event.BrandModifyNameEvent;
 
 import java.util.Date;
 
@@ -110,6 +111,11 @@ public class Brand extends ConcurrencySafeEntity {
     public void modify(String brandName, String brandNameEn, String brandLogo, String firstAreaCode,
                        String twoAreaCode, String threeAreaCode, String firstAreaName, String twoAreaName,
                        String threeAreaName) {
+        if (!this.brandName.equals(brandName)) {//修改了名称，发送事件
+            DomainEventPublisher
+                    .instance()
+                    .publish(new BrandModifyNameEvent(this.brandId, brandName));
+        }
         this.brandName = brandName;
         this.brandNameEn = brandNameEn;
         this.brandLogo = brandLogo;

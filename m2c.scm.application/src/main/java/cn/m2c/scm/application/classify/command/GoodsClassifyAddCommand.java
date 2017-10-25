@@ -25,7 +25,7 @@ public class GoodsClassifyAddCommand extends AssertionConcern implements Seriali
 
     private Integer level;
 
-    public GoodsClassifyAddCommand(String parentClassifyName, String subClassifyNames, String parentClassifyId, Integer level) {
+    public GoodsClassifyAddCommand(String classifyName, String subClassifyNames, String parentClassifyId, Integer level) {
         this.classifyName = classifyName;
         this.subClassifyNames = subClassifyNames;
         this.parentClassifyId = parentClassifyId;

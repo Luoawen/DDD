@@ -17,6 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 /**
  * 商品审核
  */
@@ -144,5 +146,41 @@ public class GoodsApproveApplication {
             throw new NegativeException(MCode.V_300, "商品审核信息不存在");
         }
         goodsApprove.remove();
+    }
+
+    /**
+     * 修改商品品牌名称
+     *
+     * @param brandId
+     * @param brandName
+     * @throws NegativeException
+     */
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+    public void modifyGoodsApproveBrandName(String brandId, String brandName) throws NegativeException {
+        LOGGER.info("modifyGoodsApproveBrandName brandId >>{}", brandId);
+        List<GoodsApprove> goodsList = goodsApproveRepository.queryGoodsApproveByBrandId(brandId);
+        if (null != goodsList) {
+            for (GoodsApprove goods : goodsList) {
+                goods.modifyBrandName(brandName);
+            }
+        }
+    }
+
+    /**
+     * 修改商品供应商名称
+     *
+     * @param dealerId
+     * @param dealerName
+     * @throws NegativeException
+     */
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+    public void modifyGoodsApproveDealerName(String dealerId, String dealerName) throws NegativeException {
+        LOGGER.info("modifyGoodsApproveDealerName dealerId >>{}", dealerId);
+        List<GoodsApprove> goodsList = goodsApproveRepository.queryGoodsApproveByDealerId(dealerId);
+        if (null != goodsList) {
+            for (GoodsApprove goods : goodsList) {
+                goods.modifyDealerName(dealerName);
+            }
+        }
     }
 }
