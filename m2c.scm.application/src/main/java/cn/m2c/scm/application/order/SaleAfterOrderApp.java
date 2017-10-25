@@ -74,6 +74,21 @@ public class SaleAfterOrderApp {
 		order.agreeApply(cmd.getUserId());
 		saleAfterRepository.updateSaleAfterOrder(order);
 	}
+	/**
+	 * 拒绝售后申请
+	 * @param cmd
+	 * @throws NegativeException
+	 */
+	@Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+	@EventListener(isListening=true)
+	public void rejectApply(AproveSaleAfterCmd cmd) throws NegativeException {
+		SaleAfterOrder order = saleAfterRepository.getSaleAfterOrderByNo(cmd.getSaleAfterNo(), cmd.getDealerId());
+		if (order == null) {
+			throw new NegativeException(MCode.V_101, "无此售后单！");
+		}
+		order.rejectSute(cmd.getRejectReason(), cmd.getRejectReasonCode(), cmd.getUserId());
+		saleAfterRepository.updateSaleAfterOrder(order);
+	}
 	
 	/***
 	 * 客户退货发货

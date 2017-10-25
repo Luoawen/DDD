@@ -139,6 +139,37 @@ public class OrderAgent {
 	}
 	
 	/**
+	 * 商家拒绝售后申请
+	 * @param userId
+	 * @param saleAfterNo
+	 * @param dealerId
+	 * @param rejectReason
+	 * @return
+	 */
+	@RequestMapping(value="/dealer/reject-apply-sale", method=RequestMethod.PUT)
+	public ResponseEntity<MResult> rejectApplySaleAftet(@RequestParam(value = "userId", required = false) String userId
+            ,@RequestParam(value = "saleAfterNo", required = false) String saleAfterNo
+            ,@RequestParam(value = "dealerId", required = false) String dealerId
+            ,@RequestParam(value = "rejectReason",required = false) String rejectReason
+            ,@RequestParam(value = "rejectReasonCode",required = false) int rejectReasonCode) {
+		MResult result = new MResult(MCode.V_1);
+		try {
+			AproveSaleAfterCmd cmd = new AproveSaleAfterCmd(userId, saleAfterNo, dealerId, rejectReason, rejectReasonCode);
+			saleAfterApp.rejectApply(cmd);
+			result.setStatus(MCode.V_200);
+		}
+		catch (NegativeException e) {
+			result.setStatus(e.getStatus());
+			result.setErrorMessage(e.getMessage());
+		}
+		catch (Exception e) {
+			LOGGER.error("拒绝售后申请出错，err:" + e.getMessage(), e);
+			result = new MResult(MCode.V_400, "服务器开小差了");
+		}
+		return new ResponseEntity<MResult>(result, HttpStatus.OK);
+	}
+	
+	/**
      * 商家换货发货
      * @param userId
      * @param orderId

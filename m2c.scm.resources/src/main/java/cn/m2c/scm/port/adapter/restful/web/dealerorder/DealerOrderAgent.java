@@ -203,7 +203,6 @@ public class DealerOrderAgent {
 			result = new MResult(MCode.V_400, e.getMessage());
 		}
 		return new ResponseEntity<MResult>(result, HttpStatus.OK);
-
 	}
 
 }
