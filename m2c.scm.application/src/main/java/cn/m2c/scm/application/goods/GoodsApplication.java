@@ -268,4 +268,18 @@ public class GoodsApplication {
             }
         }
     }
+
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+    public void GoodsSkuUpdateByOrderPayed(Map<String, Integer> map) {
+        if (null != map && map.size() > 0) {
+            for (Map.Entry<String, Integer> entry : map.entrySet()) {
+                String skuId = entry.getKey();
+                Integer num = entry.getValue();
+                GoodsSku goodsSku = goodsSkuRepository.queryGoodsSkuById(skuId);
+                if (null != goodsSku) {
+                    goodsSku.orderPayed(num);
+                }
+            }
+        }
+    }
 }
