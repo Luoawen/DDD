@@ -160,8 +160,37 @@ public class DealerOrder extends ConcurrencySafeEntity {
 		for (DealerOrderDtl dtl : orderDtls) {
 			String mres = dtl.getMediaResId();
 			if (!StringUtils.isEmpty(mres))
-				arr.add(new SimpleMediaRes(mres, dtl.getBdsRate()));
+				arr.add(new SimpleMediaRes(mres, dtl.getBdsRate(), dtl.getSkuId(), dtl.getDiscountMoney()));
 		}
 		return arr;
+	}
+	
+	/***
+	 * 设置计算金额
+	 * @param skuId
+	 * @param discountAmount
+	 * @param marketingId
+	 */
+	public boolean setSkuMoney(String skuId, long discountAmount, String marketingId) {
+		for (DealerOrderDtl dtl : orderDtls) {
+			if (dtl.setSkuMoney(skuId, discountAmount, marketingId))
+				return true;
+		}
+		return false;
+	}
+	/***
+	 * 计算订单金额
+	 */
+	void calOrderMoney() {
+		goodsAmount = 0l;
+		orderFreight = 0l;
+		plateformDiscount = 0l;
+		dealerDiscount = 0l;
+		for (DealerOrderDtl dtl : orderDtls) {
+			dtl.calOrderMoney();
+			goodsAmount += dtl.getGoodsAmount();
+			orderFreight += dtl.getFreight();
+			plateformDiscount += dtl.getPlateformDiscount();
+		}
 	}
 }
