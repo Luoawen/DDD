@@ -27,6 +27,8 @@ public class GoodsSkuUpdateByOrderPayedListener extends ExchangeListener {
     protected void filteredDispatch(String aType, String aTextMessage) throws Exception {
         NotificationReader reader = new NotificationReader(aTextMessage);
 
+
+
     }
 
     @Override
