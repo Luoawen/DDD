@@ -26,7 +26,7 @@ public class HibernateGoodsSkuRepository extends HibernateSupperRepository imple
 
     @Override
     public GoodsSku queryGoodsSkuById(String skuId) {
-        StringBuilder sql = new StringBuilder("select * from t_scm_goods_sku where sku_id =:sku_id and del_status = 1");
+        StringBuilder sql = new StringBuilder("select * from t_scm_goods_sku where sku_id =:sku_id");
         Query query = this.session().createSQLQuery(sql.toString()).addEntity(GoodsSku.class);
         query.setParameter("sku_id", skuId);
         return (GoodsSku) query.uniqueResult();

@@ -120,4 +120,32 @@ public class GoodsSku extends ConcurrencySafeEntity {
     public Goods goods() {
         return goods;
     }
+
+    /**
+     * 订单支付完成
+     *
+     * @param num
+     */
+    public void orderPayed(Integer num) {
+        this.sellerNum = this.sellerNum + num;
+        this.realNum = this.realNum - num;
+    }
+
+    /**
+     * 订单取消
+     *
+     * @param num
+     */
+    public void orderCancel(Integer num) {
+        this.availableNum = this.availableNum + num;
+    }
+
+    /**
+     * 退货
+     */
+    public void orderReturnGoods(Integer num) {
+        this.availableNum = this.availableNum + num;
+        this.realNum = this.realNum + num;
+        this.sellerNum = this.sellerNum - num;
+    }
 }
