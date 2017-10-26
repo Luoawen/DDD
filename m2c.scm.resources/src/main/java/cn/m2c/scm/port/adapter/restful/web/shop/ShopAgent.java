@@ -22,6 +22,7 @@ import cn.m2c.scm.application.goods.query.GoodsQueryApplication;
 import cn.m2c.scm.application.shop.ShopApplication;
 import cn.m2c.scm.application.shop.command.ShopInfoUpdateCommand;
 import cn.m2c.scm.application.shop.data.bean.ShopBean;
+import cn.m2c.scm.application.shop.data.representation.ShopInfoRepresentation;
 import cn.m2c.scm.application.shop.query.ShopQuery;
 import cn.m2c.scm.domain.IDGenerator;
 
@@ -55,23 +56,10 @@ public class ShopAgent {
 	            @RequestParam(value = "rows", required = false, defaultValue = "10") Integer rows) {
 	        MPager result = new MPager(MCode.V_1);
 	        try {
-	            List<Map<String, Object>> dealerList = new ArrayList<Map<String,Object>>();
-	            Map<String, Object> map = new HashMap<String, Object>();
-	            map.put("dealerId", "JXS4485CE8E3EE849F4BAAD4A1A290CD95A");
-	            map.put("shopName", "青青草原旗舰店");
-	            map.put("dealerName", "轻轻的我来了供应商");
-	            map.put("shopIcon", "http://dl.m2c2017.com/3pics/20170822/W8bq135021.jpg");
-	            map.put("onSaleGoods", 100);
-	            Map<String, Object> map1 = new HashMap<String, Object>();
-	            map1.put("dealerId", "JXS2B8734CCD4B8477983CDA97C68D6AF8C");
-	            map1.put("shopName", "北大青鸟旗舰店");
-	            map1.put("shopIcon", "http://dl.m2c2017.com/3pics/20170822/W8bq135021.jpg");
-	            map1.put("onSaleGoods", 100);
-
-	            dealerList.add(map);
-	            dealerList.add(map1);
-	            result.setContent(dealerList);
-	            result.setPager(2, pageNum, rows);
+	        	List<ShopBean> shopList  = query.getShopList(dealerName,dealerClassify,dealerId,pageNum,rows);
+	        	Integer shopCount = query.getShopCount(dealerName,dealerClassify,dealerId);
+	        	result.setContent(shopList);
+	            result.setPager(shopCount, pageNum, rows);
 	            result.setStatus(MCode.V_200);
 	        } catch (Exception e) {
 	        	log.error("店铺列表查询出错", e);
@@ -95,13 +83,15 @@ public class ShopAgent {
 		            @RequestParam(value = "dealerId", required = false) String dealerId) {
 			 MResult result = new MResult(MCode.V_1);
 		        try {
-		            Map<String, Object> map = new HashMap<String, Object>();
-		            map.put("dealerId", "JXS4485CE8E3EE849F4BAAD4A1A290CD95A");
-		            map.put("shopName", "青青草原旗舰店");
-		            map.put("dealerName", "轻轻的我来了供应商");
-		            map.put("shopIcon", "http://dl.m2c2017.com/3pics/20170822/W8bq135021.jpg");
-		            map.put("onSaleGoods", 100);
-		            result.setContent(map);
+//		            Map<String, Object> map = new HashMap<String, Object>();
+//		            map.put("dealerId", "JXS4485CE8E3EE849F4BAAD4A1A290CD95A");
+//		            map.put("shopName", "青青草原旗舰店");
+//		            map.put("dealerName", "轻轻的我来了供应商");
+//		            map.put("shopIcon", "http://dl.m2c2017.com/3pics/20170822/W8bq135021.jpg");
+//		            map.put("onSaleGoods", 100);
+//		            result.setContent(map);
+		        	ShopBean shop = query.getShop(dealerId);
+		        	result.setContent(shop);
 		            result.setStatus(MCode.V_200);
 		        } catch (Exception e) {
 		        	log.error("店铺详情出错", e);

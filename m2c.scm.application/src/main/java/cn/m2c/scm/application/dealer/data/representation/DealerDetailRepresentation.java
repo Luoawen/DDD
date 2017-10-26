@@ -1,6 +1,5 @@
 package cn.m2c.scm.application.dealer.data.representation;
 
-import cn.m2c.ddd.common.persistence.orm.ColumnAlias;
 import cn.m2c.scm.application.dealer.data.bean.DealerBean;
 
 public class DealerDetailRepresentation {
