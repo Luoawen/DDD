@@ -11,9 +11,16 @@ public class SimpleMediaRes {
 	/**bd专员及分成*/
 	private String bdsRate;
 	
-	public SimpleMediaRes(String resId, String bdsRate) {
+	private String skuId;
+	/**商品优惠后的价钱*/
+	private long goodsAmount;
+	
+	public SimpleMediaRes(String resId, String bdsRate, String skuId,
+			long goodsAmount) {
 		this.mresId = resId;
 		this.bdsRate = bdsRate;
+		this.skuId= skuId;
+		this.goodsAmount = goodsAmount;
 	}
 
 	public String getMresId() {
@@ -22,6 +29,14 @@ public class SimpleMediaRes {
 
 	public String getBdsRate() {
 		return bdsRate;
+	}
+
+	public String getSkuId() {
+		return skuId;
+	}
+
+	public long getGoodsAmount() {
+		return goodsAmount;
 	}
 	
 }

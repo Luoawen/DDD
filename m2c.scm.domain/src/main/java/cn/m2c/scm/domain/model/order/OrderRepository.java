@@ -1,4 +1,7 @@
 package cn.m2c.scm.domain.model.order;
+
+import java.util.List;
+
 /**
  * 订单仓储
  * @author fanjc
@@ -34,6 +37,16 @@ public interface OrderRepository {
 	 * @return
 	 */
 	public DealerOrderDtl getDealerOrderDtlBySku(String dealerOrderId, String sku);
-	
+	/**
+	 * 更新商家订单
+	 * @param dealOrder
+	 */
 	public void updateDealerOrder(DealerOrder dealOrder);
+	/***
+	 * 获取订单中的商品给计算用
+	 * @param orderNo
+	 * @param clss
+	 * @return
+	 */
+	public <T> List<T> getOrderGoodsForCal(String orderNo, Class<T> clss);
 }

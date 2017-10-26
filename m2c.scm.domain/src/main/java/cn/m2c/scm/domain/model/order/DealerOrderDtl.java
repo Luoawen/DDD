@@ -15,7 +15,7 @@ public class DealerOrderDtl extends ConcurrencySafeEntity {
 	private String orderId;
 	
 	//private DealerOrder dealerOrder;
-	
+	/**商家订单号*/
 	private String dealerOrderId;
 	/**订单状态 0待付款，1等发货，2待收货，3完成，4交易完成，5交易关闭，-1已取消*/
 	private Integer status = 0;
@@ -25,15 +25,9 @@ public class DealerOrderDtl extends ConcurrencySafeEntity {
 	private InvoiceInfo invoice;
 	/**快递信息*/
 	private ExpressInfo expressInfo;
-	/**媒体资源ID*/
-	private String mediaResId;
-	/**促销员ID*/
-	private String salerUserId;
-	/**促销员分成比例*/
-	private String salerUserRate;
 	/**购买数量*/
 	private Integer sellNum;
-	/**是否为换货商品 1是*/
+	/**是否为换货商品 1是， 0否*/
 	private int isChange = 0;
 	/**换货价*/
 	private long changePrice;
@@ -41,52 +35,39 @@ public class DealerOrderDtl extends ConcurrencySafeEntity {
 	private GoodsInfo goodsInfo;
 	/**以分为单位，商品金额*/
 	private Long goodsAmount;
-	/**平台优惠*/
-	private Long plateformDiscount;
 	/**商家优惠*/
 	private Long dealerDiscount;
 	/**备注 留言*/
 	private String noted;
-	/**订单总运费*/
-	private Long freight;
-	/**应用的营销ID*/
-	private String marketingId;
-	/**媒体ID*/
-	private String mediaId;
-	/**广告位分成比例*/
-	private String resRate = "0";
-	/**BD专员的分成串*/
-	private String bdsRate;
+	/**媒体相关信息*/
+	private SimpleMediaInfo mediaInfo;
 	/**评论状态， 0 待评，1已评*/
 	private Integer commentStatus = 0;
+	
+	private SimpleMarketInfo marketInfo;
 	
 	public DealerOrderDtl() {
 		super();
 	}
 	
 	public DealerOrderDtl(String orderId, String dealerOrderId, ReceiveAddr addr
-			,InvoiceInfo invoice, ExpressInfo expressInfo, String mediaResId, String salerUserId
-			,String bdsRate, String resRate, String mediaId, int isChange, int changePrice
-			, GoodsInfo goodsInfo, long plateformDiscount, long dealerDiscount, String noted
-			, String salerUserRate) {
+			,InvoiceInfo invoice, ExpressInfo expressInfo, SimpleMediaInfo mediaInfo, int isChange, int changePrice
+			, GoodsInfo goodsInfo, long dealerDiscount, String noted
+			, SimpleMarketInfo marketInfo
+			) {
 		this.orderId = orderId;
 		this.dealerOrderId = dealerOrderId;
 		this.addr = addr;
 		this.invoice = invoice;
 		this.expressInfo = expressInfo;
-		this.mediaResId = mediaResId;
-		this.salerUserId = salerUserId;
-		this.bdsRate = bdsRate;
-		this.resRate = resRate;
-		this.mediaId = mediaId;
+		this.mediaInfo = mediaInfo;
 		this.isChange = isChange;
 		this.changePrice = changePrice;
 		
 		this.goodsInfo = goodsInfo;
-		this.plateformDiscount = plateformDiscount;
 		this.dealerDiscount = dealerDiscount;
 		this.noted = noted;
-		this.salerUserRate = salerUserRate;
+		this.marketInfo = marketInfo;
 	}
 	/***
 	 * 计算商品金额
@@ -99,11 +80,10 @@ public class DealerOrderDtl extends ConcurrencySafeEntity {
 	/***
 	 * 计算运费
 	 * @return
-	 */
+	 
 	public Long calFreight() {
-		
-		return freight;
-	}
+		return goodsInfo.getFreight();
+	}*/
 	
 	
 	/**
@@ -193,10 +173,53 @@ public class DealerOrderDtl extends ConcurrencySafeEntity {
 	}
 	
 	String getMediaResId() {
-		return mediaResId;
+		if (mediaInfo != null)
+			return mediaInfo.getMediaResId();
+		return null;
 	}
 	
 	String getBdsRate() {
-		return bdsRate;
+		if (mediaInfo != null)
+			return mediaInfo.getBdsRate();
+		return null;
+	}
+	/**
+	 * 获取优惠后的价钱(纯商品的, 不含运费)
+	 * @return
+	 */
+	long getDiscountMoney() {
+		return goodsAmount - goodsInfo.getPlateformDiscount() - dealerDiscount;
+	}
+	
+	/***
+	 * 设置计算金额
+	 * @param skuId
+	 * @param discountAmount
+	 * @param marketingId
+	 */
+	public boolean setSkuMoney(String skuId, long discountAmount, String marketingId) {
+		if (skuId.equals(this.getSkuId())) {
+			this.marketInfo.setMarketId(marketingId);
+			goodsInfo.setPlateformDiscount(discountAmount);
+			return true;
+		}
+		return false;
+	}
+	
+	void calOrderMoney() {
+		goodsAmount = goodsInfo.calGoodsAmount();
+		dealerDiscount = 0l;
+	}
+	
+	long getGoodsAmount() {
+		return goodsAmount;
+	}
+	
+	long getFreight() {
+		return goodsInfo.getFreight();
+	}
+	
+	long getPlateformDiscount() {
+		return goodsInfo.getPlateformDiscount();
 	}
 }

@@ -1,4 +1,7 @@
 package cn.m2c.scm.application.order.data.bean;
+
+import cn.m2c.scm.domain.model.order.SimpleMediaInfo;
+
 /***
  * 媒体资源 简单bean
  * @author fanjc
@@ -57,5 +60,7 @@ public class MediaResBean {
 		this.bdStaffRatio = bdStaffRatio;
 	}
 	
-	
+	public SimpleMediaInfo toMediaInfo() {
+		return new SimpleMediaInfo(mediaId, mediaRatio, bdStaffRatio, mresId, salesmanId, salesmanRatio);
+	}
 }

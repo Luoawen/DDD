@@ -1,13 +1,14 @@
 package cn.m2c.scm.domain.model.order;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 
 import cn.m2c.ddd.common.domain.model.ConcurrencySafeEntity;
 import cn.m2c.scm.domain.model.order.event.SimpleMediaRes;
-import cn.m2c.scm.domain.model.order.event.SimpleSale;
 /**
  * 商家订单
  * @author fanjc
@@ -148,10 +149,10 @@ public class DealerOrder extends ConcurrencySafeEntity {
 	 * 获取销量
 	 * @return
 	 */
-	List<SimpleSale> getSaleNums() {
-		List<SimpleSale> arr = new ArrayList<SimpleSale>();
+	Map<String, Integer> getSaleNums() {
+		Map<String, Integer> arr = new HashMap<String, Integer>();
 		for (DealerOrderDtl dtl : orderDtls) {
-			arr.add(new SimpleSale(dtl.getSkuId(), (dtl.getSaleNum() == null ? 0: dtl.getSaleNum())));
+			arr.put(dtl.getSkuId(), (dtl.getSaleNum() == null ? 0: dtl.getSaleNum()));
 		}
 		return arr;
 	}
@@ -165,11 +166,39 @@ public class DealerOrder extends ConcurrencySafeEntity {
 		for (DealerOrderDtl dtl : orderDtls) {
 			String mres = dtl.getMediaResId();
 			if (!StringUtils.isEmpty(mres))
-				arr.add(new SimpleMediaRes(mres, dtl.getBdsRate()));
+				arr.add(new SimpleMediaRes(mres, dtl.getBdsRate(), dtl.getSkuId(), dtl.getDiscountMoney()));
 		}
 		return arr;
 	}
 	
+	/***
+	 * 设置计算金额
+	 * @param skuId
+	 * @param discountAmount
+	 * @param marketingId
+	 */
+	public boolean setSkuMoney(String skuId, long discountAmount, String marketingId) {
+		for (DealerOrderDtl dtl : orderDtls) {
+			if (dtl.setSkuMoney(skuId, discountAmount, marketingId))
+				return true;
+		}
+		return false;
+	}
+	/***
+	 * 计算订单金额
+	 */
+	void calOrderMoney() {
+		goodsAmount = 0l;
+		orderFreight = 0l;
+		plateformDiscount = 0l;
+		dealerDiscount = 0l;
+		for (DealerOrderDtl dtl : orderDtls) {
+			dtl.calOrderMoney();
+			goodsAmount += dtl.getGoodsAmount();
+			orderFreight += dtl.getFreight();
+			plateformDiscount += dtl.getPlateformDiscount();
+		}
+	}
 	/**
 	 * 修改收货地址
 	 * @param addr

@@ -28,7 +28,6 @@
         </component>
         
         <property name="goodsAmount" column="goods_amount" type="long"/>
-        <property name="plateformDiscount" column="plateform_discount" type="long"/>
         <property name="dealerDiscount" column="dealer_discount" type="long"/>
         <property name="noted" column="noted" type="string"/>
         
@@ -66,20 +65,27 @@
 	        <property name="discountPrice" column="discount_price" type="long"/>
 	        <property name="goodsIcon" column="goods_icon" type="string"/>
 	        <property name="sellNum" column="sell_num" type="int"/>
-	        <property name="marketingId" column="marketing_id" type="string"/>
 	        <property name="freight" column="freight" type="long"/>
+	        <property name="plateformDiscount" column="plateform_discount" type="long"/>
         </component>
         
+        <component name="marketInfo">
+        	<property name="marketingId" column="marketing_id" type="string"/>
+	    	<property name="marketLevel" column="market_level" type="int"/>
+	        <property name="threshold" column="threshold" type="int"/>
+        </component>
         
         <property name="isChange" column="is_change" type="int"/>
         <property name="changePrice" column="change_price" type="long"/>
         
-        <property name="resRate" column="res_rate" type="string"/>
-        <property name="mediaId" column="media_id" type="string"/>
-        <property name="bdsRate" column="bds_rate" type="string"/>
-        <property name="mediaResId" column="media_res_id" type="date"/>
-        <property name="salerUserId" column="saler_user_id" type="string"/>
-        <property name="salerUserRate" column="saler_user_rate" type="string"/>
+        <component name="mediaInfo">
+	        <property name="resRate" column="res_rate" type="string"/>
+	        <property name="mediaId" column="media_id" type="string"/>
+	        <property name="bdsRate" column="bds_rate" type="string"/>
+	        <property name="mediaResId" column="media_res_id" type="date"/>
+	        <property name="salerUserId" column="saler_user_id" type="string"/>
+	        <property name="salerUserRate" column="saler_user_rate" type="string"/>
+        </component>
         
         <property name="commentStatus" column="comment_status" type="int"/>
         

@@ -11,6 +11,8 @@ import cn.m2c.scm.application.order.command.ConfirmSkuCmd;
 import cn.m2c.scm.application.order.command.OrderAddCommand;
 import cn.m2c.scm.application.order.command.OrderPayedCmd;
 import cn.m2c.scm.application.order.command.PayOrderCmd;
+import cn.m2c.scm.application.order.data.bean.GoodsReqBean;
+import cn.m2c.scm.application.order.data.bean.MarketBean;
 import cn.m2c.scm.application.order.data.bean.MediaResBean;
 import cn.m2c.scm.application.order.data.representation.OrderMoney;
 import cn.m2c.scm.application.order.query.OrderQueryApplication;
@@ -22,6 +24,8 @@ import cn.m2c.scm.domain.model.order.DealerOrder;
 import cn.m2c.scm.domain.model.order.DealerOrderDtl;
 import cn.m2c.scm.domain.model.order.MainOrder;
 import cn.m2c.scm.domain.model.order.OrderRepository;
+import cn.m2c.scm.domain.model.order.SimpleMarketInfo;
+import cn.m2c.scm.domain.model.order.SimpleMarketing;
 import cn.m2c.scm.domain.service.order.OrderService;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -82,8 +86,10 @@ public class OrderApplication {
 		List<Map<String, Object>> goodses = null;
 		// skuId, num
 		Map<String, Integer> skus = new HashMap<String, Integer>();
+		Map<String, GoodsReqBean> skuBeans = new HashMap<String, GoodsReqBean>();
 		List<String> mediaResIds = new ArrayList<String>();
 		Map<String, String> skuMedia = new HashMap<String, String>();
+		List<String> marketIds = new ArrayList<String>();
 		if (gdes == null || gdes.size() < 1) {
 			// 获取购物车数据
 			goodses = orderDomainService.getShopCarGoods(cmd.getUserId());
@@ -92,33 +98,46 @@ public class OrderApplication {
 			
 			for (Map<String, Object> it : goodses) {
 				String sku = it.get("skuId").toString();
-				skus.put(sku, (Integer)it.get("num"));
+				Integer nm = (Integer)it.get("num");
+				skus.put(sku, nm);
+				skuBeans.put(sku, new GoodsReqBean(nm, (Integer)it.get("level"), (String)it.get("marketId"),
+						(Integer)it.get("isChange")));
 				String mResId = (String)it.get("mediaResId");
 				if (!StringUtils.isEmpty(mResId) && !mediaResIds.contains(mResId)) {
 					mediaResIds.add(mResId);
 				}
 				skuMedia.put(sku, mResId);
+				String marketId = (String)it.get("marketId");
+				if (!StringUtils.isEmpty(marketId)  && !marketIds.contains(marketId))
+						marketIds.add(marketId);
 			}
 		}
 		else {
 			int sz = gdes.size();
 			for (int i=0; i<sz; i++) {
 				JSONObject o = gdes.getJSONObject(i);
-				skus.put(o.getString("skuId"), o.getIntValue("purNum"));
+				String sku = o.getString("skuId");
+				skus.put(sku, o.getIntValue("purNum"));
+				String marketId = o.getString("marketId");
+				int level = 0;
+				if (o.containsKey("level"))
+					level = o.getIntValue("level");
+				skuBeans.put(sku, new GoodsReqBean(o.getIntValue("purNum"), level, marketId,
+						o.getIntValue("isChange")));
+				
 				String mResId = o.getString("mediaResId");
 				if (!StringUtils.isEmpty(mResId) && !mediaResIds.contains(mResId))
 					mediaResIds.add(mResId);
+				skuMedia.put(sku, mResId);
+				if (!StringUtils.isEmpty(marketId)  && !marketIds.contains(marketId))
+						marketIds.add(marketId);
 			}
 		}
-		// 判断库存
-		orderDomainService.judgeStock(skus);
-		// 锁定库存
-		orderDomainService.lockStock(null);
-		try {
+		try {// 锁定库存
 			goodsApp.outInventory(skus);
 		}
-		catch (NegativeException e) {
-			throw new NegativeException(MCode.V_100, e.getMessage() + "不存在或库存不够。");
+		catch (NegativeException e) {//不存在或库存不够
+			throw new NegativeException(MCode.V_100, e.getMessage());
 		}
 		
 		long orderTime = System.currentTimeMillis();
@@ -130,7 +149,11 @@ public class OrderApplication {
 		//若有媒体信息则需要查询媒体信息
 		Map<String, Object> resMap = orderDomainService.getMediaBdByResIds(mediaResIds, orderTime);
 		// 获取运费模板，计算运费
-		calFreight(skus, list, cmd.getAddr().getCityCode());
+		calFreight(skuBeans, list, cmd.getAddr().getCityCode());
+		
+		List<MarketBean> mks = orderDomainService.getMarketingsByIds(marketIds, cmd.getUserId(), MarketBean.class);
+		// 计算营销活动优惠
+		OrderMarketCalc.calMarkets(mks, list);
 		// 拆单 设置商品数量即按商家来拆分
 		Set<String> idsSet = new HashSet<String>();
 		Map<String, List<GoodsDto>> dealerOrderMap = splitOrder(list, idsSet);
@@ -151,12 +174,14 @@ public class OrderApplication {
 			dealerDiscount += d.getDealerDiscount();
 		}
 		
+		
 		MainOrder order = new MainOrder(cmd.getOrderId(), cmd.getAddr(), goodsAmounts, freight
-				, plateDiscount, dealerDiscount, cmd.getUserId(), cmd.getNoted(), dealerOrders, null, null);
+				, plateDiscount, dealerDiscount, cmd.getUserId(), cmd.getNoted(), dealerOrders, null
+				, getUsedMarket(cmd.getOrderId(), skuBeans));
 		// 组织保存(重新设置计算好的价格)		
 		order.add();
 		orderRepository.save(order);
-		
+		// 锁定营销 orderNo, 营销ID, userId
 		return new OrderResult(cmd.getOrderId(), goodsAmounts, freight, plateDiscount, dealerDiscount);
 	}
 	/***
@@ -178,6 +203,27 @@ public class OrderApplication {
 			dtos.add(bean);
 		}		
 		return rs;
+	}
+	/***
+	 * 获取应用的营销信息
+	 * @param orderNo
+	 * @param beans
+	 * @return
+	 */
+	List<SimpleMarketing> getUsedMarket(String orderNo, Map<String, GoodsReqBean> beans) {
+		List<SimpleMarketing> result = null;
+		
+		Iterator<String> keys = beans.keySet().iterator();
+		while(keys.hasNext()) {
+			SimpleMarketInfo info = beans.get(keys.next()).toMarket();
+			if (info != null) {
+				if (result == null)
+					result = new ArrayList<SimpleMarketing>();
+				result.add(new SimpleMarketing(orderNo, info));
+			}
+		}
+		
+		return result;
 	}
 	/***
 	 * 真实拆分订单到商家
@@ -215,14 +261,13 @@ public class OrderApplication {
 				
 				if (mb == null) {
 					dtls.add(new DealerOrderDtl(cmd.getOrderId(), dealerOrderId, cmd.getAddr(), 
-							cmd.getInvoice(), null, null, null, null, "0", "",
-							0, 0, bean.toGoodsInfo(), 0, 0, cmd.getNoted(), "0"));
+							cmd.getInvoice(), null, null,
+							0, 0, bean.toGoodsInfo(), 0, cmd.getNoted(), bean.toMarketInfo()));
 				}
 				else {
 					dtls.add(new DealerOrderDtl(cmd.getOrderId(), dealerOrderId, cmd.getAddr(), 
-							cmd.getInvoice(), null, mb.getMresId(), mb.getSalesmanId(), mb.getBdStaffRatio(), 
-							mb.getMediaRatio(), mb.getMediaId(),
-							0, 0, bean.toGoodsInfo(), 0, 0, cmd.getNoted(), mb.getSalesmanRatio()));
+							cmd.getInvoice(), null, mb.toMediaInfo(),
+							0, 0, bean.toGoodsInfo(), 0, cmd.getNoted(), bean.toMarketInfo()));
 				}
 			}
 			rs.add(new DealerOrder(cmd.getOrderId(), dealerOrderId, dealerId, goodsAmount, freight,
@@ -262,7 +307,7 @@ public class OrderApplication {
 	 * @param ls
 	 * @param cityCode
 	 */
-	private void calFreight(Map<String, Integer> skus, List<GoodsDto> ls, String cityCode) {
+	private void calFreight(Map<String, GoodsReqBean> skus, List<GoodsDto> ls, String cityCode) {
 		LOGGER.info("==fanjc==计算运费.");
 		Iterator<String> it = skus.keySet().iterator();
 		List<String> skuIds = new ArrayList<String>();
@@ -274,7 +319,11 @@ public class OrderApplication {
 		
 		for (GoodsDto bean : ls) {
 			String skuId = bean.getSkuId();
-			bean.setPurNum(skus.get(skuId));
+			GoodsReqBean gdb = skus.get(skuId);
+			bean.setPurNum(gdb.getPurNum());
+			bean.setMarketingId(gdb.getMarketId());
+			bean.setMarketLevel(gdb.getLevel());
+			//bean.setThreshold(gdb.get);
 			calFrt(bean, postMap.get(skuId));
 			// bean.setFreight(1000);
 		}
@@ -355,7 +404,7 @@ public class OrderApplication {
 		// 获取订单所用营销策略
 		List<String> mks = order.getMkIds();
 		// 获取营销策略详情看是否有变化
-		orderDomainService.getMarketingsByIds(mks);
+		//orderDomainService.getMarketingsByIds(mks);
 		// 若有变化则需要重新计算金额并更新
 		
 		// 请求发起支付
@@ -389,7 +438,7 @@ public class OrderApplication {
 		}
 	}
 	/***
-	 * 获取订单及支付金额
+	 * 获取订单支付金额，用于支付时调用
 	 * @param orderNo
 	 * @return
 	 */
@@ -407,6 +456,19 @@ public class OrderApplication {
 		OrderMoney result = new OrderMoney();
 		MainOrder order = orderRepository.getOrderById(orderNo);
 		// 判断是否符合营销规则，不符合需要重新计算，保存
+		List<GoodsDto> goods = orderRepository.getOrderGoodsForCal(orderNo, GoodsDto.class);
+		// 计算营销活动优惠
+		List<MarketBean> mks = orderDomainService.getMarketingsByIds(order.getMkIds(), userId, MarketBean.class);
+		try {
+			OrderMarketCalc.calMarkets(mks, goods);
+			// 设置优惠及换购价
+		}
+		catch (NegativeException e) {
+			// 按原价计算
+		}		
+		// 设置计算后的金额
+		setCalAmount(order, goods);
+		
 		result.setAmountOfMoney(order.getActual());
 		result.setOrderNo(orderNo);
 		return result;
@@ -422,5 +484,13 @@ public class OrderApplication {
 		if (order.paySuccess(cmd.getPayNo(), cmd.getPayWay(), cmd.getPayTime(), cmd.getUserId()))
 			orderRepository.updateMainOrder(order);
 		return ;
+	}
+	/**
+	 * 设置计算后的金额
+	 */
+	private void setCalAmount(MainOrder order, List<GoodsDto> goods) {
+		for (GoodsDto g : goods) {
+			order.setSkuMoney(g.getSkuId(), g.getPlateformDiscount(), g.getMarketingId());
+		}
 	}
 }

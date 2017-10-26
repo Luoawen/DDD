@@ -1,7 +1,10 @@
 package cn.m2c.scm.domain.model.order.event;
 
 import java.util.Date;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+
+import com.google.gson.Gson;
 
 import cn.m2c.ddd.common.domain.model.DomainEvent;
 /***
@@ -10,21 +13,21 @@ import cn.m2c.ddd.common.domain.model.DomainEvent;
  * created date 2017年10月23日
  * copyrighted@m2c
  */
-public class SaleNumEvent implements DomainEvent {
+public class OrderCancelEvent implements DomainEvent {
 	/**销量*/
-	private List<SimpleSale> sales;
+	private Map<String, Integer> sales;
 	
 	private Date occurredOn;
 	
     private int eventVersion;
 	
-	public SaleNumEvent() {
+	public OrderCancelEvent() {
 		super();
 		occurredOn = new Date();
 		eventVersion = 1;
 	}
 	
-	public SaleNumEvent(List<SimpleSale> s) {
+	public OrderCancelEvent(Map<String, Integer> s) {
 		this();
 		sales = s;
 	}
@@ -40,15 +43,15 @@ public class SaleNumEvent implements DomainEvent {
 		return occurredOn;
 	}
 
-	public List<SimpleSale> getSales() {
+	public Map<String, Integer> getSales() {
 		return sales;
 	}
 	
-	/*public static void main(String[] args) {
-		Gson gson = new Gson();
-		List<SimpleSale> s = new ArrayList<SimpleSale>();
-		s.add(new SimpleSale("2222", 2));
-		SaleNumEvent a = new SaleNumEvent(s);
-		System.out.print(gson.toJson(a));
-	}*/
+	public static void main(String[] args) {
+		/*Gson gson = new Gson();
+		Map<String, Integer> s = new HashMap<String, Integer>();
+		s.put("2222", 2);
+		OrderPayedEvent a = new OrderPayedEvent(s);
+		System.out.print(gson.toJson(a));*/
+	}
 }

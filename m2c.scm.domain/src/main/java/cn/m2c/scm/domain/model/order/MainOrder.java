@@ -2,14 +2,16 @@ package cn.m2c.scm.domain.model.order;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import cn.m2c.ddd.common.domain.model.ConcurrencySafeEntity;
 import cn.m2c.ddd.common.domain.model.DomainEventPublisher;
 import cn.m2c.scm.domain.model.order.event.MediaResEvent;
-import cn.m2c.scm.domain.model.order.event.SaleNumEvent;
+import cn.m2c.scm.domain.model.order.event.OrderCancelEvent;
+import cn.m2c.scm.domain.model.order.event.OrderPayedEvent;
 import cn.m2c.scm.domain.model.order.event.SimpleMediaRes;
-import cn.m2c.scm.domain.model.order.event.SimpleSale;
 import cn.m2c.scm.domain.model.order.log.event.OrderOptLogEvent;
 /***
  * 主订单实体
@@ -33,13 +35,13 @@ public class MainOrder extends ConcurrencySafeEntity {
 	/**收货人*/
 	ReceiveAddr addr;
 	/**以分为单位，商品金额*/
-	private Long goodsAmount;
+	private Long goodsAmount = 0l;
 	/**订单总运费*/
-	private Long orderFreight;
+	private Long orderFreight = 0l;
 	/**平台优惠*/
-	private Long plateformDiscount;
+	private Long plateformDiscount = 0l;
 	/**商家优惠*/
-	private Long dealerDiscount;
+	private Long dealerDiscount = 0l;
 	/**下单用户ID*/
 	private String userId;
 	/**备注 留言*/
@@ -85,11 +87,14 @@ public class MainOrder extends ConcurrencySafeEntity {
 			return false;
 		}
 		status = -1;
-		
+		Map<String, Integer> allSales = new HashMap<String, Integer>();
 		for (DealerOrder d : dealerOrders) {
 			d.cancel();
+			allSales.putAll(d.getSaleNums());
 		}
 		
+		DomainEventPublisher.instance().publish(new OrderCancelEvent(allSales));
+		allSales = null;
 		DomainEventPublisher.instance().publish(new OrderOptLogEvent(orderId, null, "订单取消成功", userId));
 		return true;
 	}
@@ -112,20 +117,22 @@ public class MainOrder extends ConcurrencySafeEntity {
 		this.payWay = payWay;
 		this.payTime = payTime;
 		status = 1;
-		List<SimpleSale> allSales = new ArrayList<SimpleSale>();
+		Map<String, Integer> allSales = new HashMap<String, Integer>();
 		List<SimpleMediaRes> allRes = new ArrayList<SimpleMediaRes>();
 		for (DealerOrder d : dealerOrders) {
 			d.payed();
-			allSales.addAll(d.getSaleNums());
+			allSales.putAll(d.getSaleNums());
 			allRes.addAll(d.getAllMediaRes());
 		}
 		DomainEventPublisher.instance().publish(new OrderOptLogEvent(orderId, null, "订单支付成功", uId));
 		
-		DomainEventPublisher.instance().publish(new SaleNumEvent(allSales));
-		
+		DomainEventPublisher.instance().publish(new OrderPayedEvent(allSales));
+		allSales = null;
 		if (allRes.size() > 1)
-			DomainEventPublisher.instance().publish(new MediaResEvent(orderId, orderFreight, 
-				goodsAmount - plateformDiscount - dealerDiscount, allRes));
+			/*DomainEventPublisher.instance().publish(new MediaResEvent(orderId, orderFreight, 
+				goodsAmount - plateformDiscount - dealerDiscount, allRes));*/
+			DomainEventPublisher.instance().publish(new MediaResEvent(orderId, allRes));
+		allRes = null;
 		return true;
 	}
 	/***
@@ -163,5 +170,34 @@ public class MainOrder extends ConcurrencySafeEntity {
 				rs.add(mId);
 		}
 		return rs;
+	}
+	/***
+	 * 设置计算金额
+	 * @param skuId
+	 * @param discountAmount
+	 * @param marketingId
+	 */
+	public void setSkuMoney(String skuId, long discountAmount, String marketingId) {
+		for (DealerOrder d : dealerOrders) {
+			if (d.setSkuMoney(skuId, discountAmount, marketingId))
+				return;
+		}
+	}
+	/***
+	 * 计算订单金额
+	 */
+	public void calOrderMoney() {
+		goodsAmount = 0l;
+		orderFreight = 0l;
+		plateformDiscount = 0l;
+		dealerDiscount = 0l;
+		
+		for (DealerOrder d : dealerOrders) {
+			d.calOrderMoney();
+			orderFreight += d.getOrderFreight();
+			goodsAmount += d.getGoodsAmount();
+			plateformDiscount += d.getPlateformDiscount();
+			dealerDiscount += d.getDealerDiscount();
+		}
 	}
 }

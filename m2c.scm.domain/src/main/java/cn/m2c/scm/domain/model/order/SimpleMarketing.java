@@ -11,8 +11,7 @@ public class SimpleMarketing extends IdentifiedDomainObject {
 	/**订单ID*/
 	private String orderId;
 	//private MainOrder order;
-	/**优惠券ID*/
-	private String marketingId;
+	private SimpleMarketInfo marketInfo;
 	/**1可用，0不可用*/
 	private Integer status = 1;
 	
@@ -20,10 +19,10 @@ public class SimpleMarketing extends IdentifiedDomainObject {
 		super();
 	}
 	
-	public SimpleMarketing(String order, String marketingId) {
+	public SimpleMarketing(String order, SimpleMarketInfo marketInfo) {
 		super();
 		this.orderId = order;
-		this.marketingId = marketingId;
+		this.marketInfo = marketInfo;
 	}
 	
 	public void disabled() {
@@ -31,8 +30,8 @@ public class SimpleMarketing extends IdentifiedDomainObject {
 	}
 	
 	String getMarketingId() {
-		if (status > 0)
-			return marketingId;
+		if (status > 0 && marketInfo != null)
+			return marketInfo.getMarketingId();
 		return null;
 	}
 }

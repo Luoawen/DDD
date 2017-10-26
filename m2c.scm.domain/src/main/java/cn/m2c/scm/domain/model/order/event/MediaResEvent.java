@@ -22,10 +22,6 @@ public class MediaResEvent implements DomainEvent {
     private int eventVersion;
     
     private String orderNo;
-    /**运费*/
-    private long freight;
-    /**优惠后物品金额*/
-    private long goodsAmount;
 	
 	public MediaResEvent() {
 		super();
@@ -33,12 +29,10 @@ public class MediaResEvent implements DomainEvent {
 		eventVersion = 1;
 	}
 	
-	public MediaResEvent(String orderNo, long freight, long goodsAmount, List<SimpleMediaRes> s) {
+	public MediaResEvent(String orderNo, List<SimpleMediaRes> s) {
 		this();
 		reses = s;
 		this.orderNo = orderNo;
-		this.freight = freight;
-		this.goodsAmount = goodsAmount;
 	}
 	@Override
 	public int eventVersion() {
@@ -67,20 +61,11 @@ public class MediaResEvent implements DomainEvent {
 	public String getOrderNo() {
 		return orderNo;
 	}
-
-	public long getFreight() {
-		return freight;
-	}
-
-	public long getGoodsAmount() {
-		return goodsAmount;
-	}
-	
 	
 	public static void main(String[] args) {
 		List<SimpleMediaRes> s = new ArrayList<SimpleMediaRes>();
-		s.add(new SimpleMediaRes("2222", "{'id':'1','rate':'2'}"));
-		MediaResEvent a = new MediaResEvent("11111", 2000, 80000, s);
+		s.add(new SimpleMediaRes("2222", "{'id':'1','rate':'2'}", "skuId", 6000));
+		MediaResEvent a = new MediaResEvent("11111", s);
 		System.out.print(JSONObject.toJSONString(a));
 	}
 }

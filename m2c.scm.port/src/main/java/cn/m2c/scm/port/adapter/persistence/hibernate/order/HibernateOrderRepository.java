@@ -1,5 +1,7 @@
 package cn.m2c.scm.port.adapter.persistence.hibernate.order;
 
+import java.util.List;
+
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.slf4j.Logger;
@@ -71,5 +73,14 @@ public class HibernateOrderRepository extends HibernateSupperRepository implemen
 	public void updateDealerOrder(DealerOrder dealOrder) {
 		// TODO Auto-generated method stub
 		this.session().save(dealOrder);
+	}
+	@Override
+	public <T> List<T> getOrderGoodsForCal(String orderNo, Class<T> clss) {
+		StringBuilder sql = new StringBuilder("select sku_id skuId, sell_num purNum, marketing_id as marketingId, market_level as marketLevel, discount_price as discountPrice, is_change as isChange, "); 
+		sql.append(" change_price as changePrice ");
+		sql.append(" from t_scm_order_detail where order_id=:orderNo");
+		Query query = this.session().createSQLQuery(sql.toString()).addEntity(clss);
+		query.setParameter("orderNo", orderNo);
+		return (List<T>)query.list();
 	}
 }

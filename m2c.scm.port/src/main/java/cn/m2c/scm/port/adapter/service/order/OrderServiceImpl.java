@@ -13,6 +13,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baidu.disconf.client.usertools.DisconfDataGetter;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import cn.m2c.scm.application.order.data.bean.MediaResBean;
 import cn.m2c.scm.domain.service.order.OrderService;
@@ -60,20 +61,6 @@ public class OrderServiceImpl implements OrderService {
 	 */
 	@Override
 	public Map<String, Object> getMarketingsByGoods(Map<String, Object> skus) {
-		return null;
-	}
-	
-	/***
-	 * 获取营销规则列表通过营销ID
-	 * @param marketingIds
-	 * @return
-	 */
-	@Override
-	public Map<String, Object> getMarketingsByIds(List<String> marketingIds) {
-		String url = M2C_HOST_URL + "/m2c.media/mres/ratios/client?mresIds={0}&orderTime={1}";
-		
-		
-		
 		return null;
 	}
 	
@@ -126,5 +113,26 @@ public class OrderServiceImpl implements OrderService {
 	public void unlockStock(Map<String, Float> skus) {
 		// TODO Auto-generated method stub
 		
+	}
+	/***
+	 * 获取营销活动
+	 */
+	@Override
+	public <T> List<T> getMarketingsByIds(List<String> marketingIds, String userId, Class<T> clss) {
+		// TODO Auto-generated method stub
+		String url = M2C_HOST_URL + "/m2c.market/fullcut/multi?full_cut_ids={0}&userId={1}";
+		
+		String rtResult = restTemplate.getForObject(url, String.class, JSONObject.toJSONString(marketingIds),
+				userId);
+		JSONObject json = JSONObject.parseObject(rtResult);
+		
+		List<T> result = null;
+        if (json.getInteger("status") == 200) {
+        	String content = json.getString("content");
+        	Gson gson = new Gson();
+        	result = gson.fromJson(content, new TypeToken<List<T>>() {
+        	}.getType());
+        }
+		return result;
 	}
 }
