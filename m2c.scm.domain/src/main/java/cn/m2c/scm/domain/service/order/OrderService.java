@@ -63,11 +63,12 @@ public interface OrderService {
 	
 	/***
 	 * 获取营销规则列表通过营销ID
+	 * @param <T>
 	 * @param marketingIds
-	 * @param time 下单时间
+	 * @param userId
 	 * @return
 	 */
-	public Map<String, Object> getMarketingsByIds(List<String> marketingIds);
+	public <T> List<T> getMarketingsByIds(List<String> marketingIds, String userId, Class<T> clss);
 	
 	/***
 	 * 获取商品的供货价

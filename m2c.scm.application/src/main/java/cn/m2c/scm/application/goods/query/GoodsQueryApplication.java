@@ -465,7 +465,7 @@ public class GoodsQueryApplication {
                     .append(", a.goods_main_images as goodsIcon")
                     .append(", d.service_rate as rate")
                     .append(", d.classify_name as goodsType")
-                    .append(", b.weight, b.dealer_id as dealerId")
+                    .append(", b.weight, a.dealer_id as dealerId")
                     .append(", b.supply_price as supplyPrice")
                     .append(", b.market_price as price")
                     .append(", b.photograph_price as discountPrice")

@@ -10,7 +10,11 @@
             <generator class="native"/>
         </id>
         <property name="orderId" column="order_id" type="string"/>
-        <property name="marketingId" column="marketing_id" type="string"/>
+        <component name="marketInfo">
+        	<property name="marketingId" column="marketing_id" type="string"/>
+	    	<property name="marketLevel" column="market_level" type="int"/>
+	        <property name="threshold" column="threshold" type="int"/>
+        </component>
         <property name="status" column="_status" type="int"/>
         
         <!-- <many-to-one name="order" column="order_id" class="cn.m2c.scm.domain.model.order.MainOrder" 

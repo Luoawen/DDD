@@ -3,7 +3,7 @@ package cn.m2c.scm.application.order.data.bean;
 import cn.m2c.ddd.common.persistence.orm.ColumnAlias;
 /***
  * 订单中的商品SKU及数量对应
- * @author 89776
+ * @author fanjc
  * created date 2017年10月19日
  * copyrighted@m2c
  */

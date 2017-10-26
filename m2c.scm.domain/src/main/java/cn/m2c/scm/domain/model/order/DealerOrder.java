@@ -1,13 +1,14 @@
 package cn.m2c.scm.domain.model.order;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 
 import cn.m2c.ddd.common.domain.model.ConcurrencySafeEntity;
 import cn.m2c.scm.domain.model.order.event.SimpleMediaRes;
-import cn.m2c.scm.domain.model.order.event.SimpleSale;
 /**
  * 商家订单
  * @author fanjc
@@ -148,10 +149,10 @@ public class DealerOrder extends ConcurrencySafeEntity {
 	 * 获取销量
 	 * @return
 	 */
-	List<SimpleSale> getSaleNums() {
-		List<SimpleSale> arr = new ArrayList<SimpleSale>();
+	Map<String, Integer> getSaleNums() {
+		Map<String, Integer> arr = new HashMap<String, Integer>();
 		for (DealerOrderDtl dtl : orderDtls) {
-			arr.add(new SimpleSale(dtl.getSkuId(), (dtl.getSaleNum() == null ? 0: dtl.getSaleNum())));
+			arr.put(dtl.getSkuId(), (dtl.getSaleNum() == null ? 0: dtl.getSaleNum()));
 		}
 		return arr;
 	}

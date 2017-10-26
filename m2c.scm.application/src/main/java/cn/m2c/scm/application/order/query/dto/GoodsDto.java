@@ -1,6 +1,9 @@
 package cn.m2c.scm.application.order.query.dto;
 
+import org.apache.commons.lang3.StringUtils;
+
 import cn.m2c.scm.domain.model.order.GoodsInfo;
+import cn.m2c.scm.domain.model.order.SimpleMarketInfo;
 
 /**
  * 商品数据传输对象
@@ -43,10 +46,62 @@ public class GoodsDto {
 	private long freight;
 	
 	private String marketingId;
+	/**营销层级*/
+	private int marketLevel;
+	/**营销层级门槛*/
+	private int threshold;
 	
+	/**平台优惠*/
+	private long plateformDiscount = 0;
+	
+	private int isChange = 0;
+	
+	private int changePrice = 0;
+	
+	public int isChange() {
+		return isChange;
+	}
+	
+	public void setIsChange(int s) {
+		isChange = s;
+	}
+	
+	public int getChangePrice() {
+		return changePrice;
+	}
+	
+	public void setChangePrice(int s) {
+		changePrice = s;
+	}
+	
+	public long getPlateformDiscount() {
+		return plateformDiscount;
+	}
+
+	public void setPlateformDiscount(long plateformDiscount) {
+		this.plateformDiscount = plateformDiscount;
+	}
+
 	/**购买数量*/
 	private int purNum = 0;
 	
+	
+	public Integer getMarketLevel() {
+		return marketLevel;
+	}
+
+	public void setMarketLevel(Integer marketLevel) {
+		this.marketLevel = marketLevel;
+	}
+
+	public Integer getThreshold() {
+		return threshold;
+	}
+
+	public void setThreshold(Integer threshold) {
+		this.threshold = threshold;
+	}
+
 	public long getFreight() {
 		return freight;
 	}
@@ -169,6 +224,13 @@ public class GoodsDto {
 		return new GoodsInfo(rate, goodsId, goodsName, goodsTitle
 				,goodsType, goodsTypeId, goodsUnit, skuId
 				,skuName, price, supplyPrice, discountPrice, goodsIcon
-				,weight, purNum, freight, marketingId);		
+				,weight, purNum, freight, plateformDiscount);		
+	}
+	
+	public SimpleMarketInfo toMarketInfo() {
+		if (!StringUtils.isEmpty(marketingId)) {
+			return new SimpleMarketInfo(marketingId, marketLevel, threshold);
+		}
+		return null; 
 	}
 }
