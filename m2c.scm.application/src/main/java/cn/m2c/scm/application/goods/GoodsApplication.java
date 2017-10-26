@@ -282,4 +282,32 @@ public class GoodsApplication {
             }
         }
     }
+
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+    public void GoodsSkuUpdateByOrderCancel(Map<String, Integer> map) {
+        if (null != map && map.size() > 0) {
+            for (Map.Entry<String, Integer> entry : map.entrySet()) {
+                String skuId = entry.getKey();
+                Integer num = entry.getValue();
+                GoodsSku goodsSku = goodsSkuRepository.queryGoodsSkuById(skuId);
+                if (null != goodsSku) {
+                    goodsSku.orderCancel(num);
+                }
+            }
+        }
+    }
+
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+    public void GoodsSkuUpdateByOrderReturnGoods(Map<String, Integer> map) {
+        if (null != map && map.size() > 0) {
+            for (Map.Entry<String, Integer> entry : map.entrySet()) {
+                String skuId = entry.getKey();
+                Integer num = entry.getValue();
+                GoodsSku goodsSku = goodsSkuRepository.queryGoodsSkuById(skuId);
+                if (null != goodsSku) {
+                    goodsSku.orderReturnGoods(num);
+                }
+            }
+        }
+    }
 }

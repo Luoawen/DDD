@@ -778,6 +778,7 @@ public class GoodsQueryApplication {
         sql.append(" FROM ");
         sql.append(" t_scm_goods WHERE dealer_id = ?");
         sql.append(" AND goods_status = 2 AND del_status= 1");
+        params.add(dealerId);
         return supportJdbcTemplate.jdbcTemplate().queryForObject(sql.toString(), params.toArray(), Integer.class);
     }
 
