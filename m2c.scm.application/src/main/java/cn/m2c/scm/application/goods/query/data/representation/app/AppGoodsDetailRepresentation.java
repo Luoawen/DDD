@@ -17,7 +17,7 @@ import java.util.Map;
  */
 public class AppGoodsDetailRepresentation {
     private static final String M2C_HOST_URL = DisconfDataGetter.getByFileItem("constants.properties", "m2c.host.url").toString().trim();
-
+    private String dealerId;
     private String goodsId;
     private String classifyId;
     private String goodsName;
@@ -37,6 +37,7 @@ public class AppGoodsDetailRepresentation {
     public AppGoodsDetailRepresentation(GoodsBean bean, List<GoodsGuaranteeBean> goodsGuaranteeBeans,
                                         String goodsUnitName, String mresId, Integer commentTotal,
                                         GoodsCommentBean goodsCommentBean, List<Map> fullCuts) {
+        this.dealerId = dealerId;
         this.goodsId = bean.getGoodsId();
         this.classifyId = bean.getGoodsClassifyId();
         this.goodsName = bean.getGoodsName();
@@ -202,5 +203,13 @@ public class AppGoodsDetailRepresentation {
 
     public void setClassifyId(String classifyId) {
         this.classifyId = classifyId;
+    }
+
+    public String getDealerId() {
+        return dealerId;
+    }
+
+    public void setDealerId(String dealerId) {
+        this.dealerId = dealerId;
     }
 }
