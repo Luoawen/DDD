@@ -7,6 +7,7 @@ import cn.m2c.scm.application.postage.command.PostageModelCommand;
 import cn.m2c.scm.application.postage.data.bean.PostageModelBean;
 import cn.m2c.scm.application.postage.data.representation.PostageModelDetailRepresentation;
 import cn.m2c.scm.application.postage.data.representation.PostageModelRepresentation;
+import cn.m2c.scm.application.postage.data.representation.PostageModelRuleRepresentation;
 import cn.m2c.scm.application.postage.query.PostageModelQueryApplication;
 import cn.m2c.scm.domain.IDGenerator;
 import cn.m2c.scm.domain.NegativeException;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 运费模板
@@ -191,6 +193,22 @@ public class PostageAgent {
         } catch (Exception e) {
             LOGGER.error("postageModelDetail Exception e:", e);
             result = new MResult(MCode.V_400, "查询运费模板详情失败");
+        }
+        return new ResponseEntity<MResult>(result, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/rule", method = RequestMethod.GET)
+    public ResponseEntity<MResult> postageModelRule(
+            @RequestParam(value = "skuIds", required = false) List<String> skuIds,
+            @RequestParam(value = "cityCode", required = false) String cityCode) {
+        MResult result = new MResult(MCode.V_1);
+        try {
+            Map<String, PostageModelRuleRepresentation> map = postageModelQueryApplication.getGoodsPostageRule(skuIds, cityCode);
+            result.setContent(map);
+            result.setStatus(MCode.V_200);
+        } catch (Exception e) {
+            LOGGER.error("postageModelRule Exception e:", e);
+            result = new MResult(MCode.V_400, "查询运费模板规则失败");
         }
         return new ResponseEntity<MResult>(result, HttpStatus.OK);
     }

@@ -19,6 +19,7 @@ public class AppGoodsDetailRepresentation {
     private static final String M2C_HOST_URL = DisconfDataGetter.getByFileItem("constants.properties", "m2c.host.url").toString().trim();
 
     private String goodsId;
+    private String classifyId;
     private String goodsName;
     private String goodsSubTitle;
     private String goodsUnitId;
@@ -37,6 +38,7 @@ public class AppGoodsDetailRepresentation {
                                         String goodsUnitName, String mresId, Integer commentTotal,
                                         GoodsCommentBean goodsCommentBean, List<Map> fullCuts) {
         this.goodsId = bean.getGoodsId();
+        this.classifyId = bean.getGoodsClassifyId();
         this.goodsName = bean.getGoodsName();
         this.goodsSubTitle = bean.getGoodsSubTitle();
         this.goodsUnitId = bean.getGoodsUnitId();
@@ -192,5 +194,13 @@ public class AppGoodsDetailRepresentation {
 
     public void setFullCuts(List<Map> fullCuts) {
         this.fullCuts = fullCuts;
+    }
+
+    public String getClassifyId() {
+        return classifyId;
+    }
+
+    public void setClassifyId(String classifyId) {
+        this.classifyId = classifyId;
     }
 }
