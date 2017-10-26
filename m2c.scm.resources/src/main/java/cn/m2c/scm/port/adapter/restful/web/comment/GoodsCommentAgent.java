@@ -122,4 +122,26 @@ public class GoodsCommentAgent {
         }
         return new ResponseEntity<MResult>(result, HttpStatus.OK);
     }
+
+
+    /**
+     * 差评24h延时展示,超过24h更新状态
+     *
+     * @return
+     */
+    @RequestMapping(value = "/over/24h/bad/comment", method = RequestMethod.POST)
+    public ResponseEntity<MResult> over24HBadCommentUpdateStatus() {
+        MResult result = new MResult(MCode.V_1);
+        try {
+            goodsCommentApplication.over24HBadCommentUpdateStatus();
+            result.setStatus(MCode.V_200);
+        } catch (NegativeException ne) {
+            LOGGER.error("over24HBadCommentUpdateStatus NegativeException e:", ne);
+            result = new MResult(ne.getStatus(), ne.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("over24HBadCommentUpdateStatus Exception e:", e);
+            result = new MResult(MCode.V_400, "更新差评延时状态失败");
+        }
+        return new ResponseEntity<MResult>(result, HttpStatus.OK);
+    }
 }

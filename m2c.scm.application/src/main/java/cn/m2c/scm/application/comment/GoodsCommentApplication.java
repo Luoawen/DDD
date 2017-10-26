@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 /**
  * 商品评价
  */
@@ -68,5 +70,18 @@ public class GoodsCommentApplication {
             throw new NegativeException(MCode.V_300, "评论信息不存在");
         }
         goodsComment.remove();
+    }
+
+    /**
+     * 差评24h延时展示,超过24h更新状态
+     */
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+    public void over24HBadCommentUpdateStatus() throws NegativeException {
+        List<GoodsComment> goodsComments = goodsCommentRepository.queryOver24HBadComment();
+        if (null != goodsComments && goodsComments.size() > 0) {
+            for (GoodsComment goodsComment : goodsComments) {
+                goodsComment.over24HBadCommentStatus();
+            }
+        }
     }
 }

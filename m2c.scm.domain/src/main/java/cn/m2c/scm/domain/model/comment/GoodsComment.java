@@ -188,4 +188,8 @@ public class GoodsComment extends ConcurrencySafeEntity {
     public void remove() {
         this.commentStatus = 2;
     }
+
+    public void over24HBadCommentStatus() {
+        this.delayedFlag = 1;
+    }
 }
