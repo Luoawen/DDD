@@ -68,4 +68,24 @@ public class PostageModelApplication {
         }
         postageModel.deletePostageModel();
     }
+
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+    public void addGoodsUserNum(String modelId) throws NegativeException {
+        LOGGER.info("addGoodsUserNum modelId >>{}", modelId);
+        PostageModel postageModel = postageModelRepository.getPostageModelById(modelId);
+        if (null == postageModel) {
+            throw new NegativeException(MCode.V_300, "运费模板不存在");
+        }
+        postageModel.addGoodsUserNum();
+    }
+
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+    public void outGoodsUserNum(String modelId) throws NegativeException {
+        LOGGER.info("outGoodsUserNum modelId >>{}", modelId);
+        PostageModel postageModel = postageModelRepository.getPostageModelById(modelId);
+        if (null == postageModel) {
+            throw new NegativeException(MCode.V_300, "运费模板不存在");
+        }
+        postageModel.outGoodsUserNum();
+    }
 }

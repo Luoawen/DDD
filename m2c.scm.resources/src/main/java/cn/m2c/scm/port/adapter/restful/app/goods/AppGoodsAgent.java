@@ -8,6 +8,7 @@ import cn.m2c.scm.application.classify.data.bean.GoodsClassifyBean;
 import cn.m2c.scm.application.classify.query.GoodsClassifyQueryApplication;
 import cn.m2c.scm.application.comment.query.GoodsCommentQueryApplication;
 import cn.m2c.scm.application.comment.query.data.bean.GoodsCommentBean;
+import cn.m2c.scm.application.goods.GoodsApplication;
 import cn.m2c.scm.application.goods.query.GoodsGuaranteeQueryApplication;
 import cn.m2c.scm.application.goods.query.GoodsQueryApplication;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsBean;
@@ -59,6 +60,8 @@ public class AppGoodsAgent {
     GoodsService goodsDubboService;
     @Autowired
     GoodsCommentQueryApplication goodsCommentQueryApplication;
+    @Autowired
+    GoodsApplication goodsApplication;
 
     /**
      * 商品猜你喜欢
@@ -129,8 +132,11 @@ public class AppGoodsAgent {
                 if (commentTotal > 0) {
                     goodsCommentBean = goodsCommentQueryApplication.queryGoodsDetailComment(goodsId);
                 }
+
+                List<Map> fullCut = goodsRestService.getGoodsFullCut(goodsBean.getDealerId(), goodsBean.getGoodsId(), goodsBean.getGoodsClassifyId());
+
                 AppGoodsDetailRepresentation representation = new AppGoodsDetailRepresentation(goodsBean,
-                        goodsGuarantee, goodsUnitName, null, commentTotal, goodsCommentBean);
+                        goodsGuarantee, goodsUnitName, null, commentTotal, goodsCommentBean, fullCut);
                 result.setContent(representation);
             }
             result.setStatus(MCode.V_200);
@@ -223,6 +229,9 @@ public class AppGoodsAgent {
             }
             result.setPager(total, pageNum, rows);
             result.setStatus(MCode.V_200);
+
+            // 发送事件统计
+            goodsApplication.goodsAppSearchMD(sn, userId, searchFrom, condition);
         } catch (Exception e) {
             LOGGER.error("searchGoodsByCondition Exception e:", e);
             result = new MPager(MCode.V_400, "搜索商品列表失败");
@@ -262,7 +271,12 @@ public class AppGoodsAgent {
     ) {
         MResult result = new MResult(MCode.V_1);
         Map mediaMap = goodsDubboService.getMediaResourceInfo(barNo);
+        String mediaId = null == mediaMap ? "" : (String) mediaMap.get("mediaId");
+        String mediaName = null == mediaMap ? "" : (String) mediaMap.get("mediaName");
         String mresId = null == mediaMap ? "" : (String) mediaMap.get("mresId");
+        String mresName = null == mediaMap ? "" : (String) mediaMap.get("mresName");
+
+
         try {
             List<GoodsBean> goodsBeans = goodsQueryApplication.recognizedGoods(recognizedInfo, location);
             if (null != goodsBeans && goodsBeans.size() > 0) {
@@ -276,16 +290,76 @@ public class AppGoodsAgent {
                     if (commentTotal > 0) {
                         goodsCommentBean = goodsCommentQueryApplication.queryGoodsDetailComment(goodsBean.getGoodsId());
                     }
+
+                    List<Map> fullCut = goodsRestService.getGoodsFullCut(goodsBean.getDealerId(), goodsBean.getGoodsId(), goodsBean.getGoodsClassifyId());
+
                     AppGoodsDetailRepresentation representation = new AppGoodsDetailRepresentation(goodsBean,
-                            goodsGuarantee, goodsUnitName, mresId, commentTotal, goodsCommentBean);
+                            goodsGuarantee, goodsUnitName, mresId, commentTotal, goodsCommentBean, fullCut);
                     representations.add(representation);
                 }
                 result.setContent(representations);
+
+                // 埋点
+                goodsApplication.goodsAppCapturedMD(sn, os, appVersion,
+                        osVersion, triggerTime, userId, userName,
+                        goodsBeans.get(0).getGoodsId(), goodsBeans.get(0).getGoodsName(), mresId, mediaName,
+                        mresId, mresName);
             }
             result.setStatus(MCode.V_200);
         } catch (Exception e) {
             LOGGER.error("recognizedPic Exception e:", e);
             result = new MResult(MCode.V_400, "拍照获取商品失败");
+        }
+        return new ResponseEntity<MResult>(result, HttpStatus.OK);
+    }
+
+
+    @RequestMapping(value = "query/by/dealer", method = RequestMethod.GET)
+    public ResponseEntity<MPager> appQueryGoodsByDealerId(
+            @RequestParam(value = "dealerId", required = false) String dealerId,
+            @RequestParam(value = "pageNum", required = false, defaultValue = "1") Integer pageNum,
+            @RequestParam(value = "rows", required = false, defaultValue = "10") Integer rows) {
+        MPager result = new MPager(MCode.V_1);
+        try {
+            Integer total = goodsQueryApplication.queryGoodsByDealerIdTotal(dealerId);
+            if (total > 0) {
+                List<GoodsBean> goodsBeans = goodsQueryApplication.queryGoodsByDealerId(dealerId, pageNum, rows);
+                if (null != goodsBeans && goodsBeans.size() > 0) {
+                    List<AppGoodsSearchRepresentation> representations = new ArrayList<AppGoodsSearchRepresentation>();
+                    for (GoodsBean goodsBean : goodsBeans) {
+                        List<Map> goodsTags = goodsRestService.getGoodsTags(goodsBean.getDealerId(), goodsBean.getGoodsId(), goodsBean.getGoodsClassifyId());
+                        representations.add(new AppGoodsSearchRepresentation(goodsBean, goodsTags));
+                    }
+                    result.setContent(representations);
+                }
+            }
+            result.setPager(total, pageNum, rows);
+            result.setStatus(MCode.V_200);
+        } catch (Exception e) {
+            LOGGER.error("searchGoodsByCondition Exception e:", e);
+            result = new MPager(MCode.V_400, "查询商家商品列表失败");
+        }
+        return new ResponseEntity<MPager>(result, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "query/by/goods/ids", method = RequestMethod.GET)
+    public ResponseEntity<MResult> appQueryGoodsByGoodsIds(
+            @RequestParam(value = "goodsIds", required = false) List goodsIds) {
+        MResult result = new MResult(MCode.V_1);
+        try {
+            List<GoodsBean> goodsBeans = goodsQueryApplication.appQueryGoodsByGoodsIds(goodsIds);
+            if (null != goodsBeans && goodsBeans.size() > 0) {
+                List<AppGoodsGuessRepresentation> resultRepresentation = new ArrayList<>();
+                for (GoodsBean goodsBean : goodsBeans) {
+                    List<Map> goodsTags = goodsRestService.getGoodsTags(goodsBean.getDealerId(), goodsBean.getGoodsId(), goodsBean.getGoodsClassifyId());
+                    resultRepresentation.add(new AppGoodsGuessRepresentation(goodsBean, goodsTags));
+                }
+                result.setContent(resultRepresentation);
+            }
+            result.setStatus(MCode.V_200);
+        } catch (Exception e) {
+            LOGGER.error("appQueryGoodsByGoodsIds Exception e:", e);
+            result = new MPager(MCode.V_400, "查询商品列表失败");
         }
         return new ResponseEntity<MResult>(result, HttpStatus.OK);
     }

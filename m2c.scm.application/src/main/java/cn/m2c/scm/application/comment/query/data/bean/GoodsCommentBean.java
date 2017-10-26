@@ -2,10 +2,15 @@ package cn.m2c.scm.application.comment.query.data.bean;
 
 import cn.m2c.ddd.common.persistence.orm.ColumnAlias;
 
+import java.util.Date;
+
 /**
  * 商品评论
  */
 public class GoodsCommentBean {
+
+    @ColumnAlias(value = "id")
+    private Integer id;
     /**
      * 评论编号
      */
@@ -103,12 +108,6 @@ public class GoodsCommentBean {
     private Integer imageStatus;
 
     /**
-     * 回复
-     */
-    @ColumnAlias(value = "reply_content")
-    private String replyContent;
-
-    /**
      * 评论级别 1好 2中 3差
      */
     @ColumnAlias(value = "comment_level")
@@ -135,14 +134,18 @@ public class GoodsCommentBean {
     /**
      * 评论时间
      */
-    @ColumnAlias(value = "comment_time")
-    private String commentTime;
+    @ColumnAlias(value = "created_date")
+    private Date createdDate;
 
-    /**
-     * 回复时间
-     */
-    @ColumnAlias(value = "reply_time")
-    private String replyTime;
+    private GoodsReplyCommentBean goodsReplyCommentBean;
+
+    public GoodsReplyCommentBean getGoodsReplyCommentBean() {
+        return goodsReplyCommentBean;
+    }
+
+    public void setGoodsReplyCommentBean(GoodsReplyCommentBean goodsReplyCommentBean) {
+        this.goodsReplyCommentBean = goodsReplyCommentBean;
+    }
 
     public String getCommentId() {
         return commentId;
@@ -272,14 +275,6 @@ public class GoodsCommentBean {
         this.imageStatus = imageStatus;
     }
 
-    public String getReplyContent() {
-        return replyContent;
-    }
-
-    public void setReplyContent(String replyContent) {
-        this.replyContent = replyContent;
-    }
-
     public Integer getCommentLevel() {
         return commentLevel;
     }
@@ -312,19 +307,19 @@ public class GoodsCommentBean {
         this.commentStatus = commentStatus;
     }
 
-    public String getCommentTime() {
-        return commentTime;
+    public Date getCreatedDate() {
+        return createdDate;
     }
 
-    public void setCommentTime(String commentTime) {
-        this.commentTime = commentTime;
+    public void setCreatedDate(Date createdDate) {
+        this.createdDate = createdDate;
     }
 
-    public String getReplyTime() {
-        return replyTime;
+    public Integer getId() {
+        return id;
     }
 
-    public void setReplyTime(String replyTime) {
-        this.replyTime = replyTime;
+    public void setId(Integer id) {
+        this.id = id;
     }
 }

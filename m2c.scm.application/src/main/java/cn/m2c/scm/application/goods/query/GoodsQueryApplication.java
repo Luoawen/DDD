@@ -537,8 +537,7 @@ public class GoodsQueryApplication {
             params.add("%" + condition + "%");
             List<String> goodsClassifyIds = goodsClassifyQueryApplication.getGoodsSubClassifyIdByName(condition);
             if (null != goodsClassifyIds && goodsClassifyIds.size() > 0) {
-                sql.append("  OR g.goods_classify_id in ?");
-                params.add("(" + Utils.listParseString(goodsClassifyIds) + ")");
+                sql.append("  OR g.goods_classify_id in (" + Utils.listParseString(goodsClassifyIds) + ")");
             }
             sql.append(")");
         }
@@ -585,8 +584,7 @@ public class GoodsQueryApplication {
             params.add("%" + condition + "%");
             List<String> goodsClassifyIds = goodsClassifyQueryApplication.getGoodsSubClassifyIdByName(condition);
             if (null != goodsClassifyIds && goodsClassifyIds.size() > 0) {
-                sql.append("  OR g.goods_classify_id in ?");
-                params.add("(" + Utils.listParseString(goodsClassifyIds) + ")");
+                sql.append("  OR g.goods_classify_id in (" + Utils.listParseString(goodsClassifyIds) + ")");
             }
             sql.append(")");
         }
@@ -727,6 +725,70 @@ public class GoodsQueryApplication {
             }
         }
         return null;
+    }
+
+    public List<GoodsBean> queryGoodsByDealerId(String dealerId, Integer pageNum, Integer rows) {
+        List<Object> params = new ArrayList<Object>();
+        StringBuilder sql = new StringBuilder();
+        sql.append(" SELECT ");
+        sql.append(" * ");
+        sql.append(" FROM ");
+        sql.append(" t_scm_goods WHERE ");
+        sql.append(" dealer_id = ? ");
+        sql.append(" AND del_status= 1 ORDER BY created_date DESC ");
+        sql.append(" LIMIT ?,?");
+        params.add(dealerId);
+        params.add(rows * (pageNum - 1));
+        params.add(rows);
+
+        List<GoodsBean> goodsBeanList = this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsBean.class, params.toArray());
+        if (null != goodsBeanList && goodsBeanList.size() > 0) {
+            for (GoodsBean goodsBean : goodsBeanList) {
+                goodsBean.setGoodsSkuBeans(queryGoodsSKUsByGoodsId(goodsBean.getId()));
+            }
+        }
+        return goodsBeanList;
+    }
+
+    public Integer queryGoodsByDealerIdTotal(String dealerId) {
+        List<Object> params = new ArrayList<Object>();
+        StringBuilder sql = new StringBuilder();
+        sql.append(" SELECT ");
+        sql.append(" count(*) ");
+        sql.append(" FROM ");
+        sql.append(" t_scm_goods WHERE ");
+        sql.append(" dealer_id = ? ");
+        sql.append(" AND del_status= 1");
+        params.add(dealerId);
+
+        List<GoodsBean> goodsBeanList = this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsBean.class, params.toArray());
+        if (null != goodsBeanList && goodsBeanList.size() > 0) {
+            for (GoodsBean goodsBean : goodsBeanList) {
+                goodsBean.setGoodsSkuBeans(queryGoodsSKUsByGoodsId(goodsBean.getId()));
+            }
+        }
+        return supportJdbcTemplate.jdbcTemplate().queryForObject(sql.toString(), params.toArray(), Integer.class);
+    }
+
+    public Integer queryGoodsSellTotal(String dealerId) {
+        List<Object> params = new ArrayList<Object>();
+        StringBuilder sql = new StringBuilder();
+        sql.append(" SELECT ");
+        sql.append(" count(*) ");
+        sql.append(" FROM ");
+        sql.append(" t_scm_goods WHERE dealer_id = ?");
+        sql.append(" AND goods_status = 2 AND del_status= 1");
+        return supportJdbcTemplate.jdbcTemplate().queryForObject(sql.toString(), params.toArray(), Integer.class);
+    }
+
+    public List<GoodsBean> appQueryGoodsByGoodsIds(List goodsIds) {
+        List<GoodsBean> goodsBeanList = queryGoodsByGoodsIds(goodsIds);
+        if (null != goodsBeanList && goodsBeanList.size() > 0) {
+            for (GoodsBean goodsBean : goodsBeanList) {
+                goodsBean.setGoodsSkuBeans(queryGoodsSKUsByGoodsId(goodsBean.getId()));
+            }
+        }
+        return goodsBeanList;
     }
 }
 

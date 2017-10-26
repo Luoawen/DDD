@@ -11,9 +11,8 @@
         </id>
         <property name="replyId" column="reply_id" type="string"/>
         <property name="replyContent" column="reply_content" type="string"/>
-        <property name="replyTime" column="reply_time" type="string"/>
 
-        <many-to-one name="commentId" cascade="all" class="cn.m2c.scm.domain.model.comment.GoodsComment"
+        <many-to-one name="goodsComment" cascade="all" class="cn.m2c.scm.domain.model.comment.GoodsComment"
                      column="comment_id" unique="true"/>
     </class>
 </hibernate-mapping>

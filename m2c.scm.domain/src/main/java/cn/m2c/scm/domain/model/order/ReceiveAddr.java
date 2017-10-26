@@ -48,4 +48,24 @@ public class ReceiveAddr extends ValueObject {
 	public String getCityCode() {
 		return cityCode;
 	}
+	
+	
+	/**
+	 * 修改地址
+	 * @param province
+	 * @param city
+	 * @param area
+	 * @param street
+	 */
+	public void updateAddr(String province,String provCode,String city,String cityCode,String area,String areaCode,String street,String revPerson,String phone) {
+		this.province =province;
+		this.provinceCode = provCode;
+		this.city = city;
+		this.cityCode = cityCode;
+		this.area = area;
+		this.areaCode = areaCode;
+		this.street = street;
+		this.revPerson = revPerson;
+		this.phone = phone;
+	}
 }

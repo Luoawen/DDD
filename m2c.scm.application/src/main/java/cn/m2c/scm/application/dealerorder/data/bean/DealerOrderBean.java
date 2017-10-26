@@ -3,39 +3,44 @@ package cn.m2c.scm.application.dealerorder.data.bean;
 import java.util.Date;
 import java.util.List;
 
-import cn.m2c.scm.application.order.data.bean.GoodsInfoBean;
+import cn.m2c.ddd.common.persistence.orm.ColumnAlias;
 
 public class DealerOrderBean {
 	/**
 	 * 商品信息
 	 */
-	private List<GoodsInfoBean> goodsInfoList;
+	private List<DealerOrderGoodsInfo> goodsInfoList;
 	/**
 	 * 订单总额
 	 */
-	private Integer totalMoney;
+	private long totalMoney;
 	/**
 	 * 下单时间
 	 */
+	@ColumnAlias(value = "created_date")
 	private Date createdDate;
 	/**
 	 * 收货人姓名
 	 */
+	@ColumnAlias(value = "rev_person")
 	private String revPerson;
 	/**
 	 * 收货人电话
 	 */
+	@ColumnAlias(value = "rev_phone")
 	private String revPhone;
 	/**
 	 * 订货单状态
 	 */
+	@ColumnAlias(value = "_status")
 	private Integer orderStatus;
 
-	public List<GoodsInfoBean> getGoodsInfoList() {
-		return goodsInfoList;
-	}
+	/**
+	 * 商品信息
+	 * @return
+	 */
 
-	public Integer getTotalMoney() {
+	public long getTotalMoney() {
 		return totalMoney;
 	}
 
@@ -55,11 +60,16 @@ public class DealerOrderBean {
 		return orderStatus;
 	}
 
-	public void setGoodsInfoList(List<GoodsInfoBean> goodsInfoList) {
+
+	public List<DealerOrderGoodsInfo> getGoodsInfoList() {
+		return goodsInfoList;
+	}
+
+	public void setGoodsInfoList(List<DealerOrderGoodsInfo> goodsInfoList) {
 		this.goodsInfoList = goodsInfoList;
 	}
 
-	public void setTotalMoney(Integer totalMoney) {
+	public void setTotalMoney(long totalMoney) {
 		this.totalMoney = totalMoney;
 	}
 

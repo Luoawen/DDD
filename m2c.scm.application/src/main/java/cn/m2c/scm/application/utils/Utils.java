@@ -1,5 +1,9 @@
 package cn.m2c.scm.application.utils;
 
+import org.apache.commons.lang3.StringUtils;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -16,4 +20,15 @@ public class Utils {
         return idStr;
     }
 
+    /*
+   * 将时间戳转换为时间
+   */
+    public static String stampToDate(String s, SimpleDateFormat dateFormat) {
+        if (StringUtils.isNotEmpty(s)) {
+            long lt = new Long(s);
+            Date date = new Date(lt);
+            return dateFormat.format(date);
+        }
+        return null;
+    }
 }

@@ -1,8 +1,8 @@
 package cn.m2c.scm.domain.model.shop;
 
-import java.util.Date;
-
 import cn.m2c.ddd.common.domain.model.ConcurrencySafeEntity;
+
+import java.util.Date;
 
 public class Shop extends ConcurrencySafeEntity{
 
@@ -20,10 +20,13 @@ public class Shop extends ConcurrencySafeEntity{
 	private String customerServiceTel;//客服电话
 	private Date createdDate;
 	private Date lastUpdatedDate;
-	
-	
+
+	public Shop() {
+		super();
+	}
+
 	public void updateShopInfo(String shopName, String shopIntroduce,
-			String shopIcon,String shopReceipt, String customerServiceTel) {
+							   String shopIcon, String shopReceipt, String customerServiceTel) {
 		this.shopName = shopName;
 		this.shopIntroduce = shopIntroduce;
 		this.shopIcon = shopIcon;

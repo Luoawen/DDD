@@ -3,6 +3,8 @@ package cn.m2c.scm.application.order.data.bean;
 import java.util.Date;
 import java.util.List;
 
+import cn.m2c.ddd.common.persistence.orm.ColumnAlias;
+
 /**
  * 商家订单详情
  * 
@@ -13,70 +15,87 @@ public class DealerOrderDetailBean {
 	/**
 	 * 订单状态
 	 */
+	@ColumnAlias(value = "_status")
 	private Integer orderStatus;
 	/**
 	 * 平台订单Id
 	 */
+	@ColumnAlias(value = "order_id")
 	private String orderId;
 	/**
 	 * 下单时间
 	 */
+	@ColumnAlias(value = "created_date")
 	private Date createdDate;
 	/**
 	 * 支付方式
 	 */
+	@ColumnAlias(value = "pay_way")
 	private Integer payWay;
 	/**
 	 * 支付时间
 	 */
+	@ColumnAlias(value ="pay_date")
 	private Date payDate;
 	/**
 	 * 支付单号
 	 */
+	@ColumnAlias(value = "pay_no")
 	private String payNo;
 	/**
 	 * 收货人姓名
 	 */
+	@ColumnAlias(value = "rev_person")
 	private String revPerson;
 	/**
 	 * 收货人电话
 	 */
+	@ColumnAlias(value ="rev_phone")
 	private String revPhone;
 	/**
 	 * 收货地址省
 	 */
+	@ColumnAlias(value = "province")
 	private String province;
 	/**
 	 * 收货地址市
 	 */
+	@ColumnAlias(value = "city")
 	private String city;
 	/**
 	 * 区或县镇
 	 */
+	@ColumnAlias(value = "area_county")
 	private String areaCounty;
 	/**
 	 * 街道详细地址
 	 */
+	@ColumnAlias(value = "street_addr")
 	private String streetAddr;
 	/**
 	 * 商家名
 	 */
+	@ColumnAlias(value = "dealer_name")
 	private String dealerName;
 	/**
 	 * 商家类型
 	 */
+	@ColumnAlias(value = "dealer_classify")
 	private String dealerClassify;
 	/**
 	 * 商家Id
 	 */
+	@ColumnAlias(value = "dealer_id")
 	private String dealerInfo;
 	/**
 	 * 业务员姓名
 	 */
+	@ColumnAlias(value = "seller_name")
 	private String sellerName;
 	/**
 	 * 业务员手机
 	 */
+	@ColumnAlias(value = "seller_phone")
 	private String sellerPhone;
 	/**
 	 * 商品信息列表
@@ -85,24 +104,24 @@ public class DealerOrderDetailBean {
 	/**
 	 * 订单商品总额(Sum(totalPrice))
 	 */
-	private Integer totalOrderPrice;
+	private long totalOrderPrice;
 	/**
 	 * 总运费
 	 */
-	private Integer totalFreight;
+	private long totalFreight;
 	/**
 	 * 平台优惠券金额
-	 */
-	private Integer plateformDiscount;
+	 */@ColumnAlias(value = "plateform_discount")
+	private long plateformDiscount;
 	/**
 	 * 商家优惠券金额
 	 */
-	private Integer dealerDiscount;
+	 @ColumnAlias(value = "dealer_discount")
+	private long dealerDiscount;
 	/**
 	 * 订单总额(订单商品总额 - 平台优惠券 - 商家优惠券)
 	 */
-	private Integer orderPrice;
-
+	private long orderPrice;
 
 	public Integer getOrderStatus() {
 		return orderStatus;
@@ -114,46 +133,6 @@ public class DealerOrderDetailBean {
 
 	public Date getCreatedDate() {
 		return createdDate;
-	}
-
-	public Integer getTotalOrderPrice() {
-		return totalOrderPrice;
-	}
-
-	public Integer getTotalFreight() {
-		return totalFreight;
-	}
-
-	public Integer getPlateformDiscount() {
-		return plateformDiscount;
-	}
-
-	public Integer getDealerDiscount() {
-		return dealerDiscount;
-	}
-
-	public Integer getOrderPrice() {
-		return orderPrice;
-	}
-
-	public void setTotalOrderPrice(Integer totalOrderPrice) {
-		this.totalOrderPrice = totalOrderPrice;
-	}
-
-	public void setTotalFreight(Integer totalFreight) {
-		this.totalFreight = totalFreight;
-	}
-
-	public void setPlateformDiscount(Integer plateformDiscount) {
-		this.plateformDiscount = plateformDiscount;
-	}
-
-	public void setDealerDiscount(Integer dealerDiscount) {
-		this.dealerDiscount = dealerDiscount;
-	}
-
-	public void setOrderPrice(Integer orderPrice) {
-		this.orderPrice = orderPrice;
 	}
 
 	public Integer getPayWay() {
@@ -172,12 +151,8 @@ public class DealerOrderDetailBean {
 		return revPerson;
 	}
 
-	public List<GoodsInfoBean> getGoodsInfoBeans() {
-		return goodsInfoBeans;
-	}
-
-	public void setGoodsInfoBeans(List<GoodsInfoBean> goodsInfoBeans) {
-		this.goodsInfoBeans = goodsInfoBeans;
+	public String getRevPhone() {
+		return revPhone;
 	}
 
 	public String getProvince() {
@@ -196,28 +171,6 @@ public class DealerOrderDetailBean {
 		return streetAddr;
 	}
 
-	public void setProvince(String province) {
-		this.province = province;
-	}
-
-	public void setCity(String city) {
-		this.city = city;
-	}
-
-	public void setAreaCounty(String areaCounty) {
-		this.areaCounty = areaCounty;
-	}
-
-	public void setStreetAddr(String streetAddr) {
-		this.streetAddr = streetAddr;
-	}
-
-	public String getRevPhone() {
-		return revPhone;
-	}
-
-
-
 	public String getDealerName() {
 		return dealerName;
 	}
@@ -225,7 +178,6 @@ public class DealerOrderDetailBean {
 	public String getDealerClassify() {
 		return dealerClassify;
 	}
-
 
 	public String getDealerInfo() {
 		return dealerInfo;
@@ -237,6 +189,30 @@ public class DealerOrderDetailBean {
 
 	public String getSellerPhone() {
 		return sellerPhone;
+	}
+
+	public List<GoodsInfoBean> getGoodsInfoBeans() {
+		return goodsInfoBeans;
+	}
+
+	public long getTotalOrderPrice() {
+		return totalOrderPrice;
+	}
+
+	public long getTotalFreight() {
+		return totalFreight;
+	}
+
+	public long getPlateformDiscount() {
+		return plateformDiscount;
+	}
+
+	public long getDealerDiscount() {
+		return dealerDiscount;
+	}
+
+	public long getOrderPrice() {
+		return orderPrice;
 	}
 
 	public void setOrderStatus(Integer orderStatus) {
@@ -271,7 +247,21 @@ public class DealerOrderDetailBean {
 		this.revPhone = revPhone;
 	}
 
+	public void setProvince(String province) {
+		this.province = province;
+	}
 
+	public void setCity(String city) {
+		this.city = city;
+	}
+
+	public void setAreaCounty(String areaCounty) {
+		this.areaCounty = areaCounty;
+	}
+
+	public void setStreetAddr(String streetAddr) {
+		this.streetAddr = streetAddr;
+	}
 
 	public void setDealerName(String dealerName) {
 		this.dealerName = dealerName;
@@ -293,6 +283,30 @@ public class DealerOrderDetailBean {
 		this.sellerPhone = sellerPhone;
 	}
 
+	public void setGoodsInfoBeans(List<GoodsInfoBean> goodsInfoBeans) {
+		this.goodsInfoBeans = goodsInfoBeans;
+	}
+
+	public void setTotalOrderPrice(long totalOrderPrice) {
+		this.totalOrderPrice = totalOrderPrice;
+	}
+
+	public void setTotalFreight(long totalFreight) {
+		this.totalFreight = totalFreight;
+	}
+
+	public void setPlateformDiscount(long plateformDiscount) {
+		this.plateformDiscount = plateformDiscount;
+	}
+
+	public void setDealerDiscount(long dealerDiscount) {
+		this.dealerDiscount = dealerDiscount;
+	}
+
+	public void setOrderPrice(long orderPrice) {
+		this.orderPrice = orderPrice;
+	}
+
 	@Override
 	public String toString() {
 		return "DealerOrderDetailBean [orderStatus=" + orderStatus + ", orderId=" + orderId + ", createdDate="
@@ -304,7 +318,5 @@ public class DealerOrderDetailBean {
 				+ ", totalFreight=" + totalFreight + ", plateformDiscount=" + plateformDiscount + ", dealerDiscount="
 				+ dealerDiscount + ", orderPrice=" + orderPrice + "]";
 	}
-	
-	
 
 }

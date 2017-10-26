@@ -28,4 +28,12 @@ public interface BrandApproveRepository {
     void save(BrandApprove brandApprove);
 
     void remove(BrandApprove brandApprove);
+
+    /**
+     * 查询品牌信息
+     *
+     * @param brandName
+     * @return
+     */
+    public boolean brandNameIsRepeat(String brandId,String brandName);
 }

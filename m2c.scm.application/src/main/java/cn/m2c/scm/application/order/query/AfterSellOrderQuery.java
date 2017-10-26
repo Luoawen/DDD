@@ -234,8 +234,8 @@ public class AfterSellOrderQuery {
 		AfterSellOrderDetailBean bean = this.supportJdbcTemplate.queryForBean(sql.toString(), AfterSellOrderDetailBean.class, afterSellOrderId);
 		System.out.println("取出数据没有-------------------------------------"+bean);
 		List<GoodsInfoBean> goodsInfoBeans = aftetSellOrderDetailGoodsInfoQuery(afterSellOrderId);
-		Integer totalPrice = 0;
-		Integer orderTotalPrice = 0;
+		long totalPrice = 0;
+		long orderTotalPrice = 0;
 		
 		for (GoodsInfoBean goodsInfo : goodsInfoBeans) {
 			totalPrice += (goodsInfo.getPrice() * goodsInfo.getSellNum() +  goodsInfo.getFreight());

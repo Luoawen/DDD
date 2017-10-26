@@ -84,6 +84,11 @@ public class DealerOrder extends ConcurrencySafeEntity {
 		return dealerDiscount;
 	}
 	
+	public ReceiveAddr getAddr() {
+		return addr;
+	}
+	
+	
 	void cancel() {
 		status = -1;
 		for (DealerOrderDtl d : orderDtls) {
@@ -192,5 +197,20 @@ public class DealerOrder extends ConcurrencySafeEntity {
 			orderFreight += dtl.getFreight();
 			plateformDiscount += dtl.getPlateformDiscount();
 		}
+	}
+	/**
+	 * 修改收货地址
+	 * @param addr
+	 */
+	public void updateAddr(ReceiveAddr addr) {
+		this.addr = addr;
+	}
+	
+	/**
+	 * 更新订单运费
+	 * @param orderFreight
+	 */
+	public void updateOrderFreight(long orderFreight) {
+		this.orderFreight = orderFreight;
 	}
 }

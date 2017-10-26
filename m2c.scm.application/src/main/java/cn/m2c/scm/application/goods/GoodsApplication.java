@@ -1,20 +1,27 @@
 package cn.m2c.scm.application.goods;
 
+import cn.m2c.common.JsonUtils;
 import cn.m2c.common.MCode;
+import cn.m2c.ddd.common.domain.model.DomainEventPublisher;
 import cn.m2c.ddd.common.event.annotation.EventListener;
 import cn.m2c.scm.application.goods.command.GoodsCommand;
 import cn.m2c.scm.application.goods.command.GoodsRecognizedModifyCommand;
 import cn.m2c.scm.domain.NegativeException;
 import cn.m2c.scm.domain.model.goods.Goods;
+import cn.m2c.scm.domain.model.goods.GoodsApproveRepository;
 import cn.m2c.scm.domain.model.goods.GoodsRepository;
 import cn.m2c.scm.domain.model.goods.GoodsSku;
 import cn.m2c.scm.domain.model.goods.GoodsSkuRepository;
+import cn.m2c.scm.domain.model.goods.event.GoodsAppCapturedMDEvent;
+import cn.m2c.scm.domain.model.goods.event.GoodsAppSearchMDEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -28,6 +35,8 @@ public class GoodsApplication {
     GoodsRepository goodsRepository;
     @Autowired
     GoodsSkuRepository goodsSkuRepository;
+    @Autowired
+    GoodsApproveRepository goodsApproveRepository;
 
     /**
      * 商品审核同意,保存商品
@@ -63,9 +72,23 @@ public class GoodsApplication {
         if (null == goods) {
             throw new NegativeException(MCode.V_300, "商品不存在");
         }
-        if (goodsRepository.goodsNameIsRepeat(command.getGoodsId(), command.getDealerId(), command.getGoodsName())) {
+        if (goodsRepository.goodsNameIsRepeat(command.getGoodsId(), command.getDealerId(), command.getGoodsName()) ||
+                goodsApproveRepository.goodsNameIsRepeat(command.getGoodsId(), command.getDealerId(), command.getGoodsName())) {
             throw new NegativeException(MCode.V_300, "商品名称已存在");
         }
+
+        // 判断商品编码是否存在
+        Map<String, String> codesMap = command.getCodeMap();
+        if (null != codesMap && codesMap.size() > 0) {
+            for (Map.Entry<String, String> entry : codesMap.entrySet()) {
+                String skuId = entry.getKey();
+                String goodsCode = entry.getValue();
+                if (goodsSkuRepository.goodsCodeIsRepeat(command.getDealerId(), skuId, goodsCode)) {
+                    throw new NegativeException(MCode.V_300, "商品编码已存在");
+                }
+            }
+        }
+
         goods.modifyGoods(command.getGoodsName(), command.getGoodsSubTitle(),
                 command.getGoodsClassifyId(), command.getGoodsBrandId(), command.getGoodsBrandName(), command.getGoodsUnitId(), command.getGoodsMinQuantity(),
                 command.getGoodsPostageId(), command.getGoodsBarCode(), command.getGoodsKeyWord(), command.getGoodsGuarantee(),
@@ -96,6 +119,7 @@ public class GoodsApplication {
      * @throws NegativeException
      */
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+    @EventListener(isListening = true)
     public void upShelfGoods(String goodsId) throws NegativeException {
         LOGGER.info("upShelfGoods goodsId >>{}", goodsId);
         Goods goods = goodsRepository.queryGoodsById(goodsId);
@@ -112,6 +136,7 @@ public class GoodsApplication {
      * @throws NegativeException
      */
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+    @EventListener(isListening = true)
     public void offShelfGoods(String goodsId) throws NegativeException {
         LOGGER.info("offShelfGoods goodsId >>{}", goodsId);
         Goods goods = goodsRepository.queryGoodsById(goodsId);
@@ -145,16 +170,28 @@ public class GoodsApplication {
      */
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
     public void outInventory(Map<String, Integer> map) throws NegativeException {
+        List<String> skuIds = new ArrayList<>();
         for (Map.Entry<String, Integer> entry : map.entrySet()) {
             String skuId = entry.getKey();
             Integer num = entry.getValue();
             GoodsSku goodsSku = goodsSkuRepository.queryGoodsSkuById(skuId);
-            if (null == goodsSku) {
-                throw new NegativeException(MCode.V_300, skuId);//300:信息不存在
+            if (null == goodsSku) {//信息不存在
+                skuIds.add(skuId);
+                continue;
             }
-            if (goodsSku.availableNum() < num) {
-                throw new NegativeException(MCode.V_301, skuId);//301:库存不足
+            if (goodsSku.availableNum() < num) {//库存不足
+                skuIds.add(skuId);
+                continue;
             }
+        }
+        if (null != skuIds && skuIds.size() > 0) {
+            throw new NegativeException(MCode.V_301, JsonUtils.toStr(skuIds));//301:库存不足
+        }
+
+        for (Map.Entry<String, Integer> entry : map.entrySet()) {
+            String skuId = entry.getKey();
+            Integer num = entry.getValue();
+            GoodsSku goodsSku = goodsSkuRepository.queryGoodsSkuById(skuId);
             // 版本号
             Integer concurrencyVersion = goodsSku.concurrencyVersion();
             int result = goodsSkuRepository.outInventory(skuId, num, concurrencyVersion);
@@ -163,6 +200,72 @@ public class GoodsApplication {
             }
             Goods goods = goodsRepository.queryGoodsById(goodsSku.goods().getId());
             goods.soldOut();//如果售完则修改状态
+        }
+    }
+
+    /**
+     * app搜索埋点
+     */
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+    @EventListener(isListening = true)
+    public void goodsAppSearchMD(String sn, String userId, String searchFrom, String keyWord) throws NegativeException {
+        DomainEventPublisher
+                .instance()
+                .publish(new GoodsAppSearchMDEvent(sn, userId, searchFrom, keyWord));
+    }
+
+
+    /**
+     * app拍获埋点
+     */
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+    @EventListener(isListening = true)
+    public void goodsAppCapturedMD(String sn, String os, String appVersion,
+                                   String osVersion, Long triggerTime, String userId, String userName,
+                                   String goodsId, String goodsName, String mediaId, String mediaName,
+                                   String mresId, String mresName) throws NegativeException {
+        DomainEventPublisher
+                .instance()
+                .publish(new GoodsAppCapturedMDEvent(sn, os, appVersion,
+                        osVersion, triggerTime, userId, userName,
+                        goodsId, goodsName, mediaId, mediaName,
+                        mresId, mresName));
+    }
+
+
+    /**
+     * 修改商品品牌名称
+     *
+     * @param brandId
+     * @param brandName
+     * @throws NegativeException
+     */
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+    public void modifyGoodsBrandName(String brandId, String brandName) throws NegativeException {
+        LOGGER.info("modifyGoodsBrandName brandId >>{}", brandId);
+        List<Goods> goodsList = goodsRepository.queryGoodsByBrandId(brandId);
+        if (null != goodsList) {
+            for (Goods goods : goodsList) {
+                goods.modifyBrandName(brandName);
+            }
+        }
+    }
+
+    /**
+     * 修改商品供应商名称
+     *
+     * @param dealerId
+     * @param dealerName
+     * @throws NegativeException
+     */
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+    public void modifyGoodsDealerName(String dealerId, String dealerName) throws NegativeException {
+        LOGGER.info("modifyGoodsDealerName dealerId >>{}", dealerId);
+        List<Goods> goodsList = goodsRepository.queryGoodsByDealerId(dealerId);
+        if (null != goodsList) {
+            for (Goods goods : goodsList) {
+                goods.modifyDealerName(dealerName);
+            }
         }
     }
 }
