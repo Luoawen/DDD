@@ -15,6 +15,7 @@ public class CommentRepresentation {
     private String buyerPhoneNumber;
     private String buyerName;
     private String skuName;
+    private String goodsName;
     private Integer goodsNum;
     private Integer starLevel;
     private String commentContent;
@@ -25,6 +26,7 @@ public class CommentRepresentation {
     private String replyTime;
 
     public CommentRepresentation(GoodsCommentBean bean) {
+        this.goodsName = bean.getGoodsName();
         this.orderId = bean.getOrderId();
         this.buyerIcon = bean.getBuyerIcon();
         this.buyerPhoneNumber = bean.getBuyerPhoneNumber();
@@ -148,5 +150,13 @@ public class CommentRepresentation {
 
     public void setReplyTime(String replyTime) {
         this.replyTime = replyTime;
+    }
+
+    public String getGoodsName() {
+        return goodsName;
+    }
+
+    public void setGoodsName(String goodsName) {
+        this.goodsName = goodsName;
     }
 }
