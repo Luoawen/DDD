@@ -1,23 +1,5 @@
 package cn.m2c.scm.application.order;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-
 import cn.m2c.common.MCode;
 import cn.m2c.ddd.common.event.annotation.EventListener;
 import cn.m2c.scm.application.dealer.data.bean.DealerBean;
@@ -33,7 +15,7 @@ import cn.m2c.scm.application.order.data.bean.MediaResBean;
 import cn.m2c.scm.application.order.data.representation.OrderMoney;
 import cn.m2c.scm.application.order.query.OrderQueryApplication;
 import cn.m2c.scm.application.order.query.dto.GoodsDto;
-import cn.m2c.scm.application.postage.data.bean.PostageModelRuleBean;
+import cn.m2c.scm.application.postage.data.representation.PostageModelRuleRepresentation;
 import cn.m2c.scm.application.postage.query.PostageModelQueryApplication;
 import cn.m2c.scm.domain.NegativeException;
 import cn.m2c.scm.domain.model.order.DealerOrder;
@@ -41,6 +23,22 @@ import cn.m2c.scm.domain.model.order.DealerOrderDtl;
 import cn.m2c.scm.domain.model.order.MainOrder;
 import cn.m2c.scm.domain.model.order.OrderRepository;
 import cn.m2c.scm.domain.service.order.OrderService;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /***
  * 订单应用服务类
@@ -272,7 +270,7 @@ public class OrderApplication {
 			skuIds.add(it.next());
 		}
 		
-		Map<String, PostageModelRuleBean> postMap = postApp.getGoodsPostageRule(skuIds, cityCode);
+		Map<String, PostageModelRuleRepresentation> postMap = postApp.getGoodsPostageRule(skuIds, cityCode);
 		
 		for (GoodsDto bean : ls) {
 			String skuId = bean.getSkuId();
@@ -287,7 +285,7 @@ public class OrderApplication {
 	 * @param pb
 	 * @return
 	 */
-	private void calFrt(GoodsDto b, PostageModelRuleBean pb) {
+	private void calFrt(GoodsDto b, PostageModelRuleRepresentation pb) {
 		if (pb == null) {
 			b.setFreight(0);
 			return ;

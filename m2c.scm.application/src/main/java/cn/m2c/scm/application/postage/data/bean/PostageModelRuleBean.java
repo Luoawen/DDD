@@ -67,19 +67,6 @@ public class PostageModelRuleBean {
     @ColumnAlias(value = "default_flag")
     private Integer defaultFlag;
 
-    /**
-     * 计费方式,0:按重量,1:按件数
-     */
-    private Integer chargeType;
-
-    public Integer getChargeType() {
-        return chargeType;
-    }
-
-    public void setChargeType(Integer chargeType) {
-        this.chargeType = chargeType;
-    }
-
     public String getRuleId() {
         return ruleId;
     }

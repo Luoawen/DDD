@@ -5,6 +5,7 @@ import cn.m2c.scm.application.goods.query.GoodsQueryApplication;
 import cn.m2c.scm.application.goods.query.data.representation.GoodsSkuInfoRepresentation;
 import cn.m2c.scm.application.postage.data.bean.PostageModelBean;
 import cn.m2c.scm.application.postage.data.bean.PostageModelRuleBean;
+import cn.m2c.scm.application.postage.data.representation.PostageModelRuleRepresentation;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,8 +76,8 @@ public class PostageModelQueryApplication {
      * @param cityCode
      * @return
      */
-    public Map<String, PostageModelRuleBean> getGoodsPostageRule(List<String> skuIds, String cityCode) {
-        Map<String, PostageModelRuleBean> map = new HashMap<>();
+    public Map<String, PostageModelRuleRepresentation> getGoodsPostageRule(List<String> skuIds, String cityCode) {
+        Map<String, PostageModelRuleRepresentation> map = new HashMap<>();
         List<GoodsSkuInfoRepresentation> goodsInfoList = goodsQueryApplication.queryGoodsBySkuIds(skuIds);
         if (null != goodsInfoList && goodsInfoList.size() > 0) {
             for (GoodsSkuInfoRepresentation info : goodsInfoList) {
@@ -92,8 +93,7 @@ public class PostageModelQueryApplication {
                                 if (StringUtils.isNotEmpty(bean.getCityCode())) {
                                     List<String> codes = Arrays.asList(bean.getCityCode().split(","));
                                     if (codes.contains(cityCode)) {
-                                        bean.setChargeType(postageModelBean.getChargeType());
-                                        map.put(info.getSkuId(), bean);
+                                        map.put(info.getSkuId(), new PostageModelRuleRepresentation(bean, postageModelBean.getChargeType()));
                                         specialFlag = true;
                                         break;
                                     }
@@ -103,8 +103,7 @@ public class PostageModelQueryApplication {
                             }
                         }
                         if (!specialFlag && null != defaultBean) {
-                            defaultBean.setChargeType(postageModelBean.getChargeType());
-                            map.put(info.getSkuId(), defaultBean);
+                            map.put(info.getSkuId(), new PostageModelRuleRepresentation(defaultBean, postageModelBean.getChargeType()));
                         }
                     }
 
