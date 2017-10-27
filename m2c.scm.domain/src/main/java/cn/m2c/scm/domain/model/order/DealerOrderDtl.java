@@ -27,10 +27,6 @@ public class DealerOrderDtl extends ConcurrencySafeEntity {
 	private ExpressInfo expressInfo;
 	/**购买数量*/
 	private Integer sellNum;
-	/**是否为换货商品 1是， 0否*/
-	private int isChange = 0;
-	/**换货价*/
-	private long changePrice;
 	
 	private GoodsInfo goodsInfo;
 	/**以分为单位，商品金额*/
@@ -51,7 +47,7 @@ public class DealerOrderDtl extends ConcurrencySafeEntity {
 	}
 	
 	public DealerOrderDtl(String orderId, String dealerOrderId, ReceiveAddr addr
-			,InvoiceInfo invoice, ExpressInfo expressInfo, SimpleMediaInfo mediaInfo, int isChange, int changePrice
+			,InvoiceInfo invoice, ExpressInfo expressInfo, SimpleMediaInfo mediaInfo
 			, GoodsInfo goodsInfo, long dealerDiscount, String noted
 			, SimpleMarketInfo marketInfo
 			) {
@@ -61,8 +57,6 @@ public class DealerOrderDtl extends ConcurrencySafeEntity {
 		this.invoice = invoice;
 		this.expressInfo = expressInfo;
 		this.mediaInfo = mediaInfo;
-		this.isChange = isChange;
-		this.changePrice = changePrice;
 		
 		this.goodsInfo = goodsInfo;
 		this.dealerDiscount = dealerDiscount;

@@ -262,12 +262,12 @@ public class OrderApplication {
 				if (mb == null) {
 					dtls.add(new DealerOrderDtl(cmd.getOrderId(), dealerOrderId, cmd.getAddr(), 
 							cmd.getInvoice(), null, null,
-							0, 0, bean.toGoodsInfo(), 0, cmd.getNoted(), bean.toMarketInfo()));
+							bean.toGoodsInfo(), 0, cmd.getNoted(), bean.toMarketInfo()));
 				}
 				else {
 					dtls.add(new DealerOrderDtl(cmd.getOrderId(), dealerOrderId, cmd.getAddr(), 
 							cmd.getInvoice(), null, mb.toMediaInfo(),
-							0, 0, bean.toGoodsInfo(), 0, cmd.getNoted(), bean.toMarketInfo()));
+							bean.toGoodsInfo(), 0, cmd.getNoted(), bean.toMarketInfo()));
 				}
 			}
 			rs.add(new DealerOrder(cmd.getOrderId(), dealerOrderId, dealerId, goodsAmount, freight,
@@ -323,6 +323,7 @@ public class OrderApplication {
 			bean.setPurNum(gdb.getPurNum());
 			bean.setMarketingId(gdb.getMarketId());
 			bean.setMarketLevel(gdb.getLevel());
+			bean.setIsChange(gdb.getIsChange());
 			//bean.setThreshold(gdb.get);
 			calFrt(bean, postMap.get(skuId));
 			// bean.setFreight(1000);

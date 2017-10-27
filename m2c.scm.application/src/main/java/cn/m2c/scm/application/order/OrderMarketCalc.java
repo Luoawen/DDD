@@ -74,7 +74,12 @@ public class OrderMarketCalc {
 		
 		if (bean.getRemainNum() < 1) {
 			// 抛出异常告知下不了单
-			throw new NegativeException(MCode.V_300, "id为的" + bean.getFullCutId() + ",满足已用完!");
+			throw new NegativeException(MCode.V_300, "id为的" + bean.getFullCutId() + ",平台活动次数已用完!");
+		}
+		
+		if (bean.getHasUsedNum() < 1) {
+			// 抛出异常告知下不了单
+			throw new NegativeException(MCode.V_303, "您的活动次数已用完！");
 		}
 		
 		// 获取层级

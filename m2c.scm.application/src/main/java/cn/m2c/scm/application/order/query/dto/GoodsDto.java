@@ -224,7 +224,7 @@ public class GoodsDto {
 		return new GoodsInfo(rate, goodsId, goodsName, goodsTitle
 				,goodsType, goodsTypeId, goodsUnit, skuId
 				,skuName, price, supplyPrice, discountPrice, goodsIcon
-				,weight, purNum, freight, plateformDiscount);		
+				,weight, purNum, freight, plateformDiscount, isChange, changePrice);		
 	}
 	
 	public SimpleMarketInfo toMarketInfo() {

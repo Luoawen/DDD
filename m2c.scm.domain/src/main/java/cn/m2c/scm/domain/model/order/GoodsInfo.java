@@ -43,6 +43,11 @@ public class GoodsInfo extends ValueObject {
 	/**平台优惠*/
 	private Long plateformDiscount;
 	
+	/**是否为换货商品 1是， 0否*/
+	private int isChange = 0;
+	/**换货价*/
+	private long changePrice;
+	
 	public Integer getSellNum() {
 		return sellNum;
 	}
@@ -58,7 +63,8 @@ public class GoodsInfo extends ValueObject {
 	public GoodsInfo(float rate, String goodsId, String goodsName, String goodsTitle
 			,String goodsType, String goodsTypeId, String goodsUnit, String skuId
 			,String skuName, long price, long supplyPrice, long discountPrice, String goodsIcon
-			,float weight, int sellNum, Long freight, long plateformDiscount) {
+			,float weight, int sellNum, Long freight, long plateformDiscount
+			,int isChange, long changePrice) {
 		this.rate = rate;
 		this.goodsId = goodsId;
 		this.goodsName = goodsName;
@@ -76,6 +82,8 @@ public class GoodsInfo extends ValueObject {
 		this.sellNum = sellNum;
 		this.freight = freight;
 		this.plateformDiscount = plateformDiscount;
+		this.isChange = isChange;
+		this.changePrice = changePrice;
 	}
 	
 	public long getDiscountPrice() {
