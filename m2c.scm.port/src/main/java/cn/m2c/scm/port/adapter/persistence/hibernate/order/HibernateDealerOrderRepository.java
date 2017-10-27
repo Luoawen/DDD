@@ -1,8 +1,13 @@
 package cn.m2c.scm.port.adapter.persistence.hibernate.order;
 
+import java.util.List;
+
+import javax.annotation.Resource;
+
 import org.springframework.stereotype.Repository;
 
 import cn.m2c.ddd.common.port.adapter.persistence.hibernate.HibernateSupperRepository;
+import cn.m2c.ddd.common.port.adapter.persistence.springJdbc.SupportJdbcTemplate;
 import cn.m2c.scm.domain.model.order.DealerOrder;
 import cn.m2c.scm.domain.model.order.DealerOrderRepository;
 /**
@@ -14,6 +19,10 @@ import cn.m2c.scm.domain.model.order.DealerOrderRepository;
 @Repository
 public class HibernateDealerOrderRepository extends HibernateSupperRepository implements DealerOrderRepository {
 
+	@Resource
+	private SupportJdbcTemplate supportJdbcTemplate;
+
+	
 	@Override
 	public void save(DealerOrder dealerOrder) {
 		this.session().saveOrUpdate(dealerOrder);
@@ -27,5 +36,28 @@ public class HibernateDealerOrderRepository extends HibernateSupperRepository im
 		return dealerOrder;
 	}
 
+	@Override
+	public List<DealerOrder> getDealerOrderStatusQeury() {
+		@SuppressWarnings("unchecked")
+		List<DealerOrder> list = this.session().createQuery(" FROM DealerOrder WHERE status = 2 ").list();
+		return list;
+	}
+
+	@Override
+	public List<DealerOrder> getDealerOrderFinishied() {
+		@SuppressWarnings("unchecked")
+		List<DealerOrder> list = this.session().createQuery(" FROM DealerOrder WHERE status = 3 ").list();
+		return list;
+	}
+
+	@Override
+	public List<DealerOrder> getDealerOrderWaitPay() {
+		@SuppressWarnings("unchecked")
+		List<DealerOrder> list = this.session().createQuery(" FROM DealerOrder WHERE status = 0 ").list();
+		System.out.println("获取出来的数据-------------------------------"+list);
+		return list;
+	}
+
+	
 
 }

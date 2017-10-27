@@ -1,5 +1,7 @@
 package cn.m2c.scm.domain.model.order;
 
+import java.util.Date;
+
 import cn.m2c.ddd.common.domain.model.ConcurrencySafeEntity;
 import cn.m2c.ddd.common.domain.model.DomainEventPublisher;
 import cn.m2c.scm.domain.model.order.log.event.OrderOptLogEvent;
@@ -20,6 +22,8 @@ public class SaleAfterOrder extends ConcurrencySafeEntity {
 	private ExpressInfo sendExpress;
 	/**售后单号*/
 	private String saleAfterNo;
+	/** 下单时间  **/
+	private Date createdDate;
 	/**主订单号*/
 	private String orderId;
 	/**商家订单id*/
@@ -108,6 +112,10 @@ public class SaleAfterOrder extends ConcurrencySafeEntity {
 		return true;
 	}
 	
+	public long dateToLong() {
+		return this.createdDate.getTime();
+	}
+	
 	/**
 	 * 商家发货
 	 * @param e
@@ -172,5 +180,12 @@ public class SaleAfterOrder extends ConcurrencySafeEntity {
 	
 	public boolean isSame(String sku) {
 		return sku.equals(skuId);
+	}
+	
+	/**
+	 * 售后订单状态改为 '交易关闭'
+	 */
+	public void updateStatusAgreeAfterSale() {
+		this.status = 11;
 	}
 }

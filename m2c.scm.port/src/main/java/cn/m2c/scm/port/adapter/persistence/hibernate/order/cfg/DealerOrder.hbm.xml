@@ -15,6 +15,7 @@
         <property name="dealerOrderId" column="dealer_order_id" type="string"/>
         <property name="dealerId" column="dealer_id" type="string"/>        
         <property name="status" column="_status" type="int"/>
+        <property name="createdDate" column="created_date" type="date" />
         
         <component name="addr">
 	        <property name="province" column="province" type="string"/>

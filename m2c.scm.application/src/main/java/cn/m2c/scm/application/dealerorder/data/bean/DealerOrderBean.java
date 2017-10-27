@@ -9,7 +9,7 @@ public class DealerOrderBean {
 	/**
 	 * 商品信息
 	 */
-	private List<DealerOrderGoodsInfo> goodsInfoList;
+	private List<DealerOrderGoodsInfoBean> goodsInfoList;
 	/**
 	 * 订单总额
 	 */
@@ -61,11 +61,11 @@ public class DealerOrderBean {
 	}
 
 
-	public List<DealerOrderGoodsInfo> getGoodsInfoList() {
+	public List<DealerOrderGoodsInfoBean> getGoodsInfoList() {
 		return goodsInfoList;
 	}
 
-	public void setGoodsInfoList(List<DealerOrderGoodsInfo> goodsInfoList) {
+	public void setGoodsInfoList(List<DealerOrderGoodsInfoBean> goodsInfoList) {
 		this.goodsInfoList = goodsInfoList;
 	}
 

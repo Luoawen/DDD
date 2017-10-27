@@ -1,5 +1,8 @@
 package cn.m2c.scm.application.order;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +15,7 @@ import cn.m2c.scm.application.order.command.AddSaleAfterCmd;
 import cn.m2c.scm.application.order.command.AproveSaleAfterCmd;
 import cn.m2c.scm.application.order.command.SaleAfterCmd;
 import cn.m2c.scm.application.order.command.SaleAfterShipCmd;
+import cn.m2c.scm.domain.NegativeCode;
 import cn.m2c.scm.domain.NegativeException;
 import cn.m2c.scm.domain.model.order.DealerOrderDtl;
 import cn.m2c.scm.domain.model.order.SaleAfterOrder;
@@ -192,4 +196,28 @@ public class SaleAfterOrderApp {
 		}
 		saleAfterRepository.updateSaleAfterOrder(order);
 	}
+	
+	/**
+	 * 商家同意售后状态下7天变更为交易关闭
+	 * @throws NegativeException 
+	 */
+	@Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+	public void updataStatusAgreeAfterSale() throws NegativeException {
+		List<SaleAfterOrder> saleAfterOrders= saleAfterRepository.getSaleAfterOrderStatusAgree();
+		List<SaleAfterOrder> list = new ArrayList<SaleAfterOrder>();
+		if (saleAfterOrders == null)
+			throw new NegativeException(NegativeCode.DEALER_ORDER_IS_NOT_EXIST, "没有满足条件的商家订单.");
+		
+		for (SaleAfterOrder bean : saleAfterOrders) {
+			if (((System.currentTimeMillis() - bean.dateToLong()) / (1000 * 60 * 60 * 24 )) > 7)
+				list.add(bean);
+		}
+		
+		for (SaleAfterOrder afterOrder : list) {
+			afterOrder.updateStatusAgreeAfterSale();
+			saleAfterRepository.save(afterOrder);
+		}
+	}
+	
+	
 }

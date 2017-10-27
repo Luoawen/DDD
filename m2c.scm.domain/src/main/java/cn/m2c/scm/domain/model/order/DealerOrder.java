@@ -1,6 +1,7 @@
 package cn.m2c.scm.domain.model.order;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -15,6 +16,7 @@ import cn.m2c.scm.domain.model.order.event.SimpleSale;
  */
 public class DealerOrder extends ConcurrencySafeEntity {
 
+
 	private static final long serialVersionUID = 1L;
 
 	//private MainOrder order;
@@ -26,6 +28,8 @@ public class DealerOrder extends ConcurrencySafeEntity {
 	private String dealerId;
 	/**订单状态 0待付款，1等发货，2待收货，3完成，4交易完成，5交易关闭，-1已取消*/
 	private Integer status = 0;
+	/** 下单时间 **/ 
+	private Date createdDate;
 	
 	private ReceiveAddr addr;
 	
@@ -88,6 +92,10 @@ public class DealerOrder extends ConcurrencySafeEntity {
 		return addr;
 	}
 	
+	public long dateToLong() {
+		return this.createdDate.getTime();
+	}
+
 	
 	void cancel() {
 		status = -1;
@@ -184,5 +192,36 @@ public class DealerOrder extends ConcurrencySafeEntity {
 	 */
 	public void updateOrderFreight(long orderFreight) {
 		this.orderFreight = orderFreight;
+	}
+	
+	/**
+	 * 更新订单状态<待收货状态改为完成状态>
+	 * @param orderStatus
+	 */
+	public void updateOrderStatus() {
+		this.status = 3;
+	}
+	
+	/**
+	 * 更新订单状态<完成状态改为订单完成状态>
+	 */
+	public void updateOrderStatusFinished() {
+		this.status = 4;
+	}
+	
+	/**
+	 * 更新订单状态<待付款状态下超过24H小时变更为已取消>
+	 */
+	public void updateOrderStatusWaitPay() {
+		this.status = -1;
+	}
+	
+	@Override
+	public String toString() {
+		return "DealerOrder [orderId=" + orderId + ", dealerOrderId=" + dealerOrderId + ", dealerId=" + dealerId
+				+ ", status=" + status + ", createdDate=" + createdDate + ", addr=" + addr + ", goodsAmount="
+				+ goodsAmount + ", orderFreight=" + orderFreight + ", plateformDiscount=" + plateformDiscount
+				+ ", dealerDiscount=" + dealerDiscount + ", noted=" + noted + ", invoice=" + invoice
+				+ ", termOfPayment=" + termOfPayment + ", orderDtls=" + orderDtls + "]";
 	}
 }

@@ -14,7 +14,7 @@ import org.springframework.stereotype.Repository;
 
 import cn.m2c.ddd.common.port.adapter.persistence.springJdbc.SupportJdbcTemplate;
 import cn.m2c.scm.application.dealerorder.data.bean.DealerOrderBean;
-import cn.m2c.scm.application.dealerorder.data.bean.DealerOrderGoodsInfo;
+import cn.m2c.scm.application.dealerorder.data.bean.DealerOrderGoodsInfoBean;
 import cn.m2c.scm.application.order.data.bean.DealerOrderDetailBean;
 import cn.m2c.scm.application.order.data.bean.GoodsInfoBean;
 
@@ -99,13 +99,13 @@ public class DealerOrderQuery {
 		params.add(rows * (pageNum - 1));
 		params.add(rows);
 		List<DealerOrderBean> beanList = this.supportJdbcTemplate.queryForBeanList(sql.toString(), DealerOrderBean.class,params.toArray());
-		List<DealerOrderGoodsInfo> goodsInfoList = dealerOrderGoodsInfoQuery(dealerOrderId);
+		List<DealerOrderGoodsInfoBean> goodsInfoList = dealerOrderGoodsInfoQuery(dealerOrderId);
 		long orderTotalMoney = 0;
 		
 		/**
 		 * 计算出订单总额
 		 */
-		for (DealerOrderGoodsInfo goodsInfoBean : goodsInfoList) {
+		for (DealerOrderGoodsInfoBean goodsInfoBean : goodsInfoList) {
 			goodsInfoBean.setTotalPrice(goodsInfoBean.getPrice() * goodsInfoBean.getSellNum());
 			orderTotalMoney += goodsInfoBean.getTotalPrice();
 		}
@@ -200,7 +200,7 @@ public class DealerOrderQuery {
 	 * @param dealerOrderId
 	 * @return
 	 */
-	public List<DealerOrderGoodsInfo> dealerOrderGoodsInfoQuery(String dealerOrderId) {
+	public List<DealerOrderGoodsInfoBean> dealerOrderGoodsInfoQuery(String dealerOrderId) {
 		StringBuilder sql = new StringBuilder();
 		sql.append(" SELECT  ");
 		sql.append(" goods.goods_main_images,detail.goods_name,detail.stantard_name, ");
@@ -210,7 +210,7 @@ public class DealerOrderQuery {
 		sql.append(" LEFT JOIN t_scm_goods goods ON detail.goods_id = goods.goods_id ");
 		sql.append(" LEFT JOIN t_scm_order_after_sell after ON dealer.dealer_order_id = after.dealer_order_id ");
 		sql.append(" WHERE 1 = 1 AND dealer.dealer_order_id = ? ");
-		 List<DealerOrderGoodsInfo> goodsInfoList = this.supportJdbcTemplate.queryForBeanList(sql.toString(), DealerOrderGoodsInfo.class,dealerOrderId);
+		 List<DealerOrderGoodsInfoBean> goodsInfoList = this.supportJdbcTemplate.queryForBeanList(sql.toString(), DealerOrderGoodsInfoBean.class,dealerOrderId);
 		 return goodsInfoList;
 	}
 	

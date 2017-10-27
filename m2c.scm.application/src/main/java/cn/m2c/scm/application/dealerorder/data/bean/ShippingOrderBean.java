@@ -80,7 +80,7 @@ public class ShippingOrderBean {
 	@ColumnAlias(value = "plateform_discount")
 	private long plateformDiscount;
 
-	private List<DealerOrderGoodsInfo> goodsInfos;
+	private List<DealerOrderGoodsInfoBean> goodsInfos;
 
 	public String getRevPerson() {
 		return revPerson;
@@ -94,11 +94,11 @@ public class ShippingOrderBean {
 		return dealerOrderId;
 	}
 
-	public List<DealerOrderGoodsInfo> getGoodsInfos() {
+	public List<DealerOrderGoodsInfoBean> getGoodsInfos() {
 		return goodsInfos;
 	}
 
-	public void setGoodsInfos(List<DealerOrderGoodsInfo> goodsInfos) {
+	public void setGoodsInfos(List<DealerOrderGoodsInfoBean> goodsInfos) {
 		this.goodsInfos = goodsInfos;
 	}
 

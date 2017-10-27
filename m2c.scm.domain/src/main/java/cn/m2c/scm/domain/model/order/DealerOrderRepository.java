@@ -1,5 +1,8 @@
 package cn.m2c.scm.domain.model.order;
 
+import java.util.List;
+
+
 public interface DealerOrderRepository {
 
 	/***
@@ -12,4 +15,19 @@ public interface DealerOrderRepository {
 	 * @param dealerOrderId 商家订单号
 	 */
 	public DealerOrder getDealerOrderById(String dealerOrderId);
+	
+	/**
+	 * 获取状态为'待收货'的订单
+	 */
+	public List<DealerOrder> getDealerOrderStatusQeury();
+	
+	/**
+	 * 获取状态为'完成'的订单
+	 */
+	public List<DealerOrder> getDealerOrderFinishied(); 
+	
+	/**
+	 * 获取订单状态为'待付款的订单'
+	 */
+	public List<DealerOrder> getDealerOrderWaitPay();
 }

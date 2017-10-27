@@ -18,6 +18,7 @@
         <property name="status" column="_status" type="int"/>
         <property name="dealerId" column="dealer_id" type="string"/>
         <property name="backNum" column="sell_num" type="int"/>
+        <property name="createdDate" column="created_date" type="date"></property>
         
         <property name="saleAfterNo" column="after_sell_order_id" type="string"/>
         <property name="goodsId" column="goods_id" type="string"/>

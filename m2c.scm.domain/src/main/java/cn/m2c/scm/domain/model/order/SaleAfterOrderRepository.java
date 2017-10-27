@@ -4,6 +4,9 @@ package cn.m2c.scm.domain.model.order;
  * @author fanjc
  *
  */
+
+import java.util.List;
+
 public interface SaleAfterOrderRepository {
 	/***
 	 * 保存订单
@@ -40,4 +43,12 @@ public interface SaleAfterOrderRepository {
 	 * @param dealerId 商家ID
 	 */
 	public SaleAfterOrder getSaleAfterOrderByNo(String saleAfterNo, String dealerId);
+	
+	
+	/**
+	 * 获取状态为同意售后的订单
+	 */
+	public List<SaleAfterOrder> getSaleAfterOrderStatusAgree();
+	
+	
 }
