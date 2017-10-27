@@ -22,7 +22,7 @@ public class DealerOrderAfterSellDetailBean {
 	 * 售后单号
 	 */
 	@ColumnAlias(value = "after_sell_order_id")
-	private String afterSelldealerOrderId;
+	private String afterSellDealerOrderId;
 	/**
 	 * 售后总额
 	 */
@@ -42,7 +42,7 @@ public class DealerOrderAfterSellDetailBean {
 	 * 关联订单号
 	 */
 	@ColumnAlias(value = "dealer_order_id")
-	private String dealerdealerOrderId;
+	private String dealerOrderId;
 	/**
 	 * 订单总额
 	 */
@@ -60,8 +60,8 @@ public class DealerOrderAfterSellDetailBean {
 		return orderType;
 	}
 
-	public String getAfterSelldealerOrderId() {
-		return afterSelldealerOrderId;
+	public String getAfterSellDealerOrderId() {
+		return afterSellDealerOrderId;
 	}
 
 	public long getBackMoney() {
@@ -76,8 +76,8 @@ public class DealerOrderAfterSellDetailBean {
 		return createdDate;
 	}
 
-	public String getDealerdealerOrderId() {
-		return dealerdealerOrderId;
+	public String getDealerOrderId() {
+		return dealerOrderId;
 	}
 
 	public long getOrderTotalMoney() {
@@ -96,8 +96,8 @@ public class DealerOrderAfterSellDetailBean {
 		this.orderType = orderType;
 	}
 
-	public void setAfterSelldealerOrderId(String afterSelldealerOrderId) {
-		this.afterSelldealerOrderId = afterSelldealerOrderId;
+	public void setAfterSellDealerOrderId(String afterSellDealerOrderId) {
+		this.afterSellDealerOrderId = afterSellDealerOrderId;
 	}
 
 	public void setBackMoney(long backMoney) {
@@ -112,8 +112,8 @@ public class DealerOrderAfterSellDetailBean {
 		this.createdDate = createdDate;
 	}
 
-	public void setDealerdealerOrderId(String dealerdealerOrderId) {
-		this.dealerdealerOrderId = dealerdealerOrderId;
+	public void setDealerOrderId(String dealerOrderId) {
+		this.dealerOrderId = dealerOrderId;
 	}
 
 	public void setOrderTotalMoney(long orderTotalMoney) {
@@ -127,8 +127,8 @@ public class DealerOrderAfterSellDetailBean {
 	@Override
 	public String toString() {
 		return "DealerOrderAfterSellDetailBean [status=" + status + ", orderType=" + orderType
-				+ ", afterSelldealerOrderId=" + afterSelldealerOrderId + ", backMoney=" + backMoney + ", reason="
-				+ reason + ", createdDate=" + createdDate + ", dealerdealerOrderId=" + dealerdealerOrderId
+				+ ", afterSelldealerOrderId=" + afterSellDealerOrderId + ", backMoney=" + backMoney + ", reason="
+				+ reason + ", createdDate=" + createdDate + ", dealerdealerOrderId=" + dealerOrderId
 				+ ", orderTotalMoney=" + orderTotalMoney + ", goodsInfoList=" + goodsInfoList + "]";
 	}
 

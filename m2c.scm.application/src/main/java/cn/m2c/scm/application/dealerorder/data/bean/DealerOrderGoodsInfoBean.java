@@ -2,7 +2,7 @@ package cn.m2c.scm.application.dealerorder.data.bean;
 
 import cn.m2c.ddd.common.persistence.orm.ColumnAlias;
 
-public class DealerOrderGoodsInfo {
+public class DealerOrderGoodsInfoBean {
 	/**
 	 * 商品信息<图片>
 	 */

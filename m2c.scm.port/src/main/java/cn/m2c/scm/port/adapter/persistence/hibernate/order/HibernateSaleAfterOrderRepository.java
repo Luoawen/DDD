@@ -1,5 +1,7 @@
 package cn.m2c.scm.port.adapter.persistence.hibernate.order;
 
+import java.util.List;
+
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.slf4j.Logger;
@@ -68,5 +70,13 @@ public class HibernateSaleAfterOrderRepository extends HibernateSupperRepository
 		query.setParameter("saleAfterNo", saleAfterNo);
 		query.setParameter("dealerId", dealerId);
 		return (SaleAfterOrder)query.uniqueResult();
+	}
+
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<SaleAfterOrder> getSaleAfterOrderStatusAgree() {
+		return this.session().createSQLQuery("FROM SaleAfterOrder WHERE status = 4").list();
+		
 	}
 }
