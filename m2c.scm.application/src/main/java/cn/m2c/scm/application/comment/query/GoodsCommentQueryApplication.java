@@ -163,7 +163,7 @@ public class GoodsCommentQueryApplication {
         sql.append(" SELECT ");
         sql.append(" * ");
         sql.append(" FROM ");
-        sql.append(" t_scm_goods_comment WHERE 1 = 1");
+        sql.append(" t_scm_goods_comment WHERE 1 = 1  AND comment_status = 1");
         if (StringUtils.isNotEmpty(dealerId)) {
             sql.append(" AND dealer_id = ? ");
             params.add(dealerId);
@@ -214,7 +214,7 @@ public class GoodsCommentQueryApplication {
         sql.append(" SELECT ");
         sql.append(" count(*) ");
         sql.append(" FROM ");
-        sql.append(" t_scm_goods_comment WHERE 1 = 1");
+        sql.append(" t_scm_goods_comment WHERE 1 = 1 AND comment_status = 1");
         if (StringUtils.isNotEmpty(dealerId)) {
             sql.append(" AND dealer_id = ? ");
             params.add(dealerId);
