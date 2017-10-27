@@ -37,7 +37,7 @@ public class AppGoodsDetailRepresentation {
     public AppGoodsDetailRepresentation(GoodsBean bean, List<GoodsGuaranteeBean> goodsGuaranteeBeans,
                                         String goodsUnitName, String mresId, Integer commentTotal,
                                         GoodsCommentBean goodsCommentBean, List<Map> fullCuts) {
-        this.dealerId = dealerId;
+        this.dealerId = bean.getDealerId();
         this.goodsId = bean.getGoodsId();
         this.classifyId = bean.getGoodsClassifyId();
         this.goodsName = bean.getGoodsName();

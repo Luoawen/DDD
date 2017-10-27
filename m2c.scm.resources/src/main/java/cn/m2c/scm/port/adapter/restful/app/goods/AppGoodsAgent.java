@@ -186,6 +186,7 @@ public class AppGoodsAgent {
      */
     @RequestMapping(value = "search", method = RequestMethod.GET)
     public ResponseEntity<MPager> appSearchGoods(
+            @RequestParam(value = "dealerId", required = false) String dealerId,
             @RequestParam(value = "sn", required = false) String sn,
             @RequestParam(value = "userId", required = false) String userId,
             @RequestParam(value = "searchFrom", required = false) String searchFrom,//HOT_KEYWORD,INPUT
@@ -197,10 +198,10 @@ public class AppGoodsAgent {
             @RequestParam(value = "rows", required = false, defaultValue = "10") Integer rows) {
         MPager result = new MPager(MCode.V_1);
         try {
-            Integer total = goodsQueryApplication.appSearchGoodsTotal(goodsClassifyId, condition);
+            Integer total = goodsQueryApplication.appSearchGoodsTotal(dealerId, goodsClassifyId, condition);
             if (total > 0) {
                 Map resultMap = new HashMap<>();
-                List<GoodsBean> goodsBeans = goodsQueryApplication.appSearchGoods(goodsClassifyId, condition, sortType,
+                List<GoodsBean> goodsBeans = goodsQueryApplication.appSearchGoods(dealerId, goodsClassifyId, condition, sortType,
                         sort, pageNum, rows);
                 if (null != goodsBeans && goodsBeans.size() > 0) {
                     List<AppGoodsSearchRepresentation> representations = new ArrayList<AppGoodsSearchRepresentation>();
@@ -235,6 +236,61 @@ public class AppGoodsAgent {
         } catch (Exception e) {
             LOGGER.error("searchGoodsByCondition Exception e:", e);
             result = new MPager(MCode.V_400, "搜索商品列表失败");
+        }
+        return new ResponseEntity<MPager>(result, HttpStatus.OK);
+    }
+
+    /**
+     * 活动商品搜索
+     *
+     * @param ids       ids
+     * @param rangeType 作用范围，0：全场，1：商家，2：商品，3：品类
+     * @param pageNum   第几页
+     * @param rows      每页多少条
+     * @return
+     */
+    @RequestMapping(value = "market", method = RequestMethod.GET)
+    public ResponseEntity<MPager> appSearchMarketGoods(
+            @RequestParam(value = "rangeType", required = false) Integer rangeType,
+            @RequestParam(value = "ids", required = false) List<String> ids,
+            @RequestParam(value = "pageNum", required = false, defaultValue = "1") Integer pageNum,
+            @RequestParam(value = "rows", required = false, defaultValue = "10") Integer rows) {
+        MPager result = new MPager(MCode.V_1);
+        try {
+            Integer total = goodsQueryApplication.appSearchMarketGoodsTotal(rangeType, ids);
+            if (total > 0) {
+                Map resultMap = new HashMap<>();
+                List<GoodsBean> goodsBeans = goodsQueryApplication.appSearchMarketGoods(rangeType, ids, pageNum, rows);
+                if (null != goodsBeans && goodsBeans.size() > 0) {
+                    List<AppGoodsSearchRepresentation> representations = new ArrayList<AppGoodsSearchRepresentation>();
+                    List<String> goodsClassifyIds = new ArrayList<>();
+                    for (GoodsBean goodsBean : goodsBeans) {
+                        // 获取商品分类的一级大类
+                        goodsClassifyIds.add(goodsBean.getGoodsClassifyId());
+                        List<Map> goodsTags = goodsRestService.getGoodsTags(goodsBean.getDealerId(), goodsBean.getGoodsId(), goodsBean.getGoodsClassifyId());
+                        representations.add(new AppGoodsSearchRepresentation(goodsBean, goodsTags));
+                    }
+                    resultMap.put("goods", representations);
+
+                    // 获取商品分类的一级大类
+                    List<GoodsClassifyBean> goodsClassifyBeanList = goodsClassifyQueryApplication.getFirstClassifyByClassifyIds(goodsClassifyIds);
+                    List<Map> classifyMap = new ArrayList<>();
+                    for (GoodsClassifyBean bean : goodsClassifyBeanList) {
+                        Map map = new HashMap<>();
+                        map.put("classifyId", bean.getClassifyId());
+                        map.put("classifyName", bean.getClassifyName());
+                        classifyMap.add(map);
+                    }
+                    resultMap.put("goodsClassify", classifyMap);
+
+                    result.setContent(resultMap);
+                }
+            }
+            result.setPager(total, pageNum, rows);
+            result.setStatus(MCode.V_200);
+        } catch (Exception e) {
+            LOGGER.error("searchGoodsByCondition Exception e:", e);
+            result = new MPager(MCode.V_400, "搜索活动商品列表失败");
         }
         return new ResponseEntity<MPager>(result, HttpStatus.OK);
     }

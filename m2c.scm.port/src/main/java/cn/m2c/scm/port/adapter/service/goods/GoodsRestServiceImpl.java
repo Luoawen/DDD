@@ -62,15 +62,17 @@ public class GoodsRestServiceImpl implements GoodsService {
 
     @Override
     public List<Map> getGoodsFullCut(String dealerId, String goodsId, String classifyId) {
-        List<Map> resultList = new ArrayList<>();
         String url = M2C_HOST_URL + "/m2c.market/fullcut/list?dealer_id={0}&goods_id={1}&classify_id={2}";
         String result = restTemplate.getForObject(url, String.class, dealerId, goodsId, classifyId);
         JSONObject json = JSONObject.parseObject(result);
         if (json.getInteger("status") == 200) {
             JSONArray contents = json.getJSONArray("content");
             if (null != contents) {
+                List<Map> resultList = new ArrayList<>();
                 Iterator<Object> contentJsons = contents.iterator();
                 while (contentJsons.hasNext()) {
+                    Map resultMap = new HashMap<>();
+                    List<Map> contentList = new ArrayList<>();
                     Object contentJson = contentJsons.next();
                     JSONObject contentObject = JSONObject.parseObject(JSONObject.toJSONString(contentJson));
                     Iterator<Object> it = contentObject.getJSONArray("itemList").iterator();
@@ -79,12 +81,27 @@ public class GoodsRestServiceImpl implements GoodsService {
                         String itemName = (String) jo.get("content");
                         Map map = new HashMap<>();
                         map.put("itemName", itemName);
-                        resultList.add(map);
+                        contentList.add(map);
                     }
+                    resultMap.put("itemNames", contentList);
+                    Integer rangeType = contentObject.getInteger("rangeType");
+                    resultMap.put("rangeType", rangeType);
+                    Iterator<Object> rangeIt = contentObject.getJSONArray("suitableRangeList").iterator();
+                    List<Map> idList = new ArrayList<>();
+                    while (rangeIt.hasNext()) {
+                        Map jo = (Map) rangeIt.next();
+                        String id = (String) jo.get("id");
+                        Map map = new HashMap<>();
+                        map.put("id", id);
+                        idList.add(map);
+                    }
+                    resultMap.put("ids", idList);
+                    resultList.add(resultMap);
                 }
+                return resultList;
             }
         }
-        return resultList;
+        return null;
     }
 
     @Override
