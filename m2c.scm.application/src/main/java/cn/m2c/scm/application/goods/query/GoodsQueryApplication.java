@@ -512,7 +512,7 @@ public class GoodsQueryApplication {
         return this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsSkuBean.class, goodsId);
     }
 
-    public List<GoodsBean> appSearchGoods(String goodsClassifyId, String condition, Integer sortType,
+    public List<GoodsBean> appSearchGoods(String dealerId, String goodsClassifyId, String condition, Integer sortType,
                                           Integer sort, Integer pageNum, Integer rows) {
         List<Object> params = new ArrayList<Object>();
         StringBuilder sql = new StringBuilder();
@@ -520,6 +520,10 @@ public class GoodsQueryApplication {
         sql.append(" g.* ");
         sql.append(" FROM ");
         sql.append(" t_scm_goods g,t_scm_goods_sku s WHERE g.id=s.goods_id");
+        if (StringUtils.isNotEmpty(dealerId)) {
+            sql.append(" AND g.dealer_id =? ");
+            params.add(dealerId);
+        }
         if (StringUtils.isNotEmpty(goodsClassifyId)) {
             // 查询所有一级分类的下级分类
             List<String> goodsClassifyIds = goodsClassifyQueryApplication.recursionQueryGoodsSubClassifyId(goodsClassifyId, new ArrayList<String>());
@@ -560,13 +564,17 @@ public class GoodsQueryApplication {
         return this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsBean.class, params.toArray());
     }
 
-    public Integer appSearchGoodsTotal(String goodsClassifyId, String condition) {
+    public Integer appSearchGoodsTotal(String dealerId, String goodsClassifyId, String condition) {
         List<Object> params = new ArrayList<Object>();
         StringBuilder sql = new StringBuilder();
         sql.append(" SELECT ");
         sql.append(" count(distinct g.goods_id) ");
         sql.append(" FROM ");
         sql.append(" t_scm_goods g,t_scm_goods_sku s WHERE g.id=s.goods_id");
+        if (StringUtils.isNotEmpty(dealerId)) {
+            sql.append(" AND g.dealer_id =? ");
+            params.add(dealerId);
+        }
         if (StringUtils.isNotEmpty(goodsClassifyId)) {
             // 查询所有一级分类的下级分类
             List<String> goodsClassifyIds = goodsClassifyQueryApplication.recursionQueryGoodsSubClassifyId(goodsClassifyId, new ArrayList<String>());
@@ -790,6 +798,63 @@ public class GoodsQueryApplication {
             }
         }
         return goodsBeanList;
+    }
+
+
+    public List<GoodsBean> appSearchMarketGoods(Integer rangeType, List<String> ids, Integer pageNum, Integer rows) {
+        List<Object> params = new ArrayList<Object>();
+        StringBuilder sql = new StringBuilder();
+        sql.append(" SELECT ");
+        sql.append(" * ");
+        sql.append(" FROM ");
+        sql.append(" t_scm_goods WHERE 1=1 AND del_status= 1");
+        //作用范围，0：全场，1：商家，2：商品，3：品类
+        if (null != ids && ids.size() > 0) {
+            if (rangeType == 1) {
+                sql.append(" AND dealer_id in (" + Utils.listParseString(ids) + ") ");
+            }
+            if (rangeType == 2) {
+                sql.append(" AND goods_id in (" + Utils.listParseString(ids) + ") ");
+            }
+            if (rangeType == 3) {
+                List<String> classifyIds = new ArrayList<>();
+                for (String id : ids) {
+                    List<String> goodsClassifyIds = goodsClassifyQueryApplication.recursionQueryGoodsSubClassifyId(id, new ArrayList<String>());
+                    classifyIds.addAll(goodsClassifyIds);
+                }
+                sql.append(" AND goods_classify_id in (" + Utils.listParseString(classifyIds) + ") ");
+            }
+        }
+        sql.append(" LIMIT ?,?");
+        params.add(rows * (pageNum - 1));
+        params.add(rows);
+        return this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsBean.class, params.toArray());
+    }
+
+    public Integer appSearchMarketGoodsTotal(Integer rangeType, List<String> ids) {
+        StringBuilder sql = new StringBuilder();
+        sql.append(" SELECT ");
+        sql.append(" count(*) ");
+        sql.append(" FROM ");
+        sql.append(" t_scm_goods WHERE 1=1 AND del_status= 1");
+        //作用范围，0：全场，1：商家，2：商品，3：品类
+        if (null != ids && ids.size() > 0) {
+            if (rangeType == 1) {
+                sql.append(" AND dealer_id in (" + Utils.listParseString(ids) + ") ");
+            }
+            if (rangeType == 2) {
+                sql.append(" AND goods_id in (" + Utils.listParseString(ids) + ") ");
+            }
+            if (rangeType == 3) {
+                List<String> classifyIds = new ArrayList<>();
+                for (String id : ids) {
+                    List<String> goodsClassifyIds = goodsClassifyQueryApplication.recursionQueryGoodsSubClassifyId(id, new ArrayList<String>());
+                    classifyIds.addAll(goodsClassifyIds);
+                }
+                sql.append(" AND goods_classify_id in (" + Utils.listParseString(classifyIds) + ") ");
+            }
+        }
+        return supportJdbcTemplate.jdbcTemplate().queryForObject(sql.toString(), null, Integer.class);
     }
 }
 
