@@ -67,6 +67,8 @@
 	        <property name="sellNum" column="sell_num" type="int"/>
 	        <property name="freight" column="freight" type="long"/>
 	        <property name="plateformDiscount" column="plateform_discount" type="long"/>
+	        <property name="isChange" column="is_change" type="int"/>
+        	<property name="changePrice" column="change_price" type="long"/>
         </component>
         
         <component name="marketInfo">
@@ -74,9 +76,6 @@
 	    	<property name="marketLevel" column="market_level" type="int"/>
 	        <property name="threshold" column="threshold" type="int"/>
         </component>
-        
-        <property name="isChange" column="is_change" type="int"/>
-        <property name="changePrice" column="change_price" type="long"/>
         
         <component name="mediaInfo">
 	        <property name="resRate" column="res_rate" type="string"/>

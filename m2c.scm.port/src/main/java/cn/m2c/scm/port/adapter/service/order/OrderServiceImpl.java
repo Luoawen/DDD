@@ -120,9 +120,9 @@ public class OrderServiceImpl implements OrderService {
 	@Override
 	public <T> List<T> getMarketingsByIds(List<String> marketingIds, String userId, Class<T> clss) {
 		// TODO Auto-generated method stub
-		String url = M2C_HOST_URL + "/m2c.market/fullcut/multi?full_cut_ids={0}&userId={1}";
+		String url = M2C_HOST_URL + "/m2c.market/fullcut/fullcut/user/{0}/multi?full_cut_ids={1}";
 		
-		String rtResult = restTemplate.getForObject(url, String.class, JSONObject.toJSONString(marketingIds),
+		String rtResult = restTemplate.getForObject(url, String.class, userId, JSONObject.toJSONString(marketingIds),
 				userId);
 		JSONObject json = JSONObject.parseObject(rtResult);
 		

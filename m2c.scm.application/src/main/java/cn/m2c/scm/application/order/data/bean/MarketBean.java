@@ -27,10 +27,44 @@ public class MarketBean {
 	private List<MarketLevelBean> itemList;
 	/**作用范围，0：全场，1：商家，2：商品，3：品类*/
 	private int rangeType;
-	
+	/**适应列表*/
 	private List<MarketRange> suitableRangeList;
-	
+	/**排他列表*/
 	private List<MarketRange> removeRangeList;
+	
+	private String userId;
+	/**用户每天可使用数*/
+	private int numPerDay = 0;
+	/**用户今天已使用数*/
+	private int numToday = 0;
+	
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
+
+	public int getNumPerDay() {
+		return numPerDay;
+	}
+	
+	public void setNumPerDay(int numPerDay) {
+		this.numPerDay = numPerDay;
+	}
+	/**用户今天已使用数*/
+	public int getNumToday() {
+		return numToday;
+	}
+
+	public void setNumToday(int numToday) {
+		this.numToday = numToday;
+	}
+
+	public void setThreshold(int threshold) {
+		this.threshold = threshold;
+	}
 
 	public String getFullCutId() {
 		return fullCutId;
@@ -152,5 +186,12 @@ public class MarketBean {
 	 */
 	public int getThreshold() {
 		return threshold;
+	}
+	/***
+	 * 获取用户今天还可使用数
+	 * @return
+	 */
+	public int getHasUsedNum() {
+		return numPerDay - numToday;
 	}
 }
