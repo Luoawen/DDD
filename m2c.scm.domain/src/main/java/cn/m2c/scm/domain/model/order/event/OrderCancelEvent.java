@@ -20,6 +20,10 @@ public class OrderCancelEvent implements DomainEvent {
 	private Date occurredOn;
 	
     private int eventVersion;
+    
+    private String orderNo;
+    
+    private Map<String, Object> markets;
 	
 	public OrderCancelEvent() {
 		super();
@@ -27,9 +31,11 @@ public class OrderCancelEvent implements DomainEvent {
 		eventVersion = 1;
 	}
 	
-	public OrderCancelEvent(Map<String, Integer> s) {
+	public OrderCancelEvent(String orderNo, Map<String, Integer> s, Map<String, Object> markets) {
 		this();
 		sales = s;
+		this.orderNo = orderNo;
+		this.markets = markets;
 	}
 	@Override
 	public int eventVersion() {
@@ -45,6 +51,14 @@ public class OrderCancelEvent implements DomainEvent {
 
 	public Map<String, Integer> getSales() {
 		return sales;
+	}
+	
+	public String getOrderNo() {
+		return orderNo;
+	}
+	
+	public Map<String, Object> getMarkets() {
+		return markets;
 	}
 	
 	public static void main(String[] args) {

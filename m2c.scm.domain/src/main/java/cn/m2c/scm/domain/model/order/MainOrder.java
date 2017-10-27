@@ -8,7 +8,6 @@ import java.util.Map;
 
 import cn.m2c.ddd.common.domain.model.ConcurrencySafeEntity;
 import cn.m2c.ddd.common.domain.model.DomainEventPublisher;
-import cn.m2c.scm.domain.model.order.event.MediaResEvent;
 import cn.m2c.scm.domain.model.order.event.OrderCancelEvent;
 import cn.m2c.scm.domain.model.order.event.OrderPayedEvent;
 import cn.m2c.scm.domain.model.order.event.SimpleMediaRes;
@@ -93,7 +92,19 @@ public class MainOrder extends ConcurrencySafeEntity {
 			allSales.putAll(d.getSaleNums());
 		}
 		
-		DomainEventPublisher.instance().publish(new OrderCancelEvent(allSales));
+		Map<String, Object> markets = null;
+		if (marketings != null) {
+			markets = new HashMap<String, Object>();
+			StringBuilder sb = new StringBuilder(200);
+			for (SimpleMarketing m : marketings) {
+				sb.append(m.getMarketingId()).append(",");
+			}
+			markets.put("marketIds", sb.toString().substring(0, sb.length() - 1));
+			markets.put("userId", userId);
+			markets.put("status", 0);
+		}
+		
+		DomainEventPublisher.instance().publish(new OrderCancelEvent(orderId, allSales, markets));
 		allSales = null;
 		DomainEventPublisher.instance().publish(new OrderOptLogEvent(orderId, null, "订单取消成功", userId));
 		return true;
@@ -124,14 +135,26 @@ public class MainOrder extends ConcurrencySafeEntity {
 			allSales.putAll(d.getSaleNums());
 			allRes.addAll(d.getAllMediaRes());
 		}
+		Map<String, Object> markets = null;
+		if (marketings != null) {
+			markets = new HashMap<String, Object>();
+			StringBuilder sb = new StringBuilder(200);
+			for (SimpleMarketing m : marketings) {
+				sb.append(m.getMarketingId()).append(",");
+			}
+			markets.put("marketIds", sb.toString().substring(0, sb.length() - 1));
+			markets.put("userId", userId);
+			markets.put("status", 1);
+		}
+		
 		DomainEventPublisher.instance().publish(new OrderOptLogEvent(orderId, null, "订单支付成功", uId));
 		
-		DomainEventPublisher.instance().publish(new OrderPayedEvent(allSales));
+		DomainEventPublisher.instance().publish(new OrderPayedEvent(orderId, allSales, allRes, markets));
 		allSales = null;
-		if (allRes.size() > 1)
-			/*DomainEventPublisher.instance().publish(new MediaResEvent(orderId, orderFreight, 
-				goodsAmount - plateformDiscount - dealerDiscount, allRes));*/
-			DomainEventPublisher.instance().publish(new MediaResEvent(orderId, allRes));
+		/*if (allRes.size() > 1)
+			DomainEventPublisher.instance().publish(new MediaResEvent(orderId, orderFreight, 
+				goodsAmount - plateformDiscount - dealerDiscount, allRes));
+			DomainEventPublisher.instance().publish(new MediaResEvent(orderId, allRes));*/
 		allRes = null;
 		return true;
 	}

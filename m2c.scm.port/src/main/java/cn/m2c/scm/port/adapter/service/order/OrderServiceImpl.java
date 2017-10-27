@@ -1,7 +1,6 @@
 package cn.m2c.scm.port.adapter.service.order;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -37,9 +36,15 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	@Override
-	public void lockStock(Map<String, Integer> skus) {
+	public boolean lockMarketIds(List<String> marketIds, String orderNo, String userId) {
 		// TODO Auto-generated method stub
-		// 抛出异常表示锁定不成功.
+		String url = M2C_HOST_URL + "/m2c.market/fullcut/use?full_cut_ids={0}&order_id={1}&user_id={2}";
+		String rtResult = restTemplate.postForObject(url, null, String.class, JSONObject.toJSONString(marketIds), orderNo, userId, String.class);
+		JSONObject json = JSONObject.parseObject(rtResult);
+        if (json.getInteger("status") != 200) {
+        	return false;
+        }
+		return true;
 	}
 
 	@Override
@@ -109,11 +114,6 @@ public class OrderServiceImpl implements OrderService {
 		
 	}
 
-	@Override
-	public void unlockStock(Map<String, Float> skus) {
-		// TODO Auto-generated method stub
-		
-	}
 	/***
 	 * 获取营销活动
 	 */
