@@ -23,8 +23,9 @@ public class GoodsSearchRepresentation {
     private String dealerName;
     private String dealerType;
     private String dealerId;
+    private String goodsId;
 
-    public GoodsSearchRepresentation(GoodsBean bean,String goodsClassify,String dealerType) {
+    public GoodsSearchRepresentation(GoodsBean bean, String goodsClassify, String dealerType) {
         List<String> mainImages = JsonUtils.toList(bean.getGoodsMainImages(), String.class);
         if (null != mainImages && mainImages.size() > 0) {
             this.goodsImageUrl = mainImages.get(0);
@@ -63,6 +64,7 @@ public class GoodsSearchRepresentation {
         this.dealerName = bean.getDealerName();
         this.dealerType = dealerType;
         this.dealerId = bean.getDealerId();
+        this.goodsId = bean.getGoodsId();
     }
 
     public String getGoodsImageUrl() {
@@ -151,5 +153,13 @@ public class GoodsSearchRepresentation {
 
     public void setDealerId(String dealerId) {
         this.dealerId = dealerId;
+    }
+
+    public String getGoodsId() {
+        return goodsId;
+    }
+
+    public void setGoodsId(String goodsId) {
+        this.goodsId = goodsId;
     }
 }
