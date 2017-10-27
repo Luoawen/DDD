@@ -182,6 +182,9 @@ public class OrderApplication {
 		order.add();
 		orderRepository.save(order);
 		// 锁定营销 orderNo, 营销ID, userId
+		if(!orderDomainService.lockMarketIds(marketIds, cmd.getOrderId(), cmd.getUserId())) {
+			throw new NegativeException(MCode.V_300, "活动已被用完！");
+		}
 		return new OrderResult(cmd.getOrderId(), goodsAmounts, freight, plateDiscount, dealerDiscount);
 	}
 	/***
@@ -293,8 +296,6 @@ public class OrderApplication {
 			orderRepository.updateMainOrder(order);
 			// 若订单中有优惠券则需要解锁
 			orderDomainService.unlockCoupons(queryApp.getCouponsByOrderId(cmd.getOrderId()), "");
-			// 解锁库存
-			orderDomainService.unlockStock(queryApp.getSkusByOrderId(cmd.getOrderId()));
 		}
 		else {
 			throw new NegativeException(MCode.V_1, "订单处于不可取消状态！");

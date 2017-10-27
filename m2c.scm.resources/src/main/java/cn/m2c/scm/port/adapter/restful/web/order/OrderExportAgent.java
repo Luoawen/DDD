@@ -1,18 +1,9 @@
 package cn.m2c.scm.port.adapter.restful.web.order;
 
-import cn.m2c.scm.application.classify.query.GoodsClassifyQueryApplication;
-import cn.m2c.scm.application.dealer.query.DealerQuery;
 import cn.m2c.scm.application.dealerorder.query.DealerOrderAfterSellQuery;
-import cn.m2c.scm.application.goods.query.GoodsQueryApplication;
-import cn.m2c.scm.application.goods.query.data.bean.GoodsBean;
-import cn.m2c.scm.application.goods.query.data.bean.GoodsSkuBean;
-import cn.m2c.scm.application.goods.query.data.export.GoodsServiceRateModel;
-import cn.m2c.scm.application.goods.query.data.export.GoodsSupplyPriceModel;
 import cn.m2c.scm.application.order.OrderApplication;
 import cn.m2c.scm.application.order.SaleAfterOrderApp;
-import cn.m2c.scm.application.order.data.bean.AfterSellOrderBean;
 import cn.m2c.scm.application.order.data.export.SaleAfterExpModel;
-import cn.m2c.scm.application.postage.query.PostageModelQueryApplication;
 import cn.m2c.scm.application.utils.ExcelUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

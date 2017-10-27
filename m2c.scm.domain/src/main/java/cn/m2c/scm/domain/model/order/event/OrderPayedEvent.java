@@ -1,10 +1,8 @@
 package cn.m2c.scm.domain.model.order.event;
 
 import java.util.Date;
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-
-import com.google.gson.Gson;
 
 import cn.m2c.ddd.common.domain.model.DomainEvent;
 /***
@@ -20,6 +18,12 @@ public class OrderPayedEvent implements DomainEvent {
 	private Date occurredOn;
 	
     private int eventVersion;
+    
+    private String orderNo;
+    
+    private List<SimpleMediaRes> reses;
+    
+    private Map<String, Object> markets;
 	
 	public OrderPayedEvent() {
 		super();
@@ -27,9 +31,12 @@ public class OrderPayedEvent implements DomainEvent {
 		eventVersion = 1;
 	}
 	
-	public OrderPayedEvent(Map<String, Integer> s) {
+	public OrderPayedEvent(String orderNo, Map<String, Integer> s, List<SimpleMediaRes> reses, Map<String, Object> markets) {
 		this();
 		sales = s;
+		this.orderNo = orderNo;
+		this.reses = reses;
+		this.markets = markets;
 	}
 	@Override
 	public int eventVersion() {
@@ -45,6 +52,18 @@ public class OrderPayedEvent implements DomainEvent {
 
 	public Map<String, Integer> getSales() {
 		return sales;
+	}
+	
+	public String getOrderNo() {
+		return orderNo;
+	}
+	
+	public List<SimpleMediaRes> getReses() {
+		return reses;
+	}
+	
+	public Map<String, Object> getMarkets() {
+		return markets;
 	}
 	
 	public static void main(String[] args) {
