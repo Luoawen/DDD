@@ -31,4 +31,8 @@ public class Utils {
         }
         return null;
     }
+
+    public static String listToString(List list, char separator) {
+        return StringUtils.join(list.toArray(), separator);
+    }
 }
