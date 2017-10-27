@@ -93,7 +93,7 @@ public class PostageModelQueryApplication {
                                 if (StringUtils.isNotEmpty(bean.getCityCode())) {
                                     List<String> codes = Arrays.asList(bean.getCityCode().split(","));
                                     if (codes.contains(cityCode)) {
-                                        map.put(info.getSkuId(), new PostageModelRuleRepresentation(bean, postageModelBean.getChargeType()));
+                                        map.put(info.getSkuId(), new PostageModelRuleRepresentation(bean, postageModelBean));
                                         specialFlag = true;
                                         break;
                                     }
@@ -103,7 +103,7 @@ public class PostageModelQueryApplication {
                             }
                         }
                         if (!specialFlag && null != defaultBean) {
-                            map.put(info.getSkuId(), new PostageModelRuleRepresentation(defaultBean, postageModelBean.getChargeType()));
+                            map.put(info.getSkuId(), new PostageModelRuleRepresentation(defaultBean, postageModelBean));
                         }
                     }
 

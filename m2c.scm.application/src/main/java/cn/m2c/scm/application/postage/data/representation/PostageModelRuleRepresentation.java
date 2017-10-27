@@ -1,5 +1,6 @@
 package cn.m2c.scm.application.postage.data.representation;
 
+import cn.m2c.scm.application.postage.data.bean.PostageModelBean;
 import cn.m2c.scm.application.postage.data.bean.PostageModelRuleBean;
 
 /**
@@ -56,7 +57,12 @@ public class PostageModelRuleRepresentation {
      */
     private Integer chargeType;
 
-    public PostageModelRuleRepresentation(PostageModelRuleBean bean, Integer chargeType) {
+    /**
+     * 模板说明
+     */
+    private String modelDescription;
+
+    public PostageModelRuleRepresentation(PostageModelRuleBean bean, PostageModelBean postageModelBean) {
         this.ruleId = bean.getRuleId();
         this.address = bean.getAddress();
         this.firstWeight = bean.getFirstWeight();
@@ -66,7 +72,8 @@ public class PostageModelRuleRepresentation {
         this.continuedPiece = bean.getContinuedPiece();
         this.continuedPostage = bean.getContinuedPostage();
         this.defaultFlag = bean.getDefaultFlag();
-        this.chargeType = chargeType;
+        this.chargeType = postageModelBean.getChargeType();
+        this.modelDescription = postageModelBean.getModelDescription();
     }
 
     public String getRuleId() {
@@ -147,5 +154,13 @@ public class PostageModelRuleRepresentation {
 
     public void setChargeType(Integer chargeType) {
         this.chargeType = chargeType;
+    }
+
+    public String getModelDescription() {
+        return modelDescription;
+    }
+
+    public void setModelDescription(String modelDescription) {
+        this.modelDescription = modelDescription;
     }
 }
