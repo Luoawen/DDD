@@ -26,6 +26,7 @@ public class CommentRepresentation {
     private String replyTime;
 
     public CommentRepresentation(GoodsCommentBean bean) {
+        this.commentId = bean.getCommentId();
         this.goodsName = bean.getGoodsName();
         this.orderId = bean.getOrderId();
         this.buyerIcon = bean.getBuyerIcon();
