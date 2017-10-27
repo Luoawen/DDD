@@ -1,6 +1,7 @@
 package cn.m2c.scm.domain.model.order;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -8,6 +9,7 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 
 import cn.m2c.ddd.common.domain.model.ConcurrencySafeEntity;
+import cn.m2c.scm.domain.NegativeException;
 import cn.m2c.scm.domain.model.order.event.SimpleMediaRes;
 /**
  * 商家订单
@@ -38,6 +40,8 @@ public class DealerOrder extends ConcurrencySafeEntity {
 	private Long plateformDiscount;
 	/**商家优惠*/
 	private Long dealerDiscount;
+	/** 下单时间 **/
+	private Date createdDate;
 	/**备注 留言*/
 	private String noted;
 	/**发票信息*/
@@ -213,5 +217,33 @@ public class DealerOrder extends ConcurrencySafeEntity {
 	 */
 	public void updateOrderFreight(long orderFreight) {
 		this.orderFreight = orderFreight;
+	}
+	
+	/**
+	 * 更新订单状态<将待收货改为已完成>
+	 */
+	public void updateOrderStatus() {
+		this.status = 3;
+		
+	}
+	
+	/**
+	 * 更新状态信息<完成状态更新为订单完成>
+	 */
+	public void updateOrderStatusFinished() {
+		this.status = 4;
+		
+	}
+	
+	/**
+	 * 更新状态信息<待付款状态24H未付款更新为已取消>
+	 */
+	public void updateOrderStatusWaitPay() {
+		this.status = -1;
+	}
+	
+	
+	public long dateToLong() {
+		return this.createdDate.getTime();
 	}
 }
