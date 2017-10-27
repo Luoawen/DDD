@@ -12,6 +12,7 @@ import cn.m2c.ddd.common.port.adapter.persistence.springJdbc.SupportJdbcTemplate
 import cn.m2c.scm.application.dealerorder.data.bean.DealerOrderAfterSellDetailBean;
 import cn.m2c.scm.application.order.data.bean.AfterSellOrderBean;
 import cn.m2c.scm.application.order.data.bean.GoodsInfoBean;
+import cn.m2c.scm.application.order.data.export.SaleAfterExpModel;
 
 @Repository
 public class DealerOrderAfterSellQuery {
@@ -64,18 +65,20 @@ public class DealerOrderAfterSellQuery {
 			params.add(endTime);
 		}
 		if (!StringUtils.isEmpty(mediaInfo)) {
-			if ("有媒体信息".equals(mediaInfo)) {
+			if ("1".equals(mediaInfo)) {
 				sql.append(" AND detail.media_id != '' ");
 			}
-			if ("无媒体信息".equals(mediaInfo)) {
+			if ("0".equals(mediaInfo)) {
 				sql.append(" AND detail.meidia_id = '' ");
 			}
 		}
 		
 		sql.append(" ORDER BY after.created_date DESC ");
-		sql.append(" LIMIT ?,?");
-		params.add(rows * (pageNum - 1));
-		params.add(rows);
+		if (rows != null && pageNum != null) {
+			sql.append(" LIMIT ?,?");
+			params.add(rows * (pageNum - 1));
+			params.add(rows);
+		}
 		List<AfterSellOrderBean> beanList = this.supportJdbcTemplate.queryForBeanList(sql.toString(), AfterSellOrderBean.class, params.toArray());
 		for (AfterSellOrderBean bean : beanList) {
 			bean.setGoodsInfo(afterSellGoodsInfoQuery(bean.getSkuId(), dealerOrderId));
@@ -169,10 +172,10 @@ public class DealerOrderAfterSellQuery {
 			params.add(startTime);
 			params.add(endTime);
 		}
-		if ("有媒体信息".equals(mediaInfo)) {
+		if ("1".equals(mediaInfo)) {
 			sql.append(" AND detail.media_id != '' ");
 		}
-		if ("无媒体信息".equals(mediaInfo)) {
+		if ("0".equals(mediaInfo)) {
 			sql.append(" AND detail.meidia_id = '' ");
 		}
 		return this.supportJdbcTemplate.jdbcTemplate().queryForObject(sql.toString(), Integer.class,params.toArray());
@@ -236,6 +239,61 @@ public class DealerOrderAfterSellQuery {
 		sql.append(" AND detail.goods_id = goods.goods_id ");
 		return this.supportJdbcTemplate.queryForBeanList(sql.toString(), GoodsInfoBean.class,param.toArray());
 	}
-	
-
+	/***
+	 * 商家平台售后单导出
+	 * @param orderType
+	 * @param dealerId
+	 * @param dealerOrderId
+	 * @param status
+	 * @param condition
+	 * @param startTime
+	 * @param endTime
+	 * @param mediaInfo
+	 * @return
+	 */
+	public List<SaleAfterExpModel> orderSaleAfterExportQuery(Integer orderType, String dealerId, Integer status,
+			String condition, String startTime, String endTime, String mediaInfo) {
+		List<Object> params = new ArrayList<Object>();
+		StringBuilder sql = new StringBuilder();
+		sql.append(" SELECT a.sku_id skuId, dtl.sku_name skuName, dtl.goods_name goodsName, dtl.goods_title goodsTitle,")
+		.append(" a.after_sell_order_id saleAfterNo, a.order_type orderType, a.back_money backMoney, a._status status, dealer.dealer_name dealerName, a.created_date createTime")
+		.append(" FROM t_scm_order_after_sell a")
+		.append(" LEFT JOIN t_scm_dealer dealer ON a.dealer_id = dealer.dealer_id ")
+		.append(" LEFT JOIN t_scm_order_detail dtl ON dtl.sku_id = a.sku_id AND dtl.dealer_order_id=a.dealer_order_id");
+		//.append(" LEFT JOIN t_scm_goods_sku sku ON a.sku_id = sku.sku_id");
+		sql.append(" WHERE dealer.dealer_id = ? ");
+		params.add(dealerId);
+		if (null != orderType) {
+			sql.append(" AND a.order_type = ? ");
+			params.add(orderType);
+		}
+		if (null != status) {
+			sql.append(" AND a._status = ? ");
+			params.add(status);
+		}
+		if (!StringUtils.isEmpty(condition)) {
+			sql.append(" AND a.dealer_order_id LIKE concat('%',?,'%') OR a.after_sell_order_id LIKE concat('%',?,'%') OR goods.goods_name LIKE concat('%',?,'%') ");
+			params.add(condition);
+			params.add(condition);
+			params.add(condition);
+		}
+		if (!StringUtils.isEmpty(startTime) && !StringUtils.isEmpty(endTime)) {
+			sql.append(" AND dealer.created_date BETWEEN ? AND ? ");
+			params.add(startTime);
+			params.add(endTime);
+		}
+		if (!StringUtils.isEmpty(mediaInfo)) {
+			if ("1".equals(mediaInfo)) {
+				sql.append(" AND detail.media_id != '' ");
+			}
+			if ("0".equals(mediaInfo)) {
+				sql.append(" AND detail.meidia_id = '' ");
+			}
+		}
+		
+		sql.append(" ORDER BY a.created_date DESC ");
+		sql.append(" LIMIT 2000");
+		List<SaleAfterExpModel> beanList = this.supportJdbcTemplate.queryForBeanList(sql.toString(), SaleAfterExpModel.class, params.toArray());
+		return beanList;
+	}
 }
