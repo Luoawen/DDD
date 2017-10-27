@@ -343,7 +343,7 @@ public class GoodsApproveAgent {
                         DealerBean dealerBean = dealerQuery.getDealer(bean.getDealerId());
                         String dealerType = "";
                         if (null != dealerBean) {
-                            dealerType = dealerBean.getDealerClassifyBean().getDealerSecondClassifyName();
+                            dealerType = null != dealerBean.getDealerClassifyBean()?dealerBean.getDealerClassifyBean().getDealerSecondClassifyName():"";
                         }
                         String goodsClassify = goodsClassifyQueryApplication.getClassifyNames(bean.getGoodsClassifyId());
                         representations.add(new GoodsApproveSearchRepresentation(bean, goodsClassify, dealerType));
