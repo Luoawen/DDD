@@ -19,6 +19,12 @@ public class GoodsInfoBean {
 	 */
 	@ColumnAlias(value = "goods_name")
 	private String goodsName;
+	/**商品副标题*/
+	@ColumnAlias(value = "goods_sub_title")
+	private String goodsSubTitle;
+	/**规格名称*/
+	@ColumnAlias(value = "sku_name")
+	private String skuName;
 	/**
 	 * 商品信息<规格>
 	 */
@@ -124,6 +130,22 @@ public class GoodsInfoBean {
 
 	public void setFreight(long freight) {
 		this.freight = freight;
+	}
+
+	public String getGoodsSubTitle() {
+		return goodsSubTitle;
+	}
+
+	public void setGoodsSubTitle(String goodsSubTitle) {
+		this.goodsSubTitle = goodsSubTitle;
+	}
+
+	public String getSkuName() {
+		return skuName;
+	}
+
+	public void setSkuName(String skuName) {
+		this.skuName = skuName;
 	}
 
 	@Override

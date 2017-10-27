@@ -1,7 +1,6 @@
 package cn.m2c.scm.application.order.data.bean;
 
 import java.util.Date;
-import java.util.List;
 
 import cn.m2c.ddd.common.persistence.orm.ColumnAlias;
 
@@ -16,7 +15,7 @@ public class AfterSellOrderBean {
 	 * 期望售后
 	 */
 	@ColumnAlias(value = "order_type")
-	private String orderType;
+	private Integer orderType;
 	/**
 	 * 售后总额
 	 */
@@ -32,13 +31,16 @@ public class AfterSellOrderBean {
 	 */
 	@ColumnAlias(value = "dealer_name")
 	private String dealerInfo;
+	/**规格ID*/
+	@ColumnAlias(value = "sku_id")
+	private String skuId;
 	/**
 	 * 申请时间
 	 */
 	@ColumnAlias(value = "created_date")
 	private Date createDate;
 
-	private List<GoodsInfoBean> goodsInfo;
+	private GoodsInfoBean goodsInfo;
 
 
 	public String getAfterSellOrderId() {
@@ -46,7 +48,7 @@ public class AfterSellOrderBean {
 	}
 
 
-	public String getOrderType() {
+	public Integer getOrderType() {
 		return orderType;
 	}
 
@@ -71,7 +73,7 @@ public class AfterSellOrderBean {
 	}
 
 
-	public List<GoodsInfoBean> getGoodsInfo() {
+	public GoodsInfoBean getGoodsInfo() {
 		return goodsInfo;
 	}
 
@@ -81,7 +83,7 @@ public class AfterSellOrderBean {
 	}
 
 
-	public void setOrderType(String orderType) {
+	public void setOrderType(Integer orderType) {
 		this.orderType = orderType;
 	}
 
@@ -106,8 +108,17 @@ public class AfterSellOrderBean {
 	}
 
 
-	public void setGoodsInfo(List<GoodsInfoBean> goodsInfo) {
+	public void setGoodsInfo(GoodsInfoBean goodsInfo) {
 		this.goodsInfo = goodsInfo;
+	}
+
+	public String getSkuId() {
+		return skuId;
+	}
+
+
+	public void setSkuId(String skuId) {
+		this.skuId = skuId;
 	}
 
 
