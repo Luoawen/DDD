@@ -1,6 +1,7 @@
 package cn.m2c.scm.port.adapter.service.goods;
 
 import cn.m2c.ddd.common.port.adapter.persistence.springJdbc.SupportJdbcTemplate;
+import cn.m2c.scm.application.utils.Utils;
 import cn.m2c.scm.domain.service.goods.GoodsService;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -87,15 +88,13 @@ public class GoodsRestServiceImpl implements GoodsService {
                     Integer rangeType = contentObject.getInteger("rangeType");
                     resultMap.put("rangeType", rangeType);
                     Iterator<Object> rangeIt = contentObject.getJSONArray("suitableRangeList").iterator();
-                    List<Map> idList = new ArrayList<>();
+                    List<String> idList = new ArrayList<>();
                     while (rangeIt.hasNext()) {
                         Map jo = (Map) rangeIt.next();
                         String id = (String) jo.get("id");
-                        Map map = new HashMap<>();
-                        map.put("id", id);
-                        idList.add(map);
+                        idList.add(id);
                     }
-                    resultMap.put("ids", idList);
+                    resultMap.put("ids", Utils.listToString(idList, ','));
                     resultList.add(resultMap);
                 }
                 return resultList;
