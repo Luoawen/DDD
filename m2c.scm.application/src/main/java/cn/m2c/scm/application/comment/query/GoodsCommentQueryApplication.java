@@ -178,8 +178,8 @@ public class GoodsCommentQueryApplication {
         }
         if (StringUtils.isNotEmpty(startTime) && StringUtils.isNotEmpty(endTime)) {
             sql.append(" AND created_date BETWEEN ? AND ? ");
-            params.add(startTime + "00:00:00");
-            params.add(endTime + "23:59:59");
+            params.add(startTime + " 00:00:00");
+            params.add(endTime + " 23:59:59");
         }
         if (StringUtils.isNotEmpty(condition)) {
             sql.append(" AND (goods_name LIKE ? OR order_id LIKE ? OR buyer_name LIKE ? OR buyer_phone_number LIKE ?)");
@@ -229,8 +229,8 @@ public class GoodsCommentQueryApplication {
         }
         if (StringUtils.isNotEmpty(startTime) && StringUtils.isNotEmpty(endTime)) {
             sql.append(" AND created_date BETWEEN ? AND ? ");
-            params.add(startTime + "00:00:00");
-            params.add(endTime + "23:59:59");
+            params.add(startTime + " 00:00:00");
+            params.add(endTime + " 23:59:59");
         }
         if (StringUtils.isNotEmpty(condition)) {
             sql.append(" AND (goods_name LIKE ? OR order_id LIKE ? OR buyer_name LIKE ? OR buyer_phone_number LIKE ?)");
