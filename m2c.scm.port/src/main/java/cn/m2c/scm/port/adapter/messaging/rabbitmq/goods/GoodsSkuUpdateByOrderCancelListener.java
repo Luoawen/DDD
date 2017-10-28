@@ -15,13 +15,13 @@ import java.util.Map;
 /**
  * 订单支付完成，加商品销量、减实际库存
  */
-public class GoodsSkuUpdateByOrderPayedListener extends ExchangeListener {
-    private static final Logger LOGGER = LoggerFactory.getLogger(GoodsSkuUpdateByOrderPayedListener.class);
+public class GoodsSkuUpdateByOrderCancelListener extends ExchangeListener {
+    private static final Logger LOGGER = LoggerFactory.getLogger(GoodsSkuUpdateByOrderCancelListener.class);
 
     @Autowired
     GoodsApplication goodsApplication;
 
-    public GoodsSkuUpdateByOrderPayedListener(RabbitmqConfiguration rabbitmqConfiguration, HibernateTransactionManager hibernateTransactionManager, ConsumedEventStore consumedEventStore) {
+    public GoodsSkuUpdateByOrderCancelListener(RabbitmqConfiguration rabbitmqConfiguration, HibernateTransactionManager hibernateTransactionManager, ConsumedEventStore consumedEventStore) {
         super(rabbitmqConfiguration, hibernateTransactionManager, consumedEventStore);
     }
 

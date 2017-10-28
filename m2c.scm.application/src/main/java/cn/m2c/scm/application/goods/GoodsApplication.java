@@ -270,11 +270,11 @@ public class GoodsApplication {
     }
 
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
-    public void GoodsSkuUpdateByOrderPayed(Map<String, Integer> map) {
+    public void GoodsSkuUpdateByOrderPayed(Map<String, Object> map) {
         if (null != map && map.size() > 0) {
-            for (Map.Entry<String, Integer> entry : map.entrySet()) {
+            for (Map.Entry<String, Object> entry : map.entrySet()) {
                 String skuId = entry.getKey();
-                Integer num = entry.getValue();
+                Integer num = Integer.parseInt(String.valueOf(entry.getValue()));
                 GoodsSku goodsSku = goodsSkuRepository.queryGoodsSkuById(skuId);
                 if (null != goodsSku) {
                     goodsSku.orderPayed(num);
@@ -284,11 +284,11 @@ public class GoodsApplication {
     }
 
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
-    public void GoodsSkuUpdateByOrderCancel(Map<String, Integer> map) {
+    public void GoodsSkuUpdateByOrderCancel(Map<String, Object> map) {
         if (null != map && map.size() > 0) {
-            for (Map.Entry<String, Integer> entry : map.entrySet()) {
+            for (Map.Entry<String, Object> entry : map.entrySet()) {
                 String skuId = entry.getKey();
-                Integer num = entry.getValue();
+                Integer num = Integer.parseInt(String.valueOf(entry.getValue()));
                 GoodsSku goodsSku = goodsSkuRepository.queryGoodsSkuById(skuId);
                 if (null != goodsSku) {
                     goodsSku.orderCancel(num);
@@ -298,11 +298,11 @@ public class GoodsApplication {
     }
 
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
-    public void GoodsSkuUpdateByOrderReturnGoods(Map<String, Integer> map) {
+    public void GoodsSkuUpdateByOrderReturnGoods(Map<String, Object> map) {
         if (null != map && map.size() > 0) {
-            for (Map.Entry<String, Integer> entry : map.entrySet()) {
+            for (Map.Entry<String, Object> entry : map.entrySet()) {
                 String skuId = entry.getKey();
-                Integer num = entry.getValue();
+                Integer num = Integer.parseInt(String.valueOf(entry.getValue()));
                 GoodsSku goodsSku = goodsSkuRepository.queryGoodsSkuById(skuId);
                 if (null != goodsSku) {
                     goodsSku.orderReturnGoods(num);
