@@ -13,6 +13,7 @@ import cn.m2c.scm.application.goods.query.GoodsGuaranteeQueryApplication;
 import cn.m2c.scm.application.goods.query.GoodsQueryApplication;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsBean;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsGuaranteeBean;
+import cn.m2c.scm.application.goods.query.data.representation.app.AppGoodsByIdsRepresentation;
 import cn.m2c.scm.application.goods.query.data.representation.app.AppGoodsDetailRepresentation;
 import cn.m2c.scm.application.goods.query.data.representation.app.AppGoodsGuessRepresentation;
 import cn.m2c.scm.application.goods.query.data.representation.app.AppGoodsSearchRepresentation;
@@ -354,10 +355,10 @@ public class AppGoodsAgent {
         try {
             List<GoodsBean> goodsBeans = goodsQueryApplication.appQueryGoodsByGoodsIds(goodsIds);
             if (null != goodsBeans && goodsBeans.size() > 0) {
-                List<AppGoodsGuessRepresentation> resultRepresentation = new ArrayList<>();
+                List<AppGoodsByIdsRepresentation> resultRepresentation = new ArrayList<>();
                 for (GoodsBean goodsBean : goodsBeans) {
                     List<Map> goodsTags = goodsRestService.getGoodsTags(goodsBean.getDealerId(), goodsBean.getGoodsId(), goodsBean.getGoodsClassifyId());
-                    resultRepresentation.add(new AppGoodsGuessRepresentation(goodsBean, goodsTags));
+                    resultRepresentation.add(new AppGoodsByIdsRepresentation(goodsBean, goodsTags));
                 }
                 result.setContent(resultRepresentation);
             }
