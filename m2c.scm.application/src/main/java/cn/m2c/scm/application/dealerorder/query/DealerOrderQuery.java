@@ -456,13 +456,6 @@ public class DealerOrderQuery {
 		dealerOrderDetailBean.setTotalOrderPrice(totalPrice);
 		dealerOrderDetailBean.setTotalFreight(totalFrieght);
 
-		/**
-		 * 获取商家订单总价格 (商品总额-运费总额-平台优惠信息-商家优惠信息)
-		 */
-		dealerOrderDetailBean
-				.setOrderPrice(dealerOrderDetailBean.getTotalOrderPrice() - dealerOrderDetailBean.getTotalFreight()
-						- dealerOrderDetailBean.getPlateformDiscount() - dealerOrderDetailBean.getDealerDiscount());
-		
 		return dealerOrderDetailBean;
 	}
 
