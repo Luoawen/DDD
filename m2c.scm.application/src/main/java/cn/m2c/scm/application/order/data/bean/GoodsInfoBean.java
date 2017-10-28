@@ -12,7 +12,7 @@ public class GoodsInfoBean {
 	/**
 	 * 商品信息<图片>
 	 */
-	@ColumnAlias(value = "goods_main_images")
+	@ColumnAlias(value = "goods_icon")
 	private String goodsImage;
 	/**
 	 * 商品信息<名称>
@@ -89,6 +89,7 @@ public class GoodsInfoBean {
 	}
 
 	public long getTotalPrice() {
+		totalPrice = price * sellNum;
 		return totalPrice;
 	}
 
