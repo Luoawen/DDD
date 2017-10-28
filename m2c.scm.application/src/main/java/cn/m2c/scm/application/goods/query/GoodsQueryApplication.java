@@ -108,9 +108,10 @@ public class GoodsQueryApplication {
             params.add(startTime);
             params.add(endTime);
         }
-        if (null != delStatus) {
-            sql.append(" AND g.del_status= ?");
-            params.add(delStatus);
+        if (delStatus == 2) {
+            sql.append(" AND g.del_status= 2");
+        }else{
+            sql.append(" AND g.del_status= 1");
         }
         sql.append(" group by g.goods_id ORDER BY g.created_date DESC ");
         sql.append(" LIMIT ?,?");
@@ -170,9 +171,10 @@ public class GoodsQueryApplication {
             params.add(startTime);
             params.add(endTime);
         }
-        if (null != delStatus) {
-            sql.append(" AND g.del_status= ?");
-            params.add(delStatus);
+        if (delStatus == 2) {
+            sql.append(" AND g.del_status= 2");
+        }else{
+            sql.append(" AND g.del_status= 1");
         }
 
         return supportJdbcTemplate.jdbcTemplate().queryForObject(sql.toString(), params.toArray(), Integer.class);
