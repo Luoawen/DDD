@@ -62,7 +62,13 @@ public class PostageModelRuleRepresentation {
      */
     private String modelDescription;
 
-    public PostageModelRuleRepresentation(PostageModelRuleBean bean, PostageModelBean postageModelBean) {
+    private String dealerId;
+
+    private String dealerName;
+
+    private String modelId;
+
+    public PostageModelRuleRepresentation(PostageModelRuleBean bean, PostageModelBean postageModelBean, String dealerName) {
         this.ruleId = bean.getRuleId();
         this.address = bean.getAddress();
         this.firstWeight = bean.getFirstWeight();
@@ -74,6 +80,9 @@ public class PostageModelRuleRepresentation {
         this.defaultFlag = bean.getDefaultFlag();
         this.chargeType = postageModelBean.getChargeType();
         this.modelDescription = postageModelBean.getModelDescription();
+        this.dealerId = postageModelBean.getDealerId();
+        this.dealerName = dealerName;
+        this.modelId = postageModelBean.getModelId();
     }
 
     public String getRuleId() {
@@ -163,4 +172,30 @@ public class PostageModelRuleRepresentation {
     public void setModelDescription(String modelDescription) {
         this.modelDescription = modelDescription;
     }
+
+    public String getDealerId() {
+        return dealerId;
+    }
+
+    public void setDealerId(String dealerId) {
+        this.dealerId = dealerId;
+    }
+
+    public String getDealerName() {
+        return dealerName;
+    }
+
+    public void setDealerName(String dealerName) {
+        this.dealerName = dealerName;
+    }
+
+    public String getModelId() {
+        return modelId;
+    }
+
+    public void setModelId(String modelId) {
+        this.modelId = modelId;
+    }
+
+    
 }
