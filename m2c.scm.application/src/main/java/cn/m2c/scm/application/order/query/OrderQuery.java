@@ -248,6 +248,44 @@ public class OrderQuery {
 		
 		return dealerOrderDetailBean;
 	}
+	
+	/**
+	 * 查询商家订单详情
+	 * fanjc
+	 * @param dealerId
+	 * @return
+	 */
+	public DealerOrderDetailBean dealerOrderDetailQuery1(String dealerOrderId) {
+		StringBuilder sql = new StringBuilder();
+		sql.append(" SELECT t1._status orderStatus,t1.order_id orderId,t1.created_date createdDate, t3.pay_way payWay,t3.pay_time payTime,t3.pay_no payNo, \r\n") 
+		.append(" t1.rev_person revPerson,t1.rev_phone revPhone,t1.province province,t1.city city,t1.area_county areaCounty,t1.street_addr streetAddr, \r\n")
+		.append(" t1.dealer_id dealerId, t1.noted,\r\n")
+		.append(" t1.plateform_discount plateformDiscount,t1.dealer_discount dealerDiscount\r\n")
+		.append(" FROM t_scm_order_dealer t1 \r\n")
+		.append(" LEFT OUTER JOIN t_scm_order_main t3 ON t1.order_id = t3.order_id\r\n") 
+		.append(" WHERE t1.dealer_order_id = ?"); 
+		DealerOrderDetailBean dealerOrderDetailBean = this.supportJdbcTemplate.queryForBean(sql.toString(), DealerOrderDetailBean.class, dealerOrderId);
+		long totalPrice = 0; // 商品总价格
+		long totalFrieght = 0; // 运费总价格
+		List<GoodsInfoBean> goodsInfoList = getGoodsInfoList(dealerOrderId);
+		dealerOrderDetailBean.setGoodsInfoBeans(goodsInfoList);
+		for (GoodsInfoBean goodsInfo : dealerOrderDetailBean.getGoodsInfoBeans()) {
+			totalPrice += goodsInfo.getTotalPrice();
+			totalFrieght += goodsInfo.getFreight();
+		}
+
+		dealerOrderDetailBean.setTotalOrderPrice(totalPrice);
+		dealerOrderDetailBean.setTotalFreight(totalFrieght);
+
+		/**
+		 * 获取商家订单总价格 (商品总额-运费总额-平台优惠信息-商家优惠信息)
+		 */
+		dealerOrderDetailBean
+				.setOrderPrice(dealerOrderDetailBean.getTotalOrderPrice() - dealerOrderDetailBean.getTotalFreight()
+						- dealerOrderDetailBean.getPlateformDiscount() - dealerOrderDetailBean.getDealerDiscount());
+		
+		return dealerOrderDetailBean;
+	}
 
 	/**
 	 * 查询商品信息列表
