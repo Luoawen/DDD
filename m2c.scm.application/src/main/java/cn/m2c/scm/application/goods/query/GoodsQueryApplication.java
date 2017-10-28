@@ -63,7 +63,7 @@ public class GoodsQueryApplication {
      * @param rows
      * @return
      */
-    public List<GoodsBean> searchGoodsByCondition(String dealerId, String goodsClassifyId, Integer goodsStatus,
+    public List<GoodsBean> searchGoodsByCondition(String dealerId, String goodsClassifyId, Integer goodsStatus, Integer delStatus,
                                                   String condition, String startTime, String endTime,
                                                   Integer pageNum, Integer rows) {
         List<Object> params = new ArrayList<Object>();
@@ -108,7 +108,11 @@ public class GoodsQueryApplication {
             params.add(startTime);
             params.add(endTime);
         }
-        sql.append(" AND g.del_status= 1 group by g.goods_id ORDER BY g.created_date DESC ");
+        if (null != delStatus) {
+            sql.append(" AND g.del_status= ?");
+            params.add(delStatus);
+        }
+        sql.append(" group by g.goods_id ORDER BY g.created_date DESC ");
         sql.append(" LIMIT ?,?");
         params.add(rows * (pageNum - 1));
         params.add(rows);
@@ -122,7 +126,7 @@ public class GoodsQueryApplication {
         return goodsBeanList;
     }
 
-    public Integer searchGoodsByConditionTotal(String dealerId, String goodsClassifyId, Integer goodsStatus,
+    public Integer searchGoodsByConditionTotal(String dealerId, String goodsClassifyId, Integer goodsStatus, Integer delStatus,
                                                String condition, String startTime, String endTime) {
         List<Object> params = new ArrayList<Object>();
         StringBuilder sql = new StringBuilder();
@@ -166,7 +170,10 @@ public class GoodsQueryApplication {
             params.add(startTime);
             params.add(endTime);
         }
-        sql.append(" AND g.del_status= 1");
+        if (null != delStatus) {
+            sql.append(" AND g.del_status= ?");
+            params.add(delStatus);
+        }
 
         return supportJdbcTemplate.jdbcTemplate().queryForObject(sql.toString(), params.toArray(), Integer.class);
     }

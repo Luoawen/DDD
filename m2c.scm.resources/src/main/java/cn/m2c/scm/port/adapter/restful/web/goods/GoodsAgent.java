@@ -248,6 +248,7 @@ public class GoodsAgent {
      * @param dealerId        商家ID
      * @param goodsClassifyId 商品分类
      * @param goodsStatus     商品状态，1：仓库中，2：出售中，3：已售罄
+     * @param delStatus       是否删除，1:正常，2：已删除
      * @param condition       搜索条件
      * @param startTime       开始时间
      * @param endTime         结束时间
@@ -260,6 +261,7 @@ public class GoodsAgent {
             @RequestParam(value = "dealerId", required = false) String dealerId,
             @RequestParam(value = "goodsClassifyId", required = false) String goodsClassifyId,
             @RequestParam(value = "goodsStatus", required = false) Integer goodsStatus,
+            @RequestParam(value = "delStatus", required = false) Integer delStatus,
             @RequestParam(value = "brandName", required = false) String brandName,
             @RequestParam(value = "condition", required = false) String condition,
             @RequestParam(value = "startTime", required = false) String startTime,
@@ -268,10 +270,10 @@ public class GoodsAgent {
             @RequestParam(value = "rows", required = false, defaultValue = "10") Integer rows) {
         MPager result = new MPager(MCode.V_1);
         try {
-            Integer total = goodsQueryApplication.searchGoodsByConditionTotal(dealerId, goodsClassifyId, goodsStatus,
+            Integer total = goodsQueryApplication.searchGoodsByConditionTotal(dealerId, goodsClassifyId, goodsStatus,delStatus,
                     condition, startTime, endTime);
             if (total > 0) {
-                List<GoodsBean> goodsBeans = goodsQueryApplication.searchGoodsByCondition(dealerId, goodsClassifyId, goodsStatus,
+                List<GoodsBean> goodsBeans = goodsQueryApplication.searchGoodsByCondition(dealerId, goodsClassifyId, goodsStatus,delStatus,
                         condition, startTime, endTime, pageNum, rows);
                 if (null != goodsBeans && goodsBeans.size() > 0) {
                     List<GoodsSearchRepresentation> representations = new ArrayList<GoodsSearchRepresentation>();
