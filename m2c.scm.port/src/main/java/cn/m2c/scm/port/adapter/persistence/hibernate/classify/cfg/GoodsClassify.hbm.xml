@@ -14,7 +14,7 @@
         <property name="classifyName" column="classify_name" type="string"/>
         <property name="parentClassifyId" column="parent_classify_id" type="string"/>
         <property name="level" column="level" type="int"/>
-        <property name="serviceRate" column="service_rate" type="string"/>
+        <property name="serviceRate" column="service_rate" type="float"/>
         <property name="status" column="status" type="int"/>
     </class>
 </hibernate-mapping>
