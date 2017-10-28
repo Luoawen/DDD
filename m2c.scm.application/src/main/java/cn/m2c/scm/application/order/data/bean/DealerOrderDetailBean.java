@@ -122,6 +122,9 @@ public class DealerOrderDetailBean {
 	 * 订单总额(订单商品总额 - 平台优惠券 - 商家优惠券)
 	 */
 	private long orderPrice;
+	/**订单备注*/
+	@ColumnAlias(value = "noted")
+	private String  noted;
 
 	public Integer getOrderStatus() {
 		return orderStatus;

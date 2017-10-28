@@ -57,9 +57,51 @@ public class OrderQueryApplication {
     /***
      * 获取商家订单操作日志列表
      * @return
+     * @throws NegativeException 
      */
-    public List<OptLogBean> getDealerOrderOptLog(String dealerId) {
-    	return null;
+    public List<OptLogBean> getDealerOrderOptLog(String orderId, String dealerOrderId) throws NegativeException {
+    	List<OptLogBean> logList = null;
+		try {
+			StringBuilder sql = new StringBuilder(200);
+			List<Object> params = new ArrayList<>(2);
+			sql.append("SELECT order_no, dealer_order_no, opt_content, opt_user, created_date FROM t_scm_order_opt_log ");
+			sql.append(" WHERE order_no=?");
+			params.add(orderId);
+			/*if (!StringUtils.isEmpty(dealerOrderId)) {
+				sql.append(" AND dealer_order_no=?");
+				params.add(dealerOrderId);
+			}*/
+			logList = this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), OptLogBean.class, params.toArray());
+		} catch (Exception e) {
+			LOGGER.error("---查询日志时出错 ",e);
+			throw new NegativeException(500, "查询操作日志时出错 ");
+		}
+		return logList;
+    }
+    
+    /***
+     * 满足条件的记录条数
+     * @return
+     * @throws NegativeException 
+     */
+    public Integer getDealerOrderOptLogTotal(String orderId, String dealerOrderId) throws NegativeException {
+    	Integer total = 0;
+		try {
+			StringBuilder sql = new StringBuilder(200);
+			List<Object> params = new ArrayList<>(2);
+			sql.append("SELECT count(1) FROM t_scm_order_opt_log ");
+			sql.append(" WHERE order_no=?");
+			params.add(orderId);
+			/*if (!StringUtils.isEmpty(dealerOrderId)) {
+				sql.append(" AND dealer_order_no=?");
+				params.add(dealerOrderId);
+			}*/
+			total = this.getSupportJdbcTemplate().jdbcTemplate().queryForObject(sql.toString(), params.toArray(), Integer.class);
+		} catch (Exception e) {
+			LOGGER.error("---查询日志条数时出错 ",e);
+			throw new NegativeException(500, "查询操作日志条数时出错 ");
+		}
+		return total;
     }
     
     /***
@@ -190,5 +232,6 @@ public class OrderQueryApplication {
 		}
 		return expressList;
 	}
+	
 }
 

@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -26,6 +27,7 @@ import cn.m2c.scm.application.order.data.bean.DealerOrderBean;
 import cn.m2c.scm.application.order.data.bean.DealerOrderDetailBean;
 import cn.m2c.scm.application.order.data.bean.MainOrderBean;
 import cn.m2c.scm.application.order.data.bean.OrderExpressBean;
+import cn.m2c.scm.application.order.data.representation.OptLogBean;
 import cn.m2c.scm.application.order.query.OrderQuery;
 import cn.m2c.scm.application.order.query.OrderQueryApplication;
 import cn.m2c.scm.domain.NegativeException;
@@ -100,6 +102,27 @@ public class OrderAgent {
 		MResult result = new MResult(MCode.V_1);
 		try {
 			DealerOrderDetailBean dealerDetail = orderQuery.dealerOrderDetailQuery(dealerOrderId);
+			if (null != dealerDetail) {
+				result.setContent(dealerDetail);
+				result.setStatus(MCode.V_200);
+			}
+		} catch (Exception e) {
+			LOGGER.error("获取商家订单出错" + e.getMessage(), e);
+            result = new MPager(MCode.V_400, "服务器开小差了");
+		}
+		return new ResponseEntity<MResult>(result,HttpStatus.OK);
+	}
+	
+	/**
+	 * 商家订货单详情
+	 * @param dealerOrderId
+	 * @return
+	 */
+	@RequestMapping(value = "/dealer/orderdetail",method = RequestMethod.GET)
+	public ResponseEntity<MResult> getDealerOrderDetail(@RequestParam(value = "dealerOrderId",required = false)String dealerOrderId){
+		MResult result = new MResult(MCode.V_1);
+		try {
+			DealerOrderDetailBean dealerDetail = orderQuery.dealerOrderDetailQuery1(dealerOrderId);
 			if (null != dealerDetail) {
 				result.setContent(dealerDetail);
 				result.setStatus(MCode.V_200);
@@ -390,4 +413,27 @@ public class OrderAgent {
 		}
     	return new ResponseEntity<MResult>(result,HttpStatus.OK);
     }
+    
+	/**
+	 * 查询操作日志
+	 */
+	@RequestMapping(value = "/logs/{dealerOrderId}", method = RequestMethod.GET)
+	public ResponseEntity<MPager> getOrderLogs(@PathVariable("dealerOrderId") String dealerOrderId,
+			@RequestParam(value = "orderId", required = false) String orderId,
+			@RequestParam(value = "pageNum", required = false, defaultValue = "1") Integer pageNum,
+			@RequestParam(value = "rows", required = false, defaultValue = "5") Integer rows) {
+		MPager result = new MPager(MCode.V_1);
+		try {
+			Integer total = orderAppQuery.getDealerOrderOptLogTotal(orderId, dealerOrderId);
+			if (total > 0) {
+				List<OptLogBean> logsList = orderAppQuery.getDealerOrderOptLog(orderId, dealerOrderId);
+				result.setContent(logsList);
+			}
+			result.setPager(total, pageNum, rows);
+			result.setStatus(MCode.V_200);
+		} catch (Exception e) {
+			LOGGER.info("查询操作日志失败");
+		}
+		return new ResponseEntity<MPager>(result, HttpStatus.OK);
+	}
 }

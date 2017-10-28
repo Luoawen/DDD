@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 import cn.m2c.common.MCode;
 import cn.m2c.common.MPager;
 import cn.m2c.common.MResult;
-import cn.m2c.scm.application.dealerorder.data.bean.DealerOrderBean;
 import cn.m2c.scm.application.dealerorder.data.bean.DealerOrderQB;
 import cn.m2c.scm.application.dealerorder.query.DealerOrderQuery;
 import cn.m2c.scm.application.order.DealerOrderApplication;
