@@ -2,6 +2,7 @@ package cn.m2c.scm.port.adapter.restful.web.dealerorder;
 
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import cn.m2c.common.MCode;
 import cn.m2c.common.MPager;
 import cn.m2c.common.MResult;
 import cn.m2c.scm.application.dealerorder.data.bean.DealerOrderBean;
+import cn.m2c.scm.application.dealerorder.data.bean.DealerOrderQB;
 import cn.m2c.scm.application.dealerorder.query.DealerOrderQuery;
 import cn.m2c.scm.application.order.DealerOrderApplication;
 import cn.m2c.scm.application.order.command.UpdateAddrCommand;
@@ -83,7 +85,7 @@ public class DealerOrderAgent {
 			@RequestParam(value = "condition", required = false) String condition,
 			@RequestParam(value = "payWay", required = false) Integer payWay,
 			@RequestParam(value = "commentStatus", required = false) Integer commentStatus,
-			@RequestParam(value = "mediaInfo", required = false) String mediaInfo,
+			@RequestParam(value = "mediaInfo", required = false) Integer mediaInfo,
 			@RequestParam(value = "orderClassify", required = false) Integer orderClassify,
 			@RequestParam(value = "invoice", required = false) Integer invoice,
 			@RequestParam(value = "pageNum", required = false, defaultValue = "1") Integer pageNum,
@@ -92,7 +94,7 @@ public class DealerOrderAgent {
 		MPager result = new MPager(MCode.V_1);
 
 		try {
-			Integer total = dealerOrderQuery.dealerOrderTotalQuery(dealerId, dealerOrderId, orderStatus,
+			/*Integer total = dealerOrderQuery.dealerOrderTotalQuery(dealerId, dealerOrderId, orderStatus,
 					afterSellStatus, startTime, endTime, condition, payWay, commentStatus, orderClassify, mediaInfo,
 					invoice);
 			List<DealerOrderBean> dealerOrderList = dealerOrderQuery.dealerOrderQuery(dealerId, dealerOrderId,
@@ -102,7 +104,25 @@ public class DealerOrderAgent {
 				result.setContent(dealerOrderList);
 				result.setPager(total, pageNum, rows);
 				result.setStatus(MCode.V_200);
+			}*/
+			
+			if (StringUtils.isEmpty(dealerId)) {
+				result = new MPager(MCode.V_1, "dealerId参数为空");
+				return new ResponseEntity<MPager>(result, HttpStatus.OK);
 			}
+			
+			Integer total = dealerOrderQuery.dealerOrderTotalQuery1(dealerId, orderStatus,
+					afterSellStatus, startTime, endTime, condition, payWay, commentStatus, orderClassify, mediaInfo,
+					invoice);
+			List<DealerOrderQB> dealerOrderList = dealerOrderQuery.dealerOrderQuery1(dealerId,
+					orderStatus, afterSellStatus, startTime, endTime, condition, payWay, commentStatus, orderClassify,
+					mediaInfo, invoice, pageNum, rows);
+			if (dealerOrderList != null) {
+				result.setContent(dealerOrderList);
+				result.setPager(total, pageNum, rows);
+				result.setStatus(MCode.V_200);
+			}
+			
 		} catch (Exception e) {
 			LOGGER.error("获取商家订单列表出错" + e.getMessage(), e);
 			result = new MPager(MCode.V_400, "服务器开小差了");
