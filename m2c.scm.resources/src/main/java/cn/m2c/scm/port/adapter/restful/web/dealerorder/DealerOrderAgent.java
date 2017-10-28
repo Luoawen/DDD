@@ -85,7 +85,7 @@ public class DealerOrderAgent {
 			@RequestParam(value = "condition", required = false) String condition,
 			@RequestParam(value = "payWay", required = false) Integer payWay,
 			@RequestParam(value = "commentStatus", required = false) Integer commentStatus,
-			@RequestParam(value = "mediaInfo", required = false) Integer mediaInfo,
+			@RequestParam(value = "hasMedia", required = false) Integer hasMedia,
 			@RequestParam(value = "orderClassify", required = false) Integer orderClassify,
 			@RequestParam(value = "invoice", required = false) Integer invoice,
 			@RequestParam(value = "pageNum", required = false, defaultValue = "1") Integer pageNum,
@@ -112,11 +112,11 @@ public class DealerOrderAgent {
 			}
 			
 			Integer total = dealerOrderQuery.dealerOrderTotalQuery1(dealerId, orderStatus,
-					afterSellStatus, startTime, endTime, condition, payWay, commentStatus, orderClassify, mediaInfo,
+					afterSellStatus, startTime, endTime, condition, payWay, commentStatus, orderClassify, hasMedia,
 					invoice);
 			List<DealerOrderQB> dealerOrderList = dealerOrderQuery.dealerOrderQuery1(dealerId,
 					orderStatus, afterSellStatus, startTime, endTime, condition, payWay, commentStatus, orderClassify,
-					mediaInfo, invoice, pageNum, rows);
+					hasMedia, invoice, pageNum, rows);
 			if (dealerOrderList != null) {
 				result.setContent(dealerOrderList);
 				result.setPager(total, pageNum, rows);
