@@ -108,7 +108,7 @@ public class GoodsQueryApplication {
             params.add(startTime);
             params.add(endTime);
         }
-        if (delStatus == 2) {
+        if (null != delStatus && delStatus == 2) {
             sql.append(" AND g.del_status= 2");
         }else{
             sql.append(" AND g.del_status= 1");
@@ -171,7 +171,7 @@ public class GoodsQueryApplication {
             params.add(startTime);
             params.add(endTime);
         }
-        if (delStatus == 2) {
+        if (null != delStatus && delStatus == 2) {
             sql.append(" AND g.del_status= 2");
         }else{
             sql.append(" AND g.del_status= 1");
