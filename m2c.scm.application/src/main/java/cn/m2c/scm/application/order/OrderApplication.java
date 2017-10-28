@@ -308,7 +308,7 @@ public class OrderApplication {
 	 * @param ls
 	 * @param cityCode
 	 */
-	private void calFreight(Map<String, GoodsReqBean> skus, List<GoodsDto> ls, String cityCode) {
+	private void calFreight(Map<String, GoodsReqBean> skus, List<GoodsDto> ls, String cityCode) throws NegativeException {
 		LOGGER.info("==fanjc==计算运费.");
 		Iterator<String> it = skus.keySet().iterator();
 		List<String> skuIds = new ArrayList<String>();
