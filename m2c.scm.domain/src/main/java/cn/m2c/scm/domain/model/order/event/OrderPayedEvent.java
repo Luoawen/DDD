@@ -1,10 +1,13 @@
 package cn.m2c.scm.domain.model.order.event;
 
+import cn.m2c.ddd.common.domain.model.DomainEvent;
+import com.google.gson.Gson;
+
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import cn.m2c.ddd.common.domain.model.DomainEvent;
 /***
  * 订单支付成功时的商品销量事件
  * @author 89776
@@ -67,10 +70,10 @@ public class OrderPayedEvent implements DomainEvent {
 	}
 	
 	public static void main(String[] args) {
-		/*Gson gson = new Gson();
+		Gson gson = new Gson();
 		Map<String, Integer> s = new HashMap<String, Integer>();
 		s.put("2222", 2);
-		OrderPayedEvent a = new OrderPayedEvent(s);
-		System.out.print(gson.toJson(a));*/
+		OrderPayedEvent a = new OrderPayedEvent("123456",  s, null, null);
+		System.out.print(gson.toJson(a));
 	}
 }
