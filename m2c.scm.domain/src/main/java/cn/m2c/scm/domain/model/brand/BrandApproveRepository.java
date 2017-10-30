@@ -35,5 +35,5 @@ public interface BrandApproveRepository {
      * @param brandName
      * @return
      */
-    public boolean brandNameIsRepeat(String brandId,String brandName);
+    public boolean brandNameIsRepeat(String approveId, String brandId, String brandName);
 }
