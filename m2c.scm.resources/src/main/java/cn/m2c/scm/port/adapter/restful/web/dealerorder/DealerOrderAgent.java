@@ -17,7 +17,6 @@ import cn.m2c.common.MCode;
 import cn.m2c.common.MPager;
 import cn.m2c.common.MResult;
 import cn.m2c.common.StringUtil;
-import cn.m2c.scm.application.dealerorder.data.bean.DealerOrderBean;
 import cn.m2c.scm.application.dealerorder.data.bean.DealerOrderQB;
 import cn.m2c.scm.application.dealerorder.query.DealerOrderQuery;
 import cn.m2c.scm.application.order.DealerOrderApplication;
@@ -95,10 +94,7 @@ public class DealerOrderAgent {
 		MPager result = new MPager(MCode.V_1);
 
 		try {
-			if (StringUtil.isEmpty(dealerId))
-				throw new NegativeException(MCode.V_1,"请传入商家ID");
 			/*Integer total = dealerOrderQuery.dealerOrderTotalQuery(dealerId, dealerOrderId, orderStatus,
-			Integer total = dealerOrderQuery.dealerOrderTotalQuery(dealerId, dealerOrderId, orderStatus,
 					afterSellStatus, startTime, endTime, condition, payWay, commentStatus, orderClassify, mediaInfo,
 					invoice);
 			List<DealerOrderBean> dealerOrderList = dealerOrderQuery.dealerOrderQuery(dealerId, dealerOrderId,
