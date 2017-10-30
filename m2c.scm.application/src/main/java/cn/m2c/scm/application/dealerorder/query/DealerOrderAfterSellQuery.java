@@ -192,16 +192,13 @@ public class DealerOrderAfterSellQuery {
 		sql.append(" SELECT after._status,after.order_type,after.after_sell_order_id,after.back_money,after.reason,after.created_date ");
 		sql.append(" ,dealer.dealer_order_id");
 		sql.append("  FROM t_scm_order_after_sell after ");
-		sql.append("  INNER JOIN t_scm_order_dealer dealer   ");
-		sql.append("  INNER JOIN t_scm_order_detail detail ");
-		sql.append("  INNER JOIN t_scm_dealer_seller seller   ");
+		sql.append("  left JOIN t_scm_order_dealer dealer   ON after.dealer_order_id = dealer.dealer_order_id   ");
+		sql.append("   left JOIN t_scm_order_detail detail  on after.dealer_order_id = detail.dealer_order_id   ");
+		sql.append("  left JOIN t_scm_dealer_seller seller  on detail.saler_user_id = seller.seller_id   ");
 		sql.append(" WHERE 1 = 1 AND after.after_sell_order_id = ? ");
 		param.add(afterSellOrderId);
 		sql.append(" AND after.dealer_id = ? ");
 		param.add(dealerId);
-		sql.append(" AND after.dealer_order_id = dealer.dealer_order_id ");
-		sql.append(" AND after.dealer_order_id = detail.dealer_order_id  ");
-		sql.append("  AND detail.saler_user_id = seller.seller_id ");
 		DealerOrderAfterSellDetailBean bean = this.supportJdbcTemplate.queryForBean(sql.toString(), DealerOrderAfterSellDetailBean.class, param.toArray());
 		List<GoodsInfoBean> goodsInfoBeans = aftetSellDealerOrderDetailGoodsInfoQuery(afterSellOrderId,dealerId);
 		long totalPrice = 0;
@@ -212,8 +209,10 @@ public class DealerOrderAfterSellQuery {
 			goodsInfo.setTotalPrice(totalPrice);
 			orderTotalPrice += totalPrice;
 		}
-		bean.setOrderTotalMoney(orderTotalPrice);
-		bean.setGoodsInfoList(aftetSellDealerOrderDetailGoodsInfoQuery(afterSellOrderId,dealerId));
+		if(bean!=null){
+			bean.setOrderTotalMoney(orderTotalPrice);
+			bean.setGoodsInfoList(aftetSellDealerOrderDetailGoodsInfoQuery(afterSellOrderId,dealerId));
+		}
 		return bean;
 	}
 	

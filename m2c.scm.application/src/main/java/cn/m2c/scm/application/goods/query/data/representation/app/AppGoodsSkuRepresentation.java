@@ -26,11 +26,14 @@ public class AppGoodsSkuRepresentation {
      */
     private Long photographPrice;
 
+    private Float weight;
+
     public AppGoodsSkuRepresentation(GoodsSkuBean bean) {
         this.skuId = bean.getSkuId();
         this.skuName = bean.getSkuName();
         this.availableNum = bean.getAvailableNum();
         this.photographPrice = bean.getPhotographPrice();
+        this.weight = bean.getWeight();
     }
 
     public String getSkuId() {
@@ -63,5 +66,13 @@ public class AppGoodsSkuRepresentation {
 
     public void setPhotographPrice(Long photographPrice) {
         this.photographPrice = photographPrice;
+    }
+
+    public Float getWeight() {
+        return weight;
+    }
+
+    public void setWeight(Float weight) {
+        this.weight = weight;
     }
 }

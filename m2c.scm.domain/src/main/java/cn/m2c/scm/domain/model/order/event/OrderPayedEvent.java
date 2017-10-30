@@ -1,12 +1,13 @@
 package cn.m2c.scm.domain.model.order.event;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-
+import cn.m2c.ddd.common.domain.model.DomainEvent;
 import com.google.gson.Gson;
 
-import cn.m2c.ddd.common.domain.model.DomainEvent;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /***
  * 订单支付成功时的商品销量事件
  * @author 89776
@@ -20,6 +21,12 @@ public class OrderPayedEvent implements DomainEvent {
 	private Date occurredOn;
 	
     private int eventVersion;
+    
+    private String orderNo;
+    
+    private List<SimpleMediaRes> reses;
+    
+    private Map<String, Object> markets;
 	
 	public OrderPayedEvent() {
 		super();
@@ -27,9 +34,12 @@ public class OrderPayedEvent implements DomainEvent {
 		eventVersion = 1;
 	}
 	
-	public OrderPayedEvent(Map<String, Integer> s) {
+	public OrderPayedEvent(String orderNo, Map<String, Integer> s, List<SimpleMediaRes> reses, Map<String, Object> markets) {
 		this();
 		sales = s;
+		this.orderNo = orderNo;
+		this.reses = reses;
+		this.markets = markets;
 	}
 	@Override
 	public int eventVersion() {
@@ -47,11 +57,23 @@ public class OrderPayedEvent implements DomainEvent {
 		return sales;
 	}
 	
+	public String getOrderNo() {
+		return orderNo;
+	}
+	
+	public List<SimpleMediaRes> getReses() {
+		return reses;
+	}
+	
+	public Map<String, Object> getMarkets() {
+		return markets;
+	}
+	
 	public static void main(String[] args) {
-		/*Gson gson = new Gson();
+		Gson gson = new Gson();
 		Map<String, Integer> s = new HashMap<String, Integer>();
 		s.put("2222", 2);
-		OrderPayedEvent a = new OrderPayedEvent(s);
-		System.out.print(gson.toJson(a));*/
+		OrderPayedEvent a = new OrderPayedEvent("123456",  s, null, null);
+		System.out.print(gson.toJson(a));
 	}
 }

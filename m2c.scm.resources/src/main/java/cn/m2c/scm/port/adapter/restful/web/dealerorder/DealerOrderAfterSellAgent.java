@@ -18,7 +18,6 @@ import cn.m2c.common.MResult;
 import cn.m2c.scm.application.dealerorder.data.bean.DealerOrderAfterSellDetailBean;
 import cn.m2c.scm.application.dealerorder.query.DealerOrderAfterSellQuery;
 import cn.m2c.scm.application.order.data.bean.AfterSellOrderBean;
-import cn.m2c.scm.application.order.data.bean.AfterSellOrderDetailBean;
 
 @RestController
 @RequestMapping("/dealerorderafter")

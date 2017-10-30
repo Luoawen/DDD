@@ -47,7 +47,7 @@ public class GoodsApproveQueryApplication {
      * @param rows
      * @return
      */
-    public List<GoodsApproveBean> searchGoodsApproveByCondition(String dealerId, String goodsClassifyId, Integer goodsStatus,
+    public List<GoodsApproveBean> searchGoodsApproveByCondition(String dealerId, String goodsClassifyId, Integer approveStatus,
                                                                 String condition, String startTime, String endTime,
                                                                 Integer pageNum, Integer rows) {
         List<Object> params = new ArrayList<Object>();
@@ -63,9 +63,9 @@ public class GoodsApproveQueryApplication {
             goodsClassifyIds.add(goodsClassifyId);
             sql.append(" AND g.goods_classify_id in (" + Utils.listParseString(goodsClassifyIds) + ") ");
         }
-        if (null != goodsStatus) {
+        if (null != approveStatus) {
             sql.append(" AND g.approve_status = ? ");
-            params.add(goodsStatus);
+            params.add(approveStatus);
         }
         if (StringUtils.isNotEmpty(condition)) {
             if (StringUtils.isNotEmpty(dealerId)) {//商家平台
@@ -103,7 +103,7 @@ public class GoodsApproveQueryApplication {
         return goodsBeanList;
     }
 
-    public Integer searchGoodsApproveByConditionTotal(String dealerId, String goodsClassifyId, Integer goodsStatus,
+    public Integer searchGoodsApproveByConditionTotal(String dealerId, String goodsClassifyId, Integer approveStatus,
                                                       String condition, String startTime, String endTime) {
         List<Object> params = new ArrayList<Object>();
         StringBuilder sql = new StringBuilder();
@@ -118,9 +118,9 @@ public class GoodsApproveQueryApplication {
             goodsClassifyIds.add(goodsClassifyId);
             sql.append(" AND g.goods_classify_id in (" + Utils.listParseString(goodsClassifyIds) + ") ");
         }
-        if (null != goodsStatus) {
+        if (null != approveStatus) {
             sql.append(" AND g.approve_status = ? ");
-            params.add(goodsStatus);
+            params.add(approveStatus);
         }
         if (StringUtils.isNotEmpty(condition)) {
             if (StringUtils.isNotEmpty(dealerId)) {//商家平台

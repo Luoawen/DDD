@@ -312,7 +312,7 @@ public class GoodsApproveAgent {
      *
      * @param dealerId        商家ID
      * @param goodsClassifyId 商品分类
-     * @param goodsStatus     商品状态，1：仓库中，2：出售中，3：已售罄
+     * @param approveStatus     审核状态，1：审核中，2：审核不通过
      * @param condition       搜索条件
      * @param startTime       开始时间
      * @param endTime         结束时间
@@ -324,7 +324,7 @@ public class GoodsApproveAgent {
     public ResponseEntity<MPager> searchGoodsApproveByCondition(
             @RequestParam(value = "dealerId", required = false) String dealerId,
             @RequestParam(value = "goodsClassifyId", required = false) String goodsClassifyId,
-            @RequestParam(value = "goodsStatus", required = false) Integer goodsStatus,
+            @RequestParam(value = "approveStatus", required = false) Integer approveStatus,
             @RequestParam(value = "condition", required = false) String condition,
             @RequestParam(value = "startTime", required = false) String startTime,
             @RequestParam(value = "endTime", required = false) String endTime,
@@ -332,10 +332,10 @@ public class GoodsApproveAgent {
             @RequestParam(value = "rows", required = false, defaultValue = "10") Integer rows) {
         MPager result = new MPager(MCode.V_1);
         try {
-            Integer total = goodsApproveQueryApplication.searchGoodsApproveByConditionTotal(dealerId, goodsClassifyId, goodsStatus,
+            Integer total = goodsApproveQueryApplication.searchGoodsApproveByConditionTotal(dealerId, goodsClassifyId, approveStatus,
                     condition, startTime, endTime);
             if (total > 0) {
-                List<GoodsApproveBean> goodsBeans = goodsApproveQueryApplication.searchGoodsApproveByCondition(dealerId, goodsClassifyId, goodsStatus,
+                List<GoodsApproveBean> goodsBeans = goodsApproveQueryApplication.searchGoodsApproveByCondition(dealerId, goodsClassifyId, approveStatus,
                         condition, startTime, endTime, pageNum, rows);
                 if (null != goodsBeans && goodsBeans.size() > 0) {
                     List<GoodsApproveSearchRepresentation> representations = new ArrayList<GoodsApproveSearchRepresentation>();
@@ -343,7 +343,7 @@ public class GoodsApproveAgent {
                         DealerBean dealerBean = dealerQuery.getDealer(bean.getDealerId());
                         String dealerType = "";
                         if (null != dealerBean) {
-                            dealerType = dealerBean.getDealerClassifyBean().getDealerSecondClassifyName();
+                            dealerType = null != dealerBean.getDealerClassifyBean()?dealerBean.getDealerClassifyBean().getDealerSecondClassifyName():"";
                         }
                         String goodsClassify = goodsClassifyQueryApplication.getClassifyNames(bean.getGoodsClassifyId());
                         representations.add(new GoodsApproveSearchRepresentation(bean, goodsClassify, dealerType));

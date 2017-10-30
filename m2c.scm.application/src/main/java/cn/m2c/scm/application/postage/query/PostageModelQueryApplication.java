@@ -1,11 +1,14 @@
 package cn.m2c.scm.application.postage.query;
 
 import cn.m2c.ddd.common.port.adapter.persistence.springJdbc.SupportJdbcTemplate;
+import cn.m2c.scm.application.dealer.data.bean.DealerBean;
+import cn.m2c.scm.application.dealer.query.DealerQuery;
 import cn.m2c.scm.application.goods.query.GoodsQueryApplication;
 import cn.m2c.scm.application.goods.query.data.representation.GoodsSkuInfoRepresentation;
 import cn.m2c.scm.application.postage.data.bean.PostageModelBean;
 import cn.m2c.scm.application.postage.data.bean.PostageModelRuleBean;
 import cn.m2c.scm.application.postage.data.representation.PostageModelRuleRepresentation;
+import cn.m2c.scm.domain.NegativeException;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,6 +37,8 @@ public class PostageModelQueryApplication {
 
     @Autowired
     GoodsQueryApplication goodsQueryApplication;
+    @Autowired
+    DealerQuery dealerQuery;
 
     public List<PostageModelBean> queryPostageModelsByDealerId(String dealerId) {
         String sql = "SELECT * FROM t_scm_postage_model WHERE 1 = 1 AND dealer_id = ? AND model_status = 1";
@@ -76,12 +81,17 @@ public class PostageModelQueryApplication {
      * @param cityCode
      * @return
      */
-    public Map<String, PostageModelRuleRepresentation> getGoodsPostageRule(List<String> skuIds, String cityCode) {
+    public Map<String, PostageModelRuleRepresentation> getGoodsPostageRule(List<String> skuIds, String cityCode) throws NegativeException {
         Map<String, PostageModelRuleRepresentation> map = new HashMap<>();
         List<GoodsSkuInfoRepresentation> goodsInfoList = goodsQueryApplication.queryGoodsBySkuIds(skuIds);
         if (null != goodsInfoList && goodsInfoList.size() > 0) {
             for (GoodsSkuInfoRepresentation info : goodsInfoList) {
                 PostageModelBean postageModelBean = queryPostageModelsByModelId(info.getGoodsPostageId());
+                List<DealerBean> dealerBeanList = dealerQuery.getDealers(postageModelBean.getDealerId());
+                String dealerName = "";
+                if (null != dealerBeanList && dealerBeanList.size() > 0) {
+                    dealerName = dealerBeanList.get(0).getDealerName();
+                }
                 if (null != postageModelBean) {
                     List<PostageModelRuleBean> ruleBeans = postageModelBean.getPostageModelRuleBeans();
                     if (null != ruleBeans && ruleBeans.size() > 0) {
@@ -93,7 +103,7 @@ public class PostageModelQueryApplication {
                                 if (StringUtils.isNotEmpty(bean.getCityCode())) {
                                     List<String> codes = Arrays.asList(bean.getCityCode().split(","));
                                     if (codes.contains(cityCode)) {
-                                        map.put(info.getSkuId(), new PostageModelRuleRepresentation(bean, postageModelBean.getChargeType()));
+                                        map.put(info.getSkuId(), new PostageModelRuleRepresentation(bean, postageModelBean, dealerName));
                                         specialFlag = true;
                                         break;
                                     }
@@ -103,7 +113,7 @@ public class PostageModelQueryApplication {
                             }
                         }
                         if (!specialFlag && null != defaultBean) {
-                            map.put(info.getSkuId(), new PostageModelRuleRepresentation(defaultBean, postageModelBean.getChargeType()));
+                            map.put(info.getSkuId(), new PostageModelRuleRepresentation(defaultBean, postageModelBean, dealerName));
                         }
                     }
 

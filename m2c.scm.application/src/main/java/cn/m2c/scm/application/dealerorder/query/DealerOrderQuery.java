@@ -1,9 +1,10 @@
 package cn.m2c.scm.application.dealerorder.query;
 
-
-
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -13,8 +14,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import cn.m2c.ddd.common.port.adapter.persistence.springJdbc.SupportJdbcTemplate;
+import cn.m2c.scm.application.dealerorder.data.bean.DealerGoodsBean;
 import cn.m2c.scm.application.dealerorder.data.bean.DealerOrderBean;
 import cn.m2c.scm.application.dealerorder.data.bean.DealerOrderGoodsInfoBean;
+import cn.m2c.scm.application.dealerorder.data.bean.DealerOrderQB;
 import cn.m2c.scm.application.order.data.bean.DealerOrderDetailBean;
 import cn.m2c.scm.application.order.data.bean.GoodsInfoBean;
 
@@ -83,10 +86,10 @@ public class DealerOrderQuery {
 			params.add(commentStatus);
 		}
 		if (mediaInfo != null && !"".equals(mediaInfo)) {
-			if ("有广告位".equals(mediaInfo)) {
+			if ("1".equals(mediaInfo)) { //有广告位
 				sql.append(" AND detail.media_id != '' ");
 			}
-			if ("无广告位".equals(mediaInfo)) {
+			if ("0".equals(mediaInfo)) { // 无广告位
 				sql.append(" AND detail.meidia_id = '' ");
 			}
 		}
@@ -196,6 +199,203 @@ public class DealerOrderQuery {
 	}
 	
 	/**
+	 * 获取订单列表
+	 * @param dealerOrderId 商家订单号
+	 * @param orderStatus 订单状态
+	 * @param afterSellStatus 售后状态
+	 * @param startTime 开始时间
+	 * @param endTime 结束时间
+	 * @param condition 搜索条件(goodsName,dealerOrderId,payNo,revPhone)
+	 * @param payWay 支付方式
+	 * @param commentStatus 评论状态
+	 * @param mediaInfo 广告位
+	 * @param invoice 开发票
+	 * @param orderClassify 订单类型
+	 * @param pageNum 第几页
+	 * @param rows 每页多少行
+	 * @return
+	 */
+	public List<DealerOrderQB> dealerOrderQuery1(String dealerId, 
+			Integer orderStatus, Integer afterSellStatus,
+			String startTime, String endTime, String condition, 
+			Integer payWay, Integer hasComment, Integer orderType, Integer hasMedia,
+			Integer hasInvoice, Integer pageNum, Integer rows) {
+		
+		List<Object> params = new ArrayList<Object>();
+		StringBuilder sql = new StringBuilder();
+		sql.append(" SELECT dtl.sku_id, dtl.sku_name, dtl.goods_name, dtl.goods_title, a.dealer_id, a.created_date, dtl.discount_price, \r\n")
+				.append("dtl.sell_num, af._status afStatus, a._status, om.pay_no, a.dealer_order_id, dtl.goods_icon, a.created_date,\r\n") 
+				.append(" a.rev_person, a.rev_phone, a.goods_amount, a.order_freight, a.plateform_discount, a.dealer_discount\r\n") 
+				.append(" FROM t_scm_order_dealer a \r\n") 
+				.append(" LEFT OUTER JOIN t_scm_order_detail dtl ON dtl.dealer_order_id = a.dealer_order_id\r\n")
+				.append(" LEFT OUTER JOIN t_scm_order_after_sell af ON af.dealer_order_id = a.dealer_order_id\r\n")
+				.append(" LEFT OUTER JOIN t_scm_order_main om ON a.order_id = om.order_id\r\n")
+				.append(" WHERE a.dealer_id = ?  \r\n");
+		
+		params.add(dealerId);
+		
+		if (!StringUtils.isEmpty(condition)) {
+			sql.append(" AND (dtl.goods_name LIKE CONCAT('%',?,'%') OR a.dealer_order_id LIKE CONCAT('%',?,'%') OR om.pay_no LIKE CONCAT('%',?,'%') OR\r\n");
+			sql.append(" a.rev_phone LIKE CONCAT('%',?,'%'))\r\n");
+			params.add(condition);
+			params.add(condition);
+			params.add(condition);
+			params.add(condition);
+		}
+		
+		if (orderStatus != null && orderStatus >=0) {
+			sql.append(" AND a._status=?\r\n");
+			params.add(orderStatus);
+		}
+		if (hasInvoice != null && hasInvoice >=0) {
+			sql.append(" AND a.invoice_type = ?\r\n") ;
+			params.add(hasInvoice);
+		}
+		
+		if (hasComment != null && hasComment >=0) {
+			sql.append(" AND dtl.comment_status = ?\r\n");
+			params.add(hasComment);
+		}
+		
+		if (orderType != null && orderType >=0) {
+			sql.append(" AND om.order_type=?\r\n");
+			params.add(orderType);
+		}
+		
+		if (payWay != null && payWay >0) {
+			sql.append(" AND om.pay_way=?\r\n");
+			params.add(payWay);
+		}
+		if (!StringUtils.isEmpty(startTime) && !StringUtils.isEmpty(endTime)) {
+			sql.append(" AND a.created_date BETWEEN ? AND ?\r\n"); 
+			params.add(startTime);
+			params.add(endTime);
+		}
+		sql.append(" ORDER BY a.dealer_order_id DESC, a.created_date DESC");
+		
+		sql.append(" LIMIT ?,?");
+		
+		params.add(rows * (pageNum - 1));
+		params.add(rows);
+		
+		List<Map<String, Object>> beanList = this.supportJdbcTemplate.jdbcTemplate().queryForList(sql.toString(), params.toArray());//(sql.toString(), HashMap.class, params.toArray());
+		
+		List<DealerOrderQB> rs = new ArrayList<DealerOrderQB>();
+		
+		String dealerOrderId = null;
+		DealerOrderQB midBean = null;
+		for (Map<String, Object> item : beanList) {
+			
+			String ordIdTemp = (String)item.get("dealer_order_id");
+			if (!ordIdTemp.equals(dealerOrderId)) {
+				midBean = new DealerOrderQB();
+				midBean.setDealerId((String)item.get("dealer_id"));
+				midBean.setDealerOrderId(ordIdTemp);
+				Timestamp a = (Timestamp)item.get("created_date");
+				midBean.setCreatedDate(a == null ? null: a.getTime());
+				midBean.setOrderStatus((Integer)item.get("_status"));
+				midBean.setPayNo((String)item.get("pay_no"));
+				midBean.setRevPerson((String)item.get("rev_person"));
+				midBean.setRevPhone((String)item.get("rev_phone"));
+				midBean.setGoodsMoney((long)item.get("goods_amount"));
+				midBean.setOrderFreight((long)item.get("order_freight"));
+				midBean.setPlateDiscount((long)item.get("plateform_discount"));
+				midBean.setDealerDiscount((long)item.get("dealer_discount"));
+				
+				List<DealerGoodsBean> goodses = new ArrayList<>();
+				midBean.setGoodsList(goodses);
+				rs.add(midBean);
+				dealerOrderId = ordIdTemp;
+			}
+			
+			DealerGoodsBean dgb = new DealerGoodsBean();
+			dgb.setSkuName((String)item.get("sku_name"));
+			dgb.setGoodsName((String)item.get("goods_name"));
+			dgb.setGoodsTitle((String)item.get("goods_title"));
+			dgb.setSkuId((String)item.get("sku_id"));
+			dgb.setDiscountPrice((long)item.get("discount_price"));
+			dgb.setSellNum((Integer)item.get("sell_num"));
+			dgb.setAfStatus((Integer)item.get("afStatus"));
+			dgb.setGoodsImage((String)item.get("goods_icon"));
+			
+			midBean.getGoodsList().add(dgb);
+		}					
+		return rs;
+	}
+	
+	/**
+	 * 获取商家订单总数
+	 * @param dealerOrderId
+	 * @param orderStatus
+	 * @param afterSellStatus
+	 * @param startTime
+	 * @param endTime
+	 * @param condition
+	 * @param payWay
+	 * @param commentStatus
+	 * @param orderClassify
+	 * @param mediaInfo
+	 * @param invoice
+	 * @return
+	 */
+	public Integer dealerOrderTotalQuery1(String dealerId, 
+			Integer orderStatus, Integer afterSellStatus,
+			String startTime, String endTime, String condition, 
+			Integer payWay, Integer hasComment, Integer orderType, Integer hasMedia,
+			Integer hasInvoice) {
+		List<Object> params = new ArrayList<Object>();
+		StringBuilder sql = new StringBuilder();
+		sql.append(" SELECT count(1)") 
+		.append(" FROM t_scm_order_dealer a \r\n") 
+		.append(" LEFT OUTER JOIN t_scm_order_detail dtl ON dtl.dealer_order_id = a.dealer_order_id\r\n")
+		.append(" LEFT OUTER JOIN t_scm_order_after_sell af ON af.dealer_order_id = a.dealer_order_id\r\n")
+		.append(" LEFT OUTER JOIN t_scm_order_main om ON a.order_id = om.order_id\r\n")
+		.append(" WHERE a.dealer_id = ?  \r\n");
+
+		params.add(dealerId);
+		
+		if (!StringUtils.isEmpty(condition)) {
+			sql.append(" AND (dtl.goods_name LIKE CONCAT('%',?,'%') OR a.dealer_order_id LIKE CONCAT('%',?,'%') OR om.pay_no LIKE CONCAT('%',?,'%') OR\r\n");
+			sql.append(" a.rev_phone LIKE CONCAT('%',?,'%'))\r\n");
+			params.add(condition);
+			params.add(condition);
+			params.add(condition);
+			params.add(condition);
+		}
+		
+		if (orderStatus != null && orderStatus >=0) {
+			sql.append(" AND a._status=?\r\n");
+			params.add(orderStatus);
+		}
+		if (hasInvoice != null && hasInvoice >=0) {
+			sql.append(" AND a.invoice_type = ?\r\n") ;
+			params.add(hasInvoice);
+		}
+		
+		if (hasComment != null && hasComment >=0) {
+			sql.append(" AND dtl.comment_status = ?\r\n");
+			params.add(hasComment);
+		}
+		
+		if (orderType != null && orderType >=0) {
+			sql.append(" AND om.order_type=?\r\n");
+			params.add(orderType);
+		}
+		
+		if (payWay != null && payWay >0) {
+			sql.append(" AND om.pay_way=?\r\n");
+			params.add(payWay);
+		}
+		if (!StringUtils.isEmpty(startTime) && !StringUtils.isEmpty(endTime)) {
+			sql.append(" AND a.created_date BETWEEN ? AND ?\r\n"); 
+			params.add(startTime);
+			params.add(endTime);
+		}
+		return this.supportJdbcTemplate.jdbcTemplate().queryForObject(sql.toString(), Integer.class, params.toArray());
+		
+	}
+	
+	/**
 	 * 获取商家订单商品信息
 	 * @param dealerOrderId
 	 * @return
@@ -256,19 +456,11 @@ public class DealerOrderQuery {
 		dealerOrderDetailBean.setTotalOrderPrice(totalPrice);
 		dealerOrderDetailBean.setTotalFreight(totalFrieght);
 
-		/**
-		 * 获取商家订单总价格 (商品总额-运费总额-平台优惠信息-商家优惠信息)
-		 */
-		dealerOrderDetailBean
-				.setOrderPrice(dealerOrderDetailBean.getTotalOrderPrice() - dealerOrderDetailBean.getTotalFreight()
-						- dealerOrderDetailBean.getPlateformDiscount() - dealerOrderDetailBean.getDealerDiscount());
-		
 		return dealerOrderDetailBean;
 	}
 
 	/**
 	 * 查询商品信息列表
-	 * 
 	 * @param dealerOrderId
 	 * @return
 	 */

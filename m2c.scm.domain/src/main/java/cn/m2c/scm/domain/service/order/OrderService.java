@@ -17,11 +17,13 @@ public interface OrderService {
 	 */
 	public Map<String, Object> judgeStock(Map<String, Integer> skus);
 	/***
-	 * 锁定商品sku库存
-	 * @param skus key:skuId, val:num
-	 * @return
+	 * 锁定营销活动
+	 * @param marketIds
+	 * @param orderNo
+	 * @param userId
+	 * @return 成功与否
 	 */
-	public void lockStock(Map<String, Integer> skus);
+	public boolean lockMarketIds(List<String> marketIds, String orderNo, String userId);
 	/***
 	 * 解锁优惠券
 	 * @param couponsIds
@@ -29,12 +31,6 @@ public interface OrderService {
 	 * @return
 	 */
 	public void unlockCoupons(List<String> couponsIds, String userId);
-	/***
-	 * 解锁商品sku库存
-	 * @param skus key:sku, val:sl
-	 * @return
-	 */
-	public void unlockStock(Map<String, Float> skus);
 	/***
 	 * 锁定优惠券
 	 * @param couponsIds

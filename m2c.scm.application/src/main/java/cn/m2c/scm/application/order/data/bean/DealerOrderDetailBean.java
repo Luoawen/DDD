@@ -104,10 +104,12 @@ public class DealerOrderDetailBean {
 	/**
 	 * 订单商品总额(Sum(totalPrice))
 	 */
+	@ColumnAlias(value = "goods_amount")
 	private long totalOrderPrice;
 	/**
 	 * 总运费
 	 */
+	@ColumnAlias(value = "order_freight")
 	private long totalFreight;
 	/**
 	 * 平台优惠券金额
@@ -119,9 +121,24 @@ public class DealerOrderDetailBean {
 	 @ColumnAlias(value = "dealer_discount")
 	private long dealerDiscount;
 	/**
-	 * 订单总额(订单商品总额 - 平台优惠券 - 商家优惠券)
+	 * 订单总额(订单商品总额 - 平台优惠券 - 商家优惠券 + 运费)
 	 */
 	private long orderPrice;
+	
+	@ColumnAlias(value = "invoice_header")
+	private String invoiceHeader;
+	@ColumnAlias(value = "invoice_name")
+	private String invoiceName;
+	@ColumnAlias(value = "invoice_code")
+	private String invoiceCode;
+	/***0 个人， 1公司， -1 不开发票*/
+	@ColumnAlias(value = "invoice_type")
+	private int invoiceType;
+	/**订单备注*/
+	@ColumnAlias(value = "noted")
+	private String  noted;
+	
+	private String dealerOrderId;
 
 	public Integer getOrderStatus() {
 		return orderStatus;
@@ -129,6 +146,54 @@ public class DealerOrderDetailBean {
 
 	public String getOrderId() {
 		return orderId;
+	}
+	
+	public String getDealerOrderId() {
+		return dealerOrderId;
+	}
+
+	public void setDealerOrderId(String dealerOrderId) {
+		this.dealerOrderId = dealerOrderId;
+	}
+
+	public String getInvoiceHeader() {
+		return invoiceHeader;
+	}
+
+	public void setInvoiceHeader(String invoiceHeader) {
+		this.invoiceHeader = invoiceHeader;
+	}
+
+	public String getInvoiceName() {
+		return invoiceName;
+	}
+
+	public void setInvoiceName(String invoiceName) {
+		this.invoiceName = invoiceName;
+	}
+
+	public String getInvoiceCode() {
+		return invoiceCode;
+	}
+
+	public void setInvoiceCode(String invoiceCode) {
+		this.invoiceCode = invoiceCode;
+	}
+
+	public int getInvoiceType() {
+		return invoiceType;
+	}
+
+	public void setInvoiceType(int invoiceType) {
+		this.invoiceType = invoiceType;
+	}
+
+	public String getNoted() {
+		return noted;
+	}
+
+	public void setNoted(String noted) {
+		this.noted = noted;
 	}
 
 	public Date getCreatedDate() {
@@ -212,6 +277,7 @@ public class DealerOrderDetailBean {
 	}
 
 	public long getOrderPrice() {
+		orderPrice = totalOrderPrice + totalFreight - plateformDiscount - dealerDiscount;
 		return orderPrice;
 	}
 
@@ -301,10 +367,6 @@ public class DealerOrderDetailBean {
 
 	public void setDealerDiscount(long dealerDiscount) {
 		this.dealerDiscount = dealerDiscount;
-	}
-
-	public void setOrderPrice(long orderPrice) {
-		this.orderPrice = orderPrice;
 	}
 
 	@Override

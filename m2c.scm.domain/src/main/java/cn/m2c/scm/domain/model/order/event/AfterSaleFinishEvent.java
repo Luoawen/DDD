@@ -8,14 +8,14 @@ import com.google.gson.Gson;
 
 import cn.m2c.ddd.common.domain.model.DomainEvent;
 /***
- * 订单支付成功时的商品销量事件
- * @author 89776
+ * 订单退货事件
+ * @author fanjc
  * created date 2017年10月23日
  * copyrighted@m2c
  */
-public class OrderCancelEvent implements DomainEvent {
-	/**销量*/
-	private Map<String, Integer> sales;
+public class AfterSaleFinishEvent implements DomainEvent {
+	/**退货商品及数量*/
+	private Map<String, Integer> skus;
 	
 	private Date occurredOn;
 	
@@ -23,19 +23,38 @@ public class OrderCancelEvent implements DomainEvent {
     
     private String orderNo;
     
-    private Map<String, Object> markets;
-	
-	public OrderCancelEvent() {
+    private String dealerOrderNo;
+    
+    private String afterSaleOrderNo;
+    /**实际退货金额*/
+    private long goodsMoney = 0;
+    
+	public String getDealerOrderNo() {
+		return dealerOrderNo;
+	}
+
+	public String getAfterSaleOrderNo() {
+		return afterSaleOrderNo;
+	}
+
+	public long getGoodsMoney() {
+		return goodsMoney;
+	}
+
+	public AfterSaleFinishEvent() {
 		super();
 		occurredOn = new Date();
 		eventVersion = 1;
 	}
 	
-	public OrderCancelEvent(String orderNo, Map<String, Integer> s, Map<String, Object> markets) {
+	public AfterSaleFinishEvent(String orderNo, Map<String, Integer> s, 
+			String dealerOrderNo, String afterSaleNo, long goodsMoney) {
 		this();
-		sales = s;
+		skus = s;
 		this.orderNo = orderNo;
-		this.markets = markets;
+		this.dealerOrderNo = dealerOrderNo;
+		this.afterSaleOrderNo = afterSaleNo;
+		this.goodsMoney = goodsMoney;
 	}
 	@Override
 	public int eventVersion() {
@@ -50,15 +69,11 @@ public class OrderCancelEvent implements DomainEvent {
 	}
 
 	public Map<String, Integer> getSales() {
-		return sales;
+		return skus;
 	}
 	
 	public String getOrderNo() {
 		return orderNo;
-	}
-	
-	public Map<String, Object> getMarkets() {
-		return markets;
 	}
 	
 	public static void main(String[] args) {

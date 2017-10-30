@@ -136,6 +136,7 @@ public class SaleAfterOrder extends ConcurrencySafeEntity {
 			return false;
 		status = 6;
 		DomainEventPublisher.instance().publish(new OrderOptLogEvent(saleAfterNo, null, "商家确认收货", userId));
+		
 		return true;
 	}
 	

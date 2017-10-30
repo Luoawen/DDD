@@ -24,8 +24,10 @@ public class CommentRepresentation {
     private String commentTime;
     private String orderId;
     private String replyTime;
+    private String dealerName;
 
     public CommentRepresentation(GoodsCommentBean bean) {
+        this.dealerName = bean.getDealerName();
         this.commentId = bean.getCommentId();
         this.goodsName = bean.getGoodsName();
         this.orderId = bean.getOrderId();
@@ -159,5 +161,13 @@ public class CommentRepresentation {
 
     public void setGoodsName(String goodsName) {
         this.goodsName = goodsName;
+    }
+
+    public String getDealerName() {
+        return dealerName;
+    }
+
+    public void setDealerName(String dealerName) {
+        this.dealerName = dealerName;
     }
 }
