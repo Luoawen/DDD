@@ -1,5 +1,7 @@
 package cn.m2c.scm.application.order.data.representation;
 
+import java.util.Date;
+
 import cn.m2c.ddd.common.persistence.orm.ColumnAlias;
 
 /***
@@ -18,7 +20,7 @@ public class OptLogBean {
 	@ColumnAlias(value= "opt_user")
 	private String optUser;
 	@ColumnAlias(value= "created_date")
-	private long optTime;
+	private Date optTime;
 
 	public String getOrderId() {
 		return orderId;
@@ -52,11 +54,12 @@ public class OptLogBean {
 		this.optUser = optUser;
 	}
 
-	public long getOptTime() {
+	public Date getOptTime() {
 		return optTime;
 	}
 
-	public void setOptTime(long optTime) {
+	public void setOptTime(Date optTime) {
 		this.optTime = optTime;
 	}
+
 }
