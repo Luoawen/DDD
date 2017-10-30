@@ -79,6 +79,7 @@ public class DealerOrderAfterSellQuery {
 			params.add(rows * (pageNum - 1));
 			params.add(rows);
 		}
+		
 		List<AfterSellOrderBean> beanList = this.supportJdbcTemplate.queryForBeanList(sql.toString(), AfterSellOrderBean.class, params.toArray());
 		for (AfterSellOrderBean bean : beanList) {
 			bean.setGoodsInfo(afterSellGoodsInfoQuery(bean.getSkuId(), dealerOrderId));
@@ -118,9 +119,11 @@ public class DealerOrderAfterSellQuery {
 	public GoodsInfoBean afterSellGoodsInfoQuery(String skuId, String dealerOrderId) {
 		List<Object> params = new ArrayList<Object>();
 		StringBuilder sql = new StringBuilder();
-		sql.append(" SELECT g.goods_main_images, g.goods_name, g.goods_sub_title, sku.sku_name")
+		sql.append(" SELECT g.goods_main_images, g.goods_name, g.goods_sub_title, sku.sku_name, ")
+		.append(" detail.discount_price,detail.sell_num ")
 		.append(" FROM t_scm_goods_sku sku")
 		.append(" LEFT OUTER JOIN t_scm_goods g ON sku.goods_id=g.id")
+		.append(" LEFT OUTER JOIN t_scm_order_detail detail ON g.goods_id = detail.goods_id ")
 		.append(" where sku.sku_id=?");
 		params.add(skuId);
 		// params.add(dealerOrderId);

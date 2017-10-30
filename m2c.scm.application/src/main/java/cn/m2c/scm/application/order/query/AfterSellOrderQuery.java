@@ -45,7 +45,7 @@ public class AfterSellOrderQuery {
 		List<Object> params = new ArrayList<Object>();
 		StringBuilder sql = new StringBuilder();
 		sql.append(" SELECT ");
-		sql.append(" after.after_sell_order_id,after.order_type,after.back_money,after._status,dealer.dealer_name,after.created_date ");
+		sql.append(" after.after_sell_order_id,after.order_id,after.order_type,after.back_money,after._status,dealer.dealer_name,after.created_date ");
 		sql.append(" FROM t_scm_order_after_sell after");
 		sql.append(" LEFT JOIN t_scm_dealer dealer ON after.dealer_id = dealer.dealer_id ");
 		sql.append(" LEFT JOIN t_scm_goods goods ON after.goods_id = goods.goods_id ");
