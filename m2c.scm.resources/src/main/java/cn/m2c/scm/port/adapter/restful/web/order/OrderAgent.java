@@ -424,9 +424,9 @@ public class OrderAgent {
 			@RequestParam(value = "rows", required = false, defaultValue = "5") Integer rows) {
 		MPager result = new MPager(MCode.V_1);
 		try {
-			Integer total = orderAppQuery.getDealerOrderOptLogTotal(orderId, dealerOrderId);
+			Integer total = orderAppQuery.getDealerOrderOptLogTotal(orderId, dealerOrderId,pageNum,rows);
 			if (total > 0) {
-				List<OptLogBean> logsList = orderAppQuery.getDealerOrderOptLog(orderId, dealerOrderId);
+				List<OptLogBean> logsList = orderAppQuery.getDealerOrderOptLog(orderId, dealerOrderId,pageNum,rows);
 				result.setContent(logsList);
 			}
 			result.setPager(total, pageNum, rows);
