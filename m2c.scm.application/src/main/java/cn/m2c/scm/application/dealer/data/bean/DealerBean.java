@@ -53,6 +53,8 @@ public class DealerBean {
 	 
 	@ColumnAlias(value = "dealer_acode")
 	private String dealerAcode;
+	@ColumnAlias(value = "dealer_detail_address")
+	private String dealerDetailAddress;
 	
 	@ColumnAlias(value = "manager_name")
 	private String managerName;
@@ -320,6 +322,14 @@ public class DealerBean {
 
 	public void setDeposit(Long deposit) {
 		this.deposit = deposit;
+	}
+
+	public String getDealerDetailAddress() {
+		return dealerDetailAddress;
+	}
+
+	public void setDealerDetailAddress(String dealerDetailAddress) {
+		this.dealerDetailAddress = dealerDetailAddress;
 	}
 
 	
