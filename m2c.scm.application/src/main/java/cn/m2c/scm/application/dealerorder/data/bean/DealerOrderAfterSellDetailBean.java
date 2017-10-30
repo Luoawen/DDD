@@ -1,7 +1,6 @@
 package cn.m2c.scm.application.dealerorder.data.bean;
 
 import java.util.Date;
-import java.util.List;
 
 import cn.m2c.ddd.common.persistence.orm.ColumnAlias;
 import cn.m2c.scm.application.order.data.bean.GoodsInfoBean;
@@ -34,6 +33,11 @@ public class DealerOrderAfterSellDetailBean {
 	@ColumnAlias(value = "reason")
 	private String reason;
 	/**
+	 * 拒绝原因
+	 */
+	@ColumnAlias(value = "reject_reason")
+	private String rejectReason;
+	/**
 	 * 申请时间
 	 */
 	@ColumnAlias(value = "created_date")
@@ -41,16 +45,35 @@ public class DealerOrderAfterSellDetailBean {
 	/**
 	 * 关联订单号
 	 */
-	@ColumnAlias(value = "dealer_order_id")
-	private String dealerOrderId;
+	@ColumnAlias(value = "order_id")
+	private String orderId;
 	/**
 	 * 订单总额
 	 */
+	@ColumnAlias(value = "goods_amount")
 	private long orderTotalMoney;
+	/**
+	 * 订单运费
+	 */
+	@ColumnAlias(value = "order_freight")
+	private long orderFreight;
+	/**
+	 * 售后运费
+	 */
+	@ColumnAlias(value = "freight")
+	private long backFreight;
+
+	/** 平台优惠金额 **/
+	@ColumnAlias(value = "plateform_discount")
+	private long plateformDiscount;
+
+	/** 商家优惠金额 **/
+	@ColumnAlias(value = "dealer_discount")
+	private long dealerDiscount;
 	/**
 	 * 商品信息
 	 */
-	private List<GoodsInfoBean> goodsInfoList;
+	private GoodsInfoBean goodsInfo;
 
 	public Integer getStatus() {
 		return status;
@@ -76,20 +99,45 @@ public class DealerOrderAfterSellDetailBean {
 		return createdDate;
 	}
 
-	public String getDealerOrderId() {
-		return dealerOrderId;
-	}
 
 	public long getOrderTotalMoney() {
-		return orderTotalMoney;
-	}
-
-	public List<GoodsInfoBean> getGoodsInfoList() {
-		return goodsInfoList;
+		return (orderTotalMoney + this.getOrderFreight() - this.getPlateformDiscount() - this.getDealerDiscount());
 	}
 
 	public void setStatus(Integer status) {
 		this.status = status;
+	}
+
+	public long getOrderFreight() {
+		return orderFreight;
+	}
+
+	public long getPlateformDiscount() {
+		return plateformDiscount;
+	}
+
+	public String getRejectReason() {
+		return rejectReason;
+	}
+
+	public void setRejectReason(String rejectReason) {
+		this.rejectReason = rejectReason;
+	}
+
+	public long getDealerDiscount() {
+		return dealerDiscount;
+	}
+
+	public void setOrderFreight(long orderFreight) {
+		this.orderFreight = orderFreight;
+	}
+
+	public void setPlateformDiscount(long plateformDiscount) {
+		this.plateformDiscount = plateformDiscount;
+	}
+
+	public void setDealerDiscount(long dealerDiscount) {
+		this.dealerDiscount = dealerDiscount;
 	}
 
 	public void setOrderType(Integer orderType) {
@@ -111,25 +159,33 @@ public class DealerOrderAfterSellDetailBean {
 	public void setCreatedDate(Date createdDate) {
 		this.createdDate = createdDate;
 	}
+	
+	public String getOrderId() {
+		return orderId;
+	}
 
-	public void setDealerOrderId(String dealerOrderId) {
-		this.dealerOrderId = dealerOrderId;
+	public void setOrderId(String orderId) {
+		this.orderId = orderId;
 	}
 
 	public void setOrderTotalMoney(long orderTotalMoney) {
 		this.orderTotalMoney = orderTotalMoney;
 	}
 
-	public void setGoodsInfoList(List<GoodsInfoBean> goodsInfoList) {
-		this.goodsInfoList = goodsInfoList;
+	public GoodsInfoBean getGoodsInfo() {
+		return goodsInfo;
 	}
 
-	@Override
-	public String toString() {
-		return "DealerOrderAfterSellDetailBean [status=" + status + ", orderType=" + orderType
-				+ ", afterSelldealerOrderId=" + afterSellDealerOrderId + ", backMoney=" + backMoney + ", reason="
-				+ reason + ", createdDate=" + createdDate + ", dealerdealerOrderId=" + dealerOrderId
-				+ ", orderTotalMoney=" + orderTotalMoney + ", goodsInfoList=" + goodsInfoList + "]";
+	public void setGoodsInfo(GoodsInfoBean goodsInfo) {
+		this.goodsInfo = goodsInfo;
+	}
+
+	public long getBackFreight() {
+		return backFreight;
+	}
+
+	public void setBackFreight(long backFreight) {
+		this.backFreight = backFreight;
 	}
 
 }
