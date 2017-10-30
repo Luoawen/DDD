@@ -105,7 +105,7 @@ public class BrandApprove extends ConcurrencySafeEntity {
      */
     public BrandApprove(String approveId, String brandId, String brandName, String brandNameEn, String brandLogo, String firstAreaCode,
                         String twoAreaCode, String threeAreaCode, String firstAreaName, String twoAreaName,
-                        String threeAreaName, String dealerId) {
+                        String threeAreaName, String dealerId, String dealerName) {
         this.approveId = approveId;
         this.brandId = brandId;
         this.brandName = brandName;
@@ -119,6 +119,7 @@ public class BrandApprove extends ConcurrencySafeEntity {
         this.threeAreaName = threeAreaName;
         this.approveStatus = 1;
         this.dealerId = dealerId;
+        this.dealerName = dealerName;
         this.createdDate = new Date();
     }
 
