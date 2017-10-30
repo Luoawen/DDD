@@ -197,13 +197,12 @@ public class AfterSellOrderQuery {
 	public List<GoodsInfoBean> afterSellGoodsInfoQuery(String afterSellOrderId) {
 		StringBuilder sql = new StringBuilder();
 		sql.append(" SELECT  ");
-		sql.append(" goods.goods_main_images,odetail.goods_name,odetail.sell_num ");
+		sql.append(" detail.goods_icon,detail.goods_name,detail.sell_num,detail.sku_name ");
 		sql.append(" FROM ");
-		sql.append(" t_scm_goods goods  INNER JOIN t_scm_order_after_sell after ");
-		sql.append(" INNER JOIN t_scm_order_detail odetail ");
+		sql.append(" t_scm_order_after_sell after ");
+		sql.append(" INNER JOIN t_scm_order_detail detail ");
 		sql.append(" WHERE 1 = 1 AND after.after_sell_order_id = ? ");
-		sql.append(" AND goods.goods_id = after.goods_id ");
-		sql.append(" AND goods.goods_id = odetail.goods_id ");
+		sql.append(" AND after.dealer_order_id = detail.dealer_order_id ");
 		List<GoodsInfoBean> goodsInfoList = this.supportJdbcTemplate.queryForBeanList(sql.toString(), GoodsInfoBean.class,afterSellOrderId);
 		return goodsInfoList;
 	}
@@ -215,7 +214,7 @@ public class AfterSellOrderQuery {
 	 */
 	public AfterSellOrderDetailBean afterSellOrderDetailQeury(String afterSellOrderId) {
 		StringBuilder sql = new StringBuilder();
-		sql.append(" SELECT after._status,after.after_sell_order_id,after.back_money,after.reason,after.created_date ");
+		sql.append(" SELECT after._status,after.after_sell_order_id,after.back_money,after.reason,after.created_date,detail.freight ");
 		sql.append(" ,dealer.dealer_name,dealer.dealer_classify  ,seller.seller_name,seller.seller_phone ");
 		if (afterSellOrderTypeQuery(afterSellOrderId) == 0) {
 			sql.append(" ,after.order_type ");
