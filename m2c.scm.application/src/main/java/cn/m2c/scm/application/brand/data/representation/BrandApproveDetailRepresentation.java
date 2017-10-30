@@ -22,6 +22,21 @@ public class BrandApproveDetailRepresentation {
     private String brandName;
 
     /**
+     * 一级区域编号
+     */
+    private String firstAreaCode;
+
+    /**
+     * 二级区域编号
+     */
+    private String twoAreaCode;
+
+    /**
+     * 三级区域编号
+     */
+    private String threeAreaCode;
+
+    /**
      * 一级区域名称
      */
     private String firstAreaName;
@@ -57,7 +72,7 @@ public class BrandApproveDetailRepresentation {
     private String rejectReason;
 
     public BrandApproveDetailRepresentation(BrandApproveBean bean) {
-        this.approveId=bean.getApproveId();
+        this.approveId = bean.getApproveId();
         this.brandId = bean.getBrandId();
         this.brandName = bean.getBrandName();
         this.firstAreaName = bean.getFirstAreaName();
@@ -65,8 +80,11 @@ public class BrandApproveDetailRepresentation {
         this.threeAreaName = bean.getThreeAreaName();
         this.brandNameEn = bean.getBrandNameEn();
         this.brandLogo = bean.getBrandLogo();
-        this.approveStatus=bean.getApproveStatus();
-        this.rejectReason=bean.getRejectReason();
+        this.approveStatus = bean.getApproveStatus();
+        this.rejectReason = bean.getRejectReason();
+        this.firstAreaCode = bean.getFirstAreaCode();
+        this.twoAreaCode = bean.getTwoAreaCode();
+        this.threeAreaCode = bean.getThreeAreaCode();
     }
 
     public String getBrandId() {
@@ -147,5 +165,29 @@ public class BrandApproveDetailRepresentation {
 
     public void setRejectReason(String rejectReason) {
         this.rejectReason = rejectReason;
+    }
+
+    public String getFirstAreaCode() {
+        return firstAreaCode;
+    }
+
+    public void setFirstAreaCode(String firstAreaCode) {
+        this.firstAreaCode = firstAreaCode;
+    }
+
+    public String getTwoAreaCode() {
+        return twoAreaCode;
+    }
+
+    public void setTwoAreaCode(String twoAreaCode) {
+        this.twoAreaCode = twoAreaCode;
+    }
+
+    public String getThreeAreaCode() {
+        return threeAreaCode;
+    }
+
+    public void setThreeAreaCode(String threeAreaCode) {
+        this.threeAreaCode = threeAreaCode;
     }
 }
