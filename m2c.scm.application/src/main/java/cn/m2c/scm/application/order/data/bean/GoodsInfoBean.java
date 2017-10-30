@@ -19,17 +19,12 @@ public class GoodsInfoBean {
 	 */
 	@ColumnAlias(value = "goods_name")
 	private String goodsName;
-	/**商品副标题*/
+	/** 商品副标题 */
 	@ColumnAlias(value = "goods_sub_title")
 	private String goodsSubTitle;
-	/**规格名称*/
+	/** 规格名称 */
 	@ColumnAlias(value = "sku_name")
 	private String skuName;
-	/**
-	 * 商品信息<规格>
-	 */
-	@ColumnAlias(value = "stantard_name")
-	private String stantardName;
 	/**
 	 * 广告位信息
 	 */
@@ -68,10 +63,6 @@ public class GoodsInfoBean {
 		return goodsName;
 	}
 
-	public String getStantardName() {
-		return stantardName;
-	}
-
 	public String getMediaResId() {
 		return mediaResId;
 	}
@@ -103,10 +94,6 @@ public class GoodsInfoBean {
 
 	public void setGoodsName(String goodsName) {
 		this.goodsName = goodsName;
-	}
-
-	public void setStantardName(String stantardName) {
-		this.stantardName = stantardName;
 	}
 
 	public void setMediaResId(String mediaResId) {
@@ -151,9 +138,10 @@ public class GoodsInfoBean {
 
 	@Override
 	public String toString() {
-		return "GoodsInfoBean [goodsImage=" + goodsImage + ", goodsName=" + goodsName + ", stantardName=" + stantardName
-				+ ", mediaResId=" + mediaResId + ", sellNum=" + sellNum + ", price=" + price + ", unitName=" + unitName
-				+ ", totalPrice=" + totalPrice + ", freight=" + freight + "]";
+		return "GoodsInfoBean [goodsImage=" + goodsImage + ", goodsName=" + goodsName + ", goodsSubTitle="
+				+ goodsSubTitle + ", skuName=" + skuName + ", mediaResId=" + mediaResId + ", sellNum=" + sellNum
+				+ ", price=" + price + ", unitName=" + unitName + ", totalPrice=" + totalPrice + ", freight=" + freight
+				+ "]";
 	}
 
 }

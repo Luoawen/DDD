@@ -59,18 +59,26 @@ public class OrderQueryApplication {
      * @return
      * @throws NegativeException 
      */
-    public List<OptLogBean> getDealerOrderOptLog(String orderId, String dealerOrderId) throws NegativeException {
+    public List<OptLogBean> getDealerOrderOptLog(String orderId, String dealerOrderId,Integer pageNum,Integer rows) throws NegativeException {
     	List<OptLogBean> logList = null;
 		try {
 			StringBuilder sql = new StringBuilder(200);
 			List<Object> params = new ArrayList<>(2);
 			sql.append("SELECT order_no, dealer_order_no, opt_content, opt_user, created_date FROM t_scm_order_opt_log ");
 			sql.append(" WHERE order_no=?");
-			params.add(orderId);
+			if(orderId!= null && !"".equals(orderId)){
+				params.add(orderId);
+			}
+			
 			/*if (!StringUtils.isEmpty(dealerOrderId)) {
 				sql.append(" AND dealer_order_no=?");
 				params.add(dealerOrderId);
 			}*/
+			sql.append(" ORDER BY created_date DESC ");
+			sql.append(" LIMIT ?,?");
+			params.add(rows*(pageNum - 1));
+			params.add(rows);
+			System.out.println("----操作日志列表："+sql.toString());
 			logList = this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), OptLogBean.class, params.toArray());
 		} catch (Exception e) {
 			LOGGER.error("---查询日志时出错 ",e);
@@ -84,7 +92,7 @@ public class OrderQueryApplication {
      * @return
      * @throws NegativeException 
      */
-    public Integer getDealerOrderOptLogTotal(String orderId, String dealerOrderId) throws NegativeException {
+    public Integer getDealerOrderOptLogTotal(String orderId, String dealerOrderId,Integer pageNum,Integer rows) throws NegativeException {
     	Integer total = 0;
 		try {
 			StringBuilder sql = new StringBuilder(200);

@@ -1,13 +1,17 @@
 package cn.m2c.scm.domain.model.postage;
 
 import cn.m2c.common.JsonUtils;
+import cn.m2c.common.MCode;
 import cn.m2c.ddd.common.domain.model.ConcurrencySafeEntity;
 import cn.m2c.scm.domain.IDGenerator;
+import cn.m2c.scm.domain.NegativeException;
 import cn.m2c.scm.domain.util.GetMapValueUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * 运费模板
@@ -61,7 +65,22 @@ public class PostageModel extends ConcurrencySafeEntity {
     }
 
     public PostageModel(String dealerId, String modelId, String modelName, Integer chargeType,
-                        String modelDescription, String postageModelRule) {
+                        String modelDescription, String postageModelRule) throws NegativeException {
+    	if (StringUtils.isEmpty(dealerId)) {
+			throw new NegativeException(MCode.V_1, "商家号参数为空(dealerId)！");
+		}
+    	if (StringUtils.isEmpty(modelId)) {
+			throw new NegativeException(MCode.V_1, "模板Id参数为空(modelId)！");
+		}
+    	if (StringUtils.isEmpty(modelName)) {
+			throw new NegativeException(MCode.V_1, "模板名称参数为空(modelName)！");
+		}
+    	if (null == chargeType) {
+			throw new NegativeException(MCode.V_1, "计费方式参数为空(modelName)！");
+		}
+    	if (StringUtils.isEmpty(postageModelRule)) {
+			throw new NegativeException(MCode.V_1, "模板规格参数为空(modelName)！");
+		}
         this.dealerId = dealerId;
         this.modelId = modelId;
         this.modelName = modelName;
