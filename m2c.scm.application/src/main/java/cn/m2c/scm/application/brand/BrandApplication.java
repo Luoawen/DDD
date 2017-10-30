@@ -41,7 +41,7 @@ public class BrandApplication {
         LOGGER.info("addBrand command >>{}", command);
         // 与当前品牌库中的不能重名
         if (brandRepository.brandNameIsRepeat(null, command.getBrandName()) ||
-                brandApproveRepository.brandNameIsRepeat(null, command.getBrandName())) {
+                brandApproveRepository.brandNameIsRepeat(null, null, command.getBrandName())) {
             throw new NegativeException(MCode.V_301, "品牌名称已存在");
         }
         Brand brand = brandRepository.getBrandByBrandId(command.getBrandId());
@@ -64,7 +64,7 @@ public class BrandApplication {
         LOGGER.info("modifyBrand command >>{}", command);
         // 与当前品牌库中的不能重名
         if (brandRepository.brandNameIsRepeat(command.getBrandId(), command.getBrandName()) ||
-                brandApproveRepository.brandNameIsRepeat(command.getBrandId(), command.getBrandName())) {
+                brandApproveRepository.brandNameIsRepeat(null, command.getBrandId(), command.getBrandName())) {
             throw new NegativeException(MCode.V_301, "品牌名称已存在");
         }
         Brand brand = brandRepository.getBrandByBrandId(command.getBrandId());

@@ -41,13 +41,19 @@ public class HibernateBrandApproveRepository extends HibernateSupperRepository i
     }
 
     @Override
-    public boolean brandNameIsRepeat(String brandId, String brandName) {
+    public boolean brandNameIsRepeat(String approveId, String brandId, String brandName) {
         StringBuilder sql = new StringBuilder("select * from t_scm_brand_approve where status = 1 AND brand_name =:brand_name");
+        if (StringUtils.isNotEmpty(approveId)) {
+            sql.append(" and approve_id <> :approve_id");
+        }
         if (StringUtils.isNotEmpty(brandId)) {
             sql.append(" and brand_id <> :brand_id");
         }
         Query query = this.session().createSQLQuery(sql.toString()).addEntity(BrandApprove.class);
         query.setParameter("brand_name", brandName);
+        if (StringUtils.isNotEmpty(approveId)) {
+            query.setParameter("approve_id", approveId);
+        }
         if (StringUtils.isNotEmpty(brandId)) {
             query.setParameter("brand_id", brandId);
         }
