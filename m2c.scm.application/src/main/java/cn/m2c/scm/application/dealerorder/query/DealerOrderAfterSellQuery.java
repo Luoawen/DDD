@@ -134,7 +134,7 @@ public class DealerOrderAfterSellQuery {
 		List<Object> params = new ArrayList<Object>();
 		StringBuilder sql = new StringBuilder();
 		sql.append(" SELECT g.goods_main_images, g.goods_name, g.goods_sub_title, sku.sku_name, ")
-				.append(" detail.discount_price,detail.sell_num ").append(" FROM t_scm_goods_sku sku")
+				.append(" detail.discount_price,after.sell_num ").append(" FROM t_scm_goods_sku sku")
 				.append(" LEFT OUTER JOIN t_scm_goods g ON sku.goods_id=g.id")
 				.append(" LEFT OUTER JOIN t_scm_order_detail detail ON g.goods_id = detail.goods_id ")
 				.append(" where sku.sku_id=?");
@@ -249,7 +249,7 @@ public class DealerOrderAfterSellQuery {
 		StringBuilder sql = new StringBuilder();
 		List<Object> param = new ArrayList<Object>();
 		sql.append(
-				" SELECT detail.discount_price,detail.sell_num,detail.freight,detail.plateform_discount,detail.dealer_discount ");
+				" SELECT detail.discount_price,after.sell_num,detail.freight,detail.plateform_discount,detail.dealer_discount ");
 		sql.append(" ,detail.media_res_id,after.back_money");
 		sql.append(" ,detail.goods_icon,detail.goods_name,detail.sku_name ");
 		sql.append(" FROM t_scm_order_detail detail ");

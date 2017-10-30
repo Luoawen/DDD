@@ -1,7 +1,5 @@
 package cn.m2c.scm.application.order.data.bean;
 
-import java.util.List;
-
 import cn.m2c.ddd.common.persistence.orm.ColumnAlias;
 
 /**
@@ -36,7 +34,7 @@ public class AftreSellLogisticsBean {
 	/**
 	 * 商品信息
 	 */
-	private List<GoodsInfoBean> goodsInfoList;
+	private GoodsInfoBean goodsInfo;
 
 	public Integer getStatus() {
 		return status;
@@ -44,10 +42,6 @@ public class AftreSellLogisticsBean {
 
 	public String getAfterSellOrderId() {
 		return afterSellOrderId;
-	}
-
-	public List<GoodsInfoBean> goodsInfoList() {
-		return goodsInfoList;
 	}
 
 	public String getExpressName() {
@@ -60,15 +54,11 @@ public class AftreSellLogisticsBean {
 
 	public void setStatus(Integer status) {
 		this.status = status;
-		
+
 	}
 
 	public void setAfterSellOrderId(String afterSellOrderId) {
 		this.afterSellOrderId = afterSellOrderId;
-	}
-
-	public void setAfterSellGoodsInfoBeans(List<GoodsInfoBean> goodsInfoList) {
-		this.goodsInfoList = goodsInfoList;
 	}
 
 	public void setExpressName(String expressName) {
@@ -79,19 +69,12 @@ public class AftreSellLogisticsBean {
 		this.expressNo = expressNo;
 	}
 
-	public List<GoodsInfoBean> getGoodsInfoList() {
-		return goodsInfoList;
+	public GoodsInfoBean getGoodsInfo() {
+		return goodsInfo;
 	}
 
-	public void setGoodsInfoList(List<GoodsInfoBean> goodsInfoList) {
-		this.goodsInfoList = goodsInfoList;
-	}
-
-	@Override
-	public String toString() {
-		return "AftreSellLogisticsBean [status=" + status + ", afterSellOrderId=" + afterSellOrderId
-				+ ", afterSellGoodsInfoBeans=" + goodsInfoList + ", expressName=" + expressName + ", expressNo="
-				+ expressNo + "]";
+	public void setGoodsInfo(GoodsInfoBean goodsInfo) {
+		this.goodsInfo = goodsInfo;
 	}
 
 }

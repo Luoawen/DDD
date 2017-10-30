@@ -179,9 +179,9 @@ public class AfterSellOrderQuery {
 		sql.append(" WHERE 1 = 1 AND aftersell.after_sell_order_id = ? ");
 		AftreSellLogisticsBean bean = this.supportJdbcTemplate.queryForBean(sql.toString(),
 				AftreSellLogisticsBean.class, afterSellOrderId);
-		List<GoodsInfoBean> goodsInfoList = afterSellGoodsInfoQuery(afterSellOrderId);
+		GoodsInfoBean goodsInfo = afterSellGoodsInfoQuery(afterSellOrderId);
 		if (null != bean) {
-			bean.setAfterSellGoodsInfoBeans(goodsInfoList);
+			bean.setGoodsInfo(goodsInfo);
 		}
 		return bean;
 
@@ -208,18 +208,18 @@ public class AfterSellOrderQuery {
 	 * @param afterSellOrderId
 	 * @return
 	 */
-	public List<GoodsInfoBean> afterSellGoodsInfoQuery(String afterSellOrderId) {
+	public GoodsInfoBean afterSellGoodsInfoQuery(String afterSellOrderId) {
 		StringBuilder sql = new StringBuilder();
 		sql.append(" SELECT  ");
-		sql.append(" detail.goods_icon,detail.goods_name,detail.sell_num,detail.sku_name ");
+		sql.append(" detail.goods_icon,detail.goods_name,after.sell_num,detail.sku_name ");
 		sql.append(" FROM ");
 		sql.append(" t_scm_order_after_sell after ");
 		sql.append(" INNER JOIN t_scm_order_detail detail ");
 		sql.append(" WHERE 1 = 1 AND after.after_sell_order_id = ? ");
-		sql.append(" AND after.dealer_order_id = detail.dealer_order_id ");
-		List<GoodsInfoBean> goodsInfoList = this.supportJdbcTemplate.queryForBeanList(sql.toString(),
+		sql.append(" AND after.dealer_order_id = detail.dealer_order_id AND after.sku_id = detail.sku_id ");
+		GoodsInfoBean goodsInfo = this.supportJdbcTemplate.queryForBean(sql.toString(),
 				GoodsInfoBean.class, afterSellOrderId);
-		return goodsInfoList;
+		return goodsInfo;
 	}
 
 	/**
@@ -270,7 +270,7 @@ public class AfterSellOrderQuery {
 	public GoodsInfoBean aftetSellOrderDetailGoodsInfoQuery(String afterSellOrderId) {
 		StringBuilder sql = new StringBuilder();
 		sql.append(
-				" SELECT detail.discount_price,detail.sell_num,detail.freight,detail.plateform_discount,detail.dealer_discount ");
+				" SELECT detail.discount_price,after.sell_num,detail.freight,detail.plateform_discount,detail.dealer_discount ");
 		sql.append(" ,detail.media_res_id,after.back_money,after.order_id,detail._price ");
 		sql.append(" ,detail.goods_icon,detail.goods_name,detail.sku_name ");
 		sql.append(" FROM t_scm_order_detail detail ");
