@@ -11,6 +11,7 @@ import cn.m2c.ddd.common.persistence.orm.ColumnAlias;
  *
  */
 public class AftreSellLogisticsBean {
+
 	/**
 	 * 售后状态
 	 */
@@ -31,8 +32,7 @@ public class AftreSellLogisticsBean {
 	 */
 	@ColumnAlias(value = "back_express_no")
 	private String expressNo;
-	
-	
+
 	/**
 	 * 商品信息
 	 */
@@ -60,6 +60,7 @@ public class AftreSellLogisticsBean {
 
 	public void setStatus(Integer status) {
 		this.status = status;
+		
 	}
 
 	public void setAfterSellOrderId(String afterSellOrderId) {
@@ -78,11 +79,19 @@ public class AftreSellLogisticsBean {
 		this.expressNo = expressNo;
 	}
 
+	public List<GoodsInfoBean> getGoodsInfoList() {
+		return goodsInfoList;
+	}
+
+	public void setGoodsInfoList(List<GoodsInfoBean> goodsInfoList) {
+		this.goodsInfoList = goodsInfoList;
+	}
+
 	@Override
 	public String toString() {
 		return "AftreSellLogisticsBean [status=" + status + ", afterSellOrderId=" + afterSellOrderId
-				+ ", afterSellGoodsInfoBeans=" + goodsInfoList + ", expressName=" + expressName
-				+ ", expressNo=" + expressNo + "]";
+				+ ", afterSellGoodsInfoBeans=" + goodsInfoList + ", expressName=" + expressName + ", expressNo="
+				+ expressNo + "]";
 	}
 
 }

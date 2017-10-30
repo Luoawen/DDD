@@ -229,16 +229,14 @@ public class DealerOrderAfterSellQuery {
 		List<Object> param = new ArrayList<Object>();
 		sql.append(" SELECT detail.discount_price,detail.sell_num,detail.freight,detail.plateform_discount,detail.dealer_discount ");
 		sql.append(" ,detail.media_res_id,after.back_money");
-		sql.append(" ,goods.goods_main_images,goods.goods_name,goods.goods_specifications ");
+		sql.append(" ,detail.goods_icon,detail.goods_name,detail.sku_name ");
 		sql.append(" FROM t_scm_order_detail detail ");
 		sql.append(" INNER JOIN t_scm_order_after_sell after ");
-		sql.append(" INNER JOIN t_scm_goods goods ");
 		sql.append(" WHERE 1 = 1 AND after.after_sell_order_id = ? ");
 		param.add(afterSellOrderId);
 		sql.append(" AND after.dealer_id = ? ");
 		param.add(dealerId);
 		sql.append(" AND detail.dealer_order_id = after.dealer_order_id ");
-		sql.append(" AND detail.goods_id = goods.goods_id ");
 		return this.supportJdbcTemplate.queryForBeanList(sql.toString(), GoodsInfoBean.class,param.toArray());
 	}
 	/***

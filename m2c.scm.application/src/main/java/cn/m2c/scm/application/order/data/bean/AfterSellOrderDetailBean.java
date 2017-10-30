@@ -62,6 +62,8 @@ public class AfterSellOrderDetailBean {
 	 * 订单总额
 	 */
 	private long orderTotalMoney;
+	/** 运费 **/
+	private long freight;
 	/**
 	 * 业务员信息<业务员姓名>
 	 */
@@ -111,6 +113,18 @@ public class AfterSellOrderDetailBean {
 
 	public String getOrderId() {
 		return orderId;
+	}
+
+	public long getFreight() {
+		return freight;
+	}
+
+	public void setBackMoney(long backMoney) {
+		this.backMoney = backMoney;
+	}
+
+	public void setFreight(long freight) {
+		this.freight = freight;
 	}
 
 	public String getDealerName() {
@@ -189,6 +203,5 @@ public class AfterSellOrderDetailBean {
 				+ ", orderTotalMoney=" + orderTotalMoney + ", sellerName=" + sellerName + ", sellerPhone=" + sellerPhone
 				+ ", goodsInfoList=" + goodsInfoList + "]";
 	}
-
 
 }
