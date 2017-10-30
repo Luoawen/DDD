@@ -110,7 +110,7 @@ public class GoodsQueryApplication {
         }
         if (null != delStatus && delStatus == 2) {
             sql.append(" AND g.del_status= 2");
-        }else{
+        } else {
             sql.append(" AND g.del_status= 1");
         }
         sql.append(" group by g.goods_id ORDER BY g.created_date DESC ");
@@ -173,7 +173,7 @@ public class GoodsQueryApplication {
         }
         if (null != delStatus && delStatus == 2) {
             sql.append(" AND g.del_status= 2");
-        }else{
+        } else {
             sql.append(" AND g.del_status= 1");
         }
 
@@ -542,9 +542,14 @@ public class GoodsQueryApplication {
                 List<String> classifyIds = new ArrayList<>();
                 for (String id : ids) {
                     List<String> goodsClassifyIds = goodsClassifyQueryApplication.recursionQueryGoodsSubClassifyId(id, new ArrayList<String>());
-                    classifyIds.addAll(goodsClassifyIds);
+                    if (null != goodsClassifyIds && goodsClassifyIds.size() > 0) {
+                        classifyIds.addAll(goodsClassifyIds);
+                    }
+
                 }
-                sql.append(" AND g.goods_classify_id in (" + Utils.listParseString(classifyIds) + ") ");
+                if (null != classifyIds && classifyIds.size() > 0) {
+                    sql.append(" AND g.goods_classify_id in (" + Utils.listParseString(classifyIds) + ") ");
+                }
             }
         }
 
@@ -612,9 +617,14 @@ public class GoodsQueryApplication {
                 List<String> classifyIds = new ArrayList<>();
                 for (String id : ids) {
                     List<String> goodsClassifyIds = goodsClassifyQueryApplication.recursionQueryGoodsSubClassifyId(id, new ArrayList<String>());
-                    classifyIds.addAll(goodsClassifyIds);
+                    if (null != goodsClassifyIds && goodsClassifyIds.size() > 0) {
+                        classifyIds.addAll(goodsClassifyIds);
+                    }
+
                 }
-                sql.append(" AND g.goods_classify_id in (" + Utils.listParseString(classifyIds) + ") ");
+                if (null != classifyIds && classifyIds.size() > 0) {
+                    sql.append(" AND g.goods_classify_id in (" + Utils.listParseString(classifyIds) + ") ");
+                }
             }
         }
 
