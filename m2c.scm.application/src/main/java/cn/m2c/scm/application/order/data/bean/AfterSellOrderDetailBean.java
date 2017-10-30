@@ -1,7 +1,6 @@
 package cn.m2c.scm.application.order.data.bean;
 
 import java.util.Date;
-import java.util.List;
 
 import cn.m2c.ddd.common.persistence.orm.ColumnAlias;
 
@@ -34,6 +33,11 @@ public class AfterSellOrderDetailBean {
 	@ColumnAlias(value = "back_money")
 	private long backMoney;
 	/**
+	 * 售后运费
+	 */
+	@ColumnAlias(value = "freight")
+	private long backFreight;
+	/**
 	 * 申请原因
 	 */
 	@ColumnAlias(value = "reason")
@@ -61,9 +65,18 @@ public class AfterSellOrderDetailBean {
 	/**
 	 * 订单总额
 	 */
+	@ColumnAlias(value = "goods_amount")
 	private long orderTotalMoney;
-	/** 运费 **/
-	private long freight;
+	/** 订单运费 **/
+	@ColumnAlias(value = "order_freight")
+	private long orderFreight;
+	/** 平台优惠金额 **/
+	@ColumnAlias(value = "plateform_discount")
+	private long plateformDiscount;
+
+	/** 商家优惠金额 **/
+	@ColumnAlias(value = "dealer_discount")
+	private long dealerDiscount;
 	/**
 	 * 业务员信息<业务员姓名>
 	 */
@@ -77,7 +90,7 @@ public class AfterSellOrderDetailBean {
 	/**
 	 * 商品信息
 	 */
-	private List<GoodsInfoBean> goodsInfoList;
+	private GoodsInfoBean goodsInfo;
 
 	public Integer getStatus() {
 		return status;
@@ -95,12 +108,8 @@ public class AfterSellOrderDetailBean {
 		return backMoney;
 	}
 
-	public List<GoodsInfoBean> getGoodsInfoList() {
-		return goodsInfoList;
-	}
-
-	public void setGoodsInfoList(List<GoodsInfoBean> goodsInfoList) {
-		this.goodsInfoList = goodsInfoList;
+	public long getBackFreight() {
+		return backFreight;
 	}
 
 	public String getReason() {
@@ -115,18 +124,6 @@ public class AfterSellOrderDetailBean {
 		return orderId;
 	}
 
-	public long getFreight() {
-		return freight;
-	}
-
-	public void setBackMoney(long backMoney) {
-		this.backMoney = backMoney;
-	}
-
-	public void setFreight(long freight) {
-		this.freight = freight;
-	}
-
 	public String getDealerName() {
 		return dealerName;
 	}
@@ -136,7 +133,19 @@ public class AfterSellOrderDetailBean {
 	}
 
 	public long getOrderTotalMoney() {
-		return orderTotalMoney;
+		return (this.orderTotalMoney + this.getOrderFreight() - this.getPlateformDiscount() - this.getDealerDiscount());
+	}
+
+	public long getOrderFreight() {
+		return orderFreight;
+	}
+
+	public long getPlateformDiscount() {
+		return plateformDiscount;
+	}
+
+	public long getDealerDiscount() {
+		return dealerDiscount;
 	}
 
 	public String getSellerName() {
@@ -145,6 +154,10 @@ public class AfterSellOrderDetailBean {
 
 	public String getSellerPhone() {
 		return sellerPhone;
+	}
+
+	public GoodsInfoBean getGoodsInfo() {
+		return goodsInfo;
 	}
 
 	public void setStatus(Integer status) {
@@ -159,8 +172,12 @@ public class AfterSellOrderDetailBean {
 		this.afterSellOrderId = afterSellOrderId;
 	}
 
-	public void setBackMoney(Integer backMoney) {
+	public void setBackMoney(long backMoney) {
 		this.backMoney = backMoney;
+	}
+
+	public void setBackFreight(long backFreight) {
+		this.backFreight = backFreight;
 	}
 
 	public void setReason(String reason) {
@@ -183,8 +200,20 @@ public class AfterSellOrderDetailBean {
 		this.dealerClassify = dealerClassify;
 	}
 
-	public void setOrderTotalMoney(long orderTotalPrice) {
-		this.orderTotalMoney = orderTotalPrice;
+	public void setOrderTotalMoney(long orderTotalMoney) {
+		this.orderTotalMoney = orderTotalMoney;
+	}
+
+	public void setOrderFreight(long orderFreight) {
+		this.orderFreight = orderFreight;
+	}
+
+	public void setPlateformDiscount(long plateformDiscount) {
+		this.plateformDiscount = plateformDiscount;
+	}
+
+	public void setDealerDiscount(long dealerDiscount) {
+		this.dealerDiscount = dealerDiscount;
 	}
 
 	public void setSellerName(String sellerName) {
@@ -195,13 +224,8 @@ public class AfterSellOrderDetailBean {
 		this.sellerPhone = sellerPhone;
 	}
 
-	@Override
-	public String toString() {
-		return "AfterSellOrderDetailBean [status=" + status + ", orderType=" + orderType + ", afterSellOrderId="
-				+ afterSellOrderId + ", backMoney=" + backMoney + ", reason=" + reason + ", createdDate=" + createdDate
-				+ ", orderId=" + orderId + ", dealerName=" + dealerName + ", dealerClassify=" + dealerClassify
-				+ ", orderTotalMoney=" + orderTotalMoney + ", sellerName=" + sellerName + ", sellerPhone=" + sellerPhone
-				+ ", goodsInfoList=" + goodsInfoList + "]";
+	public void setGoodsInfo(GoodsInfoBean goodsInfo) {
+		this.goodsInfo = goodsInfo;
 	}
 
 }
