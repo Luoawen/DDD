@@ -16,12 +16,9 @@ import org.springframework.web.bind.annotation.RestController;
 import cn.m2c.common.MCode;
 import cn.m2c.common.MPager;
 import cn.m2c.common.MResult;
-<<<<<<< HEAD
 import cn.m2c.common.StringUtil;
 import cn.m2c.scm.application.dealerorder.data.bean.DealerOrderBean;
-=======
 import cn.m2c.scm.application.dealerorder.data.bean.DealerOrderQB;
->>>>>>> b7cb3fdc27aa20f8f44d725bdb399d1e557c1c4f
 import cn.m2c.scm.application.dealerorder.query.DealerOrderQuery;
 import cn.m2c.scm.application.order.DealerOrderApplication;
 import cn.m2c.scm.application.order.command.UpdateAddrCommand;
@@ -98,13 +95,10 @@ public class DealerOrderAgent {
 		MPager result = new MPager(MCode.V_1);
 
 		try {
-<<<<<<< HEAD
 			if (StringUtil.isEmpty(dealerId))
 				throw new NegativeException(MCode.V_1,"请传入商家ID");
-			Integer total = dealerOrderQuery.dealerOrderTotalQuery(dealerId, dealerOrderId, orderStatus,
-=======
 			/*Integer total = dealerOrderQuery.dealerOrderTotalQuery(dealerId, dealerOrderId, orderStatus,
->>>>>>> b7cb3fdc27aa20f8f44d725bdb399d1e557c1c4f
+			Integer total = dealerOrderQuery.dealerOrderTotalQuery(dealerId, dealerOrderId, orderStatus,
 					afterSellStatus, startTime, endTime, condition, payWay, commentStatus, orderClassify, mediaInfo,
 					invoice);
 			List<DealerOrderBean> dealerOrderList = dealerOrderQuery.dealerOrderQuery(dealerId, dealerOrderId,
