@@ -45,4 +45,22 @@ public class HibernateGoodsClassifyRepository extends HibernateSupperRepository 
         }
         return false;
     }
+
+    public List<String> recursionQueryGoodsSubClassifyId(String parentClassifyId, List<String> resultList) {
+        List<GoodsClassify> subGoodsClassifys = queryGoodsClassifiesByParentId(parentClassifyId);
+        if (null != subGoodsClassifys && subGoodsClassifys.size() > 0) {
+            for (GoodsClassify classify : subGoodsClassifys) {
+                resultList.add(classify.classifyId());
+                recursionQueryGoodsSubClassifyId(classify.classifyId(), resultList);
+            }
+        }
+        return resultList;
+    }
+
+    public List<GoodsClassify> queryGoodsClassifiesByParentId(String parentId) {
+        StringBuilder sql = new StringBuilder("select * from t_scm_goods_classify where parent_classify_id =:parent_classify_id and status = 1");
+        Query query = this.session().createSQLQuery(sql.toString()).addEntity(GoodsClassify.class);
+        query.setParameter("parent_classify_id", parentId);
+        return query.list();
+    }
 }

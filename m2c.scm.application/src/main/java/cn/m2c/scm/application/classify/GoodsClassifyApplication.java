@@ -8,12 +8,14 @@ import cn.m2c.scm.domain.IDGenerator;
 import cn.m2c.scm.domain.NegativeException;
 import cn.m2c.scm.domain.model.classify.GoodsClassify;
 import cn.m2c.scm.domain.model.classify.GoodsClassifyRepository;
+import cn.m2c.scm.domain.model.goods.GoodsRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,6 +28,8 @@ public class GoodsClassifyApplication {
 
     @Autowired
     GoodsClassifyRepository goodsClassifyRepository;
+    @Autowired
+    GoodsRepository goodsRepository;
 
     /**
      * 添加商品分类
@@ -109,6 +113,10 @@ public class GoodsClassifyApplication {
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
     public void deleteGoodsClassify(String classifyId) throws NegativeException {
         LOGGER.info("deleteGoodsClassify classifyId >>{}", classifyId);
+        // 判断是否有商品，有商品不能删除
+        if (goodsRepository.classifyIdIsUser(goodsClassifyRepository.recursionQueryGoodsSubClassifyId(classifyId, new ArrayList<>()))) {
+            throw new NegativeException(MCode.V_300, "商品分类下有商品，不能删除");
+        }
         GoodsClassify goodsClassify = goodsClassifyRepository.getGoodsClassifyById(classifyId);
         if (null == goodsClassify) {
             throw new NegativeException(MCode.V_300, "商品分类不存在");

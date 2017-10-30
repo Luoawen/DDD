@@ -1,5 +1,7 @@
 package cn.m2c.scm.domain.model.classify;
 
+import java.util.List;
+
 /**
  * 商品分类
  */
@@ -9,4 +11,6 @@ public interface GoodsClassifyRepository {
     void save(GoodsClassify goodsClassify);
 
     boolean goodsClassifyNameIsRepeat(String classifyId, String classifyName);
+
+    List<String> recursionQueryGoodsSubClassifyId(String parentClassifyId, List<String> resultList);
 }
