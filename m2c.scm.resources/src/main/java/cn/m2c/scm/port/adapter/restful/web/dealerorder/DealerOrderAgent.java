@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import cn.m2c.common.MCode;
 import cn.m2c.common.MPager;
 import cn.m2c.common.MResult;
+import cn.m2c.common.StringUtil;
 import cn.m2c.scm.application.dealerorder.data.bean.DealerOrderBean;
 import cn.m2c.scm.application.dealerorder.query.DealerOrderQuery;
 import cn.m2c.scm.application.order.DealerOrderApplication;
@@ -92,6 +93,8 @@ public class DealerOrderAgent {
 		MPager result = new MPager(MCode.V_1);
 
 		try {
+			if (StringUtil.isEmpty(dealerId))
+				throw new NegativeException(MCode.V_1,"请传入商家ID");
 			Integer total = dealerOrderQuery.dealerOrderTotalQuery(dealerId, dealerOrderId, orderStatus,
 					afterSellStatus, startTime, endTime, condition, payWay, commentStatus, orderClassify, mediaInfo,
 					invoice);
@@ -122,8 +125,10 @@ public class DealerOrderAgent {
 			@RequestParam(value = "dealerId", required = false) String dealerId,
 			@RequestParam(value = "dealerOrderId", required = false) String dealerOrderId) {
 		MResult result = new MResult(MCode.V_1);
-
 		try {
+			if (StringUtil.isEmpty(dealerId) || StringUtil.isEmpty(dealerOrderId)) {
+				throw new NegativeException(MCode.V_1,"请传入商家ID和商家订单ID");
+			}
 			DealerOrderDetailBean orderDetail = dealerOrderQuery.dealerOrderDetailQuery(dealerOrderId, dealerId);
 			result.setContent(orderDetail);
 			result.setStatus(MCode.V_200);
@@ -165,6 +170,8 @@ public class DealerOrderAgent {
 		MResult result = new MResult(MCode.V_1);
 
 		try {
+			if (StringUtil.isEmpty(dealerOrderId))
+				throw new NegativeException(MCode.V_1,"请传入商家订单ID");
 			UpdateAddrCommand command = new UpdateAddrCommand(dealerOrderId, province, provCode, city, cityCode, area,
 					areaCode, street, revPerson, phone);
 			dealerOrderApplication.updateAddress(command);
@@ -193,6 +200,8 @@ public class DealerOrderAgent {
 		MResult result = new MResult(MCode.V_1);
 
 		try {
+			if (StringUtil.isEmpty(dealerOrderId))
+				throw new NegativeException(MCode.V_1,"请传入商家订单ID");
 			UpdateOrderFreightCmd command = new UpdateOrderFreightCmd(dealerOrderId, freight);
 			dealerOrderApplication.updateOrderFreight(command);
 			result.setStatus(MCode.V_200);
