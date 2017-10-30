@@ -71,16 +71,19 @@ public class OrderAgent {
 			@RequestParam(value = "orderStatus",required = false)Integer orderStatus,
 			@RequestParam(value = "afterSellStatus",required = false)Integer afterSellStatus,
 			@RequestParam(value = "startTime",required = false)String startTime,
+			@RequestParam(value = "orderId",required = false)String orderId,
 			@RequestParam(value = "endTime",required = false)String endTime,
 			@RequestParam(value = "condition",required = false)String condition,
 			@RequestParam(value = "payWay",required = false)Integer payWay,
+			@RequestParam(value = "mediaInfo", required = false) Integer mediaInfo,
+			@RequestParam(value = "dealerClassify", required = false) String dealerClassify,
 			@RequestParam(value = "pageNum", required = false, defaultValue = "1") Integer pageNum,
             @RequestParam(value = "rows", required = false, defaultValue = "5") Integer rows
 			) {
 		MPager result = new MPager(MCode.V_1);
 		try {
-			Integer total = orderQuery.mainOrderQueryTotal(orderStatus, afterSellStatus, startTime, endTime, condition, payWay);
-			List<MainOrderBean> mainOrderList = orderQuery.mainOrderListQuery(orderStatus, afterSellStatus, startTime, endTime, condition, payWay, pageNum, rows);
+			Integer total = orderQuery.mainOrderQueryTotal(orderStatus, afterSellStatus, startTime, endTime, condition, payWay, mediaInfo, dealerClassify);
+			List<MainOrderBean> mainOrderList = orderQuery.mainOrderListQuery(orderStatus, afterSellStatus, startTime, orderId,endTime, condition, payWay, mediaInfo, dealerClassify, pageNum, rows);
 			
 			result.setPager(total, pageNum, rows);
 			result.setContent(mainOrderList);
