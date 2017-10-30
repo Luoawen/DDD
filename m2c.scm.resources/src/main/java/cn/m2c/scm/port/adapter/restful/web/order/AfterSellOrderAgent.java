@@ -62,6 +62,7 @@ public class AfterSellOrderAgent {
 		try {
 			Integer total = afterSellOrderQuery.totalAfterSelleOrderQuery(orderType, status, createDate, condition, startTime, endTime, dealerClassify, mediaInfo);
 			List<AfterSellOrderBean> afterSelleOrderList = afterSellOrderQuery.afterSelleOrderQuery(orderType, status, createDate, condition, startTime, endTime, dealerClassify, mediaInfo, pageNum, rows);
+			System.out.println(afterSelleOrderList);
 			result.setPager(total, pageNum, rows);
 			result.setContent(afterSelleOrderList);
 			result.setStatus(MCode.V_200);
