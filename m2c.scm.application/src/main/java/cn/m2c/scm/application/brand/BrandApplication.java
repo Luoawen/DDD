@@ -48,7 +48,7 @@ public class BrandApplication {
         if (null == brand) {
             brand = new Brand(command.getBrandId(), command.getBrandName(), command.getBrandNameEn(), command.getBrandLogo(), command.getFirstAreaCode(),
                     command.getTwoAreaCode(), command.getThreeAreaCode(), command.getFirstAreaName(), command.getTwoAreaName(),
-                    command.getThreeAreaName(), command.getApplyDate(), command.getDealerId(), command.getIsSysAdd());
+                    command.getThreeAreaName(), command.getApplyDate(), command.getDealerId(), command.getDealerName(), command.getIsSysAdd());
             brandRepository.save(brand);
         }
     }
