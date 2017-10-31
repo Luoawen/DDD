@@ -1,6 +1,7 @@
 package cn.m2c.scm.port.adapter.persistence.hibernate.goods;
 
 import cn.m2c.ddd.common.port.adapter.persistence.hibernate.HibernateSupperRepository;
+import cn.m2c.scm.application.utils.Utils;
 import cn.m2c.scm.domain.model.goods.Goods;
 import cn.m2c.scm.domain.model.goods.GoodsRepository;
 import org.apache.commons.lang3.StringUtils;
@@ -71,5 +72,13 @@ public class HibernateGoodsRepository extends HibernateSupperRepository implemen
         Query query = this.session().createSQLQuery(sql.toString()).addEntity(Goods.class);
         query.setParameter("dealer_id", dealerId);
         return query.list();
+    }
+
+    @Override
+    public boolean classifyIdIsUser(List<String> classifyIds) {
+        StringBuilder sql = new StringBuilder("select * from t_scm_goods where del_status = 1");
+        sql.append(" and goods_classify_id in (" + Utils.listParseString(classifyIds) + ")");
+        Query query = this.session().createSQLQuery(sql.toString()).addEntity(Goods.class);
+        return null != query.list() && query.list().size() > 0;
     }
 }

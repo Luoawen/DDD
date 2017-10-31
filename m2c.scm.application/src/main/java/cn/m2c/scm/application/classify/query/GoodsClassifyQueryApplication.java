@@ -187,7 +187,9 @@ public class GoodsClassifyQueryApplication {
             if (null != bean && "-1".equals(bean.getParentClassifyId())) {
                 list.add(bean);
             } else {
-                list.add(getFirstClassifyByClassifyId(bean.getParentClassifyId()));
+                if (null != bean) {
+                    list.add(getFirstClassifyByClassifyId(bean.getParentClassifyId()));
+                }
             }
         }
         return list;

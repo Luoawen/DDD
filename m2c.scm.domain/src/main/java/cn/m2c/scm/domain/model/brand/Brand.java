@@ -92,7 +92,7 @@ public class Brand extends ConcurrencySafeEntity {
 
     public Brand(String brandId, String brandName, String brandNameEn, String brandLogo, String firstAreaCode,
                  String twoAreaCode, String threeAreaCode, String firstAreaName, String twoAreaName,
-                 String threeAreaName, Date applyDate, String dealerId, Integer isSysAdd) {
+                 String threeAreaName, Date applyDate, String dealerId, String dealerName, Integer isSysAdd) {
         this.brandId = brandId;
         this.brandName = brandName;
         this.brandNameEn = brandNameEn;
@@ -105,6 +105,7 @@ public class Brand extends ConcurrencySafeEntity {
         this.threeAreaName = threeAreaName;
         this.applyDate = applyDate;
         this.dealerId = dealerId;
+        this.dealerName = dealerName;
         this.isSysAdd = isSysAdd;
     }
 

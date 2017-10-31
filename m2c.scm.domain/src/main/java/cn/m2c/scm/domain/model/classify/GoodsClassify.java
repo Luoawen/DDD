@@ -58,4 +58,8 @@ public class GoodsClassify extends ConcurrencySafeEntity {
     public void modifyClassifyServiceRate(Float serviceRate) {
         this.serviceRate = serviceRate;
     }
+
+    public String classifyId() {
+        return classifyId;
+    }
 }

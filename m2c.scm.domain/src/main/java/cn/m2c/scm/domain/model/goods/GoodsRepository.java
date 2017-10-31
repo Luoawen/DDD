@@ -19,4 +19,6 @@ public interface GoodsRepository {
     List<Goods> queryGoodsByBrandId(String brandId);
 
     List<Goods> queryGoodsByDealerId(String dealerId);
+
+    boolean classifyIdIsUser(List<String> classifyIds);
 }

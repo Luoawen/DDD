@@ -18,6 +18,8 @@ public class AppGoodsByIdsRepresentation {
     private Long goodsPrice;
     private List<Map> goodsTags;
     private List<AppGoodsSkuRepresentation> goodsSKUs;
+    private String classifyId;
+    private String dealerId;
 
     public AppGoodsByIdsRepresentation(GoodsBean bean, List<Map> goodsTags) {
         this.goodsId = bean.getGoodsId();
@@ -39,6 +41,8 @@ public class AppGoodsByIdsRepresentation {
         if (null != goodsTags && goodsTags.size() > 0) {
             this.goodsTags = goodsTags;
         }
+        this.dealerId = bean.getDealerId();
+        this.classifyId = bean.getGoodsClassifyId();
     }
 
     public String getGoodsId() {
@@ -87,5 +91,21 @@ public class AppGoodsByIdsRepresentation {
 
     public void setGoodsSKUs(List<AppGoodsSkuRepresentation> goodsSKUs) {
         this.goodsSKUs = goodsSKUs;
+    }
+
+    public String getClassifyId() {
+        return classifyId;
+    }
+
+    public void setClassifyId(String classifyId) {
+        this.classifyId = classifyId;
+    }
+
+    public String getDealerId() {
+        return dealerId;
+    }
+
+    public void setDealerId(String dealerId) {
+        this.dealerId = dealerId;
     }
 }

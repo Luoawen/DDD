@@ -45,7 +45,7 @@ public class BrandApproveApplication {
         if (null == brandApprove) {
             brandApprove = new BrandApprove(command.getBrandApproveId(), command.getBrandId(), command.getBrandName(), command.getBrandNameEn(), command.getBrandLogo(), command.getFirstAreaCode(),
                     command.getTwoAreaCode(), command.getThreeAreaCode(), command.getFirstAreaName(), command.getTwoAreaName(),
-                    command.getThreeAreaName(), command.getDealerId());
+                    command.getThreeAreaName(), command.getDealerId(), command.getDealerName());
             brandApproveRepository.save(brandApprove);
         }
     }
@@ -67,7 +67,7 @@ public class BrandApproveApplication {
         if (null == brandApprove) {//不存在审核记录，就增加一条审核记录
             brandApprove = new BrandApprove(IDGenerator.get(IDGenerator.SCM_BRANDE_APPROVE_PREFIX_TITLE), command.getBrandId(), command.getBrandName(), command.getBrandNameEn(), command.getBrandLogo(), command.getFirstAreaCode(),
                     command.getTwoAreaCode(), command.getThreeAreaCode(), command.getFirstAreaName(), command.getTwoAreaName(),
-                    command.getThreeAreaName(), command.getDealerId());
+                    command.getThreeAreaName(), command.getDealerId(), command.getDealerName());
             brandApproveRepository.save(brandApprove);
         } else { //存在审核记录，就覆盖之前的
             brandApprove.modifyBrandApprove(command.getBrandName(), command.getBrandNameEn(), command.getBrandLogo(), command.getFirstAreaCode(),

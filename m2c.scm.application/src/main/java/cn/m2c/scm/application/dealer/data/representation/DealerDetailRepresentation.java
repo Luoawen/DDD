@@ -38,6 +38,7 @@ public class DealerDetailRepresentation {
 		private String dealerCcode;
 		 
 		private String dealerAcode;
+		private String dealerDetailAddress;
 		
 		private String sellerId;
 		private String sellerName;
@@ -73,6 +74,7 @@ public class DealerDetailRepresentation {
 			this.dealerPcode = model.getDealerPcode();
 			this.dealerCcode = model.getDealerCcode();
 			this.dealerAcode = model.getDealerAcode();
+			this.dealerDetailAddress = model.getDealerDetailAddress();
 			this.sellerId = model.getSellerId();
 			this.sellerName = model.getSellerName();
 			this.sellerPhone = model.getSellerPhone();
@@ -266,6 +268,12 @@ public class DealerDetailRepresentation {
 		}
 		public void setDeposit(Long deposit) {
 			this.deposit = deposit;
+		}
+		public String getDealerDetailAddress() {
+			return dealerDetailAddress;
+		}
+		public void setDealerDetailAddress(String dealerDetailAddress) {
+			this.dealerDetailAddress = dealerDetailAddress;
 		}
 		
 		

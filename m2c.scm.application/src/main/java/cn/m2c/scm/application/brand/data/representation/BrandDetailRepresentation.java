@@ -41,6 +41,21 @@ public class BrandDetailRepresentation {
      */
     private String brandLogo;
 
+    /**
+     * 一级区域编号
+     */
+    private String firstAreaCode;
+
+    /**
+     * 二级区域编号
+     */
+    private String twoAreaCode;
+
+    /**
+     * 三级区域编号
+     */
+    private String threeAreaCode;
+
 
     public BrandDetailRepresentation(BrandBean brandBean) {
         this.brandId = brandBean.getBrandId();
@@ -50,6 +65,9 @@ public class BrandDetailRepresentation {
         this.threeAreaName = brandBean.getThreeAreaName();
         this.brandNameEn = brandBean.getBrandNameEn();
         this.brandLogo = brandBean.getBrandLogo();
+        this.firstAreaCode = brandBean.getFirstAreaCode();
+        this.twoAreaCode = brandBean.getTwoAreaCode();
+        this.threeAreaCode = brandBean.getThreeAreaCode();
     }
 
     public String getBrandId() {
@@ -106,5 +124,29 @@ public class BrandDetailRepresentation {
 
     public void setBrandLogo(String brandLogo) {
         this.brandLogo = brandLogo;
+    }
+
+    public String getFirstAreaCode() {
+        return firstAreaCode;
+    }
+
+    public void setFirstAreaCode(String firstAreaCode) {
+        this.firstAreaCode = firstAreaCode;
+    }
+
+    public String getTwoAreaCode() {
+        return twoAreaCode;
+    }
+
+    public void setTwoAreaCode(String twoAreaCode) {
+        this.twoAreaCode = twoAreaCode;
+    }
+
+    public String getThreeAreaCode() {
+        return threeAreaCode;
+    }
+
+    public void setThreeAreaCode(String threeAreaCode) {
+        this.threeAreaCode = threeAreaCode;
     }
 }

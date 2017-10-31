@@ -1,5 +1,6 @@
 package cn.m2c.scm.application.order.query;
 
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,12 +34,14 @@ public class OrderQuery {
 	 * @param endTime 结束时间
 	 * @param condition 搜索条件(goodsName,orderId,payNo,revPhone,dealerName,dealerId)
 	 * @param payWay 支付方式
+	 * @param mediaInfo 媒体信息
+	 * @param dealerClassify 商家分类
 	 * @param pageNum 第几页
 	 * @param rows 每页多少行
 	 * @return
 	 */
-	public List<MainOrderBean> mainOrderListQuery(Integer orderStatus, Integer afterSaleStatus, String startTime,
-			String endTime, String condition, Integer payWay, Integer pageNum, Integer rows) {
+	public List<MainOrderBean> mainOrderListQuery(Integer orderStatus, Integer afterSaleStatus, String startTime,String orderId,
+			String endTime, String condition, Integer payWay,Integer mediaInfo,String dealerClassify, Integer pageNum, Integer rows) {
 		List<Object> params = new ArrayList<Object>();
 		StringBuilder sql = new StringBuilder();
 		sql.append(" SELECT omain.order_id AS orderId");
@@ -66,8 +69,10 @@ public class OrderQuery {
 			params.add(endTime);
 		}
 		if (condition != null && !"".equals(condition)) {
-			sql.append(
-					" AND omain.order_id = ? OR omain.pay_no = ? OR odetail.rev_phone = ? OR odealer.dealer_id = ? OR odetail.goods_name LIKE ? ");
+			sql.append(" AND omain.order_id = ? OR omain.pay_no = ? OR odetail.rev_phone = ? OR odealer.dealer_id = ? OR odetail.goods_name LIKE ? ");
+			params.add(condition);
+			params.add(condition);
+			params.add(condition);
 			params.add(condition);
 			params.add("%" + condition + "%");
 		}
@@ -85,8 +90,7 @@ public class OrderQuery {
 		 */
 		List<MainOrderBean> mainOrderList = this.supportJdbcTemplate.queryForBeanList(sql.toString(),
 				MainOrderBean.class, params.toArray());
-		List<OrderDealerBean> dealerOrderList = dealerOrderListQuery(orderStatus, afterSaleStatus, startTime, endTime,
-				condition, payWay, pageNum, rows);
+		List<OrderDealerBean> dealerOrderList = dealerOrderListQuery(orderId);
 		for (MainOrderBean mainOrder : mainOrderList) {
 			List<OrderDealerBean> list = new ArrayList<OrderDealerBean>();
 			for (OrderDealerBean dealerOrder : dealerOrderList) {
@@ -112,8 +116,7 @@ public class OrderQuery {
 	 * @param rows
 	 * @return
 	 */
-	public List<OrderDealerBean> dealerOrderListQuery(Integer orderStatus, Integer afterSaleStatus, String startTime,
-			String endTime, String condition, Integer payWay, Integer pageNum, Integer rows) {
+	public List<OrderDealerBean> dealerOrderListQuery(String orderId) {
 		List<Object> params = new ArrayList<Object>();
 		StringBuilder sql = new StringBuilder();
 		sql.append(" SELECT odealer.order_id  orderId , odealer.dealer_id  dealerId  ,odealer.dealer_order_id  dealerOrderId  ");
@@ -124,8 +127,8 @@ public class OrderQuery {
 		sql.append(" LEFT JOIN t_scm_order_after_sell oafter ");
 		sql.append(" ON odealer.dealer_order_id = oafter.dealer_order_id ");
 		sql.append(" INNER JOIN t_scm_dealer dealer ");
-		sql.append(" WHERE 1=1 ");
-		if (orderStatus != null) {
+		sql.append(" WHERE 1=1 AND odealer.order_id = ? ");
+		/*if (orderStatus != null) {
 			sql.append(" AND odealer._status = ? ");
 			params.add(orderStatus);
 		}
@@ -147,12 +150,12 @@ public class OrderQuery {
 		if (payWay != null) {
 			sql.append(" AND omain.pay_way = ? ");
 			params.add(payWay);
-		}
+		}*/
 		sql.append(" AND odealer.dealer_id = dealer.dealer_id ");
 		
 		sql.append(" ORDER BY odealer.created_date DESC ");
-		System.out.println("Show SQL---------------------------------"+sql);
-		return this.supportJdbcTemplate.queryForBeanList(sql.toString(), OrderDealerBean.class, params.toArray());
+		System.out.println("Show LIST SQL-----------------------------------------"+sql);
+		return this.supportJdbcTemplate.queryForBeanList(sql.toString(), OrderDealerBean.class, orderId);
 	}
 
 	/**
@@ -163,18 +166,21 @@ public class OrderQuery {
 	 * @param startTime
 	 * @param endTime
 	 * @param condition
+	 * @param mediaInfo 
+	 * @param dealerClassify
 	 * @param payWay
 	 * @return
 	 */
 	public Integer mainOrderQueryTotal(Integer orderStatus, Integer afterSaleStatus, String startTime, String endTime,
-			String condition, Integer payWay) {
+			String condition, Integer payWay,Integer mediaInfo,String dealerClassify) {
 		List<Object> params = new ArrayList<Object>();
 		StringBuilder sql = new StringBuilder();
-		sql.append(" SELECT COUNT(*) ");
+		sql.append(" SELECT COUNT(1) ");
 		sql.append(" FROM ");
 		sql.append("  t_scm_order_main omain LEFT JOIN t_scm_order_dealer odealer ON  omain.order_id = odealer.order_id ");
 		sql.append(" LEFT JOIN t_scm_order_detail odetail ON omain.order_id = odetail.order_id ");
-		sql.append(" LEFT JOIN t_scm_order_after_sell oafter  ");
+		sql.append(" LEFT JOIN t_scm_order_after_sell oafter ON omain.order_id = oafter.order_id ");
+		sql.append(" LEFT JOIN t_scm_dealer dealer ON omain.dealer_id = dealer_id ");
 		sql.append(" ON omain.order_id = oafter.order_id ");
 		sql.append(" WHERE 1=1 ");
 		if (orderStatus != null) {
@@ -193,12 +199,28 @@ public class OrderQuery {
 		if (StringUtils.isNotEmpty(condition) && condition != null && !"".equals(condition)) {
 			sql.append(" AND omain.order_id = ? OR omain.pay_no = ? OR odetail.rev_phone = ? OR odealer.dealer_id = ? OR odetail.goods_name LIKE ? ");
 			params.add(condition);
+			params.add(condition);
+			params.add(condition);
+			params.add(condition);
 			params.add("%" + condition + "%");
 		}
 		if (payWay != null) {
 			sql.append(" AND omain.pay_way = ? ");
 			params.add(payWay);
 		}
+		if (mediaInfo != null) {
+			if (mediaInfo == 1) {
+				sql.append(" AND odetail.media_id <> '' ");
+			}
+			if (mediaInfo == 0) {
+				sql.append(" AND odetail.media_id IS NULL ");
+			}
+		}
+		if (!StringUtils.isEmpty(dealerClassify)) {
+			sql.append(" AND dealer.dealer_classify = ? ");
+			params.add(dealerClassify);
+		}
+		System.out.println("SQL TOTAL SQL -------------------------------------------"+sql);
 		Integer total = this.supportJdbcTemplate.jdbcTemplate().queryForObject(sql.toString(), params.toArray(), Integer.class);
 		return total;
 	}

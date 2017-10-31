@@ -213,7 +213,9 @@ public class AppGoodsAgent {
                     List<String> goodsClassifyIds = new ArrayList<>();
                     for (GoodsBean goodsBean : goodsBeans) {
                         // 获取商品分类的一级大类
-                        goodsClassifyIds.add(goodsBean.getGoodsClassifyId());
+                        if (!goodsClassifyIds.contains(goodsBean.getGoodsClassifyId())){
+                            goodsClassifyIds.add(goodsBean.getGoodsClassifyId());
+                        }
                         List<Map> goodsTags = goodsRestService.getGoodsTags(goodsBean.getDealerId(), goodsBean.getGoodsId(), goodsBean.getGoodsClassifyId());
                         representations.add(new AppGoodsSearchRepresentation(goodsBean, goodsTags));
                     }

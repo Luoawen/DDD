@@ -26,9 +26,10 @@ public class PostageModelApplication {
      * 添加运费模板
      *
      * @param command
+     * @throws NegativeException 
      */
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
-    public void addPostageModel(PostageModelCommand command) {
+    public void addPostageModel(PostageModelCommand command) throws NegativeException {
         LOGGER.info("addPostageModel command >>{}", command);
         PostageModel postageModel = postageModelRepository.getPostageModelById(command.getModelId());
         if (null == postageModel) {
