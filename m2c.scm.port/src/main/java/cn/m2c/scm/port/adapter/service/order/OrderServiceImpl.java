@@ -38,6 +38,9 @@ public class OrderServiceImpl implements OrderService {
 	@Override
 	public boolean lockMarketIds(List<String> marketIds, String orderNo, String userId) {
 		// TODO Auto-generated method stub
+		if (null == marketIds || marketIds.size() < 1) {
+			return true;
+		}
 		String url = M2C_HOST_URL + "/m2c.market/fullcut/use?full_cut_ids={0}&order_id={1}&user_id={2}";
 		String rtResult = restTemplate.postForObject(url, null, String.class, JSONObject.toJSONString(marketIds), orderNo, userId, String.class);
 		JSONObject json = JSONObject.parseObject(rtResult);
@@ -87,6 +90,10 @@ public class OrderServiceImpl implements OrderService {
 	@Override
 	public Map<String, Object> getMediaBdByResIds(List<String> resIds, long time) {
 		// TODO Auto-generated method stub
+		if (null == resIds || resIds.size() < 1) {
+			return null;
+		}
+		
 		String url = M2C_HOST_URL + "/m2c.media/mres/ratios/client?mresIds={0}&orderTime={1}";
 		
 		String rtResult = restTemplate.getForObject(url, String.class, JSONObject.toJSONString(resIds),
@@ -120,6 +127,11 @@ public class OrderServiceImpl implements OrderService {
 	@Override
 	public <T> List<T> getMarketingsByIds(List<String> marketingIds, String userId, Class<T> clss) {
 		// TODO Auto-generated method stub
+		
+		if (null == marketingIds || marketingIds.size() < 1) {
+			return null;
+		}
+		
 		String url = M2C_HOST_URL + "/m2c.market/fullcut/fullcut/user/{0}/multi?full_cut_ids={1}";
 		
 		String rtResult = restTemplate.getForObject(url, String.class, userId, JSONObject.toJSONString(marketingIds),

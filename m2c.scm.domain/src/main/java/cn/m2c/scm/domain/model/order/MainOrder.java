@@ -8,6 +8,7 @@ import java.util.Map;
 
 import cn.m2c.ddd.common.domain.model.ConcurrencySafeEntity;
 import cn.m2c.ddd.common.domain.model.DomainEventPublisher;
+import cn.m2c.scm.domain.model.order.event.OrderAddedEvent;
 import cn.m2c.scm.domain.model.order.event.OrderCancelEvent;
 import cn.m2c.scm.domain.model.order.event.OrderPayedEvent;
 import cn.m2c.scm.domain.model.order.event.SimpleMediaRes;
@@ -74,7 +75,8 @@ public class MainOrder extends ConcurrencySafeEntity {
 	/**
 	 * 增加订单
 	 */
-	public void add() {
+	public void add(Map<String, Integer> skus) {
+		DomainEventPublisher.instance().publish(new OrderAddedEvent(userId, skus, orderId));
 		DomainEventPublisher.instance().publish(new OrderOptLogEvent(orderId, null, "订单提交成功", userId));
 	}
 	/***

@@ -179,7 +179,7 @@ public class OrderApplication {
 				, plateDiscount, dealerDiscount, cmd.getUserId(), cmd.getNoted(), dealerOrders, null
 				, getUsedMarket(cmd.getOrderId(), list));
 		// 组织保存(重新设置计算好的价格)		
-		order.add();
+		order.add(skus);
 		orderRepository.save(order);
 		// 锁定营销 orderNo, 营销ID, userId
 		if(!orderDomainService.lockMarketIds(marketIds, cmd.getOrderId(), cmd.getUserId())) {
