@@ -1,6 +1,7 @@
 package cn.m2c.scm.application.order.data.bean;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 import cn.m2c.ddd.common.AssertionConcern;
@@ -26,7 +27,7 @@ public class MainOrderBean extends AssertionConcern implements Serializable {
 	 * 下单时间
 	 */
 	@ColumnAlias(value = "created_date")
-	private String createDate;
+	private Date createDate;
 	/**
 	 * 订单商品金额
 	 */
@@ -60,7 +61,7 @@ public class MainOrderBean extends AssertionConcern implements Serializable {
 		return payNo;
 	}
 
-	public String getCreateDate() {
+	public Date getCreateDate() {
 		return createDate;
 	}
 
@@ -92,7 +93,7 @@ public class MainOrderBean extends AssertionConcern implements Serializable {
 		this.payNo = payNo;
 	}
 
-	public void setCreateDate(String createDate) {
+	public void setCreateDate(Date createDate) {
 		this.createDate = createDate;
 	}
 

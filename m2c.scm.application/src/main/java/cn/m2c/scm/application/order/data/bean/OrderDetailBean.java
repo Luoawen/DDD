@@ -34,6 +34,34 @@ public class OrderDetailBean {
 	private String expressCode;
 	@ColumnAlias(value= "express_time")
 	private Date expressTime;
+	/**主订单号*/
+	@ColumnAlias(value= "order_id")
+	private String orderId;
+	
+	@ColumnAlias(value= "discount_price")
+	private long discountPrice;
+	
+	@ColumnAlias(value= "freight")
+	private long freight;
+	
+	public long getDiscountPrice() {
+		return discountPrice;
+	}
+	public void setDiscountPrice(long discountPrice) {
+		this.discountPrice = discountPrice;
+	}
+	public long getFreight() {
+		return freight;
+	}
+	public void setFreight(long freight) {
+		this.freight = freight;
+	}
+	public String getOrderId() {
+		return orderId;
+	}
+	public void setOrderId(String orderId) {
+		this.orderId = orderId;
+	}
 	public String getDealerOrderId() {
 		return dealerOrderId;
 	}
@@ -118,7 +146,5 @@ public class OrderDetailBean {
 	public void setExpressCode(String expressCode) {
 		this.expressCode = expressCode;
 	}
-	
-	
 	
 }

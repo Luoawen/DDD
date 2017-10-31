@@ -13,7 +13,9 @@ import cn.m2c.scm.application.order.command.OrderAddCommand;
 import cn.m2c.scm.application.order.command.PayOrderCmd;
 import cn.m2c.scm.application.order.command.SaleAfterCmd;
 import cn.m2c.scm.application.order.command.SaleAfterShipCmd;
+import cn.m2c.scm.application.order.data.bean.OrderBean;
 import cn.m2c.scm.application.order.data.representation.OrderNo;
+import cn.m2c.scm.application.order.query.OrderQueryApplication;
 import cn.m2c.scm.domain.NegativeException;
 
 import org.apache.commons.lang3.StringUtils;
@@ -50,6 +52,9 @@ public class AppOrderAgent {
     
     @Autowired
     SaleAfterOrderApp saleAfterApp;
+    
+    @Autowired
+    OrderQueryApplication orderQueryApp;
     /**
      * 获取订单号
      * @return
@@ -114,22 +119,19 @@ public class AppOrderAgent {
     @RequestMapping(value = "/app/list", method = RequestMethod.GET)
     public ResponseEntity<MPager> getOrderListByUser(
             @RequestParam(value = "userId", required = false) String userId
-            ,@RequestParam(value = "pageIndex", required = false) int pageIndex
-            ,@RequestParam(value = "pageNum", required = false) int pageNum
-            ,@RequestParam(value = "status", required = false) int status
+            ,@RequestParam(value = "pageIndex", required = false, defaultValue="1") Integer pageIndex
+            ,@RequestParam(value = "pageNum", required = false, defaultValue="5") Integer pageNum
+            ,@RequestParam(value = "status", required = false) Integer status
             ) {
     	MPager result = new MPager(MCode.V_1);
         try {
-            Map<String, Object> map = new HashMap<>();
-            
-            List<Map<String, Object>> orderList = new ArrayList<>();
-            orderList.add(map);
-            
-            result.setContent(orderList);
-            result.setPager(1, 1, 2);
+        	Integer total = orderQueryApp.getAppOrderListTotal(userId, status);
+        	List<OrderBean> cntList = orderQueryApp.getAppOrderList(userId, status, pageIndex, pageNum);
+            result.setPager(total, pageIndex, pageNum);
+            result.setContent(cntList);
             result.setStatus(MCode.V_200);
         } catch (Exception e) {
-            LOGGER.error("get order list error, e:", e);
+            LOGGER.error("app get order list error, e:", e);
             result = new MPager(MCode.V_400, e.getMessage());
         }
         return new ResponseEntity<MPager>(result, HttpStatus.OK);
