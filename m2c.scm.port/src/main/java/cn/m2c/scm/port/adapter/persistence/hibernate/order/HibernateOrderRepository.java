@@ -77,7 +77,7 @@ public class HibernateOrderRepository extends HibernateSupperRepository implemen
 	@Override
 	public <T> List<T> getOrderGoodsForCal(String orderNo, Class<T> clss) {
 		StringBuilder sql = new StringBuilder("select sku_id skuId, sell_num purNum, marketing_id as marketingId, market_level as marketLevel, discount_price as discountPrice, is_change as isChange, "); 
-		sql.append(" change_price as changePrice ");
+		sql.append(" change_price as changePrice, freight ");
 		sql.append(" from t_scm_order_detail where order_id=:orderNo");
 		Query query = this.session().createSQLQuery(sql.toString()).addEntity(clss);
 		query.setParameter("orderNo", orderNo);
