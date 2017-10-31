@@ -15,16 +15,29 @@ public class SimpleMarketInfo extends ValueObject {
 	private Integer marketLevel;
 	/**营销层级门槛*/
 	private Integer threshold;
+	/**营销形式，1：减钱，2：打折，3：换购*/
+	private Integer marketType;
+	/**门槛类型，1：金额，2：件数*/
+	private Integer thresholdType;
+	/**优惠平摊，json串*/
+	private String sharePercent;
+	/**营销名称*/
+	private String marketName;
 	
 	public SimpleMarketInfo() {
 		super();
 	}
 	
-	public SimpleMarketInfo(String marketingId, int marketLevel, int threshold) {
+	public SimpleMarketInfo(String marketingId, int marketLevel, int threshold,
+			int marketType, int thresholdType, String sharePercent, String marketName) {
 		super();
 		this.marketingId = marketingId;
 		this.marketLevel = marketLevel;
 		this.threshold = threshold;
+		this.marketType = marketType;
+		this.thresholdType = thresholdType;
+		this.sharePercent = sharePercent;
+		this.marketName = marketName;
 	}
 	
 	String getMarketingId() {
@@ -33,5 +46,9 @@ public class SimpleMarketInfo extends ValueObject {
 	
 	void setMarketId(String mid) {
 		marketingId = mid;
+	}
+	
+	String getMarketName() {
+		return marketName;
 	}
 }

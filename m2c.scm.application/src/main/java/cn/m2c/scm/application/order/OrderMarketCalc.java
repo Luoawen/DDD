@@ -84,7 +84,7 @@ public class OrderMarketCalc {
 		
 		// 获取层级
 		Integer level = goodsLs.get(0).getMarketLevel();
-		
+		// 根据层级计算满减
 		isFullAndSet(bean, level, goodsLs);
 	}
 	/***
@@ -99,8 +99,9 @@ public class OrderMarketCalc {
 		int t = bean.getFullCutType();
 		//获取 层级对应的数量 (优惠金额，折扣，换购价等，与上面的类型对应)
 		int as = bean.getLevelNum(level);
-		// 获取门槛类型
+		// 获取门槛
 		int threshold = bean.getThreshold();
+		// 获取门槛类型
 		int type = bean.getThresholdType();
 		double totalMoney = 0;
 		int totalNum = 0;
@@ -112,7 +113,8 @@ public class OrderMarketCalc {
 				totalMoney += d.getDiscountPrice() * d.getPurNum();
 			}
 			else {
-				// 判断下换购商品是否满足要求
+				// 增加判断数量要求 等potato接口
+				// 判断下换购商品是否满足要求 
 				changeMoney += d.getChangePrice() * d.getPurNum();
 				changeNum += d.getPurNum();
 			}
@@ -137,25 +139,35 @@ public class OrderMarketCalc {
 				
 			}
 			else // 满足其他条件需要做的计算
-				calcItem(t, as, totalMoney, totalNum, changeMoney, goodsLs);
+				calcItem(t, as, totalMoney, totalNum, changeMoney, goodsLs,
+						type, threshold, bean.getFullCutName(), bean.getCostList());
 		}
 		else { // 不满足则需要抛出异常
 			throw new NegativeException(MCode.V_301, bean.getFullCutId());
 		}
 	}
 	/***
-	 * 
+	 * 计算是否真的满足
 	 * @param fullType 满减类型 1：减钱，2：打折，3：换购
 	 * @param fullNum 满减值
 	 * @param totalMoney 总金额
 	 * @param totalNum 总数量
 	 * @param changeMoney 总换购价
 	 * @param goodsLs 商品
+	 * @param thresholdType
+	 * @param threshold
+	 * @param marketName
+	 * @param sharePercent
 	 */
-	private static void calcItem(int fullType, int fullNum, double totalMoney, int totalNum, int changeMoney, List<GoodsDto> goodsLs) {
+	private static void calcItem(int fullType, int fullNum, double totalMoney, int totalNum, int changeMoney, List<GoodsDto> goodsLs
+			, int thresholdType, int threshold, String marketName, String sharePercent) {
 		for (GoodsDto d : goodsLs) {
 			if (d.isChange() != 0) 
 				continue;
+			d.setThreshold(threshold);
+			d.setThresholdType(thresholdType);
+			d.setMarketName(marketName);
+			d.setSharePercent(sharePercent);
 			if (fullType == 1) {
 				d.setPlateformDiscount((long)(fullNum * d.getDiscountPrice() * d.getPurNum()/totalMoney));
 			}

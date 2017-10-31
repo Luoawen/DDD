@@ -177,7 +177,7 @@ public class OrderApplication {
 		
 		MainOrder order = new MainOrder(cmd.getOrderId(), cmd.getAddr(), goodsAmounts, freight
 				, plateDiscount, dealerDiscount, cmd.getUserId(), cmd.getNoted(), dealerOrders, null
-				, getUsedMarket(cmd.getOrderId(), skuBeans));
+				, getUsedMarket(cmd.getOrderId(), list));
 		// 组织保存(重新设置计算好的价格)		
 		order.add();
 		orderRepository.save(order);
@@ -213,7 +213,7 @@ public class OrderApplication {
 	 * @param beans
 	 * @return
 	 */
-	List<SimpleMarketing> getUsedMarket(String orderNo, Map<String, GoodsReqBean> beans) {
+	/*List<SimpleMarketing> getUsedMarket(String orderNo, Map<String, GoodsReqBean> beans) {
 		List<SimpleMarketing> result = null;
 		
 		Iterator<String> keys = beans.keySet().iterator();
@@ -226,6 +226,34 @@ public class OrderApplication {
 			}
 		}
 		
+		return result;
+	}*/
+	
+	/***
+	 * 获取应用的营销信息
+	 * @param orderNo
+	 * @param beans
+	 * @return
+	 */
+	List<SimpleMarketing> getUsedMarket(String orderNo,  List<GoodsDto> beans) {
+		List<SimpleMarketing> result = null;
+		
+		List<String> mids = new ArrayList<>();
+		for(GoodsDto b : beans) {
+			SimpleMarketInfo info = b.toMarketInfo();
+			if (info != null) {
+				String mid = b.getMarketingId();
+				if (mids.contains(mid)) {
+					info = null;
+					continue;
+				}
+				mids.add(mid);
+				if (result == null)
+					result = new ArrayList<SimpleMarketing>();
+				result.add(new SimpleMarketing(orderNo, info));
+			}
+		}
+		mids = null;
 		return result;
 	}
 	/***

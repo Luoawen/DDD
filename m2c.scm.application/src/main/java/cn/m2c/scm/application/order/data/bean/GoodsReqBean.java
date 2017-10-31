@@ -3,7 +3,6 @@ package cn.m2c.scm.application.order.data.bean;
 import org.apache.commons.lang3.StringUtils;
 
 import cn.m2c.scm.domain.model.order.SimpleMarketInfo;
-import cn.m2c.scm.domain.model.order.SimpleMarketing;
 
 /***
  * 订单提交时的商品请求数据
@@ -60,12 +59,5 @@ public class GoodsReqBean {
 
 	public void setIsChange(int isChange) {
 		this.isChange = isChange;
-	}
-	
-	public SimpleMarketInfo toMarket() {
-		if (StringUtils.isEmpty(marketId))
-			return null;
-		
-		return new SimpleMarketInfo(marketId, level, 0);
-	}
+	}	
 }

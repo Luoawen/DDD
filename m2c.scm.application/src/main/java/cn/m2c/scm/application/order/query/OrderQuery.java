@@ -285,8 +285,7 @@ public class OrderQuery {
 	}
 
 	/**
-	 * 查询商品信息列表
-	 * 
+	 * 查询商品信息列表 
 	 * @param dealerOrderId
 	 * @return
 	 */

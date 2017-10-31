@@ -4,7 +4,7 @@ import java.util.List;
 
 /***
  * 订单计算时用的market 活动
- * @author 89776
+ * @author fanjc
  * created date 2017年10月25日
  * copyrighted@m2c
  */
@@ -15,7 +15,7 @@ public class MarketBean {
 	private String fullCutNo;
 	/**满减状态，1：未生效，2：已生效，3已失效*/
 	private int status;
-	
+	/**营销名*/
 	private String fullCutName;
 	
 	private int remainNum;
@@ -31,12 +31,24 @@ public class MarketBean {
 	private List<MarketRange> suitableRangeList;
 	/**排他列表*/
 	private List<MarketRange> removeRangeList;
-	
+	/**当前用户*/
 	private String userId;
 	/**用户每天可使用数*/
 	private int numPerDay = 0;
 	/**用户今天已使用数*/
 	private int numToday = 0;
+	/**json 串*/
+	private String costList;
+	
+	private int threshold;
+	
+	public String getCostList() {
+		return costList;
+	}
+
+	public void setCostList(String costList) {
+		this.costList = costList;
+	}
 	
 	public String getUserId() {
 		return userId;
@@ -155,7 +167,6 @@ public class MarketBean {
 		this.removeRangeList = removeRangeList;
 	}	
 	
-	private int threshold;
 	/**
 	 * 获取层级对应的 计算金额
 	 * @param level

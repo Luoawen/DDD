@@ -57,7 +57,51 @@ public class GoodsDto {
 	private int isChange = 0;
 	
 	private int changePrice = 0;
+	/**营销类型*/
+	private int marketType;
+	/**门槛类型*/
+	private int thresholdType;
+	/**优惠平摊*/
+	private String sharePercent;
+	/**营销名称*/
+	private String marketName;
 	
+	public int getMarketType() {
+		return marketType;
+	}
+
+	public void setMarketType(int marketType) {
+		this.marketType = marketType;
+	}
+
+	public int getThresholdType() {
+		return thresholdType;
+	}
+
+	public void setThresholdType(int thresholdType) {
+		this.thresholdType = thresholdType;
+	}
+
+	public String getSharePercent() {
+		return sharePercent;
+	}
+
+	public void setSharePercent(String sharePercent) {
+		this.sharePercent = sharePercent;
+	}
+
+	public String getMarketName() {
+		return marketName;
+	}
+
+	public void setMarketName(String marketName) {
+		this.marketName = marketName;
+	}
+
+	public void setThreshold(int threshold) {
+		this.threshold = threshold;
+	}
+
 	public int isChange() {
 		return isChange;
 	}
@@ -229,7 +273,8 @@ public class GoodsDto {
 	
 	public SimpleMarketInfo toMarketInfo() {
 		if (!StringUtils.isEmpty(marketingId)) {
-			return new SimpleMarketInfo(marketingId, marketLevel, threshold);
+			return new SimpleMarketInfo(marketingId, marketLevel, threshold, 
+					marketType, thresholdType, sharePercent, marketName);
 		}
 		return null; 
 	}
