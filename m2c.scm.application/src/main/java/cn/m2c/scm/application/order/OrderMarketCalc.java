@@ -9,6 +9,8 @@ import org.apache.commons.lang3.StringUtils;
 
 import cn.m2c.common.MCode;
 import cn.m2c.scm.application.order.data.bean.MarketBean;
+import cn.m2c.scm.application.order.data.bean.MarketRangeSuit;
+import cn.m2c.scm.application.order.data.bean.MarketSku;
 import cn.m2c.scm.application.order.query.dto.GoodsDto;
 import cn.m2c.scm.domain.NegativeException;
 
@@ -109,11 +111,13 @@ public class OrderMarketCalc {
 		int changeNum = 0;
 		for (GoodsDto d : goodsLs) {
 			if (d.isChange() == 0) {
-				totalNum += d.getPurNum();
-				totalMoney += d.getDiscountPrice() * d.getPurNum();
+				// 增加判断数量要求, 若不满足则需要按原价执行
+				if (judgeOk(bean, d)) {
+					totalNum += d.getPurNum();
+					totalMoney += d.getDiscountPrice() * d.getPurNum();
+				}
 			}
 			else {
-				// 增加判断数量要求 等potato接口
 				// 判断下换购商品是否满足要求 
 				changeMoney += d.getChangePrice() * d.getPurNum();
 				changeNum += d.getPurNum();
@@ -175,5 +179,45 @@ public class OrderMarketCalc {
 				d.setPlateformDiscount((long)(fullNum * d.getDiscountPrice() * d.getPurNum()/1000.0));
 			}
 		}
+	}
+	/***
+	 * 判断是否满足条件
+	 * @param bean
+	 * @param d
+	 * @return true满足
+	 */
+	private static boolean judgeOk(MarketBean bean, GoodsDto d) {
+		if (bean.getRangeType() != 2)
+			return true;
+		
+		List<MarketRangeSuit> suits = bean.getSuitableRangeList();
+		if (suits == null) {
+			d.setMarketingId(null);
+			return false;
+		}
+		for (MarketRangeSuit s : suits) {
+			if (s.getSkuFlag() == 0)
+				return true;
+			if (d.getGoodsId().equals(s.getId()) && isSkuOk(d, s.getSkuList())) {
+				return true;
+			}
+		}
+		return false;
+	} 
+	/***
+	 * 
+	 * @param d
+	 * @param skus
+	 * @return
+	 */
+	private static boolean isSkuOk(GoodsDto d, List<MarketSku> skus) {
+		
+		for (MarketSku s : skus) {
+			if (d.getSkuId().equals(s.getSkuId()) && s.getSkuRemianNum() >= d.getPurNum()) {
+				return true;
+			}
+		}
+		
+		return false;
 	}
 }

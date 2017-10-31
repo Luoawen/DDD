@@ -28,7 +28,7 @@ public class MarketBean {
 	/**作用范围，0：全场，1：商家，2：商品，3：品类*/
 	private int rangeType;
 	/**适应列表*/
-	private List<MarketRange> suitableRangeList;
+	private List<MarketRangeSuit> suitableRangeList;
 	/**排他列表*/
 	private List<MarketRange> removeRangeList;
 	/**当前用户*/
@@ -151,11 +151,11 @@ public class MarketBean {
 		this.rangeType = rangeType;
 	}
 
-	public List<MarketRange> getSuitableRangeList() {
+	public List<MarketRangeSuit> getSuitableRangeList() {
 		return suitableRangeList;
 	}
 
-	public void setSuitableRangeList(List<MarketRange> suitableRangeList) {
+	public void setSuitableRangeList(List<MarketRangeSuit> suitableRangeList) {
 		this.suitableRangeList = suitableRangeList;
 	}
 

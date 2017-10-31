@@ -12,8 +12,6 @@ public class MarketRange {
 	private int type;
 	/**作用范围类型0：全场，1：商家，2：商品，3：品类*/
 	private int rangeType;
-	/**作用范围为商品对应规格及数量 为一个jsonArray串*/
-	private String skuList;
 	
 	public String getId() {
 		return id;
@@ -32,11 +30,5 @@ public class MarketRange {
 	}
 	public void setRangeType(int rangeType) {
 		this.rangeType = rangeType;
-	}
-	public String getSkuList() {
-		return skuList;
-	}
-	public void setSkuList(String skuList) {
-		this.skuList = skuList;
 	}
 }

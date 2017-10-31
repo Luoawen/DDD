@@ -432,7 +432,7 @@ public class OrderApplication {
 	public Object payOrder(PayOrderCmd cmd) {
 		MainOrder order = orderRepository.getOrderById(cmd.getOrderId());
 		// 获取订单所用营销策略
-		List<String> mks = order.getMkIds();
+		//List<String> mks = order.getMkIds();
 		// 获取营销策略详情看是否有变化
 		//orderDomainService.getMarketingsByIds(mks);
 		// 若有变化则需要重新计算金额并更新
@@ -486,21 +486,22 @@ public class OrderApplication {
 		OrderMoney result = new OrderMoney();
 		MainOrder order = orderRepository.getOrderById(orderNo);
 		// 判断是否符合营销规则，不符合需要重新计算，保存
-		List<GoodsDto> goods = orderRepository.getOrderGoodsForCal(orderNo, GoodsDto.class);
-		// 计算营销活动优惠
+		// 计算营销活动优惠  2017-10-31 已经锁定的优惠不需要再计算一次
+		/*List<GoodsDto> goods = orderRepository.getOrderGoodsForCal(orderNo, GoodsDto.class);
+		
 		List<MarketBean> mks = orderDomainService.getMarketingsByIds(order.getMkIds(), userId, MarketBean.class);
 		try {
 			OrderMarketCalc.calMarkets(mks, goods);
-			// 设置优惠及换购价
 		}
 		catch (NegativeException e) {
 			// 按原价计算
-		}		
-		// 设置计算后的金额
-		setCalAmount(order, goods);
-		
+		}	*/	
+		// 设置计算后的金额 2017-10-31
+		// setCalAmount(order, goods);
+		order.calOrderMoney();
 		result.setAmountOfMoney(order.getActual());
 		result.setOrderNo(orderNo);
+		orderRepository.updateMainOrder(order);
 		return result;
 	}
 	/***
