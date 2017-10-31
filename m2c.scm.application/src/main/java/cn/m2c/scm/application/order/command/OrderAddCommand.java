@@ -198,10 +198,10 @@ public class OrderAddCommand extends AssertionConcern implements Serializable {
 		if (StringUtils.isEmpty(tmp)) {
 			throw new NegativeException(MCode.V_1, "发票抬头为空！");
 		}
-		tmp = invoice1.getString("name");
+		/*tmp = invoice1.getString("name");
 		if (StringUtils.isEmpty(tmp)) {
 			throw new NegativeException(MCode.V_1, "开票的单位或名称为空！");
-		}
+		}*/
 		//this.invoice = JSONObject.parseObject(invoice1.toJSONString(), InvoiceInfo.class);
 		this.invoice = gson.fromJson(invoice1.toJSONString(), InvoiceInfo.class);
 	}
