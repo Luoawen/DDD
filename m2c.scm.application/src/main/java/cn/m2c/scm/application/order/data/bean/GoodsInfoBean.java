@@ -25,6 +25,9 @@ public class GoodsInfoBean {
 	/** 规格名称 */
 	@ColumnAlias(value = "sku_name")
 	private String skuName;
+	/** 规格ID **/
+	@ColumnAlias(value = "sku_id")
+	private String skuId;
 	/**
 	 * 广告位信息
 	 */
@@ -84,6 +87,14 @@ public class GoodsInfoBean {
 		return totalPrice;
 	}
 
+	public String getSkuId() {
+		return skuId;
+	}
+
+	public void setSkuId(String skuId) {
+		this.skuId = skuId;
+	}
+
 	public long getFreight() {
 		return freight;
 	}
@@ -139,9 +150,9 @@ public class GoodsInfoBean {
 	@Override
 	public String toString() {
 		return "GoodsInfoBean [goodsImage=" + goodsImage + ", goodsName=" + goodsName + ", goodsSubTitle="
-				+ goodsSubTitle + ", skuName=" + skuName + ", mediaResId=" + mediaResId + ", sellNum=" + sellNum
-				+ ", price=" + price + ", unitName=" + unitName + ", totalPrice=" + totalPrice + ", freight=" + freight
-				+ "]";
+				+ goodsSubTitle + ", skuName=" + skuName + ", skuId=" + skuId + ", mediaResId=" + mediaResId
+				+ ", sellNum=" + sellNum + ", price=" + price + ", unitName=" + unitName + ", totalPrice=" + totalPrice
+				+ ", freight=" + freight + "]";
 	}
 
 }
