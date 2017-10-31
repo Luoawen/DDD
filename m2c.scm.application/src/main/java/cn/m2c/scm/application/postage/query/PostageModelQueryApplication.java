@@ -41,7 +41,7 @@ public class PostageModelQueryApplication {
     DealerQuery dealerQuery;
 
     public List<PostageModelBean> queryPostageModelsByDealerId(String dealerId) {
-        String sql = "SELECT * FROM t_scm_postage_model WHERE 1 = 1 AND dealer_id = ? AND model_status = 1";
+        String sql = "SELECT * FROM t_scm_postage_model WHERE 1 = 1 AND dealer_id = ? AND model_status = 1 order by created_date desc";
         List<PostageModelBean> postageModelBeans = this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), PostageModelBean.class,
                 new Object[]{dealerId});
         if (null != postageModelBeans && postageModelBeans.size() > 0) {
