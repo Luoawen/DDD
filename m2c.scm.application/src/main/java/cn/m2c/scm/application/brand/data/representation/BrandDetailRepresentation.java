@@ -56,6 +56,8 @@ public class BrandDetailRepresentation {
      */
     private String threeAreaCode;
 
+    private Integer isSysAdd;
+
 
     public BrandDetailRepresentation(BrandBean brandBean) {
         this.brandId = brandBean.getBrandId();
@@ -68,6 +70,7 @@ public class BrandDetailRepresentation {
         this.firstAreaCode = brandBean.getFirstAreaCode();
         this.twoAreaCode = brandBean.getTwoAreaCode();
         this.threeAreaCode = brandBean.getThreeAreaCode();
+        this.isSysAdd = brandBean.getIsSysAdd();
     }
 
     public String getBrandId() {
@@ -148,5 +151,13 @@ public class BrandDetailRepresentation {
 
     public void setThreeAreaCode(String threeAreaCode) {
         this.threeAreaCode = threeAreaCode;
+    }
+
+    public Integer getIsSysAdd() {
+        return isSysAdd;
+    }
+
+    public void setIsSysAdd(Integer isSysAdd) {
+        this.isSysAdd = isSysAdd;
     }
 }
