@@ -45,8 +45,7 @@ public class DealerOrderAfterSellQuery {
 		List<Object> params = new ArrayList<Object>();
 		StringBuilder sql = new StringBuilder();
 		sql.append(" SELECT after.sku_id,");
-		sql.append(
-				" after.after_sell_order_id,after.order_type,after.back_money,after._status,dealer.dealer_name,after.created_date ");
+		sql.append(" after.after_sell_order_id,after.order_type,after.back_money,after._status,dealer.dealer_name,after.created_date ");
 		sql.append(" FROM t_scm_order_after_sell after");
 		sql.append(" LEFT JOIN t_scm_dealer dealer ON after.dealer_id = dealer.dealer_id ");
 		sql.append(" LEFT JOIN t_scm_goods goods ON after.goods_id = goods.goods_id ");
@@ -117,6 +116,7 @@ public class DealerOrderAfterSellQuery {
 		params.add(dealerOrderId);
 		sql.append(" AND after.goods_id = goods.goods_id ");
 
+		System.out.println("SHOW  SQL -----------------------------------------"+sql);
 		List<GoodsInfoBean> goodsInfoList = this.supportJdbcTemplate.queryForBeanList(sql.toString(),
 				GoodsInfoBean.class, params.toArray());
 		return goodsInfoList;
@@ -136,11 +136,12 @@ public class DealerOrderAfterSellQuery {
 		sql.append(" SELECT g.goods_main_images, g.goods_name, g.goods_sub_title, sku.sku_name, ")
 				.append(" detail.discount_price,after.sell_num ").append(" FROM t_scm_goods_sku sku")
 				.append(" LEFT OUTER JOIN t_scm_goods g ON sku.goods_id=g.id")
+				.append(" LEFT OUTER JOIN t_scm_order_after_sell after ON sku.sku_id = after.sku_id ")
 				.append(" LEFT OUTER JOIN t_scm_order_detail detail ON g.goods_id = detail.goods_id ")
 				.append(" where sku.sku_id=?");
 		params.add(skuId);
 		// params.add(dealerOrderId);
-
+		System.out.println("GOODS   SHOW  SQL-----------------------------------"+sql);
 		GoodsInfoBean goodsInfoList = this.supportJdbcTemplate.queryForBean(sql.toString(), GoodsInfoBean.class,
 				params.toArray());
 		return goodsInfoList;
@@ -181,8 +182,7 @@ public class DealerOrderAfterSellQuery {
 			params.add(status);
 		}
 		if (!StringUtils.isEmpty(condition)) {
-			sql.append(
-					" AND after.dealer_order_id LIKE concat('%',?,'%') OR after.after_sell_order_id LIKE concat('%',?,'%') OR goods.goods_name LIKE concat('%',?,'%') ");
+			sql.append(" AND after.dealer_order_id LIKE concat('%',?,'%') OR after.after_sell_order_id LIKE concat('%',?,'%') OR goods.goods_name LIKE concat('%',?,'%') ");
 			params.add(condition);
 			params.add(condition);
 			params.add(condition);
