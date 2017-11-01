@@ -166,29 +166,11 @@ public class SellerCommand extends AssertionConcern implements Serializable{
 			String sellerCcode, String sellerAcode, String sellerqq,
 			String sellerWechat, String sellerRemark) throws NegativeException {
 		super();
-		if (sellerName.length() > 20) {
-			throw new NegativeException(MCode.V_1,"业务员姓名不能超过20位");
-		}
-		if (sellerId.length() > 11) {
-			throw new NegativeException(MCode.V_1,"业务员电话不能超过11位");
-		}
-		if (sellerPass.length() < 8 && sellerPass.length() > 16 && sellerConfirmPass.length() < 8 && sellerConfirmPass.length() > 16) {
-			throw new NegativeException(MCode.V_1,"请输入8-16位密码");
-		}
-		if (sellerPass != sellerConfirmPass) {
-			throw new NegativeException(MCode.V_1,"密码不相同");
-		}
 		if (StringUtils.isEmpty(sellerName.replaceAll(" ", ""))) {
 			throw new NegativeException(MCode.V_1,"请输入业务员姓名");
 		}
-		if (StringUtils.isEmpty(sellerPhone.replaceAll(" ", ""))) {
-			throw new NegativeException(MCode.V_1,"请输入业务员电话");
-		}
 		if (null == sellerSex) {
 			throw new NegativeException(MCode.V_1,"请选择业务员性别");
-		}
-		if (StringUtils.isEmpty(sellerNo.replaceAll(" ", ""))) {
-			throw new NegativeException(MCode.V_1,"请输入业务员编号");
 		}
 		if (StringUtils.isEmpty(sellerPass.replaceAll(" ", "")) || StringUtils.isEmpty(sellerConfirmPass.replaceAll(" ", ""))) {
 			throw new NegativeException(MCode.V_1,"请输入业务员密码");
@@ -201,6 +183,24 @@ public class SellerCommand extends AssertionConcern implements Serializable{
 		}
 		if (StringUtils.isEmpty(sellerArea.replaceAll(" ", "")) || null == sellerAcode) {
 			throw new NegativeException(MCode.V_1,"请输入区信息");
+		}
+		if (StringUtils.isEmpty(sellerPhone.replaceAll(" ", ""))) {
+			throw new NegativeException(MCode.V_1,"请输入业务员电话");
+		}
+		if (StringUtils.isEmpty(sellerNo.replaceAll(" ", ""))) {
+			throw new NegativeException(MCode.V_1,"请输入业务员编号");
+		}
+		if (sellerName.length() > 20) {
+			throw new NegativeException(MCode.V_1,"业务员姓名不能超过20位");
+		}
+		if (sellerId.length() > 11) {
+			throw new NegativeException(MCode.V_1,"业务员电话不能超过11位");
+		}
+		if (sellerPass.length() < 8 && sellerPass.length() > 16 && sellerConfirmPass.length() < 8 && sellerConfirmPass.length() > 16) {
+			throw new NegativeException(MCode.V_1,"请输入8-16位密码");
+		}
+		if (sellerPass != sellerConfirmPass) {
+			throw new NegativeException(MCode.V_1,"密码不相同");
 		}
 		this.sellerId = sellerId;
 		this.sellerName = sellerName;
