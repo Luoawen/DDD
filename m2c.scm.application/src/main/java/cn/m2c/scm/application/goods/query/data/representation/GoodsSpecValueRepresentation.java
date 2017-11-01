@@ -7,17 +7,17 @@ import cn.m2c.scm.application.goods.query.data.bean.GoodsSpecValueBean;
  */
 public class GoodsSpecValueRepresentation {
 
-    private String specValue;
+    private String value;
 
     public GoodsSpecValueRepresentation(GoodsSpecValueBean bean) {
-        this.specValue = bean.getSpecValue();
+        this.value = bean.getSpecValue();
     }
 
-    public String getSpecValue() {
-        return specValue;
+    public String getValue() {
+        return value;
     }
 
-    public void setSpecValue(String specValue) {
-        this.specValue = specValue;
+    public void setValue(String value) {
+        this.value = value;
     }
 }

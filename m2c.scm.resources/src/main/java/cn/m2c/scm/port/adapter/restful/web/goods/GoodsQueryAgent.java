@@ -21,7 +21,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 商品查询(提供出去的)
@@ -201,6 +203,27 @@ public class GoodsQueryAgent {
         } catch (Exception e) {
             LOGGER.error("queryMaxPriceGoodsByGoodsIds Exception e:", e);
             result = new MResult(MCode.V_400, "查询拍获价最大的商品失败");
+        }
+        return new ResponseEntity<MResult>(result, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/status", method = RequestMethod.GET)
+    public ResponseEntity<MResult> queryGoodsStatusByGoodsIds(
+            @RequestParam(value = "goodsIds", required = false) List<String> goodsIds) {
+        MResult result = new MResult(MCode.V_1);
+        try {
+            List<GoodsBean> goodsBeans = goodsQueryApplication.queryGoodsByGoodsIds(goodsIds);
+            if (null != goodsBeans && goodsBeans.size() > 0) {
+                Map map = new HashMap<>();
+                for (GoodsBean goodsBean : goodsBeans) {
+                    map.put(goodsBean.getGoodsId(), goodsBean.getGoodsStatus());
+                }
+                result.setContent(map);
+            }
+            result.setStatus(MCode.V_200);
+        } catch (Exception e) {
+            LOGGER.error("queryGoodsStatusByGoodsIds Exception e:", e);
+            result = new MResult(MCode.V_400, "查询商品的状态失败");
         }
         return new ResponseEntity<MResult>(result, HttpStatus.OK);
     }

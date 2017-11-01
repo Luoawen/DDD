@@ -22,7 +22,7 @@ public class UnitCommand extends AssertionConcern implements Serializable{
 		if (StringUtils.isEmpty(unitId)) {
 			throw new NegativeException(MCode.V_1, "计量ID名称没有参数(unitId)");
 		}
-		if (StringUtils.isEmpty(unitName)) {
+		if (StringUtils.isEmpty(unitName.replaceAll(" ", ""))) {
 			throw new NegativeException(MCode.V_1, "计量单位名称没有参数(unitName)");
 		}
 		this.unitId = unitId;

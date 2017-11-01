@@ -2,6 +2,7 @@ package cn.m2c.scm.application.goods.query;
 
 import cn.m2c.ddd.common.port.adapter.persistence.springJdbc.SupportJdbcTemplate;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsSpecValueBean;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -30,9 +31,13 @@ public class GoodsSpecValueQueryApplication {
         sql.append(" * ");
         sql.append(" FROM ");
         sql.append(" t_scm_goods_spec_value WHERE 1 = 1");
-        sql.append(" AND dealer_id = ? AND spec_value like ?");
+        sql.append(" AND dealer_id = ?");
         params.add(dealerId);
-        params.add("%" + specValue + "%");
+        if (StringUtils.isNotEmpty(specValue)) {
+            sql.append(" AND spec_value like ?");
+            params.add("%" + specValue + "%");
+        }
+
         List<GoodsSpecValueBean> goodsClassifyBeans = this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsSpecValueBean.class, params.toArray());
         return goodsClassifyBeans;
     }

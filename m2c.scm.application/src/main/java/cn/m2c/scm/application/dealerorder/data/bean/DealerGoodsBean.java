@@ -32,6 +32,9 @@ public class DealerGoodsBean {
 	
 	private String goodsTitle;
 	
+	private String goodsIcon;
+	
+	
 	public String getGoodsTitle() {
 		return goodsTitle;
 	}
@@ -56,6 +59,16 @@ public class DealerGoodsBean {
 
 	public String getSkuName() {
 		return skuName;
+	}
+
+	
+	public String getGoodsIcon() {
+		String string = this.goodsImage.split(",")[0];
+		return string.substring(2, string.length()-1);
+	}
+
+	public void setGoodsIcon(String goodsIcon) {
+		this.goodsIcon = goodsIcon;
 	}
 
 	public Integer getSellNum() {
