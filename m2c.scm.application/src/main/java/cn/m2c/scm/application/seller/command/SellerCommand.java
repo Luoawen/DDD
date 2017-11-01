@@ -175,13 +175,13 @@ public class SellerCommand extends AssertionConcern implements Serializable{
 		if (StringUtils.isEmpty(sellerPass.replaceAll(" ", "")) && StringUtils.isEmpty(sellerConfirmPass.replaceAll(" ", ""))) {
 			throw new NegativeException(MCode.V_1,"请输入业务员密码");
 		}
-		if (StringUtils.isEmpty(sellerProvince.replaceAll(" ", "")) && null == sellerPcode) {
+		if (StringUtils.isEmpty(sellerProvince.replaceAll(" ", "")) || StringUtils.isEmpty(sellerPcode.replaceAll(" ", ""))) {
 			throw new NegativeException(MCode.V_1,"请输入省信息");
 		}
-		if (StringUtils.isEmpty(sellerCity.replaceAll(" ", "")) && null == sellerCcode) {
+		if (StringUtils.isEmpty(sellerCity.replaceAll(" ", "")) || StringUtils.isEmpty(sellerCcode.replaceAll(" ", ""))) {
 			throw new NegativeException(MCode.V_1,"请输入市信息");
 		}
-		if (StringUtils.isEmpty(sellerArea.replaceAll(" ", "")) && null == sellerAcode) {
+		if (StringUtils.isEmpty(sellerArea.replaceAll(" ", "")) || StringUtils.isEmpty(sellerAcode.replaceAll(" ", ""))) {
 			throw new NegativeException(MCode.V_1,"请输入区信息");
 		}
 		if (StringUtils.isEmpty(sellerPhone.replaceAll(" ", ""))) {
@@ -196,10 +196,10 @@ public class SellerCommand extends AssertionConcern implements Serializable{
 		if (sellerPhone.length() > 11) {
 			throw new NegativeException(MCode.V_1,"业务员电话不能超过11位");
 		}
-		if (sellerPass.length() < 8 && sellerPass.length() > 16 && sellerConfirmPass.length() < 8 && sellerConfirmPass.length() > 16) {
+		if (sellerPass.length() < 8 || sellerPass.length() > 16) {
 			throw new NegativeException(MCode.V_1,"请输入8-16位密码");
 		}
-		if (sellerPass != sellerConfirmPass) {
+		if (!(sellerPass.equals(sellerConfirmPass))) {
 			throw new NegativeException(MCode.V_1,"密码不相同");
 		}
 		this.sellerId = sellerId;
