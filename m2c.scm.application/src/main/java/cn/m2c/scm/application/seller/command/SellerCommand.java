@@ -172,16 +172,16 @@ public class SellerCommand extends AssertionConcern implements Serializable{
 		if (null == sellerSex) {
 			throw new NegativeException(MCode.V_1,"请选择业务员性别");
 		}
-		if (StringUtils.isEmpty(sellerPass.replaceAll(" ", "")) || StringUtils.isEmpty(sellerConfirmPass.replaceAll(" ", ""))) {
+		if (StringUtils.isEmpty(sellerPass.replaceAll(" ", "")) && StringUtils.isEmpty(sellerConfirmPass.replaceAll(" ", ""))) {
 			throw new NegativeException(MCode.V_1,"请输入业务员密码");
 		}
-		if (StringUtils.isEmpty(sellerProvince.replaceAll(" ", "")) || null == sellerPcode) {
+		if (StringUtils.isEmpty(sellerProvince.replaceAll(" ", "")) && null == sellerPcode) {
 			throw new NegativeException(MCode.V_1,"请输入省信息");
 		}
-		if (StringUtils.isEmpty(sellerCity.replaceAll(" ", "")) || null == sellerCcode) {
+		if (StringUtils.isEmpty(sellerCity.replaceAll(" ", "")) && null == sellerCcode) {
 			throw new NegativeException(MCode.V_1,"请输入市信息");
 		}
-		if (StringUtils.isEmpty(sellerArea.replaceAll(" ", "")) || null == sellerAcode) {
+		if (StringUtils.isEmpty(sellerArea.replaceAll(" ", "")) && null == sellerAcode) {
 			throw new NegativeException(MCode.V_1,"请输入区信息");
 		}
 		if (StringUtils.isEmpty(sellerPhone.replaceAll(" ", ""))) {
@@ -193,7 +193,7 @@ public class SellerCommand extends AssertionConcern implements Serializable{
 		if (sellerName.length() > 20) {
 			throw new NegativeException(MCode.V_1,"业务员姓名不能超过20位");
 		}
-		if (sellerId.length() > 11) {
+		if (sellerPhone.length() > 11) {
 			throw new NegativeException(MCode.V_1,"业务员电话不能超过11位");
 		}
 		if (sellerPass.length() < 8 && sellerPass.length() > 16 && sellerConfirmPass.length() < 8 && sellerConfirmPass.length() > 16) {
