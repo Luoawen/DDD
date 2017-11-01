@@ -113,8 +113,11 @@ public class GoodsClassifyApplication {
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
     public void deleteGoodsClassify(String classifyId) throws NegativeException {
         LOGGER.info("deleteGoodsClassify classifyId >>{}", classifyId);
+
+        List<String> ids = goodsClassifyRepository.recursionQueryGoodsSubClassifyId(classifyId, new ArrayList<>());
+        ids.add(classifyId);
         // 判断是否有商品，有商品不能删除
-        if (goodsRepository.classifyIdIsUser(goodsClassifyRepository.recursionQueryGoodsSubClassifyId(classifyId, new ArrayList<>()))) {
+        if (goodsRepository.classifyIdIsUser(ids)) {
             throw new NegativeException(MCode.V_300, "商品分类下有商品，不能删除");
         }
         GoodsClassify goodsClassify = goodsClassifyRepository.getGoodsClassifyById(classifyId);
