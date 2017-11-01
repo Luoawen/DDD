@@ -175,6 +175,9 @@ public class SellerCommand extends AssertionConcern implements Serializable{
 		if (sellerPass.length() < 8 && sellerPass.length() > 16 && sellerConfirmPass.length() < 8 && sellerConfirmPass.length() > 16) {
 			throw new NegativeException(MCode.V_1,"请输入8-16位密码");
 		}
+		if (sellerPass != sellerConfirmPass) {
+			throw new NegativeException(MCode.V_1,"密码不相同");
+		}
 		if (StringUtils.isEmpty(sellerName.replaceAll(" ", ""))) {
 			throw new NegativeException(MCode.V_1,"请输入业务员姓名");
 		}
