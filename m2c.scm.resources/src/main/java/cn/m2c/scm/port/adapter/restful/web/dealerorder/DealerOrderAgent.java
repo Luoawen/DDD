@@ -21,6 +21,7 @@ import cn.m2c.scm.application.dealerorder.data.bean.DealerOrderQB;
 import cn.m2c.scm.application.dealerorder.query.DealerOrderQuery;
 import cn.m2c.scm.application.order.DealerOrderApplication;
 import cn.m2c.scm.application.order.command.UpdateAddrCommand;
+import cn.m2c.scm.application.order.command.UpdateAddrFreightCmd;
 import cn.m2c.scm.application.order.command.UpdateOrderFreightCmd;
 import cn.m2c.scm.application.order.data.bean.DealerOrderDetailBean;
 import cn.m2c.scm.domain.NegativeException;
@@ -231,4 +232,35 @@ public class DealerOrderAgent {
 		return new ResponseEntity<MResult>(result, HttpStatus.OK);
 	}
 
+	@RequestMapping(value = "/addrfreight", method = RequestMethod.PUT)
+	public ResponseEntity<MResult> updateAddrFreight(
+			@RequestParam(value = "dealerOrderId", required = false) String dealerOrderId,
+			@RequestParam(value = "province", required = false) String province,
+			@RequestParam(value = "provCode", required = false) String provCode,
+			@RequestParam(value = "city", required = false) String city,
+			@RequestParam(value = "cityCode", required = false) String cityCode,
+			@RequestParam(value = "area", required = false) String area,
+			@RequestParam(value = "areaCode", required = false) String areaCode,
+			@RequestParam(value = "street", required = false) String street,
+			@RequestParam(value = "revPerson", required = false) String revPerson,
+			@RequestParam(value = "phone", required = false) String phone
+			,@RequestParam(value = "freights", required = false) String freights) {
+
+		MResult result = new MResult(MCode.V_1);
+
+		try {
+			if (StringUtil.isEmpty(dealerOrderId))
+				throw new NegativeException(MCode.V_1, "商家订单号为空");
+			UpdateAddrFreightCmd cmd = new UpdateAddrFreightCmd(dealerOrderId, province, provCode, city, cityCode, area,
+					areaCode, street, revPerson, phone, freights);
+			dealerOrderApplication.updateAddrFreight(cmd);
+			result.setStatus(MCode.V_200);
+		} catch (NegativeException ne) {
+			result = new MResult(ne.getStatus(), ne.getMessage());
+		} catch (Exception e) {
+			LOGGER.error("修改收货地址发生错误", e);
+			result = new MResult(MCode.V_400, e.getMessage());
+		}
+		return new ResponseEntity<MResult>(result, HttpStatus.OK);
+	}
 }

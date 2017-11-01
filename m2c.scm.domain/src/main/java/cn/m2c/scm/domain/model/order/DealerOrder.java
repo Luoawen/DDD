@@ -9,7 +9,6 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 
 import cn.m2c.ddd.common.domain.model.ConcurrencySafeEntity;
-import cn.m2c.scm.domain.NegativeException;
 import cn.m2c.scm.domain.model.order.event.SimpleMediaRes;
 /**
  * 商家订单
@@ -245,5 +244,35 @@ public class DealerOrder extends ConcurrencySafeEntity {
 	
 	public long dateToLong() {
 		return this.createdDate.getTime();
+	}
+	/**
+	 * 更新运费 主要用于商家修改
+	 * @param freights
+	 */
+	public boolean updateOrderFreight(Map<String, Integer> freights) {
+		if (freights == null)
+			return true;
+		long frg = 0;
+		for (DealerOrderDtl d : orderDtls) {
+			Integer f = freights.get(d.getSkuId());
+			if (f != null) {
+				d.updateFreight(f);
+				frg += f;
+			}
+			else
+				frg += d.getFreight();
+		}
+		orderFreight = frg;
+		return true;
+	}
+	/***
+	 * 能更新地址及运费
+	 * @return
+	 */
+	public boolean canUpdateFreight() {
+		if (status > 1) {
+			return false;
+		}
+		return true;
 	}
 }

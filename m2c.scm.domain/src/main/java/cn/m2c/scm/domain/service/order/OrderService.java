@@ -64,7 +64,7 @@ public interface OrderService {
 	 * @param userId
 	 * @return
 	 */
-	public <T> List<T> getMarketingsByIds(List<String> marketingIds, String userId, Class<T> clss);
+	public <T> List<T> getMarketingsByIds(List<String> marketingIds, String userId, Class<T[]> clss);
 	
 	/***
 	 * 获取商品的供货价

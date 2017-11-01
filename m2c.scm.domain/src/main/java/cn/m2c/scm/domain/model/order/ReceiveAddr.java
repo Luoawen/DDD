@@ -1,5 +1,7 @@
 package cn.m2c.scm.domain.model.order;
 
+import org.apache.commons.lang3.StringUtils;
+
 import cn.m2c.ddd.common.domain.model.ValueObject;
 /***
  * 收货地址值对象
@@ -57,7 +59,22 @@ public class ReceiveAddr extends ValueObject {
 	 * @param area
 	 * @param street
 	 */
-	public void updateAddr(String province,String provCode,String city,String cityCode,String area,String areaCode,String street,String revPerson,String phone) {
+	public boolean updateAddr(String province,String provCode,String city,String cityCode,String area,String areaCode,
+			String street, String revPerson, String phone) {
+		if(StringUtils.isEmpty(provCode)) 
+			return false;
+		if(StringUtils.isEmpty(province)) 
+			return false;
+		if(StringUtils.isEmpty(city)) 
+			return false;
+		if(StringUtils.isEmpty(cityCode)) 
+			return false;
+		
+		if(StringUtils.isEmpty(street)) 
+			return false;
+		if(StringUtils.isEmpty(revPerson) || StringUtils.isEmpty(phone)) 
+			return false;
+		
 		this.province =province;
 		this.provinceCode = provCode;
 		this.city = city;
@@ -67,5 +84,7 @@ public class ReceiveAddr extends ValueObject {
 		this.street = street;
 		this.revPerson = revPerson;
 		this.phone = phone;
+		
+		return true;
 	}
 }

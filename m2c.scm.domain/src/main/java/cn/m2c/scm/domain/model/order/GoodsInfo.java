@@ -55,6 +55,10 @@ public class GoodsInfo extends ValueObject {
 	public Long getFreight() {
 		return freight;
 	}
+	
+	void setFreight(long f) {
+		freight = f;
+	}
 
 	public GoodsInfo() {
 		super();

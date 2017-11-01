@@ -1,5 +1,6 @@
 package cn.m2c.scm.port.adapter.service.order;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -125,25 +126,30 @@ public class OrderServiceImpl implements OrderService {
 	 * 获取营销活动
 	 */
 	@Override
-	public <T> List<T> getMarketingsByIds(List<String> marketingIds, String userId, Class<T> clss) {
+	public <T> List<T> getMarketingsByIds(List<String> marketingIds, String userId, Class<T[]> clss) {
 		// TODO Auto-generated method stub
 		
 		if (null == marketingIds || marketingIds.size() < 1) {
 			return null;
 		}
 		
-		String url = M2C_HOST_URL + "/m2c.market/fullcut/fullcut/user/{0}/multi?full_cut_ids={1}";
+		String url = M2C_HOST_URL + "/m2c.market/fullcut/user/{0}/multi?full_cut_ids={1}";
+		StringBuilder mks = new StringBuilder(200);
+		for(int i=0; i<marketingIds.size(); i++) {
+			if (i>0)
+				mks.append(",");
+			mks.append(marketingIds.get(i));
+		}
 		
-		String rtResult = restTemplate.getForObject(url, String.class, userId, JSONObject.toJSONString(marketingIds),
-				userId);
+		String rtResult = restTemplate.getForObject(url, String.class, userId, mks.toString());
 		JSONObject json = JSONObject.parseObject(rtResult);
 		
 		List<T> result = null;
         if (json.getInteger("status") == 200) {
         	String content = json.getString("content");
         	Gson gson = new Gson();
-        	result = gson.fromJson(content, new TypeToken<List<T>>() {
-        	}.getType());
+        	//result = gson.fromJson(content, new TypeToken<List<T>>() {}.getType());
+        	result = Arrays.asList(gson.fromJson(content, clss));
         }
 		return result;
 	}
