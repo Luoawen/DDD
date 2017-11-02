@@ -26,13 +26,16 @@ public class PostageModelApplication {
      * 添加运费模板
      *
      * @param command
-     * @throws NegativeException 
+     * @throws NegativeException
      */
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
     public void addPostageModel(PostageModelCommand command) throws NegativeException {
         LOGGER.info("addPostageModel command >>{}", command);
         PostageModel postageModel = postageModelRepository.getPostageModelById(command.getModelId());
         if (null == postageModel) {
+            if (postageModelRepository.postageNameIsRepeat(null, command.getDealerId(), command.getModelName())) {
+                throw new NegativeException(MCode.V_300, "运费模板名称已存在");
+            }
             postageModel = new PostageModel(command.getDealerId(), command.getModelId(), command.getModelName(), command.getChargeType(),
                     command.getModelDescription(), command.getPostageModelRule());
             postageModelRepository.save(postageModel);
@@ -50,6 +53,9 @@ public class PostageModelApplication {
         PostageModel postageModel = postageModelRepository.getPostageModelById(command.getModelId());
         if (null == postageModel) {
             throw new NegativeException(MCode.V_300, "运费模板不存在");
+        }
+        if (postageModelRepository.postageNameIsRepeat(command.getModelId(), command.getDealerId(), command.getModelName())) {
+            throw new NegativeException(MCode.V_300, "运费模板名称已存在");
         }
         postageModel.modifyPostageModel(command.getDealerId(), command.getModelId(), command.getModelName(), command.getChargeType(),
                 command.getModelDescription(), command.getPostageModelRule());

@@ -18,4 +18,5 @@ public interface PostageModelRepository {
      */
     public void save(PostageModel postageModel);
 
+    boolean postageNameIsRepeat(String modelId, String dealerId, String modelName);
 }
