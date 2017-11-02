@@ -65,7 +65,7 @@ public class DealerAddOrUpdateCommand extends AssertionConcern implements Serial
 		if (StringUtils.isEmpty(dealerName)) {
 			throw new NegativeException(MCode.V_1,"请输入用户名");
 		}
-		if (managerPhone.length() > 11) {
+		if (!StringUtils.isEmpty(managerPhone) && managerPhone.length() > 11) {
 			throw new NegativeException(MCode.V_1,"请输入11位电话号码");
 		}
 		if(dealerName.length() > 20) {
