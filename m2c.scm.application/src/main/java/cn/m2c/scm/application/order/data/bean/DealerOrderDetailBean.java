@@ -138,6 +138,13 @@ public class DealerOrderDetailBean {
 	@ColumnAlias(value = "noted")
 	private String  noted;
 	
+	@ColumnAlias(value = "province_code")
+	private String  privinceCode;
+	@ColumnAlias(value = "city_code")
+	private String  cityCode;
+	@ColumnAlias(value = "area_code")
+	private String  areaCode;
+	
 	private String dealerOrderId;
 
 	public Integer getOrderStatus() {

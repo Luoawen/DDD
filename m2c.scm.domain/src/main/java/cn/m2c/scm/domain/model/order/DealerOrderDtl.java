@@ -216,4 +216,8 @@ public class DealerOrderDtl extends ConcurrencySafeEntity {
 	long getPlateformDiscount() {
 		return goodsInfo.getPlateformDiscount();
 	}
+	
+	void updateFreight(long f) {
+		goodsInfo.setFreight(f);
+	}
 }

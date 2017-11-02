@@ -9,8 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import cn.m2c.common.MCode;
 import cn.m2c.scm.application.order.command.SendOrderCommand;
 import cn.m2c.scm.application.order.command.UpdateAddrCommand;
+import cn.m2c.scm.application.order.command.UpdateAddrFreightCmd;
 import cn.m2c.scm.application.order.command.UpdateOrderFreightCmd;
 import cn.m2c.scm.domain.NegativeCode;
 import cn.m2c.scm.domain.NegativeException;
@@ -77,6 +79,34 @@ public class DealerOrderApplication {
 		dealerOrderRepository.save(dealerOrder);
 	}
 
+	/**
+	 * 更新收货地址及运费
+	 * @param command
+	 * @throws NegativeException
+	 */
+	@Transactional(rollbackFor = { Exception.class, RuntimeException.class, NegativeException.class })
+	public void updateAddrFreight(UpdateAddrFreightCmd cmd) throws NegativeException {
+		
+		DealerOrder dealerOrder = dealerOrderRepository.getDealerOrderById(cmd.getDealerOrderId());
+		if (dealerOrder == null)
+			throw new NegativeException(NegativeCode.DEALER_ORDER_IS_NOT_EXIST, "此商家订单不存在.");
+		
+		if (!dealerOrder.canUpdateFreight()) 
+			throw new NegativeException(MCode.V_1, "此商家订单处于不能修改状态.");
+		
+		ReceiveAddr addr = dealerOrder.getAddr();
+		boolean updatedAddr = addr.updateAddr(cmd.getProvince(), cmd.getProvCode(), cmd.getCity(), cmd.getCityCode(),
+				cmd.getArea(), cmd.getAreaCode(), cmd.getStreet(), cmd.getRevPerson(),
+				cmd.getPhone());
+		
+		if (updatedAddr)
+			dealerOrder.updateAddr(addr);
+		
+		boolean updatedFreight = dealerOrder.updateOrderFreight(cmd.getFreights());
+		
+		if (updatedFreight || updatedAddr)
+			dealerOrderRepository.save(dealerOrder);
+	}
 	/**
 	 * 更新订单状态<将待收货改为已完成>
 	 * 

@@ -151,7 +151,7 @@ public class OrderApplication {
 		// 获取运费模板，计算运费
 		calFreight(skuBeans, list, cmd.getAddr().getCityCode());
 		
-		List<MarketBean> mks = orderDomainService.getMarketingsByIds(marketIds, cmd.getUserId(), MarketBean.class);
+		List<MarketBean> mks = orderDomainService.getMarketingsByIds(marketIds, cmd.getUserId(), MarketBean[].class);
 		// 计算营销活动优惠
 		OrderMarketCalc.calMarkets(mks, list);
 		// 拆单 设置商品数量即按商家来拆分
