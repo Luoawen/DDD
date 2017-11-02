@@ -2,7 +2,11 @@ package cn.m2c.scm.application.dealer.command;
 
 import java.io.Serializable;
 
+import org.springframework.util.StringUtils;
+
+import cn.m2c.common.MCode;
 import cn.m2c.ddd.common.AssertionConcern;
+import cn.m2c.scm.domain.NegativeException;
 
 public class DealerAddOrUpdateCommand extends AssertionConcern implements Serializable{
 
@@ -54,8 +58,19 @@ public class DealerAddOrUpdateCommand extends AssertionConcern implements Serial
 			String managerName, String managerPhone, String managerqq,
 			String managerWechat, String managerEmail,
 			String managerDepartment, String sellerId, String sellerName,
-			String sellerPhone) {
-		super();
+			String sellerPhone) throws NegativeException {
+		if (StringUtils.isEmpty(userPhone)) {
+			throw new NegativeException(MCode.V_1,"请输入用户电话");
+		}
+		if (StringUtils.isEmpty(dealerName)) {
+			throw new NegativeException(MCode.V_1,"请输入用户名");
+		}
+		if (managerPhone.length() > 11) {
+			throw new NegativeException(MCode.V_1,"请输入11位电话号码");
+		}
+		if(dealerName.length() > 20) {
+			throw new NegativeException(MCode.V_1,"商家名称不能超过20个字符");
+		}
 		this.dealerId = dealerId;
 		this.userId = userId;
 		this.userName = userName;
