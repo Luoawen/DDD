@@ -87,7 +87,7 @@ public class DealerAgent {
 			@RequestParam(value="dealerCcode",required=true)String dealerCcode,
 			@RequestParam(value="dealerAcode",required=true)String dealerAcode,
 			@RequestParam(value="dealerDetailAddress",required=false,defaultValue="")String dealerDetailAddress,
-			@RequestParam(value="countMode",required=true)Integer countMode,
+			@RequestParam(value="countMode",required=false)Integer countMode,
 			@RequestParam(value="deposit",required=false,defaultValue="0")Long deposit,
 			@RequestParam(value="isPayDeposit",required=true,defaultValue="0")Integer isPayDeposit,
 			@RequestParam(value="managerName",required=false)String managerName,
