@@ -4,6 +4,7 @@ import cn.m2c.common.JsonUtils;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsBean;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsGuaranteeBean;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -22,7 +23,7 @@ public class GoodsDetailRepresentation {
     private Integer goodsMinQuantity;
     private String goodsBarCode;
     private List<String> goodsKeyWord;
-    private List<Map> goodsGuarantee;
+    private List<String> goodsGuarantee;
     private List<Map> goodsSpecifications;
     private List<Map> goodsSKUs;
     private List<String> goodsMainImages;
@@ -43,8 +44,14 @@ public class GoodsDetailRepresentation {
         this.goodsMinQuantity = bean.getGoodsMinQuantity();
         this.goodsBarCode = bean.getGoodsBarCode();
         this.goodsKeyWord = JsonUtils.toList(bean.getGoodsKeyWord(), String.class);
-        ;
-        this.goodsGuarantee = JsonUtils.toList(JsonUtils.toStr(goodsGuaranteeBeans), Map.class);
+        if (null != goodsGuaranteeBeans && goodsGuaranteeBeans.size() > 0) {
+            if (null == goodsGuarantee) {
+                this.goodsGuarantee = new ArrayList<>();
+            }
+            for (GoodsGuaranteeBean guaranteeBean : goodsGuaranteeBeans) {
+                this.goodsGuarantee.add(guaranteeBean.getGuaranteeDesc());
+            }
+        }
         this.goodsSpecifications = JsonUtils.toList(bean.getGoodsSpecifications(), Map.class);
         this.goodsSKUs = JsonUtils.toList(JsonUtils.toStr(bean.getGoodsSkuBeans()), Map.class);
         this.goodsMainImages = JsonUtils.toList(bean.getGoodsMainImages(), String.class);
@@ -174,11 +181,11 @@ public class GoodsDetailRepresentation {
         this.goodsDesc = goodsDesc;
     }
 
-    public List<Map> getGoodsGuarantee() {
+    public List<String> getGoodsGuarantee() {
         return goodsGuarantee;
     }
 
-    public void setGoodsGuarantee(List<Map> goodsGuarantee) {
+    public void setGoodsGuarantee(List<String> goodsGuarantee) {
         this.goodsGuarantee = goodsGuarantee;
     }
 
