@@ -30,6 +30,7 @@
         <property name="approveStatus" column="approve_status" type="int"/>
         <property name="rejectReason" column="reject_reason" type="string"/>
         <property name="goodsSpecifications" column="goods_specifications" type="text"/>
+        <property name="skuFlag" column="sku_flag" type="int"/>
         <property name="delStatus" column="del_status" type="int"/>
         <bag name="goodsSkuApproves" lazy="false" cascade="all-delete-orphan" inverse="true">
             <key column="goods_id"/>

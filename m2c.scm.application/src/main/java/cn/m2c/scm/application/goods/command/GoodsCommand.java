@@ -115,10 +115,12 @@ public class GoodsCommand extends AssertionConcern implements Serializable {
      */
     private Map<String, String> codeMap;
 
+    private Integer skuFlag;
+
     public GoodsCommand(String goodsId, String dealerId, String dealerName, String goodsName, String goodsSubTitle,
                         String goodsClassifyId, String goodsBrandId, String goodsBrandName, String goodsUnitId, Integer goodsMinQuantity,
                         String goodsPostageId, String goodsBarCode, String goodsKeyWord, String goodsGuarantee,
-                        String goodsMainImages, String goodsDesc, Integer goodsShelves, String goodsSpecifications, String goodsSKUs) {
+                        String goodsMainImages, String goodsDesc, Integer goodsShelves, String goodsSpecifications, String goodsSKUs, Integer skuFlag) {
         this.goodsId = goodsId;
         this.dealerId = dealerId;
         this.dealerName = dealerName;
@@ -138,6 +140,7 @@ public class GoodsCommand extends AssertionConcern implements Serializable {
         this.goodsShelves = goodsShelves;
         this.goodsSpecifications = goodsSpecifications;
         this.goodsSKUs = goodsSKUs;
+        this.skuFlag = skuFlag;
     }
 
     public GoodsCommand(String goodsId, String dealerId, String goodsName, String goodsSubTitle,
@@ -161,6 +164,7 @@ public class GoodsCommand extends AssertionConcern implements Serializable {
         this.goodsDesc = goodsDesc;
         this.goodsSpecifications = goodsSpecifications;
         this.goodsSKUs = goodsSKUs;
+        this.skuFlag = skuFlag;
 
         List<Map> skuList = JsonUtils.toList(goodsSKUs, Map.class);
         List<String> goodsCodes = new ArrayList<>();
@@ -263,5 +267,9 @@ public class GoodsCommand extends AssertionConcern implements Serializable {
 
     public Map<String, String> getCodeMap() {
         return codeMap;
+    }
+
+    public Integer getSkuFlag() {
+        return skuFlag;
     }
 }

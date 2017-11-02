@@ -212,11 +212,16 @@ public class GoodsQueryAgent {
             @RequestParam(value = "goodsIds", required = false) List<String> goodsIds) {
         MResult result = new MResult(MCode.V_1);
         try {
-            List<GoodsBean> goodsBeans = goodsQueryApplication.queryGoodsByGoodsIds(goodsIds);
+            List<GoodsBean> goodsBeans = goodsQueryApplication.queryAllGoodsByGoodsIds(goodsIds);
             if (null != goodsBeans && goodsBeans.size() > 0) {
                 Map map = new HashMap<>();
                 for (GoodsBean goodsBean : goodsBeans) {
-                    map.put(goodsBean.getGoodsId(), goodsBean.getGoodsStatus());
+                    Integer status = goodsBean.getGoodsStatus(); //商品状态，1：仓库中，2：出售中，3：已售罄
+                    Integer delStatus = goodsBean.getDelStatus(); //是否删除，1:正常，2：已删除
+                    if (delStatus == 2) {
+                        status = 4;
+                    }
+                    map.put(goodsBean.getGoodsId(), status);
                 }
                 result.setContent(map);
             }

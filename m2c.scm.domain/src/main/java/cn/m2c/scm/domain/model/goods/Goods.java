@@ -139,6 +139,11 @@ public class Goods extends ConcurrencySafeEntity {
     private Integer delStatus;
 
     /**
+     * 是否是多规格：0：单规格，1：多规格
+     */
+    private Integer skuFlag;
+
+    /**
      * 创建时间
      */
     private Date createdDate;
@@ -151,7 +156,7 @@ public class Goods extends ConcurrencySafeEntity {
     public Goods(String goodsId, String dealerId, String dealerName, String goodsName, String goodsSubTitle,
                  String goodsClassifyId, String goodsBrandId, String goodsBrandName, String goodsUnitId, Integer goodsMinQuantity,
                  String goodsPostageId, String goodsBarCode, String goodsKeyWord, String goodsGuarantee,
-                 String goodsMainImages, String goodsDesc, Integer goodsShelves, String goodsSpecifications, String goodsSKUs) {
+                 String goodsMainImages, String goodsDesc, Integer goodsShelves, String goodsSpecifications, String goodsSKUs, Integer skuFlag) {
         this.goodsId = goodsId;
         this.dealerId = dealerId;
         this.dealerName = dealerName;
@@ -169,6 +174,7 @@ public class Goods extends ConcurrencySafeEntity {
         this.goodsMainImages = goodsMainImages;
         this.goodsDesc = goodsDesc;
         this.goodsShelves = goodsShelves;
+        this.skuFlag = skuFlag;
         if (this.goodsShelves == 1) {//1:手动上架,2:审核通过立即上架
             this.goodsStatus = 1;
         } else {
@@ -306,7 +312,7 @@ public class Goods extends ConcurrencySafeEntity {
                                 this.goodsSubTitle, this.goodsClassifyId, this.goodsBrandId, this.goodsUnitId,
                                 this.goodsMinQuantity, this.goodsPostageId, this.goodsBarCode,
                                 this.goodsKeyWord, this.goodsGuarantee, this.goodsMainImages, this.goodsDesc, goodsSpecifications,
-                                goodsSKUs));
+                                goodsSKUs, this.skuFlag));
             }
         }
     }
@@ -335,7 +341,7 @@ public class Goods extends ConcurrencySafeEntity {
         }
         DomainEventPublisher
                 .instance()
-                .publish(new GoodsUpShelfEvent(this.goodsId,this.goodsPostageId));
+                .publish(new GoodsUpShelfEvent(this.goodsId, this.goodsPostageId));
     }
 
     /**
@@ -345,7 +351,7 @@ public class Goods extends ConcurrencySafeEntity {
         this.goodsStatus = 1;
         DomainEventPublisher
                 .instance()
-                .publish(new GoodsOffShelfEvent(this.goodsId,this.goodsPostageId));
+                .publish(new GoodsOffShelfEvent(this.goodsId, this.goodsPostageId));
     }
 
     /**
