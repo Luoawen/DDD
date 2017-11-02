@@ -29,7 +29,7 @@ public class HibernatePostageModelRepository extends HibernateSupperRepository i
 
     @Override
     public boolean postageNameIsRepeat(String modelId, String dealerId, String modelName) {
-        StringBuilder sql = new StringBuilder("select * from t_scm_postage_model where dealer_id=:dealer_id AND model_name =:model_name AND del_status = 1 ");
+        StringBuilder sql = new StringBuilder("select * from t_scm_postage_model where dealer_id=:dealer_id AND model_name =:model_name AND model_status = 1 ");
         if (StringUtils.isNotEmpty(modelId)) {
             sql.append(" and model_id <> :model_id");
         }
