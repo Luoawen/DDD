@@ -45,7 +45,7 @@ public class ShopApplication {
 			Shop shop = shopRepository.getShopByShopID(command.getShopId());
 			if(shop!=null)
 				throw new NegativeException(NegativeCode.DEALER_SHOP_IS_EXIST, "此经销商店铺已存在.");
-			shop = new Shop(command.getShopId(),command.getDealerId(),command.getShopName(),command.getShopIntroduce(),command.getShopIcon(),command.getShopReceipt(),command.getCustomerServiceTel());
+			shop = new Shop(command.getShopId(),command.getDealerId(),command.getShopName(),command.getShopIcon(),command.getShopIntroduce(),command.getShopReceipt(),command.getCustomerServiceTel());
 			shopRepository.save(shop);
 		}
 
