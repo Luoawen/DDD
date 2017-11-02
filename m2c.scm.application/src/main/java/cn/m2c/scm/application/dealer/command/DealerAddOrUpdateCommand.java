@@ -71,6 +71,9 @@ public class DealerAddOrUpdateCommand extends AssertionConcern implements Serial
 		if(dealerName.length() > 20) {
 			throw new NegativeException(MCode.V_1,"商家名称不能超过20个字符");
 		}
+		if (null == countMode) {
+			throw new NegativeException(MCode.V_1,"请选择结算方式");
+		}
 		this.dealerId = dealerId;
 		this.userId = userId;
 		this.userName = userName;
