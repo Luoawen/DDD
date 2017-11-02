@@ -175,6 +175,12 @@ public class SellerCommand extends AssertionConcern implements Serializable{
 		if (StringUtils.isEmpty(sellerPass.replaceAll(" ", "")) && StringUtils.isEmpty(sellerConfirmPass.replaceAll(" ", ""))) {
 			throw new NegativeException(MCode.V_1,"请输入业务员密码");
 		}
+		if (StringUtils.isEmpty(sellerPhone.replaceAll(" ", ""))) {
+			throw new NegativeException(MCode.V_1,"请输入业务员电话");
+		}
+		if (StringUtils.isEmpty(sellerNo.replaceAll(" ", ""))) {
+			throw new NegativeException(MCode.V_1,"请输入业务员编号");
+		}
 		if (StringUtils.isEmpty(sellerProvince.replaceAll(" ", "")) || StringUtils.isEmpty(sellerPcode.replaceAll(" ", ""))) {
 			throw new NegativeException(MCode.V_1,"请输入省信息");
 		}
@@ -183,12 +189,6 @@ public class SellerCommand extends AssertionConcern implements Serializable{
 		}
 		if (StringUtils.isEmpty(sellerArea.replaceAll(" ", "")) || StringUtils.isEmpty(sellerAcode.replaceAll(" ", ""))) {
 			throw new NegativeException(MCode.V_1,"请输入区信息");
-		}
-		if (StringUtils.isEmpty(sellerPhone.replaceAll(" ", ""))) {
-			throw new NegativeException(MCode.V_1,"请输入业务员电话");
-		}
-		if (StringUtils.isEmpty(sellerNo.replaceAll(" ", ""))) {
-			throw new NegativeException(MCode.V_1,"请输入业务员编号");
 		}
 		if (sellerName.length() > 20) {
 			throw new NegativeException(MCode.V_1,"业务员姓名不能超过20位");
