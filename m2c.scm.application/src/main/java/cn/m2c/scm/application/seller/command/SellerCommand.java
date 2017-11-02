@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import org.apache.commons.lang3.StringUtils;
 
+import cn.m2c.common.ArgumentUtils;
 import cn.m2c.common.MCode;
 import cn.m2c.ddd.common.AssertionConcern;
 import cn.m2c.scm.domain.NegativeException;
@@ -166,42 +167,25 @@ public class SellerCommand extends AssertionConcern implements Serializable{
 			String sellerCcode, String sellerAcode, String sellerqq,
 			String sellerWechat, String sellerRemark) throws NegativeException {
 		super();
-		if (StringUtils.isEmpty(sellerName.replaceAll(" ", ""))) {
-			throw new NegativeException(MCode.V_1,"请输入业务员姓名");
+		assertArgumentNotEmpty(sellerId, "业务员id不能为空");
+		
+		assertArgumentNotEmpty(sellerName, "业务员名称不能为空");
+		assertArgumentLength(sellerName, 50, "业务员名称过长");
+		
+		assertArgumentNotEmpty(sellerPhone, "手机号不能为空");
+		ArgumentUtils.assertArgIsPhone(sellerPhone, "手机号不合法");
+		
+		if(sellerSex == null){
+			assertArgumentRange(sellerSex, 0, 1, "年龄输入不合法");
 		}
-		if (null == sellerSex) {
-			throw new NegativeException(MCode.V_1,"请选择业务员性别");
-		}
-		if (StringUtils.isEmpty(sellerPass.replaceAll(" ", "")) && StringUtils.isEmpty(sellerConfirmPass.replaceAll(" ", ""))) {
-			throw new NegativeException(MCode.V_1,"请输入业务员密码");
-		}
-		if (StringUtils.isEmpty(sellerProvince.replaceAll(" ", "")) || StringUtils.isEmpty(sellerPcode.replaceAll(" ", ""))) {
-			throw new NegativeException(MCode.V_1,"请输入省信息");
-		}
-		if (StringUtils.isEmpty(sellerCity.replaceAll(" ", "")) || StringUtils.isEmpty(sellerCcode.replaceAll(" ", ""))) {
-			throw new NegativeException(MCode.V_1,"请输入市信息");
-		}
-		if (StringUtils.isEmpty(sellerArea.replaceAll(" ", "")) || StringUtils.isEmpty(sellerAcode.replaceAll(" ", ""))) {
-			throw new NegativeException(MCode.V_1,"请输入区信息");
-		}
-		if (StringUtils.isEmpty(sellerPhone.replaceAll(" ", ""))) {
-			throw new NegativeException(MCode.V_1,"请输入业务员电话");
-		}
-		if (StringUtils.isEmpty(sellerNo.replaceAll(" ", ""))) {
-			throw new NegativeException(MCode.V_1,"请输入业务员编号");
-		}
-		if (sellerName.length() > 20) {
-			throw new NegativeException(MCode.V_1,"业务员姓名不能超过20位");
-		}
-		if (sellerPhone.length() > 11) {
-			throw new NegativeException(MCode.V_1,"业务员电话不能超过11位");
-		}
-		if (sellerPass.length() < 8 || sellerPass.length() > 16) {
-			throw new NegativeException(MCode.V_1,"请输入8-16位密码");
-		}
-		if (!(sellerPass.equals(sellerConfirmPass))) {
-			throw new NegativeException(MCode.V_1,"密码不相同");
-		}
+		
+		assertArgumentNotEmpty(sellerPass, "密码不能为空");
+		
+		assertArgumentNotEmpty(sellerAcode, "请选择区域");
+		assertArgumentLength(sellerAcode, 6, "业务员区code长度不合法");
+		
+		assertArgumentLength(sellerqq, 15, "qq号过长");
+		assertArgumentLength(sellerWechat, 20, "微信号过长");
 		this.sellerId = sellerId;
 		this.sellerName = sellerName;
 		this.sellerPhone = sellerPhone;

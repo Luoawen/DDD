@@ -105,8 +105,11 @@ public class DealerAgent {
 				DealerAddOrUpdateCommand command = new DealerAddOrUpdateCommand(dealerId,userId,userName,userPhone, dealerName, dealerClassify, cooperationMode, startSignDate, endSignDate, dealerProvince, dealerCity, dealerArea, dealerPcode, dealerCcode, dealerAcode, dealerDetailAddress, countMode, deposit, isPayDeposit, managerName, managerPhone, managerqq, managerWechat, managerEmail, managerDepartment, sellerId,sellerName,sellerPhone);
 				application.addDealer(command);
 				result.setStatus(MCode.V_200);
+			}catch (IllegalArgumentException e) {
+				log.error("添加经销商出错", e);
+				result = new MResult(MCode.V_1, e.getMessage());
 			}catch (NegativeException ne) {
-				log.error("addUnit NegativeException e:", ne);
+				log.error("添加经销商出错", ne);
 				result = new MResult(ne.getStatus(), ne.getMessage());
 			}catch (Exception e) {
 				log.error("添加经销商出错" + e.getMessage(), e);
@@ -179,6 +182,9 @@ public class DealerAgent {
 				DealerAddOrUpdateCommand command = new DealerAddOrUpdateCommand(dealerId,userId,userName,userPhone, dealerName, dealerClassify, cooperationMode, startSignDate, endSignDate, dealerProvince, dealerCity, dealerArea, dealerPcode, dealerCcode, dealerAcode, dealerDetailAddress, countMode, deposit, isPayDeposit, managerName, managerPhone, managerqq, managerWechat, managerEmail, managerDepartment, sellerId,sellerName,sellerPhone);
 				application.updateDealer(command);
 				result.setStatus(MCode.V_200);
+			}catch (IllegalArgumentException e) {
+				log.error("修改经销商出错", e);
+				result = new MResult(MCode.V_1, e.getMessage());
 			} catch (Exception e) {
 				log.error("修改经销商出错" + e.getMessage(), e);
 	            result = new MResult(MCode.V_400, "服务器开小差了");
