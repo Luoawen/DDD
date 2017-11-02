@@ -143,6 +143,12 @@ public class GoodsBean {
     @ColumnAlias(value = "del_status")
     private Integer delStatus;
 
+    /**
+     * 是否是多规格：0：单规格，1：多规格
+     */
+    @ColumnAlias(value = "sku_flag")
+    private Integer skuFlag;
+
     private List<GoodsSkuBean> goodsSkuBeans;
 
     public Integer getId() {
@@ -335,5 +341,13 @@ public class GoodsBean {
 
     public void setGoodsSkuBeans(List<GoodsSkuBean> goodsSkuBeans) {
         this.goodsSkuBeans = goodsSkuBeans;
+    }
+
+    public Integer getSkuFlag() {
+        return skuFlag;
+    }
+
+    public void setSkuFlag(Integer skuFlag) {
+        this.skuFlag = skuFlag;
     }
 }

@@ -107,7 +107,7 @@ public class ShopAgent {
 		 @RequestMapping(value = "/shopInfo", method = RequestMethod.PUT)
 		    public ResponseEntity<MResult> updateShopInfo(
 		            @RequestParam(value = "dealerId", required = true) String dealerId,
-		            @RequestParam(value = "shopId", required = true) String shopId,
+		            @RequestParam(value = "shopId", required = false) String shopId,
 		            @RequestParam(value = "shopName", required = true) String shopName,
 		            @RequestParam(value = "shopIcon", required = true) String shopIcon,
 		            @RequestParam(value = "shopReceipt", required = false) String shopReceipt,

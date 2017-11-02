@@ -31,6 +31,7 @@
         <property name="goodsShelves" column="goods_shelves" type="int"/>
         <property name="goodsStatus" column="goods_status" type="int"/>
         <property name="goodsSpecifications" column="goods_specifications" type="text"/>
+        <property name="skuFlag" column="sku_flag" type="int"/>
         <property name="delStatus" column="del_status" type="int"/>
         <property name="createdDate" column="created_date" type="timestamp"/>
         <bag name="goodsSKUs" lazy="false" cascade="all-delete-orphan" inverse="true">

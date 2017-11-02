@@ -1,6 +1,9 @@
 package cn.m2c.scm.port.adapter.restful.web.seller;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,10 +19,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import cn.m2c.common.MCode;
 import cn.m2c.common.MPager;
 import cn.m2c.common.MResult;
+import cn.m2c.scm.application.dealer.data.export.SellerExportModel;
+import cn.m2c.scm.application.goods.query.data.bean.GoodsSkuBean;
+import cn.m2c.scm.application.goods.query.data.export.GoodsServiceRateModel;
+import cn.m2c.scm.application.goods.query.data.export.GoodsSupplyPriceModel;
 import cn.m2c.scm.application.seller.SellerApplication;
 import cn.m2c.scm.application.seller.command.SellerCommand;
 import cn.m2c.scm.application.seller.data.bean.SellerBean;
 import cn.m2c.scm.application.seller.query.SellerQuery;
+import cn.m2c.scm.application.utils.ExcelUtil;
 import cn.m2c.scm.domain.IDGenerator;
 import cn.m2c.scm.domain.NegativeException;
 
@@ -179,6 +187,35 @@ public class SellerAgent {
 		try {
 			SellerBean seller = sellerQuery.getSeller(sellerId);
 			result.setContent(seller);
+			result.setStatus(MCode.V_200);
+		} catch (Exception e) {
+			log.error("业务员列表出错" + e.getMessage(), e);
+			result = new MPager(MCode.V_400, "服务器开小差了");
+		}
+		return new ResponseEntity<MPager>(result, HttpStatus.OK);
+
+	}
+	
+	/**
+	 * 业务员详情
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = "/exportSeller", method = RequestMethod.GET)
+	public ResponseEntity<MPager> getSellerExport(
+			HttpServletResponse response,
+			@RequestParam(value = "filter", required = false) String filter,
+			@RequestParam(value = "startTime", required = false) String startTime,
+			@RequestParam(value = "endTime", required = false) String endTime) {
+		MPager result = new MPager(MCode.V_1);
+		try {
+			List<SellerBean> sellerList = sellerQuery.getSellerExportList(filter,startTime,endTime);
+			List<SellerExportModel> excelList = new ArrayList<SellerExportModel>();  
+			for (SellerBean model : sellerList) {
+				excelList.add(new SellerExportModel(model));
+              }
+			String fileName = "业务员.xls";
+            ExcelUtil.writeExcel(response, fileName, excelList, SellerExportModel.class);
 			result.setStatus(MCode.V_200);
 		} catch (Exception e) {
 			log.error("业务员列表出错" + e.getMessage(), e);

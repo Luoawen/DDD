@@ -28,6 +28,7 @@ import cn.m2c.scm.application.dealer.data.representation.DealerRepresentation;
 import cn.m2c.scm.application.dealer.query.DealerQuery;
 import cn.m2c.scm.application.dealerclassify.query.DealerClassifyQuery;
 import cn.m2c.scm.domain.IDGenerator;
+import cn.m2c.scm.domain.NegativeException;
 
 @RestController
 @RequestMapping("/dealer/sys")
@@ -86,7 +87,7 @@ public class DealerAgent {
 			@RequestParam(value="dealerCcode",required=true)String dealerCcode,
 			@RequestParam(value="dealerAcode",required=true)String dealerAcode,
 			@RequestParam(value="dealerDetailAddress",required=false,defaultValue="")String dealerDetailAddress,
-			@RequestParam(value="countMode",required=true)Integer countMode,
+			@RequestParam(value="countMode",required=false)Integer countMode,
 			@RequestParam(value="deposit",required=false,defaultValue="0")Long deposit,
 			@RequestParam(value="isPayDeposit",required=true,defaultValue="0")Integer isPayDeposit,
 			@RequestParam(value="managerName",required=false)String managerName,
@@ -104,7 +105,10 @@ public class DealerAgent {
 				DealerAddOrUpdateCommand command = new DealerAddOrUpdateCommand(dealerId,userId,userName,userPhone, dealerName, dealerClassify, cooperationMode, startSignDate, endSignDate, dealerProvince, dealerCity, dealerArea, dealerPcode, dealerCcode, dealerAcode, dealerDetailAddress, countMode, deposit, isPayDeposit, managerName, managerPhone, managerqq, managerWechat, managerEmail, managerDepartment, sellerId,sellerName,sellerPhone);
 				application.addDealer(command);
 				result.setStatus(MCode.V_200);
-			} catch (Exception e) {
+			}catch (NegativeException ne) {
+				log.error("addUnit NegativeException e:", ne);
+				result = new MResult(ne.getStatus(), ne.getMessage());
+			}catch (Exception e) {
 				log.error("添加经销商出错" + e.getMessage(), e);
 	            result = new MResult(MCode.V_400, "服务器开小差了");
 			}

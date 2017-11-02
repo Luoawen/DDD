@@ -139,6 +139,11 @@ public class GoodsApproveBean {
     @ColumnAlias(value = "del_status")
     private Integer delStatus;
 
+    /**
+     * 是否是多规格：0：单规格，1：多规格
+     */
+    @ColumnAlias(value = "sku_flag")
+    private Integer skuFlag;
 
     /**
      * 商品规格
@@ -327,5 +332,14 @@ public class GoodsApproveBean {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+
+    public Integer getSkuFlag() {
+        return skuFlag;
+    }
+
+    public void setSkuFlag(Integer skuFlag) {
+        this.skuFlag = skuFlag;
     }
 }

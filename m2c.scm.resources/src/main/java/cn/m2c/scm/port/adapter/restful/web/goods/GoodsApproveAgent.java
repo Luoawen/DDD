@@ -124,6 +124,7 @@ public class GoodsApproveAgent {
             @RequestParam(value = "goodsDesc", required = false) String goodsDesc,
             @RequestParam(value = "goodsShelves", required = false) Integer goodsShelves,
             @RequestParam(value = "goodsSpecifications", required = false) String goodsSpecifications,
+            @RequestParam(value = "skuFlag", required = false) Integer skuFlag,//是否是多规格：0：单规格，1：多规格
             @RequestParam(value = "goodsSKUs", required = false) String goodsSkuApproves) {
         MResult result = new MResult(MCode.V_1);
 
@@ -137,7 +138,7 @@ public class GoodsApproveAgent {
                     } catch (Exception e) { //失败重新生成一次
                         skuId = commonApplication.generateGoodsSku();
                     }
-                    if(StringUtils.isEmpty(skuId)){
+                    if (StringUtils.isEmpty(skuId)) {
                         result = new MResult(MCode.V_1, "商品SKU生成失败");
                         return new ResponseEntity<MResult>(result, HttpStatus.OK);
                     }
@@ -151,7 +152,7 @@ public class GoodsApproveAgent {
             GoodsApproveCommand command = new GoodsApproveCommand(goodsId, dealerId, dealerName, goodsName, goodsSubTitle,
                     goodsClassifyId, goodsBrandId, goodsBrandName, goodsUnitId, goodsMinQuantity,
                     goodsPostageId, goodsBarCode, goodsKeyWord, goodsGuarantee,
-                    goodsMainImages, goodsDesc, goodsShelves, goodsSpecifications, goodsSkuApproves);
+                    goodsMainImages, goodsDesc, goodsShelves, goodsSpecifications, goodsSkuApproves, skuFlag);
             goodsApproveApplication.addGoodsApprove(command);
             result.setStatus(MCode.V_200);
         } catch (NegativeException ne) {
@@ -312,7 +313,7 @@ public class GoodsApproveAgent {
      *
      * @param dealerId        商家ID
      * @param goodsClassifyId 商品分类
-     * @param approveStatus     审核状态，1：审核中，2：审核不通过
+     * @param approveStatus   审核状态，1：审核中，2：审核不通过
      * @param condition       搜索条件
      * @param startTime       开始时间
      * @param endTime         结束时间
@@ -343,7 +344,7 @@ public class GoodsApproveAgent {
                         DealerBean dealerBean = dealerQuery.getDealer(bean.getDealerId());
                         String dealerType = "";
                         if (null != dealerBean) {
-                            dealerType = null != dealerBean.getDealerClassifyBean()?dealerBean.getDealerClassifyBean().getDealerSecondClassifyName():"";
+                            dealerType = null != dealerBean.getDealerClassifyBean() ? dealerBean.getDealerClassifyBean().getDealerSecondClassifyName() : "";
                         }
                         String goodsClassify = goodsClassifyQueryApplication.getClassifyNames(bean.getGoodsClassifyId());
                         representations.add(new GoodsApproveSearchRepresentation(bean, goodsClassify, dealerType));

@@ -20,6 +20,7 @@ public class AppGoodsByIdsRepresentation {
     private List<AppGoodsSkuRepresentation> goodsSKUs;
     private String classifyId;
     private String dealerId;
+    private Integer skuFlag;
 
     public AppGoodsByIdsRepresentation(GoodsBean bean, List<Map> goodsTags) {
         this.goodsId = bean.getGoodsId();
@@ -43,6 +44,7 @@ public class AppGoodsByIdsRepresentation {
         }
         this.dealerId = bean.getDealerId();
         this.classifyId = bean.getGoodsClassifyId();
+        this.skuFlag = bean.getSkuFlag();
     }
 
     public String getGoodsId() {
@@ -107,5 +109,13 @@ public class AppGoodsByIdsRepresentation {
 
     public void setDealerId(String dealerId) {
         this.dealerId = dealerId;
+    }
+
+    public Integer getSkuFlag() {
+        return skuFlag;
+    }
+
+    public void setSkuFlag(Integer skuFlag) {
+        this.skuFlag = skuFlag;
     }
 }

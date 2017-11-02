@@ -130,6 +130,11 @@ public class GoodsApprove extends ConcurrencySafeEntity {
      */
     private Integer delStatus;
 
+    /**
+     * 是否是多规格：0：单规格，1：多规格
+     */
+    private Integer skuFlag;
+
     public GoodsApprove() {
         super();
     }
@@ -137,7 +142,8 @@ public class GoodsApprove extends ConcurrencySafeEntity {
     public GoodsApprove(String goodsId, String dealerId, String dealerName, String goodsName, String goodsSubTitle,
                         String goodsClassifyId, String goodsBrandId, String goodsBrandName, String goodsUnitId, Integer goodsMinQuantity,
                         String goodsPostageId, String goodsBarCode, String goodsKeyWord, String goodsGuarantee,
-                        String goodsMainImages, String goodsDesc, Integer goodsShelves, String goodsSpecifications, String goodsSkuApproves) {
+                        String goodsMainImages, String goodsDesc, Integer goodsShelves, String goodsSpecifications, String goodsSkuApproves,
+                        Integer skuFlag) {
         this.goodsId = goodsId;
         this.dealerId = dealerId;
         this.dealerName = dealerName;
@@ -172,6 +178,7 @@ public class GoodsApprove extends ConcurrencySafeEntity {
                 this.goodsSkuApproves.add(createGoodsSkuApprove(skuList.get(i)));
             }
         }
+        this.skuFlag = skuFlag;
     }
 
     private GoodsSkuApprove createGoodsSkuApprove(Map map) {
@@ -206,7 +213,7 @@ public class GoodsApprove extends ConcurrencySafeEntity {
                         this.goodsUnitId, this.goodsMinQuantity, this.goodsPostageId,
                         this.goodsBarCode, this.goodsKeyWord, this.goodsGuarantee,
                         this.goodsMainImages, this.goodsMainVideo, this.goodsDesc,
-                        this.goodsShelves,this.goodsSpecifications, goodsSKUs));
+                        this.goodsShelves, this.goodsSpecifications, goodsSKUs, this.skuFlag));
     }
 
     /**

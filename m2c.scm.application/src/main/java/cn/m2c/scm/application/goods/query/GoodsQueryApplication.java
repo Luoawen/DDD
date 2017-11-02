@@ -856,5 +856,15 @@ public class GoodsQueryApplication {
         }
         return goodsBeanList;
     }
+
+
+    public List<GoodsBean> queryAllGoodsByGoodsIds(List<String> goodsIds) {
+        StringBuilder sql = new StringBuilder();
+        sql.append(" SELECT ");
+        sql.append(" * ");
+        sql.append(" FROM ");
+        sql.append(" t_scm_goods where goods_id in (" + Utils.listParseString(goodsIds) + ")");
+        return this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsBean.class);
+    }
 }
 
