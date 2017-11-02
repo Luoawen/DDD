@@ -157,7 +157,7 @@ public class GoodsApproveCommand extends AssertionConcern implements Serializabl
         if (null == goodsMainImages || goodsMainImages.size() == 0) {
             throw new NegativeException(MCode.V_1, "商品主图为空");
         }
-        if (StringUtils.isEmpty(goodsSpecifications)) {
+        if (skuFlag == 1 && StringUtils.isEmpty(goodsSpecifications)) {
             throw new NegativeException(MCode.V_1, "商品规格为空");
         }
 

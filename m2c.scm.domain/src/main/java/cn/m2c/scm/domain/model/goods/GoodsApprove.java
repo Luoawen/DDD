@@ -213,7 +213,7 @@ public class GoodsApprove extends ConcurrencySafeEntity {
                         this.goodsUnitId, this.goodsMinQuantity, this.goodsPostageId,
                         this.goodsBarCode, this.goodsKeyWord, this.goodsGuarantee,
                         this.goodsMainImages, this.goodsMainVideo, this.goodsDesc,
-                        this.goodsShelves, this.goodsSpecifications, goodsSKUs, skuFlag));
+                        this.goodsShelves, this.goodsSpecifications, goodsSKUs, this.skuFlag));
     }
 
     /**
