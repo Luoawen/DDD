@@ -2,6 +2,7 @@ package cn.m2c.scm.application.classify.query;
 
 import cn.m2c.ddd.common.port.adapter.persistence.springJdbc.SupportJdbcTemplate;
 import cn.m2c.scm.application.classify.data.bean.GoodsClassifyBean;
+import cn.m2c.scm.application.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -143,6 +144,34 @@ public class GoodsClassifyQueryApplication {
             }
         }
         return null;
+    }
+
+    public Map queryServiceRateByClassifyIds(List<String> classifyIds) {
+        Map map = new HashMap<>();
+        StringBuilder sql = new StringBuilder();
+        sql.append(" SELECT ");
+        sql.append(" * ");
+        sql.append(" FROM ");
+        sql.append(" t_scm_goods_classify WHERE 1 = 1");
+        sql.append(" AND classify_id in (" + Utils.listParseString(classifyIds) + ")");
+        List<GoodsClassifyBean> goodsClassifyBeans = this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsClassifyBean.class);
+        if (null != goodsClassifyBeans && goodsClassifyBeans.size() > 0) {
+            for (GoodsClassifyBean goodsClassifyBean : goodsClassifyBeans) {
+                Float rate = null;
+                if (null != goodsClassifyBean) {
+                    rate = goodsClassifyBean.getServiceRate();
+                    if (null == rate) {
+                        if (!"-1".equals(goodsClassifyBean.getParentClassifyId())) {//不是一级分类
+                            GoodsClassifyBean bean = queryGoodsClassifiesById(goodsClassifyBean.getParentClassifyId());
+                            //找上级分类
+                            rate = bean.getServiceRate();
+                        }
+                    }
+                }
+                map.put(goodsClassifyBean.getClassifyId(), rate);
+            }
+        }
+        return map;
     }
 
     public List<GoodsClassifyBean> queryGoodsClassifiesByName(String classifyName) {
