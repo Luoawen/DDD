@@ -30,4 +30,9 @@ public interface DealerOrderRepository {
 	 * 获取订单状态为'待付款的订单'
 	 */
 	public List<DealerOrder> getDealerOrderWaitPay();
+	
+	/**
+	 * 更新运费及收货信息
+	 */
+	public void updateFreight(DealerOrder dealerOrder);
 }

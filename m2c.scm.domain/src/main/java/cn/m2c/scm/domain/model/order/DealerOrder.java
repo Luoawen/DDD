@@ -279,4 +279,8 @@ public class DealerOrder extends ConcurrencySafeEntity {
 		}
 		return true;
 	}
+	
+	public String getOrderNo() {
+		return orderId;
+	}
 }
