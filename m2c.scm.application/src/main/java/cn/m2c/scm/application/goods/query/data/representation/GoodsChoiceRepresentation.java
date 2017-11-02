@@ -20,7 +20,7 @@ public class GoodsChoiceRepresentation {
     private Long goodsPrice;
     private String goodsImageUrl;
     private List<Map> goodsSkuList;
-    private Integer skuFlag;
+    private Integer skuSingleFlag;
 
     public GoodsChoiceRepresentation(GoodsBean bean) {
         this.dealerId = bean.getDealerId();
@@ -45,7 +45,7 @@ public class GoodsChoiceRepresentation {
         if (null != mainImages && mainImages.size() > 0) {
             this.goodsImageUrl = mainImages.get(0);
         }
-        this.skuFlag = bean.getSkuFlag();
+        this.skuSingleFlag = bean.getSkuFlag();
     }
 
     public String getDealerId() {
@@ -104,11 +104,11 @@ public class GoodsChoiceRepresentation {
         this.goodsSkuList = goodsSkuList;
     }
 
-    public Integer getSkuFlag() {
-        return skuFlag;
+    public Integer getSkuSingleFlag() {
+        return skuSingleFlag;
     }
 
-    public void setSkuFlag(Integer skuFlag) {
-        this.skuFlag = skuFlag;
+    public void setSkuSingleFlag(Integer skuSingleFlag) {
+        this.skuSingleFlag = skuSingleFlag;
     }
 }
