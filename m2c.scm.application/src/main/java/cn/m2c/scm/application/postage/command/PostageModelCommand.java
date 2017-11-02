@@ -66,7 +66,7 @@ public class PostageModelCommand extends AssertionConcern implements Serializabl
             throw new NegativeException(MCode.V_1, "运费模板计费方式为空");
         }
         String a[] = postageModelRule.split(",");
-        if ("[{\"address\":\"\"".equals(a[0]) || "\"index\":\"\"}]".equals(a[5]) || "\"continuedPostage\":\"\"".equals(a[4]) ||
+        if ("\"index\":\"\"}]".equals(a[5]) || "\"continuedPostage\":\"\"".equals(a[4]) ||
         		"\"continuedWeight\":\"\"".equals(a[3]) || "\"firstPostage\":\"\"".equals(a[2]) || "\"firstWeight\":\"\"".equals(a[1])) {
         	throw new NegativeException(MCode.V_1, "请输入完整的运费模板规则");
 		}
