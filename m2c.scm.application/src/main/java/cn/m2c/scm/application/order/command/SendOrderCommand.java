@@ -1,6 +1,10 @@
 package cn.m2c.scm.application.order.command;
 
+import org.apache.commons.lang3.StringUtils;
+
+import cn.m2c.common.MCode;
 import cn.m2c.ddd.common.AssertionConcern;
+import cn.m2c.scm.domain.NegativeException;
 
 public class SendOrderCommand extends AssertionConcern{
 
@@ -29,7 +33,7 @@ public class SendOrderCommand extends AssertionConcern{
 	
 	public SendOrderCommand(String dealerOrderId, String expressNo,
 			String expressName, String expressPerson, String expressPhone,
-			Integer expressWay, String expressNote, String expressCode) {
+			Integer expressWay, String expressNote, String expressCode) throws NegativeException {
 		super();
 		this.dealerOrderId = dealerOrderId;
 		this.expressNo = expressNo;
@@ -39,6 +43,10 @@ public class SendOrderCommand extends AssertionConcern{
 		this.expressWay = expressWay;
 		this.expressNote = expressNote;
 		this.expressCode = expressCode;
+		
+		if (StringUtils.isEmpty(dealerOrderId)) {// 增加判断若为空则需要抛出异常。
+			throw new NegativeException(MCode.V_1, "dealerOrderId 参数为空.");
+		}
 	}
 
 

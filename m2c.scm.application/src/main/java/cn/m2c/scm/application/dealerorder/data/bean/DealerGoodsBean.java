@@ -46,7 +46,7 @@ public class DealerGoodsBean {
 	/**
 	 * 售后状态
 	 */
-	private Integer afStatus;
+	private Integer afStatus = -2;
 
 	public String getGoodsImage() {
 		return goodsImage;
@@ -104,7 +104,8 @@ public class DealerGoodsBean {
 	}
 
 	public void setAfStatus(Integer afStatus) {
-		this.afStatus = afStatus;
+		if (afStatus != null)
+			this.afStatus = afStatus;
 	}
 
 	public String getSkuId() {

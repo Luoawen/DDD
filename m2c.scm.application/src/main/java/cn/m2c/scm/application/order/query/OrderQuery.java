@@ -314,7 +314,7 @@ public class OrderQuery {
 	 */
 	public List<GoodsInfoBean> getGoodsInfoList(String dealerOrderId) {
 		StringBuilder sql = new StringBuilder();
-		sql.append(" SELECT  dtl.goods_icon, dtl.goods_name,dtl.sku_name, \r\n")
+		sql.append(" SELECT  dtl.goods_icon, dtl.goods_name,dtl.sku_name, dtl.sku_id, \r\n")
 		.append(" dtl.media_res_id,dtl.sell_num,dtl.goods_unit, dtl.discount_price,dtl.freight \r\n") 
 		.append(" FROM  t_scm_order_dealer dealer \r\n")
 		.append(" LEFT OUTER JOIN t_scm_order_detail dtl ON dealer.dealer_order_id = dtl.dealer_order_id\r\n")

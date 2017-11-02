@@ -116,14 +116,18 @@ public class DealerOrder extends ConcurrencySafeEntity {
 	 * @param expressPhone
 	 * @param expressWay
 	 */
-	public void updateExpress(String expressName, String expressNo,
+	public boolean updateExpress(String expressName, String expressNo,
 			String expressNote, String expressPerson, String expressPhone,
 			Integer expressWay, String expressCode) {
-		List<DealerOrderDtl> orderDtls = this.orderDtls;
+		if (status >= 2 || status < 1) {
+			return false;
+		}
+		status = 2;
 		for (DealerOrderDtl dealerOrderDtl : orderDtls) {
 			dealerOrderDtl.updateOrderDetailExpress(expressName,expressNo,expressNote,expressPerson
 					,expressPhone,expressWay, expressCode);
 		}
+		return true;
 	}
 	/***
 	 * 检查是否全部确认收货，除指定的sku外
@@ -256,8 +260,8 @@ public class DealerOrder extends ConcurrencySafeEntity {
 		for (DealerOrderDtl d : orderDtls) {
 			Integer f = freights.get(d.getSkuId());
 			if (f != null) {
-				d.updateFreight(f);
-				frg += f;
+				d.updateFreight(f * 100);
+				frg += f * 100;
 			}
 			else
 				frg += d.getFreight();

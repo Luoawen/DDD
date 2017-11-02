@@ -47,8 +47,8 @@ public class DealerOrderAgent {
 	/**
 	 * 查询订单列表
 	 * 
-	 * @param dealerOrderId
-	 *            商家订单号
+	 * @param dealerId
+	 *            商家ID
 	 * @param orderStatus
 	 *            订单状态
 	 * @param afterSellStatus

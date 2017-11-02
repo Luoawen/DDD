@@ -257,6 +257,11 @@ public class DealerOrderQuery {
 			params.add(hasComment);
 		}
 		
+		if (afterSellStatus != null && afterSellStatus >=0) {
+			sql.append(" AND af._status = ?\r\n");
+			params.add(afterSellStatus);
+		}
+		
 		if (orderType != null && orderType >=0) {
 			sql.append(" AND om.order_type=?\r\n");
 			params.add(orderType);
@@ -375,6 +380,11 @@ public class DealerOrderQuery {
 		if (hasComment != null && hasComment >=0) {
 			sql.append(" AND dtl.comment_status = ?\r\n");
 			params.add(hasComment);
+		}
+		
+		if (afterSellStatus != null && afterSellStatus >=0) {
+			sql.append(" AND af._status = ?\r\n");
+			params.add(afterSellStatus);
 		}
 		
 		if (orderType != null && orderType >=0) {

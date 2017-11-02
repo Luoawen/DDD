@@ -212,6 +212,7 @@ public class OrderAgent {
             ,@RequestParam(value = "expressPerson", required = false) String expressPerson
             ,@RequestParam(value = "phone", required = false) String expressPhone
             ,@RequestParam(value = "expressWay", required = false) int expressWay
+            ,@RequestParam(value = "noted", required = false) String noted
             ) {
     	MResult result = new MResult(MCode.V_1);
         try {
@@ -338,7 +339,7 @@ public class OrderAgent {
       *2更新状态为已发货
       *3发出已发货事件（先不做，后期需要再做）
      */
-    @RequestMapping(value="/dealer/sendOrder", method = RequestMethod.POST)
+    @RequestMapping(value="/dealer/sendOrder", method = RequestMethod.PUT)
     public ResponseEntity<MResult> sendOrder(
     		@RequestParam(value = "dealerOrderId", required = true) String dealerOrderId,
     		@RequestParam(value = "expressNo", required = false) String expressNo,

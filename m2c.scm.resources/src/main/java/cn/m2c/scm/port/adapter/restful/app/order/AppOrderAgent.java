@@ -277,6 +277,7 @@ public class AppOrderAgent {
             ,@RequestParam(value = "skuId", required = false) String skuId
             ,@RequestParam(value = "saleAfterNo", required = false) String saleAfterNo
             ,@RequestParam(value = "expressName", required = false) String expressName
+            ,@RequestParam(value = "noted", required = false) String noted
             ) {
     	MResult result = new MResult(MCode.V_1);
         try {
