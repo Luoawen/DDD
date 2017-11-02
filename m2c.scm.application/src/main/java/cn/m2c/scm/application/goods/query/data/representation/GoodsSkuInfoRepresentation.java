@@ -36,7 +36,7 @@ public class GoodsSkuInfoRepresentation {
      */
     private String goodsPostageId;
     /**
-     * 商品状态，1：仓库中，2：出售中，3：已售罄
+     * 商品状态，1：仓库中，2：出售中，3：已售罄; 4:删除
      */
     private Integer goodsStatus;
 
@@ -75,6 +75,9 @@ public class GoodsSkuInfoRepresentation {
         this.goodsClassifyId = goodsBean.getGoodsClassifyId();
         this.goodsPostageId = goodsBean.getGoodsPostageId();
         this.goodsStatus = goodsBean.getGoodsStatus();
+        if (goodsBean.getDelStatus() == 2) {
+            this.goodsStatus = 4;
+        }
         this.skuId = bean.getSkuId();
         this.skuName = bean.getSkuName();
         this.availableNum = bean.getAvailableNum();
