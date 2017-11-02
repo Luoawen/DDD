@@ -57,7 +57,10 @@ public class HibernateDealerOrderRepository extends HibernateSupperRepository im
 		System.out.println("获取出来的数据-------------------------------"+list);
 		return list;
 	}
-
-	
-
+	@Override
+	public void updateFreight(DealerOrder dealerOrder) {
+		this.session().saveOrUpdate(dealerOrder);
+		session().createQuery("update t_scm_order_main set order_freight = (select sum(a.order_freight) from t_scm_order_dealer a where a.order_id=:orderId) where order_id=:orderId")
+		.setParameter("orderId", dealerOrder.getOrderNo()).executeUpdate();
+	}
 }

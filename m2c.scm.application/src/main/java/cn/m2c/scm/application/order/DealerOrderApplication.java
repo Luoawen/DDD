@@ -107,7 +107,7 @@ public class DealerOrderApplication {
 		boolean updatedFreight = dealerOrder.updateOrderFreight(cmd.getFreights());
 		
 		if (updatedFreight || updatedAddr)
-			dealerOrderRepository.save(dealerOrder);
+			dealerOrderRepository.updateFreight(dealerOrder);
 	}
 	/**
 	 * 更新订单状态<将待收货改为已完成>

@@ -18,12 +18,13 @@ public interface OrderService {
 	public Map<String, Object> judgeStock(Map<String, Integer> skus);
 	/***
 	 * 锁定营销活动
+	 * @param <T>
 	 * @param marketIds
 	 * @param orderNo
 	 * @param userId
 	 * @return 成功与否
 	 */
-	public boolean lockMarketIds(List<String> marketIds, String orderNo, String userId);
+	public <T> boolean lockMarketIds(List<T> marketIds, String orderNo, String userId);
 	/***
 	 * 解锁优惠券
 	 * @param couponsIds
