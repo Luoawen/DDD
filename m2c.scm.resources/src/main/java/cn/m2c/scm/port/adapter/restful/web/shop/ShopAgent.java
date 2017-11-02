@@ -119,7 +119,10 @@ public class ShopAgent {
 		        	ShopInfoUpdateCommand command = new ShopInfoUpdateCommand(dealerId,shopId, shopName, shopIcon, shopIntroduce,shopReceipt, customerServiceTel);
 		        	shopApplication.updateShopInfo(command);
 		            result.setStatus(MCode.V_200);
-		        } catch (Exception e) {
+		        }catch (IllegalArgumentException e) {
+					log.error("修改店铺信息出错出错", e);
+					result = new MResult(MCode.V_1, e.getMessage());
+				}  catch (Exception e) {
 		        	log.error("修改店铺信息出错", e);
 		            result = new MPager(MCode.V_400, "服务器开小差了，请稍后再试");
 		        }
@@ -147,7 +150,10 @@ public class ShopAgent {
 		        	ShopInfoUpdateCommand command = new ShopInfoUpdateCommand(dealerId,shopId, shopName, shopIcon, shopIntroduce, shopReceipt,customerServiceTel);
 		        	shopApplication.addShopInfo(command);
 		            result.setStatus(MCode.V_200);
-		        } catch (Exception e) {
+		        }catch (IllegalArgumentException e) {
+					log.error("修改店铺信息出错出错", e);
+					result = new MResult(MCode.V_1, e.getMessage());
+				} catch (Exception e) {
 		        	log.error("修改店铺信息出错", e);
 		            result = new MPager(MCode.V_400, "服务器开小差了，请稍后再试");
 		        }

@@ -59,21 +59,34 @@ public class DealerAddOrUpdateCommand extends AssertionConcern implements Serial
 			String managerWechat, String managerEmail,
 			String managerDepartment, String sellerId, String sellerName,
 			String sellerPhone) throws NegativeException {
-		if (StringUtils.isEmpty(userPhone)) {
-			throw new NegativeException(MCode.V_1,"请输入用户电话");
-		}
-		if (StringUtils.isEmpty(dealerName)) {
-			throw new NegativeException(MCode.V_1,"请输入用户名");
-		}
-		if (!StringUtils.isEmpty(managerPhone) && managerPhone.length() > 11) {
-			throw new NegativeException(MCode.V_1,"请输入11位电话号码");
-		}
-		if(dealerName.length() > 20) {
-			throw new NegativeException(MCode.V_1,"商家名称不能超过20个字符");
-		}
+		assertArgumentNotNull(dealerId, "经销商不能为空");
+		assertArgumentLength(dealerId, 36, "经销商id过长");
+		
+		assertArgumentNotNull(userId, "用户不能为空");
+		assertArgumentLength(userId, 36, "用户id过长");
+		
+		assertArgumentNotNull(dealerName, "商家名称不能为空");
+		assertArgumentLength(dealerName, 50, "商家名称过长");
+		
+		assertArgumentNotNull(dealerClassify, "商家类型不能为空");
+		assertArgumentLength(dealerClassify, 36, "商家类型过长");
+		
+		assertArgumentNotNull(startSignDate, "开始时间不能为空");
+		assertArgumentLength(startSignDate, 20, "开始时间过长");
+		
+		assertArgumentNotNull(endSignDate, "结束时间不能为空");
+		assertArgumentLength(endSignDate, 20, "结束时间过长");
+		
+		
+		assertArgumentNotNull(dealerAcode, "区域code不能为空");
+		
+		
 		if (null == countMode) {
 			throw new NegativeException(MCode.V_1,"请选择结算方式");
 		}
+		
+		assertArgumentNotNull(sellerId, "请选择业务员");
+		
 		this.dealerId = dealerId;
 		this.userId = userId;
 		this.userName = userName;
