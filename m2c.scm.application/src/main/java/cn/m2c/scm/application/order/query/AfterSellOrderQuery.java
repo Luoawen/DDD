@@ -72,9 +72,11 @@ public class AfterSellOrderQuery {
 			sql.append(" AND after.created_date = ? ");
 			params.add(createDate);
 		}
-		if (null != condition && "".equals(condition)) {
-			sql.append(" AND after.dealer_order_id OR after.after_sell_order_id OR goods.goods_name LIKE ? ");
+		if (null != condition && !"".equals(condition)) {
+			sql.append(" AND (after.dealer_order_id LIKE ? OR after.after_sell_order_id LIKE ? OR goods.goods_name LIKE ?) ");
 			params.add(condition);
+			params.add("%" + condition + "%");
+			params.add("%" + condition + "%");
 			params.add("%" + condition + "%");
 		}
 		if (StringUtils.isNotEmpty(endTime) && StringUtils.isNotEmpty(endTime)) {
@@ -136,9 +138,11 @@ public class AfterSellOrderQuery {
 			sql.append(" AND after.created_date = ? ");
 			params.add(createDate);
 		}
-		if (null != condition && "".equals(condition)) {
-			sql.append(" AND after.dealer_order_id OR after.after_sell_order_id OR goods.goods_name LIKE ? ");
+		if (null != condition && !"".equals(condition)) {
+			sql.append(" AND (after.dealer_order_id LIKE ? OR after.after_sell_order_id LIKE ? OR goods.goods_name LIKE ?) ");
 			params.add(condition);
+			params.add("%" + condition + "%");
+			params.add("%" + condition + "%");
 			params.add("%" + condition + "%");
 		}
 		if (StringUtils.isNotEmpty(endTime) && StringUtils.isNotEmpty(endTime)) {
@@ -150,10 +154,10 @@ public class AfterSellOrderQuery {
 			sql.append(" AND dealer.dealer_classify = ? ");
 			params.add(dealerClassify);
 		}
-		if ("有媒体信息".equals(mediaInfo)) {
+		if ("1".equals(mediaInfo)) {
 			sql.append(" AND detail.media_id != '' ");
 		}
-		if ("无媒体信息".equals(mediaInfo)) {
+		if ("0".equals(mediaInfo)) {
 			sql.append(" AND detail.meidia_id = '' ");
 		}
 
