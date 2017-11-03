@@ -4,6 +4,8 @@ import cn.m2c.scm.application.goods.query.data.bean.GoodsBean;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsSkuBean;
 import cn.m2c.scm.application.utils.ExcelField;
 
+import java.util.Map;
+
 /**
  * 导出
  */
@@ -38,11 +40,13 @@ public class GoodsSupplyPriceModel {
     private String goodsPostageName;
 
 
-    public GoodsSupplyPriceModel(GoodsBean goodsBean, GoodsSkuBean goodsSkuBean, String goodsClassify, String goodsPostageName) {
+    public GoodsSupplyPriceModel(GoodsBean goodsBean, GoodsSkuBean goodsSkuBean, Map goodsClassifyMap, String goodsPostageName) {
         this.dealerName = goodsBean.getDealerName();
         this.goodsName = goodsBean.getGoodsName();
         this.goodsBarCode = goodsBean.getGoodsBarCode();
-        this.goodsClassify = goodsClassify;
+        if (null != goodsClassifyMap) {
+            this.goodsClassify = null == goodsClassifyMap.get("name") ? "" : (String) goodsClassifyMap.get("name");
+        }
         this.goodsBrandName = goodsBean.getGoodsBrandName();
         this.goodsCode = goodsSkuBean.getGoodsCode();
         this.goodsSkuId = goodsSkuBean.getSkuId();

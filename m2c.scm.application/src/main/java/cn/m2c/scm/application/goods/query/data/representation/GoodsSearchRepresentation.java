@@ -7,6 +7,7 @@ import cn.m2c.scm.application.goods.query.data.bean.GoodsSkuBean;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 搜索结果展示
@@ -25,13 +26,15 @@ public class GoodsSearchRepresentation {
     private String dealerId;
     private String goodsId;
 
-    public GoodsSearchRepresentation(GoodsBean bean, String goodsClassify, String dealerType) {
+    public GoodsSearchRepresentation(GoodsBean bean, Map goodsClassifyMap, String dealerType) {
         List<String> mainImages = JsonUtils.toList(bean.getGoodsMainImages(), String.class);
         if (null != mainImages && mainImages.size() > 0) {
             this.goodsImageUrl = mainImages.get(0);
         }
         this.goodsName = bean.getGoodsName();
-        this.goodsClassify = goodsClassify;
+        if (null != goodsClassifyMap) {
+            this.goodsClassify = null == goodsClassifyMap.get("name") ? "" : (String) goodsClassifyMap.get("name");
+        }
         this.brandName = bean.getGoodsBrandName();
         List<GoodsSkuBean> goodsSkuBeans = bean.getGoodsSkuBeans();
         if (null != goodsSkuBeans && goodsSkuBeans.size() > 0) {

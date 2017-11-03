@@ -190,10 +190,14 @@ public class GoodsApprove extends ConcurrencySafeEntity {
         Long marketPrice = GetMapValueUtils.getLongFromMapKey(map, "marketPrice");
         Long supplyPrice = GetMapValueUtils.getLongFromMapKey(map, "supplyPrice");
         String goodsCode = GetMapValueUtils.getStringFromMapKey(map, "goodsCode");
-        Integer showStatus = GetMapValueUtils.getIntFromMapKey(map, "showStatus");
+        Boolean isShow = GetMapValueUtils.getBooleanFromMapKey(map, "showStatus");
+        Integer shwStatus = 1;
+        if (isShow) {
+            shwStatus = 2;
+        }
         GoodsSkuApprove goodsSkuApprove = new GoodsSkuApprove(this, skuId, skuName, availableNum,
                 weight, photographPrice, marketPrice, supplyPrice, goodsCode,
-                showStatus);
+                shwStatus);
         return goodsSkuApprove;
     }
 

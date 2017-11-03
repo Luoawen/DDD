@@ -202,7 +202,7 @@ public class GoodsQueryApplication {
         return goodsBean;
     }
 
-    public List<GoodsBean> goodsChoice(String goodsClassifyId, String condition,
+    public List<GoodsBean> goodsChoice(String dealerId, String goodsClassifyId, String condition,
                                        Integer pageNum, Integer rows) {
         List<Object> params = new ArrayList<Object>();
         StringBuilder sql = new StringBuilder();
@@ -210,13 +210,19 @@ public class GoodsQueryApplication {
         sql.append(" g.* ");
         sql.append(" FROM ");
         sql.append(" t_scm_goods g,t_scm_goods_sku s WHERE g.id=s.goods_id");
+        if (StringUtils.isNotEmpty(dealerId)) {
+            sql.append(" AND g.dealer_id = ? ");
+            params.add(dealerId);
+        }
         if (StringUtils.isNotEmpty(goodsClassifyId)) {
             List<String> goodsClassifyIds = goodsClassifyQueryApplication.recursionQueryGoodsSubClassifyId(goodsClassifyId, new ArrayList<String>());
             goodsClassifyIds.add(goodsClassifyId);
             sql.append(" AND g.goods_classify_id in (" + Utils.listParseString(goodsClassifyIds) + ") ");
         }
         if (StringUtils.isNotEmpty(condition)) {
-            sql.append(" AND g.goods_name like ? ");
+            sql.append(" AND (g.goods_name like ? OR g.goods_sub_title like ? OR g.goods_id like ?");
+            params.add("%" + condition + "%");
+            params.add("%" + condition + "%");
             params.add("%" + condition + "%");
         }
         sql.append(" AND g.del_status= 1 group by g.goods_id ORDER BY g.created_date desc,s.photograph_price desc ");
@@ -233,20 +239,26 @@ public class GoodsQueryApplication {
         return goodsBeanList;
     }
 
-    public Integer goodsChoiceTotal(String goodsClassifyId, String condition) {
+    public Integer goodsChoiceTotal(String dealerId, String goodsClassifyId, String condition) {
         List<Object> params = new ArrayList<Object>();
         StringBuilder sql = new StringBuilder();
         sql.append(" SELECT ");
         sql.append(" count(distinct g.goods_id) ");
         sql.append(" FROM ");
         sql.append(" t_scm_goods g,t_scm_goods_sku s WHERE g.id=s.goods_id");
+        if (StringUtils.isNotEmpty(dealerId)) {
+            sql.append(" AND g.dealer_id = ? ");
+            params.add(dealerId);
+        }
         if (StringUtils.isNotEmpty(goodsClassifyId)) {
             List<String> goodsClassifyIds = goodsClassifyQueryApplication.recursionQueryGoodsSubClassifyId(goodsClassifyId, new ArrayList<String>());
             goodsClassifyIds.add(goodsClassifyId);
             sql.append(" AND g.goods_classify_id in (" + Utils.listParseString(goodsClassifyIds) + ") ");
         }
         if (StringUtils.isNotEmpty(condition)) {
-            sql.append(" AND g.goods_name like ? ");
+            sql.append(" AND (g.goods_name like ? OR g.goods_sub_title like ? OR g.goods_id like ?");
+            params.add("%" + condition + "%");
+            params.add("%" + condition + "%");
             params.add("%" + condition + "%");
         }
         sql.append(" AND g.del_status= 1");

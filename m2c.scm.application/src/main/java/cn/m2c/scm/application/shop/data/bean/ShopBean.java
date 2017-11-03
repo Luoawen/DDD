@@ -24,19 +24,19 @@ public class ShopBean {
 	@ColumnAlias(value = "on_sale_goods")
 	private Integer onSaleGoods;
 
-	private String userId;
-
-	/** 店铺是否被关注 0:未关注  1：已被关注 **/
+	/** 是否已关注 0：未关注 1：已关注 **/
 	private Integer isFocus;
+
+	private String userId;
 
 	public ShopBean() {
 		super();
 	}
 
 	public ShopBean(String dealerId, String shopId, String shopName, String dealerName, String shopIcon,
-			String shopIntroduce, String shopReceipt, String customerServiceTel, Integer onSaleGoods, String userId) {
-		super();
-		if(StringUtils.isEmpty(userId)) {
+			String shopIntroduce, String shopReceipt, String customerServiceTel, Integer onSaleGoods) {
+		
+		if (StringUtils.isEmpty(userId)) {
 			this.isFocus = 0;
 		}
 		this.dealerId = dealerId;
@@ -48,7 +48,6 @@ public class ShopBean {
 		this.shopReceipt = shopReceipt;
 		this.customerServiceTel = customerServiceTel;
 		this.onSaleGoods = onSaleGoods;
-		this.userId = userId;
 	}
 
 	public String getDealerId() {
@@ -59,28 +58,28 @@ public class ShopBean {
 		this.dealerId = dealerId;
 	}
 
-	public String getUserId() {
-		return userId;
-	}
-
-	public void setUserId(String userId) {
-		this.userId = userId;
-	}
-
 	public String getShopId() {
 		return shopId;
+	}
+
+	public void setShopId(String shopId) {
+		this.shopId = shopId;
 	}
 
 	public Integer getIsFocus() {
 		return isFocus;
 	}
 
+	public String getUserId() {
+		return userId;
+	}
+
 	public void setIsFocus(Integer isFocus) {
 		this.isFocus = isFocus;
 	}
 
-	public void setShopId(String shopId) {
-		this.shopId = shopId;
+	public void setUserId(String userId) {
+		this.userId = userId;
 	}
 
 	public String getShopName() {

@@ -6,6 +6,7 @@ import cn.m2c.scm.domain.service.goods.GoodsService;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baidu.disconf.client.usertools.DisconfDataGetter;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
