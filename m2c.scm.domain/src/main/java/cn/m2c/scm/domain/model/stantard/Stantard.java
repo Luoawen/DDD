@@ -2,15 +2,16 @@ package cn.m2c.scm.domain.model.stantard;
 
 import java.util.Date;
 
+import cn.m2c.ddd.common.domain.model.ConcurrencySafeEntity;
+
 /**
  * 规格说明
  * 
  * @author lqwen
  *
  */
-public class Stantard {
+public class Stantard extends ConcurrencySafeEntity{
 
-	private Integer id;
 	
 	private String stantardId;
 

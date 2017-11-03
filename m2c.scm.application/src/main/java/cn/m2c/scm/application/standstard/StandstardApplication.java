@@ -29,7 +29,7 @@ public class StandstardApplication {
 	public void addStantard(StantardCommand command) throws NegativeException{
     	LOGGER.info("addStantard command >> {}",command);
     	
-    	if (stantardRepository.stantardNameIsRepeat(command.getStantardName())) {
+    	if (stantardRepository.stantardNameIsRepeat(command.getStantardName()) != null) {
 			throw new NegativeException(MCode.V_301,"规格已存在");
 		}
     	Stantard stantard = stantardRepository.getStantardByStantardId(command.getStantardId());
@@ -67,7 +67,7 @@ public class StandstardApplication {
 	    public void modifyStantard(StantardCommand command) throws NegativeException {
 	    	LOGGER.info("modify stantardName >>{}",command.getStantardName());
 	    	
-	    	if (stantardRepository.stantardNameIsRepeat(command.getStantardName())) {
+	    	if (stantardRepository.stantardNameIsRepeat(command.getStantardName()) != null) {
 				throw new NegativeException(MCode.V_301,"规格已存在");
 			}
 	    	Stantard stantard = stantardRepository.getStantardByStantardId(command.getStantardId());
