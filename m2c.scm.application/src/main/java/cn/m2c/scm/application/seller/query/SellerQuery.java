@@ -43,7 +43,7 @@ public class SellerQuery {
 	            sql.append(" WHERE ");
 	            sql.append(" sds.seller_status = 1 ");
 	            if(filter!=null && !"".equals(filter)){
-	            	sql.append(" AND (sds.seller_name LIKE concat('%', ?,'%') or sds.seller_phone LIKE concat('%', ?,'%'))");
+	            	sql.append(" AND (sds.seller_name LIKE concat('%', ?,'%') or sds.seller_phone = ?)");
 	            	params.add(filter);
 	            	params.add(filter);
 	            }
