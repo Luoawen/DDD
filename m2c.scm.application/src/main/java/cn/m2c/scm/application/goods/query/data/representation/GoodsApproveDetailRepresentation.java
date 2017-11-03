@@ -35,6 +35,7 @@ public class GoodsApproveDetailRepresentation {
     private Float serviceRate;//服务费率
     private Integer skuFlag;
     private String goodsPostageId;
+    private Integer goodsShelves;
 
     public GoodsApproveDetailRepresentation(GoodsApproveBean bean, Map goodsClassifyMap,
                                             List<GoodsGuaranteeBean> goodsGuarantees, String goodsUnitName,
@@ -71,6 +72,7 @@ public class GoodsApproveDetailRepresentation {
         this.serviceRate = serviceRate;
         this.skuFlag = bean.getSkuFlag();
         this.goodsPostageId = bean.getGoodsPostageId();
+        this.goodsShelves = bean.getGoodsShelves();
     }
 
     public String getGoodsName() {
@@ -255,5 +257,13 @@ public class GoodsApproveDetailRepresentation {
 
     public void setGoodsClassifyIds(List goodsClassifyIds) {
         this.goodsClassifyIds = goodsClassifyIds;
+    }
+
+    public Integer getGoodsShelves() {
+        return goodsShelves;
+    }
+
+    public void setGoodsShelves(Integer goodsShelves) {
+        this.goodsShelves = goodsShelves;
     }
 }
