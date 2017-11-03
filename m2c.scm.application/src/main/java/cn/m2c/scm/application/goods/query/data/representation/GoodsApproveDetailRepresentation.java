@@ -4,6 +4,7 @@ import cn.m2c.common.JsonUtils;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsApproveBean;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsGuaranteeBean;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -22,7 +23,7 @@ public class GoodsApproveDetailRepresentation {
     private Integer goodsMinQuantity;
     private String goodsBarCode;
     private List<String> goodsKeyWord;
-    private List<Map> goodsGuarantee;
+    private List<String> goodsGuarantee;
     private List<Map> goodsSpecifications;
     private List<Map> goodsSKUs;
     private List<String> goodsMainImages;
@@ -34,7 +35,7 @@ public class GoodsApproveDetailRepresentation {
     private Integer skuFlag;
 
     public GoodsApproveDetailRepresentation(GoodsApproveBean bean, String goodsClassify,
-                                            List<GoodsGuaranteeBean> goodsGuarantee, String goodsUnitName,
+                                            List<GoodsGuaranteeBean> goodsGuarantees, String goodsUnitName,
                                             Integer settlementMode, Float serviceRate) {
         this.goodsName = bean.getGoodsName();
         this.goodsSubTitle = bean.getGoodsSubTitle();
@@ -47,7 +48,14 @@ public class GoodsApproveDetailRepresentation {
         this.goodsMinQuantity = bean.getGoodsMinQuantity();
         this.goodsBarCode = bean.getGoodsBarCode();
         this.goodsKeyWord = JsonUtils.toList(bean.getGoodsKeyWord(), String.class);
-        this.goodsGuarantee = JsonUtils.toList(JsonUtils.toStr(goodsGuarantee), Map.class);
+        if (null != goodsGuarantees && goodsGuarantees.size() > 0) {
+            if (null == goodsGuarantee) {
+                this.goodsGuarantee = new ArrayList<>();
+            }
+            for (GoodsGuaranteeBean guaranteeBean : goodsGuarantees) {
+                this.goodsGuarantee.add(guaranteeBean.getGuaranteeDesc());
+            }
+        }
         this.goodsSpecifications = JsonUtils.toList(bean.getGoodsSpecifications(), Map.class);
         this.goodsSKUs = JsonUtils.toList(JsonUtils.toStr(bean.getGoodsSkuApproves()), Map.class);
         this.goodsMainImages = JsonUtils.toList(bean.getGoodsMainImages(), String.class);
@@ -195,14 +203,6 @@ public class GoodsApproveDetailRepresentation {
         this.goodsKeyWord = goodsKeyWord;
     }
 
-    public List<Map> getGoodsGuarantee() {
-        return goodsGuarantee;
-    }
-
-    public void setGoodsGuarantee(List<Map> goodsGuarantee) {
-        this.goodsGuarantee = goodsGuarantee;
-    }
-
     public Integer getSettlementMode() {
         return settlementMode;
     }
@@ -225,5 +225,13 @@ public class GoodsApproveDetailRepresentation {
 
     public void setSkuFlag(Integer skuFlag) {
         this.skuFlag = skuFlag;
+    }
+
+    public List<String> getGoodsGuarantee() {
+        return goodsGuarantee;
+    }
+
+    public void setGoodsGuarantee(List<String> goodsGuarantee) {
+        this.goodsGuarantee = goodsGuarantee;
     }
 }
