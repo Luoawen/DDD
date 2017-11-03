@@ -233,4 +233,36 @@ public class GoodsQueryAgent {
         }
         return new ResponseEntity<MResult>(result, HttpStatus.OK);
     }
+    
+    /**
+     * 根据商品Id查询识别图id和url(支持多个)
+     * 
+     * @param goodsIds 多个商品ID逗号分隔
+     * @return
+     */
+    @RequestMapping(value = "/recognizeds", method = RequestMethod.GET)
+    public ResponseEntity<MResult> queryRecognizedsByGoodsIds(
+    		@RequestParam(value = "goodsIds", required = false) List<String> goodsIds){
+    	MResult result = new MResult(MCode.V_1);
+    	try {
+            List<GoodsBean> goodsBeans = goodsQueryApplication.queryAllGoodsByGoodsIds(goodsIds);
+            if (null != goodsBeans && goodsBeans.size() > 0) {
+                Map map = new HashMap<>();
+                for (GoodsBean goodsBean : goodsBeans) {
+                	Map recognizedMap = new HashMap<>();
+                	String recognizedId = goodsBean.getRecognizedId();
+                	String recognizedUrl = goodsBean.getRecognizedUrl(); 
+                	recognizedMap.put("recognizedId", recognizedId);
+                	recognizedMap.put("recognizedUrl", recognizedUrl);
+                    map.put(goodsBean.getGoodsId(), recognizedMap);
+                }
+                result.setContent(map);
+            }
+            result.setStatus(MCode.V_200);
+        } catch (Exception e) {
+            LOGGER.error("queryRecognizedsByGoodsIds Exception e:", e);
+            result = new MResult(MCode.V_400, "查询商品识别图失败");
+        }
+        return new ResponseEntity<MResult>(result, HttpStatus.OK);
+    }
 }
