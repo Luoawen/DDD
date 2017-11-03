@@ -220,7 +220,7 @@ public class GoodsQueryApplication {
             sql.append(" AND g.goods_classify_id in (" + Utils.listParseString(goodsClassifyIds) + ") ");
         }
         if (StringUtils.isNotEmpty(condition)) {
-            sql.append(" AND (g.goods_name like ? OR g.goods_sub_title like ? OR g.goods_id like ?");
+            sql.append(" AND (g.goods_name like ? OR g.goods_sub_title like ? OR g.goods_id like ? )");
             params.add("%" + condition + "%");
             params.add("%" + condition + "%");
             params.add("%" + condition + "%");
@@ -256,7 +256,7 @@ public class GoodsQueryApplication {
             sql.append(" AND g.goods_classify_id in (" + Utils.listParseString(goodsClassifyIds) + ") ");
         }
         if (StringUtils.isNotEmpty(condition)) {
-            sql.append(" AND (g.goods_name like ? OR g.goods_sub_title like ? OR g.goods_id like ?");
+            sql.append(" AND (g.goods_name like ? OR g.goods_sub_title like ? OR g.goods_id like ? )");
             params.add("%" + condition + "%");
             params.add("%" + condition + "%");
             params.add("%" + condition + "%");
