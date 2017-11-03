@@ -56,8 +56,7 @@ public class AfterSellOrderQuery {
 		sql.append(
 				" after.after_sell_order_id,after.order_id,after.order_type,after.back_money,after._status,dealer.dealer_name,after.created_date ");
 		sql.append(" FROM t_scm_order_after_sell after");
-		sql.append(" LEFT JOIN t_scm_dealer dealer ON after.dealer_id = dealer.dealer_id ");
-		sql.append(" LEFT JOIN t_scm_goods goods ON after.goods_id = goods.goods_id ");
+		sql.append(" LEFT JOIN t_scm_order_main main ON after.order_id = main.order_id ");
 		sql.append(" LEFT JOIN t_scm_order_detail detail ON after.dealer_order_id = detail.dealer_order_id ");
 		sql.append(" WHERE 1 = 1 ");
 		if (null != orderType) {
@@ -96,6 +95,8 @@ public class AfterSellOrderQuery {
 		sql.append(" LIMIT ?,?");
 		params.add(rows * (pageNum - 1));
 		params.add(rows);
+		
+		System.out.println("    SHOW    LIST  SQL---------------------------------"+sql);
 		return this.supportJdbcTemplate.queryForBeanList(sql.toString(), AfterSellOrderBean.class, params.toArray());
 	}
 
@@ -155,6 +156,7 @@ public class AfterSellOrderQuery {
 			sql.append(" AND detail.meidia_id = '' ");
 		}
 
+		System.out.println("SHOW   TOTAL SQL ----------------------------------------"+sql);
 		return this.supportJdbcTemplate.jdbcTemplate().queryForObject(sql.toString(), Integer.class, params.toArray());
 
 	}
