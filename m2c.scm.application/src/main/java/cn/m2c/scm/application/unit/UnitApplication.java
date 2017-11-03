@@ -29,13 +29,14 @@ public class UnitApplication {
     @Transactional(rollbackFor = {Exception.class,RuntimeException.class,NegativeException.class})
     public void addUnit(UnitCommand command) throws NegativeException{
     	LOGGER.info("addUnit command >> {}",command);
-    	
-    	if (unitRepository.unitNameIsRepeat(command.getUnitName())) {
+    	System.out.println(command);
+    	Unit unitByName = unitRepository.unitNameIsRepeat(command.getUnitName());
+    	if (unitByName!=null) {
 			throw new NegativeException(MCode.V_301,"计量单位已存在");
 		}
     	Unit unit = unitRepository.getUnitByUnitId(command.getUnitId());
     	if (null == unit) {
-			unit = new Unit(command.getUnitId(),command.getUnitName(), command.getUnitStatus());
+			unit = new Unit(command.getUnitId(),command.getUnitName());
 			unitRepository.saveUnit(unit);
 		}
     }
@@ -66,8 +67,8 @@ public class UnitApplication {
     @Transactional(rollbackFor = {Exception.class,RuntimeException.class,NegativeException.class})
     public void modifyUnit(UnitCommand command) throws NegativeException {
     	LOGGER.info("modify unitName >>{}",command.getUnitName());
-    	
-    	if (unitRepository.unitNameIsRepeat(command.getUnitName())) {
+    	Unit unitByName = unitRepository.unitNameIsRepeat(command.getUnitName());
+    	if (unitByName!=null) {
 			throw new NegativeException(MCode.V_301,"计量单位已存在");
 		}
     	Unit unit = unitRepository.getUnitByUnitId(command.getUnitId());

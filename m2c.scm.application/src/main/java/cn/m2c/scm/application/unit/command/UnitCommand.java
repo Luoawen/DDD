@@ -8,17 +8,16 @@ import cn.m2c.common.MCode;
 import cn.m2c.ddd.common.AssertionConcern;
 import cn.m2c.scm.domain.NegativeException;
 
-public class UnitCommand extends AssertionConcern implements Serializable{
+public class UnitCommand extends AssertionConcern implements Serializable {
 
-	//计量单位Id
+	// 计量单位Id
 	private String unitId;
-	//计量单位名称
+	// 计量单位名称
 	private String unitName;
-	
+
 	private Integer unitStatus = 1;
-	
-	
-	public UnitCommand(String unitId,String unitName) throws NegativeException {
+
+	public UnitCommand(String unitId, String unitName) throws NegativeException {
 		if (StringUtils.isEmpty(unitId)) {
 			throw new NegativeException(MCode.V_1, "计量ID名称没有参数(unitId)");
 		}
@@ -32,13 +31,18 @@ public class UnitCommand extends AssertionConcern implements Serializable{
 	public String getUnitId() {
 		return unitId;
 	}
-	
+
 	public String getUnitName() {
 		return unitName;
 	}
 
 	public Integer getUnitStatus() {
 		return unitStatus;
+	}
+
+	@Override
+	public String toString() {
+		return "UnitCommand [unitId=" + unitId + ", unitName=" + unitName + ", unitStatus=" + unitStatus + "]";
 	}
 
 }

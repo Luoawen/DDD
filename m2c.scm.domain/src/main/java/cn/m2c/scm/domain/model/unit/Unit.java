@@ -18,7 +18,6 @@ public class Unit extends ConcurrencySafeEntity {
 	 */
 	private static final long serialVersionUID = -4137714621787020003L;
 	
-	private Integer id;
 	private String unitId;
 	private String unitName;        //计量单位名
 	private Date createdDate;
@@ -33,10 +32,9 @@ public class Unit extends ConcurrencySafeEntity {
 		super();
 	}
 
-	public Unit(String unitId,String unitName,Integer unitstatues) {
+	public Unit(String unitId,String unitName) {
 		this.unitId = unitId;
 		this.unitName = unitName;
-		this.unitStatus = unitstatues;
 	}
 	
 	/**

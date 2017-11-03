@@ -21,7 +21,7 @@ public class HibernateStantardRepository extends HibernateSupperRepository imple
 	 */
 	@Override
 	public boolean stantardNameIsRepeat(String stantardName) {
-		StringBuffer sql = new StringBuffer("select * from t_scm_stantard  where stantard_status = 1 AND stantard_name =:stantard_name");
+		StringBuffer sql = new StringBuffer("select s.stantard_name  from t_scm_stantard s where stantard_status = 1 AND stantard_name =:stantard_name");
 		Query query = this.session().createSQLQuery(sql.toString()).addEntity(Stantard.class);
 		query.setParameter("stantard_name", stantardName);
 		List list = query.list();
@@ -36,7 +36,7 @@ public class HibernateStantardRepository extends HibernateSupperRepository imple
 	 */
 	@Override
 	public Stantard getStantardByStantardId(String stantardId) {
-		StringBuffer sql = new StringBuffer("select * from t_scm_stantard where stantard_status = 1 AND stantard_id =:stantard_id");
+		StringBuffer sql = new StringBuffer("select stantard_id,stantard_name,stantar from t_scm_stantard where stantard_status = 1 AND stantard_id =:stantard_id");
 		Query query = this.session().createSQLQuery(sql.toString()).addEntity(Stantard.class);
 		query.setParameter("stantard_id", stantardId);
 		return (Stantard) query.uniqueResult();

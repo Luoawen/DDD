@@ -69,7 +69,6 @@ public class UnitAgent {
 	 */
 	@RequestMapping(value = "", method = RequestMethod.DELETE)
 	public ResponseEntity<MResult> delUnit(@RequestParam(value = "unitId", required = false) String unitId) {
-		System.out.println("删除计量单位------------------------");
 		MResult result = new MResult(MCode.V_1);
 		try {
 			unitApplication.delUnit(unitId);
