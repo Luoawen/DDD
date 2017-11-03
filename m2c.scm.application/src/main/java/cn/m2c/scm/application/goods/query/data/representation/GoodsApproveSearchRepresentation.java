@@ -7,6 +7,7 @@ import cn.m2c.scm.application.goods.query.data.bean.GoodsSkuApproveBean;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 搜索结果展示
@@ -25,14 +26,16 @@ public class GoodsApproveSearchRepresentation {
     private String dealerId;
     private String rejectReason;
 
-    public GoodsApproveSearchRepresentation(GoodsApproveBean bean, String goodsClassify, String dealerType) {
+    public GoodsApproveSearchRepresentation(GoodsApproveBean bean, Map goodsClassifyMap, String dealerType) {
         List<String> mainImages = JsonUtils.toList(bean.getGoodsMainImages(), String.class);
         if (null != mainImages && mainImages.size() > 0) {
             this.goodsImageUrl = mainImages.get(0);
         }
         this.goodsId = bean.getGoodsId();
         this.goodsName = bean.getGoodsName();
-        this.goodsClassify = goodsClassify;
+        if (null != goodsClassifyMap) {
+            this.goodsClassify = null == goodsClassifyMap.get("name") ? "" : (String) goodsClassifyMap.get("name");
+        }
         this.brandName = bean.getGoodsBrandName();
         List<GoodsSkuApproveBean> goodsSkuBeans = bean.getGoodsSkuApproves();
         if (null != goodsSkuBeans && goodsSkuBeans.size() > 0) {

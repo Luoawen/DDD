@@ -346,8 +346,8 @@ public class GoodsApproveAgent {
                         if (null != dealerBean) {
                             dealerType = null != dealerBean.getDealerClassifyBean() ? dealerBean.getDealerClassifyBean().getDealerSecondClassifyName() : "";
                         }
-                        String goodsClassify = goodsClassifyQueryApplication.getClassifyNames(bean.getGoodsClassifyId());
-                        representations.add(new GoodsApproveSearchRepresentation(bean, goodsClassify, dealerType));
+                        Map goodsClassifyMap = goodsClassifyQueryApplication.getClassifyMap(bean.getGoodsClassifyId());
+                        representations.add(new GoodsApproveSearchRepresentation(bean, goodsClassifyMap, dealerType));
                     }
                     result.setContent(representations);
                 }
@@ -375,7 +375,7 @@ public class GoodsApproveAgent {
         try {
             GoodsApproveBean goodsBean = goodsApproveQueryApplication.queryGoodsApproveByGoodsId(goodsId);
             if (null != goodsBean) {
-                String goodsClassify = goodsClassifyQueryApplication.getClassifyNames(goodsBean.getGoodsClassifyId());
+                Map goodsClassifyMap = goodsClassifyQueryApplication.getClassifyMap(goodsBean.getGoodsClassifyId());
                 List<GoodsGuaranteeBean> goodsGuarantee = goodsGuaranteeQueryApplication.queryGoodsGuaranteeByIds(JsonUtils.toList(goodsBean.getGoodsGuarantee(), String.class));
                 String goodsUnitName = unitQuery.getUnitNameByUnitId(goodsBean.getGoodsUnitId());
                 //结算模式 1：按供货价 2：按服务费率
@@ -385,7 +385,7 @@ public class GoodsApproveAgent {
                     serviceRate = goodsClassifyQueryApplication.queryServiceRateByClassifyId(goodsBean.getGoodsClassifyId());
                 }
                 GoodsApproveDetailRepresentation representation = new GoodsApproveDetailRepresentation(goodsBean,
-                        goodsClassify, goodsGuarantee, goodsUnitName, settlementMode, serviceRate);
+                        goodsClassifyMap, goodsGuarantee, goodsUnitName, settlementMode, serviceRate);
                 result.setContent(representation);
             }
             result.setStatus(MCode.V_200);

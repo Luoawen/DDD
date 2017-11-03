@@ -15,6 +15,7 @@ public class GoodsApproveDetailRepresentation {
     private String goodsName;
     private String goodsSubTitle;
     private String goodsClassifyId;
+    private List goodsClassifyIds;
     private String goodsClassify;
     private String goodsBrandId;
     private String goodsBrandName;
@@ -35,13 +36,16 @@ public class GoodsApproveDetailRepresentation {
     private Integer skuFlag;
     private String goodsPostageId;
 
-    public GoodsApproveDetailRepresentation(GoodsApproveBean bean, String goodsClassify,
+    public GoodsApproveDetailRepresentation(GoodsApproveBean bean, Map goodsClassifyMap,
                                             List<GoodsGuaranteeBean> goodsGuarantees, String goodsUnitName,
                                             Integer settlementMode, Float serviceRate) {
         this.goodsName = bean.getGoodsName();
         this.goodsSubTitle = bean.getGoodsSubTitle();
         this.goodsClassifyId = bean.getGoodsClassifyId();
-        this.goodsClassify = goodsClassify;
+        if (null != goodsClassifyMap) {
+            this.goodsClassify = null == goodsClassifyMap.get("name") ? "" : (String) goodsClassifyMap.get("name");
+            this.goodsClassifyIds = null == goodsClassifyMap.get("ids") ? null : (List) goodsClassifyMap.get("ids");
+        }
         this.goodsBrandId = bean.getGoodsBrandId();
         this.goodsBrandName = bean.getGoodsBrandName();
         this.goodsUnitId = bean.getGoodsUnitId();
@@ -243,5 +247,13 @@ public class GoodsApproveDetailRepresentation {
 
     public void setGoodsPostageId(String goodsPostageId) {
         this.goodsPostageId = goodsPostageId;
+    }
+
+    public List getGoodsClassifyIds() {
+        return goodsClassifyIds;
+    }
+
+    public void setGoodsClassifyIds(List goodsClassifyIds) {
+        this.goodsClassifyIds = goodsClassifyIds;
     }
 }
