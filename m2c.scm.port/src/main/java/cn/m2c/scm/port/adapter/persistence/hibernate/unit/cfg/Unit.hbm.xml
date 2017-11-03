@@ -6,7 +6,7 @@
 	<class name="cn.m2c.scm.domain.model.unit.Unit" table="t_scm_unit"
 		lazy="true" optimistic-lock="version" dynamic-insert="true"
 		dynamic-update="true">
-		<id name="id" column="id" type="int" unsaved-value="-1">
+		<id name="id" column="id" type="long" unsaved-value="-1">
 			<generator class="native" />
 		</id>
 		<version name="concurrencyVersion" column="concurrency_version" type="int" />
