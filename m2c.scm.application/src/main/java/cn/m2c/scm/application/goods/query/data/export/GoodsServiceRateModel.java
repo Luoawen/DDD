@@ -4,6 +4,8 @@ import cn.m2c.scm.application.goods.query.data.bean.GoodsBean;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsSkuBean;
 import cn.m2c.scm.application.utils.ExcelField;
 
+import java.util.Map;
+
 /**
  * 导出
  */
@@ -37,11 +39,13 @@ public class GoodsServiceRateModel {
     @ExcelField(title = "运费模板")
     private String goodsPostageName;
 
-    public GoodsServiceRateModel(GoodsBean goodsBean, GoodsSkuBean goodsSkuBean, String goodsClassify, Float serviceRate, String goodsPostageName) {
+    public GoodsServiceRateModel(GoodsBean goodsBean, GoodsSkuBean goodsSkuBean, Map goodsClassifyMap, Float serviceRate, String goodsPostageName) {
         this.dealerName = goodsBean.getDealerName();
         this.goodsName = goodsBean.getGoodsName();
         this.goodsBarCode = goodsBean.getGoodsBarCode();
-        this.goodsClassify = goodsClassify;
+        if (null != goodsClassifyMap) {
+            this.goodsClassify = null == goodsClassifyMap.get("name") ? "" : (String) goodsClassifyMap.get("name");
+        }
         this.goodsBrandName = goodsBean.getGoodsBrandName();
         this.goodsCode = goodsSkuBean.getGoodsCode();
         this.goodsSkuId = goodsSkuBean.getSkuId();

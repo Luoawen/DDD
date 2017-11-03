@@ -283,8 +283,8 @@ public class GoodsAgent {
                         if (null != dealerBean) {
                             dealerType = null != dealerBean.getDealerClassifyBean() ? dealerBean.getDealerClassifyBean().getDealerSecondClassifyName() : "";
                         }
-                        String goodsClassify = goodsClassifyQueryApplication.getClassifyNames(bean.getGoodsClassifyId());
-                        representations.add(new GoodsSearchRepresentation(bean, goodsClassify, dealerType));
+                        Map goodsClassifyMap = goodsClassifyQueryApplication.getClassifyMap(bean.getGoodsClassifyId());
+                        representations.add(new GoodsSearchRepresentation(bean, goodsClassifyMap, dealerType));
                     }
                     result.setContent(representations);
                 }
@@ -312,7 +312,7 @@ public class GoodsAgent {
         try {
             GoodsBean goodsBean = goodsQueryApplication.queryGoodsByGoodsId(goodsId);
             if (null != goodsBean) {
-                String goodsClassify = goodsClassifyQueryApplication.getClassifyNames(goodsBean.getGoodsClassifyId());
+                Map goodsClassifyMap = goodsClassifyQueryApplication.getClassifyMap(goodsBean.getGoodsClassifyId());
                 List<GoodsGuaranteeBean> goodsGuarantee = goodsGuaranteeQueryApplication.queryGoodsGuaranteeByIds(JsonUtils.toList(goodsBean.getGoodsGuarantee(), String.class));
                 String goodsUnitName = unitQuery.getUnitNameByUnitId(goodsBean.getGoodsUnitId());
                 //结算模式 1：按供货价 2：按服务费率
@@ -321,7 +321,7 @@ public class GoodsAgent {
                 if (settlementMode == 2) {
                     serviceRate = goodsClassifyQueryApplication.queryServiceRateByClassifyId(goodsBean.getGoodsClassifyId());
                 }
-                GoodsDetailRepresentation representation = new GoodsDetailRepresentation(goodsBean, goodsClassify,
+                GoodsDetailRepresentation representation = new GoodsDetailRepresentation(goodsBean, goodsClassifyMap,
                         goodsGuarantee, goodsUnitName, settlementMode, serviceRate);
                 result.setContent(representation);
             }

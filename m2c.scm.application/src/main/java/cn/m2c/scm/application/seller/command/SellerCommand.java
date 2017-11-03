@@ -185,8 +185,10 @@ public class SellerCommand extends AssertionConcern implements Serializable{
 		assertArgumentNotEmpty(sellerAcode, "请选择区域");
 		assertArgumentLength(sellerAcode, 6, "业务员区code长度不合法");
 		
-		assertArgumentLength(sellerqq, 15, "qq号过长");
-		assertArgumentLength(sellerWechat, 20, "微信号过长");
+		if(sellerqq!=null && !"".equals(sellerqq))
+			assertArgumentLength(sellerqq, 15, "qq号过长");
+		if(sellerWechat!=null && !"".equals(sellerWechat))
+			assertArgumentLength(sellerWechat, 20, "微信号过长");
 		this.sellerId = sellerId;
 		this.sellerName = sellerName;
 		this.sellerPhone = sellerPhone;

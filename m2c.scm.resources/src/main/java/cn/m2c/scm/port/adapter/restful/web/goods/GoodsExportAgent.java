@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 商品导出
@@ -55,7 +56,7 @@ public class GoodsExportAgent {
 
             for (GoodsBean goodsBean : goodsBeanList) {
                 List<GoodsSkuBean> goodsSkuBeanList = goodsBean.getGoodsSkuBeans();
-                String goodsClassify = goodsClassifyQueryApplication.getClassifyNames(goodsBean.getGoodsClassifyId());
+                Map goodsClassifyMap = goodsClassifyQueryApplication.getClassifyMap(goodsBean.getGoodsClassifyId());
                 Float serviceRate = null;
                 if (settlementMode == 2) {
                     serviceRate = goodsClassifyQueryApplication.queryServiceRateByClassifyId(goodsBean.getGoodsClassifyId());
@@ -63,10 +64,10 @@ public class GoodsExportAgent {
                 String goodsPostageName = postageModelQueryApplication.getPostageModelNameByModelId(goodsBean.getGoodsPostageId());
                 for (GoodsSkuBean goodsSkuBean : goodsSkuBeanList) {
                     if (settlementMode == 2) {
-                        GoodsServiceRateModel goodsServiceRateModel = new GoodsServiceRateModel(goodsBean, goodsSkuBean, goodsClassify,
+                        GoodsServiceRateModel goodsServiceRateModel = new GoodsServiceRateModel(goodsBean, goodsSkuBean, goodsClassifyMap,
                                 serviceRate, goodsPostageName);
                     } else {
-                        GoodsSupplyPriceModel goodsSupplyPriceModel = new GoodsSupplyPriceModel(goodsBean, goodsSkuBean, goodsClassify,
+                        GoodsSupplyPriceModel goodsSupplyPriceModel = new GoodsSupplyPriceModel(goodsBean, goodsSkuBean, goodsClassifyMap,
                                 goodsPostageName);
                         goodsSupplyPriceModels.add(goodsSupplyPriceModel);
                     }
