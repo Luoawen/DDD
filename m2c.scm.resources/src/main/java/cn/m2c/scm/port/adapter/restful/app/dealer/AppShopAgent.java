@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import cn.m2c.common.MCode;
@@ -29,7 +30,8 @@ public class AppShopAgent {
 	 ShopQuery shopQuery;
 	 
 	@RequestMapping(value = "/{dealerId}", method = RequestMethod.GET)
-	 public ResponseEntity<MResult> getShopInfo(@PathVariable(value="dealerId") String dealerId) {
+	 public ResponseEntity<MResult> getShopInfo(@PathVariable(value="dealerId") String dealerId,
+			 @RequestParam(value = "userId",required = false) String userId) {
     	MResult result = new MResult(MCode.V_1);
         try {
         	ShopBean appShopInfo = shopQuery.getAppShopInfo(dealerId);

@@ -172,7 +172,7 @@ public class SellerCommand extends AssertionConcern implements Serializable{
 		if (null == sellerSex) {
 			throw new NegativeException(MCode.V_1,"请选择业务员性别");
 		}
-		if (StringUtils.isEmpty(sellerPass.replaceAll(" ", "")) && StringUtils.isEmpty(sellerConfirmPass.replaceAll(" ", ""))) {
+		if (StringUtils.isEmpty(sellerPass.replaceAll(" ", ""))) {
 			throw new NegativeException(MCode.V_1,"请输入业务员密码");
 		}
 		if (StringUtils.isEmpty(sellerPhone.replaceAll(" ", ""))) {
@@ -180,6 +180,9 @@ public class SellerCommand extends AssertionConcern implements Serializable{
 		}
 		if (StringUtils.isEmpty(sellerNo.replaceAll(" ", ""))) {
 			throw new NegativeException(MCode.V_1,"请输入业务员编号");
+		}
+		if (StringUtils.isEmpty(sellerConfirmPass.replaceAll(" ", ""))) {
+			throw new NegativeException(MCode.V_1,"请确认密码");
 		}
 		if (StringUtils.isEmpty(sellerProvince.replaceAll(" ", "")) || StringUtils.isEmpty(sellerPcode.replaceAll(" ", ""))) {
 			throw new NegativeException(MCode.V_1,"请输入省信息");
