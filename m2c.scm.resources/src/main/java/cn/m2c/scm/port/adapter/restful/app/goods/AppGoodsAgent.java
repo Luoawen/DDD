@@ -1,5 +1,23 @@
 package cn.m2c.scm.port.adapter.restful.app.goods;
 
+import java.io.Writer;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import cn.m2c.common.JsonUtils;
 import cn.m2c.common.MCode;
 import cn.m2c.common.MPager;
@@ -19,22 +37,6 @@ import cn.m2c.scm.application.goods.query.data.representation.app.AppGoodsGuessR
 import cn.m2c.scm.application.goods.query.data.representation.app.AppGoodsSearchRepresentation;
 import cn.m2c.scm.application.unit.query.UnitQuery;
 import cn.m2c.scm.domain.service.goods.GoodsService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
-import javax.annotation.Resource;
-import java.io.Writer;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * 商品
@@ -115,11 +117,13 @@ public class AppGoodsAgent {
      * 查询商品详情
      *
      * @param goodsId
+     * @param userId
      * @return
      */
     @RequestMapping(value = "/detail", method = RequestMethod.GET)
     public ResponseEntity<MResult> queryGoodsDetailApp(
-            @RequestParam(value = "goodsId", required = false) String goodsId
+            @RequestParam(value = "goodsId", required = false) String goodsId,
+            @RequestParam(value = "userId", required = false) String userId
     ) {
         MResult result = new MResult(MCode.V_1);
         try {
@@ -127,17 +131,22 @@ public class AppGoodsAgent {
             if (null != goodsBean) {
                 List<GoodsGuaranteeBean> goodsGuarantee = goodsGuaranteeQueryApplication.queryGoodsGuaranteeByIds(JsonUtils.toList(goodsBean.getGoodsGuarantee(), String.class));
                 String goodsUnitName = unitQuery.getUnitNameByUnitId(goodsBean.getGoodsUnitId());
-
                 Integer commentTotal = goodsCommentQueryApplication.queryGoodsCommentTotal(goodsId);
                 GoodsCommentBean goodsCommentBean = null;
                 if (commentTotal > 0) {
                     goodsCommentBean = goodsCommentQueryApplication.queryGoodsDetailComment(goodsId);
                 }
-
                 List<Map> fullCut = goodsRestService.getGoodsFullCut(goodsBean.getDealerId(), goodsBean.getGoodsId(), goodsBean.getGoodsClassifyId());
-
+                
+                //查询商品被收藏id 
+                String favoriteId=null;
+                if(null!=userId) {
+                	String token = "";
+                	favoriteId = goodsRestService.getUserIsFavoriteGoods(userId,goodsId,token);
+                }
+                
                 AppGoodsDetailRepresentation representation = new AppGoodsDetailRepresentation(goodsBean,
-                        goodsGuarantee, goodsUnitName, null, commentTotal, goodsCommentBean, fullCut);
+                        goodsGuarantee, goodsUnitName, null, commentTotal, goodsCommentBean, fullCut, favoriteId);
                 result.setContent(representation);
             }
             result.setStatus(MCode.V_200);
@@ -300,9 +309,13 @@ public class AppGoodsAgent {
                     }
 
                     List<Map> fullCut = goodsRestService.getGoodsFullCut(goodsBean.getDealerId(), goodsBean.getGoodsId(), goodsBean.getGoodsClassifyId());
-
+                    
+                    //查询商品被收藏id 
+                    String favoriteId=null;
+                    favoriteId = goodsRestService.getUserIsFavoriteGoods(userId,goodsBean.getGoodsId(),"");
+                    
                     AppGoodsDetailRepresentation representation = new AppGoodsDetailRepresentation(goodsBean,
-                            goodsGuarantee, goodsUnitName, mresId, commentTotal, goodsCommentBean, fullCut);
+                            goodsGuarantee, goodsUnitName, mresId, commentTotal, goodsCommentBean, fullCut, favoriteId);
                     representations.add(representation);
                 }
                 result.setContent(representations);
