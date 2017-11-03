@@ -4,6 +4,7 @@ import cn.m2c.common.JsonUtils;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsApproveBean;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsGuaranteeBean;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -14,6 +15,7 @@ public class GoodsApproveDetailRepresentation {
     private String goodsName;
     private String goodsSubTitle;
     private String goodsClassifyId;
+    private List goodsClassifyIds;
     private String goodsClassify;
     private String goodsBrandId;
     private String goodsBrandName;
@@ -22,7 +24,7 @@ public class GoodsApproveDetailRepresentation {
     private Integer goodsMinQuantity;
     private String goodsBarCode;
     private List<String> goodsKeyWord;
-    private List<Map> goodsGuarantee;
+    private List<String> goodsGuarantee;
     private List<Map> goodsSpecifications;
     private List<Map> goodsSKUs;
     private List<String> goodsMainImages;
@@ -32,14 +34,19 @@ public class GoodsApproveDetailRepresentation {
     private Integer settlementMode;//结算模式 1：按供货价 2：按服务费率
     private Float serviceRate;//服务费率
     private Integer skuFlag;
+    private String goodsPostageId;
+    private Integer goodsShelves;
 
-    public GoodsApproveDetailRepresentation(GoodsApproveBean bean, String goodsClassify,
-                                            List<GoodsGuaranteeBean> goodsGuarantee, String goodsUnitName,
+    public GoodsApproveDetailRepresentation(GoodsApproveBean bean, Map goodsClassifyMap,
+                                            List<GoodsGuaranteeBean> goodsGuarantees, String goodsUnitName,
                                             Integer settlementMode, Float serviceRate) {
         this.goodsName = bean.getGoodsName();
         this.goodsSubTitle = bean.getGoodsSubTitle();
         this.goodsClassifyId = bean.getGoodsClassifyId();
-        this.goodsClassify = goodsClassify;
+        if (null != goodsClassifyMap) {
+            this.goodsClassify = null == goodsClassifyMap.get("name") ? "" : (String) goodsClassifyMap.get("name");
+            this.goodsClassifyIds = null == goodsClassifyMap.get("ids") ? null : (List) goodsClassifyMap.get("ids");
+        }
         this.goodsBrandId = bean.getGoodsBrandId();
         this.goodsBrandName = bean.getGoodsBrandName();
         this.goodsUnitId = bean.getGoodsUnitId();
@@ -47,7 +54,14 @@ public class GoodsApproveDetailRepresentation {
         this.goodsMinQuantity = bean.getGoodsMinQuantity();
         this.goodsBarCode = bean.getGoodsBarCode();
         this.goodsKeyWord = JsonUtils.toList(bean.getGoodsKeyWord(), String.class);
-        this.goodsGuarantee = JsonUtils.toList(JsonUtils.toStr(goodsGuarantee), Map.class);
+        if (null != goodsGuarantees && goodsGuarantees.size() > 0) {
+            if (null == goodsGuarantee) {
+                this.goodsGuarantee = new ArrayList<>();
+            }
+            for (GoodsGuaranteeBean guaranteeBean : goodsGuarantees) {
+                this.goodsGuarantee.add(guaranteeBean.getGuaranteeDesc());
+            }
+        }
         this.goodsSpecifications = JsonUtils.toList(bean.getGoodsSpecifications(), Map.class);
         this.goodsSKUs = JsonUtils.toList(JsonUtils.toStr(bean.getGoodsSkuApproves()), Map.class);
         this.goodsMainImages = JsonUtils.toList(bean.getGoodsMainImages(), String.class);
@@ -57,6 +71,8 @@ public class GoodsApproveDetailRepresentation {
         this.settlementMode = settlementMode;
         this.serviceRate = serviceRate;
         this.skuFlag = bean.getSkuFlag();
+        this.goodsPostageId = bean.getGoodsPostageId();
+        this.goodsShelves = bean.getGoodsShelves();
     }
 
     public String getGoodsName() {
@@ -195,14 +211,6 @@ public class GoodsApproveDetailRepresentation {
         this.goodsKeyWord = goodsKeyWord;
     }
 
-    public List<Map> getGoodsGuarantee() {
-        return goodsGuarantee;
-    }
-
-    public void setGoodsGuarantee(List<Map> goodsGuarantee) {
-        this.goodsGuarantee = goodsGuarantee;
-    }
-
     public Integer getSettlementMode() {
         return settlementMode;
     }
@@ -225,5 +233,37 @@ public class GoodsApproveDetailRepresentation {
 
     public void setSkuFlag(Integer skuFlag) {
         this.skuFlag = skuFlag;
+    }
+
+    public List<String> getGoodsGuarantee() {
+        return goodsGuarantee;
+    }
+
+    public void setGoodsGuarantee(List<String> goodsGuarantee) {
+        this.goodsGuarantee = goodsGuarantee;
+    }
+
+    public String getGoodsPostageId() {
+        return goodsPostageId;
+    }
+
+    public void setGoodsPostageId(String goodsPostageId) {
+        this.goodsPostageId = goodsPostageId;
+    }
+
+    public List getGoodsClassifyIds() {
+        return goodsClassifyIds;
+    }
+
+    public void setGoodsClassifyIds(List goodsClassifyIds) {
+        this.goodsClassifyIds = goodsClassifyIds;
+    }
+
+    public Integer getGoodsShelves() {
+        return goodsShelves;
+    }
+
+    public void setGoodsShelves(Integer goodsShelves) {
+        this.goodsShelves = goodsShelves;
     }
 }

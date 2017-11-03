@@ -6,6 +6,7 @@ import cn.m2c.scm.domain.service.goods.GoodsService;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baidu.disconf.client.usertools.DisconfDataGetter;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -112,20 +113,5 @@ public class GoodsRestServiceImpl implements GoodsService {
     public List<String> getGoodsIdByCoordinate(Double longitude, Double latitude) {
         return null;
     }
-
-	@Override
-	public String getUserIsFavoriteGoods(String userId, String goodsId, String token) {
-		String url = M2C_HOST_URL + "/m2c.users/favorite/app/detail?token={0}&userId={1}&goodsId={2}";
-		String result = restTemplate.getForObject(url, String.class, token, userId, goodsId);
-		JSONObject json = JSONObject.parseObject(result);
-		if (json.getInteger("status") == 200) {
-			JSONObject contents = json.getJSONObject("content");
-            if (null != contents) {
-                String favoriteId = contents.getString("favoriteId");
-                return favoriteId;
-            }
-		}
-		return null;
-	}
 
 }

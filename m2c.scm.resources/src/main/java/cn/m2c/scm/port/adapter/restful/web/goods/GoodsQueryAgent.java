@@ -47,15 +47,16 @@ public class GoodsQueryAgent {
      */
     @RequestMapping(value = "/choice", method = RequestMethod.GET)
     public ResponseEntity<MPager> goodsChoice(
+            @RequestParam(value = "dealerId", required = false) String dealerId,
             @RequestParam(value = "goodsClassifyId", required = false) String goodsClassifyId,
             @RequestParam(value = "condition", required = false) String condition,
             @RequestParam(value = "pageNum", required = false, defaultValue = "1") Integer pageNum,
             @RequestParam(value = "rows", required = false, defaultValue = "10") Integer rows) {
         MPager result = new MPager(MCode.V_1);
         try {
-            Integer total = goodsQueryApplication.goodsChoiceTotal(goodsClassifyId, condition);
+            Integer total = goodsQueryApplication.goodsChoiceTotal(dealerId, goodsClassifyId, condition);
             if (total > 0) {
-                List<GoodsBean> goodsBeans = goodsQueryApplication.goodsChoice(goodsClassifyId,
+                List<GoodsBean> goodsBeans = goodsQueryApplication.goodsChoice(dealerId, goodsClassifyId,
                         condition, pageNum, rows);
                 if (null != goodsBeans && goodsBeans.size() > 0) {
                     List<GoodsChoiceRepresentation> representations = new ArrayList<GoodsChoiceRepresentation>();

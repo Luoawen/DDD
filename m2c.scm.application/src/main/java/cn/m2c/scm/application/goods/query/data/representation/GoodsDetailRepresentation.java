@@ -16,6 +16,7 @@ public class GoodsDetailRepresentation {
     private String goodsSubTitle;
     private String goodsClassifyId;
     private String goodsClassify;
+    private List goodsClassifyIds;
     private String goodsBrandId;
     private String goodsBrandName;
     private String goodsUnitId;
@@ -31,13 +32,18 @@ public class GoodsDetailRepresentation {
     private Integer settlementMode;//结算模式 1：按供货价 2：按服务费率
     private Float serviceRate;//服务费率
     private Integer skuFlag;
+    private String goodsPostageId;
 
-    public GoodsDetailRepresentation(GoodsBean bean, String goodsClassify, List<GoodsGuaranteeBean> goodsGuaranteeBeans,
+    public GoodsDetailRepresentation(GoodsBean bean, Map goodsClassifyMap, List<GoodsGuaranteeBean> goodsGuaranteeBeans,
                                      String goodsUnitName, Integer settlementMode, Float serviceRate) {
         this.goodsName = bean.getGoodsName();
         this.goodsSubTitle = bean.getGoodsSubTitle();
         this.goodsClassifyId = bean.getGoodsClassifyId();
-        this.goodsClassify = goodsClassify;
+        if (null != goodsClassifyMap) {
+            this.goodsClassify = null == goodsClassifyMap.get("name") ? "" : (String) goodsClassifyMap.get("name");
+            this.goodsClassifyIds = null == goodsClassifyMap.get("ids") ? null : (List) goodsClassifyMap.get("ids");
+        }
+
         this.goodsBrandId = bean.getGoodsBrandId();
         this.goodsBrandName = bean.getGoodsBrandName();
         this.goodsUnitName = goodsUnitName;
@@ -59,6 +65,7 @@ public class GoodsDetailRepresentation {
         this.settlementMode = settlementMode;
         this.serviceRate = serviceRate;
         this.skuFlag = bean.getSkuFlag();
+        this.goodsPostageId = bean.getGoodsPostageId();
     }
 
     public String getGoodsName() {
@@ -211,5 +218,21 @@ public class GoodsDetailRepresentation {
 
     public void setSkuFlag(Integer skuFlag) {
         this.skuFlag = skuFlag;
+    }
+
+    public String getGoodsPostageId() {
+        return goodsPostageId;
+    }
+
+    public void setGoodsPostageId(String goodsPostageId) {
+        this.goodsPostageId = goodsPostageId;
+    }
+
+    public List getGoodsClassifyIds() {
+        return goodsClassifyIds;
+    }
+
+    public void setGoodsClassifyIds(List goodsClassifyIds) {
+        this.goodsClassifyIds = goodsClassifyIds;
     }
 }

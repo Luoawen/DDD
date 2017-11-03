@@ -190,7 +190,11 @@ public class GoodsApprove extends ConcurrencySafeEntity {
         Long marketPrice = GetMapValueUtils.getLongFromMapKey(map, "marketPrice");
         Long supplyPrice = GetMapValueUtils.getLongFromMapKey(map, "supplyPrice");
         String goodsCode = GetMapValueUtils.getStringFromMapKey(map, "goodsCode");
-        Integer showStatus = GetMapValueUtils.getIntFromMapKey(map, "showStatus");
+        Boolean isShow = GetMapValueUtils.getBooleanFromMapKey(map, "showStatus");
+        Integer showStatus = 1;
+        if (isShow) {
+            showStatus = 2;
+        }
         GoodsSkuApprove goodsSkuApprove = new GoodsSkuApprove(this, skuId, skuName, availableNum,
                 weight, photographPrice, marketPrice, supplyPrice, goodsCode,
                 showStatus);
@@ -250,15 +254,51 @@ public class GoodsApprove extends ConcurrencySafeEntity {
         // "weight":20.5,"availableNum":200,"goodsCode":"111111","marketPrice":6000,"photographPrice":5000,"showStatus":2}]
         if (null == this.goodsSkuApproves) {
             this.goodsSkuApproves = new ArrayList<>();
-        } else {
-            this.goodsSkuApproves.clear();
         }
         List<Map> skuList = JsonUtils.toList(goodsSkuApproves, Map.class);
         if (null != skuList && skuList.size() > 0) {
-            for (int i = 0; i < skuList.size(); i++) {
-                this.goodsSkuApproves.add(createGoodsSkuApprove(skuList.get(i)));
+            for (Map map : skuList) {
+                String skuId = GetMapValueUtils.getStringFromMapKey(map, "skuId");
+                // 判断商品规格sku是否存在,存在就修改供货价和拍获价，不存在就增加商品sku
+                GoodsSkuApprove goodsSkuApprove = getGoodsSkuApprove(skuId);
+                if (null == goodsSkuApprove) {// 增加规格
+                    this.goodsSkuApproves.add(createGoodsSkuApprove(map));
+                } else { //修改
+                    String skuName = GetMapValueUtils.getStringFromMapKey(map, "skuName");
+                    Integer availableNum = GetMapValueUtils.getIntFromMapKey(map, "availableNum");
+                    Float weight = GetMapValueUtils.getFloatFromMapKey(map, "weight");
+                    Long photographPrice = GetMapValueUtils.getLongFromMapKey(map, "photographPrice");
+                    Long marketPrice = GetMapValueUtils.getLongFromMapKey(map, "marketPrice");
+                    Long supplyPrice = GetMapValueUtils.getLongFromMapKey(map, "supplyPrice");
+                    String goodsCode = GetMapValueUtils.getStringFromMapKey(map, "goodsCode");
+                    Boolean isShow = GetMapValueUtils.getBooleanFromMapKey(map, "showStatus");
+                    Integer showStatus = 1;
+                    if (isShow) {
+                        showStatus = 2;
+                    }
+                    goodsSkuApprove.modifyGoodsSkuApprove(skuName, availableNum, weight, photographPrice,
+                            marketPrice, supplyPrice, goodsCode, showStatus);
+                }
             }
         }
+    }
+
+    /**
+     * 根据skuId获取商品规格
+     *
+     * @param skuId
+     * @return
+     */
+    private GoodsSkuApprove getGoodsSkuApprove(String skuId) {
+        GoodsSkuApprove goodsSkuApprove = null;
+        List<GoodsSkuApprove> goodsSKUs = this.goodsSkuApproves;
+        for (GoodsSkuApprove sku : goodsSKUs) {
+            goodsSkuApprove = sku.getGoodsSKUApprove(skuId);
+            if (null != goodsSkuApprove) {
+                return goodsSkuApprove;
+            }
+        }
+        return goodsSkuApprove;
     }
 
     public void remove() {
