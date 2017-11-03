@@ -92,4 +92,24 @@ public class GoodsSkuApprove extends IdentifiedValueObject {
         map.put("showStatus", showStatus);
         return map;
     }
+
+    public GoodsSkuApprove getGoodsSKUApprove(String skuId) {
+        if (this.skuId.equals(skuId)) {
+            return this;
+        } else {
+            return null;
+        }
+    }
+
+    public void modifyGoodsSkuApprove(String skuName, Integer availableNum, Float weight, Long photographPrice,
+                                 Long marketPrice, Long supplyPrice, String goodsCode, Integer showStatus) {
+        this.skuName = skuName;
+        this.availableNum = availableNum;
+        this.weight = weight;
+        this.photographPrice = photographPrice;
+        this.marketPrice = marketPrice;
+        this.supplyPrice = supplyPrice;
+        this.goodsCode = goodsCode;
+        this.showStatus = showStatus;
+    }
 }
