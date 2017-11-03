@@ -2,6 +2,7 @@ package cn.m2c.scm.application.order;
 
 import cn.m2c.common.MCode;
 import cn.m2c.ddd.common.event.annotation.EventListener;
+import cn.m2c.scm.application.classify.query.GoodsClassifyQueryApplication;
 import cn.m2c.scm.application.dealer.data.bean.DealerBean;
 import cn.m2c.scm.application.dealer.query.DealerQuery;
 import cn.m2c.scm.application.goods.GoodsApplication;
@@ -13,6 +14,7 @@ import cn.m2c.scm.application.order.command.OrderPayedCmd;
 import cn.m2c.scm.application.order.command.PayOrderCmd;
 import cn.m2c.scm.application.order.data.bean.GoodsReqBean;
 import cn.m2c.scm.application.order.data.bean.MarketBean;
+import cn.m2c.scm.application.order.data.bean.MarketUseBean;
 import cn.m2c.scm.application.order.data.bean.MediaResBean;
 import cn.m2c.scm.application.order.data.representation.OrderMoney;
 import cn.m2c.scm.application.order.query.OrderQueryApplication;
@@ -73,6 +75,8 @@ public class OrderApplication {
 	DealerQuery dealerQuery; // getDealers
 	@Autowired
 	PostageModelQueryApplication postApp;
+	@Autowired
+	GoodsClassifyQueryApplication goodsClassQuery;
 	/**
 	 * 提交订单
 	 * @param cmd
@@ -146,6 +150,8 @@ public class OrderApplication {
 		//orderDomainService.lockCoupons(null);
 		// 获取商品详情
 		List<GoodsDto> list = gQueryApp.getGoodsDtl(skus.keySet());
+		// 获取分类及费率
+		getClassifyRate(list);
 		//若有媒体信息则需要查询媒体信息
 		Map<String, Object> resMap = orderDomainService.getMediaBdByResIds(mediaResIds, orderTime);
 		// 获取运费模板，计算运费
@@ -174,15 +180,15 @@ public class OrderApplication {
 			dealerDiscount += d.getDealerDiscount();
 		}
 		
-		
+		List<MarketUseBean> useList = new ArrayList<>();
 		MainOrder order = new MainOrder(cmd.getOrderId(), cmd.getAddr(), goodsAmounts, freight
 				, plateDiscount, dealerDiscount, cmd.getUserId(), cmd.getNoted(), dealerOrders, null
-				, getUsedMarket(cmd.getOrderId(), list));
+				, getUsedMarket(cmd.getOrderId(), list, useList));
 		// 组织保存(重新设置计算好的价格)		
 		order.add(skus);
 		orderRepository.save(order);
 		// 锁定营销 orderNo, 营销ID, userId
-		if(!orderDomainService.lockMarketIds(marketIds, cmd.getOrderId(), cmd.getUserId())) {
+		if(!orderDomainService.lockMarketIds(useList, cmd.getOrderId(), cmd.getUserId())) {
 			throw new NegativeException(MCode.V_300, "活动已被用完！");
 		}
 		return new OrderResult(cmd.getOrderId(), goodsAmounts, freight, plateDiscount, dealerDiscount);
@@ -235,14 +241,17 @@ public class OrderApplication {
 	 * @param beans
 	 * @return
 	 */
-	List<SimpleMarketing> getUsedMarket(String orderNo,  List<GoodsDto> beans) {
+	private List<SimpleMarketing> getUsedMarket(String orderNo,  List<GoodsDto> beans, List<MarketUseBean> useList) {
 		List<SimpleMarketing> result = null;
 		
 		List<String> mids = new ArrayList<>();
 		for(GoodsDto b : beans) {
 			SimpleMarketInfo info = b.toMarketInfo();
+			String mid = b.getMarketingId();
+			if (mid != null) {
+				useList.add(new MarketUseBean(b.getGoodsId(), mid, b.getSkuId(), b.getPurNum()));
+			}
 			if (info != null) {
-				String mid = b.getMarketingId();
 				if (mids.contains(mid)) {
 					info = null;
 					continue;
@@ -522,6 +531,30 @@ public class OrderApplication {
 	private void setCalAmount(MainOrder order, List<GoodsDto> goods) {
 		for (GoodsDto g : goods) {
 			order.setSkuMoney(g.getSkuId(), g.getPlateformDiscount(), g.getMarketingId());
+		}
+	}
+	/***
+	 * 获取商品分类费率并设置
+	 * @param goodses
+	 */
+	private void getClassifyRate(List<GoodsDto> goodses) {
+		if (null == goodses || goodses.size() < 1)
+			return;
+		List<String> clsIds = new ArrayList<String>();
+		for (GoodsDto d : goodses) {
+			String s = d.getGoodsTypeId();
+			if (!clsIds.contains(s)) {
+				clsIds.add(s);
+			}
+		}
+		
+		Map<String, Float> map = (Map<String, Float>)goodsClassQuery.queryServiceRateByClassifyIds(clsIds);
+		
+		for (GoodsDto d : goodses) {
+			String s = d.getGoodsTypeId();
+			Float rate = map.get(s);
+			if (rate != null)
+				d.setRate(rate);
 		}
 	}
 }

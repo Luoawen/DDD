@@ -31,6 +31,7 @@ public class GoodsDetailRepresentation {
     private Integer settlementMode;//结算模式 1：按供货价 2：按服务费率
     private Float serviceRate;//服务费率
     private Integer skuFlag;
+    private String goodsPostageId;
 
     public GoodsDetailRepresentation(GoodsBean bean, String goodsClassify, List<GoodsGuaranteeBean> goodsGuaranteeBeans,
                                      String goodsUnitName, Integer settlementMode, Float serviceRate) {
@@ -59,6 +60,7 @@ public class GoodsDetailRepresentation {
         this.settlementMode = settlementMode;
         this.serviceRate = serviceRate;
         this.skuFlag = bean.getSkuFlag();
+        this.goodsPostageId = bean.getGoodsPostageId();
     }
 
     public String getGoodsName() {
@@ -211,5 +213,13 @@ public class GoodsDetailRepresentation {
 
     public void setSkuFlag(Integer skuFlag) {
         this.skuFlag = skuFlag;
+    }
+
+    public String getGoodsPostageId() {
+        return goodsPostageId;
+    }
+
+    public void setGoodsPostageId(String goodsPostageId) {
+        this.goodsPostageId = goodsPostageId;
     }
 }

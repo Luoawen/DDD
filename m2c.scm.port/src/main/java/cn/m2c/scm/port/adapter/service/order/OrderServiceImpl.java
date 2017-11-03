@@ -37,13 +37,13 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	@Override
-	public boolean lockMarketIds(List<String> marketIds, String orderNo, String userId) {
+	public <T> boolean lockMarketIds(List<T> marketIds, String orderNo, String userId) {
 		// TODO Auto-generated method stub
 		if (null == marketIds || marketIds.size() < 1) {
 			return true;
 		}
-		String url = M2C_HOST_URL + "/m2c.market/fullcut/use?full_cut_ids={0}&order_id={1}&user_id={2}";
-		String rtResult = restTemplate.postForObject(url, null, String.class, JSONObject.toJSONString(marketIds), orderNo, userId, String.class);
+		String url = M2C_HOST_URL + "/m2c.market/fullcut/use?goods_list={0}&order_id={1}&user_id={2}";
+		String rtResult = restTemplate.postForObject(url, null, String.class, JSONObject.toJSONString(marketIds), orderNo, userId);
 		JSONObject json = JSONObject.parseObject(rtResult);
         if (json.getInteger("status") != 200) {
         	return false;
