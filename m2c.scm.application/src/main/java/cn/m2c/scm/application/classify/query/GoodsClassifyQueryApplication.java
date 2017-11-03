@@ -86,28 +86,44 @@ public class GoodsClassifyQueryApplication {
         return resultList;
     }
 
-    private List<String> recursionQueryGoodsUpClassifyName(String classifyId, List<String> classifyNames) {
+    private List<GoodsClassifyBean> recursionQueryGoodsUpClassify(String classifyId, List<GoodsClassifyBean> classifies) {
         GoodsClassifyBean bean = queryGoodsClassifiesById(classifyId);
         if (null != bean) {
-            classifyNames.add(bean.getClassifyName());
+            classifies.add(bean);
             if (!"-1".equals(bean.getParentClassifyId())) {
-                return recursionQueryGoodsUpClassifyName(bean.getParentClassifyId(), classifyNames);
+                return recursionQueryGoodsUpClassify(bean.getParentClassifyId(), classifies);
             }
         }
-        return classifyNames;
+        return classifies;
     }
 
-    public String getClassifyNames(String classifyId) {
-        List<String> goodsClassifies = recursionQueryGoodsUpClassifyName(classifyId, new ArrayList<>());
+    public Map getClassifyMap(String classifyId) {
+        List<GoodsClassifyBean> goodsClassifies = recursionQueryGoodsUpClassify(classifyId, new ArrayList<GoodsClassifyBean>());
         if (null != goodsClassifies && goodsClassifies.size() > 0) {
-            Collections.reverse(goodsClassifies);
-            String[] type = new String[goodsClassifies.size()];
-            String[] newGoodsClassify = (String[]) goodsClassifies.toArray(type);
-            String goodsClassify = String.join(",", newGoodsClassify);
-            return goodsClassify;
+            List<String> ids = new ArrayList<>();
+            List<String> names = new ArrayList<>();
+            for (GoodsClassifyBean bean : goodsClassifies) {
+                ids.add(bean.getClassifyId());
+                names.add(bean.getClassifyName());
+            }
+            String goodsClassify = listJoinString(names);
+            Collections.reverse(ids);
+            Map map = new HashMap<>();
+            map.put("name", goodsClassify);
+            map.put("ids", ids);
+            return map;
         }
         return null;
     }
+
+    private String listJoinString(List<String> obj) {
+        Collections.reverse(obj);
+        String[] type = new String[obj.size()];
+        String[] newGoodsClassify = (String[]) obj.toArray(type);
+        String goodsClassify = String.join(",", newGoodsClassify);
+        return goodsClassify;
+    }
+
 
     public List<GoodsClassifyBean> queryGoodsClassifyRandom(Integer number) {
         StringBuilder sql = new StringBuilder();
