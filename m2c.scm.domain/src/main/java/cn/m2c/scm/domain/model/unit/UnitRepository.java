@@ -8,7 +8,7 @@ public interface UnitRepository {
 	 * @param unitName
 	 * @return
 	 */
-	public boolean unitNameIsRepeat(String unitName);
+	public Unit unitNameIsRepeat(String unitName);
 	
 	/**
 	 * 

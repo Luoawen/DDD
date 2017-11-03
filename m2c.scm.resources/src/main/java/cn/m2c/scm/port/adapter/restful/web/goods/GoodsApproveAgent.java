@@ -192,17 +192,17 @@ public class GoodsApproveAgent {
     /**
      * 拒绝商品审核
      *
-     * @param approveId
+     * @param goodsId
      * @return
      */
     @RequestMapping(value = "/reject", method = RequestMethod.POST)
     public ResponseEntity<MResult> rejectGoodsApprove(
-            @RequestParam(value = "approveId", required = false) String approveId,
+            @RequestParam(value = "goodsId", required = false) String goodsId,
             @RequestParam(value = "rejectReason", required = false) String rejectReason
     ) {
         MResult result = new MResult(MCode.V_1);
         try {
-            GoodsApproveRejectCommand command = new GoodsApproveRejectCommand(approveId, rejectReason);
+            GoodsApproveRejectCommand command = new GoodsApproveRejectCommand(goodsId, rejectReason);
             goodsApproveApplication.rejectGoodsApprove(command);
             result.setStatus(MCode.V_200);
         } catch (NegativeException ne) {

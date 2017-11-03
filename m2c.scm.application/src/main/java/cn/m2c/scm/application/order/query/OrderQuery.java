@@ -85,20 +85,16 @@ public class OrderQuery {
 		params.add(rows * (pageNum - 1));
 		params.add(rows);
 
+		
 		/**
 		 * 将商家订单塞进对应的平台订单
 		 */
 		List<MainOrderBean> mainOrderList = this.supportJdbcTemplate.queryForBeanList(sql.toString(),
 				MainOrderBean.class, params.toArray());
-		List<OrderDealerBean> dealerOrderList = dealerOrderListQuery(orderId);
 		for (MainOrderBean mainOrder : mainOrderList) {
-			List<OrderDealerBean> list = new ArrayList<OrderDealerBean>();
-			for (OrderDealerBean dealerOrder : dealerOrderList) {
-				if (mainOrder.getOrderId() == dealerOrder.getOrderId()) {
-					list.add(dealerOrder);
-				}
-			}
-			mainOrder.setDealerOrderBeans(list);
+			List<OrderDealerBean> dealerOrderList = dealerOrderListQuery(mainOrder.getOrderId());
+			
+			mainOrder.setDealerOrderBeans(dealerOrderList);
 		}
 		return mainOrderList;
 	}
@@ -154,7 +150,6 @@ public class OrderQuery {
 		sql.append(" AND odealer.dealer_id = dealer.dealer_id ");
 		
 		sql.append(" ORDER BY odealer.created_date DESC ");
-		System.out.println("Show LIST SQL-----------------------------------------"+sql);
 		return this.supportJdbcTemplate.queryForBeanList(sql.toString(), OrderDealerBean.class, orderId);
 	}
 
@@ -180,8 +175,7 @@ public class OrderQuery {
 		sql.append("  t_scm_order_main omain LEFT JOIN t_scm_order_dealer odealer ON  omain.order_id = odealer.order_id ");
 		sql.append(" LEFT JOIN t_scm_order_detail odetail ON omain.order_id = odetail.order_id ");
 		sql.append(" LEFT JOIN t_scm_order_after_sell oafter ON omain.order_id = oafter.order_id ");
-		sql.append(" LEFT JOIN t_scm_dealer dealer ON omain.dealer_id = dealer_id ");
-		sql.append(" ON omain.order_id = oafter.order_id ");
+		sql.append(" LEFT JOIN t_scm_dealer dealer ON odealer.dealer_id = dealer.dealer_id  ");
 		sql.append(" WHERE 1=1 ");
 		if (orderStatus != null) {
 			sql.append(" AND omain._status = ? ");

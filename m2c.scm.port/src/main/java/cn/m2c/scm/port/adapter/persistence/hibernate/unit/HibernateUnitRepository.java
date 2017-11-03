@@ -6,6 +6,7 @@ import org.hibernate.Query;
 import org.springframework.stereotype.Repository;
 
 import cn.m2c.ddd.common.port.adapter.persistence.hibernate.HibernateSupperRepository;
+import cn.m2c.scm.domain.model.dealer.Dealer;
 import cn.m2c.scm.domain.model.unit.Unit;
 import cn.m2c.scm.domain.model.unit.UnitRepository;
 
@@ -27,15 +28,13 @@ public class HibernateUnitRepository extends HibernateSupperRepository implement
 	 * 判断计量单位是否重复
 	 */
 	@Override
-	public boolean unitNameIsRepeat(String unitName) {
-		StringBuffer sql = new StringBuffer("select u.unit_name from t_scm_unit u where unit_status = 1 AND unit_name =:unit_name");
-		Query query = this.session().createSQLQuery(sql.toString()).addEntity(Unit.class);
-		query.setParameter("unit_name", unitName);
-		List list = query.list();
-		if (null != list && list.size() > 0) {
-			return true;
-		}
-		return false;
+	public Unit unitNameIsRepeat(String unitName) {
+//		Unit unit = (Unit) this.session().createQuery(" select unit_id unitId,unit_name unitName,unit_status unitStatus from t_scm_unit where unit_status = 1 and unit_name =: unitName")
+//				.setString("unitName", unitName).uniqueResult();
+//				return unit;
+				Unit unit = (Unit) this.session().createQuery(" FROM Unit WHERE unitStatus = 1 AND unitName =:unitName")
+						.setString("unitName", unitName).uniqueResult();
+				return unit;
 	}
 
 	/**
@@ -43,7 +42,7 @@ public class HibernateUnitRepository extends HibernateSupperRepository implement
 	 */
 	@Override
 	public Unit getUnitByUnitId(String unitId) {
-		StringBuffer sql = new StringBuffer("select * from t_scm_unit  where unit_status = 1 AND unit_id =:unit_id");
+		StringBuffer sql = new StringBuffer("select unit_id,unit_name,unit_status from t_scm_unit  where unit_status = 1 AND unit_id =:unit_id");
 		Query query = this.session().createSQLQuery(sql.toString()).addEntity(Unit.class);
 		query.setParameter("unit_id", unitId);
 		return (Unit) query.uniqueResult();

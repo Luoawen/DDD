@@ -7,7 +7,7 @@ public interface StantardRepository {
 	 * @param unitName
 	 * @return
 	 */
-	public boolean stantardNameIsRepeat(String stantardName);
+	public Stantard stantardNameIsRepeat(String stantardName);
 	
 	/**
 	 * 
