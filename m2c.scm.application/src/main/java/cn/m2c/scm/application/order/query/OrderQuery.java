@@ -214,7 +214,6 @@ public class OrderQuery {
 			sql.append(" AND dealer.dealer_classify = ? ");
 			params.add(dealerClassify);
 		}
-		System.out.println("SQL TOTAL SQL -------------------------------------------"+sql);
 		Integer total = this.supportJdbcTemplate.jdbcTemplate().queryForObject(sql.toString(), params.toArray(), Integer.class);
 		return total;
 	}

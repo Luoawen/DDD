@@ -1,15 +1,10 @@
 package cn.m2c.scm.port.adapter.restful.web.goods;
 
-import cn.m2c.common.MCode;
-import cn.m2c.common.MPager;
-import cn.m2c.common.MResult;
-import cn.m2c.scm.application.goods.query.GoodsQueryApplication;
-import cn.m2c.scm.application.goods.query.data.bean.GoodsBean;
-import cn.m2c.scm.application.goods.query.data.representation.GoodsChoiceRepresentation;
-import cn.m2c.scm.application.goods.query.data.representation.GoodsDetailMultipleRepresentation;
-import cn.m2c.scm.application.goods.query.data.representation.GoodsRandomRepresentation;
-import cn.m2c.scm.application.goods.query.data.representation.GoodsSimpleDetailRepresentation;
-import cn.m2c.scm.application.goods.query.data.representation.GoodsSkuInfoRepresentation;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,10 +15,17 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import cn.m2c.common.MCode;
+import cn.m2c.common.MPager;
+import cn.m2c.common.MResult;
+import cn.m2c.scm.application.goods.query.GoodsQueryApplication;
+import cn.m2c.scm.application.goods.query.data.bean.GoodsBean;
+import cn.m2c.scm.application.goods.query.data.representation.GoodsChoiceRepresentation;
+import cn.m2c.scm.application.goods.query.data.representation.GoodsDetailMultipleRepresentation;
+import cn.m2c.scm.application.goods.query.data.representation.GoodsRandomRepresentation;
+import cn.m2c.scm.application.goods.query.data.representation.GoodsRecognizedRepresentation;
+import cn.m2c.scm.application.goods.query.data.representation.GoodsSimpleDetailRepresentation;
+import cn.m2c.scm.application.goods.query.data.representation.GoodsSkuInfoRepresentation;
 
 /**
  * 商品查询(提供出去的)
@@ -230,6 +232,33 @@ public class GoodsQueryAgent {
         } catch (Exception e) {
             LOGGER.error("queryGoodsStatusByGoodsIds Exception e:", e);
             result = new MResult(MCode.V_400, "查询商品的状态失败");
+        }
+        return new ResponseEntity<MResult>(result, HttpStatus.OK);
+    }
+    
+    /**
+     * 根据商品Id查询识别图id和url(支持多个)
+     * 
+     * @param goodsIds 多个商品ID逗号分隔
+     * @return
+     */
+    @RequestMapping(value = "/recognizeds", method = RequestMethod.GET)
+    public ResponseEntity<MResult> queryRecognizedsByGoodsIds(
+    		@RequestParam(value = "goodsIds", required = false) List<String> goodsIds){
+    	MResult result = new MResult(MCode.V_1);
+    	try {
+            List<GoodsBean> goodsBeans = goodsQueryApplication.queryAllGoodsByGoodsIds(goodsIds);
+            if (null != goodsBeans && goodsBeans.size() > 0) {
+            	List<GoodsRecognizedRepresentation> resultList = new ArrayList<>();
+                for (GoodsBean goodsBean : goodsBeans) {
+                	resultList.add(new GoodsRecognizedRepresentation(goodsBean));
+                }
+                result.setContent(resultList);
+            }
+            result.setStatus(MCode.V_200);
+        } catch (Exception e) {
+            LOGGER.error("queryRecognizedsByGoodsIds Exception e:", e);
+            result = new MResult(MCode.V_400, "查询商品识别图失败");
         }
         return new ResponseEntity<MResult>(result, HttpStatus.OK);
     }
