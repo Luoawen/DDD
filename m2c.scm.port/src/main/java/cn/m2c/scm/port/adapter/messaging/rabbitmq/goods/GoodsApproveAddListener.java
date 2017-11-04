@@ -13,7 +13,7 @@ import org.springframework.orm.hibernate4.HibernateTransactionManager;
 import java.util.List;
 
 /**
- * 商家管理平台商品审核同意
+ * 商家管理平台商品审核
  */
 public class GoodsApproveAddListener extends ExchangeListener {
     public GoodsApproveAddListener(RabbitmqConfiguration rabbitmqConfiguration, HibernateTransactionManager hibernateTransactionManager, ConsumedEventStore consumedEventStore) {
