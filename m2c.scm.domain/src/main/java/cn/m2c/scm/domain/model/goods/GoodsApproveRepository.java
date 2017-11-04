@@ -19,4 +19,6 @@ public interface GoodsApproveRepository {
     List<GoodsApprove> queryGoodsApproveByBrandId(String brandId);
 
     List<GoodsApprove> queryGoodsApproveByDealerId(String dealerId);
+
+    boolean postageIdIsUser(String postageId);
 }

@@ -17,6 +17,8 @@ import cn.m2c.scm.application.goods.query.data.bean.GoodsBean;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsGuaranteeBean;
 import cn.m2c.scm.application.goods.query.data.representation.GoodsDetailRepresentation;
 import cn.m2c.scm.application.goods.query.data.representation.GoodsSearchRepresentation;
+import cn.m2c.scm.application.postage.data.bean.PostageModelBean;
+import cn.m2c.scm.application.postage.query.PostageModelQueryApplication;
 import cn.m2c.scm.application.unit.query.UnitQuery;
 import cn.m2c.scm.domain.NegativeException;
 import org.apache.commons.lang3.StringUtils;
@@ -60,6 +62,8 @@ public class GoodsAgent {
     GoodsGuaranteeQueryApplication goodsGuaranteeQueryApplication;
     @Autowired
     UnitQuery unitQuery;
+    @Autowired
+    PostageModelQueryApplication postageModelQueryApplication;
 
 
     /**
@@ -321,8 +325,9 @@ public class GoodsAgent {
                 if (settlementMode == 2) {
                     serviceRate = goodsClassifyQueryApplication.queryServiceRateByClassifyId(goodsBean.getGoodsClassifyId());
                 }
+                PostageModelBean postageModelBean = postageModelQueryApplication.queryPostageModelsByModelId(goodsBean.getGoodsPostageId());
                 GoodsDetailRepresentation representation = new GoodsDetailRepresentation(goodsBean, goodsClassifyMap,
-                        goodsGuarantee, goodsUnitName, settlementMode, serviceRate);
+                        goodsGuarantee, goodsUnitName, settlementMode, serviceRate,postageModelBean);
                 result.setContent(representation);
             }
             result.setStatus(MCode.V_200);
