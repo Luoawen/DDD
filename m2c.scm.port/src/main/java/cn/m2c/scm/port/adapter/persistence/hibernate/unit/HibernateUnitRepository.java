@@ -42,10 +42,9 @@ public class HibernateUnitRepository extends HibernateSupperRepository implement
 	 */
 	@Override
 	public Unit getUnitByUnitId(String unitId) {
-		StringBuffer sql = new StringBuffer("select unit_id,unit_name,unit_status from t_scm_unit  where unit_status = 1 AND unit_id =:unit_id");
-		Query query = this.session().createSQLQuery(sql.toString()).addEntity(Unit.class);
-		query.setParameter("unit_id", unitId);
-		return (Unit) query.uniqueResult();
+		StringBuffer sql = new StringBuffer("FROM Unit WHERE unitStatus = 1 AND unitId =:unitId");
+		Unit unit = (Unit) this.session().createQuery(sql.toString()).setString("unitId", unitId).uniqueResult();
+		return unit;
 	}
 
 
