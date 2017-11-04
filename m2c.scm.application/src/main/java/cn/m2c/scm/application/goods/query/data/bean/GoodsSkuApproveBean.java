@@ -68,6 +68,19 @@ public class GoodsSkuApproveBean extends IdentifiedValueObject {
     @ColumnAlias(value = "show_status")
     private Integer showStatus;
 
+    private boolean show;
+
+    public void setShow(boolean show) {
+        if (this.showStatus == 2) {
+            this.show = true;
+        }
+        this.show = false;
+    }
+
+    public boolean isShow() {
+        return show;
+    }
+
     public Integer getGoodsId() {
         return goodsId;
     }
