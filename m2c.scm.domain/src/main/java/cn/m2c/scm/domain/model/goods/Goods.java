@@ -147,8 +147,12 @@ public class Goods extends ConcurrencySafeEntity {
      * 创建时间
      */
     private Date createdDate;
-
-
+    
+    /**
+     * 商品投放状态：0：未投放，1：投放
+     */
+    private Integer goodsLaunchStatus;
+    
     public Goods() {
         super();
     }

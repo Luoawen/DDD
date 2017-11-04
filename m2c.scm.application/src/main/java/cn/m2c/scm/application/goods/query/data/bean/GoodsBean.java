@@ -150,7 +150,13 @@ public class GoodsBean {
     private Integer skuFlag;
 
     private List<GoodsSkuBean> goodsSkuBeans;
-
+    
+    /**
+     * 商品投放状态：0：未投放，1：投放
+     */
+    @ColumnAlias(value = "goods_launch_status")
+    private Integer goodsLaunchStatus;
+    
     public Integer getId() {
         return id;
     }
@@ -350,4 +356,13 @@ public class GoodsBean {
     public void setSkuFlag(Integer skuFlag) {
         this.skuFlag = skuFlag;
     }
+
+	public Integer getGoodsLaunchStatus() {
+		return goodsLaunchStatus;
+	}
+
+	public void setGoodsLaunchStatus(Integer goodsLaunchStatus) {
+		this.goodsLaunchStatus = goodsLaunchStatus;
+	}
+    
 }
