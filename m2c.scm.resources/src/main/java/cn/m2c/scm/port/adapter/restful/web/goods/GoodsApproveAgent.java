@@ -17,6 +17,8 @@ import cn.m2c.scm.application.goods.query.data.bean.GoodsApproveBean;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsGuaranteeBean;
 import cn.m2c.scm.application.goods.query.data.representation.GoodsApproveDetailRepresentation;
 import cn.m2c.scm.application.goods.query.data.representation.GoodsApproveSearchRepresentation;
+import cn.m2c.scm.application.postage.data.bean.PostageModelBean;
+import cn.m2c.scm.application.postage.query.PostageModelQueryApplication;
 import cn.m2c.scm.application.unit.query.UnitQuery;
 import cn.m2c.scm.domain.IDGenerator;
 import cn.m2c.scm.domain.NegativeException;
@@ -61,6 +63,8 @@ public class GoodsApproveAgent {
     UnitQuery unitQuery;
     @Autowired
     DealerQuery dealerQuery;
+    @Autowired
+    PostageModelQueryApplication postageModelQueryApplication;
 
     /**
      * 获取ID
@@ -384,8 +388,10 @@ public class GoodsApproveAgent {
                 if (settlementMode == 2) {
                     serviceRate = goodsClassifyQueryApplication.queryServiceRateByClassifyId(goodsBean.getGoodsClassifyId());
                 }
+                PostageModelBean postageModelBean = postageModelQueryApplication.queryPostageModelsByModelId(goodsBean.getGoodsPostageId());
+
                 GoodsApproveDetailRepresentation representation = new GoodsApproveDetailRepresentation(goodsBean,
-                        goodsClassifyMap, goodsGuarantee, goodsUnitName, settlementMode, serviceRate);
+                        goodsClassifyMap, goodsGuarantee, goodsUnitName, settlementMode, serviceRate, postageModelBean);
                 result.setContent(representation);
             }
             result.setStatus(MCode.V_200);

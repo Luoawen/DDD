@@ -3,6 +3,7 @@ package cn.m2c.scm.application.goods.query.data.representation;
 import cn.m2c.common.JsonUtils;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsApproveBean;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsGuaranteeBean;
+import cn.m2c.scm.application.postage.data.bean.PostageModelBean;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,10 +37,11 @@ public class GoodsApproveDetailRepresentation {
     private Integer skuFlag;
     private String goodsPostageId;
     private Integer goodsShelves;
+    private String goodsPostageName;
 
     public GoodsApproveDetailRepresentation(GoodsApproveBean bean, Map goodsClassifyMap,
                                             List<GoodsGuaranteeBean> goodsGuarantees, String goodsUnitName,
-                                            Integer settlementMode, Float serviceRate) {
+                                            Integer settlementMode, Float serviceRate, PostageModelBean postageModelBean) {
         this.goodsName = bean.getGoodsName();
         this.goodsSubTitle = bean.getGoodsSubTitle();
         this.goodsClassifyId = bean.getGoodsClassifyId();
@@ -73,6 +75,17 @@ public class GoodsApproveDetailRepresentation {
         this.skuFlag = bean.getSkuFlag();
         this.goodsPostageId = bean.getGoodsPostageId();
         this.goodsShelves = bean.getGoodsShelves();
+        if (null != postageModelBean) {
+            this.goodsPostageName = postageModelBean.getModelName();
+        }
+    }
+
+    public String getGoodsPostageName() {
+        return goodsPostageName;
+    }
+
+    public void setGoodsPostageName(String goodsPostageName) {
+        this.goodsPostageName = goodsPostageName;
     }
 
     public String getGoodsName() {
