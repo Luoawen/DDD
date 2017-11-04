@@ -85,7 +85,7 @@ public class HibernateGoodsRepository extends HibernateSupperRepository implemen
     @Override
     public boolean postageIdIsUser(String postageId) {
         StringBuilder sql = new StringBuilder("select * from t_scm_goods where del_status = 1");
-        sql.append(" and goods_postage_id = ?");
+        sql.append(" and goods_postage_id = :goods_postage_id");
         Query query = this.session().createSQLQuery(sql.toString()).addEntity(Goods.class);
         query.setParameter("goods_postage_id", postageId);
         return null != query.list() && query.list().size() > 0;
