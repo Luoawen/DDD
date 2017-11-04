@@ -2,6 +2,7 @@ package cn.m2c.scm.application.order;
 
 import cn.m2c.common.MCode;
 import cn.m2c.ddd.common.event.annotation.EventListener;
+import cn.m2c.scm.application.classify.data.bean.GoodsClassifyBean;
 import cn.m2c.scm.application.classify.query.GoodsClassifyQueryApplication;
 import cn.m2c.scm.application.dealer.data.bean.DealerBean;
 import cn.m2c.scm.application.dealer.query.DealerQuery;
@@ -16,6 +17,7 @@ import cn.m2c.scm.application.order.data.bean.GoodsReqBean;
 import cn.m2c.scm.application.order.data.bean.MarketBean;
 import cn.m2c.scm.application.order.data.bean.MarketUseBean;
 import cn.m2c.scm.application.order.data.bean.MediaResBean;
+import cn.m2c.scm.application.order.data.bean.SkuMediaBean;
 import cn.m2c.scm.application.order.data.representation.OrderMoney;
 import cn.m2c.scm.application.order.query.OrderQueryApplication;
 import cn.m2c.scm.application.order.query.dto.GoodsDto;
@@ -91,7 +93,7 @@ public class OrderApplication {
 		// skuId, num
 		Map<String, Integer> skus = new HashMap<String, Integer>();
 		Map<String, GoodsReqBean> skuBeans = new HashMap<String, GoodsReqBean>();
-		List<String> mediaResIds = new ArrayList<String>();
+		Map<String, SkuMediaBean> mediaResIds = new HashMap<String, SkuMediaBean>();
 		Map<String, String> skuMedia = new HashMap<String, String>();
 		List<String> marketIds = new ArrayList<String>();
 		if (gdes == null || gdes.size() < 1) {
@@ -107,13 +109,13 @@ public class OrderApplication {
 				skuBeans.put(sku, new GoodsReqBean(nm, (Integer)it.get("level"), (String)it.get("marketId"),
 						(Integer)it.get("isChange")));
 				String mResId = (String)it.get("mediaResId");
-				if (!StringUtils.isEmpty(mResId) && !mediaResIds.contains(mResId)) {
-					mediaResIds.add(mResId);
+				if (!StringUtils.isEmpty(mResId)) {
+					mediaResIds.put(sku, new SkuMediaBean(sku, mResId));
 				}
 				skuMedia.put(sku, mResId);
 				String marketId = (String)it.get("marketId");
 				if (!StringUtils.isEmpty(marketId)  && !marketIds.contains(marketId))
-						marketIds.add(marketId);
+					marketIds.add(marketId);
 			}
 		}
 		else {
@@ -130,11 +132,12 @@ public class OrderApplication {
 						o.getIntValue("isChange")));
 				
 				String mResId = o.getString("mediaResId");
-				if (!StringUtils.isEmpty(mResId) && !mediaResIds.contains(mResId))
-					mediaResIds.add(mResId);
+				if (!StringUtils.isEmpty(mResId)) {
+					mediaResIds.put(sku, new SkuMediaBean(sku, mResId));
+				}
 				skuMedia.put(sku, mResId);
 				if (!StringUtils.isEmpty(marketId)  && !marketIds.contains(marketId))
-						marketIds.add(marketId);
+					marketIds.add(marketId);
 			}
 		}
 		try {// 锁定库存
@@ -151,9 +154,17 @@ public class OrderApplication {
 		// 获取商品详情
 		List<GoodsDto> list = gQueryApp.getGoodsDtl(skus.keySet());
 		// 获取分类及费率
-		getClassifyRate(list);
+		getClassifyRate(list, mediaResIds);
 		//若有媒体信息则需要查询媒体信息
-		Map<String, Object> resMap = orderDomainService.getMediaBdByResIds(mediaResIds, orderTime);
+		Map<String, Object> resMap = null;
+		if (mediaResIds != null) {
+			Iterator<SkuMediaBean> it = mediaResIds.values().iterator();
+			List<SkuMediaBean> lsMd = new ArrayList<>();
+			while(it.hasNext()) {
+				lsMd.add(it.next());
+			}
+			resMap = orderDomainService.getMediaBdByResIds(lsMd, orderTime);
+		}
 		// 获取运费模板，计算运费
 		calFreight(skuBeans, list, cmd.getAddr().getCityCode());
 		
@@ -183,7 +194,7 @@ public class OrderApplication {
 		List<MarketUseBean> useList = new ArrayList<>();
 		MainOrder order = new MainOrder(cmd.getOrderId(), cmd.getAddr(), goodsAmounts, freight
 				, plateDiscount, dealerDiscount, cmd.getUserId(), cmd.getNoted(), dealerOrders, null
-				, getUsedMarket(cmd.getOrderId(), list, useList));
+				, getUsedMarket(cmd.getOrderId(), list, useList), cmd.getLatitude(), cmd.getLongitude());
 		// 组织保存(重新设置计算好的价格)		
 		order.add(skus);
 		orderRepository.save(order);
@@ -297,7 +308,7 @@ public class OrderApplication {
 				String resId = skuMedia.get(bean.getSkuId());
 				MediaResBean mb = null;
 				if (!StringUtils.isEmpty(resId))
-					mb = (MediaResBean)medias.get(resId);
+					mb = medias != null ?(MediaResBean)medias.get(resId) : null;
 				
 				if (mb == null) {
 					dtls.add(new DealerOrderDtl(cmd.getOrderId(), dealerOrderId, cmd.getAddr(), 
@@ -537,14 +548,23 @@ public class OrderApplication {
 	 * 获取商品分类费率并设置
 	 * @param goodses
 	 */
-	private void getClassifyRate(List<GoodsDto> goodses) {
+	private void getClassifyRate(List<GoodsDto> goodses, Map<String, SkuMediaBean> resMap) {
 		if (null == goodses || goodses.size() < 1)
 			return;
 		List<String> clsIds = new ArrayList<String>();
+		List<String> clsIdMedia = new ArrayList<String>();
 		for (GoodsDto d : goodses) {
 			String s = d.getGoodsTypeId();
 			if (!clsIds.contains(s)) {
 				clsIds.add(s);
+			}
+			
+			if (resMap != null) {
+				SkuMediaBean skb = resMap.get(d.getSkuId());
+				if (skb != null) {
+					clsIdMedia.add(s);
+					skb.setGoodsTypeCode(s);
+				}
 			}
 		}
 		
@@ -555,6 +575,17 @@ public class OrderApplication {
 			Float rate = map.get(s);
 			if (rate != null)
 				d.setRate(rate);
+		}
+		
+		if (resMap != null && clsIdMedia.size() > 0) { // 获取父级分类
+			List<GoodsClassifyBean> parentType = goodsClassQuery.getFirstClassifyByClassifyIds(clsIdMedia);
+			if (parentType == null)
+				return;
+			Iterator<SkuMediaBean> it = resMap.values().iterator();
+			while (it.hasNext()) {
+				String cid = it.next().getGoodsTypeCode();
+				// 
+			}
 		}
 	}
 }

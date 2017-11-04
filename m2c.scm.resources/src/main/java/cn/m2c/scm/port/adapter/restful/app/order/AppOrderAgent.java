@@ -13,6 +13,7 @@ import cn.m2c.scm.application.order.command.OrderAddCommand;
 import cn.m2c.scm.application.order.command.PayOrderCmd;
 import cn.m2c.scm.application.order.command.SaleAfterCmd;
 import cn.m2c.scm.application.order.command.SaleAfterShipCmd;
+import cn.m2c.scm.application.order.data.bean.AppOrderBean;
 import cn.m2c.scm.application.order.data.bean.OrderBean;
 import cn.m2c.scm.application.order.data.representation.OrderNo;
 import cn.m2c.scm.application.order.query.OrderQueryApplication;
@@ -29,10 +30,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /***
  * 订单
@@ -94,10 +92,13 @@ public class AppOrderAgent {
             ,@RequestParam(value = "invoice", required = false) String invoice
             ,@RequestParam(value = "addr", required = false) String addr
             ,@RequestParam(value = "noted", required = false) String noted
-            ,@RequestParam(value = "coupons", required = false) String coupons) {
+            ,@RequestParam(value = "coupons", required = false) String coupons
+            ,@RequestParam(value = "latitude", required = false) Double latitude
+            ,@RequestParam(value = "longitude", required = false) Double longitude) {
     	MResult result = new MResult(MCode.V_1);
         try {
-        	OrderAddCommand cmd = new OrderAddCommand(orderId, userId, noted, goodses, invoice, addr, coupons);
+        	OrderAddCommand cmd = new OrderAddCommand(orderId, userId, noted, goodses, invoice, addr, coupons,
+        			latitude, longitude);
             result.setContent(orderApp.submitOrder(cmd));
             result.setStatus(MCode.V_200);
         } 
@@ -122,11 +123,12 @@ public class AppOrderAgent {
             ,@RequestParam(value = "pageIndex", required = false, defaultValue="1") Integer pageIndex
             ,@RequestParam(value = "pageNum", required = false, defaultValue="5") Integer pageNum
             ,@RequestParam(value = "status", required = false) Integer status
+            ,@RequestParam(value = "commentStatus", required = false) Integer commentStatus
             ) {
     	MPager result = new MPager(MCode.V_1);
         try {
-        	Integer total = orderQueryApp.getAppOrderListTotal(userId, status);
-        	List<OrderBean> cntList = orderQueryApp.getAppOrderList(userId, status, pageIndex, pageNum);
+        	Integer total = orderQueryApp.getAppOrderListTotal(userId, status, commentStatus);
+        	List<AppOrderBean> cntList = orderQueryApp.getAppOrderList(userId, status, commentStatus, pageIndex, pageNum);
             result.setPager(total, pageIndex, pageNum);
             result.setContent(cntList);
             result.setStatus(MCode.V_200);

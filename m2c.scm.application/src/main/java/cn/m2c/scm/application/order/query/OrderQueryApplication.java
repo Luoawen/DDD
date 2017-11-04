@@ -13,8 +13,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import cn.m2c.ddd.common.port.adapter.persistence.springJdbc.SupportJdbcTemplate;
+import cn.m2c.scm.application.order.data.bean.AppOrderBean;
 import cn.m2c.scm.application.order.data.bean.DealerOrderBean;
-import cn.m2c.scm.application.order.data.bean.OrderBean;
 import cn.m2c.scm.application.order.data.bean.OrderDetailBean;
 import cn.m2c.scm.application.order.data.bean.OrderExpressBean;
 import cn.m2c.scm.application.order.data.bean.SkuNumBean;
@@ -241,39 +241,71 @@ public class OrderQueryApplication {
 	 * @return
 	 * @throws NegativeException
 	 */
-	public List<OrderBean> getAppOrderList(String userId, Integer status, int pageIndex, int pageSize) throws NegativeException {
-		List<OrderBean> result = null;
+	public List<AppOrderBean> getAppOrderList(String userId, Integer status, Integer commentStatus,
+			int pageIndex, int pageSize) throws NegativeException {
+		List<AppOrderBean> result = null;
 		try {
 			List<Object> params = new ArrayList<>(4);
 			StringBuilder sql = new StringBuilder();
-			sql.append("SELECT\r\n")
-			.append(" a.province_code, a.province, a.city, a.city_code, a.area_code, a.area_county, a.street_addr\r\n")
-			.append(" , a.order_freight, a.order_id, a.goods_amount, a.plateform_discount, a.dealer_discount\r\n")
-			.append(" , b.invoice_code, b.invoice_header, b.invoice_name, b.invoice_type, a.created_date\r\n")
-			.append("FROM\r\n")
-			.append("	t_scm_order_main a LEFT OUTER JOIN t_scm_order_dealer b ON a.order_id=b.order_id \r\n")
+			sql.append("SELECT a.province_code, a.province, a.city, a.city_code, a.area_code, a.area_county, a.street_addr\r\n")
+			.append(", a.order_freight, a.order_id, a.goods_amount, a.plateform_discount, a.dealer_discount\r\n")
+			.append(", b.invoice_code, b.invoice_header, b.invoice_name, b.invoice_type, a.created_date, b._status\r\n") 
+			.append(", b.dealer_id, c.dealer_name, b.dealer_order_id\r\n") 
+			.append("FROM t_scm_order_dealer b \r\n")
+			.append("LEFT OUTER JOIN t_scm_order_main a ON a.order_id=b.order_id \r\n") 
+			.append("LEFT OUTER JOIN t_scm_dealer c ON c.dealer_id = b.dealer_id \r\n")
 			.append("WHERE a.user_id=? ");
 			params.add(userId);
-			if (status != null) {
-				sql.append(" AND a._status=?");
+			
+			
+			if (commentStatus != null && commentStatus == 1) {
+				sql.append(" AND b.dealer_order_id in (SELECT e.dealer_order_id FROM t_scm_order_detail e WHERE e.comment_status=0 AND e._status=?)");
+				status = 3;
+				params.add(status);
+			}
+			else if (status != null) {
+				sql.append(" AND b._status=?");
 				params.add(status);
 			}
 			
-			sql.append(" ORDER BY a.created_date DESC ");
+			sql.append(" ORDER BY a.order_id DESC, a.created_date DESC ");
 			
 			sql.append(" LIMIT ?,? ");
 			params.add((pageIndex - 1) * pageSize + 1);
 			params.add(pageSize);
 			
-			result = this.supportJdbcTemplate.queryForBeanList(sql.toString(), OrderBean.class, params.toArray());
+			result = this.supportJdbcTemplate.queryForBeanList(sql.toString(), AppOrderBean.class, params.toArray());
 			
 			if (result != null) {
-				for (OrderBean o : result) {
-					sql.delete(0, sql.length());
-					sql.append("SELECT a.goods_icon, a.goods_name, a.goods_title, a.sku_name, a.sku_id, a.sell_num, a.discount_price, a.freight, a.goods_amount\r\n") 
-					.append(" FROM t_scm_order_detail a WHERE a.order_id=?");
-					o.setGoodses(this.supportJdbcTemplate.queryForBeanList(sql.toString(), 
-							OrderDetailBean.class, new Object[] {o.getOrderId()}));
+				int sz = result.size();
+				String tmpOrderId = null; 
+				AppOrderBean tmp = null;
+				for (int i=sz - 1; i> -1; i--) {
+					AppOrderBean o = result.get(i);
+					if (o.getStatus() == 0 && !o.getOrderId().equals(tmpOrderId)) {
+						tmp = o;
+						tmpOrderId = o.getOrderId();
+						sql.delete(0, sql.length());
+						sql.append("SELECT a.goods_icon, a.goods_name, a.goods_title, a.sku_name, a.sku_id, a.sell_num, a.discount_price, a.freight, a.goods_amount\r\n") 
+						.append(" FROM t_scm_order_detail a WHERE a.order_id=?");
+						o.setGoodses(this.supportJdbcTemplate.queryForBeanList(sql.toString(), 
+								OrderDetailBean.class, new Object[] {tmpOrderId}));
+					}
+					else if (o.getStatus() == 0 && o.getOrderId().equals(tmpOrderId)) {
+						result.remove(i);
+						tmp.setDealerDiscount(tmp.getDealerDiscount() + o.getDealerDiscount());
+						tmp.setPlateFormDiscount(tmp.getPlateFormDiscount() + o.getPlateFormDiscount());
+						tmp.setGoodAmount(tmp.getGoodAmount() + o.getGoodAmount());
+						tmp.setOderFreight(tmp.getOderFreight() + o.getOderFreight());
+					}
+					else {
+						tmpOrderId = o.getOrderId();
+						sql.delete(0, sql.length());
+						sql.append("SELECT a.goods_icon, a.goods_name, a.goods_title, a.sku_name, a.sku_id, a.sell_num, a.discount_price, a.freight, a.goods_amount\r\n") 
+						.append(" FROM t_scm_order_detail a WHERE a.order_id=? AND a.dealer_order_id=?");
+						o.setGoodses(this.supportJdbcTemplate.queryForBeanList(sql.toString(), 
+								OrderDetailBean.class, new Object[] {tmpOrderId, o.getDealerOrderId()}));
+					}
 				}
 			}
 			
@@ -291,18 +323,24 @@ public class OrderQueryApplication {
 	 * @return
 	 * @throws NegativeException
 	 */
-	public Integer getAppOrderListTotal(String userId, Integer status) throws NegativeException {
+	public Integer getAppOrderListTotal(String userId, Integer status, Integer commentStatus) throws NegativeException {
 		Integer result = 0;
 		try {
 			List<Object> params = new ArrayList<>(2);
 			StringBuilder sql = new StringBuilder();
-			sql.append("SELECT ")
-			.append(" count(1) ")
-			.append("FROM t_scm_order_main a")
-			.append(" WHERE a.user_id=? ");
+			sql.append("SELECT count(1) FROM t_scm_order_dealer b \r\n")
+			.append("LEFT OUTER JOIN t_scm_order_main a ON a.order_id=b.order_id \r\n") 
+			.append("LEFT OUTER JOIN t_scm_dealer c ON c.dealer_id = b.dealer_id \r\n")
+			.append("WHERE a.user_id=? ");
 			params.add(userId);
-			if (status != null) {
-				sql.append(" AND a._status=?");
+			
+			if (commentStatus != null && commentStatus == 1) {
+				sql.append(" AND b.dealer_order_id in (SELECT e.dealer_order_id FROM t_scm_order_detail e WHERE e.comment_status=0 AND e._status=?)");
+				status = 3;
+				params.add(status);
+			}
+			else if (status != null) {
+				sql.append(" AND b._status=?");
 				params.add(status);
 			}
 			

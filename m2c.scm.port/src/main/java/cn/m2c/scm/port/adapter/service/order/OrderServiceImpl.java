@@ -89,7 +89,7 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	@Override
-	public Map<String, Object> getMediaBdByResIds(List<String> resIds, long time) {
+	public <T> Map<String, Object> getMediaBdByResIds(List<T> resIds, long time) {
 		// TODO Auto-generated method stub
 		if (null == resIds || resIds.size() < 1) {
 			return null;

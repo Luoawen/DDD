@@ -53,13 +53,18 @@ public class MainOrder extends ConcurrencySafeEntity {
 	/**应用的营销策略*/
 	private List<SimpleMarketing> marketings;
 	
+	/**纬度*/
+	private Double latitude;
+	/**经度*/
+	private Double longitude;
+	
 	public MainOrder() {
 		super();
 	}
 	// String payNo, int payWay, Date payTime, 
 	public MainOrder(String orderId, ReceiveAddr addr, long goodsAmount, long orderFreight, long plateformDiscount
 			, long dealerDiscount, String userId, String noted, List<DealerOrder> dealerOrders
-			,List<SimpleCoupon> coupons, List<SimpleMarketing> marketings) {
+			,List<SimpleCoupon> coupons, List<SimpleMarketing> marketings, Double latitude, Double longitude) {
 		this.orderId = orderId;
 		this.addr = addr;
 		this.goodsAmount = goodsAmount;
@@ -71,6 +76,8 @@ public class MainOrder extends ConcurrencySafeEntity {
 		this.dealerOrders = dealerOrders;
 		this.coupons = coupons;
 		this.marketings = marketings;
+		this.latitude = latitude;
+		this.longitude = longitude;
 	}
 	/**
 	 * 增加订单

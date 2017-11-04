@@ -79,6 +79,6 @@ public interface OrderService {
 	 * @param resIds
 	 * @return
 	 */
-	public Map<String, Object> getMediaBdByResIds(List<String> resIds, long time);
+	public <T> Map<String, Object> getMediaBdByResIds(List<T> resIds, long time);
 	
 }

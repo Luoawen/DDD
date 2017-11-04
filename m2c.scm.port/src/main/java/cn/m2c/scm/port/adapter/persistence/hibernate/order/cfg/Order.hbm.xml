@@ -35,6 +35,9 @@
         <property name="userId" column="user_id" type="string"/>
         <property name="noted" column="noted" type="string"/>
         
+        <property name="latitude" column="latitude" type="double"/>
+        <property name="longitude" column="longitude" type="double"/>
+        
         <bag name="dealerOrders" cascade="all-delete-orphan" lazy="false" inverse="true">
         	<key column="order_id" property-ref="orderId"/>
         	<one-to-many class="cn.m2c.scm.domain.model.order.DealerOrder" />
