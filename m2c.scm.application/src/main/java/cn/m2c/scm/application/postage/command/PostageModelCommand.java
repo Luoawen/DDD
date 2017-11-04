@@ -82,7 +82,7 @@ public class PostageModelCommand extends AssertionConcern implements Serializabl
             Integer size = 0;
             for (Map map : ruleList) {
                 Integer defaultFlag = GetMapValueUtils.getIntFromMapKey(map, "defaultFlag");
-                if (defaultFlag == 1) {
+                if (null != defaultFlag && defaultFlag == 1) {
                     String cityCode = GetMapValueUtils.getStringFromMapKey(map, "cityCode");
                     if (StringUtils.isEmpty(cityCode)) {
                         throw new NegativeException(MCode.V_1, "配送城市编码为空");
