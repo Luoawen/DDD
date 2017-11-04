@@ -2,7 +2,6 @@ package cn.m2c.scm.application.order;
 
 import cn.m2c.common.MCode;
 import cn.m2c.ddd.common.event.annotation.EventListener;
-import cn.m2c.scm.application.classify.data.bean.GoodsClassifyBean;
 import cn.m2c.scm.application.classify.query.GoodsClassifyQueryApplication;
 import cn.m2c.scm.application.dealer.data.bean.DealerBean;
 import cn.m2c.scm.application.dealer.query.DealerQuery;
@@ -578,13 +577,18 @@ public class OrderApplication {
 		}
 		
 		if (resMap != null && clsIdMedia.size() > 0) { // 获取父级分类
-			List<GoodsClassifyBean> parentType = goodsClassQuery.getFirstClassifyByClassifyIds(clsIdMedia);
-			if (parentType == null)
+			Map<String, String> clsMap = (Map<String, String>)goodsClassQuery.getFirstClassifyByIds(clsIdMedia);
+			if (clsMap == null)
 				return;
 			Iterator<SkuMediaBean> it = resMap.values().iterator();
 			while (it.hasNext()) {
-				String cid = it.next().getGoodsTypeCode();
-				// 
+				SkuMediaBean skb = it.next();
+				String cid = skb.getGoodsTypeCode();
+
+				String pId = clsMap.get(cid);
+				if (pId != null) {
+					skb.setGoodsTypeCode(pId);
+				}
 			}
 		}
 	}
