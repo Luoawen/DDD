@@ -16,37 +16,37 @@ public class MainOrderBean extends AssertionConcern implements Serializable {
 	/**
 	 * 主订单号
 	 */
-	@ColumnAlias(value = "ordde_id")
+//	@ColumnAlias(value = "ordde_id")
 	private String orderId;
 	/**
 	 * 支付单号
 	 */
-	@ColumnAlias(value = "pay_no")
+	//	@ColumnAlias(value = "pay_no")
 	private String payNo;
 	/**
 	 * 下单时间
 	 */
-	@ColumnAlias(value = "created_date")
+	//	@ColumnAlias(value = "created_date")
 	private Date createDate;
 	/**
 	 * 订单商品金额
 	 */
-	@ColumnAlias(value = "goods_amount")
+	//	@ColumnAlias(value = "goods_amount")
 	private long goodAmount;
 	/**
 	 * 订单运费
 	 */
-	@ColumnAlias(value = "order_freight")
+	//@ColumnAlias(value = "order_freight")
 	private long oderFreight;
 	/**
 	 * 平台优惠
 	 */
-	@ColumnAlias(value = "plateform_discount")
+	//@ColumnAlias(value = "plateform_discount")
 	private long plateFormDiscount;
 	/**
 	 * 商家优惠
 	 */
-	@ColumnAlias(value = "dealer_discount")
+	//@ColumnAlias(value = "dealer_discount")
 	private long dealerDiscount;
 	/**
 	 * 商家订单列表

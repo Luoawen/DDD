@@ -7,32 +7,32 @@ public class OrderDealerBean {
 	/**
 	 * 平台订单号
 	 */
-	@ColumnAlias(value = "order_id")
+	//@ColumnAlias(value = "order_id")
 	private String orderId;
 	/**
 	 * 商家Id
 	 */
-	@ColumnAlias(value = "dealer_id")
+	//@ColumnAlias(value = "dealer_id")
 	private String dealerId;
 	/**
 	 * 商家订单号
 	 */
-	@ColumnAlias(value = "dealer_order_id")
+	//@ColumnAlias(value = "dealer_order_id")
 	private String dealerOrderId;
 	/**
 	 * 商家或店铺名称
 	 */
-	@ColumnAlias(value = "dealer_name")
+	//@ColumnAlias(value = "dealer_name")
 	private String dealerName;
 	/**
 	 * 订单状态：0待付款;1待发货;2待收货;3完成;4交易完成;5交易关闭;-1已取消
 	 */
-	@ColumnAlias(value = "_status")
+	//@ColumnAlias(value = "_status")
 	private Integer status;
 	/**
 	 * 订单商品金额
 	 */
-	@ColumnAlias(value = "goods_amount")
+	//@ColumnAlias(value = "goods_amount")
 	private long goodAmount;
 	/**
 	 * 订单运费
