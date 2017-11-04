@@ -16,42 +16,46 @@ public class MainOrderBean extends AssertionConcern implements Serializable {
 	/**
 	 * 主订单号
 	 */
-	@ColumnAlias(value = "ordde_id")
+//	@ColumnAlias(value = "ordde_id")
 	private String orderId;
 	/**
 	 * 支付单号
 	 */
-	@ColumnAlias(value = "pay_no")
+	//	@ColumnAlias(value = "pay_no")
 	private String payNo;
 	/**
 	 * 下单时间
 	 */
-	@ColumnAlias(value = "created_date")
+	//	@ColumnAlias(value = "created_date")
 	private Date createDate;
 	/**
 	 * 订单商品金额
 	 */
-	@ColumnAlias(value = "goods_amount")
-	private int goodAmount;
+	//	@ColumnAlias(value = "goods_amount")
+	private long goodAmount;
 	/**
 	 * 订单运费
 	 */
-	@ColumnAlias(value = "order_freight")
-	private int oderFreight;
+	//@ColumnAlias(value = "order_freight")
+	private long oderFreight;
 	/**
 	 * 平台优惠
 	 */
-	@ColumnAlias(value = "plateform_discount")
-	private int plateFormDiscount;
+	//@ColumnAlias(value = "plateform_discount")
+	private long plateFormDiscount;
 	/**
 	 * 商家优惠
 	 */
-	@ColumnAlias(value = "dealer_discount")
-	private int dealerDiscount;
+	//@ColumnAlias(value = "dealer_discount")
+	private long dealerDiscount;
 	/**
 	 * 商家订单列表
 	 */
 	private List<OrderDealerBean> dealerOrderBeans;
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
 
 	public String getOrderId() {
 		return orderId;
@@ -65,19 +69,19 @@ public class MainOrderBean extends AssertionConcern implements Serializable {
 		return createDate;
 	}
 
-	public int getGoodAmount() {
+	public long getGoodAmount() {
 		return goodAmount;
 	}
 
-	public int getOderFreight() {
+	public long getOderFreight() {
 		return oderFreight;
 	}
 
-	public int getPlateFormDiscount() {
+	public long getPlateFormDiscount() {
 		return plateFormDiscount;
 	}
 
-	public int getDealerDiscount() {
+	public long getDealerDiscount() {
 		return dealerDiscount;
 	}
 
@@ -97,19 +101,19 @@ public class MainOrderBean extends AssertionConcern implements Serializable {
 		this.createDate = createDate;
 	}
 
-	public void setGoodAmount(int goodAmount) {
+	public void setGoodAmount(long goodAmount) {
 		this.goodAmount = goodAmount;
 	}
 
-	public void setOderFreight(int oderFreight) {
+	public void setOderFreight(long oderFreight) {
 		this.oderFreight = oderFreight;
 	}
 
-	public void setPlateFormDiscount(int plateFormDiscount) {
+	public void setPlateFormDiscount(long plateFormDiscount) {
 		this.plateFormDiscount = plateFormDiscount;
 	}
 
-	public void setDealerDiscount(int dealerDiscount) {
+	public void setDealerDiscount(long dealerDiscount) {
 		this.dealerDiscount = dealerDiscount;
 	}
 
@@ -119,7 +123,7 @@ public class MainOrderBean extends AssertionConcern implements Serializable {
 
 	@Override
 	public String toString() {
-		return "mainOrderBean [orderId=" + orderId + ", payNo=" + payNo + ", createDate=" + createDate + ", goodAmount="
+		return "MainOrderBean [orderId=" + orderId + ", payNo=" + payNo + ", createDate=" + createDate + ", goodAmount="
 				+ goodAmount + ", oderFreight=" + oderFreight + ", plateFormDiscount=" + plateFormDiscount
 				+ ", dealerDiscount=" + dealerDiscount + ", dealerOrderBeans=" + dealerOrderBeans + "]";
 	}

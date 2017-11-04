@@ -7,45 +7,45 @@ public class OrderDealerBean {
 	/**
 	 * 平台订单号
 	 */
-	@ColumnAlias(value = "order_id")
+	//@ColumnAlias(value = "order_id")
 	private String orderId;
 	/**
 	 * 商家Id
 	 */
-	@ColumnAlias(value = "dealer_id")
+	//@ColumnAlias(value = "dealer_id")
 	private String dealerId;
 	/**
 	 * 商家订单号
 	 */
-	@ColumnAlias(value = "dealer_order_id")
+	//@ColumnAlias(value = "dealer_order_id")
 	private String dealerOrderId;
 	/**
 	 * 商家或店铺名称
 	 */
-	@ColumnAlias(value = "dealer_name")
+	//@ColumnAlias(value = "dealer_name")
 	private String dealerName;
 	/**
 	 * 订单状态：0待付款;1待发货;2待收货;3完成;4交易完成;5交易关闭;-1已取消
 	 */
-	@ColumnAlias(value = "_status")
+	//@ColumnAlias(value = "_status")
 	private Integer status;
 	/**
 	 * 订单商品金额
 	 */
-	@ColumnAlias(value = "goods_amount")
-	private int goodAmount;
+	//@ColumnAlias(value = "goods_amount")
+	private long goodAmount;
 	/**
 	 * 订单运费
 	 */
-	private int oderFreight;
+	private long oderFreight;
 	/**
 	 * 平台优惠
 	 */
-	private int plateFormDiscount;
+	private long plateFormDiscount;
 	/**
 	 * 商家优惠
 	 */
-	private int dealerDiscount;
+	private long dealerDiscount;
 
 	public String getOrderId() {
 		return orderId;
@@ -67,19 +67,19 @@ public class OrderDealerBean {
 		return status;
 	}
 
-	public int getGoodAmount() {
+	public long getGoodAmount() {
 		return goodAmount;
 	}
 
-	public int getOderFreight() {
+	public long getOderFreight() {
 		return oderFreight;
 	}
 
-	public int getPlateFormDiscount() {
+	public long getPlateFormDiscount() {
 		return plateFormDiscount;
 	}
 
-	public int getDealerDiscount() {
+	public long getDealerDiscount() {
 		return dealerDiscount;
 	}
 
@@ -103,27 +103,20 @@ public class OrderDealerBean {
 		this.status = status;
 	}
 
-	public void setGoodAmount(int goodAmount) {
+	public void setGoodAmount(long goodAmount) {
 		this.goodAmount = goodAmount;
 	}
 
-	public void setOderFreight(int oderFreight) {
+	public void setOderFreight(long oderFreight) {
 		this.oderFreight = oderFreight;
 	}
 
-	public void setPlateFormDiscount(int plateFormDiscount) {
+	public void setPlateFormDiscount(long plateFormDiscount) {
 		this.plateFormDiscount = plateFormDiscount;
 	}
 
-	public void setDealerDiscount(int dealerDiscount) {
+	public void setDealerDiscount(long dealerDiscount) {
 		this.dealerDiscount = dealerDiscount;
-	}
-
-	@Override
-	public String toString() {
-		return "OrderDealerBean [orderId=" + orderId + ", dealerId=" + dealerId + ", dealerOrderId=" + dealerOrderId
-				+ ", dealerName=" + dealerName + ", status=" + status + ", goodAmount=" + goodAmount + ", oderFreight="
-				+ oderFreight + ", plateFormDiscount=" + plateFormDiscount + ", dealerDiscount=" + dealerDiscount + "]";
 	}
 
 }

@@ -164,7 +164,10 @@ public class GoodsApprove extends ConcurrencySafeEntity {
             this.goodsShelves = goodsShelves;
         }
         this.approveStatus = 1;
-        this.goodsSpecifications = goodsSpecifications;
+        this.skuFlag = skuFlag;
+        if (null != skuFlag && skuFlag == 1) {//是否是多规格：0：单规格，1：多规格
+            this.goodsSpecifications = goodsSpecifications;
+        }
         //商品规格格式：[{"skuId":20171014125226158648","skuName":"L,红","supplyPrice":4000,
         // "weight":20.5,"availableNum":200,"goodsCode":"111111","marketPrice":6000,"photographPrice":5000,"showStatus":2}]
         if (null == this.goodsSkuApproves) {
@@ -178,7 +181,6 @@ public class GoodsApprove extends ConcurrencySafeEntity {
                 this.goodsSkuApproves.add(createGoodsSkuApprove(skuList.get(i)));
             }
         }
-        this.skuFlag = skuFlag;
     }
 
     private GoodsSkuApprove createGoodsSkuApprove(Map map) {
@@ -190,10 +192,12 @@ public class GoodsApprove extends ConcurrencySafeEntity {
         Long marketPrice = GetMapValueUtils.getLongFromMapKey(map, "marketPrice");
         Long supplyPrice = GetMapValueUtils.getLongFromMapKey(map, "supplyPrice");
         String goodsCode = GetMapValueUtils.getStringFromMapKey(map, "goodsCode");
-        Boolean isShow = GetMapValueUtils.getBooleanFromMapKey(map, "showStatus");
-        Integer showStatus = 1;
-        if (isShow) {
-            showStatus = 2;
+        Integer showStatus = 2; //是否对外展示，1：不展示，2：展示
+        if (null != this.skuFlag && this.skuFlag == 1) {
+            Boolean isShow = GetMapValueUtils.getBooleanFromMapKey(map, "showStatus");
+            if (!isShow) {
+                showStatus = 1;
+            }
         }
         GoodsSkuApprove goodsSkuApprove = new GoodsSkuApprove(this, skuId, skuName, availableNum,
                 weight, photographPrice, marketPrice, supplyPrice, goodsCode,
@@ -249,7 +253,9 @@ public class GoodsApprove extends ConcurrencySafeEntity {
         this.goodsDesc = goodsDesc;
         this.approveStatus = 1;
         this.rejectReason = null;
-        this.goodsSpecifications = goodsSpecifications;
+        if (null != this.skuFlag && this.skuFlag == 1) {//是否是多规格：0：单规格，1：多规格
+            this.goodsSpecifications = goodsSpecifications;
+        }
         //商品规格格式：[{"skuId":20171014125226158648","skuName":"L,红","supplyPrice":4000,
         // "weight":20.5,"availableNum":200,"goodsCode":"111111","marketPrice":6000,"photographPrice":5000,"showStatus":2}]
         if (null == this.goodsSkuApproves) {
@@ -271,10 +277,12 @@ public class GoodsApprove extends ConcurrencySafeEntity {
                     Long marketPrice = GetMapValueUtils.getLongFromMapKey(map, "marketPrice");
                     Long supplyPrice = GetMapValueUtils.getLongFromMapKey(map, "supplyPrice");
                     String goodsCode = GetMapValueUtils.getStringFromMapKey(map, "goodsCode");
-                    Boolean isShow = GetMapValueUtils.getBooleanFromMapKey(map, "showStatus");
-                    Integer showStatus = 1;
-                    if (isShow) {
-                        showStatus = 2;
+                    Integer showStatus = 2; //是否对外展示，1：不展示，2：展示
+                    if (null != this.skuFlag && this.skuFlag == 1) {
+                        Boolean isShow = GetMapValueUtils.getBooleanFromMapKey(map, "showStatus");
+                        if (!isShow) {
+                            showStatus = 1;
+                        }
                     }
                     goodsSkuApprove.modifyGoodsSkuApprove(skuName, availableNum, weight, photographPrice,
                             marketPrice, supplyPrice, goodsCode, showStatus);

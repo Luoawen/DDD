@@ -13,15 +13,15 @@ import org.springframework.orm.hibernate4.HibernateTransactionManager;
 import java.util.Map;
 
 /**
- * 订单支付完成，减商品销量、加实际库存
+ * 订单退货，减商品销量、减可用和实际库存
  */
-public class GoodsSkuUpdateByOrderCancelListener extends ExchangeListener {
-    private static final Logger LOGGER = LoggerFactory.getLogger(GoodsSkuUpdateByOrderCancelListener.class);
+public class GoodsSkuUpdateByOrderReturnListener extends ExchangeListener {
+    private static final Logger LOGGER = LoggerFactory.getLogger(GoodsSkuUpdateByOrderReturnListener.class);
 
     @Autowired
     GoodsApplication goodsApplication;
 
-    public GoodsSkuUpdateByOrderCancelListener(RabbitmqConfiguration rabbitmqConfiguration, HibernateTransactionManager hibernateTransactionManager, ConsumedEventStore consumedEventStore) {
+    public GoodsSkuUpdateByOrderReturnListener(RabbitmqConfiguration rabbitmqConfiguration, HibernateTransactionManager hibernateTransactionManager, ConsumedEventStore consumedEventStore) {
         super(rabbitmqConfiguration, hibernateTransactionManager, consumedEventStore);
     }
 
@@ -33,12 +33,12 @@ public class GoodsSkuUpdateByOrderCancelListener extends ExchangeListener {
     @Override
     protected void filteredDispatch(String aType, String aTextMessage) throws Exception {
         Map map = JsonUtils.toMap4Obj(aTextMessage);
-        Map<String, Object> obj = JsonUtils.toMap4Obj(JsonUtils.toStr(map.get("sales")));
-        goodsApplication.GoodsSkuUpdateByOrderCancel(obj);
+        Map<String, Object> obj = JsonUtils.toMap4Obj(JsonUtils.toStr(map.get("skus")));
+        goodsApplication.GoodsSkuUpdateByOrderReturnGoods(obj);
     }
 
     @Override
     protected String[] listensTo() {
-        return new String[]{"cn.m2c.scm.domain.model.order.event.OrderPayedEvent"};
+        return new String[]{"cn.m2c.scm.domain.model.order.event.OrderSkuReturnEvent"};
     }
 }

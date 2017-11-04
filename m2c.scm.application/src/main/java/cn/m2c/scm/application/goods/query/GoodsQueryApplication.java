@@ -357,7 +357,7 @@ public class GoodsQueryApplication {
         sql.append(" SELECT ");
         sql.append(" * ");
         sql.append(" FROM ");
-        sql.append(" t_scm_goods where del_status= 1 ");
+        sql.append(" t_scm_goods where del_status= 1 and goods_status <> 1");
         if (null != goodsIds && goodsIds.size() > 0) {
             sql.append(" and goods_id not in (" + Utils.listParseString(goodsIds) + ")");
         }
@@ -878,5 +878,69 @@ public class GoodsQueryApplication {
         sql.append(" t_scm_goods where goods_id in (" + Utils.listParseString(goodsIds) + ")");
         return this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsBean.class);
     }
+    
+    public Integer queryGoodsByGoodOrDealerTotal(String goodsId, String goodsName, String dealerId, String dealerName, Integer goodsLaunchStatus) {
+		List<Object> params = new ArrayList<Object>();
+        StringBuilder sql = new StringBuilder();
+        sql.append(" SELECT ");
+        sql.append(" COUNT(DISTINCT g.goods_id) ");
+        sql.append(" FROM ");
+        sql.append(" t_scm_goods g WHERE g.del_status = 1 ");
+        if (null != goodsLaunchStatus) {
+        	sql.append(" AND g.goods_launch_status = ? ");
+    		params.add(goodsLaunchStatus);
+        }
+        if (StringUtils.isNotEmpty(goodsId)) {
+            sql.append(" AND g.goods_id = ? ");
+            params.add(goodsId);
+        }
+		if(StringUtils.isNotEmpty(goodsName)) {
+			sql.append(" AND g.goods_name = ? ");
+            params.add(goodsName);
+		}
+		if(StringUtils.isNotEmpty(dealerId)) {
+			sql.append(" AND g.dealer_id = ? ");
+            params.add(dealerId);
+		}
+		if(StringUtils.isNotEmpty(dealerName)) {
+			sql.append(" AND g.dealer_name = ? ");
+            params.add(dealerName);
+		}
+		return supportJdbcTemplate.jdbcTemplate().queryForObject(sql.toString(), Integer.class, params.toArray());
+	}
+    
+	public List<GoodsBean> queryGoodsByGoodOrDealer(String goodsId, String goodsName, String dealerId,
+			String dealerName, Integer goodsLaunchStatus, Integer pageNum, Integer rows) {
+		List<Object> params = new ArrayList<Object>();
+        StringBuilder sql = new StringBuilder();
+        sql.append(" SELECT ");
+        sql.append(" * ");
+        sql.append(" FROM ");
+        sql.append(" t_scm_goods g WHERE g.del_status = 1 ");
+        if (null != goodsLaunchStatus) {
+        	sql.append(" AND g.goods_launch_status = ? ");
+    		params.add(goodsLaunchStatus);
+        }
+        if (StringUtils.isNotEmpty(goodsId)) {
+            sql.append(" AND g.goods_id = ? ");
+            params.add(goodsId);
+        }
+		if(StringUtils.isNotEmpty(goodsName)) {
+			sql.append(" AND g.goods_name = ? ");
+            params.add(goodsName);
+		}
+		if(StringUtils.isNotEmpty(dealerId)) {
+			sql.append(" AND g.dealer_id = ? ");
+            params.add(dealerId);
+		}
+		if(StringUtils.isNotEmpty(dealerName)) {
+			sql.append(" AND g.dealer_name = ? ");
+            params.add(dealerName);
+		}
+		sql.append(" LIMIT ?,?");
+		params.add(rows * (pageNum - 1));
+		params.add(rows);
+		return supportJdbcTemplate.queryForBeanList(sql.toString(), GoodsBean.class, params.toArray());
+	}
 }
 

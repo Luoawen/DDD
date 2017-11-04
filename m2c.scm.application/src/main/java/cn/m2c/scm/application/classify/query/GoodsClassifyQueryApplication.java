@@ -239,4 +239,20 @@ public class GoodsClassifyQueryApplication {
         }
         return list;
     }
+
+    public Map getFirstClassifyByIds(List<String> classifyIds) {
+        Map map = new HashMap<>();
+        for (String classifyId : classifyIds) {
+            GoodsClassifyBean bean = queryGoodsClassifiesById(classifyId);
+            if (null != bean && "-1".equals(bean.getParentClassifyId())) {
+                map.put(classifyId, bean.getClassifyId());
+            } else {
+                if (null != bean) {
+                    bean = getFirstClassifyByClassifyId(bean.getParentClassifyId());
+                    map.put(classifyId, bean.getClassifyId());
+                }
+            }
+        }
+        return map;
+    }
 }
