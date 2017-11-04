@@ -81,9 +81,8 @@ public class ShopQuery {
 	public List<ShopBean> getShopList(String dealerName, String dealerClassify, String dealerId, Integer pageNum,
 			Integer rows) {
 		List<Object> params = new ArrayList<Object>();
-		List<ShopBean> shopBeanList = new ArrayList<ShopBean>();
-		try {
-			StringBuffer sql = new StringBuffer("select * from  t_scm_dealer sd  where sd.dealer_status=1 ");
+		//List<ShopBean> shopBeanList = new ArrayList<ShopBean>();
+			StringBuffer sql = new StringBuffer("SELECT * FROM t_scm_dealer_shop ds LEFT OUTER JOIN t_scm_dealer d ON ds.dealer_id = d.dealer_id WHERE 1 = 1  ");
 			if (dealerClassify != null && !"".equals(dealerClassify)) {
 				sql.append(" AND sd.dealer_classify LIKE concat('%', ?,'%') ");
 				params.add(dealerClassify);
@@ -99,20 +98,17 @@ public class ShopQuery {
 			sql.append(" LIMIT ?,?");
 			params.add(rows * (pageNum - 1));
 			params.add(rows);
-			System.out.println("----查询经销商列表：" + sql.toString());
-			List<DealerBean> dealerList = this.supportJdbcTemplate.queryForBeanList(sql.toString(), DealerBean.class,
+			List<ShopBean> shopList = this.supportJdbcTemplate.queryForBeanList(sql.toString(), ShopBean.class,
 					params.toArray());
-			if (dealerList != null && dealerList.size() > 0) {
+			System.out.println(shopList);
+			/*if (dealerList != null && dealerList.size() > 0) {
 				for (DealerBean dealerBean : dealerList) {
 					ShopBean shopInfo = getShopInfo(dealerBean.getDealerId(), dealerBean.getDealerName());
 					if (shopInfo != null)
 						shopBeanList.add(shopInfo);
 				}
-			}
-		} catch (Exception e) {
-			log.error("查询店铺列表出错", e);
-		}
-		return shopBeanList;
+			}*/
+		return shopList;
 	}
 
 	public ShopBean getShop(String dealerId) {
@@ -136,18 +132,15 @@ public class ShopQuery {
 	 * @return
 	 */
 	private ShopBean getShopInfo(String dealerId, String dealerName) {
-		ShopBean bean = null;
-		try {
+		
 			String sql = "SELECT * FROM t_scm_dealer_shop WHERE dealer_id=?";
 			System.out.println("------------" + sql);
-			bean = this.supportJdbcTemplate.queryForBean(sql, ShopBean.class, dealerId);
+			ShopBean	bean = this.supportJdbcTemplate.queryForBean(sql, ShopBean.class, dealerId);
 			if (bean != null) {
 				bean.setOnSaleGoods(getOnSaleGoodsCount(dealerId));
 				bean.setDealerName(dealerName);
 			}
-		} catch (Exception e) {
-			log.error("查询店铺信息出错", e);
-		}
+		
 		return bean;
 	}
 
@@ -174,20 +167,19 @@ public class ShopQuery {
 		Integer resultCount = 0;
 		try {
 			StringBuffer sql = new StringBuffer(
-					"select COUNT(*) from  t_scm_dealer d ,t_scm_dealer_shop ds where d.dealer_status=1 AND ds.dealer_id = d.dealer_id");
-			if (dealerClassify != null && !"".equals(dealerClassify)) {
+					"SELECT COUNT(1) FROM t_scm_dealer_shop ds LEFT OUTER JOIN t_scm_dealer d ON ds.dealer_id = d.dealer_id WHERE 1 = 1  ");
+			if (!StringUtils.isEmpty(dealerClassify)) {
 				sql.append(" AND ds.dealer_classify LIKE concat('%', ?,'%') ");
 				params.add(dealerClassify);
 			}
-			if (dealerName != null && !"".equals(dealerName)) {
+			if (!StringUtils.isEmpty(dealerName)) {
 				sql.append(" AND ds.dealer_name LIKE concat('%', ?,'%') ");
 				params.add(dealerName);
 			}
-			if (dealerId != null && !"".equals(dealerId)) {
+			if (!StringUtils.isEmpty(dealerId)) {
 				sql.append(" AND ds.dealer_id LIKE concat('%', ?,'%') ");
 				params.add(dealerId);
 			}
-			System.out.println("----查询经销商列表：" + sql.toString());
 			resultCount = this.supportJdbcTemplate.jdbcTemplate().queryForObject(sql.toString(), Integer.class,
 					params.toArray());
 		} catch (Exception e) {

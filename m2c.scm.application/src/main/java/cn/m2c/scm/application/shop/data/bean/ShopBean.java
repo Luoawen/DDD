@@ -23,10 +23,10 @@ public class ShopBean {
 	private String customerServiceTel;
 	@ColumnAlias(value = "on_sale_goods")
 	private Integer onSaleGoods;
-
+	
 	/** 是否已关注 0：未关注 1：已关注 **/
 	private Integer isFocus;
-
+	
 	private String userId;
 
 	public ShopBean() {
