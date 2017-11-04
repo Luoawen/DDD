@@ -25,13 +25,16 @@ public class GoodsGuaranteeQueryApplication {
     }
 
     public List<GoodsGuaranteeBean> queryGoodsGuaranteeByIds(List<String> ids) {
-        StringBuilder sql = new StringBuilder();
-        sql.append(" SELECT ");
-        sql.append(" * ");
-        sql.append(" FROM ");
-        sql.append(" t_scm_goods_guarantee WHERE 1 = 1");
-        sql.append(" AND guarantee_id in (" + Utils.listParseString(ids) + ") ");
-        return this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsGuaranteeBean.class);
+        if (null != ids && ids.size() > 0) {
+            StringBuilder sql = new StringBuilder();
+            sql.append(" SELECT ");
+            sql.append(" * ");
+            sql.append(" FROM ");
+            sql.append(" t_scm_goods_guarantee WHERE 1 = 1");
+            sql.append(" AND guarantee_id in (" + Utils.listParseString(ids) + ") ");
+            return this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsGuaranteeBean.class);
+        }
+        return null;
     }
 
     public List<GoodsGuaranteeBean> queryGoodsGuarantee() {
