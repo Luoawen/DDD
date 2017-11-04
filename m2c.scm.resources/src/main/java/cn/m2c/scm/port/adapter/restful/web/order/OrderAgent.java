@@ -85,7 +85,6 @@ public class OrderAgent {
 		try {
 			Integer total = orderQuery.mainOrderQueryTotal(orderStatus, afterSellStatus, startTime, endTime, condition, payWay, mediaInfo, dealerClassify);
 			List<MainOrderBean> mainOrderList = orderQuery.mainOrderListQuery(orderStatus, afterSellStatus, startTime, orderId,endTime, condition, payWay, mediaInfo, dealerClassify, pageNum, rows);
-			
 			result.setPager(total, pageNum, rows);
 			result.setContent(mainOrderList);
 			result.setStatus(MCode.V_200);
