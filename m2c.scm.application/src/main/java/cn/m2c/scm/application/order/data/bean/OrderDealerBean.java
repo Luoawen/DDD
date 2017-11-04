@@ -33,19 +33,19 @@ public class OrderDealerBean {
 	 * 订单商品金额
 	 */
 	@ColumnAlias(value = "goods_amount")
-	private int goodAmount;
+	private long goodAmount;
 	/**
 	 * 订单运费
 	 */
-	private int oderFreight;
+	private long oderFreight;
 	/**
 	 * 平台优惠
 	 */
-	private int plateFormDiscount;
+	private long plateFormDiscount;
 	/**
 	 * 商家优惠
 	 */
-	private int dealerDiscount;
+	private long dealerDiscount;
 
 	public String getOrderId() {
 		return orderId;
@@ -67,19 +67,19 @@ public class OrderDealerBean {
 		return status;
 	}
 
-	public int getGoodAmount() {
+	public long getGoodAmount() {
 		return goodAmount;
 	}
 
-	public int getOderFreight() {
+	public long getOderFreight() {
 		return oderFreight;
 	}
 
-	public int getPlateFormDiscount() {
+	public long getPlateFormDiscount() {
 		return plateFormDiscount;
 	}
 
-	public int getDealerDiscount() {
+	public long getDealerDiscount() {
 		return dealerDiscount;
 	}
 
@@ -103,27 +103,20 @@ public class OrderDealerBean {
 		this.status = status;
 	}
 
-	public void setGoodAmount(int goodAmount) {
+	public void setGoodAmount(long goodAmount) {
 		this.goodAmount = goodAmount;
 	}
 
-	public void setOderFreight(int oderFreight) {
+	public void setOderFreight(long oderFreight) {
 		this.oderFreight = oderFreight;
 	}
 
-	public void setPlateFormDiscount(int plateFormDiscount) {
+	public void setPlateFormDiscount(long plateFormDiscount) {
 		this.plateFormDiscount = plateFormDiscount;
 	}
 
-	public void setDealerDiscount(int dealerDiscount) {
+	public void setDealerDiscount(long dealerDiscount) {
 		this.dealerDiscount = dealerDiscount;
-	}
-
-	@Override
-	public String toString() {
-		return "OrderDealerBean [orderId=" + orderId + ", dealerId=" + dealerId + ", dealerOrderId=" + dealerOrderId
-				+ ", dealerName=" + dealerName + ", status=" + status + ", goodAmount=" + goodAmount + ", oderFreight="
-				+ oderFreight + ", plateFormDiscount=" + plateFormDiscount + ", dealerDiscount=" + dealerDiscount + "]";
 	}
 
 }

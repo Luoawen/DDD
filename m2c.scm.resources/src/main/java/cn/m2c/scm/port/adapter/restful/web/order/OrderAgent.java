@@ -62,6 +62,7 @@ public class OrderAgent {
 	 * @param endTime 结束时间
 	 * @param condition 搜索条件(goodsName,orderId,payNo,revPhone,dealerName,dealerId)
 	 * @param payWay 支付方式
+	 * @param mediaInfo 广告位信息    <0：没有广告位   1：有广告位>
 	 * @param pageNum 第几页
 	 * @param rows 每页多少行
 	 * @return
