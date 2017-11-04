@@ -183,6 +183,9 @@ public class Goods extends ConcurrencySafeEntity {
             this.goodsStatus = 1;
         } else {
             this.goodsStatus = 2;
+            DomainEventPublisher
+                    .instance()
+                    .publish(new GoodsUpShelfEvent(this.goodsId, this.goodsPostageId));
         }
         this.goodsSpecifications = goodsSpecifications;
         this.createdDate = new Date();

@@ -302,6 +302,7 @@ public class GoodsApproveAgent {
         MResult result = new MResult(MCode.V_1);
         try {
             goodsApproveApplication.deleteGoodsApprove(goodsId);
+            result.setStatus(MCode.V_200);
         } catch (NegativeException ne) {
             LOGGER.error("delGoodsApprove NegativeException e:", ne);
             result = new MResult(ne.getStatus(), ne.getMessage());
