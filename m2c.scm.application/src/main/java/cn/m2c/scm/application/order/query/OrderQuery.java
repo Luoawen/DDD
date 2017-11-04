@@ -2,6 +2,7 @@ package cn.m2c.scm.application.order.query;
 
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Repository;
 
 import cn.m2c.ddd.common.port.adapter.persistence.springJdbc.SupportJdbcTemplate;
 import cn.m2c.scm.application.order.data.bean.OrderDealerBean;
+import cn.m2c.scm.application.order.data.bean.AllOrderBean;
 import cn.m2c.scm.application.order.data.bean.DealerOrderDetailBean;
 import cn.m2c.scm.application.order.data.bean.GoodsInfoBean;
 import cn.m2c.scm.application.order.data.bean.MainOrderBean;
@@ -44,43 +46,48 @@ public class OrderQuery {
 			String endTime, String condition, Integer payWay,Integer mediaInfo,String dealerClassify, Integer pageNum, Integer rows) {
 		List<Object> params = new ArrayList<Object>();
 		StringBuilder sql = new StringBuilder();
-		sql.append(" SELECT omain.order_id AS orderId");
-		sql.append("  ,omain.pay_no AS payNo");
-		sql.append("  ,omain.created_date AS createDate");
-		sql.append("  ,omain.goods_amount AS goodsAmount");
-		sql.append("  ,omain.order_freight AS orderFreight");
-		sql.append("  ,omain.plateform_discount AS plateformDiscount");
-		sql.append("  ,omain.dealer_discount AS dealerDiscount");
-
-		sql.append(" FROM ");
-		sql.append("  t_scm_order_main omain ");
+		sql.append(" SELECT d.dealer_order_id,m.order_id,m.pay_no,m.pay_way,m.created_date,m.goods_amount,m.order_freight,m.plateform_discount,m.dealer_discount, ");
+		sql.append(" d.goods_amount AS dealerAmount,d.order_freight AS orderFreight,d._status,dealer.dealer_name ");
+		sql.append("  FROM t_scm_order_dealer d ");
+		sql.append(" LEFT OUTER JOIN t_scm_order_main m ON d.order_id = m.order_id ");
+		sql.append(" LEFT OUTER JOIN t_scm_dealer dealer ON d.dealer_id = dealer.dealer_id ");
 		sql.append(" WHERE 1=1 ");
 		if (orderStatus != null) {
-			sql.append(" AND odealer._status = ? ");
+			sql.append(" AND d._status =  ? ");
 			params.add(orderStatus);
 		}
 		if (afterSaleStatus != null) {
-			sql.append(" AND oafter._status = ? ");
+			sql.append(" AND d.dealer_order_id IN (SELECT af.dealer_order_id FROM t_scm_order_after_sell af WHERE af._status = ?) ");
 			params.add(afterSaleStatus);
 		}
 		if (StringUtils.isNotEmpty(endTime) && StringUtils.isNotEmpty(endTime)) {
-			sql.append(" AND omain.created_date BETWEEN ? AND ? ");
+			sql.append(" AND (d.created_date BETWEEN ? AND ?)");
 			params.add(startTime);
 			params.add(endTime);
 		}
-		if (condition != null && !"".equals(condition)) {
-			sql.append(" AND omain.order_id = ? OR omain.pay_no = ? OR odetail.rev_phone = ? OR odealer.dealer_id = ? OR odetail.goods_name LIKE ? ");
-			params.add(condition);
-			params.add(condition);
-			params.add(condition);
-			params.add(condition);
+		if (StringUtils.isNotEmpty(condition) && condition != null && !"".equals(condition)) {
+			sql.append(" AND (d.dealer_order_id LIKE ?	OR m.pay_no LIKE ? OR dealer.dealer_name LIKE ?) ");
+			params.add("%" + condition + "%");
+			params.add("%" + condition + "%");
 			params.add("%" + condition + "%");
 		}
 		if (payWay != null) {
-			sql.append(" AND omain.pay_way = ? ");
+			sql.append(" AND m.pay_way = ? ");
 			params.add(payWay);
 		}
-		sql.append(" ORDER BY omain.created_date DESC ");
+		if (mediaInfo != null) {
+			if (mediaInfo == 0) {
+				sql.append("AND d.dealer_order_id IN (SELECT dtl.dealer_order_id FROM t_scm_order_detail dtl WHERE dtl.comment_status = 0 AND dtl.media_res_id = '')");
+			}
+			if (mediaInfo ==1) {
+				sql.append("AND d.dealer_order_id IN (SELECT dtl.dealer_order_id FROM t_scm_order_detail dtl WHERE dtl.comment_status = 0 AND dtl.media_res_id != '')");
+			}
+		}
+		if (!StringUtils.isEmpty(dealerClassify)) {
+			sql.append(" AND dealer.dealer_classify = ? ");
+			params.add(dealerClassify);
+		}
+		sql.append(" ORDER BY m.order_id DESC, m.created_date DESC ");
 		sql.append(" LIMIT ?,?");
 		params.add(rows * (pageNum - 1));
 		params.add(rows);
@@ -89,12 +96,39 @@ public class OrderQuery {
 		/**
 		 * 将商家订单塞进对应的平台订单
 		 */
-		List<MainOrderBean> mainOrderList = this.supportJdbcTemplate.queryForBeanList(sql.toString(),
-				MainOrderBean.class, params.toArray());
-		for (MainOrderBean mainOrder : mainOrderList) {
-			List<OrderDealerBean> dealerOrderList = dealerOrderListQuery(mainOrder.getOrderId());
-			
-			mainOrder.setDealerOrderBeans(dealerOrderList);
+		List<AllOrderBean> allOrderList = this.supportJdbcTemplate.queryForBeanList(sql.toString(),
+				AllOrderBean.class, params.toArray());
+		List<MainOrderBean> mainOrderList = new ArrayList<MainOrderBean>();
+		
+		MainOrderBean mainOrder = null;
+		String tmpOrderId = null;
+		for (AllOrderBean allOrder : allOrderList) {
+			OrderDealerBean dealerBean = null;
+			String id = allOrder.getOrderId();
+			if (!id.equals(tmpOrderId)) {
+				tmpOrderId = id;
+				mainOrder = new MainOrderBean();
+				mainOrderList.add(mainOrder);
+				mainOrder.setOrderId(allOrder.getOrderId());
+				mainOrder.setPayNo(allOrder.getPayNo());
+				mainOrder.setCreateDate(allOrder.getCreatedDate());
+				mainOrder.setGoodAmount(allOrder.getMainGoodsAmount());
+				mainOrder.setOderFreight(allOrder.getMainOrderFreight());
+				mainOrder.setDealerDiscount(allOrder.getDealerDiscount());
+				mainOrder.setPlateFormDiscount(allOrder.getPlateformDiscount());
+				List<OrderDealerBean> dealerOrderList = new ArrayList<OrderDealerBean>();
+				mainOrder.setDealerOrderBeans(dealerOrderList);
+			}
+			dealerBean = new OrderDealerBean();
+			dealerBean.setOrderId(allOrder.getOrderId());
+			dealerBean.setDealerName(allOrder.getDealerName());
+			dealerBean.setDealerOrderId(allOrder.getDealerOrderId());
+			dealerBean.setGoodAmount(allOrder.getDealerGoodsAmount());
+			dealerBean.setOderFreight(allOrder.getDealerOrderFreight());
+			dealerBean.setPlateFormDiscount(allOrder.getPlateformDiscount());
+			dealerBean.setDealerDiscount(allOrder.getDealerDiscount());
+			dealerBean.setStatus(allOrder.getStatus());
+			mainOrder.getDealerOrderBeans().add(dealerBean);
 		}
 		return mainOrderList;
 	}
@@ -171,43 +205,39 @@ public class OrderQuery {
 		List<Object> params = new ArrayList<Object>();
 		StringBuilder sql = new StringBuilder();
 		sql.append(" SELECT COUNT(1) ");
-		sql.append(" FROM ");
-		sql.append("  t_scm_order_main omain LEFT JOIN t_scm_order_dealer odealer ON  omain.order_id = odealer.order_id ");
-		sql.append(" LEFT JOIN t_scm_order_detail odetail ON omain.order_id = odetail.order_id ");
-		sql.append(" LEFT JOIN t_scm_order_after_sell oafter ON omain.order_id = oafter.order_id ");
-		sql.append(" LEFT JOIN t_scm_dealer dealer ON odealer.dealer_id = dealer.dealer_id  ");
+		sql.append("  FROM t_scm_order_dealer d");
+		sql.append(" LEFT OUTER JOIN t_scm_order_main m ON d.order_id = m.order_id ");
+		sql.append(" LEFT OUTER JOIN t_scm_dealer dealer ON d.dealer_id = dealer.dealer_id ");
 		sql.append(" WHERE 1=1 ");
 		if (orderStatus != null) {
-			sql.append(" AND omain._status = ? ");
+			sql.append(" AND d._status =  ? ");
 			params.add(orderStatus);
 		}
 		if (afterSaleStatus != null) {
-			sql.append(" AND oafter._status = ? ");
+			sql.append(" AND d.dealer_order_id IN (SELECT af.dealer_order_id FROM t_scm_order_after_sell af WHERE af._status = ?) ");
 			params.add(afterSaleStatus);
 		}
 		if (StringUtils.isNotEmpty(endTime) && StringUtils.isNotEmpty(endTime)) {
-			sql.append(" AND omain.created_date BETWEEN ? AND ? ");
+			sql.append(" AND (d.created_date BETWEEN ? AND ?)");
 			params.add(startTime);
 			params.add(endTime);
 		}
 		if (StringUtils.isNotEmpty(condition) && condition != null && !"".equals(condition)) {
-			sql.append(" AND omain.order_id = ? OR omain.pay_no = ? OR odetail.rev_phone = ? OR odealer.dealer_id = ? OR odetail.goods_name LIKE ? ");
-			params.add(condition);
-			params.add(condition);
-			params.add(condition);
-			params.add(condition);
+			sql.append(" AND (d.dealer_order_id LIKE ?	OR m.pay_no LIKE ? OR dealer.dealer_name LIKE ?) ");
+			params.add("%" + condition + "%");
+			params.add("%" + condition + "%");
 			params.add("%" + condition + "%");
 		}
 		if (payWay != null) {
-			sql.append(" AND omain.pay_way = ? ");
+			sql.append(" AND m.pay_way = ? ");
 			params.add(payWay);
 		}
 		if (mediaInfo != null) {
-			if (mediaInfo == 1) {
-				sql.append(" AND odetail.media_id <> '' ");
-			}
 			if (mediaInfo == 0) {
-				sql.append(" AND odetail.media_id IS NULL ");
+				sql.append("AND d.dealer_order_id IN (SELECT dtl.dealer_order_id FROM t_scm_order_detail dtl WHERE dtl.comment_status = 0 AND dtl.media_res_id = '')");
+			}
+			if (mediaInfo ==1) {
+				sql.append("AND d.dealer_order_id IN (SELECT dtl.dealer_order_id FROM t_scm_order_detail dtl WHERE dtl.comment_status = 0 AND dtl.media_res_id != '')");
 			}
 		}
 		if (!StringUtils.isEmpty(dealerClassify)) {
