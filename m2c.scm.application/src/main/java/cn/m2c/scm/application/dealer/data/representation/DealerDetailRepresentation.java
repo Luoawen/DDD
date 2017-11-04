@@ -63,9 +63,11 @@ public class DealerDetailRepresentation {
 			this.userName = model.getUserName();
 			this.userPhone = model.getUserPhone();
 			this.dealerClassify = model.getDealerClassify();
-			this.dealerFirstClassify = model.getDealerClassifyBean().getDealerClassifyId();
-			this.dealerFristClassifyName = model.getDealerClassifyBean().getDealerFirstClassifyName();
-			this.dealerSecondClassifyName = model.getDealerClassifyBean().getDealerSecondClassifyName();
+			if(null != model.getDealerClassifyBean()){
+				this.dealerFirstClassify = model.getDealerClassifyBean().getDealerClassifyId();
+				this.dealerFristClassifyName = model.getDealerClassifyBean().getDealerFirstClassifyName();
+				this.dealerSecondClassifyName = model.getDealerClassifyBean().getDealerSecondClassifyName();
+			}
 			this.cooperationMode = model.getCooperationMode();
 			this.countMode = model.getCountMode();
 			this.dealerProvince = model.getDealerProvince();
