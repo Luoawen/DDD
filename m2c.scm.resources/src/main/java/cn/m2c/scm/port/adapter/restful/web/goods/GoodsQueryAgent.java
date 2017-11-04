@@ -22,6 +22,7 @@ import cn.m2c.scm.application.goods.query.GoodsQueryApplication;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsBean;
 import cn.m2c.scm.application.goods.query.data.representation.GoodsChoiceRepresentation;
 import cn.m2c.scm.application.goods.query.data.representation.GoodsDetailMultipleRepresentation;
+import cn.m2c.scm.application.goods.query.data.representation.GoodsInformationRepresentation;
 import cn.m2c.scm.application.goods.query.data.representation.GoodsRandomRepresentation;
 import cn.m2c.scm.application.goods.query.data.representation.GoodsRecognizedRepresentation;
 import cn.m2c.scm.application.goods.query.data.representation.GoodsSimpleDetailRepresentation;
@@ -261,5 +262,47 @@ public class GoodsQueryAgent {
             result = new MResult(MCode.V_400, "查询商品识别图失败");
         }
         return new ResponseEntity<MResult>(result, HttpStatus.OK);
+    }
+    
+    /**
+     * 根据商品名/ID,商家名/ID查询商品详情
+     * 
+     * @param goodsId 商品ID
+     * @param goodsName 商品名
+     * @param dealerId 商家ID
+     * @param dealerName 商家名
+     * @param pageNum 第几页
+     * @param rows 每页多少行
+     * @return
+     */
+    @RequestMapping(value = "/information", method = RequestMethod.GET)
+    public ResponseEntity<MPager> queryGoodsDetailByGoodsAndDealer(
+    		@RequestParam(value="goodsId", required = false) String goodsId,
+    		@RequestParam(value="goodsName", required = false) String goodsName,
+    		@RequestParam(value="dealerId", required = false) String dealerId,
+    		@RequestParam(value="dealerName", required = false) String dealerName,
+    		@RequestParam(value="goodsLaunchStatus", required = false) Integer goodsLaunchStatus,
+    		@RequestParam(value = "pageNum", required = false, defaultValue = "1") Integer pageNum,
+            @RequestParam(value = "rows", required = false, defaultValue = "10") Integer rows){
+    	MPager result = new MPager(MCode.V_1);
+    	try {
+    		Integer total = goodsQueryApplication.queryGoodsByGoodOrDealerTotal(goodsId, goodsName, dealerId, dealerName, goodsLaunchStatus);
+    		if(total > 0) {
+    			List<GoodsBean> goodsBeans = goodsQueryApplication.queryGoodsByGoodOrDealer(goodsId, goodsName, dealerId, dealerName, goodsLaunchStatus, pageNum, rows);
+    			if (null != goodsBeans && goodsBeans.size() > 0) {
+        			List<GoodsInformationRepresentation> resultList = new ArrayList<GoodsInformationRepresentation>();
+        			for(GoodsBean bean : goodsBeans) {
+        				resultList.add(new GoodsInformationRepresentation(bean));
+        			}
+        			result.setContent(resultList);
+        		}
+    		}
+    		 result.setPager(total, pageNum, rows);
+             result.setStatus(MCode.V_200);
+		} catch (Exception e) {
+			LOGGER.error("queryGoodsDetailByGoodsAndDealer Exception e:", e);
+			result = new MPager(MCode.V_400, "查询商品信息失败");
+		}
+    	return new ResponseEntity<MPager>(result, HttpStatus.OK);
     }
 }

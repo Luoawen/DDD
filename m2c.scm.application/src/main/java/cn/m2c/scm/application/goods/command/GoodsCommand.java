@@ -116,7 +116,7 @@ public class GoodsCommand extends AssertionConcern implements Serializable {
     private Map<String, String> codeMap;
 
     private Integer skuFlag;
-
+    
     public GoodsCommand(String goodsId, String dealerId, String dealerName, String goodsName, String goodsSubTitle,
                         String goodsClassifyId, String goodsBrandId, String goodsBrandName, String goodsUnitId, Integer goodsMinQuantity,
                         String goodsPostageId, String goodsBarCode, String goodsKeyWord, String goodsGuarantee,
