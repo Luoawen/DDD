@@ -357,7 +357,7 @@ public class GoodsQueryApplication {
         sql.append(" SELECT ");
         sql.append(" * ");
         sql.append(" FROM ");
-        sql.append(" t_scm_goods where del_status= 1 ");
+        sql.append(" t_scm_goods where del_status= 1 and goods_status <> 1");
         if (null != goodsIds && goodsIds.size() > 0) {
             sql.append(" and goods_id not in (" + Utils.listParseString(goodsIds) + ")");
         }
