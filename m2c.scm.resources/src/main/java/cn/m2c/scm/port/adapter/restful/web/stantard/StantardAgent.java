@@ -116,7 +116,9 @@ public class StantardAgent {
 		try {
 			Integer total = stantardQuery.queryStantardTotal();
 			List<StantardBean> stantardList = stantardQuery.getStantardList(pageNum, rows);
-			result.setPager(total, pageNum, rows);
+			if (pageNum != null && rows != null) {
+				result.setPager(total, pageNum, rows);
+			}
 			result.setContent(stantardList);
 			result.setStatus(MCode.V_200);
 		} catch (Exception e) {
