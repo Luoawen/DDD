@@ -3,6 +3,7 @@ package cn.m2c.scm.application.postage;
 import cn.m2c.common.MCode;
 import cn.m2c.scm.application.postage.command.PostageModelCommand;
 import cn.m2c.scm.domain.NegativeException;
+import cn.m2c.scm.domain.model.goods.GoodsRepository;
 import cn.m2c.scm.domain.model.postage.PostageModel;
 import cn.m2c.scm.domain.model.postage.PostageModelRepository;
 import org.slf4j.Logger;
@@ -21,6 +22,8 @@ public class PostageModelApplication {
 
     @Autowired
     PostageModelRepository postageModelRepository;
+    @Autowired
+    GoodsRepository goodsRepository;
 
     /**
      * 添加运费模板
@@ -73,6 +76,11 @@ public class PostageModelApplication {
         if (null == postageModel) {
             throw new NegativeException(MCode.V_300, "运费模板不存在");
         }
+        // 判断是否有商品，有商品不能删除
+        if (goodsRepository.postageIdIsUser(command.getModelId())) {
+            throw new NegativeException(MCode.V_301, "运费模板有商品使用，不能删除");
+        }
+
         postageModel.deletePostageModel();
     }
 
