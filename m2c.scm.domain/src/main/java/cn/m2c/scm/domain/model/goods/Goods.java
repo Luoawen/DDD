@@ -281,6 +281,9 @@ public class Goods extends ConcurrencySafeEntity {
         if (this.goodsStatus == 3) {
             this.goodsStatus = 2;
         }
+        if (null != this.skuFlag && this.skuFlag == 1) {//是否是多规格：0：单规格，1：多规格
+            this.goodsSpecifications = goodsSpecifications;
+        }
         List<Map> skuList = ObjectSerializer.instance().deserialize(goodsSKUs, List.class);
         if (null != skuList && skuList.size() > 0) {
             //修改供货价、拍获价、规格需要审批
@@ -296,7 +299,15 @@ public class Goods extends ConcurrencySafeEntity {
                     Float weight = GetMapValueUtils.getFloatFromMapKey(map, "weight");
                     Long marketPrice = GetMapValueUtils.getLongFromMapKey(map, "marketPrice");
                     String goodsCode = GetMapValueUtils.getStringFromMapKey(map, "goodsCode");
-                    Integer showStatus = GetMapValueUtils.getIntFromMapKey(map, "showStatus");
+
+                    Integer showStatus = 2; //是否对外展示，1：不展示，2：展示
+                    //Integer showStatus = GetMapValueUtils.getIntFromMapKey(map, "showStatus");
+                    if (null != this.skuFlag && this.skuFlag == 1) {
+                        Boolean isShow = GetMapValueUtils.getBooleanFromMapKey(map, "showStatus");
+                        if (!isShow) {
+                            showStatus = 1;
+                        }
+                    }
 
                     // 修改商品规格不需要审批的信息
                     goodsSku.modifyNotApproveGoodsSku(availableNum, weight, marketPrice, goodsCode, showStatus);
@@ -315,7 +326,7 @@ public class Goods extends ConcurrencySafeEntity {
                         .publish(new GoodsApproveAddEvent(this.goodsId, this.dealerId, this.dealerName, this.goodsName,
                                 this.goodsSubTitle, this.goodsClassifyId, this.goodsBrandId, this.goodsUnitId,
                                 this.goodsMinQuantity, this.goodsPostageId, this.goodsBarCode,
-                                this.goodsKeyWord, this.goodsGuarantee, this.goodsMainImages, this.goodsDesc, goodsSpecifications,
+                                this.goodsKeyWord, this.goodsGuarantee, this.goodsMainImages, this.goodsDesc, this.goodsSpecifications,
                                 goodsSKUs, this.skuFlag));
             }
         }
