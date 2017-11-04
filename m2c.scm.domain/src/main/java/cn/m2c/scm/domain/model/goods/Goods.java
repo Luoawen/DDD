@@ -147,12 +147,12 @@ public class Goods extends ConcurrencySafeEntity {
      * 创建时间
      */
     private Date createdDate;
-    
+
     /**
      * 商品投放状态：0：未投放，1：投放
      */
     private Integer goodsLaunchStatus;
-    
+
     public Goods() {
         super();
     }
@@ -327,7 +327,7 @@ public class Goods extends ConcurrencySafeEntity {
                 DomainEventPublisher
                         .instance()
                         .publish(new GoodsApproveAddEvent(this.goodsId, this.dealerId, this.dealerName, this.goodsName,
-                                this.goodsSubTitle, this.goodsClassifyId, this.goodsBrandId, this.goodsUnitId,
+                                this.goodsSubTitle, this.goodsClassifyId, this.goodsBrandId, this.goodsBrandName, this.goodsUnitId,
                                 this.goodsMinQuantity, this.goodsPostageId, this.goodsBarCode,
                                 this.goodsKeyWord, this.goodsGuarantee, this.goodsMainImages, this.goodsDesc, this.goodsSpecifications,
                                 goodsSKUs, this.skuFlag));
