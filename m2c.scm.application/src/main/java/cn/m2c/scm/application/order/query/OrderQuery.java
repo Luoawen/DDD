@@ -91,11 +91,6 @@ public class OrderQuery {
 		sql.append(" LIMIT ?,?");
 		params.add(rows * (pageNum - 1));
 		params.add(rows);
-
-		
-		/**
-		 * 将商家订单塞进对应的平台订单
-		 */
 		List<AllOrderBean> allOrderList = this.supportJdbcTemplate.queryForBeanList(sql.toString(),
 				AllOrderBean.class, params.toArray());
 		List<MainOrderBean> mainOrderList = new ArrayList<MainOrderBean>();
