@@ -1,9 +1,13 @@
 package cn.m2c.scm.port.adapter.messaging.rabbitmq.goods;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate4.HibernateTransactionManager;
+
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 
 import cn.m2c.common.JsonUtils;
 import cn.m2c.ddd.common.application.configuration.RabbitmqConfiguration;
@@ -32,15 +36,16 @@ public class GoodsLaunchListener extends ExchangeListener {
 
 	@Override
 	protected void filteredDispatch(String aType, String aTextMessage) throws Exception {
-		NotificationReader reader = new NotificationReader(aTextMessage);
-		String goodsIdList = reader.eventStringValue("goodsIdList");
-        List<String> goodsIdLists = JsonUtils.toList(goodsIdList, String.class);
-        goodsApplication.LaunchGoods(goodsIdLists);
+		JSONObject jsonObject = JSONObject.parseObject(aTextMessage);
+		JSONObject jsonObject2 = jsonObject.getJSONObject("event");
+		JSONArray jsonArray = jsonObject2.getJSONArray("goodsIdList");
+		List<String> goodsIdLists = jsonArray.toJavaList(String.class);
+		goodsApplication.LaunchGoods(goodsIdLists);
 	}
 
 	@Override
 	protected String[] listensTo() {
-		return new String[]{"cn.m2c.media.domain.mresources.AdsenseScheduleAddEvent"};
+		return new String[]{"cn.m2c.media.domain.mresources.AdsenseScheduleAddEvent","cn.m2c.scm.domain.model.goods.event.TestGoodsLaunchEvent"};
 	}
 
 }
