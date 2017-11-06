@@ -907,16 +907,16 @@ public class GoodsQueryApplication {
             params.add(goodsId);
         }
         if (StringUtils.isNotEmpty(goodsName)) {
-            sql.append(" AND g.goods_name = ? ");
-            params.add(goodsName);
+            sql.append(" AND g.goods_name Like ? ");
+            params.add("%" + goodsName + "%");
         }
         if (StringUtils.isNotEmpty(dealerId)) {
             sql.append(" AND g.dealer_id = ? ");
             params.add(dealerId);
         }
         if (StringUtils.isNotEmpty(dealerName)) {
-            sql.append(" AND g.dealer_name = ? ");
-            params.add(dealerName);
+            sql.append(" AND g.dealer_name Like ? ");
+            params.add("%" + dealerName + "%");
         }
         return supportJdbcTemplate.jdbcTemplate().queryForObject(sql.toString(), Integer.class, params.toArray());
     }
@@ -938,16 +938,16 @@ public class GoodsQueryApplication {
             params.add(goodsId);
         }
         if (StringUtils.isNotEmpty(goodsName)) {
-            sql.append(" AND g.goods_name = ? ");
-            params.add(goodsName);
+            sql.append(" AND g.goods_name Like ? ");
+            params.add("%" + goodsName + "%");
         }
         if (StringUtils.isNotEmpty(dealerId)) {
             sql.append(" AND g.dealer_id = ? ");
             params.add(dealerId);
         }
         if (StringUtils.isNotEmpty(dealerName)) {
-            sql.append(" AND g.dealer_name = ? ");
-            params.add(dealerName);
+            sql.append(" AND g.dealer_name Like ? ");
+            params.add("%" + dealerName + "%");
         }
         sql.append(" LIMIT ?,?");
         params.add(rows * (pageNum - 1));

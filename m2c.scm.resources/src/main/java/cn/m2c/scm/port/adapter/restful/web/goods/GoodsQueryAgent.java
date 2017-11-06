@@ -24,7 +24,6 @@ import cn.m2c.scm.application.goods.query.data.representation.GoodsChoiceReprese
 import cn.m2c.scm.application.goods.query.data.representation.GoodsDetailMultipleRepresentation;
 import cn.m2c.scm.application.goods.query.data.representation.GoodsInformationRepresentation;
 import cn.m2c.scm.application.goods.query.data.representation.GoodsRandomRepresentation;
-import cn.m2c.scm.application.goods.query.data.representation.GoodsRecognizedRepresentation;
 import cn.m2c.scm.application.goods.query.data.representation.GoodsSimpleDetailRepresentation;
 import cn.m2c.scm.application.goods.query.data.representation.GoodsSkuInfoRepresentation;
 
@@ -250,9 +249,9 @@ public class GoodsQueryAgent {
     	try {
             List<GoodsBean> goodsBeans = goodsQueryApplication.queryAllGoodsByGoodsIds(goodsIds);
             if (null != goodsBeans && goodsBeans.size() > 0) {
-            	List<GoodsRecognizedRepresentation> resultList = new ArrayList<>();
+            	List<GoodsInformationRepresentation> resultList = new ArrayList<>();
                 for (GoodsBean goodsBean : goodsBeans) {
-                	resultList.add(new GoodsRecognizedRepresentation(goodsBean));
+                	resultList.add(new GoodsInformationRepresentation(goodsBean));
                 }
                 result.setContent(resultList);
             }
@@ -291,8 +290,8 @@ public class GoodsQueryAgent {
     			List<GoodsBean> goodsBeans = goodsQueryApplication.queryGoodsByGoodOrDealer(goodsId, goodsName, dealerId, dealerName, goodsLaunchStatus, pageNum, rows);
     			if (null != goodsBeans && goodsBeans.size() > 0) {
         			List<GoodsInformationRepresentation> resultList = new ArrayList<GoodsInformationRepresentation>();
-        			for(GoodsBean bean : goodsBeans) {
-        				resultList.add(new GoodsInformationRepresentation(bean));
+        			for(GoodsBean goodsBean : goodsBeans) {
+        				resultList.add(new GoodsInformationRepresentation(goodsBean));
         			}
         			result.setContent(resultList);
         		}

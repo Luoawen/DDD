@@ -1,19 +1,18 @@
 package cn.m2c.scm.domain.model.goods;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
 import cn.m2c.ddd.common.domain.model.ConcurrencySafeEntity;
 import cn.m2c.ddd.common.domain.model.DomainEventPublisher;
 import cn.m2c.ddd.common.serializer.ObjectSerializer;
 import cn.m2c.scm.domain.model.goods.event.GoodsApproveAddEvent;
 import cn.m2c.scm.domain.model.goods.event.GoodsDeleteEvent;
-import cn.m2c.scm.domain.model.goods.event.GoodsLaunchEvent;
 import cn.m2c.scm.domain.model.goods.event.GoodsOffShelfEvent;
 import cn.m2c.scm.domain.model.goods.event.GoodsUpShelfEvent;
 import cn.m2c.scm.domain.util.GetMapValueUtils;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
 
 /**
  * 商品
@@ -419,8 +418,5 @@ public class Goods extends ConcurrencySafeEntity {
      */
     public void launchGoods() {
     	this.goodsLaunchStatus = 1;
-    	/*DomainEventPublisher
-        .instance()
-        .publish(new GoodsLaunchEvent(this.goodsId));*/
     }
 }
