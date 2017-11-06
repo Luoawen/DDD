@@ -1,14 +1,11 @@
 package cn.m2c.scm.port.adapter.persistence.hibernate.stantard;
 
-import java.util.List;
 
-import org.hibernate.Query;
 import org.springframework.stereotype.Repository;
 
 import cn.m2c.ddd.common.port.adapter.persistence.hibernate.HibernateSupperRepository;
 import cn.m2c.scm.domain.model.stantard.StantardRepository;
 import cn.m2c.scm.domain.model.stantard.Stantard;
-import cn.m2c.scm.domain.model.unit.Unit;
 
 @Repository
 public class HibernateStantardRepository extends HibernateSupperRepository implements StantardRepository {

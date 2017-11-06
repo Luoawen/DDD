@@ -66,6 +66,7 @@ public class GoodsExportAgent {
                     if (settlementMode == 2) {
                         GoodsServiceRateModel goodsServiceRateModel = new GoodsServiceRateModel(goodsBean, goodsSkuBean, goodsClassifyMap,
                                 serviceRate, goodsPostageName);
+                        goodsServiceRateModels.add(goodsServiceRateModel);
                     } else {
                         GoodsSupplyPriceModel goodsSupplyPriceModel = new GoodsSupplyPriceModel(goodsBean, goodsSkuBean, goodsClassifyMap,
                                 goodsPostageName);

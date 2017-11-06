@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,7 +21,6 @@ import cn.m2c.scm.application.standstard.command.StantardCommand;
 import cn.m2c.scm.application.standstard.query.StantardQuery;
 import cn.m2c.scm.domain.IDGenerator;
 import cn.m2c.scm.domain.NegativeException;
-import cn.m2c.scm.domain.model.stantard.Stantard;
 
 @Controller
 @RequestMapping("/stantard")
@@ -112,13 +110,15 @@ public class StantardAgent {
 	 */
 	@RequestMapping(value = "", method = RequestMethod.GET)
 	public ResponseEntity<MPager> list(
-			@RequestParam(value = "pageNum", required = false, defaultValue = "1") Integer pageNum,
-			@RequestParam(value = "rows", required = false, defaultValue = "10") Integer rows) {
+			@RequestParam(value = "pageNum", required = false) Integer pageNum,
+			@RequestParam(value = "rows", required = false) Integer rows) {
 		MPager result = new MPager(MCode.V_1);
 		try {
 			Integer total = stantardQuery.queryStantardTotal();
 			List<StantardBean> stantardList = stantardQuery.getStantardList(pageNum, rows);
-			result.setPager(total, pageNum, rows);
+			if (pageNum != null && rows != null) {
+				result.setPager(total, pageNum, rows);
+			}
 			result.setContent(stantardList);
 			result.setStatus(MCode.V_200);
 		} catch (Exception e) {

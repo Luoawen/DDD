@@ -23,4 +23,6 @@ public interface GoodsRepository {
     boolean classifyIdIsUser(List<String> classifyIds);
 
     boolean postageIdIsUser(String postageId);
+
+	List<Goods> queryGoodsByIdList(List<String> goodsIdLists);
 }

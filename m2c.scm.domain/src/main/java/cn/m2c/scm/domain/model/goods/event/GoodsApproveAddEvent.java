@@ -45,6 +45,11 @@ public class GoodsApproveAddEvent implements DomainEvent {
     private String goodsBrandId;
 
     /**
+     * 品牌名称
+     */
+    private String goodsBrandName;
+
+    /**
      * 商品计量单位id
      */
     private String goodsUnitId;
@@ -97,7 +102,7 @@ public class GoodsApproveAddEvent implements DomainEvent {
     private int eventVersion;
 
     public GoodsApproveAddEvent(String goodsId, String dealerId, String dealerName, String goodsName,
-                                String goodsSubTitle, String goodsClassifyId, String goodsBrandId, String goodsUnitId,
+                                String goodsSubTitle, String goodsClassifyId, String goodsBrandId, String goodsBrandName, String goodsUnitId,
                                 Integer goodsMinQuantity, String goodsPostageId, String goodsBarCode,
                                 String goodsKeyWord, String goodsGuarantee, String goodsMainImages, String goodsDesc,
                                 String goodsSpecifications, String goodsSkuApproves, Integer skuFlag) {
@@ -108,6 +113,7 @@ public class GoodsApproveAddEvent implements DomainEvent {
         this.goodsSubTitle = goodsSubTitle;
         this.goodsClassifyId = goodsClassifyId;
         this.goodsBrandId = goodsBrandId;
+        this.goodsBrandName = goodsBrandName;
         this.goodsUnitId = goodsUnitId;
         this.goodsMinQuantity = goodsMinQuantity;
         this.goodsPostageId = goodsPostageId;

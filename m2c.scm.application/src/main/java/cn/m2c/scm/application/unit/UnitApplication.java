@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import cn.m2c.common.MCode;
-import cn.m2c.scm.application.unit.bean.UnitBean;
 import cn.m2c.scm.application.unit.command.UnitCommand;
 import cn.m2c.scm.domain.NegativeException;
 import cn.m2c.scm.domain.model.unit.Unit;

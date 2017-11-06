@@ -363,6 +363,11 @@ public class GoodsQueryApplication {
         }
         sql.append(" order by rand() limit 0,?");
         List<GoodsBean> goodsBeans = this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsBean.class, number);
+        if (null != goodsBeans && goodsBeans.size() > 0) {
+            for (GoodsBean goodsBean : goodsBeans) {
+                goodsBean.setGoodsSkuBeans(queryGoodsSKUsByGoodsId(goodsBean.getId()));
+            }
+        }
         if (null == goodsIds) {
             if (null != goodsBeans && goodsBeans.size() > 0) {
                 redisUtil.setString(key, 24 * 3600, JsonUtils.toStr(goodsBeans));
@@ -606,7 +611,14 @@ public class GoodsQueryApplication {
         sql.append(" LIMIT ?,?");
         params.add(rows * (pageNum - 1));
         params.add(rows);
-        return this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsBean.class, params.toArray());
+
+        List<GoodsBean> goodsBeanList = this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsBean.class, params.toArray());
+        if (null != goodsBeanList && goodsBeanList.size() > 0) {
+            for (GoodsBean goodsBean : goodsBeanList) {
+                goodsBean.setGoodsSkuBeans(queryGoodsSKUsByGoodsId(goodsBean.getId()));
+            }
+        }
+        return goodsBeanList;
     }
 
     public Integer appSearchGoodsTotal(String dealerId, String goodsClassifyId, String condition, Integer rangeType, List<String> ids) {
@@ -878,69 +890,58 @@ public class GoodsQueryApplication {
         sql.append(" t_scm_goods where goods_id in (" + Utils.listParseString(goodsIds) + ")");
         return this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsBean.class);
     }
-    
-    public Integer queryGoodsByGoodOrDealerTotal(String goodsId, String goodsName, String dealerId, String dealerName, Integer goodsLaunchStatus) {
-		List<Object> params = new ArrayList<Object>();
+
+    public Integer queryGoodsByGoodOrDealerTotal(String goodsMessage, String dealerMessage, Integer goodsLaunchStatus) {
+        List<Object> params = new ArrayList<Object>();
         StringBuilder sql = new StringBuilder();
         sql.append(" SELECT ");
         sql.append(" COUNT(DISTINCT g.goods_id) ");
         sql.append(" FROM ");
         sql.append(" t_scm_goods g WHERE g.del_status = 1 ");
         if (null != goodsLaunchStatus) {
-        	sql.append(" AND g.goods_launch_status = ? ");
-    		params.add(goodsLaunchStatus);
+            sql.append(" AND g.goods_launch_status = ? ");
+            params.add(goodsLaunchStatus);
         }
-        if (StringUtils.isNotEmpty(goodsId)) {
-            sql.append(" AND g.goods_id = ? ");
-            params.add(goodsId);
+        if (StringUtils.isNotEmpty(goodsMessage)) {
+            sql.append(" AND (g.goods_id = ? OR g.goods_name LIKE ?) ");
+            params.add(goodsMessage);
+            params.add("%" + goodsMessage + "%");
         }
-		if(StringUtils.isNotEmpty(goodsName)) {
-			sql.append(" AND g.goods_name = ? ");
-            params.add(goodsName);
-		}
-		if(StringUtils.isNotEmpty(dealerId)) {
-			sql.append(" AND g.dealer_id = ? ");
-            params.add(dealerId);
-		}
-		if(StringUtils.isNotEmpty(dealerName)) {
-			sql.append(" AND g.dealer_name = ? ");
-            params.add(dealerName);
-		}
-		return supportJdbcTemplate.jdbcTemplate().queryForObject(sql.toString(), Integer.class, params.toArray());
-	}
-    
-	public List<GoodsBean> queryGoodsByGoodOrDealer(String goodsId, String goodsName, String dealerId,
-			String dealerName, Integer goodsLaunchStatus, Integer pageNum, Integer rows) {
-		List<Object> params = new ArrayList<Object>();
+        if (StringUtils.isNotEmpty(dealerMessage)) {
+            sql.append(" AND (g.dealer_id = ? OR g.dealer_name LIKE ? ) ");
+            params.add(dealerMessage);
+            params.add("%" + dealerMessage + "%");
+        }
+        return supportJdbcTemplate.jdbcTemplate().queryForObject(sql.toString(), Integer.class, params.toArray());
+    }
+
+    public List<GoodsBean> queryGoodsByGoodOrDealer(String goodsMessage, String dealerMessage, Integer goodsLaunchStatus, Integer pageOrNot, Integer pageNum, Integer rows) {
+        List<Object> params = new ArrayList<Object>();
         StringBuilder sql = new StringBuilder();
         sql.append(" SELECT ");
         sql.append(" * ");
         sql.append(" FROM ");
         sql.append(" t_scm_goods g WHERE g.del_status = 1 ");
         if (null != goodsLaunchStatus) {
-        	sql.append(" AND g.goods_launch_status = ? ");
-    		params.add(goodsLaunchStatus);
+            sql.append(" AND g.goods_launch_status = ? ");
+            params.add(goodsLaunchStatus);
         }
-        if (StringUtils.isNotEmpty(goodsId)) {
-            sql.append(" AND g.goods_id = ? ");
-            params.add(goodsId);
+        if (StringUtils.isNotEmpty(goodsMessage)) {
+            sql.append(" AND (g.goods_id = ? OR g.goods_name LIKE ?) ");
+            params.add(goodsMessage);
+            params.add("%" + goodsMessage + "%");
         }
-		if(StringUtils.isNotEmpty(goodsName)) {
-			sql.append(" AND g.goods_name = ? ");
-            params.add(goodsName);
-		}
-		if(StringUtils.isNotEmpty(dealerId)) {
-			sql.append(" AND g.dealer_id = ? ");
-            params.add(dealerId);
-		}
-		if(StringUtils.isNotEmpty(dealerName)) {
-			sql.append(" AND g.dealer_name = ? ");
-            params.add(dealerName);
-		}
-		sql.append(" LIMIT ?,?");
-		params.add(rows * (pageNum - 1));
-		params.add(rows);
-		return supportJdbcTemplate.queryForBeanList(sql.toString(), GoodsBean.class, params.toArray());
-	}
+        if (StringUtils.isNotEmpty(dealerMessage)) {
+            sql.append(" AND (g.dealer_id = ? OR g.dealer_name LIKE ? ) ");
+            params.add(dealerMessage);
+            params.add("%" + dealerMessage + "%");
+        }
+        if(0 != pageOrNot) {
+        	sql.append(" LIMIT ?,?");
+            params.add(rows * (pageNum - 1));
+            params.add(rows);
+        }
+        return supportJdbcTemplate.queryForBeanList(sql.toString(), GoodsBean.class, params.toArray());
+    }
 }
 

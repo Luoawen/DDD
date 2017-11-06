@@ -24,7 +24,6 @@ import cn.m2c.scm.application.goods.query.data.representation.GoodsChoiceReprese
 import cn.m2c.scm.application.goods.query.data.representation.GoodsDetailMultipleRepresentation;
 import cn.m2c.scm.application.goods.query.data.representation.GoodsInformationRepresentation;
 import cn.m2c.scm.application.goods.query.data.representation.GoodsRandomRepresentation;
-import cn.m2c.scm.application.goods.query.data.representation.GoodsRecognizedRepresentation;
 import cn.m2c.scm.application.goods.query.data.representation.GoodsSimpleDetailRepresentation;
 import cn.m2c.scm.application.goods.query.data.representation.GoodsSkuInfoRepresentation;
 
@@ -250,9 +249,9 @@ public class GoodsQueryAgent {
     	try {
             List<GoodsBean> goodsBeans = goodsQueryApplication.queryAllGoodsByGoodsIds(goodsIds);
             if (null != goodsBeans && goodsBeans.size() > 0) {
-            	List<GoodsRecognizedRepresentation> resultList = new ArrayList<>();
+            	List<GoodsInformationRepresentation> resultList = new ArrayList<>();
                 for (GoodsBean goodsBean : goodsBeans) {
-                	resultList.add(new GoodsRecognizedRepresentation(goodsBean));
+                	resultList.add(new GoodsInformationRepresentation(goodsBean));
                 }
                 result.setContent(resultList);
             }
@@ -265,34 +264,33 @@ public class GoodsQueryAgent {
     }
     
     /**
-     * 根据商品名/ID,商家名/ID查询商品详情
+     * 根据商品名/ID,商家名/ID,商品是否投放,查询商品详情
      * 
-     * @param goodsId 商品ID
-     * @param goodsName 商品名
-     * @param dealerId 商家ID
-     * @param dealerName 商家名
+     * @param goodsMessage 商品信息(商品id或商品名)
+     * @param dealerMessage 商家信息(商家id或商家名)
+     * @param goodsLaunchStatus 商品投放状态(0:未投放, 1:投放)
+     * @param pageOrNot 是否分页(0:不分页, 1:分页)
      * @param pageNum 第几页
      * @param rows 每页多少行
      * @return
      */
     @RequestMapping(value = "/information", method = RequestMethod.GET)
     public ResponseEntity<MPager> queryGoodsDetailByGoodsAndDealer(
-    		@RequestParam(value="goodsId", required = false) String goodsId,
-    		@RequestParam(value="goodsName", required = false) String goodsName,
-    		@RequestParam(value="dealerId", required = false) String dealerId,
-    		@RequestParam(value="dealerName", required = false) String dealerName,
+    		@RequestParam(value="goodsMessage", required = false) String goodsMessage,
+    		@RequestParam(value="dealerMessage", required = false) String dealerMessage,
     		@RequestParam(value="goodsLaunchStatus", required = false) Integer goodsLaunchStatus,
+    		@RequestParam(value="pageOrNot", required = false, defaultValue = "0") Integer pageOrNot,
     		@RequestParam(value = "pageNum", required = false, defaultValue = "1") Integer pageNum,
-            @RequestParam(value = "rows", required = false, defaultValue = "10") Integer rows){
+            @RequestParam(value = "rows", required = false, defaultValue = "5") Integer rows){
     	MPager result = new MPager(MCode.V_1);
     	try {
-    		Integer total = goodsQueryApplication.queryGoodsByGoodOrDealerTotal(goodsId, goodsName, dealerId, dealerName, goodsLaunchStatus);
+    		Integer total = goodsQueryApplication.queryGoodsByGoodOrDealerTotal(goodsMessage, dealerMessage, goodsLaunchStatus);
     		if(total > 0) {
-    			List<GoodsBean> goodsBeans = goodsQueryApplication.queryGoodsByGoodOrDealer(goodsId, goodsName, dealerId, dealerName, goodsLaunchStatus, pageNum, rows);
+    			List<GoodsBean> goodsBeans = goodsQueryApplication.queryGoodsByGoodOrDealer(goodsMessage, dealerMessage, goodsLaunchStatus, pageOrNot, pageNum, rows);
     			if (null != goodsBeans && goodsBeans.size() > 0) {
         			List<GoodsInformationRepresentation> resultList = new ArrayList<GoodsInformationRepresentation>();
-        			for(GoodsBean bean : goodsBeans) {
-        				resultList.add(new GoodsInformationRepresentation(bean));
+        			for(GoodsBean goodsBean : goodsBeans) {
+        				resultList.add(new GoodsInformationRepresentation(goodsBean));
         			}
         			result.setContent(resultList);
         		}

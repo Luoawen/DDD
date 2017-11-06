@@ -1,5 +1,10 @@
 package cn.m2c.scm.domain.model.goods;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
 import cn.m2c.ddd.common.domain.model.ConcurrencySafeEntity;
 import cn.m2c.ddd.common.domain.model.DomainEventPublisher;
 import cn.m2c.ddd.common.serializer.ObjectSerializer;
@@ -8,11 +13,6 @@ import cn.m2c.scm.domain.model.goods.event.GoodsDeleteEvent;
 import cn.m2c.scm.domain.model.goods.event.GoodsOffShelfEvent;
 import cn.m2c.scm.domain.model.goods.event.GoodsUpShelfEvent;
 import cn.m2c.scm.domain.util.GetMapValueUtils;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
 
 /**
  * 商品
@@ -147,12 +147,12 @@ public class Goods extends ConcurrencySafeEntity {
      * 创建时间
      */
     private Date createdDate;
-    
+
     /**
      * 商品投放状态：0：未投放，1：投放
      */
     private Integer goodsLaunchStatus;
-    
+
     public Goods() {
         super();
     }
@@ -183,6 +183,9 @@ public class Goods extends ConcurrencySafeEntity {
             this.goodsStatus = 1;
         } else {
             this.goodsStatus = 2;
+            DomainEventPublisher
+                    .instance()
+                    .publish(new GoodsUpShelfEvent(this.goodsId, this.goodsPostageId));
         }
         this.goodsSpecifications = goodsSpecifications;
         this.createdDate = new Date();
@@ -324,7 +327,7 @@ public class Goods extends ConcurrencySafeEntity {
                 DomainEventPublisher
                         .instance()
                         .publish(new GoodsApproveAddEvent(this.goodsId, this.dealerId, this.dealerName, this.goodsName,
-                                this.goodsSubTitle, this.goodsClassifyId, this.goodsBrandId, this.goodsUnitId,
+                                this.goodsSubTitle, this.goodsClassifyId, this.goodsBrandId, this.goodsBrandName, this.goodsUnitId,
                                 this.goodsMinQuantity, this.goodsPostageId, this.goodsBarCode,
                                 this.goodsKeyWord, this.goodsGuarantee, this.goodsMainImages, this.goodsDesc, this.goodsSpecifications,
                                 goodsSKUs, this.skuFlag));
@@ -408,5 +411,12 @@ public class Goods extends ConcurrencySafeEntity {
      */
     public void modifyDealerName(String dealerName) {
         this.dealerName = dealerName;
+    }
+    
+    /**
+     * 修改商品投放状态
+     */
+    public void launchGoods() {
+    	this.goodsLaunchStatus = 1;
     }
 }
