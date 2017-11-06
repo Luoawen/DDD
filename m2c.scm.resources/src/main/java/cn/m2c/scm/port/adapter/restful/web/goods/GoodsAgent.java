@@ -274,10 +274,10 @@ public class GoodsAgent {
             @RequestParam(value = "rows", required = false, defaultValue = "10") Integer rows) {
         MPager result = new MPager(MCode.V_1);
         try {
-            Integer total = goodsQueryApplication.searchGoodsByConditionTotal(dealerId, goodsClassifyId, goodsStatus,delStatus,
+            Integer total = goodsQueryApplication.searchGoodsByConditionTotal(dealerId, goodsClassifyId, goodsStatus, delStatus,
                     condition, startTime, endTime);
             if (total > 0) {
-                List<GoodsBean> goodsBeans = goodsQueryApplication.searchGoodsByCondition(dealerId, goodsClassifyId, goodsStatus,delStatus,
+                List<GoodsBean> goodsBeans = goodsQueryApplication.searchGoodsByCondition(dealerId, goodsClassifyId, goodsStatus, delStatus,
                         condition, startTime, endTime, pageNum, rows);
                 if (null != goodsBeans && goodsBeans.size() > 0) {
                     List<GoodsSearchRepresentation> representations = new ArrayList<GoodsSearchRepresentation>();
@@ -327,7 +327,7 @@ public class GoodsAgent {
                 }
                 PostageModelBean postageModelBean = postageModelQueryApplication.queryPostageModelsByModelId(goodsBean.getGoodsPostageId());
                 GoodsDetailRepresentation representation = new GoodsDetailRepresentation(goodsBean, goodsClassifyMap,
-                        goodsGuarantee, goodsUnitName, settlementMode, serviceRate,postageModelBean);
+                        goodsGuarantee, goodsUnitName, settlementMode, serviceRate, postageModelBean);
                 result.setContent(representation);
             }
             result.setStatus(MCode.V_200);
