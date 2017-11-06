@@ -84,15 +84,16 @@ public class ShopQuery {
 		//List<ShopBean> shopBeanList = new ArrayList<ShopBean>();
 			StringBuffer sql = new StringBuffer("SELECT * FROM t_scm_dealer_shop ds LEFT OUTER JOIN t_scm_dealer d ON ds.dealer_id = d.dealer_id WHERE 1 = 1  ");
 			if (dealerClassify != null && !"".equals(dealerClassify)) {
-				sql.append(" AND sd.dealer_classify LIKE concat('%', ?,'%') ");
+				sql.append(" AND d.dealer_classify LIKE concat('%', ?,'%') ");
 				params.add(dealerClassify);
 			}
 			if (dealerName != null && !"".equals(dealerName)) {
-				sql.append(" AND sd.dealer_name LIKE concat('%', ?,'%') ");
+				sql.append(" AND (d.dealer_name LIKE concat('%', ?,'%') or ds.shop_name LIKE concat('%', ?,'%'))");
+				params.add(dealerName);
 				params.add(dealerName);
 			}
 			if (dealerId != null && !"".equals(dealerId)) {
-				sql.append(" AND sd.dealer_id LIKE concat('%', ?,'%') ");
+				sql.append(" AND d.dealer_id LIKE concat('%', ?,'%') ");
 				params.add(dealerId);
 			}
 			sql.append(" LIMIT ?,?");
@@ -169,15 +170,16 @@ public class ShopQuery {
 			StringBuffer sql = new StringBuffer(
 					"SELECT COUNT(1) FROM t_scm_dealer_shop ds LEFT OUTER JOIN t_scm_dealer d ON ds.dealer_id = d.dealer_id WHERE 1 = 1  ");
 			if (!StringUtils.isEmpty(dealerClassify)) {
-				sql.append(" AND ds.dealer_classify LIKE concat('%', ?,'%') ");
+				sql.append(" AND d.dealer_classify LIKE concat('%', ?,'%') ");
 				params.add(dealerClassify);
 			}
 			if (!StringUtils.isEmpty(dealerName)) {
-				sql.append(" AND ds.dealer_name LIKE concat('%', ?,'%') ");
+				sql.append(" AND (d.dealer_name LIKE concat('%', ?,'%') or ds.shop_name LIKE concat('%', ?,'%'))");
+				params.add(dealerName);
 				params.add(dealerName);
 			}
 			if (!StringUtils.isEmpty(dealerId)) {
-				sql.append(" AND ds.dealer_id LIKE concat('%', ?,'%') ");
+				sql.append(" AND d.dealer_id LIKE concat('%', ?,'%') ");
 				params.add(dealerId);
 			}
 			resultCount = this.supportJdbcTemplate.jdbcTemplate().queryForObject(sql.toString(), Integer.class,
