@@ -48,6 +48,7 @@ public class GoodsDetailRepresentation {
 
         this.goodsBrandId = bean.getGoodsBrandId();
         this.goodsBrandName = bean.getGoodsBrandName();
+        this.goodsUnitId = bean.getGoodsUnitId();
         this.goodsUnitName = goodsUnitName;
         this.goodsMinQuantity = bean.getGoodsMinQuantity();
         this.goodsBarCode = bean.getGoodsBarCode();
