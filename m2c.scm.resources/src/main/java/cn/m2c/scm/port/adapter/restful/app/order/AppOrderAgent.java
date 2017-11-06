@@ -16,7 +16,6 @@ import cn.m2c.scm.application.order.command.SaleAfterCmd;
 import cn.m2c.scm.application.order.command.SaleAfterShipCmd;
 import cn.m2c.scm.application.order.data.bean.AppOrderBean;
 import cn.m2c.scm.application.order.data.bean.AppOrderDtl;
-import cn.m2c.scm.application.order.data.bean.OrderBean;
 import cn.m2c.scm.application.order.data.representation.OrderNo;
 import cn.m2c.scm.application.order.query.OrderQueryApplication;
 import cn.m2c.scm.domain.NegativeException;

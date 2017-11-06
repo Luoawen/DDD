@@ -87,6 +87,10 @@ public class PostageModelQueryApplication {
         if (null != goodsInfoList && goodsInfoList.size() > 0) {
             for (GoodsSkuInfoRepresentation info : goodsInfoList) {
                 PostageModelBean postageModelBean = queryPostageModelsByModelId(info.getGoodsPostageId());
+                if (postageModelBean == null) {
+                	map.put(info.getSkuId(), null);
+                	continue;
+                }
                 List<DealerBean> dealerBeanList = dealerQuery.getDealers(postageModelBean.getDealerId());
                 String dealerName = "";
                 if (null != dealerBeanList && dealerBeanList.size() > 0) {
