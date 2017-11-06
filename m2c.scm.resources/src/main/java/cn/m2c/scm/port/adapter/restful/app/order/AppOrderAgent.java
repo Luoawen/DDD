@@ -9,12 +9,13 @@ import cn.m2c.scm.application.order.SaleAfterOrderApp;
 import cn.m2c.scm.application.order.command.AddSaleAfterCmd;
 import cn.m2c.scm.application.order.command.CancelOrderCmd;
 import cn.m2c.scm.application.order.command.ConfirmSkuCmd;
+import cn.m2c.scm.application.order.command.GetOrderCmd;
 import cn.m2c.scm.application.order.command.OrderAddCommand;
 import cn.m2c.scm.application.order.command.PayOrderCmd;
 import cn.m2c.scm.application.order.command.SaleAfterCmd;
 import cn.m2c.scm.application.order.command.SaleAfterShipCmd;
 import cn.m2c.scm.application.order.data.bean.AppOrderBean;
-import cn.m2c.scm.application.order.data.bean.OrderBean;
+import cn.m2c.scm.application.order.data.bean.AppOrderDtl;
 import cn.m2c.scm.application.order.data.representation.OrderNo;
 import cn.m2c.scm.application.order.query.OrderQueryApplication;
 import cn.m2c.scm.domain.NegativeException;
@@ -318,6 +319,37 @@ public class AppOrderAgent {
         } 
         catch (NegativeException e) {
         	result = new MResult(e.getStatus(), e.getMessage());
+        }
+        catch (Exception e) {
+            LOGGER.error("Aplly after sale Exception e:", e);
+            result = new MResult(MCode.V_400, e.getMessage());
+        }
+        return new ResponseEntity<MResult>(result, HttpStatus.OK);
+    }
+    
+    /**
+     * 订单详情
+     * @param userId
+     * @param orderId
+     * @param dealerOrderId
+     * @return
+     */
+    @RequestMapping(value = "/app/orderdtl", method = RequestMethod.GET)
+    public ResponseEntity<MResult> getOrderDtl(
+            @RequestParam(value = "userId", required = false) String userId
+            ,@RequestParam(value = "orderId", required = false) String orderId
+            ,@RequestParam(value = "dealerOrderId", required = false) String dealerOrderId
+            ) {
+    	MResult result = new MResult(MCode.V_1);
+        try {
+        	GetOrderCmd cmd = new GetOrderCmd(userId, orderId, dealerOrderId);
+        	AppOrderDtl orderBean = orderQueryApp.getOrderDtl(cmd);
+        	result.setContent(orderBean);
+            result.setStatus(MCode.V_200);
+        } 
+        catch (NegativeException e) {
+        	result.setStatus(e.getStatus());
+        	result.setErrorMessage(e.getMessage());
         }
         catch (Exception e) {
             LOGGER.error("Aplly after sale Exception e:", e);

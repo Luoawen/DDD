@@ -1,18 +1,16 @@
 package cn.m2c.scm.application.dealer.query;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.annotation.Resource;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Repository;
-
 import cn.m2c.ddd.common.port.adapter.persistence.springJdbc.SupportJdbcTemplate;
 import cn.m2c.scm.application.dealer.data.bean.DealerBean;
 import cn.m2c.scm.application.dealer.data.bean.DealerClassifyNameBean;
 import cn.m2c.scm.domain.NegativeException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Repository;
+
+import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.List;
 
 @Repository
 public class DealerQuery {
@@ -174,7 +172,7 @@ public class DealerQuery {
 			
 			String sql =  " SELECT  *  FROM  t_scm_dealer sd  WHERE  dealer_status = 1 and dealer_id=?";
 			bean = this.supportJdbcTemplate.queryForBean(sql, DealerBean.class,dealerId);
-			if(bean.getDealerClassify()!=null && !"".equals(bean.getDealerClassify())){
+			if(null != bean && bean.getDealerClassify()!=null && !"".equals(bean.getDealerClassify())){
 				bean.setDealerClassifyBean(getDealerClassify(bean.getDealerClassify()));
 			}
 		} catch (Exception e) {

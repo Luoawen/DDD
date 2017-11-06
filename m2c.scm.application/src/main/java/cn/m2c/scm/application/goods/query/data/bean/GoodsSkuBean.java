@@ -82,14 +82,16 @@ public class GoodsSkuBean {
     private boolean show;
 
     public void setShow(boolean show) {
-        if (this.showStatus == 2) {
-            this.show = true;
-        }
-        this.show = false;
+        this.show = show;
     }
 
     public boolean isShow() {
-        return show;
+        if (this.showStatus == 2) {
+            this.show = true;
+        }else{
+            this.show = false;
+        }
+        return this.show;
     }
 
     public Integer getGoodsId() {

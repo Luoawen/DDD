@@ -45,4 +45,12 @@ public class SimpleMediaInfo extends ValueObject {
 	String getBdsRate() {
 		return bdsRate;
 	}
+	
+	String getMediaId() {
+		return mediaId;
+	}
+	
+	String getSalerUserId() {
+		return salerUserId;
+	}
 }

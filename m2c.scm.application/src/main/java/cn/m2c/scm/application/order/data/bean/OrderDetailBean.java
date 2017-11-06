@@ -44,6 +44,9 @@ public class OrderDetailBean {
 	@ColumnAlias(value= "freight")
 	private long freight;
 	
+	@ColumnAlias(value= "comment_status")
+	private int commentStatus;
+	
 	public long getDiscountPrice() {
 		return discountPrice;
 	}
@@ -145,6 +148,12 @@ public class OrderDetailBean {
 	}
 	public void setExpressCode(String expressCode) {
 		this.expressCode = expressCode;
+	}
+	public int getCommentStatus() {
+		return commentStatus;
+	}
+	public void setCommentStatus(int commentStatus) {
+		this.commentStatus = commentStatus;
 	}
 	
 }

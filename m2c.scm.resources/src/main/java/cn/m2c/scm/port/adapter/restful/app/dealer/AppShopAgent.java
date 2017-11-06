@@ -29,8 +29,8 @@ public class AppShopAgent {
 	 @Autowired
 	 ShopQuery shopQuery;
 	 
-	@RequestMapping(value = "", method = RequestMethod.GET)
-	 public ResponseEntity<MResult> getShopInfo(@RequestParam(value="dealerId",required = true) String dealerId,
+	@RequestMapping(value = "/{dealerId}", method = RequestMethod.GET)
+	 public ResponseEntity<MResult> getShopInfo(@PathVariable(value="dealerId",required = true) String dealerId,
 			 @RequestParam(value = "userId",required = false) String userId) {
     	MResult result = new MResult(MCode.V_1);
         try {
