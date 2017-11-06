@@ -891,7 +891,7 @@ public class GoodsQueryApplication {
         return this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsBean.class);
     }
 
-    public Integer queryGoodsByGoodOrDealerTotal(String goodsId, String goodsName, String dealerId, String dealerName, Integer goodsLaunchStatus) {
+    public Integer queryGoodsByGoodOrDealerTotal(String goodsMessage, String dealerMessage, Integer goodsLaunchStatus) {
         List<Object> params = new ArrayList<Object>();
         StringBuilder sql = new StringBuilder();
         sql.append(" SELECT ");
@@ -902,27 +902,20 @@ public class GoodsQueryApplication {
             sql.append(" AND g.goods_launch_status = ? ");
             params.add(goodsLaunchStatus);
         }
-        if (StringUtils.isNotEmpty(goodsId)) {
-            sql.append(" AND g.goods_id = ? ");
-            params.add(goodsId);
+        if (StringUtils.isNotEmpty(goodsMessage)) {
+            sql.append(" AND (g.goods_id = ? OR g.goods_name LIKE ?) ");
+            params.add(goodsMessage);
+            params.add("%" + goodsMessage + "%");
         }
-        if (StringUtils.isNotEmpty(goodsName)) {
-            sql.append(" AND g.goods_name Like ? ");
-            params.add("%" + goodsName + "%");
-        }
-        if (StringUtils.isNotEmpty(dealerId)) {
-            sql.append(" AND g.dealer_id = ? ");
-            params.add(dealerId);
-        }
-        if (StringUtils.isNotEmpty(dealerName)) {
-            sql.append(" AND g.dealer_name Like ? ");
-            params.add("%" + dealerName + "%");
+        if (StringUtils.isNotEmpty(dealerMessage)) {
+            sql.append(" AND (g.dealer_id = ? OR g.dealer_name LIKE ? ) ");
+            params.add(dealerMessage);
+            params.add("%" + dealerMessage + "%");
         }
         return supportJdbcTemplate.jdbcTemplate().queryForObject(sql.toString(), Integer.class, params.toArray());
     }
 
-    public List<GoodsBean> queryGoodsByGoodOrDealer(String goodsId, String goodsName, String dealerId,
-                                                    String dealerName, Integer goodsLaunchStatus, Integer pageNum, Integer rows) {
+    public List<GoodsBean> queryGoodsByGoodOrDealer(String goodsMessage, String dealerMessage, Integer goodsLaunchStatus, Integer pageOrNot, Integer pageNum, Integer rows) {
         List<Object> params = new ArrayList<Object>();
         StringBuilder sql = new StringBuilder();
         sql.append(" SELECT ");
@@ -933,25 +926,21 @@ public class GoodsQueryApplication {
             sql.append(" AND g.goods_launch_status = ? ");
             params.add(goodsLaunchStatus);
         }
-        if (StringUtils.isNotEmpty(goodsId)) {
-            sql.append(" AND g.goods_id = ? ");
-            params.add(goodsId);
+        if (StringUtils.isNotEmpty(goodsMessage)) {
+            sql.append(" AND (g.goods_id = ? OR g.goods_name LIKE ?) ");
+            params.add(goodsMessage);
+            params.add("%" + goodsMessage + "%");
         }
-        if (StringUtils.isNotEmpty(goodsName)) {
-            sql.append(" AND g.goods_name Like ? ");
-            params.add("%" + goodsName + "%");
+        if (StringUtils.isNotEmpty(dealerMessage)) {
+            sql.append(" AND (g.dealer_id = ? OR g.dealer_name LIKE ? ) ");
+            params.add(dealerMessage);
+            params.add("%" + dealerMessage + "%");
         }
-        if (StringUtils.isNotEmpty(dealerId)) {
-            sql.append(" AND g.dealer_id = ? ");
-            params.add(dealerId);
+        if(0 != pageOrNot) {
+        	sql.append(" LIMIT ?,?");
+            params.add(rows * (pageNum - 1));
+            params.add(rows);
         }
-        if (StringUtils.isNotEmpty(dealerName)) {
-            sql.append(" AND g.dealer_name Like ? ");
-            params.add("%" + dealerName + "%");
-        }
-        sql.append(" LIMIT ?,?");
-        params.add(rows * (pageNum - 1));
-        params.add(rows);
         return supportJdbcTemplate.queryForBeanList(sql.toString(), GoodsBean.class, params.toArray());
     }
 }
