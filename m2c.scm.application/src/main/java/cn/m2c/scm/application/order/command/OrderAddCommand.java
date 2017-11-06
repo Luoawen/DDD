@@ -36,8 +36,20 @@ public class OrderAddCommand extends AssertionConcern implements Serializable {
 	/**收货地址*/
 	private ReceiveAddr addr;
 	
+	private Double latitude;
+	
+	private Double longitude;
+	
+	public Double getLatitude() {
+		return latitude;
+	}
+	public Double getLongitude() {
+		return longitude;
+	}
+	
 	public OrderAddCommand(String orderId, String userId, String noted
-			,String goodses, String invoice, String addr, String coupons) throws NegativeException {
+			,String goodses, String invoice, String addr, String coupons
+			, Double latitude, Double longitude) throws NegativeException {
 		// 检验必传参数, 若不符合条件则直接抛出异常
 		if (StringUtils.isEmpty(orderId)) {
 			throw new NegativeException(MCode.V_1, "订单号为空(orderId)");
@@ -59,6 +71,8 @@ public class OrderAddCommand extends AssertionConcern implements Serializable {
 				throw new NegativeException(MCode.V_1, "优惠券参数格式不正确！");
 			}
 		}
+		this.latitude = latitude;
+		this.longitude = longitude;
 		
 		Gson gson = new Gson();
 		

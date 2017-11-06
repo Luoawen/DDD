@@ -45,7 +45,7 @@ public interface GoodsService {
     List<Map> getGoodsFullCut(String dealerId, String goodsId, String classifyId);
     
     /**
-     * 查询商品是否被用户收藏  lx
+     * 查询商品是否被用户收藏 
      * 
      * @param userId  用户id
      * @param goodsId 商品id

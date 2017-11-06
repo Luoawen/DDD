@@ -20,7 +20,7 @@ public class MediaResBean {
 	// 促销员分成
 	private String salesmanRatio;
 	// 销售专员及分成
-	private String bdStaffRatio;
+	private String bdDeductInfoList;
 	
 	
 	public String getMresId() {
@@ -54,13 +54,13 @@ public class MediaResBean {
 		this.salesmanRatio = salesmanRatio;
 	}
 	public String getBdStaffRatio() {
-		return bdStaffRatio;
+		return bdDeductInfoList;
 	}
 	public void setBdStaffRatio(String bdStaffRatio) {
-		this.bdStaffRatio = bdStaffRatio;
+		this.bdDeductInfoList = bdStaffRatio;
 	}
 	
 	public SimpleMediaInfo toMediaInfo() {
-		return new SimpleMediaInfo(mediaId, mediaRatio, bdStaffRatio, mresId, salesmanId, salesmanRatio);
+		return new SimpleMediaInfo(mediaId, mediaRatio, bdDeductInfoList, mresId, salesmanId, salesmanRatio);
 	}
 }

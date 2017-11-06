@@ -1,6 +1,8 @@
 package cn.m2c.scm.port.adapter.service.order;
 
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -89,16 +91,19 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	@Override
-	public Map<String, Object> getMediaBdByResIds(List<String> resIds, long time) {
+	public <T> Map<String, Object> getMediaBdByResIds(List<T> resIds, long time) {
 		// TODO Auto-generated method stub
 		if (null == resIds || resIds.size() < 1) {
 			return null;
 		}
 		
-		String url = M2C_HOST_URL + "/m2c.media/mres/ratios/client?mresIds={0}&orderTime={1}";
+		String url = M2C_HOST_URL + "/m2c.media/order/ad?skuListStr={0}&orderDateTime={1}";
+		
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		
 		String rtResult = restTemplate.getForObject(url, String.class, JSONObject.toJSONString(resIds),
-				time);
+				formatter.format(new Date(time)));
+		formatter = null;
 		JSONObject json = JSONObject.parseObject(rtResult);
 		
 		Map<String, Object> result = null;

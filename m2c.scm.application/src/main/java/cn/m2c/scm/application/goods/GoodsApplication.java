@@ -310,4 +310,18 @@ public class GoodsApplication {
             }
         }
     }
+
+    /**
+     * 修改商品投放状态
+     * @param goodsId
+     * @throws NegativeException 
+     */
+	public void LaunchGoods(String goodsId) throws NegativeException {
+		LOGGER.info("LaunchGoods goodsId >>{}", goodsId);
+        Goods goods = goodsRepository.queryGoodsById(goodsId);
+        if (null == goods) {
+            throw new NegativeException(MCode.V_300, "商品不存在");
+        }
+        goods.launchGoods();
+	}
 }
