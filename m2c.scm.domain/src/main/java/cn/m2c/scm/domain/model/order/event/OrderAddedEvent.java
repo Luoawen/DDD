@@ -28,13 +28,13 @@ public class OrderAddedEvent implements DomainEvent {
 	@Override
 	public int eventVersion() {
 		// TODO Auto-generated method stub
-		return 0;
+		return eventVersion;
 	}
 
 	@Override
 	public Date occurredOn() {
 		// TODO Auto-generated method stub
-		return null;
+		return occurredOn;
 	}
 
 	public OrderAddedEvent() {
