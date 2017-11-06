@@ -110,7 +110,7 @@ public class GoodsSku extends ConcurrencySafeEntity {
 
 
     public boolean isModifyNeedApprovePrice(Long photographPrice, Long supplyPrice) {
-        return !this.photographPrice.equals(photographPrice) || !this.supplyPrice.equals(supplyPrice);
+        return !this.photographPrice.equals(photographPrice) || (null != this.supplyPrice && !this.supplyPrice.equals(supplyPrice));
     }
 
     public Integer availableNum() {
