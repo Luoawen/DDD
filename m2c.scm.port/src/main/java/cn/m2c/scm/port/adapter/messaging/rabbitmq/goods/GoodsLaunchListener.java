@@ -1,7 +1,6 @@
 package cn.m2c.scm.port.adapter.messaging.rabbitmq.goods;
 
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate4.HibernateTransactionManager;
@@ -9,10 +8,8 @@ import org.springframework.orm.hibernate4.HibernateTransactionManager;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
-import cn.m2c.common.JsonUtils;
 import cn.m2c.ddd.common.application.configuration.RabbitmqConfiguration;
 import cn.m2c.ddd.common.event.ConsumedEventStore;
-import cn.m2c.ddd.common.notification.NotificationReader;
 import cn.m2c.ddd.common.port.adapter.messaging.rabbitmq.ExchangeListener;
 import cn.m2c.scm.application.goods.GoodsApplication;
 

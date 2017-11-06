@@ -1,14 +1,15 @@
 package cn.m2c.scm.port.adapter.persistence.hibernate.goods;
 
-import cn.m2c.ddd.common.port.adapter.persistence.hibernate.HibernateSupperRepository;
-import cn.m2c.scm.application.utils.Utils;
-import cn.m2c.scm.domain.model.goods.Goods;
-import cn.m2c.scm.domain.model.goods.GoodsRepository;
+import java.util.List;
+
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Query;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
+import cn.m2c.ddd.common.port.adapter.persistence.hibernate.HibernateSupperRepository;
+import cn.m2c.scm.application.utils.Utils;
+import cn.m2c.scm.domain.model.goods.Goods;
+import cn.m2c.scm.domain.model.goods.GoodsRepository;
 
 /**
  * 商品
