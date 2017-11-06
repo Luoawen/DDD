@@ -35,6 +35,8 @@ public class GoodsDetailRepresentation {
     private Integer skuFlag;
     private String goodsPostageId;
     private String goodsPostageName;
+    private String recognizedId;
+    private String recognizedUrl;
 
     public GoodsDetailRepresentation(GoodsBean bean, Map goodsClassifyMap, List<GoodsGuaranteeBean> goodsGuaranteeBeans,
                                      String goodsUnitName, Integer settlementMode, Float serviceRate, PostageModelBean postageModelBean) {
@@ -72,6 +74,8 @@ public class GoodsDetailRepresentation {
         if (null != postageModelBean) {
             this.goodsPostageName = postageModelBean.getModelName();
         }
+        this.recognizedId = bean.getRecognizedId();
+        this.recognizedUrl = bean.getRecognizedUrl();
     }
 
     public String getGoodsPostageName() {
@@ -248,5 +252,21 @@ public class GoodsDetailRepresentation {
 
     public void setGoodsClassifyIds(List goodsClassifyIds) {
         this.goodsClassifyIds = goodsClassifyIds;
+    }
+
+    public String getRecognizedId() {
+        return recognizedId;
+    }
+
+    public void setRecognizedId(String recognizedId) {
+        this.recognizedId = recognizedId;
+    }
+
+    public String getRecognizedUrl() {
+        return recognizedUrl;
+    }
+
+    public void setRecognizedUrl(String recognizedUrl) {
+        this.recognizedUrl = recognizedUrl;
     }
 }
