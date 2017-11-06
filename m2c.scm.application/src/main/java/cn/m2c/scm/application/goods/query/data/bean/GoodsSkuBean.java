@@ -81,7 +81,7 @@ public class GoodsSkuBean {
 
     private boolean show;
 
-    public void setShow(boolean show) {
+    public void setShow() {
         if (this.showStatus == 2) {
             this.show = true;
         }
