@@ -313,15 +313,19 @@ public class GoodsApplication {
 
     /**
      * 修改商品投放状态
-     * @param goodsId
+     * @param goodsIdLists
      * @throws NegativeException 
      */
-	public void LaunchGoods(String goodsId) throws NegativeException {
-		LOGGER.info("LaunchGoods goodsId >>{}", goodsId);
-        Goods goods = goodsRepository.queryGoodsById(goodsId);
-        if (null == goods) {
-            throw new NegativeException(MCode.V_300, "商品不存在");
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+	public void LaunchGoods(List<String> goodsIdLists) throws NegativeException {
+		LOGGER.info("LaunchGoods goodsIdLists >>{}", goodsIdLists);
+        if(null != goodsIdLists && goodsIdLists.size() > 0 ) {
+        	List<Goods> goodsList = goodsRepository.queryGoodsByIdList(goodsIdLists);
+            if (null != goodsList && goodsList.size() > 0 ) {
+            	for(Goods goods : goodsList) {
+                	goods.launchGoods();
+            	}
+            }
         }
-        goods.launchGoods();
 	}
 }
