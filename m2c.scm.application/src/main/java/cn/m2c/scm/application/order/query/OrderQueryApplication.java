@@ -13,7 +13,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import cn.m2c.ddd.common.port.adapter.persistence.springJdbc.SupportJdbcTemplate;
+import cn.m2c.scm.application.order.command.GetOrderCmd;
 import cn.m2c.scm.application.order.data.bean.AppOrderBean;
+import cn.m2c.scm.application.order.data.bean.AppOrderDtl;
 import cn.m2c.scm.application.order.data.bean.DealerOrderBean;
 import cn.m2c.scm.application.order.data.bean.OrderDetailBean;
 import cn.m2c.scm.application.order.data.bean.OrderExpressBean;
@@ -302,7 +304,7 @@ public class OrderQueryApplication {
 						tmpOrderId = o.getOrderId();
 						sql.delete(0, sql.length());
 						sql.append("SELECT a.goods_icon, a.goods_name, a.goods_title, a.sku_name, a.sku_id, a.sell_num, a.discount_price, a.freight, a.goods_amount\r\n") 
-						.append(" FROM t_scm_order_detail a WHERE a.order_id=? AND a.dealer_order_id=?");
+						.append(", a.comment_status FROM t_scm_order_detail a WHERE a.order_id=? AND a.dealer_order_id=?");
 						o.setGoodses(this.supportJdbcTemplate.queryForBeanList(sql.toString(), 
 								OrderDetailBean.class, new Object[] {tmpOrderId, o.getDealerOrderId()}));
 					}
@@ -347,6 +349,77 @@ public class OrderQueryApplication {
 			result = this.getSupportJdbcTemplate().jdbcTemplate().queryForObject(sql.toString(), params.toArray(), Integer.class);
 		} catch (Exception e) {
 			LOGGER.error("---查询APP订单列表出错 ",e);
+			throw new NegativeException(500, "查询APP订单列表出错");
+		}
+		return result;
+	}
+	/***
+	 * 获取订单详情
+	 * @param cmd
+	 * @return
+	 * @throws NegativeException 
+	 */
+	public AppOrderDtl getOrderDtl(GetOrderCmd cmd) throws NegativeException {
+		AppOrderDtl result = null;
+		try {
+			List<Object> params = new ArrayList<>(4);
+			StringBuilder sql = new StringBuilder();
+			
+			if (StringUtils.isEmpty(cmd.getDealerOrderId())) {
+				
+				sql.append("SELECT a.province_code, a.province, a.city, a.city_code, a.area_code, a.area_county, a.street_addr\r\n")
+				.append(", a.order_freight, a.order_id, a.goods_amount, a.plateform_discount, a.dealer_discount\r\n")
+				.append(", b.invoice_code, b.invoice_header, b.invoice_name, b.invoice_type, a.created_date, b._status\r\n") 
+				.append(", b.dealer_id, c.dealer_name, b.dealer_order_id\r\n") 
+				.append("FROM t_scm_order_dealer b \r\n")
+				.append("LEFT OUTER JOIN t_scm_order_main a ON a.order_id=b.order_id \r\n") 
+				.append("LEFT OUTER JOIN t_scm_dealer c ON c.dealer_id = b.dealer_id \r\n")
+				.append("WHERE a.user_id=? ");
+				params.add(cmd.getUserId());		
+				
+				if (!StringUtils.isEmpty(cmd.getOrderId())) {
+					sql.append(" AND b.order_id =?");
+					params.add(cmd.getOrderId());
+				}
+				if (!StringUtils.isEmpty(cmd.getDealerOrderId())) {
+					sql.append(" AND b.dealer_order_id =?");
+					params.add(cmd.getDealerOrderId());
+				}
+				sql.append(" limit 1");
+			}
+			else {
+				sql.append("SELECT a.province_code, a.province, a.city, a.city_code, a.area_code, a.area_county, a.street_addr\r\n")
+				.append(", a.order_freight, a.order_id, a.goods_amount, a.plateform_discount, a.dealer_discount\r\n")
+				.append(", b.invoice_code, b.invoice_header, b.invoice_name, b.invoice_type, a.created_date, b._status\r\n") 
+				.append(", b.dealer_id, c.dealer_name, b.dealer_order_id\r\n") 
+				.append("FROM t_scm_order_dealer b \r\n")
+				.append("LEFT OUTER JOIN t_scm_order_main a ON a.order_id=b.order_id \r\n") 
+				.append("LEFT OUTER JOIN t_scm_dealer c ON c.dealer_id = b.dealer_id \r\n")
+				.append("WHERE a.user_id=? ");
+				params.add(cmd.getUserId());		
+				
+				if (!StringUtils.isEmpty(cmd.getOrderId())) {
+					sql.append(" AND b.order_id =?");
+					params.add(cmd.getOrderId());
+				}
+				if (!StringUtils.isEmpty(cmd.getDealerOrderId())) {
+					sql.append(" AND b.dealer_order_id =?");
+					params.add(cmd.getDealerOrderId());
+				}
+			}
+			
+			result = this.supportJdbcTemplate.queryForBean(sql.toString(), AppOrderDtl.class, params.toArray());
+			
+			if (result != null) {
+				sql.delete(0, sql.length());
+				sql.append("SELECT a.goods_icon, a.goods_name, a.goods_title, a.sku_name, a.sku_id, a.sell_num, a.discount_price, a.freight, a.goods_amount\r\n") 
+				.append(" FROM t_scm_order_detail a WHERE a.order_id=? AND a.dealer_order_id=?");
+				result.setGoodses(this.supportJdbcTemplate.queryForBeanList(sql.toString(), 
+						OrderDetailBean.class, new Object[] {result.getOrderId(), result.getDealerOrderId()}));
+			}
+			
+		} catch (Exception e) {
+			LOGGER.error("---查询APP订单列表出错",e);
 			throw new NegativeException(500, "查询APP订单列表出错");
 		}
 		return result;

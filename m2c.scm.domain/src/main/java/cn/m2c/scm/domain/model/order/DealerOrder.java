@@ -165,7 +165,7 @@ public class DealerOrder extends ConcurrencySafeEntity {
 	}
 	
 	/**
-	 * 获取销量
+	 * 获取媒体相关的东东
 	 * @return
 	 */
 	List<SimpleMediaRes> getAllMediaRes() {
@@ -173,7 +173,8 @@ public class DealerOrder extends ConcurrencySafeEntity {
 		for (DealerOrderDtl dtl : orderDtls) {
 			String mres = dtl.getMediaResId();
 			if (!StringUtils.isEmpty(mres))
-				arr.add(new SimpleMediaRes(mres, dtl.getBdsRate(), dtl.getSkuId(), dtl.getDiscountMoney()));
+				arr.add(new SimpleMediaRes(mres, dtl.getBdsRate(), dtl.getSkuId(), dtl.getDiscountMoney()
+						, dtl.getMediaId(), dtl.getSellerId()));
 		}
 		return arr;
 	}

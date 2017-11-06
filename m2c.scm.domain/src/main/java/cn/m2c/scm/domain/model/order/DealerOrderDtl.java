@@ -220,4 +220,16 @@ public class DealerOrderDtl extends ConcurrencySafeEntity {
 	void updateFreight(long f) {
 		goodsInfo.setFreight(f);
 	}
+	
+	String getMediaId() {
+		if (mediaInfo != null)
+			return mediaInfo.getMediaId();
+		return null;
+	}
+	
+	String getSellerId() {
+		if (mediaInfo != null)
+			return mediaInfo.getSalerUserId();
+		return null;
+	}
 }

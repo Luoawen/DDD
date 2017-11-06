@@ -64,7 +64,7 @@ public class MediaResEvent implements DomainEvent {
 	
 	public static void main(String[] args) {
 		List<SimpleMediaRes> s = new ArrayList<SimpleMediaRes>();
-		s.add(new SimpleMediaRes("2222", "{'id':'1','rate':'2'}", "skuId", 6000));
+		s.add(new SimpleMediaRes("2222", "{'id':'1','rate':'2'}", "skuId", 6000, "aaa", "ddd"));
 		MediaResEvent a = new MediaResEvent("11111", s);
 		System.out.print(JSONObject.toJSONString(a));
 	}
