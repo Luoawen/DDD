@@ -24,8 +24,7 @@ public class MediaResBean {
 	// 促销员分成
 	private String salesmanRatio;
 	// 销售专员及分成
-	private List<Map<String, Object>> bdDeductInfoList;
-	
+	private List<Map<String, Object>> bdDeductInfoList;	
 	
 	public String getMresId() {
 		return mresId;

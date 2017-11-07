@@ -311,9 +311,9 @@ public class AfterSellOrderQuery {
 	 */
 	public SimpleMarket getMarketById(String marketId, String orderId) {
 		StringBuilder sql = new StringBuilder();
-		sql.append(" SELECT marketing_id, market_level, market_type, threshold, threshold_type\r\n")
+		sql.append(" SELECT marketing_id, market_level, market_type, threshold, threshold_type, discount\r\n")
 		.append("FROM	t_scm_order_marketing_used\r\n")
-		.append("WHERE	order_id = ? AND marketing_id = ? ");
+		.append("WHERE	order_id = ? AND marketing_id = ? AND _status=1");
 		return this.supportJdbcTemplate.queryForBean(sql.toString(), SimpleMarket.class, orderId, marketId);
 	}
 }

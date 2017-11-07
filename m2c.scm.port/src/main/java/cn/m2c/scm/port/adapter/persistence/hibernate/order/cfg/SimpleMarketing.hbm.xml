@@ -18,6 +18,7 @@
 	        <property name="thresholdType" column="threshold_type" type="int"/>
 	        <property name="sharePercent" column="share_percent" type="string"/>
 	        <property name="marketName" column="market_name" type="string"/>
+	        <property name="discount" column="discount" type="int"/>
         </component>
         <property name="status" column="_status" type="int"/>
         

@@ -23,13 +23,16 @@ public class SimpleMarketInfo extends ValueObject {
 	private String sharePercent;
 	/**营销名称*/
 	private String marketName;
+	/**活动折扣或优惠*/
+	private Integer discount;
 	
 	public SimpleMarketInfo() {
 		super();
 	}
 	
 	public SimpleMarketInfo(String marketingId, int marketLevel, int threshold,
-			int marketType, int thresholdType, String sharePercent, String marketName) {
+			int marketType, int thresholdType, String sharePercent, String marketName
+			, int discount) {
 		super();
 		this.marketingId = marketingId;
 		this.marketLevel = marketLevel;
@@ -38,6 +41,7 @@ public class SimpleMarketInfo extends ValueObject {
 		this.thresholdType = thresholdType;
 		this.sharePercent = sharePercent;
 		this.marketName = marketName;
+		this.discount = discount;
 	}
 	
 	String getMarketingId() {

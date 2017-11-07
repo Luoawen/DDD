@@ -66,6 +66,17 @@ public class GoodsDto {
 	/**营销名称*/
 	private String marketName;
 	
+	/**优惠额度*/
+	private int discount;
+	
+	public int getDiscount() {
+		return discount;
+	}
+
+	public void setDiscount(int discount) {
+		this.discount = discount;
+	}
+
 	public int getMarketType() {
 		return marketType;
 	}
@@ -274,7 +285,7 @@ public class GoodsDto {
 	public SimpleMarketInfo toMarketInfo() {
 		if (!StringUtils.isEmpty(marketingId)) {
 			return new SimpleMarketInfo(marketingId, marketLevel, threshold, 
-					marketType, thresholdType, sharePercent, marketName);
+					marketType, thresholdType, sharePercent, marketName, discount);
 		}
 		return null; 
 	}
