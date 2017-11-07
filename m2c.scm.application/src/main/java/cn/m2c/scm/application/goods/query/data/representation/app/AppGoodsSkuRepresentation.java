@@ -30,7 +30,7 @@ public class AppGoodsSkuRepresentation {
 
     public AppGoodsSkuRepresentation(GoodsSkuBean bean) {
         this.skuId = bean.getSkuId();
-        this.skuName = bean.getSkuName();
+        this.skuName = "".equals(bean.getSkuName()) ? "默认" : bean.getSkuName();
         this.availableNum = bean.getAvailableNum();
         this.photographPrice = bean.getPhotographPrice();
         this.weight = bean.getWeight();

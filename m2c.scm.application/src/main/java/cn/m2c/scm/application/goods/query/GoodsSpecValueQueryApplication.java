@@ -24,15 +24,19 @@ public class GoodsSpecValueQueryApplication {
         return supportJdbcTemplate;
     }
 
-    public List<GoodsSpecValueBean> queryGoodsSpecValueByName(String dealerId, String specValue) {
+    public List<GoodsSpecValueBean> queryGoodsSpecValueByName(String dealerId, String standardId, String specValue) {
         List<Object> params = new ArrayList<Object>();
         StringBuilder sql = new StringBuilder();
         sql.append(" SELECT ");
         sql.append(" * ");
         sql.append(" FROM ");
         sql.append(" t_scm_goods_spec_value WHERE 1 = 1");
-        sql.append(" AND dealer_id = ?");
+        sql.append(" AND standard_id = ?");
         params.add(dealerId);
+        if (StringUtils.isNotEmpty(standardId)) {
+            sql.append(" AND spec_value = ?");
+            params.add(standardId);
+        }
         if (StringUtils.isNotEmpty(specValue)) {
             sql.append(" AND spec_value like ?");
             params.add("%" + specValue + "%");

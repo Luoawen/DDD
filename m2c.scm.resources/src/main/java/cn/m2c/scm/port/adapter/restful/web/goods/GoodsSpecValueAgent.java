@@ -46,10 +46,11 @@ public class GoodsSpecValueAgent {
     @RequestMapping(value = "", method = RequestMethod.POST)
     public ResponseEntity<MResult> addGoodsSpecValue(
             @RequestParam(value = "dealerId", required = false) String dealerId,
+            @RequestParam(value = "standardId", required = false) String standardId,
             @RequestParam(value = "specValue", required = false) String specValue) {
         MResult result = new MResult(MCode.V_1);
         String specId = IDGenerator.get(IDGenerator.SCM_GOODS_SPEC_VALUE_PREFIX_TITLE);
-        GoodsSpecValueCommand command = new GoodsSpecValueCommand(specId, dealerId, specValue);
+        GoodsSpecValueCommand command = new GoodsSpecValueCommand(specId, dealerId, standardId, specValue);
         try {
             goodsSpecValueApplication.addGoodsSpecValue(command);
             result.setStatus(MCode.V_200);
@@ -73,10 +74,11 @@ public class GoodsSpecValueAgent {
     @RequestMapping(value = "", method = RequestMethod.GET)
     public ResponseEntity<MResult> queryGoodsSpecValue(
             @RequestParam(value = "dealerId", required = false) String dealerId,
+            @RequestParam(value = "standardId", required = false) String standardId,
             @RequestParam(value = "specValue", required = false) String specValue) {
         MResult result = new MResult(MCode.V_1);
         try {
-            List<GoodsSpecValueBean> list = goodsSpecValueQueryApplication.queryGoodsSpecValueByName(dealerId, specValue);
+            List<GoodsSpecValueBean> list = goodsSpecValueQueryApplication.queryGoodsSpecValueByName(dealerId, standardId, specValue);
             if (null != list && list.size() > 0) {
                 List<GoodsSpecValueRepresentation> resultList = new ArrayList<>();
                 for (GoodsSpecValueBean bean : list) {

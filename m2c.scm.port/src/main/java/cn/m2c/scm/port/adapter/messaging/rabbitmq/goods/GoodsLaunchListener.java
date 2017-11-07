@@ -1,15 +1,11 @@
 package cn.m2c.scm.port.adapter.messaging.rabbitmq.goods;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate4.HibernateTransactionManager;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-
 import cn.m2c.ddd.common.application.configuration.RabbitmqConfiguration;
 import cn.m2c.ddd.common.event.ConsumedEventStore;
+import cn.m2c.ddd.common.notification.NotificationReader;
 import cn.m2c.ddd.common.port.adapter.messaging.rabbitmq.ExchangeListener;
 import cn.m2c.scm.application.goods.GoodsApplication;
 
@@ -33,11 +29,9 @@ public class GoodsLaunchListener extends ExchangeListener {
 
 	@Override
 	protected void filteredDispatch(String aType, String aTextMessage) throws Exception {
-		JSONObject jsonObject = JSONObject.parseObject(aTextMessage);
-		JSONObject jsonObject2 = jsonObject.getJSONObject("event");
-		JSONArray jsonArray = jsonObject2.getJSONArray("goodsIdList");
-		List<String> goodsIdLists = jsonArray.toJavaList(String.class);
-		goodsApplication.LaunchGoods(goodsIdLists);
+		NotificationReader reader = new NotificationReader(aTextMessage);
+        String goodsId = reader.eventStringValue("goodsId");
+        goodsApplication.LaunchGoods(goodsId);
 	}
 
 	@Override

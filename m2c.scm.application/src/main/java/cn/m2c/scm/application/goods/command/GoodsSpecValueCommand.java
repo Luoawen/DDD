@@ -23,9 +23,12 @@ public class GoodsSpecValueCommand extends AssertionConcern implements Serializa
      */
     private String specValue;
 
-    public GoodsSpecValueCommand(String specId, String dealerId, String specValue) {
+    private String standardId;
+
+    public GoodsSpecValueCommand(String specId, String dealerId, String standardId, String specValue) {
         this.specId = specId;
         this.dealerId = dealerId;
+        this.standardId = standardId;
         this.specValue = specValue;
     }
 
@@ -39,5 +42,9 @@ public class GoodsSpecValueCommand extends AssertionConcern implements Serializa
 
     public String getSpecValue() {
         return specValue;
+    }
+
+    public String getStandardId() {
+        return standardId;
     }
 }

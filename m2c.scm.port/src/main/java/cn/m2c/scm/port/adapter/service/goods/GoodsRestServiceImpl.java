@@ -129,4 +129,9 @@ public class GoodsRestServiceImpl implements GoodsService {
 		return null;
 	}
 
+    @Override
+    public boolean updateRecognizedImgStatus(String recognizedId, String recognizedUrl, Integer status) {
+        return false;
+    }
+
 }
