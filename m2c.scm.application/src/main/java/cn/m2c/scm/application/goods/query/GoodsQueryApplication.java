@@ -936,12 +936,21 @@ public class GoodsQueryApplication {
             params.add(dealerMessage);
             params.add("%" + dealerMessage + "%");
         }
-        if(0 != pageOrNot) {
-        	sql.append(" LIMIT ?,?");
+        if (0 != pageOrNot) {
+            sql.append(" LIMIT ?,?");
             params.add(rows * (pageNum - 1));
             params.add(rows);
         }
         return supportJdbcTemplate.queryForBeanList(sql.toString(), GoodsBean.class, params.toArray());
+    }
+
+    public List<String> getRecognizedGoods() {
+        StringBuilder sql = new StringBuilder();
+        sql.append(" SELECT ");
+        sql.append(" recognized_id ");
+        sql.append(" FROM ");
+        sql.append(" t_scm_goods WHERE del_status = 1 and recognized_id is not null");
+        return supportJdbcTemplate.jdbcTemplate().queryForList(sql.toString(), String.class);
     }
 }
 
