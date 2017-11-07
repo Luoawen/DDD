@@ -14,6 +14,7 @@ import cn.m2c.scm.domain.model.goods.GoodsSku;
 import cn.m2c.scm.domain.model.goods.GoodsSkuRepository;
 import cn.m2c.scm.domain.model.goods.event.GoodsAppCapturedMDEvent;
 import cn.m2c.scm.domain.model.goods.event.GoodsAppSearchMDEvent;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -317,15 +318,11 @@ public class GoodsApplication {
      * @throws NegativeException 
      */
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
-	public void LaunchGoods(List<String> goodsIdLists) throws NegativeException {
-		LOGGER.info("LaunchGoods goodsIdLists >>{}", goodsIdLists);
-        if(null != goodsIdLists && goodsIdLists.size() > 0 ) {
-        	List<Goods> goodsList = goodsRepository.queryGoodsByIdList(goodsIdLists);
-            if (null != goodsList && goodsList.size() > 0 ) {
-            	for(Goods goods : goodsList) {
-                	goods.launchGoods();
-            	}
-            }
+	public void LaunchGoods(String goodsId) throws NegativeException {
+		LOGGER.info("LaunchGoods goodsId >>{}", goodsId);
+    	Goods goods = goodsRepository.queryGoodsById(goodsId);
+        if (null != goods ) {
+            goods.launchGoods();
         }
 	}
 }
