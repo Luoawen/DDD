@@ -130,17 +130,17 @@ public class OrderQueryApplication {
      * @param orderId
      * @return
      */
-    public Map<String, Float> getSkusByOrderId(String orderId) throws NegativeException {
+    public Map<String, Integer> getSkusByOrderId(String orderId) throws NegativeException {
     	if (StringUtils.isEmpty(orderId))
     		return null;
-    	Map<String, Float> rs = null;
+    	Map<String, Integer> rs = null;
     	try {
     		List<SkuNumBean> ls = supportJdbcTemplate.queryForBeanList("select sku_id, sell_num from t_scm_order_detail where order_id=?", SkuNumBean.class, orderId);
     		
     		if (ls == null || ls.size() < 1)
     			return rs;
     		
-    		rs = new HashMap<String, Float>();
+    		rs = new HashMap<String, Integer>();
     		for (SkuNumBean sb : ls) {
     			rs.put(sb.getSkuId(), sb.getNum());
     		}

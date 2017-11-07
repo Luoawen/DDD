@@ -158,7 +158,7 @@ public class MainOrder extends ConcurrencySafeEntity {
 		
 		DomainEventPublisher.instance().publish(new OrderOptLogEvent(orderId, null, "订单支付成功", uId));
 		
-		DomainEventPublisher.instance().publish(new OrderPayedEvent(orderId, allSales, allRes, markets));
+		DomainEventPublisher.instance().publish(new OrderPayedEvent(orderId, allSales, allRes, markets, payTime));
 		allSales = null;
 		/*if (allRes.size() > 1)
 			DomainEventPublisher.instance().publish(new MediaResEvent(orderId, orderFreight, 

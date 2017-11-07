@@ -13,6 +13,8 @@ import cn.m2c.scm.application.order.data.bean.AfterSellOrderBean;
 import cn.m2c.scm.application.order.data.bean.AfterSellOrderDetailBean;
 import cn.m2c.scm.application.order.data.bean.AftreSellLogisticsBean;
 import cn.m2c.scm.application.order.data.bean.GoodsInfoBean;
+import cn.m2c.scm.application.order.data.bean.SimpleMarket;
+import cn.m2c.scm.application.order.data.bean.SkuNumBean;
 
 /**
  * 售后订单查询
@@ -288,5 +290,30 @@ public class AfterSellOrderQuery {
 		return this.supportJdbcTemplate.queryForBean(sql.toString(), GoodsInfoBean.class, afterSellOrderId);
 
 	}
-
+	/***
+	 * 获取同一个活动的订单中的商品列表
+	 * @param marketId
+	 * @param orderId
+	 */
+	public List<SkuNumBean> getOrderDtlByMarketId(String marketId, String orderId) {
+		StringBuilder sql = new StringBuilder();
+		sql.append(" SELECT sku_id,	sell_num,	is_change, goods_amount,	marketing_id\r\n")
+		.append("FROM	t_scm_order_detail\r\n")
+		.append("WHERE	order_id = ?\r\n")
+		.append("AND marketing_id = ? ");
+		return this.supportJdbcTemplate.queryForBeanList(sql.toString(), SkuNumBean.class, orderId, marketId);
+	}
+	
+	/***
+	 * 获取订单中一个活动
+	 * @param marketId
+	 * @param orderId
+	 */
+	public SimpleMarket getMarketById(String marketId, String orderId) {
+		StringBuilder sql = new StringBuilder();
+		sql.append(" SELECT marketing_id, market_level, market_type, threshold, threshold_type\r\n")
+		.append("FROM	t_scm_order_marketing_used\r\n")
+		.append("WHERE	order_id = ? AND marketing_id = ? ");
+		return this.supportJdbcTemplate.queryForBean(sql.toString(), SimpleMarket.class, orderId, marketId);
+	}
 }

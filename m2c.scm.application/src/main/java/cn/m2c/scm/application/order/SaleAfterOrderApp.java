@@ -15,6 +15,9 @@ import cn.m2c.scm.application.order.command.AddSaleAfterCmd;
 import cn.m2c.scm.application.order.command.AproveSaleAfterCmd;
 import cn.m2c.scm.application.order.command.SaleAfterCmd;
 import cn.m2c.scm.application.order.command.SaleAfterShipCmd;
+import cn.m2c.scm.application.order.data.bean.SimpleMarket;
+import cn.m2c.scm.application.order.data.bean.SkuNumBean;
+import cn.m2c.scm.application.order.query.AfterSellOrderQuery;
 import cn.m2c.scm.domain.NegativeCode;
 import cn.m2c.scm.domain.NegativeException;
 import cn.m2c.scm.domain.model.order.DealerOrderDtl;
@@ -33,6 +36,8 @@ public class SaleAfterOrderApp {
 	@Autowired
 	SaleAfterOrderRepository saleAfterRepository;
 	
+	@Autowired
+	AfterSellOrderQuery saleOrderQuery;
 	/***
 	 * 创建售后单
 	 * @param cmd
@@ -44,11 +49,23 @@ public class SaleAfterOrderApp {
 		DealerOrderDtl itemDtl = saleAfterRepository.getDealerOrderDtlBySku(cmd.getDealerOrderId(), 
 				cmd.getSkuId());
 		
+		if (itemDtl == null) {
+			throw new NegativeException(MCode.V_1, "申请售后的商品不存在！");
+		}
+		
 		if (!itemDtl.canApplySaleAfter()) {
 			throw new NegativeException(MCode.V_100, "商品处于不可申请售后状态！");
 		}
-		// 生成售后单保存
-		long money = 1000;
+		// 生成售后单保存, 计算售后需要退的钱
+		String mkId = itemDtl.getMarketId(); 
+		long discountMoney = 0;
+		if (mkId != null) {//计算售后需要退的钱
+			SimpleMarket marketInfo = saleOrderQuery.getMarketById(mkId, cmd.getOrderId());
+			List<SkuNumBean> skuBeanLs =saleOrderQuery.getOrderDtlByMarketId(mkId, cmd.getOrderId());
+			
+			discountMoney = OrderMarketCalc.calcReturnMoney(marketInfo, skuBeanLs, cmd.getSkuId());
+		}		
+		long money = itemDtl.sumGoodsMoney() - discountMoney;
 		SaleAfterOrder afterOrder = new SaleAfterOrder(cmd.getSaleAfterNo(), cmd.getUserId(), cmd.getOrderId(),
 				cmd.getDealerOrderId(), cmd.getDealerId(), cmd.getGoodsId(), cmd.getSkuId(), cmd.getReason()
 				, cmd.getBackNum(), 0, cmd.getType(), money, cmd.getReasonCode());

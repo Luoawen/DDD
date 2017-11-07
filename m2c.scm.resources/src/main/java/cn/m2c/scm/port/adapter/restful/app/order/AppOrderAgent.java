@@ -257,11 +257,13 @@ public class AppOrderAgent {
             result.setStatus(MCode.V_200);
         } 
         catch (NegativeException e) {
-        	result = new MResult(e.getStatus(), e.getMessage());
+        	result.setStatus(e.getStatus());
+        	result.setErrorMessage(e.getMessage());
         }
         catch (Exception e) {
             LOGGER.error("Aplly after sale Exception e:", e);
-            result = new MResult(MCode.V_400, e.getMessage());
+            result.setStatus(MCode.V_400);
+        	result.setErrorMessage(e.getMessage());
         }
         return new ResponseEntity<MResult>(result, HttpStatus.OK);
     }

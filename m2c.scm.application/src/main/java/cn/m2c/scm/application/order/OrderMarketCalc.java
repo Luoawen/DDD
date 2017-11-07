@@ -11,6 +11,8 @@ import cn.m2c.common.MCode;
 import cn.m2c.scm.application.order.data.bean.MarketBean;
 import cn.m2c.scm.application.order.data.bean.MarketRangeSuit;
 import cn.m2c.scm.application.order.data.bean.MarketSku;
+import cn.m2c.scm.application.order.data.bean.SimpleMarket;
+import cn.m2c.scm.application.order.data.bean.SkuNumBean;
 import cn.m2c.scm.application.order.query.dto.GoodsDto;
 import cn.m2c.scm.domain.NegativeException;
 
@@ -205,7 +207,7 @@ public class OrderMarketCalc {
 		return false;
 	} 
 	/***
-	 * 
+	 * 检查指定的SKU是否可以
 	 * @param d
 	 * @param skus
 	 * @return
@@ -219,5 +221,23 @@ public class OrderMarketCalc {
 		}
 		
 		return false;
+	}
+	/***
+	 * 计算售后需要退的某个商品的钱
+	 * @param marketInfo
+	 * @param skuBeanLs
+	 * @param skuId
+	 * @return
+	 */
+	public static long calcReturnMoney(SimpleMarket marketInfo
+			, List<SkuNumBean> skuBeanLs, String skuId) {
+		long rtMoney = 0;
+		// 根据marketInfo 来计算
+		if (marketInfo == null)
+			return rtMoney;
+		
+		
+		
+		return rtMoney;
 	}
 }

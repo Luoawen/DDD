@@ -28,18 +28,26 @@ public class OrderPayedEvent implements DomainEvent {
     
     private Map<String, Object> markets;
 	
+    private Date payTime;
+    
+	public Date getPayTime() {
+		return payTime;
+	}
+
 	public OrderPayedEvent() {
 		super();
 		occurredOn = new Date();
 		eventVersion = 1;
 	}
 	
-	public OrderPayedEvent(String orderNo, Map<String, Integer> s, List<SimpleMediaRes> reses, Map<String, Object> markets) {
+	public OrderPayedEvent(String orderNo, Map<String, Integer> s, List<SimpleMediaRes> reses, Map<String, Object> markets
+			, Date payTime) {
 		this();
 		sales = s;
 		this.orderNo = orderNo;
 		this.reses = reses;
 		this.markets = markets;
+		this.payTime = payTime;
 	}
 	@Override
 	public int eventVersion() {
@@ -73,7 +81,7 @@ public class OrderPayedEvent implements DomainEvent {
 		Gson gson = new Gson();
 		Map<String, Integer> s = new HashMap<String, Integer>();
 		s.put("2222", 2);
-		OrderPayedEvent a = new OrderPayedEvent("123456",  s, null, null);
+		OrderPayedEvent a = new OrderPayedEvent("123456",  s, null, null, null);
 		System.out.print(gson.toJson(a));
 	}
 }

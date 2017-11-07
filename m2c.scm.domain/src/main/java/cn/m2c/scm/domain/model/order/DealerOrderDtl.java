@@ -232,4 +232,15 @@ public class DealerOrderDtl extends ConcurrencySafeEntity {
 			return mediaInfo.getSalerUserId();
 		return null;
 	}
+	
+	public String getMarketId() {
+		if (marketInfo != null)
+			return marketInfo.getMarketingId();
+		
+		return null;
+	}
+	
+	public long sumGoodsMoney() {
+		return goodsAmount;
+	}
 }
