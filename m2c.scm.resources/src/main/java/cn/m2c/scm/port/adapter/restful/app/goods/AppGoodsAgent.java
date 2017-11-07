@@ -1,23 +1,5 @@
 package cn.m2c.scm.port.adapter.restful.app.goods;
 
-import java.io.Writer;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Resource;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
 import cn.m2c.common.JsonUtils;
 import cn.m2c.common.MCode;
 import cn.m2c.common.MPager;
@@ -37,6 +19,22 @@ import cn.m2c.scm.application.goods.query.data.representation.app.AppGoodsGuessR
 import cn.m2c.scm.application.goods.query.data.representation.app.AppGoodsSearchRepresentation;
 import cn.m2c.scm.application.unit.query.UnitQuery;
 import cn.m2c.scm.domain.service.goods.GoodsService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.annotation.Resource;
+import java.io.Writer;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 商品
@@ -272,17 +270,17 @@ public class AppGoodsAgent {
      * @param userName
      * @return
      */
-    @RequestMapping(value = "/app/recognized", method = RequestMethod.GET)
+    @RequestMapping(value = "/recognized", method = RequestMethod.GET)
     public ResponseEntity<MResult> recognizedPic(
-            @RequestParam(value = "token", required = true) String token,
+            @RequestParam(value = "token", required = false) String token,
             @RequestParam(value = "recognizedInfo", required = false) String recognizedInfo,
             @RequestParam(value = "barNo", required = false) String barNo,
             @RequestParam(value = "location", required = false) String location,
-            @RequestParam(value = "sn", required = true) String sn,
-            @RequestParam(value = "os", required = true) String os,
-            @RequestParam(value = "appVersion", required = true) String appVersion,
-            @RequestParam(value = "osVersion", required = true) String osVersion,
-            @RequestParam(value = "triggerTime", required = true) long triggerTime,
+            @RequestParam(value = "sn", required = false) String sn,
+            @RequestParam(value = "os", required = false) String os,
+            @RequestParam(value = "appVersion", required = false) String appVersion,
+            @RequestParam(value = "osVersion", required = false) String osVersion,
+            @RequestParam(value = "triggerTime", required = false) long triggerTime,
             @RequestParam(value = "userId", required = false, defaultValue = "") String userId,
             @RequestParam(value = "userName", required = false, defaultValue = "") String userName
     ) {
