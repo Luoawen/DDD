@@ -134,17 +134,19 @@ public class AppGoodsAgent {
                 if (commentTotal > 0) {
                     goodsCommentBean = goodsCommentQueryApplication.queryGoodsDetailComment(goodsId);
                 }
+
+                List<Map> goodsTags = goodsRestService.getGoodsTags(goodsBean.getDealerId(), goodsBean.getGoodsId(), goodsBean.getGoodsClassifyId());
                 List<Map> fullCut = goodsRestService.getGoodsFullCut(goodsBean.getDealerId(), goodsBean.getGoodsId(), goodsBean.getGoodsClassifyId());
-                
+
                 //查询商品被收藏id 
-                String favoriteId=null;
-                if(null!=userId) {
-                	String token = "";
-                	favoriteId = goodsRestService.getUserIsFavoriteGoods(userId,goodsId,token);
+                String favoriteId = null;
+                if (null != userId) {
+                    String token = "";
+                    favoriteId = goodsRestService.getUserIsFavoriteGoods(userId, goodsId, token);
                 }
-                
+
                 AppGoodsDetailRepresentation representation = new AppGoodsDetailRepresentation(goodsBean,
-                        goodsGuarantee, goodsUnitName, null, commentTotal, goodsCommentBean, fullCut, favoriteId);
+                        goodsGuarantee, goodsUnitName, null, commentTotal, goodsCommentBean, fullCut, goodsTags, favoriteId);
                 result.setContent(representation);
             }
             result.setStatus(MCode.V_200);
@@ -220,7 +222,7 @@ public class AppGoodsAgent {
                     List<String> goodsClassifyIds = new ArrayList<>();
                     for (GoodsBean goodsBean : goodsBeans) {
                         // 获取商品分类的一级大类
-                        if (!goodsClassifyIds.contains(goodsBean.getGoodsClassifyId())){
+                        if (!goodsClassifyIds.contains(goodsBean.getGoodsClassifyId())) {
                             goodsClassifyIds.add(goodsBean.getGoodsClassifyId());
                         }
                         List<Map> goodsTags = goodsRestService.getGoodsTags(goodsBean.getDealerId(), goodsBean.getGoodsId(), goodsBean.getGoodsClassifyId());
@@ -307,13 +309,15 @@ public class AppGoodsAgent {
                     }
 
                     List<Map> fullCut = goodsRestService.getGoodsFullCut(goodsBean.getDealerId(), goodsBean.getGoodsId(), goodsBean.getGoodsClassifyId());
-                    
+
+                    List<Map> goodsTags = goodsRestService.getGoodsTags(goodsBean.getDealerId(), goodsBean.getGoodsId(), goodsBean.getGoodsClassifyId());
+
                     //查询商品被收藏id 
-                    String favoriteId=null;
-                    favoriteId = goodsRestService.getUserIsFavoriteGoods(userId,goodsBean.getGoodsId(),"");
-                    
+                    String favoriteId = null;
+                    favoriteId = goodsRestService.getUserIsFavoriteGoods(userId, goodsBean.getGoodsId(), "");
+
                     AppGoodsDetailRepresentation representation = new AppGoodsDetailRepresentation(goodsBean,
-                            goodsGuarantee, goodsUnitName, mresId, commentTotal, goodsCommentBean, fullCut, favoriteId);
+                            goodsGuarantee, goodsUnitName, mresId, commentTotal, goodsCommentBean, fullCut, goodsTags, favoriteId);
                     representations.add(representation);
                 }
                 result.setContent(representations);
