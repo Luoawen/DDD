@@ -116,11 +116,11 @@ public class OrderServiceImpl implements OrderService {
             Gson gson = new Gson();
             for (int i=0; i< sz; i++) {
             	JSONObject obj = contentArr.getJSONObject(i);
-            	MediaResBean m = gson.fromJson(obj.toJSONString(), MediaResBean.class);
-            	result.put(m.getMresId(), m);
-            	//Type type = new TypeToken<HashMap<String, MediaResBean>>(){}.getType();
-            	//HashMap<String, MediaResBean> mp = gson.fromJson(obj.toJSONString(), type);
-            	//result.putAll(mp);
+            	//MediaResBean m = gson.fromJson(obj.toJSONString(), MediaResBean.class);
+            	//result.put(m.getMresId(), m);
+            	Type type = new TypeToken<HashMap<String, MediaResBean>>(){}.getType();
+            	HashMap<String, MediaResBean> mp = gson.fromJson(obj.toJSONString(), type);
+            	result.putAll(mp);
             }
         }
 		return result;

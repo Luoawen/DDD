@@ -81,7 +81,7 @@
 	        <property name="resRate" column="res_rate" type="string"/>
 	        <property name="mediaId" column="media_id" type="string"/>
 	        <property name="bdsRate" column="bds_rate" type="string"/>
-	        <property name="mediaResId" column="media_res_id" type="date"/>
+	        <property name="mediaResId" column="media_res_id" type="string"/>
 	        <property name="salerUserId" column="saler_user_id" type="string"/>
 	        <property name="salerUserRate" column="saler_user_rate" type="string"/>
         </component>

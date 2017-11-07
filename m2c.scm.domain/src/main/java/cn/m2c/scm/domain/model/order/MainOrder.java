@@ -145,7 +145,7 @@ public class MainOrder extends ConcurrencySafeEntity {
 			allRes.addAll(d.getAllMediaRes());
 		}
 		Map<String, Object> markets = null;
-		if (marketings != null) {
+		if (marketings != null && marketings.size() > 0) {
 			markets = new HashMap<String, Object>();
 			StringBuilder sb = new StringBuilder(200);
 			for (SimpleMarketing m : marketings) {
