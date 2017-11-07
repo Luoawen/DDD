@@ -4,6 +4,7 @@ import cn.m2c.scm.application.goods.query.data.bean.GoodsBean;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsSkuBean;
 import cn.m2c.scm.application.utils.ExcelField;
 
+import java.text.DecimalFormat;
 import java.util.Map;
 
 /**
@@ -27,7 +28,7 @@ public class GoodsServiceRateModel {
     @ExcelField(title = "规格")
     private String goodsSkuName;
     @ExcelField(title = "拍获价/元")
-    private Long photographPrice;
+    private String photographPrice;
     @ExcelField(title = "服务费率/%")
     private Float serviceRate;
     @ExcelField(title = "商品库存")
@@ -50,7 +51,8 @@ public class GoodsServiceRateModel {
         this.goodsCode = goodsSkuBean.getGoodsCode();
         this.goodsSkuId = goodsSkuBean.getSkuId();
         this.goodsSkuName = goodsSkuBean.getSkuName();
-        this.photographPrice = goodsSkuBean.getPhotographPrice();
+        DecimalFormat df = new DecimalFormat("#.00");
+        this.photographPrice = df.format(goodsSkuBean.getPhotographPrice().floatValue()/100);
         this.availableNum = goodsSkuBean.getAvailableNum();
         this.sellerNum = goodsSkuBean.getSellerNum();
         //商品状态，1：仓库中，2：出售中，3：已售罄
