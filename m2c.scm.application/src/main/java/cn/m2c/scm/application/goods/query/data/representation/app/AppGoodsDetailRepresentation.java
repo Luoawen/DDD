@@ -36,10 +36,11 @@ public class AppGoodsDetailRepresentation {
     private List<Map> fullCuts;
     private Integer skuFlag;
     private String favoriteId;
+    private List<Map> goodsTags;
 
     public AppGoodsDetailRepresentation(GoodsBean bean, List<GoodsGuaranteeBean> goodsGuaranteeBeans,
                                         String goodsUnitName, String mresId, Integer commentTotal, GoodsCommentBean goodsCommentBean,
-                                        List<Map> fullCuts, String favoriteId) {
+                                        List<Map> fullCuts, List<Map> goodsTags, String favoriteId) {
         this.skuFlag = bean.getSkuFlag();
         this.dealerId = bean.getDealerId();
         this.goodsId = bean.getGoodsId();
@@ -101,6 +102,9 @@ public class AppGoodsDetailRepresentation {
         }
         this.fullCuts = fullCuts;
         this.favoriteId = favoriteId;
+        if (null != goodsTags && goodsTags.size() > 0) {
+            this.goodsTags = goodsTags;
+        }
     }
 
     public String getGoodsName() {
@@ -245,5 +249,13 @@ public class AppGoodsDetailRepresentation {
 
     public void setFavoriteId(String favoriteId) {
         this.favoriteId = favoriteId;
+    }
+
+    public List<Map> getGoodsTags() {
+        return goodsTags;
+    }
+
+    public void setGoodsTags(List<Map> goodsTags) {
+        this.goodsTags = goodsTags;
     }
 }
