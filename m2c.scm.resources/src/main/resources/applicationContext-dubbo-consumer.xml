@@ -10,4 +10,5 @@
 	<dubbo:registry address="${dubbo.registry.url}" />
 	<dubbo:consumer check="false" reconnect="30000" timeout="10000" />
 	<dubbo:reference id="mediaService" interface="cn.m2c.media.interfaces.dubbo.MediaService" />
+	<dubbo:reference id="recognizeService" interface="cn.m2c.support.interfaces.dubbo.RecognizeService" />
 </beans>
