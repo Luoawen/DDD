@@ -1,5 +1,6 @@
 package cn.m2c.scm.port.adapter.service.order;
 
+import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
@@ -117,6 +118,9 @@ public class OrderServiceImpl implements OrderService {
             	JSONObject obj = contentArr.getJSONObject(i);
             	MediaResBean m = gson.fromJson(obj.toJSONString(), MediaResBean.class);
             	result.put(m.getMresId(), m);
+            	//Type type = new TypeToken<HashMap<String, MediaResBean>>(){}.getType();
+            	//HashMap<String, MediaResBean> mp = gson.fromJson(obj.toJSONString(), type);
+            	//result.putAll(mp);
             }
         }
 		return result;
