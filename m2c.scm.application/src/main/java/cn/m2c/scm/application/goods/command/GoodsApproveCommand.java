@@ -173,6 +173,10 @@ public class GoodsApproveCommand extends AssertionConcern implements Serializabl
                 if (StringUtils.isNotEmpty(goodsCode)) {
                     goodsCodes.add(goodsCode);
                 }
+                Integer availableNum = GetMapValueUtils.getIntFromMapKey(map, "availableNum");
+                if (availableNum < 0) {
+                	throw new NegativeException(MCode.V_1, "商品库存不能小于0");
+				}
             }
         }
         if (null != goodsCodes && goodsCodes.size() > 0) {
