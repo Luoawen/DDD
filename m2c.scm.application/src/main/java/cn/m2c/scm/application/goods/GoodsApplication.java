@@ -14,12 +14,8 @@ import cn.m2c.scm.domain.model.goods.GoodsSku;
 import cn.m2c.scm.domain.model.goods.GoodsSkuRepository;
 import cn.m2c.scm.domain.model.goods.event.GoodsAppCapturedMDEvent;
 import cn.m2c.scm.domain.model.goods.event.GoodsAppSearchMDEvent;
-<<<<<<< HEAD
-
-=======
 import cn.m2c.scm.domain.service.goods.GoodsService;
 import org.apache.commons.lang3.StringUtils;
->>>>>>> local_owen
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
