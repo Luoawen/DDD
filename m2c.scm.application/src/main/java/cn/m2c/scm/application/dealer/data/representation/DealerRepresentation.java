@@ -4,57 +4,54 @@ import java.util.Date;
 
 import cn.m2c.scm.application.dealer.data.bean.DealerBean;
 
-
 public class DealerRepresentation {
-	
 
 	private String dealerName;
-	 
-	 private String dealerId;
-	 
-	 private String userName;
-	 
-	 private String userPhone;
-	 
-	 private String userId;
-	 
-	 private String dealerClassify;
-	 
-	 private String dealerFristClassifyName;
-	 
-	 private String dealerSecondClassifyName;
-	 
-	 private Integer cooperationMode;
-	 
-	 private Integer countMode;
 
-	 private String dealerProvince;
-	 
-	 private String dealerCity;
-	 
+	private String dealerId;
+
+	private String userName;
+
+	private String userPhone;
+
+	private String userId;
+
+	private String dealerClassify;
+
+	private String dealerFristClassifyName;
+
+	private String dealerSecondClassifyName;
+
+	private Integer cooperationMode;
+
+	private Integer countMode;
+
+	private String dealerProvince;
+
+	private String dealerCity;
+
 	private String dealerArea;
-	 
+
 	private String dealerPcode;
-	 
+
 	private String dealerCcode;
-	 
+
 	private String dealerAcode;
-	
+
 	private String sellerName;
-	
+
 	private String sellerPhone;
-	
-	
+
+	private String sellerId;
+
 	private Date createdDate;
-	
-	
 
 	public DealerRepresentation() {
 		super();
 	}
-	
 
 	public DealerRepresentation(DealerBean model) {
+		this.sellerId = model.getSellerId();
 		this.dealerId = model.getDealerId();
 		this.dealerName = model.getDealerName();
 		this.userName = model.getUserName();
@@ -76,13 +73,20 @@ public class DealerRepresentation {
 		this.dealerSecondClassifyName = model.getDealerClassifyBean().getDealerSecondClassifyName();
 	}
 
-
 	public String getDealerName() {
 		return dealerName;
 	}
 
 	public void setDealerName(String dealerName) {
 		this.dealerName = dealerName;
+	}
+
+	public String getSellerId() {
+		return sellerId;
+	}
+
+	public void setSellerId(String sellerId) {
+		this.sellerId = sellerId;
 	}
 
 	public String getDealerId() {
@@ -213,25 +217,20 @@ public class DealerRepresentation {
 		this.createdDate = createdDate;
 	}
 
-
 	public String getDealerFristClassifyName() {
 		return dealerFristClassifyName;
 	}
-
 
 	public void setDealerFristClassifyName(String dealerFristClassifyName) {
 		this.dealerFristClassifyName = dealerFristClassifyName;
 	}
 
-
 	public String getDealerSecondClassifyName() {
 		return dealerSecondClassifyName;
 	}
 
-
 	public void setDealerSecondClassifyName(String dealerSecondClassifyName) {
 		this.dealerSecondClassifyName = dealerSecondClassifyName;
 	}
-	
-	
+
 }
