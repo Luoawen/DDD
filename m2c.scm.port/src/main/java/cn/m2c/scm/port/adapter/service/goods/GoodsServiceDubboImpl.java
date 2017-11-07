@@ -2,6 +2,7 @@ package cn.m2c.scm.port.adapter.service.goods;
 
 import cn.m2c.media.interfaces.dubbo.MediaService;
 import cn.m2c.scm.domain.service.goods.GoodsService;
+import cn.m2c.support.interfaces.dubbo.RecognizeService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +23,8 @@ public class GoodsServiceDubboImpl implements GoodsService {
 
     @Autowired
     MediaService mediaService;
+    @Autowired
+    RecognizeService recognizeService;
 
     @Override
     public List<Map> getGoodsTags(String dealerId, String goodsId, String classifyId) {
@@ -73,8 +76,13 @@ public class GoodsServiceDubboImpl implements GoodsService {
         return null;
     }
 
-	@Override
-	public String getUserIsFavoriteGoods(String userId, String goodsId, String token) {
-		return null;
-	}
+    @Override
+    public String getUserIsFavoriteGoods(String userId, String goodsId, String token) {
+        return null;
+    }
+
+    @Override
+    public boolean updateRecognizedImgStatus(String recognizedId, String recognizedUrl, Integer status) {
+        return recognizeService.updateRecoImgStatus(recognizedId, recognizedUrl, status);
+    }
 }

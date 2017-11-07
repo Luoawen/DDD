@@ -14,13 +14,19 @@ import cn.m2c.scm.domain.model.goods.GoodsSku;
 import cn.m2c.scm.domain.model.goods.GoodsSkuRepository;
 import cn.m2c.scm.domain.model.goods.event.GoodsAppCapturedMDEvent;
 import cn.m2c.scm.domain.model.goods.event.GoodsAppSearchMDEvent;
+<<<<<<< HEAD
 
+=======
+import cn.m2c.scm.domain.service.goods.GoodsService;
+import org.apache.commons.lang3.StringUtils;
+>>>>>>> local_owen
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -38,6 +44,8 @@ public class GoodsApplication {
     GoodsSkuRepository goodsSkuRepository;
     @Autowired
     GoodsApproveRepository goodsApproveRepository;
+    @Resource(name = "goodsDubboService")
+    GoodsService goodsDubboService;
 
     /**
      * 商品审核同意,保存商品
@@ -128,6 +136,12 @@ public class GoodsApplication {
             throw new NegativeException(MCode.V_300, "商品不存在");
         }
         goods.upShelf();
+        if (StringUtils.isNotEmpty(goods.recognizedId())) {
+            boolean result = goodsDubboService.updateRecognizedImgStatus(goods.recognizedId(), goods.recognizedUrl(), 1);
+            if (!result) {
+                LOGGER.error("商品上架，更新识别图片状态失败");
+            }
+        }
     }
 
     /**
@@ -145,6 +159,12 @@ public class GoodsApplication {
             throw new NegativeException(MCode.V_300, "商品不存在");
         }
         goods.offShelf();
+        if (StringUtils.isNotEmpty(goods.recognizedId())) {
+            boolean result = goodsDubboService.updateRecognizedImgStatus(goods.recognizedId(), goods.recognizedUrl(), 0);
+            if (!result) {
+                LOGGER.error("商品下架，更新识别图片状态失败");
+            }
+        }
     }
 
     /**
@@ -161,6 +181,10 @@ public class GoodsApplication {
             throw new NegativeException(MCode.V_300, "商品不存在");
         }
         goods.modifyRecognized(command.getRecognizedId(), command.getRecognizedUrl());
+        boolean result = goodsDubboService.updateRecognizedImgStatus(goods.recognizedId(), goods.recognizedUrl(), goods.goodsStatus() == 1 ? 0 : 1);
+        if (!result) {
+            LOGGER.error("商品添加广告图，更新识别图片状态失败");
+        }
     }
 
     /**
@@ -314,8 +338,9 @@ public class GoodsApplication {
 
     /**
      * 修改商品投放状态
-     * @param goodsIdLists
-     * @throws NegativeException 
+     *
+     * @param goodsId
+     * @throws NegativeException
      */
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
 	public void LaunchGoods(String goodsId) throws NegativeException {
@@ -324,5 +349,5 @@ public class GoodsApplication {
         if (null != goods ) {
             goods.launchGoods();
         }
-	}
+    }
 }

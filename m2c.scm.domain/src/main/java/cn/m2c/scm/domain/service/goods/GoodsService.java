@@ -51,4 +51,6 @@ public interface GoodsService {
      * @param goodsId 商品id
      */
     String getUserIsFavoriteGoods(String userId,String goodsId, String token);
+
+    boolean updateRecognizedImgStatus(String recognizedId,String recognizedUrl,Integer status);
 }

@@ -26,7 +26,7 @@ public class GoodsSpecValueApplication {
         LOGGER.info("addGoodsSpecValue command >>{}", command);
         GoodsSpecValue goodsSpecValue = goodsSpecValueRepository.queryGoodsSpecValueById(command.getSpecId());
         if (null == goodsSpecValue) {
-            goodsSpecValue = new GoodsSpecValue(command.getSpecId(), command.getDealerId(), command.getSpecValue());
+            goodsSpecValue = new GoodsSpecValue(command.getSpecId(), command.getDealerId(),command.getStandardId(), command.getSpecValue());
             goodsSpecValueRepository.save(goodsSpecValue);
         }
     }

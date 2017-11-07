@@ -11,6 +11,7 @@
         </id>
         <property name="specId" column="spec_id" type="string"/>
         <property name="dealerId" column="dealer_id" type="string"/>
+        <property name="standardId" column="standard_id" type="string"/>
         <property name="specValue" column="spec_value" type="string"/>
     </class>
 </hibernate-mapping>
