@@ -16,221 +16,234 @@ import java.util.Map;
  * app商品详情
  */
 public class AppGoodsDetailRepresentation {
-	private static final String M2C_HOST_URL = DisconfDataGetter.getByFileItem("constants.properties", "m2c.host.url")
-			.toString().trim();
-	private String dealerId;
-	private String goodsId;
-	private String classifyId;
-	private String goodsName;
-	private String goodsSubTitle;
-	private String goodsUnitId;
-	private String goodsUnitName;
-	private Integer goodsMinQuantity;
-	private List<Map> goodsGuarantee;
-	private List<Map> goodsSpecifications;
-	private List<AppGoodsSkuRepresentation> goodsSKUs;
-	private List<String> goodsMainImages;
-	private String mresId;
-	private String goodsDescUrl;
-	private Map goodsComment;
-	private List<Map> fullCuts;
-	private Integer skuFlag;
-	private String favoriteId;
+    private static final String M2C_HOST_URL = DisconfDataGetter.getByFileItem("constants.properties", "m2c.host.url")
+            .toString().trim();
+    private String dealerId;
+    private String goodsId;
+    private String classifyId;
+    private String goodsName;
+    private String goodsSubTitle;
+    private String goodsUnitId;
+    private String goodsUnitName;
+    private Integer goodsMinQuantity;
+    private List<Map> goodsGuarantee;
+    private List<Map> goodsSpecifications;
+    private List<AppGoodsSkuRepresentation> goodsSKUs;
+    private List<String> goodsMainImages;
+    private String mresId;
+    private String goodsDescUrl;
+    private Map goodsComment;
+    private List<Map> fullCuts;
+    private Integer skuFlag;
+    private String favoriteId;
 
-	public AppGoodsDetailRepresentation(GoodsBean bean, List<GoodsGuaranteeBean> goodsGuaranteeBeans,
-			String goodsUnitName, String mresId, Integer commentTotal, GoodsCommentBean goodsCommentBean,
-			List<Map> fullCuts, String favoriteId) {
-		this.skuFlag = bean.getSkuFlag();
-		this.dealerId = bean.getDealerId();
-		this.goodsId = bean.getGoodsId();
-		this.classifyId = bean.getGoodsClassifyId();
-		this.goodsName = bean.getGoodsName();
-		this.goodsSubTitle = bean.getGoodsSubTitle();
-		this.goodsUnitId = bean.getGoodsUnitId();
-		this.goodsUnitName = goodsUnitName;
-		this.goodsMinQuantity = bean.getGoodsMinQuantity();
-		this.goodsGuarantee = JsonUtils.toList(JsonUtils.toStr(goodsGuaranteeBeans), Map.class);
-		this.goodsSpecifications = JsonUtils.toList(bean.getGoodsSpecifications(), Map.class);
-		if (null != bean.getGoodsSkuBeans() && bean.getGoodsSkuBeans().size() > 0) {
-			if (null == this.goodsSKUs) {
-				this.goodsSKUs = new ArrayList<>();
-			}
-			for (GoodsSkuBean sukBean : bean.getGoodsSkuBeans()) {
-				this.goodsSKUs.add(new AppGoodsSkuRepresentation(sukBean));
-			}
-		}
-		this.goodsMainImages = JsonUtils.toList(bean.getGoodsMainImages(), String.class);
-		this.mresId = mresId;
-		this.goodsDescUrl = M2C_HOST_URL + "/m2c.scm/goods/app/desc?goodsId=" + this.goodsId;
+    public AppGoodsDetailRepresentation(GoodsBean bean, List<GoodsGuaranteeBean> goodsGuaranteeBeans,
+                                        String goodsUnitName, String mresId, Integer commentTotal, GoodsCommentBean goodsCommentBean,
+                                        List<Map> fullCuts, String favoriteId) {
+        this.skuFlag = bean.getSkuFlag();
+        this.dealerId = bean.getDealerId();
+        this.goodsId = bean.getGoodsId();
+        this.classifyId = bean.getGoodsClassifyId();
+        this.goodsName = bean.getGoodsName();
+        this.goodsSubTitle = bean.getGoodsSubTitle();
+        this.goodsUnitId = bean.getGoodsUnitId();
+        this.goodsUnitName = goodsUnitName;
+        this.goodsMinQuantity = bean.getGoodsMinQuantity();
+        this.goodsGuarantee = JsonUtils.toList(JsonUtils.toStr(goodsGuaranteeBeans), Map.class);
+        this.goodsSpecifications = JsonUtils.toList(bean.getGoodsSpecifications(), Map.class);
+        if (this.skuFlag == 0) {//是否是多规格：0：单规格，1：多规格
+            List<Map> list = new ArrayList<>();
+            Map map = new HashMap<>();
+            map.put("itemName", "规格");
+            List<Map> valueList = new ArrayList<>();
+            Map valueMap = new HashMap<>();
+            valueMap.put("spec_name", "默认");
+            valueList.add(valueMap);
+            map.put("itemValue", valueList);
+            list.add(map);
+            this.goodsSpecifications = list;
+        }
 
-		if (null == this.goodsComment) {
-			this.goodsComment = new HashMap<>();
-		}
-		this.goodsComment.put("commentTotal", commentTotal);
-		if (null != goodsCommentBean) {
-			this.goodsComment.put("buyerIcon", goodsCommentBean.getBuyerIcon());
-			this.goodsComment.put("buyerPhoneNumber", goodsCommentBean.getBuyerPhoneNumber());
-			this.goodsComment.put("buyerName", goodsCommentBean.getBuyerName());
-			this.goodsComment.put("skuName", goodsCommentBean.getSkuName());
-			this.goodsComment.put("goodsNum", goodsCommentBean.getGoodsNum());
-			this.goodsComment.put("starLevel", goodsCommentBean.getStarLevel());
-			this.goodsComment.put("commentContent", goodsCommentBean.getCommentContent());
+        if (null != bean.getGoodsSkuBeans() && bean.getGoodsSkuBeans().size() > 0) {
+            if (null == this.goodsSKUs) {
+                this.goodsSKUs = new ArrayList<>();
+            }
+            for (GoodsSkuBean sukBean : bean.getGoodsSkuBeans()) {
+                this.goodsSKUs.add(new AppGoodsSkuRepresentation(sukBean));
+            }
+        }
+        this.goodsMainImages = JsonUtils.toList(bean.getGoodsMainImages(), String.class);
+        this.mresId = mresId;
+        this.goodsDescUrl = M2C_HOST_URL + "/m2c.scm/goods/app/desc?goodsId=" + this.goodsId;
 
-			String images = goodsCommentBean.getCommentImages();
-			List<String> imageList = JsonUtils.toList(images, String.class);
-			this.goodsComment.put("commentImages", imageList);
+        if (null == this.goodsComment) {
+            this.goodsComment = new HashMap<>();
+        }
+        this.goodsComment.put("commentTotal", commentTotal);
+        if (null != goodsCommentBean) {
+            this.goodsComment.put("buyerIcon", goodsCommentBean.getBuyerIcon());
+            this.goodsComment.put("buyerPhoneNumber", goodsCommentBean.getBuyerPhoneNumber());
+            this.goodsComment.put("buyerName", goodsCommentBean.getBuyerName());
+            this.goodsComment.put("skuName", goodsCommentBean.getSkuName());
+            this.goodsComment.put("goodsNum", goodsCommentBean.getGoodsNum());
+            this.goodsComment.put("starLevel", goodsCommentBean.getStarLevel());
+            this.goodsComment.put("commentContent", goodsCommentBean.getCommentContent());
 
-			String replyCommentContent = "";
-			if (null != goodsCommentBean.getGoodsReplyCommentBean()) {
-				replyCommentContent = goodsCommentBean.getGoodsReplyCommentBean().getReplyContent();
-			}
-			this.goodsComment.put("replyCommentContent", replyCommentContent);
-		}
-		this.fullCuts = fullCuts;
-		this.favoriteId = favoriteId;
-	}
+            String images = goodsCommentBean.getCommentImages();
+            List<String> imageList = JsonUtils.toList(images, String.class);
+            this.goodsComment.put("commentImages", imageList);
 
-	public String getGoodsName() {
-		return goodsName;
-	}
+            String replyCommentContent = "";
+            if (null != goodsCommentBean.getGoodsReplyCommentBean()) {
+                replyCommentContent = goodsCommentBean.getGoodsReplyCommentBean().getReplyContent();
+            }
+            this.goodsComment.put("replyCommentContent", replyCommentContent);
+        }
+        this.fullCuts = fullCuts;
+        this.favoriteId = favoriteId;
+    }
 
-	public void setGoodsName(String goodsName) {
-		this.goodsName = goodsName;
-	}
+    public String getGoodsName() {
+        return goodsName;
+    }
 
-	public String getGoodsSubTitle() {
-		return goodsSubTitle;
-	}
+    public void setGoodsName(String goodsName) {
+        this.goodsName = goodsName;
+    }
 
-	public void setGoodsSubTitle(String goodsSubTitle) {
-		this.goodsSubTitle = goodsSubTitle;
-	}
+    public String getGoodsSubTitle() {
+        return goodsSubTitle;
+    }
 
-	public String getGoodsUnitId() {
-		return goodsUnitId;
-	}
+    public void setGoodsSubTitle(String goodsSubTitle) {
+        this.goodsSubTitle = goodsSubTitle;
+    }
 
-	public void setGoodsUnitId(String goodsUnitId) {
-		this.goodsUnitId = goodsUnitId;
-	}
+    public String getGoodsUnitId() {
+        return goodsUnitId;
+    }
 
-	public String getGoodsUnitName() {
-		return goodsUnitName;
-	}
+    public void setGoodsUnitId(String goodsUnitId) {
+        this.goodsUnitId = goodsUnitId;
+    }
 
-	public void setGoodsUnitName(String goodsUnitName) {
-		this.goodsUnitName = goodsUnitName;
-	}
+    public String getGoodsUnitName() {
+        return goodsUnitName;
+    }
 
-	public Integer getGoodsMinQuantity() {
-		return goodsMinQuantity;
-	}
+    public void setGoodsUnitName(String goodsUnitName) {
+        this.goodsUnitName = goodsUnitName;
+    }
 
-	public void setGoodsMinQuantity(Integer goodsMinQuantity) {
-		this.goodsMinQuantity = goodsMinQuantity;
-	}
+    public Integer getGoodsMinQuantity() {
+        return goodsMinQuantity;
+    }
 
-	public List<Map> getGoodsGuarantee() {
-		return goodsGuarantee;
-	}
+    public void setGoodsMinQuantity(Integer goodsMinQuantity) {
+        this.goodsMinQuantity = goodsMinQuantity;
+    }
 
-	public void setGoodsGuarantee(List<Map> goodsGuarantee) {
-		this.goodsGuarantee = goodsGuarantee;
-	}
+    public List<Map> getGoodsGuarantee() {
+        return goodsGuarantee;
+    }
 
-	public List<Map> getGoodsSpecifications() {
-		return goodsSpecifications;
-	}
+    public void setGoodsGuarantee(List<Map> goodsGuarantee) {
+        this.goodsGuarantee = goodsGuarantee;
+    }
 
-	public void setGoodsSpecifications(List<Map> goodsSpecifications) {
-		this.goodsSpecifications = goodsSpecifications;
-	}
+    public List<Map> getGoodsSpecifications() {
+        return goodsSpecifications;
+    }
 
-	public List<AppGoodsSkuRepresentation> getGoodsSKUs() {
-		return goodsSKUs;
-	}
+    public void setGoodsSpecifications(List<Map> goodsSpecifications) {
+        this.goodsSpecifications = goodsSpecifications;
+    }
 
-	public void setGoodsSKUs(List<AppGoodsSkuRepresentation> goodsSKUs) {
-		this.goodsSKUs = goodsSKUs;
-	}
+    public List<AppGoodsSkuRepresentation> getGoodsSKUs() {
+        return goodsSKUs;
+    }
 
-	public List<String> getGoodsMainImages() {
-		return goodsMainImages;
-	}
+    public void setGoodsSKUs(List<AppGoodsSkuRepresentation> goodsSKUs) {
+        this.goodsSKUs = goodsSKUs;
+    }
 
-	public void setGoodsMainImages(List<String> goodsMainImages) {
-		this.goodsMainImages = goodsMainImages;
-	}
+    public List<String> getGoodsMainImages() {
+        return goodsMainImages;
+    }
 
-	public String getGoodsId() {
-		return goodsId;
-	}
+    public void setGoodsMainImages(List<String> goodsMainImages) {
+        this.goodsMainImages = goodsMainImages;
+    }
 
-	public void setGoodsId(String goodsId) {
-		this.goodsId = goodsId;
-	}
+    public String getGoodsId() {
+        return goodsId;
+    }
 
-	public String getMresId() {
-		return mresId;
-	}
+    public void setGoodsId(String goodsId) {
+        this.goodsId = goodsId;
+    }
 
-	public void setMresId(String mresId) {
-		this.mresId = mresId;
-	}
+    public String getMresId() {
+        return mresId;
+    }
 
-	public String getGoodsDescUrl() {
-		return goodsDescUrl;
-	}
+    public void setMresId(String mresId) {
+        this.mresId = mresId;
+    }
 
-	public void setGoodsDescUrl(String goodsDescUrl) {
-		this.goodsDescUrl = goodsDescUrl;
-	}
+    public String getGoodsDescUrl() {
+        return goodsDescUrl;
+    }
 
-	public Map getGoodsComment() {
-		return goodsComment;
-	}
+    public void setGoodsDescUrl(String goodsDescUrl) {
+        this.goodsDescUrl = goodsDescUrl;
+    }
 
-	public void setGoodsComment(Map goodsComment) {
-		this.goodsComment = goodsComment;
-	}
+    public Map getGoodsComment() {
+        return goodsComment;
+    }
 
-	public List<Map> getFullCuts() {
-		return fullCuts;
-	}
+    public void setGoodsComment(Map goodsComment) {
+        this.goodsComment = goodsComment;
+    }
 
-	public void setFullCuts(List<Map> fullCuts) {
-		this.fullCuts = fullCuts;
-	}
+    public List<Map> getFullCuts() {
+        return fullCuts;
+    }
 
-	public String getClassifyId() {
-		return classifyId;
-	}
+    public void setFullCuts(List<Map> fullCuts) {
+        this.fullCuts = fullCuts;
+    }
 
-	public void setClassifyId(String classifyId) {
-		this.classifyId = classifyId;
-	}
+    public String getClassifyId() {
+        return classifyId;
+    }
 
-	public String getDealerId() {
-		return dealerId;
-	}
+    public void setClassifyId(String classifyId) {
+        this.classifyId = classifyId;
+    }
 
-	public void setDealerId(String dealerId) {
-		this.dealerId = dealerId;
-	}
+    public String getDealerId() {
+        return dealerId;
+    }
 
-	public Integer getSkuFlag() {
-		return skuFlag;
-	}
+    public void setDealerId(String dealerId) {
+        this.dealerId = dealerId;
+    }
 
-	public void setSkuFlag(Integer skuFlag) {
-		this.skuFlag = skuFlag;
-	}
+    public Integer getSkuFlag() {
+        return skuFlag;
+    }
 
-	public String getFavoriteId() {
-		return favoriteId;
-	}
+    public void setSkuFlag(Integer skuFlag) {
+        this.skuFlag = skuFlag;
+    }
 
-	public void setFavoriteId(String favoriteId) {
-		this.favoriteId = favoriteId;
-	}
+    public String getFavoriteId() {
+        return favoriteId;
+    }
+
+    public void setFavoriteId(String favoriteId) {
+        this.favoriteId = favoriteId;
+    }
 }
