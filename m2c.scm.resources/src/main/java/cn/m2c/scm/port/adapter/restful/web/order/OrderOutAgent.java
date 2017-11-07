@@ -30,7 +30,7 @@ public class OrderOutAgent {
     /**
      * 获取订单需要支付的金额
      */
-    @RequestMapping(value="/{orderNo}", method = RequestMethod.GET)
+    @RequestMapping(value="/amountOfMoney/{orderNo}", method = RequestMethod.GET)
     public ResponseEntity<MResult> getOrderNoMoney(@PathVariable("orderNo") String orderNo
     		,@RequestParam(value="userId", required=false) String userId){
     	MResult result = new MResult(MCode.V_1);
