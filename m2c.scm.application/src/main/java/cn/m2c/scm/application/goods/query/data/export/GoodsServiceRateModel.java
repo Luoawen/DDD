@@ -51,7 +51,7 @@ public class GoodsServiceRateModel {
         this.goodsCode = goodsSkuBean.getGoodsCode();
         this.goodsSkuId = goodsSkuBean.getSkuId();
         this.goodsSkuName = goodsSkuBean.getSkuName();
-        DecimalFormat df = new DecimalFormat(".00");
+        DecimalFormat df = new DecimalFormat("0.00");
         this.photographPrice = df.format(goodsSkuBean.getPhotographPrice().floatValue()/100);
         this.availableNum = goodsSkuBean.getAvailableNum();
         this.sellerNum = goodsSkuBean.getSellerNum();
