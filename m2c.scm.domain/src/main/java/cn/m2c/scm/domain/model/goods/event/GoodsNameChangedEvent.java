@@ -9,7 +9,7 @@ import cn.m2c.ddd.common.domain.model.DomainEvent;
 /**
  * 商品名修改
  */
-public class GoodsOrDealerNameChangedEvent implements DomainEvent {
+public class GoodsNameChangedEvent implements DomainEvent {
 	/**
      * 商品id
      */
@@ -29,7 +29,7 @@ public class GoodsOrDealerNameChangedEvent implements DomainEvent {
     private Date occurredOn;
     private int eventVersion;
 
-    public GoodsOrDealerNameChangedEvent(String goodsId, String goodsName, String dealerId, String dealerName) {
+    public GoodsNameChangedEvent(String goodsId, String goodsName, String dealerId, String dealerName) {
     	this.goodsId = goodsId;
         this.goodsName = goodsName;
         this.dealerId = dealerId;
@@ -50,7 +50,7 @@ public class GoodsOrDealerNameChangedEvent implements DomainEvent {
     
     public static void main(String[] args) {
     	Gson gson = new Gson();
-    	GoodsOrDealerNameChangedEvent godnEvent = new GoodsOrDealerNameChangedEvent("SP7C5DB9C7AD334810AA308225B1757567", "华为手机", "JXS0256D0FE28B1467F87AAB6AEC5D73839", "摸摸旗舰ddd店");
+    	GoodsNameChangedEvent godnEvent = new GoodsNameChangedEvent("SP7C5DB9C7AD334810AA308225B1757567", "华为手机", "JXS0256D0FE28B1467F87AAB6AEC5D73839", "摸摸旗舰ddd店");
     	System.out.println(gson.toJson(godnEvent));
     }
 }
