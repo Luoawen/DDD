@@ -113,13 +113,15 @@ public class UnitAgent {
 	 */
 	@RequestMapping(value = "", method = RequestMethod.GET)
 	public ResponseEntity<MPager> list(
-			@RequestParam(value = "pageNum", required = false, defaultValue = "1") Integer pageNum,
-			@RequestParam(value = "rows", required = false, defaultValue = "10") Integer rows) {
+			@RequestParam(value = "pageNum", required = false) Integer pageNum,
+			@RequestParam(value = "rows", required = false) Integer rows) {
 		MPager result = new MPager(MCode.V_1);
 		try {
 			Integer total = unitQuery.queryUnitTotal();
 			List<UnitBean> unitList = unitQuery.getUnitList(pageNum, rows);
-			result.setPager(total, pageNum, rows);
+			if (pageNum != null && rows != null) {
+				result.setPager(total, pageNum, rows);
+			}
 			result.setContent(unitList);
 			result.setStatus(MCode.V_200);
 		} catch (Exception e) {
