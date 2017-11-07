@@ -6,7 +6,7 @@ import cn.m2c.ddd.common.serializer.ObjectSerializer;
 import cn.m2c.scm.domain.model.goods.event.GoodsApproveAddEvent;
 import cn.m2c.scm.domain.model.goods.event.GoodsDeleteEvent;
 import cn.m2c.scm.domain.model.goods.event.GoodsOffShelfEvent;
-import cn.m2c.scm.domain.model.goods.event.GoodsNameChangedEvent;
+import cn.m2c.scm.domain.model.goods.event.GoodsChangedEvent;
 import cn.m2c.scm.domain.model.goods.event.GoodsUpShelfEvent;
 import cn.m2c.scm.domain.util.GetMapValueUtils;
 
@@ -271,7 +271,7 @@ public class Goods extends ConcurrencySafeEntity {
                             String goodsMainImages, String goodsDesc, String goodsSpecifications, String goodsSKUs) {
         if(this.goodsName != goodsName) {
         	this.goodsName = goodsName;
-        	DomainEventPublisher.instance().publish(new GoodsNameChangedEvent(this.goodsId, this.goodsName, this.dealerId, this.dealerName));
+        	DomainEventPublisher.instance().publish(new GoodsChangedEvent(this.goodsId, this.goodsName, this.dealerId, this.dealerName));
         }
         this.goodsSubTitle = goodsSubTitle;
         this.goodsClassifyId = goodsClassifyId;
