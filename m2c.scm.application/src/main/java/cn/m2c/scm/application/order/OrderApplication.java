@@ -306,8 +306,8 @@ public class OrderApplication {
 				goodsAmount += (int)(num * bean.getDiscountPrice());
 				String resId = skuMedia.get(bean.getSkuId());
 				MediaResBean mb = null;
-				if (!StringUtils.isEmpty(resId))
-					mb = medias != null ?(MediaResBean)medias.get(resId) : null;
+				//if (!StringUtils.isEmpty(resId))
+					mb = medias != null ?(MediaResBean)medias.get(bean.getSkuId()) : null;
 				
 				if (mb == null) {
 					dtls.add(new DealerOrderDtl(cmd.getOrderId(), dealerOrderId, cmd.getAddr(), 
@@ -315,6 +315,7 @@ public class OrderApplication {
 							bean.toGoodsInfo(), 0, cmd.getNoted(), bean.toMarketInfo()));
 				}
 				else {
+					mb.setMresId(resId);
 					dtls.add(new DealerOrderDtl(cmd.getOrderId(), dealerOrderId, cmd.getAddr(), 
 							cmd.getInvoice(), null, mb.toMediaInfo(),
 							bean.toGoodsInfo(), 0, cmd.getNoted(), bean.toMarketInfo()));

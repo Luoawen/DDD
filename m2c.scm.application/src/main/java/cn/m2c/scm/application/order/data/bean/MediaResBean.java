@@ -1,5 +1,9 @@
 package cn.m2c.scm.application.order.data.bean;
 
+import java.util.List;
+import java.util.Map;
+
+import cn.m2c.common.JsonUtils;
 import cn.m2c.scm.domain.model.order.SimpleMediaInfo;
 
 /***
@@ -20,7 +24,7 @@ public class MediaResBean {
 	// 促销员分成
 	private String salesmanRatio;
 	// 销售专员及分成
-	private String bdDeductInfoList;
+	private List<Map<String, Object>> bdDeductInfoList;
 	
 	
 	public String getMresId() {
@@ -54,13 +58,15 @@ public class MediaResBean {
 		this.salesmanRatio = salesmanRatio;
 	}
 	public String getBdStaffRatio() {
-		return bdDeductInfoList;
+		if (bdDeductInfoList == null)
+			return "";
+		return JsonUtils.toStr(bdDeductInfoList);
 	}
-	public void setBdStaffRatio(String bdStaffRatio) {
+	public void setBdStaffRatio(List<Map<String, Object>> bdStaffRatio) {
 		this.bdDeductInfoList = bdStaffRatio;
 	}
 	
 	public SimpleMediaInfo toMediaInfo() {
-		return new SimpleMediaInfo(mediaId, mediaRatio, bdDeductInfoList, mresId, salesmanId, salesmanRatio);
+		return new SimpleMediaInfo(mediaId, mediaRatio, getBdStaffRatio(), mresId, salesmanId, salesmanRatio);
 	}
 }

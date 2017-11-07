@@ -1,5 +1,7 @@
 package cn.m2c.scm.port.adapter.restful.web.order;
 
+import java.util.Date;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import cn.m2c.common.MCode;
 import cn.m2c.common.MResult;
 import cn.m2c.scm.application.order.OrderApplication;
+import cn.m2c.scm.application.order.command.OrderPayedCmd;
 import cn.m2c.scm.application.order.data.representation.OrderMoney;
 import cn.m2c.scm.domain.NegativeException;
 
@@ -47,6 +50,28 @@ public class OrderOutAgent {
 			LOGGER.info("获取订单金额失败,e:" + e.getMessage());
 			result.setStatus(MCode.V_400);
 			result.setContent("获取订单金额失败");
+		}
+    	return new ResponseEntity<MResult>(result,HttpStatus.OK);
+    }
+    
+    
+    @RequestMapping(value="/test", method = RequestMethod.GET)
+    public ResponseEntity<MResult> testForMedia(@RequestParam(value="userId", required=false) String userId){
+    	MResult result = new MResult(MCode.V_1);
+    	try {
+    		OrderPayedCmd cmd = new OrderPayedCmd("20171107141115DTB1MRW", userId, "89555555555555551", 1, new Date());
+    		orderApp.orderPayed(cmd);
+    		result.setContent("ok");
+    		result.setStatus(MCode.V_200);
+		} 
+    	catch (NegativeException e) {
+    		result.setStatus(e.getStatus());
+			result.setContent(e.getMessage());
+    	}
+    	catch (Exception e) {
+			LOGGER.info("获取test失败,e:" + e.getMessage());
+			result.setStatus(MCode.V_400);
+			result.setContent("获取test失败");
 		}
     	return new ResponseEntity<MResult>(result,HttpStatus.OK);
     }
