@@ -24,6 +24,15 @@ public class SimpleMarket {
 	@ColumnAlias(value = "threshold_type")
 	private Integer thresholdType;//1：金额，2：件数
 	
+	@ColumnAlias(value = "discount")
+	private Integer discount;
+	
+	public Integer getDiscount() {
+		return discount;
+	}
+	public void setDiscount(Integer discount) {
+		this.discount = discount;
+	}
 	public String getMarketingId() {
 		return marketingId;
 	}

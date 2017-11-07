@@ -174,10 +174,11 @@ public class OrderMarketCalc {
 			d.setThresholdType(thresholdType);
 			d.setMarketName(marketName);
 			d.setSharePercent(sharePercent);
+			d.setDiscount(fullNum);// 若是折扣就已经乘了100了，所以需要除1000
 			if (fullType == 1) {
 				d.setPlateformDiscount((long)(fullNum * d.getDiscountPrice() * d.getPurNum()/totalMoney));
 			}
-			else if (fullType == 2) {
+			else if (fullType == 2) { // 除以1000是因为前面已经乘以100了，因存的是8表示8折优惠
 				d.setPlateformDiscount((long)(fullNum * d.getDiscountPrice() * d.getPurNum()/1000.0));
 			}
 		}
@@ -226,18 +227,84 @@ public class OrderMarketCalc {
 	 * 计算售后需要退的某个商品的钱
 	 * @param marketInfo
 	 * @param skuBeanLs
-	 * @param skuId
-	 * @return
+	 * @param skuId 要退货或退款的skuId
+	 * @return 返回本商品优惠的金额
 	 */
 	public static long calcReturnMoney(SimpleMarket marketInfo
 			, List<SkuNumBean> skuBeanLs, String skuId) {
 		long rtMoney = 0;
 		// 根据marketInfo 来计算
-		if (marketInfo == null)
+		if (marketInfo == null || skuBeanLs == null || skuBeanLs.size() < 1)
+			return rtMoney;
+		//营销形式，1：减钱，2：打折，3：换购
+		Integer a = marketInfo.getMarketType();
+		//1：金额，2：件数
+		Integer b = marketInfo.getThresholdType();
+		
+		long threshold = marketInfo.getThreshold();
+		
+		long total = 0;
+		for (SkuNumBean bean : skuBeanLs) {
+			boolean bFlag = skuId.equals(bean.getSkuId());
+			if (b == 1 && !bFlag && bean.getIsChange() == 0) {
+				total += bean.getGoodsAmount();
+			}
+			else if (b == 2 && !bFlag && bean.getIsChange() == 0) {
+				total += bean.getNum();
+			}
+		}
+		// 优惠金额或折扣
+		Integer discount = marketInfo.getDiscount();
+		if (discount == null)
 			return rtMoney;
 		
-		
-		
+		SkuNumBean tmp = null;
+		if (total >= threshold) {// 若还满足, 需要计算满足的值
+			for(SkuNumBean bean : skuBeanLs) {
+				
+				boolean bFlag = skuId.equals(bean.getSkuId());
+				if (bFlag) {
+					tmp = bean;
+					continue;
+				}
+				switch (a) {
+					case 1:
+						bean.setDiscountMoney((long)(bean.getGoodsAmount() * discount / (total + 0.0)));
+						break;
+					case 2://打折就不用计算
+						// bean.setDiscountMoney((long)(bean.getGoodsAmount() * threshold / (total + 0.0)));
+						break;
+					case 3:
+						bean.setDiscountMoney((long)(bean.getGoodsAmount() * discount / (total + 0.0)));
+						break;
+				}				
+			}
+			
+			if (a == 2)
+				rtMoney = (long)(tmp.getGoodsAmount() * discount/1000.0);
+		}
+		else { // 不满足
+			for(SkuNumBean bean : skuBeanLs) {
+				
+				boolean bFlag = skuId.equals(bean.getSkuId());
+				if (bFlag) {
+					tmp = bean;
+					continue;
+				}
+				switch (a) {
+					case 1:
+						bean.setDiscountMoney(0);
+						break;
+					case 2://打折就不用计算
+						// bean.setDiscountMoney((long)(bean.getGoodsAmount() * threshold / (total + 0.0)));
+						break;
+					case 3:
+						bean.setDiscountMoney(0);
+						break;
+				}				
+			}
+			rtMoney = discount;
+		}
 		return rtMoney;
 	}
 }

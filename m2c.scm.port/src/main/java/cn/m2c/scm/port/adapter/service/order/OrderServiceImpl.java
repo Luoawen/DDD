@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baidu.disconf.client.usertools.DisconfDataGetter;
 import com.google.gson.Gson;
@@ -98,8 +97,8 @@ public class OrderServiceImpl implements OrderService {
 			return null;
 		}
 		
-		//String url = M2C_HOST_URL + "/m2c.media/order/ad?skuListStr={0}&orderDateTime={1}";
-		String url = "http://10.0.40.25:8080/m2c.media/order/ad?skuListStr={0}&orderDateTime={1}";
+		String url = M2C_HOST_URL + "/m2c.media/order/ad?skuListStr={0}&orderDateTime={1}";
+		//String url = "http://10.0.40.25:8080/m2c.media/order/ad?skuListStr={0}&orderDateTime={1}";
 		
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		
@@ -111,18 +110,31 @@ public class OrderServiceImpl implements OrderService {
 		Map<String, Object> result = null;
         if (json.getInteger("status") == 200) {
         	result = new HashMap<String, Object>();
-        	JSONArray contentArr = json.getJSONArray("content");
-            int sz = contentArr.size();
+        	JSONObject contentArr = json.getJSONObject("content");
+            //int sz = contentArr.size();
             Gson gson = new Gson();
-            for (int i=0; i< sz; i++) {
-            	JSONObject obj = contentArr.getJSONObject(i);
+            //for (int i=0; i< sz; i++) {
+            //	JSONObject obj = contentArr.getJSONObject(i);
             	//MediaResBean m = gson.fromJson(obj.toJSONString(), MediaResBean.class);
             	//result.put(m.getMresId(), m);
             	Type type = new TypeToken<HashMap<String, MediaResBean>>(){}.getType();
-            	HashMap<String, MediaResBean> mp = gson.fromJson(obj.toJSONString(), type);
+        		
+            	//HashMap<String, MediaResBean> mp = JSON.parseObject(obj.toJSONString(), type, Feature.IgnoreNotMatch, Feature.DisableCircularReferenceDetect);
+            	HashMap<String, MediaResBean> mp = gson.fromJson(contentArr.toJSONString(), type);
             	result.putAll(mp);
-            }
+            //}
         }
+        
+        /*if (json.getInteger("status") == 200) {
+        	result = new HashMap<String, Object>();
+        	Map<String, Object> contentArr = JsonUtils.toMap4Obj(json.getJSONObject("content").toJSONString());
+        	Iterator<String> it = contentArr.keySet().iterator();
+            while (it.hasNext()) {
+            	String key = it.next();
+            	JSONObject beanStr = (JSONObject)contentArr.get(key);
+            	result.put(key, JsonUtils.toBean(beanStr.toJSONString(), MediaResBean.class));
+            }
+        }*/
 		return result;
 	}
 
