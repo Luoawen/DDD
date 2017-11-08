@@ -24,7 +24,7 @@ public class UnitUpdateListener  extends ExchangeListener {
 	@Override
 	protected void filteredDispatch(String aType, String aTextMessage) throws Exception {
 		NotificationReader reader = new NotificationReader(aTextMessage);
-        String oldUnitId = reader.eventStringValue("oldUnitId");
+        String oldUnitId = reader.eventStringValue("oldGoodsUnitId");
         String newGoodsUnitId = reader.eventStringValue("newGoodsUnitId");
         if (!oldUnitId.equals(newGoodsUnitId) && oldUnitId != newGoodsUnitId) {
         	if (null != oldUnitId && null != newGoodsUnitId) {

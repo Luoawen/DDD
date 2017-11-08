@@ -23,7 +23,7 @@ public class UnitDeleteListener extends ExchangeListener{
 	@Override
 	protected void filteredDispatch(String aType, String aTextMessage) throws Exception {
 		NotificationReader reader = new NotificationReader(aTextMessage);
-        String unitId = reader.eventStringValue("unitId");
+        String unitId = reader.eventStringValue("goodsUnitId");
         if (null != unitId) {
 			Unit unit = unitRepository.getUnitByUnitId(unitId);
 			if (unit.getUseNum() > 0) {

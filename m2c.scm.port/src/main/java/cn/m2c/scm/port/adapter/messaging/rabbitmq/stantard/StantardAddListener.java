@@ -28,7 +28,7 @@ public class StantardAddListener extends ExchangeListener{
 	@Override
 	protected void filteredDispatch(String aType, String aTextMessage) throws Exception {
 		JSONObject jsonObject = JSONObject.parseObject(aTextMessage);
-        List<String> stantardIds = JsonUtils.toList(jsonObject.getJSONArray("stantardId").toJSONString(), String.class);
+        List<String> stantardIds = JsonUtils.toList(jsonObject.getJSONArray("standardIds").toJSONString(), String.class);
         
         if (stantardIds != null && stantardIds.size() > 0) {
         	for (String stantardId : stantardIds) {
