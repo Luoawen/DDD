@@ -302,8 +302,6 @@ public class Goods extends ConcurrencySafeEntity {
                             String goodsMainImages, String goodsDesc, String goodsSpecifications, String goodsSKUs) {
         String oldGoodsUnitId = this.goodsUnitId;
         String newGoodsUnitId = goodsUnitId;
-        List<String> oldStandardIds = getStandardId(this.goodsSpecifications);
-        List<String> newStandardIds = getStandardId(goodsSpecifications);
         this.goodsName = goodsName;
         this.goodsSubTitle = goodsSubTitle;
         this.goodsClassifyId = goodsClassifyId;
@@ -371,7 +369,7 @@ public class Goods extends ConcurrencySafeEntity {
         }
 
         DomainEventPublisher.instance().publish(new GoodsChangedEvent(this.goodsId, this.goodsName, this.dealerId, this.dealerName,
-                oldGoodsUnitId, newGoodsUnitId, oldStandardIds, newStandardIds));
+                oldGoodsUnitId, newGoodsUnitId));
     }
 
     /**
