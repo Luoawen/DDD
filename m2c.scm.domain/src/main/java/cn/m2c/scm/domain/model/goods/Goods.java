@@ -1,14 +1,17 @@
 package cn.m2c.scm.domain.model.goods;
 
+import cn.m2c.common.JsonUtils;
 import cn.m2c.ddd.common.domain.model.ConcurrencySafeEntity;
 import cn.m2c.ddd.common.domain.model.DomainEventPublisher;
 import cn.m2c.ddd.common.serializer.ObjectSerializer;
+import cn.m2c.scm.domain.model.goods.event.GoodsAddEvent;
 import cn.m2c.scm.domain.model.goods.event.GoodsApproveAddEvent;
+import cn.m2c.scm.domain.model.goods.event.GoodsChangedEvent;
 import cn.m2c.scm.domain.model.goods.event.GoodsDeleteEvent;
 import cn.m2c.scm.domain.model.goods.event.GoodsOffShelfEvent;
-import cn.m2c.scm.domain.model.goods.event.GoodsNameChangedEvent;
 import cn.m2c.scm.domain.model.goods.event.GoodsUpShelfEvent;
 import cn.m2c.scm.domain.util.GetMapValueUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -189,6 +192,9 @@ public class Goods extends ConcurrencySafeEntity {
                     .publish(new GoodsUpShelfEvent(this.goodsId, this.goodsPostageId));
         }
         this.goodsSpecifications = goodsSpecifications;
+        //[{"itemName":"发送","itemValue":[{"spec_name":"16G"},{"spec_name":"32G"}],"state1":"","standardId":"GG1B487E5857C44367AB50C05A5E4B5A5E"},{"itemName":"规格是嘛","itemValue":[{"spec_name":"红"},{"spec_name":"黑"}],"state1":"","standardId":"GGF01849F898A54B5E9FB565388272C2FA"}]
+
+
         this.createdDate = new Date();
         if (null == this.goodsSKUs) {
             this.goodsSKUs = new ArrayList<>();
@@ -201,6 +207,31 @@ public class Goods extends ConcurrencySafeEntity {
                 this.goodsSKUs.add(createGoodsSku(map));
             }
         }
+        DomainEventPublisher
+                .instance()
+                .publish(new GoodsAddEvent(this.goodsId, this.goodsUnitId, getStandardId(goodsSpecifications)));
+    }
+
+    /**
+     * [{"itemName":"发送","itemValue":[{"spec_name":"16G"},{"spec_name":"32G"}],"state1":"","standardId":"GG1B487E5857C44367AB50C05A5E4B5A5E"},
+     * {"itemName":"规格是嘛","itemValue":[{"spec_name":"红"},{"spec_name":"黑"}],"state1":"","standardId":"GGF01849F898A54B5E9FB565388272C2FA"}]
+     *
+     * @return
+     */
+    private List<String> getStandardId(String goodsSpecifications) {
+        List<String> standardIds = new ArrayList<>();
+        if (StringUtils.isNotEmpty(goodsSpecifications)) {
+            List<Map> list = JsonUtils.toList(goodsSpecifications, Map.class);
+            if (null != list && list.size() > 0) {
+                for (Map map : list) {
+                    if (map.containsKey("standardId")) {
+                        String standardId = null != map.get("standardId") ? (String) map.get("standardId") : "";
+                        standardIds.add(standardId);
+                    }
+                }
+            }
+        }
+        return standardIds;
     }
 
     private GoodsSku createGoodsSku(Map map) {
@@ -269,10 +300,11 @@ public class Goods extends ConcurrencySafeEntity {
                             String goodsClassifyId, String goodsBrandId, String goodsBrandName, String goodsUnitId, Integer goodsMinQuantity,
                             String goodsPostageId, String goodsBarCode, String goodsKeyWord, String goodsGuarantee,
                             String goodsMainImages, String goodsDesc, String goodsSpecifications, String goodsSKUs) {
-        if(this.goodsName != goodsName) {
-        	this.goodsName = goodsName;
-        	DomainEventPublisher.instance().publish(new GoodsNameChangedEvent(this.goodsId, this.goodsName, this.dealerId, this.dealerName));
-        }
+        String oldGoodsUnitId = this.goodsUnitId;
+        String newGoodsUnitId = goodsUnitId;
+        List<String> oldStandardIds = getStandardId(this.goodsSpecifications);
+        List<String> newStandardIds = getStandardId(goodsSpecifications);
+        this.goodsName = goodsName;
         this.goodsSubTitle = goodsSubTitle;
         this.goodsClassifyId = goodsClassifyId;
         this.goodsBrandId = goodsBrandId;
@@ -337,6 +369,9 @@ public class Goods extends ConcurrencySafeEntity {
                                 goodsSKUs, this.skuFlag));
             }
         }
+
+        DomainEventPublisher.instance().publish(new GoodsChangedEvent(this.goodsId, this.goodsName, this.dealerId, this.dealerName,
+                oldGoodsUnitId, newGoodsUnitId, oldStandardIds, newStandardIds));
     }
 
     /**
@@ -346,7 +381,7 @@ public class Goods extends ConcurrencySafeEntity {
         this.delStatus = 2;
         DomainEventPublisher
                 .instance()
-                .publish(new GoodsDeleteEvent(this.goodsId));
+                .publish(new GoodsDeleteEvent(this.goodsId, this.goodsUnitId, getStandardId(goodsSpecifications)));
     }
 
     /**
@@ -416,12 +451,12 @@ public class Goods extends ConcurrencySafeEntity {
     public void modifyDealerName(String dealerName) {
         this.dealerName = dealerName;
     }
-    
+
     /**
      * 修改商品投放状态
      */
     public void launchGoods() {
-    	this.goodsLaunchStatus = 1;
+        this.goodsLaunchStatus = 1;
     }
 
     public String recognizedId() {
