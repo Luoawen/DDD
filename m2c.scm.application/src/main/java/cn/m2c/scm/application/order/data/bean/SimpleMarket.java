@@ -26,7 +26,7 @@ public class SimpleMarket {
 	
 	@ColumnAlias(value = "discount")
 	private Integer discount;
-	
+	/**用于退货后是否还处于满足状态*/
 	private boolean isFull = true;
 	
 	public void setIsFull(boolean full) {

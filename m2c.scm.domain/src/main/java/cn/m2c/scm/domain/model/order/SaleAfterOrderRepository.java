@@ -49,6 +49,10 @@ public interface SaleAfterOrderRepository {
 	 * 获取状态为同意售后的订单
 	 */
 	public List<SaleAfterOrder> getSaleAfterOrderStatusAgree();
-	
-	
+	/***
+	 * 使某个营销不可用， 主要是用于退款时用。
+	 * @param orderId
+	 * @param marketId
+	 */
+	public int disabledOrderMarket(String orderId, String marketId);
 }

@@ -41,8 +41,8 @@ public class GoodsQueryApplication {
         return supportJdbcTemplate;
     }
 
-    @Autowired
-    RedisUtil redisUtil;
+//    @Autowired
+//    RedisUtil redisUtil;
     @Autowired
     GoodsClassifyQueryApplication goodsClassifyQueryApplication;
     @Resource(name = "goodsDubboService")
@@ -333,7 +333,7 @@ public class GoodsQueryApplication {
 
         List<GoodsBean> goodsBeans = new ArrayList<>();
         String key = "scm.goods.guess." + positionType;
-        String guess = redisUtil.getString(key); //从缓存中取数据
+        String guess = RedisUtil.getString(key); //从缓存中取数据
         if (StringUtils.isNotEmpty(guess)) { // 缓存不为空
             List<GoodsBean> guessInfoList = JsonUtils.toList(guess, GoodsBean.class);
             if (guessInfoList.size() < number) { //随机取剩余部分
@@ -342,7 +342,7 @@ public class GoodsQueryApplication {
                     goodsIds.add(goodsBean.getGoodsId());
                 }
                 guessInfoList.addAll(queryGoodsGuess((number - guessInfoList.size()), positionType, goodsIds));
-                redisUtil.setString(key, 24 * 3600, JsonUtils.toStr(guessInfoList));
+                RedisUtil.setString(key, 24 * 3600, JsonUtils.toStr(guessInfoList));
             }
             goodsBeans = guessInfoList;
         } else {
@@ -370,7 +370,7 @@ public class GoodsQueryApplication {
         }
         if (null == goodsIds) {
             if (null != goodsBeans && goodsBeans.size() > 0) {
-                redisUtil.setString(key, 24 * 3600, JsonUtils.toStr(goodsBeans));
+            	RedisUtil.setString(key, 24 * 3600, JsonUtils.toStr(goodsBeans));
             }
         }
         return goodsBeans;

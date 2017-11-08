@@ -75,4 +75,22 @@
 		</mvc:interceptor>
 	</mvc:interceptors>
 	-->
+	<!-- <mvc:interceptors>
+		<mvc:interceptor>
+			<mvc:mapping path="/order/app/**" />
+			<bean class="cn.m2c.common.permission.interceptor.AccessTokenInterceptor" />
+		</mvc:interceptor>
+		
+		<mvc:interceptor>
+			<mvc:mapping path="/order/web/**" />
+			<bean class="cn.m2c.common.permission.interceptor.AccessTokenInterceptor" />
+		</mvc:interceptor>
+		
+		<mvc:interceptor>
+			<mvc:mapping path="/order/app/**" />
+			<bean
+				class="cn.m2c.common.permission.interceptor.GlobalPermissionInterceptor" />
+		</mvc:interceptor>
+	</mvc:interceptors> -->
+	
 </beans>  

@@ -11,7 +11,7 @@ public class MarketSku {
 	
 	private Integer skuNum;
 	
-	private Integer skuRemianNum;
+	private Integer skuRemainNum;
 
 	public MarketSku() {
 		
@@ -33,11 +33,11 @@ public class MarketSku {
 		this.skuNum = skuNum;
 	}
 
-	public Integer getSkuRemianNum() {
-		return skuRemianNum;
+	public Integer getSkuRemainNum() {
+		return skuRemainNum;
 	}
 
-	public void setSkuRemianNum(Integer skuRemianNum) {
-		this.skuRemianNum = skuRemianNum;
+	public void setSkuRemainNum(Integer skuRemianNum) {
+		this.skuRemainNum = skuRemianNum;
 	}
 }

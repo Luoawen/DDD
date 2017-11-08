@@ -378,7 +378,7 @@ public class OrderQuery {
 		sql.append(" SELECT order_id  orderId , dealer_id  dealerId,dealer_order_id dealerOrderId \r\n");
 		sql.append("  ,dealer_discount  dealerDiscount, _status  status\r\n");
 		sql.append("  ,goods_amount goodsAmount, order_freight orderFreight,plateform_discount plateformDiscount\r\n");
-		sql.append("  ,dealer_discount dealerDiscount\r\n");
+		sql.append("  ,dealer_discount dealerDiscount, term_of_payment termOfPayment\r\n");
 		sql.append(" FROM t_scm_order_dealer WHERE order_id=?");
 		order.setDealerOrderBeans(supportJdbcTemplate.queryForBeanList(sql.toString(), OrderDealerBean.class, orderNo));
 		

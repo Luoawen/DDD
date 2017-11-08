@@ -46,6 +46,16 @@ public class OrderDealerBean {
 	 * 商家优惠
 	 */
 	private long dealerDiscount;
+	/**结算方式*/
+	private Integer termOfPayment;
+
+	public Integer getTermOfPayment() {
+		return termOfPayment;
+	}
+
+	public void setTermOfPayment(Integer termOfPayment) {
+		this.termOfPayment = termOfPayment;
+	}
 
 	public String getOrderId() {
 		return orderId;

@@ -1,10 +1,8 @@
 package cn.m2c.scm.domain.model.order.event;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 
-import com.google.gson.Gson;
 
 import cn.m2c.ddd.common.domain.model.DomainEvent;
 /***

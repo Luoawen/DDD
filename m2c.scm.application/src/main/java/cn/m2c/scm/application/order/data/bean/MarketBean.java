@@ -1,6 +1,9 @@
 package cn.m2c.scm.application.order.data.bean;
 
+import java.util.HashMap;
 import java.util.List;
+
+import cn.m2c.common.JsonUtils;
 
 /***
  * 订单计算时用的market 活动
@@ -38,15 +41,17 @@ public class MarketBean {
 	/**用户今天已使用数*/
 	private int numToday = 0;
 	/**json 串*/
-	private String costList;
+	private HashMap<String, Object> costList;
 	
 	private int threshold;
 	
 	public String getCostList() {
-		return costList;
+		if (costList != null)
+			return JsonUtils.toStr(costList);
+		return "";
 	}
 
-	public void setCostList(String costList) {
+	public void setCostList(HashMap<String, Object> costList) {
 		this.costList = costList;
 	}
 	
@@ -142,7 +147,7 @@ public class MarketBean {
 	public void setItemList(List<MarketLevelBean> itemList) {
 		this.itemList = itemList;
 	}
-
+	/**作用范围，0：全场，1：商家，2：商品，3：品类*/
 	public int getRangeType() {
 		return rangeType;
 	}

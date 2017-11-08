@@ -105,7 +105,7 @@ public class OrderApplication {
 				String sku = it.get("skuId").toString();
 				Integer nm = (Integer)it.get("num");
 				skus.put(sku, nm);
-				skuBeans.put(sku, new GoodsReqBean(nm, (Integer)it.get("level"), (String)it.get("marketId"),
+				skuBeans.put(sku, new GoodsReqBean(nm, (Integer)it.get("marketLevel"), (String)it.get("marketId"),
 						(Integer)it.get("isChange")));
 				String mResId = (String)it.get("mediaResId");
 				if (!StringUtils.isEmpty(mResId)) {
@@ -125,8 +125,8 @@ public class OrderApplication {
 				skus.put(sku, o.getIntValue("purNum"));
 				String marketId = o.getString("marketId");
 				int level = 0;
-				if (o.containsKey("level"))
-					level = o.getIntValue("level");
+				if (o.containsKey("marketLevel"))
+					level = o.getIntValue("marketLevel");
 				skuBeans.put(sku, new GoodsReqBean(o.getIntValue("purNum"), level, marketId,
 						o.getIntValue("isChange")));
 				
@@ -296,7 +296,7 @@ public class OrderApplication {
 			List<DealerOrderDtl> dtls = new ArrayList<DealerOrderDtl>();
 			int freight = 0;
 			int goodsAmount = 0;
-			int plateDiscount = 0;
+			long plateDiscount = 0;
 			int dealerDiscount = 0;
 			int termOfPayment = dc.get(dealerId);
 			String dealerOrderId = cmd.getOrderId() + c;
@@ -304,6 +304,7 @@ public class OrderApplication {
 				float num = bean.getPurNum();
 				freight += bean.getFreight();
 				goodsAmount += (int)(num * bean.getDiscountPrice());
+				plateDiscount += bean.getPlateformDiscount();
 				String resId = skuMedia.get(bean.getSkuId());
 				MediaResBean mb = null;
 				//if (!StringUtils.isEmpty(resId))

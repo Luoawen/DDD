@@ -2,7 +2,6 @@ package cn.m2c.scm.application.shop.command;
 
 import java.io.Serializable;
 
-import cn.m2c.common.ArgumentUtils;
 import cn.m2c.ddd.common.AssertionConcern;
 
 public class ShopInfoUpdateCommand extends AssertionConcern implements Serializable{

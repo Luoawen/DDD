@@ -265,7 +265,7 @@ public class OrderQueryApplication {
 				status = 3;
 				params.add(status);
 			}
-			else if (status != null) {
+			else if (status != null && status> -2) {
 				sql.append(" AND b._status=?");
 				params.add(status);
 			}

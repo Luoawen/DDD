@@ -64,6 +64,11 @@ public class SaleAfterOrderApp {
 			List<SkuNumBean> skuBeanLs =saleOrderQuery.getOrderDtlByMarketId(mkId, cmd.getOrderId());
 			
 			discountMoney = OrderMarketCalc.calcReturnMoney(marketInfo, skuBeanLs, cmd.getSkuId());
+			
+			if (marketInfo != null && !marketInfo.isFull()) {
+				// 更新已使用营销 为不可用状态
+				saleAfterRepository.disabledOrderMarket(cmd.getOrderId(), mkId);
+			}
 		}		
 		long money = itemDtl.sumGoodsMoney() - discountMoney;
 		SaleAfterOrder afterOrder = new SaleAfterOrder(cmd.getSaleAfterNo(), cmd.getUserId(), cmd.getOrderId(),

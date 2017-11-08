@@ -216,7 +216,7 @@ public class OrderMarketCalc {
 	private static boolean isSkuOk(GoodsDto d, List<MarketSku> skus) {
 		
 		for (MarketSku s : skus) {
-			if (d.getSkuId().equals(s.getSkuId()) && s.getSkuRemianNum() >= d.getPurNum()) {
+			if (d.getSkuId().equals(s.getSkuId()) && s.getSkuRemainNum() >= d.getPurNum()) {
 				return true;
 			}
 		}
