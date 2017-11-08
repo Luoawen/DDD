@@ -20,5 +20,6 @@
 		<property name="unitId" column="unit_id" type="string"></property>
 		<property name="unitName" column="unit_name" type="string"></property>
 		<property name="unitStatus" column="unit_status" type="int"></property>
+		<property name="useNum" column="use_num" type="int"></property>
 	</class>
 </hibernate-mapping>
