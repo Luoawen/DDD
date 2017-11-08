@@ -273,4 +273,31 @@ public class DealerAgent {
 		        return new ResponseEntity<MResult>(result, HttpStatus.OK);
 		    }
 		 
+		 /**
+		  * 根据经销商名称获取经销商
+		  * @param dealerName
+		  * @return
+		  */
+		 @RequestMapping(value = "/getDealerName", method = RequestMethod.GET)
+		    public ResponseEntity<MResult> getDealerName(
+		            @RequestParam(value = "dealerName", required = true) String dealerName
+		            ) {
+			 MResult result = new MResult(MCode.V_1);
+			 List<DealerNameListRepresentation> list = new ArrayList<DealerNameListRepresentation>();
+		        try {
+		        	List<DealerBean> dealerList =  dealerQuery.getDealerByName(dealerName);
+		        	if(dealerList!=null && dealerList.size()>0){
+		        		for (DealerBean model : dealerList) {
+		        			list.add(new DealerNameListRepresentation(model));
+						}
+		        	}
+		        	result.setContent(list);
+		            result.setStatus(MCode.V_200);
+		        } catch (Exception e) {
+		        	log.error("经销商名称列表出错", e);
+		            result = new MPager(MCode.V_400, "服务器开小差了，请稍后再试");
+		        }
+		        return new ResponseEntity<MResult>(result, HttpStatus.OK);
+		    }
+		 
 }
