@@ -3,6 +3,7 @@ package cn.m2c.scm.application.order.data.bean;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import cn.m2c.ddd.common.AssertionConcern;
 import cn.m2c.ddd.common.persistence.orm.ColumnAlias;
@@ -48,10 +49,62 @@ public class MainOrderBean extends AssertionConcern implements Serializable {
 	 */
 	//@ColumnAlias(value = "dealer_discount")
 	private long dealerDiscount;
+	/**订单状态*/
+	private int status;
+	
+	/**支付时间*/
+	private Date payTime;
+	/**下单人*/
+	private String userId;
+	
 	/**
 	 * 商家订单列表
 	 */
 	private List<OrderDealerBean> dealerOrderBeans;
+	/**订单中的商品列表*/
+	private Map<String, List<OrderGoodsBean>> goodses;
+	
+	private List<SimpleMarket> markets;
+	
+	public List<SimpleMarket> getMarkets() {
+		return markets;
+	}
+	
+	public void setMarkets(List<SimpleMarket> ges) {
+		markets = ges;
+	}
+	
+	public Map<String, List<OrderGoodsBean>> getGoodses() {
+		return goodses;
+	}
+	
+	public void setGoodses(Map<String, List<OrderGoodsBean>> ges) {
+		goodses = ges;
+	}
+	
+	public int getStatus() {
+		return status;
+	}
+
+	public void setStatus(int status) {
+		this.status = status;
+	}
+
+	public Date getPayTime() {
+		return payTime;
+	}
+
+	public void setPayTime(Date payTime) {
+		this.payTime = payTime;
+	}
+
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;

@@ -27,6 +27,16 @@ public class SimpleMarket {
 	@ColumnAlias(value = "discount")
 	private Integer discount;
 	
+	private boolean isFull = true;
+	
+	public void setIsFull(boolean full) {
+		isFull = full;
+	}
+	
+	public boolean isFull() {
+		return isFull;
+	}
+	
 	public Integer getDiscount() {
 		return discount;
 	}

@@ -272,7 +272,7 @@ public class OrderMarketCalc {
 						bean.setDiscountMoney((long)(bean.getGoodsAmount() * discount / (total + 0.0)));
 						break;
 					case 2://打折就不用计算
-						// bean.setDiscountMoney((long)(bean.getGoodsAmount() * threshold / (total + 0.0)));
+						// bean.setDiscountMoney((long)(bean.getGoodsAmount() * discount / 1000.0));
 						break;
 					case 3:
 						bean.setDiscountMoney((long)(bean.getGoodsAmount() * discount / (total + 0.0)));
@@ -284,6 +284,7 @@ public class OrderMarketCalc {
 				rtMoney = (long)(tmp.getGoodsAmount() * discount/1000.0);
 		}
 		else { // 不满足
+			marketInfo.setIsFull(false);
 			for(SkuNumBean bean : skuBeanLs) {
 				
 				boolean bFlag = skuId.equals(bean.getSkuId());
@@ -296,14 +297,18 @@ public class OrderMarketCalc {
 						bean.setDiscountMoney(0);
 						break;
 					case 2://打折就不用计算
-						// bean.setDiscountMoney((long)(bean.getGoodsAmount() * threshold / (total + 0.0)));
+						rtMoney += (bean.getGoodsAmount() * discount/1000.0);
 						break;
 					case 3:
 						bean.setDiscountMoney(0);
 						break;
 				}				
 			}
-			rtMoney = discount;
+			if (a == 2) {
+				rtMoney += (tmp.getGoodsAmount() * discount/1000.0);
+			}
+			else
+				rtMoney = discount;
 		}
 		return rtMoney;
 	}
