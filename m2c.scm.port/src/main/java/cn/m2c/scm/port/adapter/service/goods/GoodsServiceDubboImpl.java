@@ -85,4 +85,14 @@ public class GoodsServiceDubboImpl implements GoodsService {
     public boolean updateRecognizedImgStatus(String recognizedId, String recognizedUrl, Integer status) {
         return recognizeService.updateRecoImgStatus(recognizedId, recognizedUrl, status);
     }
+
+    @Override
+    public Map getMediaInfo(String mediaResourceId) {
+        return null;
+    }
+
+    @Override
+    public Map getUserInfoByUserId(String userId) {
+        return null;
+    }
 }

@@ -9,6 +9,7 @@ import cn.m2c.scm.application.classify.query.GoodsClassifyQueryApplication;
 import cn.m2c.scm.application.comment.query.GoodsCommentQueryApplication;
 import cn.m2c.scm.application.comment.query.data.bean.GoodsCommentBean;
 import cn.m2c.scm.application.goods.GoodsApplication;
+import cn.m2c.scm.application.goods.command.MDViewGoodsCommand;
 import cn.m2c.scm.application.goods.query.GoodsGuaranteeQueryApplication;
 import cn.m2c.scm.application.goods.query.GoodsQueryApplication;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsBean;
@@ -383,6 +384,40 @@ public class AppGoodsAgent {
         } catch (Exception e) {
             LOGGER.error("appQueryGoodsByGoodsIds Exception e:", e);
             result = new MPager(MCode.V_400, "查询商品列表失败");
+        }
+        return new ResponseEntity<MResult>(result, HttpStatus.OK);
+    }
+
+    /**
+     * 商品访问埋点
+     */
+    @RequestMapping(value = "/md/view", method = RequestMethod.POST)
+    public ResponseEntity<MResult> mdViewGoods(@RequestParam(value = "token", required = false) String token,
+                                               @RequestParam(value = "sn", required = false) String sn,
+                                               @RequestParam(value = "os", required = false) String os,
+                                               @RequestParam(value = "appVersion", required = false) String appVersion,
+                                               @RequestParam(value = "osVersion", required = false) String osVersion,
+                                               @RequestParam(value = "triggerTime", required = false) long triggerTime,
+                                               @RequestParam(value = "lastTime", required = false) long lastTime,
+                                               @RequestParam(value = "userId", required = false, defaultValue = "") String userId,
+                                               @RequestParam(value = "userName", required = false, defaultValue = "") String userName,
+                                               @RequestParam(value = "goodsId", required = false) String goodsId,
+                                               @RequestParam(value = "goodsName", required = false) String goodsName,
+                                               @RequestParam(value = "mresId", required = false, defaultValue = "") String mresId
+    ) {
+        MResult result = new MResult(MCode.V_1);
+        try {
+            MDViewGoodsCommand command = new MDViewGoodsCommand(sn, os, appVersion, osVersion, triggerTime, lastTime, userId, userName,
+                    goodsId, goodsName, mresId);
+            LOGGER.info("商品访问埋点接口访问" + command);
+            goodsApplication.mdViewGoods(command);
+            result.setStatus(MCode.V_200);
+        } catch (IllegalArgumentException e) {
+            LOGGER.error("Goods mdViewGoods Exception e:", e);
+            result = new MPager(MCode.V_1, e.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("Goods mdViewGoods Exception e:", e);
+            result = new MPager(MCode.V_400, e.getMessage());
         }
         return new ResponseEntity<MResult>(result, HttpStatus.OK);
     }

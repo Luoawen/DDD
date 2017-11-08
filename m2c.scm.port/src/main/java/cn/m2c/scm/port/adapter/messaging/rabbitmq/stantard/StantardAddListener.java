@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate4.HibernateTransactionManager;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
 import cn.m2c.common.JsonUtils;
@@ -27,11 +28,16 @@ public class StantardAddListener extends ExchangeListener{
 
 	@Override
 	protected void filteredDispatch(String aType, String aTextMessage) throws Exception {
-		JSONObject jsonObject = JSONObject.parseObject(aTextMessage);
+		JSONObject jsonObjject = JSONObject.parseObject(aTextMessage);
+		
+		JSONObject object = jsonObjject.getJSONObject("event");
+		JSONArray array = object.getJSONArray("standardIds");
+		List<String> list = array.toJavaList(String.class);
+		/*System.out.println("全部数据-------------------------------------"+jsonObject);
         List<String> stantardIds = JsonUtils.toList(jsonObject.getJSONArray("standardIds").toJSONString(), String.class);
-        
-        if (stantardIds != null && stantardIds.size() > 0) {
-        	for (String stantardId : stantardIds) {
+        */
+        if (list != null && list.size() > 0) {
+        	for (String stantardId : list) {
             	if (null != stantardId) {
             		Stantard stantard = stantardRepository.getStantardByStantardId(stantardId);
             		stantard.used();

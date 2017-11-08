@@ -43,14 +43,36 @@ public interface GoodsService {
      * @return
      */
     List<Map> getGoodsFullCut(String dealerId, String goodsId, String classifyId);
-    
+
     /**
-     * 查询商品是否被用户收藏 
-     * 
+     * 查询商品是否被用户收藏
+     *
      * @param userId  用户id
      * @param goodsId 商品id
      */
-    String getUserIsFavoriteGoods(String userId,String goodsId, String token);
+    String getUserIsFavoriteGoods(String userId, String goodsId, String token);
 
-    boolean updateRecognizedImgStatus(String recognizedId,String recognizedUrl,Integer status);
+    /**
+     * 更新识别图状态
+     * @param recognizedId
+     * @param recognizedUrl
+     * @param status 0 下架 1 上架
+     * @return
+     */
+    boolean updateRecognizedImgStatus(String recognizedId, String recognizedUrl, Integer status);
+
+    /**
+     * 根据媒体资源id获取媒体信息
+     *
+     * @param mediaResourceId
+     * @return
+     */
+    Map getMediaInfo(String mediaResourceId);
+
+    /**
+     * 根据userId获取用户信息
+     * @param userId
+     * @return
+     */
+    Map getUserInfoByUserId(String userId);
 }

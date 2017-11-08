@@ -6,6 +6,7 @@ import cn.m2c.ddd.common.domain.model.DomainEventPublisher;
 import cn.m2c.ddd.common.event.annotation.EventListener;
 import cn.m2c.scm.application.goods.command.GoodsCommand;
 import cn.m2c.scm.application.goods.command.GoodsRecognizedModifyCommand;
+import cn.m2c.scm.application.goods.command.MDViewGoodsCommand;
 import cn.m2c.scm.domain.NegativeException;
 import cn.m2c.scm.domain.model.goods.Goods;
 import cn.m2c.scm.domain.model.goods.GoodsApproveRepository;
@@ -14,6 +15,7 @@ import cn.m2c.scm.domain.model.goods.GoodsSku;
 import cn.m2c.scm.domain.model.goods.GoodsSkuRepository;
 import cn.m2c.scm.domain.model.goods.event.GoodsAppCapturedMDEvent;
 import cn.m2c.scm.domain.model.goods.event.GoodsAppSearchMDEvent;
+import cn.m2c.scm.domain.model.goods.event.GoodsAppViewMDEvent;
 import cn.m2c.scm.domain.service.goods.GoodsService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -42,6 +44,8 @@ public class GoodsApplication {
     GoodsApproveRepository goodsApproveRepository;
     @Resource(name = "goodsDubboService")
     GoodsService goodsDubboService;
+    @Resource(name = "goodsRestService")
+    GoodsService goodsRestService;
 
     /**
      * 商品审核同意,保存商品
@@ -340,11 +344,49 @@ public class GoodsApplication {
      * @throws NegativeException
      */
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
-	public void LaunchGoods(String goodsId) throws NegativeException {
-		LOGGER.info("LaunchGoods goodsId >>{}", goodsId);
-    	Goods goods = goodsRepository.queryGoodsById(goodsId);
-        if (null != goods ) {
+    public void LaunchGoods(String goodsId) throws NegativeException {
+        LOGGER.info("LaunchGoods goodsId >>{}", goodsId);
+        Goods goods = goodsRepository.queryGoodsById(goodsId);
+        if (null != goods) {
             goods.launchGoods();
         }
+    }
+
+    /**
+     * app搜索埋点
+     */
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+    @EventListener(isListening = true)
+    public void mdViewGoods(MDViewGoodsCommand command) throws NegativeException {
+        String areaProvince = "";
+        String areaDistrict = "";
+        String provinceCode = "";
+        String districtCode = "";
+        if (StringUtils.isNotEmpty(command.getUserId())) {
+            Map userInfo = goodsRestService.getUserInfoByUserId(command.getUserId());
+            if (null != userInfo) {
+                areaProvince = null != userInfo.get("areaProvince") ? (String) userInfo.get("areaProvince") : "";
+                areaDistrict = null != userInfo.get("areaDistrict") ? (String) userInfo.get("areaDistrict") : "";
+                provinceCode = null != userInfo.get("provinceCode") ? (String) userInfo.get("provinceCode") : "";
+                districtCode = null != userInfo.get("districtCode") ? (String) userInfo.get("districtCode") : "";
+            }
+        }
+        String mediaId = "";
+        String mediaName = "";
+        String mresName = "";
+        if (StringUtils.isNotEmpty(command.getMresId())) {
+            Map mediaInfo = goodsRestService.getMediaInfo(command.getMresId());
+            if (null != mediaInfo) {
+                mediaId = (String) mediaInfo.get("mediaId");
+                mediaName = (String) mediaInfo.get("mediaName");
+                mresName = (String) mediaInfo.get("mresName");
+            }
+        }
+        GoodsAppViewMDEvent goodsViewEvent = new GoodsAppViewMDEvent(command.getSn(), command.getOs(), command.getAppVersion(),
+                command.getOsVersion(), command.getTriggerTime(), command.getLastTime(), command.getUserId(), command.getUserName(),
+                areaProvince, areaDistrict, provinceCode, districtCode,
+                command.getGoodsId(), command.getGoodsName(), mediaId, mediaName, command.getMresId(),
+                mresName);
+        DomainEventPublisher.instance().publish(goodsViewEvent);
     }
 }

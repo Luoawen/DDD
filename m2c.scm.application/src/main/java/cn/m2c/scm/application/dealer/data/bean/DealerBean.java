@@ -86,7 +86,8 @@ public class DealerBean {
 	
 	@ColumnAlias(value = "created_date")
 	private Date createdDate;
-
+	 @ColumnAlias(value = "shop_name")
+	 private String shopName;
 	
 	
 	private DealerClassifyNameBean dealerClassifyBean;
@@ -332,5 +333,14 @@ public class DealerBean {
 		this.dealerDetailAddress = dealerDetailAddress;
 	}
 
+	public String getShopName() {
+		return shopName;
+	}
+
+	public void setShopName(String shopName) {
+		this.shopName = shopName;
+	}
+
+	
 	
 }
