@@ -41,18 +41,18 @@ public class MarketBean {
 	/**用户今天已使用数*/
 	private int numToday = 0;
 	/**json 串*/
-	private HashMap<String, Object> costList;
+	//private HashMap<String, Object> costList;
 	
 	private int threshold;
 	
 	public String getCostList() {
-		if (costList != null)
-			return JsonUtils.toStr(costList);
+//		if (costList != null)
+//			return JsonUtils.toStr(costList);
 		return "";
 	}
 
 	public void setCostList(HashMap<String, Object> costList) {
-		this.costList = costList;
+//		this.costList = costList;
 	}
 	
 	public String getUserId() {
