@@ -49,6 +49,7 @@ public class GoodsApplication {
      * @param command
      */
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+    @EventListener(isListening = true)
     public void saveGoods(GoodsCommand command) throws NegativeException {
         LOGGER.info("saveGoods command >>{}", command);
         Goods goods = goodsRepository.queryGoodsById(command.getGoodsId());
