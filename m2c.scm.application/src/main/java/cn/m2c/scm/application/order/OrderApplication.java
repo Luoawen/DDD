@@ -232,7 +232,7 @@ public class OrderApplication {
      * @return
      */
     /*List<SimpleMarketing> getUsedMarket(String orderNo, Map<String, GoodsReqBean> beans) {
-		List<SimpleMarketing> result = null;
+        List<SimpleMarketing> result = null;
 		
 		Iterator<String> keys = beans.keySet().iterator();
 		while(keys.hasNext()) {
@@ -304,7 +304,7 @@ public class OrderApplication {
             long plateDiscount = 0;
             int dealerDiscount = 0;
             int termOfPayment = 0;
-            if (null != dc) {
+            if (null != dc && null != dc.get(dealerId)) {
                 termOfPayment = dc.get(dealerId);
             }
             String dealerOrderId = cmd.getOrderId() + c;
