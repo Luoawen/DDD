@@ -595,7 +595,7 @@ public class GoodsQueryApplication {
             }
             sql.append(")");
         }
-        sql.append(" AND g.del_status= 1 group by g.goods_id");
+        sql.append(" AND g.del_status= 1 AND g.goods_status <> 1 group by g.goods_id");
 
         //sortType 排序类型：1：综合，2：价格
         //sort 1：降序，2：升序
@@ -783,7 +783,7 @@ public class GoodsQueryApplication {
         sql.append(" SELECT ");
         sql.append(" * ");
         sql.append(" FROM ");
-        sql.append(" t_scm_goods WHERE 1 = 1 AND goods_id IN (" + Utils.listParseString(recognizedIds) + ")");
+        sql.append(" t_scm_goods WHERE 1 = 1 AND recognized_id IN (" + Utils.listParseString(recognizedIds) + ")");
         List<GoodsBean> goodsBeanList = this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsBean.class);
         if (null != goodsBeanList && goodsBeanList.size() > 0) {
             for (GoodsBean goodsBean : goodsBeanList) {

@@ -20,7 +20,7 @@
 
 		<property name="stantardId" column="stantard_id" type="string"></property>
 		<property name="stantardName" column="stantard_name" type="string"></property>
-		<property name="stantardStatus" column="stantard_status"
-			type="int"></property>
+		<property name="stantardStatus" column="stantard_status" type="int"></property>
+		<property name="useNum" column="use_num" type="int"></property>
 	</class>
 </hibernate-mapping>
