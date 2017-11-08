@@ -595,7 +595,7 @@ public class GoodsQueryApplication {
             }
             sql.append(")");
         }
-        sql.append(" AND g.del_status= 1 group by g.goods_id");
+        sql.append(" AND g.del_status= 1 AND g.goods_status <> 1 group by g.goods_id");
 
         //sortType 排序类型：1：综合，2：价格
         //sort 1：降序，2：升序
