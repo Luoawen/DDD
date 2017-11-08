@@ -22,6 +22,7 @@ public class Unit extends ConcurrencySafeEntity {
 	private String unitName;        //计量单位名
 	private Date createdDate;
 	private Date lastUpdatedDate;
+	private Integer useNum;    //被使用  默认0，为0时可以删除，大于0不能删除
 	
 	/**
 	 * 1 正常 2 删除
@@ -35,6 +36,18 @@ public class Unit extends ConcurrencySafeEntity {
 	public Unit(String unitId,String unitName) {
 		this.unitId = unitId;
 		this.unitName = unitName;
+	}
+	
+	public void used() {
+		this.useNum ++;
+	}
+	
+	public void noUsed() {
+		this.useNum --;
+	}
+	
+	public Integer getUseNum() {
+		return useNum;
 	}
 	
 	/**

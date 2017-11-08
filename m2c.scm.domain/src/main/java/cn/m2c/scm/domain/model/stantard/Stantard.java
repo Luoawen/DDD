@@ -18,6 +18,8 @@ public class Stantard extends ConcurrencySafeEntity{
 	private String stantardName;
 
 	private Integer stantardStatus = 1; // 状态：1 正常 2 删除
+	
+	private Integer useNum;//被使用  默认0，为0时可以删除，大于0不能删除
 
 	
 	private Integer concurrencyVersion;
@@ -52,6 +54,18 @@ public class Stantard extends ConcurrencySafeEntity{
 	 */
 	public void delStanstard() {
 		this.stantardStatus = 2;
+	}
+	
+	public void used() {
+		this.useNum++;
+	}
+	
+	public void noUsed() {
+		this.useNum --;
+	}
+	
+	public Integer getUseNum() {
+		return useNum;
 	}
 	
 	public void modify(String stantardId,String stantardName,Integer stantardStatus) {
