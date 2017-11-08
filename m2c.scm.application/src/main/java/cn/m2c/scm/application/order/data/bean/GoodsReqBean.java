@@ -1,8 +1,5 @@
 package cn.m2c.scm.application.order.data.bean;
 
-import org.apache.commons.lang3.StringUtils;
-
-import cn.m2c.scm.domain.model.order.SimpleMarketInfo;
 
 /***
  * 订单提交时的商品请求数据

@@ -25,6 +25,7 @@ import cn.m2c.scm.application.dealer.data.bean.DealerBean;
 import cn.m2c.scm.application.dealer.data.representation.DealerDetailRepresentation;
 import cn.m2c.scm.application.dealer.data.representation.DealerNameListRepresentation;
 import cn.m2c.scm.application.dealer.data.representation.DealerRepresentation;
+import cn.m2c.scm.application.dealer.data.representation.DealerShopRepresentation;
 import cn.m2c.scm.application.dealer.query.DealerQuery;
 import cn.m2c.scm.application.dealerclassify.query.DealerClassifyQuery;
 import cn.m2c.scm.domain.IDGenerator;
@@ -234,13 +235,11 @@ public class DealerAgent {
 		            ) {
 			 MResult result = new MResult(MCode.V_1);
 		        try {
-		        	List<DealerNameListRepresentation> list = new ArrayList<DealerNameListRepresentation>();
+		        	List<DealerShopRepresentation> list = new ArrayList<DealerShopRepresentation>();
 		        	List<DealerBean> dealers =  dealerQuery.getDealers(dealerIds);
-		        	if(dealers!=null && dealers.size()>0){
-		        		for (DealerBean model : dealers) {
-		        			list.add(new DealerNameListRepresentation(model));
-						}
-		        	}
+		        	for (DealerBean model : dealers) {
+		        		list.add(new DealerShopRepresentation(model));
+					}
 		        	result.setContent(list);
 		            result.setStatus(MCode.V_200);
 		        } catch (Exception e) {
@@ -268,6 +267,33 @@ public class DealerAgent {
 		            result.setStatus(MCode.V_200);
 		        } catch (Exception e) {
 		        	log.error("经销商列表出错", e);
+		            result = new MPager(MCode.V_400, "服务器开小差了，请稍后再试");
+		        }
+		        return new ResponseEntity<MResult>(result, HttpStatus.OK);
+		    }
+		 
+		 /**
+		  * 根据经销商名称获取经销商
+		  * @param dealerName
+		  * @return
+		  */
+		 @RequestMapping(value = "/getDealerName", method = RequestMethod.GET)
+		    public ResponseEntity<MResult> getDealerName(
+		            @RequestParam(value = "dealerName", required = true) String dealerName
+		            ) {
+			 MResult result = new MResult(MCode.V_1);
+			 List<DealerNameListRepresentation> list = new ArrayList<DealerNameListRepresentation>();
+		        try {
+		        	List<DealerBean> dealerList =  dealerQuery.getDealerByName(dealerName);
+		        	if(dealerList!=null && dealerList.size()>0){
+		        		for (DealerBean model : dealerList) {
+		        			list.add(new DealerNameListRepresentation(model));
+						}
+		        	}
+		        	result.setContent(list);
+		            result.setStatus(MCode.V_200);
+		        } catch (Exception e) {
+		        	log.error("经销商名称列表出错", e);
 		            result = new MPager(MCode.V_400, "服务器开小差了，请稍后再试");
 		        }
 		        return new ResponseEntity<MResult>(result, HttpStatus.OK);

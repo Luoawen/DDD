@@ -82,7 +82,7 @@ public class ShopQuery {
 			Integer rows) {
 		List<Object> params = new ArrayList<Object>();
 		//List<ShopBean> shopBeanList = new ArrayList<ShopBean>();
-			StringBuffer sql = new StringBuffer("SELECT * FROM t_scm_dealer_shop ds LEFT OUTER JOIN t_scm_dealer d ON ds.dealer_id = d.dealer_id WHERE 1 = 1  ");
+			StringBuffer sql = new StringBuffer("SELECT * FROM t_scm_dealer_shop ds , t_scm_dealer d  WHERE 1 = 1  AND  ds.dealer_id = d.dealer_id ");
 			if (dealerClassify != null && !"".equals(dealerClassify)) {
 				sql.append(" AND d.dealer_classify LIKE concat('%', ?,'%') ");
 				params.add(dealerClassify);
@@ -168,7 +168,7 @@ public class ShopQuery {
 		Integer resultCount = 0;
 		try {
 			StringBuffer sql = new StringBuffer(
-					"SELECT COUNT(1) FROM t_scm_dealer_shop ds LEFT OUTER JOIN t_scm_dealer d ON ds.dealer_id = d.dealer_id WHERE 1 = 1  ");
+					"SELECT COUNT(1) FROM t_scm_dealer_shop ds, t_scm_dealer d  WHERE 1 = 1  AND  ds.dealer_id = d.dealer_id");
 			if (!StringUtils.isEmpty(dealerClassify)) {
 				sql.append(" AND d.dealer_classify LIKE concat('%', ?,'%') ");
 				params.add(dealerClassify);

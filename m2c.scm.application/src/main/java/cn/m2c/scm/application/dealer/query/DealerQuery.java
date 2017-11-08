@@ -4,11 +4,13 @@ import cn.m2c.ddd.common.port.adapter.persistence.springJdbc.SupportJdbcTemplate
 import cn.m2c.scm.application.dealer.data.bean.DealerBean;
 import cn.m2c.scm.application.dealer.data.bean.DealerClassifyNameBean;
 import cn.m2c.scm.domain.NegativeException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.Resource;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -209,7 +211,7 @@ public class DealerQuery {
 	public List<DealerBean> getDealers(String dealerIds) throws NegativeException {
 		List<DealerBean> result = null;
 		try {
-			StringBuffer sql = new StringBuffer( " SELECT  *  FROM  t_scm_dealer sd  WHERE  dealer_status = 1 and dealer_id in (");
+			StringBuffer sql = new StringBuffer( " SELECT  sd.dealer_name ,sd.dealer_id ,s.shop_name FROM  t_scm_dealer sd LEFT JOIN t_scm_dealer_shop s ON s.dealer_id = sd.dealer_id WHERE  dealer_status = 1 and sd.dealer_id in (");
 			String[] dealer = dealerIds.split(",");
 			for (int i = 0; i < dealer.length; i++) {
 				if(i==(dealer.length-1)){
@@ -233,6 +235,7 @@ public class DealerQuery {
 		return result;
 	}
 	
+	
 	/**
 	 * 业务员Id获取经销商列表
 	 * @param sellerId
@@ -243,6 +246,25 @@ public class DealerQuery {
 		StringBuffer sql = new StringBuffer("SELECT * FROM t_scm_dealer WHERE dealer_status = 1 AND seller_id = ?");
 		return this.supportJdbcTemplate.queryForBeanList(sql.toString(), DealerBean.class,sellerId);
 		
+	}
+
+
+	/**
+	 * 根据商家名称获取商家信息
+	 * @param dealerName
+	 * @return
+	 * @throws NegativeException 
+	 */
+	public List<DealerBean> getDealerByName(String dealerName) throws NegativeException {
+		String sql = "SELECT * FROM t_scm_dealer WHERE dealer_status = 1 AND dealer_name LIKE concat('%', ?,'%')";
+		List<DealerBean> result = new ArrayList<DealerBean>();
+		try {
+			result = this.supportJdbcTemplate.queryForBeanList(sql.toString(), DealerBean.class,dealerName);
+		} catch (Exception e) {
+			log.error("查询经销商列表出错",e);
+			throw new NegativeException(500, "经销商查询列表出错");
+		}
+		return result;
 	}
 
 }

@@ -4,6 +4,7 @@ package cn.m2c.scm.application.order.query;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -12,8 +13,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
+import cn.m2c.common.MCode;
 import cn.m2c.ddd.common.port.adapter.persistence.springJdbc.SupportJdbcTemplate;
 import cn.m2c.scm.application.order.data.bean.OrderDealerBean;
+import cn.m2c.scm.application.order.data.bean.OrderGoodsBean;
+import cn.m2c.scm.application.order.data.bean.SimpleMarket;
+import cn.m2c.scm.domain.NegativeException;
+import cn.m2c.scm.domain.model.order.MainOrder;
 import cn.m2c.scm.application.order.data.bean.AllOrderBean;
 import cn.m2c.scm.application.order.data.bean.DealerOrderDetailBean;
 import cn.m2c.scm.application.order.data.bean.GoodsInfoBean;
@@ -346,4 +352,61 @@ public class OrderQuery {
 		return goodsInfoList;
 	}
 
+	/***
+	 * 获取订单数据
+	 * @param orderNo
+	 * @param userId
+	 * @return
+	 */
+	public MainOrderBean getOrderByNo(String orderNo, String userId) throws NegativeException {
+		
+		if (StringUtils.isEmpty(orderNo)) {
+			throw new NegativeException(MCode.V_1, "订单号参数为空！");
+		}
+		
+		if (StringUtils.isEmpty(userId)) {
+			throw new NegativeException(MCode.V_1, "用户ID参数为空！");
+		}
+		StringBuilder sql = new StringBuilder();
+		sql.append(" SELECT order_id orderId, _status status, pay_no payNo, goods_amount goodAmount, order_freight oderFreight, ")
+		.append("plateform_discount plateFormDiscount, dealer_discount dealerDiscount, user_id userId, pay_time payTime\r\n")
+		.append(",created_date createDate FROM t_scm_order_main WHERE order_id= ?");
+		
+		MainOrderBean order = supportJdbcTemplate.queryForBean(sql.toString(), MainOrderBean.class, orderNo);
+		
+		sql.delete(0, sql.length());
+		sql.append(" SELECT order_id  orderId , dealer_id  dealerId,dealer_order_id dealerOrderId \r\n");
+		sql.append("  ,dealer_discount  dealerDiscount, _status  status\r\n");
+		sql.append("  ,goods_amount goodsAmount, order_freight orderFreight,plateform_discount plateformDiscount\r\n");
+		sql.append("  ,dealer_discount dealerDiscount\r\n");
+		sql.append(" FROM t_scm_order_dealer WHERE order_id=?");
+		order.setDealerOrderBeans(supportJdbcTemplate.queryForBeanList(sql.toString(), OrderDealerBean.class, orderNo));
+		
+		//获取商品
+		sql.delete(0, sql.length());
+		sql.append("SELECT dealer_order_id, _status, freight, plateform_discount, goods_amount, rate,goods_id, sku_id, sku_name,supply_price, discount_price, \r\n")
+		.append(" sell_num, bds_rate, media_id, media_res_id, saler_user_id, saler_user_rate\r\n")
+		.append(" FROM t_scm_order_detail WHERE order_id=? ORDER BY dealer_order_id");
+		List<OrderGoodsBean> ls = supportJdbcTemplate.queryForBeanList(sql.toString(), OrderGoodsBean.class, orderNo);
+		
+		Map<String, List<OrderGoodsBean>> goodses = new HashMap<String, List<OrderGoodsBean>>();
+		for (OrderGoodsBean a : ls) {
+			String doId = a.getDealerOrderId();
+			List<OrderGoodsBean> gls = goodses.get(doId);
+			if (gls == null) {
+				gls = new ArrayList<OrderGoodsBean>();	
+				goodses.put(doId, gls);
+			}
+			gls.add(a);
+		}
+		order.setGoodses(goodses);
+		
+		
+		sql.delete(0, sql.length());
+		sql.append("SELECT marketing_id, market_level,market_type, threshold, threshold_type, discount \r\n")
+		.append(" FROM t_scm_order_marketing_used WHERE order_id=? ");
+		order.setMarkets(supportJdbcTemplate.queryForBeanList(sql.toString(), SimpleMarket.class, orderNo));
+		sql = null;
+		return order;
+	}
 }
