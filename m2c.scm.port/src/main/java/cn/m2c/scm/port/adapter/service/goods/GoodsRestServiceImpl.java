@@ -114,24 +114,68 @@ public class GoodsRestServiceImpl implements GoodsService {
         return null;
     }
 
-	@Override
-	public String getUserIsFavoriteGoods(String userId, String goodsId, String token) {
-		String url = M2C_HOST_URL + "/m2c.users/favorite/app/detail?token={0}&userId={1}&goodsId={2}";
-		String result = restTemplate.getForObject(url, String.class, token, userId, goodsId);
-		JSONObject json = JSONObject.parseObject(result);
-		if (json.getInteger("status") == 200) {
-			JSONObject contents = json.getJSONObject("content");
+    @Override
+    public String getUserIsFavoriteGoods(String userId, String goodsId, String token) {
+        String url = M2C_HOST_URL + "/m2c.users/favorite/app/detail?token={0}&userId={1}&goodsId={2}";
+        String result = restTemplate.getForObject(url, String.class, token, userId, goodsId);
+        JSONObject json = JSONObject.parseObject(result);
+        if (json.getInteger("status") == 200) {
+            JSONObject contents = json.getJSONObject("content");
             if (null != contents) {
                 String favoriteId = contents.getString("favoriteId");
                 return favoriteId;
             }
-		}
-		return null;
-	}
+        }
+        return null;
+    }
 
     @Override
     public boolean updateRecognizedImgStatus(String recognizedId, String recognizedUrl, Integer status) {
         return false;
+    }
+
+    @Override
+    public Map getMediaInfo(String mediaResourceId) {
+        String url = M2C_HOST_URL + "/m2c.media/mres/detail/" + mediaResourceId + "/client";
+        String result = restTemplate.getForObject(url, String.class);
+        JSONObject json = JSONObject.parseObject(result);
+        if (json.getInteger("status") == 200) {
+            JSONObject contentObject = json.getJSONObject("content");
+            if (null != contentObject) {
+                String mediaId = contentObject.getString("mediaId");
+                String mediaName = contentObject.getString("mediaName");
+                String mresName = contentObject.getString("mresName");
+                Map<String, Object> mediaInfo = new HashMap<>();
+                mediaInfo.put("mediaId", mediaId);
+                mediaInfo.put("mediaName", mediaName);
+                mediaInfo.put("mresName", mresName);
+                return mediaInfo;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public Map getUserInfoByUserId(String userId) {
+        String url = M2C_HOST_URL + "/m2c.users/user/detail?token={0}&userId={1}";
+        String result = restTemplate.getForObject(url, String.class, "", userId);
+        JSONObject json = JSONObject.parseObject(result);
+        if (json.getInteger("status") == 200) {
+            JSONObject contentObject = json.getJSONObject("content");
+            if (null != contentObject) {
+                String areaProvince = contentObject.getString("areaProvince");
+                String areaDistrict = contentObject.getString("areaDistrict");
+                String provinceCode = contentObject.getString("provinceCode");
+                String districtCode = contentObject.getString("districtCode");
+                Map<String, Object> userInfo = new HashMap<>();
+                userInfo.put("areaProvince", areaProvince);
+                userInfo.put("areaDistrict", areaDistrict);
+                userInfo.put("provinceCode", provinceCode);
+                userInfo.put("districtCode", districtCode);
+                return userInfo;
+            }
+        }
+        return null;
     }
 
 }
