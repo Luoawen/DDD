@@ -50,7 +50,7 @@ public class StandstardApplication {
 	    	LOGGER.info("delStantard stantardName >>{}",stantardId);
 	    	
 	    	Stantard stantard = stantardRepository.getStantardByStantardId(stantardId);
-	    	if (stantard.getUseNum() != 0) {
+	    	if (stantard.getUseNum() > 0) {
 	    		throw new NegativeException(MCode.V_300,"规格被使用不能被删除");
 			}
 	    	if (null == stantard) {

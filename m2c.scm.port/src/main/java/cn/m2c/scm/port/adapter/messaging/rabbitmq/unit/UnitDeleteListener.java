@@ -26,8 +26,10 @@ public class UnitDeleteListener extends ExchangeListener{
         String unitId = reader.eventStringValue("unitId");
         if (null != unitId) {
 			Unit unit = unitRepository.getUnitByUnitId(unitId);
-			unit.noUsed();
-			unitRepository.saveUnit(unit);
+			if (unit.getUseNum() > 0) {
+				unit.noUsed();
+				unitRepository.saveUnit(unit);
+			}
 		}
 		
 	}

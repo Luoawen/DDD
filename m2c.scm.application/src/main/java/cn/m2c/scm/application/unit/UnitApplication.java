@@ -51,7 +51,7 @@ public class UnitApplication {
     public void delUnit(String unitId) throws NegativeException{
     	LOGGER.info("delUnit unitName >>{}",unitId);
     	Unit unit = unitRepository.getUnitByUnitId(unitId);
-		if (unit.getUseNum() != 0) {
+		if (unit.getUseNum() > 0) {
 			throw new NegativeException(MCode.V_300,"计量单位被商品使用不能删除");
 		}
     	if (null == unit) {

@@ -33,8 +33,10 @@ public class StantardDeleteListener extends ExchangeListener{
         	for (String stantardId : stantardIds) {
             	if (null != stantardId) {
             		Stantard stantard = stantardRepository.getStantardByStantardId(stantardId);
-            		stantard.noUsed();
-            		stantardRepository.saveStantard(stantard);
+            		if (stantard.getUseNum() > 0) {
+            			stantard.noUsed();
+            			stantardRepository.saveStantard(stantard);
+					}
             	}
     		}
 		}

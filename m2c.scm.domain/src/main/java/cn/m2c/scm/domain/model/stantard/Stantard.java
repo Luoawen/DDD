@@ -57,7 +57,7 @@ public class Stantard extends ConcurrencySafeEntity{
 	}
 	
 	public void used() {
-		this.useNum++;
+		this.useNum ++;
 	}
 	
 	public void noUsed() {

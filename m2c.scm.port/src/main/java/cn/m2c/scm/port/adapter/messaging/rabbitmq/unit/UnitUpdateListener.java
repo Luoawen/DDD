@@ -30,9 +30,11 @@ public class UnitUpdateListener  extends ExchangeListener {
         	if (null != oldUnitId && null != newGoodsUnitId) {
     			Unit oldUnit = unitRepository.getUnitByUnitId(oldUnitId);
     			Unit newUnit = unitRepository.getUnitByUnitId(newGoodsUnitId);
-    			oldUnit.noUsed();
+    			if (oldUnit.getUseNum() > 0) {
+    				oldUnit.noUsed();
+        			unitRepository.saveUnit(oldUnit);
+				}
     			newUnit.used();
-    			unitRepository.saveUnit(oldUnit);
     			unitRepository.saveUnit(newUnit);
     		}
 		}
