@@ -42,6 +42,10 @@ public class Unit extends ConcurrencySafeEntity {
 		this.useNum ++;
 	}
 	
+	public void noUsed() {
+		this.useNum --;
+	}
+	
 	public Integer getUseNum() {
 		return useNum;
 	}
