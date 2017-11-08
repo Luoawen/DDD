@@ -25,6 +25,7 @@ import cn.m2c.scm.application.dealer.data.bean.DealerBean;
 import cn.m2c.scm.application.dealer.data.representation.DealerDetailRepresentation;
 import cn.m2c.scm.application.dealer.data.representation.DealerNameListRepresentation;
 import cn.m2c.scm.application.dealer.data.representation.DealerRepresentation;
+import cn.m2c.scm.application.dealer.data.representation.DealerShopRepresentation;
 import cn.m2c.scm.application.dealer.query.DealerQuery;
 import cn.m2c.scm.application.dealerclassify.query.DealerClassifyQuery;
 import cn.m2c.scm.domain.IDGenerator;
@@ -234,13 +235,11 @@ public class DealerAgent {
 		            ) {
 			 MResult result = new MResult(MCode.V_1);
 		        try {
-		        	List<DealerNameListRepresentation> list = new ArrayList<DealerNameListRepresentation>();
+		        	List<DealerShopRepresentation> list = new ArrayList<DealerShopRepresentation>();
 		        	List<DealerBean> dealers =  dealerQuery.getDealers(dealerIds);
-		        	if(dealers!=null && dealers.size()>0){
-		        		for (DealerBean model : dealers) {
-		        			list.add(new DealerNameListRepresentation(model));
-						}
-		        	}
+		        	for (DealerBean model : dealers) {
+		        		list.add(new DealerShopRepresentation(model));
+					}
 		        	result.setContent(list);
 		            result.setStatus(MCode.V_200);
 		        } catch (Exception e) {
