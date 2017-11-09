@@ -358,6 +358,19 @@ public class OrderApplication {
             throw new NegativeException(MCode.V_1, "订单处于不可取消状态！");
         }
     }
+    
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+    public void delOrder(CancelOrderCmd cmd) throws NegativeException {
+
+        MainOrder order = orderRepository.getOrderById(cmd.getOrderId());
+        // 检查是否可取消,若不可取消抛出异常。
+        if (order.del()) {
+            // 可能是逻辑删除或是改成取消状态(子订单也要改)
+            orderRepository.updateMainOrder(order);
+        } else {
+            throw new NegativeException(MCode.V_1, "订单处于不可取消状态！");
+        }
+    }
 
     /***
      * 计算运费

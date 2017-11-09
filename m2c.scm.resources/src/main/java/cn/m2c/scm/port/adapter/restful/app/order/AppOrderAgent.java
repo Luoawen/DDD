@@ -146,7 +146,7 @@ public class AppOrderAgent {
      * @param orderId
      * @return
      */
-    @RequestMapping(value = "/app/cancel", method = RequestMethod.PUT)
+    @RequestMapping(value = "/app/cancel", method = {RequestMethod.PUT, RequestMethod.POST})
     public ResponseEntity<MResult> cancelOrder(
             @RequestParam(value = "userId", required = false) String userId
             ,@RequestParam(value = "orderId", required = false) String orderId
@@ -205,7 +205,7 @@ public class AppOrderAgent {
      * @param skuId
      * @return
      */
-    @RequestMapping(value = "/app/confirm", method = RequestMethod.PUT)
+    @RequestMapping(value = "/app/confirm", method = {RequestMethod.PUT, RequestMethod.POST})
     public ResponseEntity<MResult> confirmReceive(
             @RequestParam(value = "userId", required = false) String userId
             ,@RequestParam(value = "orderId", required = false) String orderId
@@ -274,7 +274,7 @@ public class AppOrderAgent {
      * @param orderId
      * @return
      */
-    @RequestMapping(value = "/app/aftersale/ship", method = RequestMethod.PUT)
+    @RequestMapping(value = "/app/aftersale/ship", method = {RequestMethod.PUT, RequestMethod.POST})
     public ResponseEntity<MResult> afterSaleShip(
             @RequestParam(value = "userId", required = false) String userId
             ,@RequestParam(value = "expressNo", required = false) String expressNo
@@ -307,7 +307,7 @@ public class AppOrderAgent {
      * @param orderId
      * @return
      */
-    @RequestMapping(value = "/app/aftersale/user-rev", method = RequestMethod.PUT)
+    @RequestMapping(value = "/app/aftersale/user-rev", method = {RequestMethod.PUT, RequestMethod.POST})
     public ResponseEntity<MResult> userConfirmRev(
             @RequestParam(value = "userId", required = false) String userId
             ,@RequestParam(value = "skuId", required = false) String skuId

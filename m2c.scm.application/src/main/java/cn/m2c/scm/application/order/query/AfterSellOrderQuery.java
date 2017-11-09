@@ -316,4 +316,18 @@ public class AfterSellOrderQuery {
 		.append("WHERE	order_id = ? AND marketing_id = ? AND _status=1");
 		return this.supportJdbcTemplate.queryForBean(sql.toString(), SimpleMarket.class, orderId, marketId);
 	}
+	
+	/***
+	 * 获取订单中一个活动
+	 * @param marketId
+	 * @param orderId
+	 */
+	public SimpleMarket getMarketBySkuIdAndOrderId(String skuId, String orderId) {
+		StringBuilder sql = new StringBuilder();
+		sql.append(" SELECT marketing_id, market_level, market_type, threshold, threshold_type, discount\r\n")
+		.append("FROM	t_scm_order_marketing_used\r\n")
+		.append("WHERE	order_id = ? AND marketing_id = (SELECT a.marketing_id FROM t_scm_order_detail a WHERE a.order_id=? AND a.sku_id=?)")
+		.append(" AND _status=1");
+		return this.supportJdbcTemplate.queryForBean(sql.toString(), SimpleMarket.class, orderId, orderId, skuId);
+	}
 }

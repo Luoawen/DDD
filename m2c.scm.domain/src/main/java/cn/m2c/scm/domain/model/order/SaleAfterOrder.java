@@ -189,4 +189,12 @@ public class SaleAfterOrder extends ConcurrencySafeEntity {
 	public void updateStatusAgreeAfterSale() {
 		this.status = 11;
 	}
+	
+	public String orderId() {
+		return orderId;
+	}
+	
+	public String skuId() {
+		return skuId;
+	}
 }

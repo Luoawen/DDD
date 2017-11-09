@@ -118,6 +118,18 @@ public class MainOrder extends ConcurrencySafeEntity {
 		DomainEventPublisher.instance().publish(new OrderOptLogEvent(orderId, null, "订单取消成功", userId));
 		return true;
 	}
+	
+	/***
+	 * 取消订单(用户主动操作，系统自动操作)
+	 */
+	public boolean del() {
+		// 检查是否可以取消，只有在未支付的状态下用户可以取消
+		if (status < 3) {
+			return false;
+		}
+		//aaa
+		return true;
+	}
 	/***
 	 * 结算(可暂不做)
 	 */
