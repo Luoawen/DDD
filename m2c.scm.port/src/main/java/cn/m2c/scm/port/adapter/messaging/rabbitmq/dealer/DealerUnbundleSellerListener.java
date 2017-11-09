@@ -1,5 +1,7 @@
 package cn.m2c.scm.port.adapter.messaging.rabbitmq.dealer;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate4.HibernateTransactionManager;
 
@@ -18,6 +20,8 @@ import cn.m2c.scm.domain.model.dealer.DealerRepository;
  */
 public class DealerUnbundleSellerListener extends ExchangeListener{
 	
+	private static final Logger log = LoggerFactory.getLogger(DealerUnbundleSellerListener.class);
+	
 	@Autowired
 	DealerApplication dealerApplication;
 
@@ -28,14 +32,19 @@ public class DealerUnbundleSellerListener extends ExchangeListener{
 
 	@Override
 	protected void filteredDispatch(String aType, String aTextMessage) throws Exception {
-		NotificationReader reader = new NotificationReader(aTextMessage);
-        String userId = reader.eventStringValue("userId");
-        Integer oldGroupType = reader.eventIntegerValue("oldGroupType");
-        Integer newGroupType = reader.eventIntegerValue("newGroupType");
-        if (oldGroupType == 4) {
-			if (oldGroupType != newGroupType) {
-				dealerApplication.unbundleUser(userId);
+		try {
+			NotificationReader reader = new NotificationReader(aTextMessage);
+			String userId = reader.eventStringValue("userId");
+			Integer oldGroupType = reader.eventIntegerValue("oldGroupType");
+			Integer newGroupType = reader.eventIntegerValue("newGroupType");
+			if (oldGroupType == 4) {
+				if (oldGroupType != newGroupType) {
+					dealerApplication.unbundleUser(userId);
+				}
 			}
+		} catch (Exception e) {
+			log.info("解绑商家管理员",e.getMessage());
+			throw new Exception();
 		}
 	}
 

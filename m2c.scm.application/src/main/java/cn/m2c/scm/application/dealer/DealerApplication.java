@@ -80,11 +80,13 @@ public class DealerApplication {
 	 */
 	@Transactional(rollbackFor = {Exception.class,RuntimeException.class,NegativeException.class})
 	public void unbundleUser(String userId) throws NegativeException {
-		Dealer dealer = dealerRepository.getDealerByUserId(userId);
-		if (null == dealer) {
+		List<Dealer> dealerList = dealerRepository.getDealerByUserId(userId);
+		if (null == dealerList && dealerList.size() >0) {
 			throw new NegativeException(NegativeCode.DEALER_IS_NOT_EXIST, "此管理员对应的经销商不存在.");
 		}
-		dealer.unbundleSeller();
+		for (Dealer dealer : dealerList) {
+			dealer.unbundleSeller();
+		}
 	}
 
 	
