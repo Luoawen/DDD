@@ -273,8 +273,8 @@ public class OrderQueryApplication {
 			sql.append(" ORDER BY a.order_id DESC, a.created_date DESC ");
 			
 			sql.append(" LIMIT ?,? ");
-			params.add((pageIndex - 1) * pageSize + 1);
-			params.add(pageSize);
+			params.add((pageIndex - 1) * pageSize);
+			params.add(pageIndex * pageSize);
 			
 			result = this.supportJdbcTemplate.queryForBeanList(sql.toString(), AppOrderBean.class, params.toArray());
 			
