@@ -146,10 +146,14 @@ public class Dealer extends ConcurrencySafeEntity{
 		this.sellerPhone = sellerPhone;
 	}
 
-
+	/**
+	 * 解绑管理员
+	 */
+	public void unbundleSeller() {
+		this.userId = "";
+		this.userName = "";
+		this.userPhone = "";
+	}
 	
-	
-	
-
 	
 }
