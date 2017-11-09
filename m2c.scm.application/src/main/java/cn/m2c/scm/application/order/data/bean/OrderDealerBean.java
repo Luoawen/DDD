@@ -49,16 +49,6 @@ public class OrderDealerBean {
 	/**结算方式*/
 	private Integer termOfPayment;
 	
-	private Float resRate;
-	
-	public Float getResRate() {
-		return resRate;
-	}
-
-	public void setResRate(Float resRate) {
-		this.resRate = resRate;
-	}
-
 	public Integer getTermOfPayment() {
 		return termOfPayment;
 	}
