@@ -298,7 +298,7 @@ public class OrderApplication {
 			int goodsAmount = 0;
 			long plateDiscount = 0;
 			int dealerDiscount = 0;
-			int termOfPayment = dc.get(dealerId);
+			int termOfPayment = dc.get(dealerId) == null ? 0 : dc.get(dealerId);
 			String dealerOrderId = cmd.getOrderId() + c;
 			for (GoodsDto bean : dtos) {
 				float num = bean.getPurNum();
