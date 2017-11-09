@@ -46,6 +46,16 @@ public class DealerOrderQB {
 	/**商家优惠 */
 	private long dealerDiscount;
 	
+	private String orderId;
+	
+	public String getOrderId() {
+		return orderId;
+	}
+
+	public void setOrderId(String orderId) {
+		this.orderId = orderId;
+	}
+
 	public long getGoodsMoney() {
 		return goodsMoney;
 	}

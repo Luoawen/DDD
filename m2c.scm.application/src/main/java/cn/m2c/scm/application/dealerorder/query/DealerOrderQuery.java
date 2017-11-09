@@ -225,7 +225,7 @@ public class DealerOrderQuery {
 		StringBuilder sql = new StringBuilder();
 		sql.append(" SELECT dtl.sku_id, dtl.sku_name, dtl.goods_name, dtl.goods_title, a.dealer_id, a.created_date, dtl.discount_price, \r\n")
 				.append("dtl.sell_num, af._status afStatus, a._status, om.pay_no, a.dealer_order_id, dtl.goods_icon, a.created_date,\r\n") 
-				.append(" a.rev_person, a.rev_phone, a.goods_amount, a.order_freight, a.plateform_discount, a.dealer_discount\r\n") 
+				.append(" a.rev_person, a.rev_phone, a.goods_amount, a.order_freight, a.plateform_discount, a.dealer_discount, a.order_id\r\n") 
 				.append(" FROM t_scm_order_dealer a \r\n") 
 				.append(" LEFT OUTER JOIN t_scm_order_detail dtl ON dtl.dealer_order_id = a.dealer_order_id\r\n")
 				.append(" LEFT OUTER JOIN t_scm_order_after_sell af ON af.dealer_order_id = a.dealer_order_id\r\n")
@@ -306,6 +306,7 @@ public class DealerOrderQuery {
 				midBean.setOrderFreight((long)item.get("order_freight"));
 				midBean.setPlateDiscount((long)item.get("plateform_discount"));
 				midBean.setDealerDiscount((long)item.get("dealer_discount"));
+				midBean.setOrderId((String)item.get("order_id"));
 				
 				List<DealerGoodsBean> goodses = new ArrayList<>();
 				midBean.setGoodsList(goodses);

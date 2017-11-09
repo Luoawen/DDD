@@ -343,7 +343,7 @@ public class OrderAgent {
      */
     @RequestMapping(value="/dealer/sendOrder", method = RequestMethod.PUT)
     public ResponseEntity<MResult> sendOrder(
-    		@RequestParam(value = "dealerOrderId", required = true) String dealerOrderId,
+    		@RequestParam(value = "dealerOrderId", required = false) String dealerOrderId,
     		@RequestParam(value = "expressNo", required = false) String expressNo,
     		@RequestParam(value = "expressName", required = false) String expressName,
     		@RequestParam(value = "expressNote", required = false) String expressNote,
@@ -360,6 +360,7 @@ public class OrderAgent {
     		result.setStatus(MCode.V_200);
 		} catch (NegativeException e) {
 			result.setStatus(MCode.V_400);
+			result.setErrorMessage(e.getMessage());
 			LOGGER.info("发货失败");
 		}
     	
