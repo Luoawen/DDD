@@ -41,6 +41,11 @@ public class GoodsSkuInfoRepresentation {
     private Integer goodsStatus;
 
     /**
+     * sku状态是否可用0：不可用，1：可用
+     */
+    private Integer skuAvailableStatus;
+
+    /**
      * 规格id
      */
     private String skuId;
@@ -86,6 +91,13 @@ public class GoodsSkuInfoRepresentation {
         List<String> mainImages = JsonUtils.toList(goodsBean.getGoodsMainImages(), String.class);
         if (null != mainImages && mainImages.size() > 0) {
             this.goodsImageUrl = mainImages.get(0);
+        }
+
+        // 是否对外展示，1：不展示，2：展示
+        if (this.goodsStatus == 2 && this.availableNum > 0 && bean.getShowStatus() == 2) {
+            this.skuAvailableStatus = 1;
+        } else {
+            this.skuAvailableStatus = 0;
         }
     }
 
@@ -191,5 +203,13 @@ public class GoodsSkuInfoRepresentation {
 
     public void setGoodsImageUrl(String goodsImageUrl) {
         this.goodsImageUrl = goodsImageUrl;
+    }
+
+    public Integer getSkuAvailableStatus() {
+        return skuAvailableStatus;
+    }
+
+    public void setSkuAvailableStatus(Integer skuAvailableStatus) {
+        this.skuAvailableStatus = skuAvailableStatus;
     }
 }
