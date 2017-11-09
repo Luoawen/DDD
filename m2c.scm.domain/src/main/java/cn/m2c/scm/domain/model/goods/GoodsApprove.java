@@ -312,6 +312,9 @@ public class GoodsApprove extends ConcurrencySafeEntity {
     public void remove() {
         this.delStatus = 2;
         this.goodsId = new StringBuffer("DEL_").append(this.goodsId).toString();
+        for (GoodsSkuApprove sku : this.goodsSkuApproves) {
+            sku.remove();
+        }
     }
 
     /**
