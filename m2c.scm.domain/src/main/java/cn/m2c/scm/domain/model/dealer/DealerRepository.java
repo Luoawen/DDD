@@ -18,5 +18,11 @@ public interface DealerRepository {
     public void save(Dealer dealer);
 
     public Dealer getDealerBySellerId(String sellerId);
+    
+    /**
+     * 用户Id获取经销商
+     * @return
+     */
+    public Dealer getDealerByUserId(String userId);
 
 }

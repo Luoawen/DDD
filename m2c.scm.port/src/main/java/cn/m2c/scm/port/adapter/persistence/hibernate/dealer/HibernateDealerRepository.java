@@ -37,5 +37,12 @@ public class HibernateDealerRepository extends HibernateSupperRepository impleme
 		return dealer;
 	}
 
+	@Override
+	public Dealer getDealerByUserId(String userId) {
+		return (Dealer) this.session().createQuery("FROM Dealer WHERE userId = :userId")
+				.setString("userId", userId).uniqueResult();
+		
+	}
+
 
 }
