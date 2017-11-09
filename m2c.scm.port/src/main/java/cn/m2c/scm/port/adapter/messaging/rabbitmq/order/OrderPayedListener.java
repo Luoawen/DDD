@@ -1,6 +1,5 @@
 package cn.m2c.scm.port.adapter.messaging.rabbitmq.order;
 
-import java.util.Calendar;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +9,6 @@ import cn.m2c.ddd.common.application.configuration.RabbitmqConfiguration;
 import cn.m2c.ddd.common.event.ConsumedEventStore;
 import cn.m2c.ddd.common.notification.NotificationReader;
 import cn.m2c.ddd.common.port.adapter.messaging.rabbitmq.ExchangeListener;
-import cn.m2c.ddd.common.port.adapter.persistence.springJdbc.SupportJdbcTemplate;
 import cn.m2c.scm.application.order.OrderApplication;
 import cn.m2c.scm.application.order.command.OrderPayedCmd;
 /***
