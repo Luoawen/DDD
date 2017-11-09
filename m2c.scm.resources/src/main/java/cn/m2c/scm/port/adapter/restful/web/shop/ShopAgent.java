@@ -109,7 +109,7 @@ public class ShopAgent {
 		            @RequestParam(value = "dealerId", required = true) String dealerId,
 		            @RequestParam(value = "shopId", required = false) String shopId,
 		            @RequestParam(value = "shopName", required = true) String shopName,
-		            @RequestParam(value = "shopIcon", required = true) String shopIcon,
+		            @RequestParam(value = "shopIcon") String shopIcon,
 		            @RequestParam(value = "shopReceipt", required = false) String shopReceipt,
 		            @RequestParam(value = "shopIntroduce", required = false) String shopIntroduce,
 		            @RequestParam(value = "customerServiceTel", required = true) String customerServiceTel
@@ -139,7 +139,7 @@ public class ShopAgent {
 		    public ResponseEntity<MResult> addShopInfo(
 		            @RequestParam(value = "dealerId", required = true) String dealerId,
 		            @RequestParam(value = "shopName", required = true) String shopName,
-		            @RequestParam(value = "shopIcon", required = true) String shopIcon,
+		            @RequestParam(value = "shopIcon") String shopIcon,
 		            @RequestParam(value = "shopIntroduce", required = false) String shopIntroduce,
 		            @RequestParam(value = "shopReceipt", required = false) String shopReceipt,
 		            @RequestParam(value = "customerServiceTel", required = true) String customerServiceTel
