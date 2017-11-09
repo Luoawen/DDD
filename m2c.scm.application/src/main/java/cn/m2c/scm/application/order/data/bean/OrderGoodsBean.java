@@ -68,6 +68,27 @@ public class OrderGoodsBean {
 	@ColumnAlias(value="dealer_order_id")
 	private String dealerOrderId;
 
+	@ColumnAlias(value="change_price")
+	private long changePrice;
+	@ColumnAlias(value="is_change")
+	private Integer isChange;
+	
+	public long getChangePrice() {
+		return changePrice;
+	}
+
+	public void setChangePrice(long changePrice) {
+		this.changePrice = changePrice;
+	}
+
+	public Integer getIsChange() {
+		return isChange;
+	}
+
+	public void setIsChange(Integer isChange) {
+		this.isChange = isChange;
+	}
+
 	public String getGoodsName() {
 		return goodsName;
 	}

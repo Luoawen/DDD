@@ -385,7 +385,7 @@ public class OrderQuery {
 		//获取商品
 		sql.delete(0, sql.length());
 		sql.append("SELECT dealer_order_id, _status, freight, plateform_discount, goods_amount, rate,goods_id, sku_id, sku_name,supply_price, discount_price, \r\n")
-		.append(" sell_num, bds_rate, media_id, media_res_id, saler_user_id, saler_user_rate\r\n")
+		.append(" sell_num, bds_rate, media_id, media_res_id, saler_user_id, saler_user_rate, is_change, change_price\r\n")
 		.append(" FROM t_scm_order_detail WHERE order_id=? ORDER BY dealer_order_id");
 		List<OrderGoodsBean> ls = supportJdbcTemplate.queryForBeanList(sql.toString(), OrderGoodsBean.class, orderNo);
 		
@@ -403,7 +403,7 @@ public class OrderQuery {
 		
 		
 		sql.delete(0, sql.length());
-		sql.append("SELECT marketing_id, market_level,market_type, threshold, threshold_type, discount \r\n")
+		sql.append("SELECT marketing_id, market_level,market_type, threshold, threshold_type, discount, share_percent \r\n")
 		.append(" FROM t_scm_order_marketing_used WHERE order_id=? ");
 		order.setMarkets(supportJdbcTemplate.queryForBeanList(sql.toString(), SimpleMarket.class, orderNo));
 		sql = null;
