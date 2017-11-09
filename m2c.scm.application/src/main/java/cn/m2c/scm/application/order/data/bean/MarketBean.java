@@ -3,8 +3,6 @@ package cn.m2c.scm.application.order.data.bean;
 import java.util.HashMap;
 import java.util.List;
 
-import cn.m2c.common.JsonUtils;
-
 /***
  * 订单计算时用的market 活动
  * @author fanjc
@@ -18,6 +16,9 @@ public class MarketBean {
 	private String fullCutNo;
 	/**满减状态，1：未生效，2：已生效，3已失效*/
 	private int status;
+
+	private int totalNum;
+
 	/**营销名*/
 	private String fullCutName;
 	
@@ -44,6 +45,8 @@ public class MarketBean {
 	//private HashMap<String, Object> costList;
 	
 	private int threshold;
+
+
 	
 	public String getCostList() {
 //		if (costList != null)
@@ -209,5 +212,13 @@ public class MarketBean {
 	 */
 	public int getHasUsedNum() {
 		return numPerDay - numToday;
+	}
+
+	public int getTotalNum() {
+		return totalNum;
+	}
+
+	public void setTotalNum(int totalNum) {
+		this.totalNum = totalNum;
 	}
 }
