@@ -8,7 +8,6 @@ import org.springframework.orm.hibernate4.HibernateTransactionManager;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
-import cn.m2c.common.JsonUtils;
 import cn.m2c.ddd.common.application.configuration.RabbitmqConfiguration;
 import cn.m2c.ddd.common.event.ConsumedEventStore;
 import cn.m2c.ddd.common.port.adapter.messaging.rabbitmq.ExchangeListener;
@@ -30,16 +29,17 @@ public class StantardDeleteListener extends ExchangeListener {
 		JSONObject jsonObjject = JSONObject.parseObject(aTextMessage);
 
 		JSONObject object = jsonObjject.getJSONObject("event");
-		JSONArray array = object.getJSONArray("standardIds");
-		List<String> list = array.toJavaList(String.class);
-
-		if (list != null && list.size() > 0) {
-			for (String stantardId : list) {
-				if (null != stantardId) {
-					Stantard stantard = stantardRepository.getStantardByStantardId(stantardId);
-					if (stantard.getUseNum() > 0) {
-						stantard.noUsed();
-						stantardRepository.saveStantard(stantard);
+		JSONArray array = object.getJSONArray("standardId");
+		if (array != null) {
+			List<String> list = array.toJavaList(String.class);
+			if (list != null && list.size() > 0) {
+				for (String stantardId : list) {
+					if (null != stantardId) {
+						Stantard stantard = stantardRepository.getStantardByStantardId(stantardId);
+						if (stantard.getUseNum() > 0) {
+							stantard.noUsed();
+							stantardRepository.saveStantard(stantard);
+						}
 					}
 				}
 			}
