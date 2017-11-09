@@ -60,6 +60,11 @@ public class GoodsSkuApprove extends IdentifiedValueObject {
      */
     private Integer showStatus;
 
+    /**
+     * 是否删除，1：正常，2：删除
+     */
+    private Integer delStatus;
+
     public GoodsSkuApprove() {
         super();
     }
@@ -102,7 +107,7 @@ public class GoodsSkuApprove extends IdentifiedValueObject {
     }
 
     public void modifyGoodsSkuApprove(String skuName, Integer availableNum, Float weight, Long photographPrice,
-                                 Long marketPrice, Long supplyPrice, String goodsCode, Integer showStatus) {
+                                      Long marketPrice, Long supplyPrice, String goodsCode, Integer showStatus) {
         this.skuName = skuName;
         this.availableNum = availableNum;
         this.weight = weight;
@@ -111,5 +116,10 @@ public class GoodsSkuApprove extends IdentifiedValueObject {
         this.supplyPrice = supplyPrice;
         this.goodsCode = goodsCode;
         this.showStatus = showStatus;
+    }
+
+    public void remove() {
+        this.delStatus = 2;
+        this.skuId = new StringBuffer("DEL_").append(this.id()).append("_").append(this.skuId).toString();
     }
 }
