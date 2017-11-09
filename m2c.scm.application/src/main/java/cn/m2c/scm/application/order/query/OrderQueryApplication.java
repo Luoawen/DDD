@@ -314,9 +314,9 @@ public class OrderQueryApplication {
 		} catch (Exception e) {
 			LOGGER.error("---查询APP订单列表出错"+e.getMessage(),e);
 	           StackTraceElement stackTraceElement= e.getStackTrace()[0]; 
-	           LOGGER.error("File="+stackTraceElement.getFileName()); 
-	           LOGGER.error("Line="+stackTraceElement.getLineNumber()); 
-	           LOGGER.error("Method="+stackTraceElement.getMethodName()); 
+	           LOGGER.error("File=" + stackTraceElement.getFileName()); 
+	           LOGGER.error("Line=" + stackTraceElement.getLineNumber()); 
+	           LOGGER.error("Method=" + stackTraceElement.getMethodName()); 
 	           
 			throw new NegativeException(500, "查询APP订单列表出错");
 		}
