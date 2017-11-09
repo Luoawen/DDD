@@ -468,4 +468,8 @@ public class Goods extends ConcurrencySafeEntity {
     public Integer goodsStatus() {
         return goodsStatus;
     }
+
+    public void modifyGoodsMainImages(List<String> images) {
+        this.goodsMainImages = JsonUtils.toStr(images);
+    }
 }

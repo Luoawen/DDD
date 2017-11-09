@@ -3,6 +3,8 @@ package cn.m2c.scm.port.adapter.restful.web.goods;
 import cn.m2c.common.MCode;
 import cn.m2c.common.MPager;
 import cn.m2c.common.MResult;
+import cn.m2c.scm.application.dealer.data.bean.DealerBean;
+import cn.m2c.scm.application.dealer.query.DealerQuery;
 import cn.m2c.scm.application.goods.query.GoodsQueryApplication;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsBean;
 import cn.m2c.scm.application.goods.query.data.representation.GoodsChoiceRepresentation;
@@ -36,6 +38,8 @@ public class GoodsQueryAgent {
 
     @Autowired
     GoodsQueryApplication goodsQueryApplication;
+    @Autowired
+    DealerQuery dealerQuery;
 
     /**
      * 商品筛选根据商品类别，名称、标题、编号筛选
@@ -62,7 +66,12 @@ public class GoodsQueryAgent {
                 if (null != goodsBeans && goodsBeans.size() > 0) {
                     List<GoodsChoiceRepresentation> representations = new ArrayList<GoodsChoiceRepresentation>();
                     for (GoodsBean bean : goodsBeans) {
-                        representations.add(new GoodsChoiceRepresentation(bean));
+                        String shopName = "";
+                        List<DealerBean> list = dealerQuery.getDealers(bean.getDealerId());
+                        if (null != list && list.size() > 0) {
+                            shopName = list.get(0).getShopName();
+                        }
+                        representations.add(new GoodsChoiceRepresentation(bean, shopName));
                     }
                     result.setContent(representations);
                 }

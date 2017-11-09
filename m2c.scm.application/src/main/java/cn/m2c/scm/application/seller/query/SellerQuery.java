@@ -58,9 +58,11 @@ public class SellerQuery {
 					params.add(endTime+" 23:59:59");
 				}
 				sql.append(" ORDER BY sds.created_date DESC ");
-				sql.append(" LIMIT ?,?");
-				params.add(rows*(pageNum - 1));
-				params.add(rows);
+				if (pageNum != null && rows != null) {
+					sql.append(" LIMIT ?,?");
+					params.add(rows*(pageNum - 1));
+					params.add(rows);
+				}
 				System.out.println("----查询业务员列表："+sql.toString());
 				sellerList =  this.supportJdbcTemplate.queryForBeanList(sql.toString(), SellerBean.class, params.toArray());
 				
