@@ -12,6 +12,7 @@ public class GoodsSimpleDetailRepresentation {
     private String dealerId;
     private String dealerName;
     private String goodsName;
+    private String goodsSubTitle;
     private String goodsId;
     private Long goodsPrice;
     private String goodsImageUrl;
@@ -22,6 +23,7 @@ public class GoodsSimpleDetailRepresentation {
         this.dealerId = bean.getDealerId();
         this.dealerName = bean.getDealerName();
         this.goodsName = bean.getGoodsName();
+        this.goodsSubTitle = bean.getGoodsSubTitle();
         this.goodsId = bean.getGoodsId();
         this.goodsClassifyId = bean.getGoodsClassifyId();
         List<String> mainImages = JsonUtils.toList(bean.getGoodsMainImages(), String.class);
@@ -87,5 +89,13 @@ public class GoodsSimpleDetailRepresentation {
 
     public void setGoodsClassifyId(String goodsClassifyId) {
         this.goodsClassifyId = goodsClassifyId;
+    }
+
+    public String getGoodsSubTitle() {
+        return goodsSubTitle;
+    }
+
+    public void setGoodsSubTitle(String goodsSubTitle) {
+        this.goodsSubTitle = goodsSubTitle;
     }
 }

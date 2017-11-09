@@ -21,10 +21,12 @@ public class GoodsChoiceRepresentation {
     private String goodsImageUrl;
     private List<Map> goodsSkuList;
     private Integer skuSingleFlag;
+    private String shopName;
 
-    public GoodsChoiceRepresentation(GoodsBean bean) {
+    public GoodsChoiceRepresentation(GoodsBean bean, String shopName) {
         this.dealerId = bean.getDealerId();
         this.dealerName = bean.getDealerName();
+        this.shopName = shopName;
         this.goodsName = bean.getGoodsName();
         this.goodsId = bean.getGoodsId();
         if (null != bean.getGoodsSkuBeans() && bean.getGoodsSkuBeans().size() > 0) {
@@ -110,5 +112,13 @@ public class GoodsChoiceRepresentation {
 
     public void setSkuSingleFlag(Integer skuSingleFlag) {
         this.skuSingleFlag = skuSingleFlag;
+    }
+
+    public String getShopName() {
+        return shopName;
+    }
+
+    public void setShopName(String shopName) {
+        this.shopName = shopName;
     }
 }
