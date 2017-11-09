@@ -19,10 +19,10 @@ public class UnitCommand extends AssertionConcern implements Serializable {
 
 	public UnitCommand(String unitId, String unitName) throws NegativeException {
 		if (StringUtils.isEmpty(unitId)) {
-			throw new NegativeException(MCode.V_1, "计量ID名称没有参数(unitId)");
+			throw new NegativeException(MCode.V_1, "计量单位不能为空");
 		}
 		if (StringUtils.isEmpty(unitName.replaceAll(" ", ""))) {
-			throw new NegativeException(MCode.V_1, "计量单位名称没有参数(unitName)");
+			throw new NegativeException(MCode.V_1, "计量单位名称不能为空");
 		}
 		this.unitId = unitId;
 		this.unitName = unitName;

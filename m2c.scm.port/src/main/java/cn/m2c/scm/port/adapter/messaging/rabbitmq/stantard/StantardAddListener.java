@@ -8,7 +8,6 @@ import org.springframework.orm.hibernate4.HibernateTransactionManager;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
-import cn.m2c.common.JsonUtils;
 import cn.m2c.ddd.common.application.configuration.RabbitmqConfiguration;
 import cn.m2c.ddd.common.event.ConsumedEventStore;
 import cn.m2c.ddd.common.port.adapter.messaging.rabbitmq.ExchangeListener;
@@ -29,13 +28,13 @@ public class StantardAddListener extends ExchangeListener{
 	@Override
 	protected void filteredDispatch(String aType, String aTextMessage) throws Exception {
 		JSONObject jsonObjject = JSONObject.parseObject(aTextMessage);
-		
+		System.out.println("全部数据==============================>"+aTextMessage);
 		JSONObject object = jsonObjject.getJSONObject("event");
-		JSONArray array = object.getJSONArray("standardIds");
+		System.out.println("事件数据-------------------------------"+object);
+		JSONArray array = object.getJSONArray("standardId");
+		System.out.println("取出Id----------------------------------------->"+array);
 		List<String> list = array.toJavaList(String.class);
-		/*System.out.println("全部数据-------------------------------------"+jsonObject);
-        List<String> stantardIds = JsonUtils.toList(jsonObject.getJSONArray("standardIds").toJSONString(), String.class);
-        */
+		System.out.println("取出List======================================="+list);
         if (list != null && list.size() > 0) {
         	for (String stantardId : list) {
             	if (null != stantardId) {
