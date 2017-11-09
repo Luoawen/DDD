@@ -35,6 +35,7 @@ public class UnitQuery {
 			params.add(rows * (pageNum - 1));
 			params.add(rows);
 		}
+        sql.append(" ORDER BY created_date DESC ");
         List<UnitBean> unitList = this.supportJdbcTemplate.queryForBeanList(sql.toString(), UnitBean.class, params.toArray());
         return unitList;
     }

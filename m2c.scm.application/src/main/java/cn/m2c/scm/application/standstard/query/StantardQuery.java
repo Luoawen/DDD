@@ -45,6 +45,7 @@ public class StantardQuery {
 			params.add(rows * (pageNum - 1));
 			params.add(rows);
 		}
+		sql.append(" ORDER BY created_date DESC ");
 		List<StantardBean> stantardList= this.supportJdbcTemplate.queryForBeanList(sql.toString(), StantardBean.class, params.toArray());
 		return stantardList;
 	}
