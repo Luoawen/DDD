@@ -186,7 +186,10 @@ public class DealerAgent {
 			}catch (IllegalArgumentException e) {
 				log.error("修改经销商出错", e);
 				result = new MResult(MCode.V_1, e.getMessage());
-			} catch (Exception e) {
+			} catch (NegativeException ne) {
+				log.error("添加经销商出错", ne);
+				result = new MResult(MCode.V_1, ne.getMessage());
+			}catch (Exception e) {
 				log.error("修改经销商出错" + e.getMessage(), e);
 	            result = new MResult(MCode.V_400, "服务器开小差了");
 			}
