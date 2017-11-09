@@ -79,6 +79,7 @@ public class DealerAddOrUpdateCommand extends AssertionConcern implements Serial
 		
 		
 		assertArgumentNotNull(dealerAcode, "区域code不能为空");
+		assertArgumentNotNull(dealerArea, "请选择区域");
 		
 		
 		if (null == countMode) {

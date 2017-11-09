@@ -160,6 +160,7 @@ public class BrandAgent {
         MResult result = new MResult(MCode.V_1);
         try {
             brandApplication.delBrand(brandId);
+            result.setStatus(MCode.V_200);
         } catch (NegativeException ne) {
             LOGGER.error("deleteBrand NegativeException e:", ne);
             result = new MResult(ne.getStatus(), ne.getMessage());

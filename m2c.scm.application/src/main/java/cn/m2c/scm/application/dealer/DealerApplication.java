@@ -51,7 +51,7 @@ public class DealerApplication {
 		dealerRepository.save(dealer);
 	}
 	
-
+	
 	
 	/**
 	 * 更新经销商中的业务员信息
@@ -70,6 +70,21 @@ public class DealerApplication {
 	
 		dealer.updateSellerInfo(command.getSellerName(), command.getSellerPhone());
 		dealerRepository.save(dealer);
+	}
+	
+	
+	/**
+	 * 解绑经销商中的管理员
+	 * @param userId
+	 * @throws NegativeException
+	 */
+	@Transactional(rollbackFor = {Exception.class,RuntimeException.class,NegativeException.class})
+	public void unbundleUser(String userId) throws NegativeException {
+		Dealer dealer = dealerRepository.getDealerByUserId(userId);
+		if (null == dealer) {
+			throw new NegativeException(NegativeCode.DEALER_IS_NOT_EXIST, "此管理员对应的经销商不存在.");
+		}
+		dealer.unbundleSeller();
 	}
 
 	
