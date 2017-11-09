@@ -389,4 +389,21 @@ public class GoodsApplication {
                 mresName);
         DomainEventPublisher.instance().publish(goodsViewEvent);
     }
+
+    /**
+     * 修改商品主图
+     *
+     * @param goodsId
+     * @throws NegativeException
+     */
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+    @EventListener(isListening = true)
+    public void modifyGoodsMainImages(String goodsId, List<String> images) throws NegativeException {
+        LOGGER.info("modifyGoodsMainImages goodsId >>{}", goodsId);
+        Goods goods = goodsRepository.queryGoodsById(goodsId);
+        if (null == goods) {
+            throw new NegativeException(MCode.V_300, "商品不存在");
+        }
+        goods.modifyGoodsMainImages(images);
+    }
 }

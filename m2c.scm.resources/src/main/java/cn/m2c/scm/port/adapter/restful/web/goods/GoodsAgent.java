@@ -1,21 +1,5 @@
 package cn.m2c.scm.port.adapter.restful.web.goods;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
 import cn.m2c.common.JsonUtils;
 import cn.m2c.common.MCode;
 import cn.m2c.common.MPager;
@@ -37,6 +21,21 @@ import cn.m2c.scm.application.postage.data.bean.PostageModelBean;
 import cn.m2c.scm.application.postage.query.PostageModelQueryApplication;
 import cn.m2c.scm.application.unit.query.UnitQuery;
 import cn.m2c.scm.domain.NegativeException;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 商品
@@ -335,6 +334,35 @@ public class GoodsAgent {
         } catch (Exception e) {
             LOGGER.error("queryGoodsDetail Exception e:", e);
             result = new MResult(MCode.V_400, "查询商品详情失败");
+        }
+        return new ResponseEntity<MResult>(result, HttpStatus.OK);
+    }
+
+    /**
+     * 修改商品主图
+     *
+     * @param goodsId
+     * @return
+     */
+    @RequestMapping(value = "/main/image/{goodsId}", method = RequestMethod.PUT)
+    public ResponseEntity<MResult> modifyGoodsMainImages(
+            @PathVariable("goodsId") String goodsId,
+            @RequestParam(value = "images", required = false) List images
+    ) {
+        MResult result = new MResult(MCode.V_1);
+        if (null == images || images.size() == 0) {
+            result = new MResult(MCode.V_400, "商品主图不能为空");
+            return new ResponseEntity<MResult>(result, HttpStatus.OK);
+        }
+        try {
+            goodsApplication.modifyGoodsMainImages(goodsId, images);
+            result.setStatus(MCode.V_200);
+        } catch (NegativeException ne) {
+            LOGGER.error("modifyGoodsMainImages NegativeException e:", ne);
+            result = new MResult(ne.getStatus(), ne.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("modifyGoodsMainImages Exception e:", e);
+            result = new MResult(MCode.V_400, "修改商品主图失败");
         }
         return new ResponseEntity<MResult>(result, HttpStatus.OK);
     }
