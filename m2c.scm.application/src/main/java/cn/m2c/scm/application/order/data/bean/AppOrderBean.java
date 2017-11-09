@@ -33,22 +33,22 @@ public class AppOrderBean extends AssertionConcern implements Serializable {
 	 * 订单商品金额
 	 */
 	@ColumnAlias(value = "goods_amount")
-	private int goodAmount;
+	private Long goodAmount;
 	/**
 	 * 订单运费
 	 */
 	@ColumnAlias(value = "order_freight")
-	private int oderFreight;
+	private Long oderFreight;
 	/**
 	 * 平台优惠
 	 */
 	@ColumnAlias(value = "plateform_discount")
-	private int plateFormDiscount;
+	private Long plateFormDiscount;
 	/**
 	 * 商家优惠
 	 */
 	@ColumnAlias(value = "dealer_discount")
-	private int dealerDiscount;
+	private Long dealerDiscount;
 	
 	@ColumnAlias(value = "dealer_id")
 	private String dealerId;
@@ -86,19 +86,19 @@ public class AppOrderBean extends AssertionConcern implements Serializable {
 		return createDate;
 	}
 
-	public int getGoodAmount() {
+	public Long getGoodAmount() {
 		return goodAmount;
 	}
 
-	public int getOderFreight() {
+	public Long getOderFreight() {
 		return oderFreight;
 	}
 
-	public int getPlateFormDiscount() {
+	public Long getPlateFormDiscount() {
 		return plateFormDiscount;
 	}
 
-	public int getDealerDiscount() {
+	public Long getDealerDiscount() {
 		return dealerDiscount;
 	}
 
@@ -114,19 +114,19 @@ public class AppOrderBean extends AssertionConcern implements Serializable {
 		this.createDate = createDate;
 	}
 
-	public void setGoodAmount(int goodAmount) {
+	public void setGoodAmount(Long goodAmount) {
 		this.goodAmount = goodAmount;
 	}
 
-	public void setOderFreight(int oderFreight) {
+	public void setOderFreight(Long oderFreight) {
 		this.oderFreight = oderFreight;
 	}
 
-	public void setPlateFormDiscount(int plateFormDiscount) {
+	public void setPlateFormDiscount(Long plateFormDiscount) {
 		this.plateFormDiscount = plateFormDiscount;
 	}
 
-	public void setDealerDiscount(int dealerDiscount) {
+	public void setDealerDiscount(Long dealerDiscount) {
 		this.dealerDiscount = dealerDiscount;
 	}
 	
