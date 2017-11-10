@@ -89,8 +89,7 @@ public class SellerAgent {
 		}catch (IllegalArgumentException e) {
 			log.error("添加业务员出错", e);
 			result = new MResult(MCode.V_1, e.getMessage());
-		} 
-		catch (NegativeException ne) {
+		}catch (NegativeException ne) {
 			result = new MResult(MCode.V_1, ne.getMessage());
 		} catch (Exception e) {
 			log.error("添加业务员出错" + e.getMessage(), e);
@@ -149,7 +148,9 @@ public class SellerAgent {
 		}catch (IllegalArgumentException e) {
 			log.error("修改业务员出错", e);
 			result = new MResult(MCode.V_1, e.getMessage());
-		} catch (Exception e) {
+		}catch (NegativeException ne) {
+			result = new MResult(MCode.V_1, ne.getMessage());
+		}catch (Exception e) {
 			log.error("修改业务员出错" + e.getMessage(), e);
 			result = new MResult(MCode.V_400, "服务器开小差了");
 		}

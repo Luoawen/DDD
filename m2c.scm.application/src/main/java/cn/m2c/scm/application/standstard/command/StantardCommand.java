@@ -28,10 +28,10 @@ public class StantardCommand extends AssertionConcern implements Serializable {
 
 	public StantardCommand(String stantardId, String stantardName) throws NegativeException {
 		if (StringUtils.isEmpty(stantardId)) {
-			throw new NegativeException(MCode.V_1, "规格ID没有参数(unitName)");
+			throw new NegativeException(400, "规格ID没有参数(unitName)");
 		}
 		if (StringUtils.isEmpty(stantardName.replaceAll(" ", ""))) {
-			throw new NegativeException(MCode.V_1, "规格名称不能为空");
+			throw new NegativeException(400, "规格名称不能为空");
 		}
 		this.stantardId = stantardId;
 		this.stantardName = stantardName;
