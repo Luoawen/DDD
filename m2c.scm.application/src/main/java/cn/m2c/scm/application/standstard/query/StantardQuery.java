@@ -40,12 +40,13 @@ public class StantardQuery {
 		sql.append("SELECT");
 		sql.append(" * ");
 		sql.append(" FROM t_scm_stantard where 1 = 1 and stantard_status = 1");
+		sql.append(" ORDER BY created_date DESC ");
 		if (pageNum != null && rows != null) {
 			sql.append(" LIMIT ?,?");
 			params.add(rows * (pageNum - 1));
 			params.add(rows);
 		}
-		sql.append(" ORDER BY created_date DESC ");
+		
 		List<StantardBean> stantardList= this.supportJdbcTemplate.queryForBeanList(sql.toString(), StantardBean.class, params.toArray());
 		return stantardList;
 	}
