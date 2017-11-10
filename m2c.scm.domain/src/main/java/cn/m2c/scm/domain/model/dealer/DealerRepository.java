@@ -23,6 +23,6 @@ public interface DealerRepository {
      * 用户Id获取经销商
      * @return
      */
-    public Dealer getDealerByUserId(String userId);
+    public List<Dealer> getDealerByUserId(String userId);
 
 }

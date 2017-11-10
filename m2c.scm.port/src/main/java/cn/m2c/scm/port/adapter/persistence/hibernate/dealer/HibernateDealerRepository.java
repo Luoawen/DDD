@@ -1,6 +1,8 @@
 package cn.m2c.scm.port.adapter.persistence.hibernate.dealer;
 
 
+import java.util.List;
+
 import org.springframework.stereotype.Repository;
 
 import cn.m2c.ddd.common.port.adapter.persistence.hibernate.HibernateSupperRepository;
@@ -38,9 +40,9 @@ public class HibernateDealerRepository extends HibernateSupperRepository impleme
 	}
 
 	@Override
-	public Dealer getDealerByUserId(String userId) {
-		return (Dealer) this.session().createQuery("FROM Dealer WHERE userId = :userId")
-				.setString("userId", userId).uniqueResult();
+	public List<Dealer> getDealerByUserId(String userId) {
+		List<Dealer> list = this.session().createQuery(" FROM Dealer WHERE userId = :userId").list();
+		return list;
 		
 	}
 
