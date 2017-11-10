@@ -8,13 +8,18 @@ import javax.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Repository;
 
+import cn.m2c.common.MCode;
 import cn.m2c.ddd.common.port.adapter.persistence.springJdbc.SupportJdbcTemplate;
+import cn.m2c.scm.application.order.data.bean.AfterSellBean;
 import cn.m2c.scm.application.order.data.bean.AfterSellOrderBean;
 import cn.m2c.scm.application.order.data.bean.AfterSellOrderDetailBean;
 import cn.m2c.scm.application.order.data.bean.AftreSellLogisticsBean;
+import cn.m2c.scm.application.order.data.bean.AppOrderBean;
 import cn.m2c.scm.application.order.data.bean.GoodsInfoBean;
+import cn.m2c.scm.application.order.data.bean.OrderDetailBean;
 import cn.m2c.scm.application.order.data.bean.SimpleMarket;
 import cn.m2c.scm.application.order.data.bean.SkuNumBean;
+import cn.m2c.scm.domain.NegativeException;
 
 /**
  * 售后订单查询
@@ -329,5 +334,78 @@ public class AfterSellOrderQuery {
 		.append("WHERE	order_id = ? AND marketing_id = (SELECT a.marketing_id FROM t_scm_order_detail a WHERE a.order_id=? AND a.sku_id=?)")
 		.append(" AND _status=1");
 		return this.supportJdbcTemplate.queryForBean(sql.toString(), SimpleMarket.class, orderId, orderId, skuId);
+	}
+	
+	/***
+	 * 获取APP售后单列表页面
+	 * @param userId
+	 * @param status
+	 * @param pageIndex
+	 * @param pageSize
+	 * @return
+	 * @throws NegativeException
+	 */
+	public List<AfterSellBean> getAppSaleAfterList(String userId, Integer status,
+			int pageIndex, int pageSize) throws NegativeException {
+		List<AfterSellBean> result = null;
+		try {
+			List<Object> params = new ArrayList<>(4);
+			StringBuilder sql = new StringBuilder();
+			sql.append("SELECT a.created_date, a.after_sell_order_id, a.order_id, a.dealer_order_id, a.dealer_id, a.goods_id, a.sku_id, a.sell_num, a._status, a.back_money, a.order_type\r\n")
+			.append(",c.dealer_name, b.goods_name, b.sku_name, b.goods_type, b.goods_type_id, b.discount_price\r\n") 
+			.append("FROM t_scm_order_after_sell a \r\n")
+			.append("LEFT OUTER JOIN t_scm_order_detail b ON a.order_id=b.order_id AND a.dealer_order_id=b.dealer_order_id AND a.sku_id = b.sku_id\r\n")
+			.append("LEFT OUTER JOIN t_scm_dealer c ON a.dealer_id = c.dealer_id \r\n")
+			.append(" WHERE a.user_id=?");
+			params.add(userId);
+			
+			if (status != null) {
+				sql.append(" AND a._status=?");
+				params.add(status);
+			}
+			
+			sql.append("ORDER BY a.created_date DESC LIMIT ?,?");
+			params.add((pageIndex - 1) * pageSize);
+			params.add(pageSize);
+			
+			result = this.supportJdbcTemplate.queryForBeanList(sql.toString(), AfterSellBean.class, params.toArray());
+			
+		} catch (Exception e) {
+			throw new NegativeException(MCode.V_500, "查询APP售后单列表出错");
+		}
+		return result;
+	}
+	
+	/***
+	 * 获取APP售后单列表页面
+	 * @param userId
+	 * @param status
+	 * @param pageIndex
+	 * @param pageSize
+	 * @return
+	 * @throws NegativeException
+	 */
+	public Integer getAppSaleAfterTotal(String userId, Integer status) throws NegativeException {
+		Integer result = 0;
+		try {
+			List<Object> params = new ArrayList<>(4);
+			StringBuilder sql = new StringBuilder();
+			sql.append("SELECT count(1) FROM t_scm_order_after_sell a \r\n")
+			.append("LEFT OUTER JOIN t_scm_order_detail b ON a.order_id=b.order_id AND a.dealer_order_id=b.dealer_order_id AND a.sku_id = b.sku_id\r\n")
+			.append("LEFT OUTER JOIN t_scm_dealer c ON a.dealer_id = c.dealer_id \r\n")
+			.append(" WHERE a.user_id=?");
+			params.add(userId);
+			
+			if (status != null) {
+				sql.append(" AND a._status=?");
+				params.add(status);
+			}
+			
+			result = this.supportJdbcTemplate.jdbcTemplate().queryForObject(sql.toString(), params.toArray(), Integer.class);
+			
+		} catch (Exception e) {
+			throw new NegativeException(MCode.V_500, "查询APP售后单列表总数出错");
+		}
+		return result;
 	}
 }
