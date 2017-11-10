@@ -88,6 +88,9 @@ public class GoodsRestServiceImpl implements GoodsService {
                     resultMap.put("itemNames", contentList);
                     Integer rangeType = contentObject.getInteger("rangeType");
                     resultMap.put("rangeType", rangeType);
+
+                    resultMap.put("fullCutName", contentObject.getString("fullCutName"));
+
                     Iterator<Object> rangeIt = contentObject.getJSONArray("suitableRangeList").iterator();
                     List<String> idList = new ArrayList<>();
                     while (rangeIt.hasNext()) {
