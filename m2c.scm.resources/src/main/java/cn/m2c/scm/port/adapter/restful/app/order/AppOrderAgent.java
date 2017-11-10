@@ -104,7 +104,15 @@ public class AppOrderAgent {
             result.setStatus(MCode.V_200);
         } 
         catch (NegativeException e) {
-        	result = new MResult(e.getStatus(), e.getMessage());
+        	int st = e.getStatus();
+        	if (st == 100) {
+        		result.setStatus(e.getStatus());
+        		result.setContent(e.getMessage());
+        	}
+        	else {
+        		result.setStatus(e.getStatus());
+        		result.setErrorMessage(e.getMessage());
+        	}
         }
         catch (Exception e) {
             LOGGER.error("order add Exception e:", e);
