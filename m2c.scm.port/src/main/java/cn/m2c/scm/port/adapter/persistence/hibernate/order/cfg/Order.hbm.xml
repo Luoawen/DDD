@@ -15,6 +15,7 @@
         <property name="payWay" column="pay_way" type="int"/>
         <property name="payTime" column="pay_time" type="date"/>
         <property name="status" column="_status" type="int"/>
+        <property name="delFlag" column="del_flag" type="int"/>
         
         <component name="addr">
 	        <property name="province" column="province" type="string"/>

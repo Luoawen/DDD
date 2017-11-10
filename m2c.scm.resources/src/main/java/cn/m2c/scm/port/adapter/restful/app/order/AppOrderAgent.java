@@ -105,7 +105,7 @@ public class AppOrderAgent {
         } 
         catch (NegativeException e) {
         	int st = e.getStatus();
-        	if (st == 100) {
+        	if (st == MCode.V_100) {
         		result.setStatus(e.getStatus());
         		result.setContent(e.getMessage());
         	}
@@ -355,6 +355,29 @@ public class AppOrderAgent {
         	GetOrderCmd cmd = new GetOrderCmd(userId, orderId, dealerOrderId);
         	AppOrderDtl orderBean = orderQueryApp.getOrderDtl(cmd);
         	result.setContent(orderBean);
+            result.setStatus(MCode.V_200);
+        } 
+        catch (NegativeException e) {
+        	result.setStatus(e.getStatus());
+        	result.setErrorMessage(e.getMessage());
+        }
+        catch (Exception e) {
+            LOGGER.error("Aplly after sale Exception e:", e);
+            result = new MResult(MCode.V_400, e.getMessage());
+        }
+        return new ResponseEntity<MResult>(result, HttpStatus.OK);
+    }
+    
+    @RequestMapping(value = "/app/del", method = {RequestMethod.POST,RequestMethod.PUT})
+    public ResponseEntity<MResult> delOrder(
+            @RequestParam(value = "userId", required = false) String userId
+            ,@RequestParam(value = "orderId", required = false) String orderId
+            ) {
+    	MResult result = new MResult(MCode.V_1);
+        try {
+        	CancelOrderCmd cmd = new CancelOrderCmd(orderId, userId);
+        	orderApp.delOrder(cmd);
+        	//result.setContent(orderBean);
             result.setStatus(MCode.V_200);
         } 
         catch (NegativeException e) {

@@ -39,6 +39,15 @@ public class HibernateOrderRepository extends HibernateSupperRepository implemen
 	}
 	
 	@Override
+	public MainOrder getOrderById(String orderId, String userId) {
+		// TODO Auto-generated method stub
+		StringBuilder sql = new StringBuilder("select * from t_scm_order_main where order_id =:orderId AND user_id=:userId");
+		Query query = this.session().createSQLQuery(sql.toString()).addEntity(MainOrder.class);
+		query.setParameter("orderId", orderId).setParameter("userId", userId);
+		return (MainOrder)query.uniqueResult();
+	}
+	
+	@Override
 	public void updateMainOrder(MainOrder order) {
 		Session s = this.session();
 		s.save(order);

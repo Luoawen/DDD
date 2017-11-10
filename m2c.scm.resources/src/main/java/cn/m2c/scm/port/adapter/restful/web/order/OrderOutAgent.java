@@ -19,9 +19,9 @@ import cn.m2c.scm.application.order.OrderApplication;
 import cn.m2c.scm.application.order.command.OrderPayedCmd;
 import cn.m2c.scm.application.order.data.bean.MainOrderBean;
 import cn.m2c.scm.application.order.data.representation.OrderMoney;
+import cn.m2c.scm.application.order.data.representation.OrderNums;
 import cn.m2c.scm.application.order.query.OrderQuery;
 import cn.m2c.scm.domain.NegativeException;
-import cn.m2c.scm.domain.model.order.MainOrder;
 
 
 @RestController
@@ -102,6 +102,31 @@ public class OrderOutAgent {
 			LOGGER.info("获取订单数据失败,e:" + e.getMessage());
 			result.setStatus(MCode.V_400);
 			result.setContent("获取订单数据失败");
+		}
+    	return new ResponseEntity<MResult>(result,HttpStatus.OK);
+    }
+    
+    /**
+     * 获取订单数据根据订单号
+     */
+    @RequestMapping(value="/payed/order", method = RequestMethod.GET)
+    public ResponseEntity<MResult> getOrderByNo(@RequestParam(value="userId", required=false) String userId
+    		,@RequestParam(value="startTime", required=false) String startTime
+    		,@RequestParam(value="endTime", required=false) String endTime){
+    	MResult result = new MResult(MCode.V_1);
+    	try {
+    		Integer i = orderQuery.getPayedOrders(startTime, endTime);
+    		result.setContent(new OrderNums(i));
+    		result.setStatus(MCode.V_200);
+		} 
+    	catch (NegativeException e) {
+    		result.setStatus(e.getStatus());
+			result.setContent(e.getMessage());
+    	}
+    	catch (Exception e) {
+			LOGGER.info("获取订单数失败,e:" + e.getMessage());
+			result.setStatus(MCode.V_400);
+			result.setContent("获取订单数失败");
 		}
     	return new ResponseEntity<MResult>(result,HttpStatus.OK);
     }

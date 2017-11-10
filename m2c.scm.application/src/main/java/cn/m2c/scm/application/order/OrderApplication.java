@@ -348,6 +348,9 @@ public class OrderApplication {
     public void cancelOrder(CancelOrderCmd cmd) throws NegativeException {
 
         MainOrder order = orderRepository.getOrderById(cmd.getOrderId());
+        if (order == null) {
+        	throw new NegativeException(MCode.V_1, "无此订单！");
+        }
         // 检查是否可取消,若不可取消抛出异常。
         if (order.cancel()) {
             // 可能是逻辑删除或是改成取消状态(子订单也要改)
@@ -362,10 +365,13 @@ public class OrderApplication {
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
     public void delOrder(CancelOrderCmd cmd) throws NegativeException {
 
-        MainOrder order = orderRepository.getOrderById(cmd.getOrderId());
+        MainOrder order = orderRepository.getOrderById(cmd.getOrderId(), cmd.getUserId());
         // 检查是否可取消,若不可取消抛出异常。
+        if (order == null) {
+        	throw new NegativeException(MCode.V_1, "无此订单！");
+        }
+        
         if (order.del()) {
-            // 可能是逻辑删除或是改成取消状态(子订单也要改)
             orderRepository.updateMainOrder(order);
         } else {
             throw new NegativeException(MCode.V_1, "订单处于不可取消状态！");

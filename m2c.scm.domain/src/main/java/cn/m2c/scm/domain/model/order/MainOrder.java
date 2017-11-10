@@ -58,6 +58,8 @@ public class MainOrder extends ConcurrencySafeEntity {
 	/**经度*/
 	private Double longitude;
 	
+	private Integer delFlag = 0;
+	
 	public MainOrder() {
 		super();
 	}
@@ -120,14 +122,18 @@ public class MainOrder extends ConcurrencySafeEntity {
 	}
 	
 	/***
-	 * 取消订单(用户主动操作，系统自动操作)
+	 * 删除订单(用户主动操作)
 	 */
 	public boolean del() {
 		// 检查是否可以取消，只有在未支付的状态下用户可以取消
-		if (status < 3) {
+		if (status > 0 && status < 3) {
 			return false;
 		}
-		//aaa
+		if (dealerOrders != null) {
+			for(DealerOrder d : dealerOrders)
+				d.del();
+		}
+		delFlag = 1;
 		return true;
 	}
 	/***
@@ -243,5 +249,11 @@ public class MainOrder extends ConcurrencySafeEntity {
 			plateformDiscount += d.getPlateformDiscount();
 			dealerDiscount += d.getDealerDiscount();
 		}
+	}
+	
+	public boolean isSameUser(String userId) {
+		if (userId != null && userId.equals(this.userId))
+			return true;
+		return false;
 	}
 }

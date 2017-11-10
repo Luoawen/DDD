@@ -19,6 +19,12 @@ public interface OrderRepository {
 	 */
 	public MainOrder getOrderById(String orderId);
 	/***
+	 * 获取订单通过订单号
+	 * @param orderId 订单号
+	 * @param userId
+	 */
+	public MainOrder getOrderById(String orderId, String userId);
+	/***
 	 * 主要用于更新订单状态
 	 * @param order
 	 */

@@ -46,9 +46,27 @@ public class DealerOrder extends ConcurrencySafeEntity {
 	/**发票信息*/
 	private InvoiceInfo invoice;
 	/**结算方式 1 按供货价， 2按服务费率**/
-	private Integer termOfPayment;	
+	private Integer termOfPayment;
+	/**删除状态*/
+	private Integer delFlag = 0;
 	/**订单明细*/
 	private List<DealerOrderDtl> orderDtls;
+	
+	/***
+	 * 删除订单(用户主动操作)
+	 */
+	boolean del() {
+		// 检查是否可以取消，只有在未支付的状态下用户可以取消
+		if (status > 0 && status < 3) {
+			return false;
+		}
+		if (orderDtls != null) {
+			for(DealerOrderDtl d : orderDtls)
+				d.del();
+		}
+		delFlag = 1;
+		return true;
+	}
 	
 	public DealerOrder() {
 		super();

@@ -42,6 +42,20 @@ public class DealerOrderDtl extends ConcurrencySafeEntity {
 	
 	private SimpleMarketInfo marketInfo;
 	
+	/**删除状态*/
+	private Integer delFlag = 0;
+	/***
+	 * 删除订单(用户主动操作)
+	 */
+	boolean del() {
+		// 检查是否可以取消，只有在未支付的状态下用户可以取消
+		if (status > 0 && status < 3) {
+			return false;
+		}
+		delFlag = 1;
+		return true;
+	}
+	
 	public DealerOrderDtl() {
 		super();
 	}

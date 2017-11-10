@@ -409,4 +409,28 @@ public class OrderQuery {
 		sql = null;
 		return order;
 	}
+	
+	/***
+	 * 获取成效订单数
+	 * @param startTime
+	 * @param endTime
+	 * @return
+	 */
+	public Integer getPayedOrders(String startTime, String endTime) throws NegativeException {
+		
+		if (StringUtils.isEmpty(startTime)) {
+			throw new NegativeException(MCode.V_1, "开始时间参数为空！");
+		}
+		
+		if (StringUtils.isEmpty(endTime)) {
+			throw new NegativeException(MCode.V_1, "结束时间参数为空！");
+		}
+		StringBuilder sql = new StringBuilder();
+		sql.append(" SELECT count(1)\r\n")
+		.append(" FROM t_scm_order_main WHERE pay_time BETWEEN ? AND ?");
+		
+		Integer orders = supportJdbcTemplate.jdbcTemplate().queryForObject(sql.toString(), Integer.class, startTime, endTime);
+		
+		return orders;
+	}
 }

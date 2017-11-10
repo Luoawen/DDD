@@ -274,7 +274,7 @@ public class OrderQueryApplication {
 			
 			sql.append(" LIMIT ?,? ");
 			params.add((pageIndex - 1) * pageSize);
-			params.add(pageIndex * pageSize);
+			params.add(pageSize);
 			
 			result = this.supportJdbcTemplate.queryForBeanList(sql.toString(), AppOrderBean.class, params.toArray());
 			
