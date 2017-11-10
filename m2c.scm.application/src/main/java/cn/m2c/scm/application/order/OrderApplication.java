@@ -195,7 +195,7 @@ public class OrderApplication {
                 , plateDiscount, dealerDiscount, cmd.getUserId(), cmd.getNoted(), dealerOrders, null
                 , getUsedMarket(cmd.getOrderId(), list, useList), cmd.getLatitude(), cmd.getLongitude());
         // 组织保存(重新设置计算好的价格)
-        order.add(skus);
+        order.add(skus, cmd.getFrom());
         orderRepository.save(order);
         // 锁定营销 orderNo, 营销ID, userId
         if (!orderDomainService.lockMarketIds(useList, cmd.getOrderId(), cmd.getUserId())) {
@@ -365,17 +365,27 @@ public class OrderApplication {
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
     public void delOrder(CancelOrderCmd cmd) throws NegativeException {
 
-        MainOrder order = orderRepository.getOrderById(cmd.getOrderId(), cmd.getUserId());
-        // 检查是否可取消,若不可取消抛出异常。
-        if (order == null) {
-        	throw new NegativeException(MCode.V_1, "无此订单！");
-        }
-        
-        if (order.del()) {
-            orderRepository.updateMainOrder(order);
-        } else {
-            throw new NegativeException(MCode.V_1, "订单处于不可取消状态！");
-        }
+    	if (StringUtils.isEmpty(cmd.getDealerOrderId())) {
+	        MainOrder order = orderRepository.getOrderById(cmd.getOrderId(), cmd.getUserId());
+	        // 检查是否可取消,若不可取消抛出异常。
+	        if (order == null) {
+	        	throw new NegativeException(MCode.V_1, "无此订单！");
+	        }
+	        
+	        if (order.del()) {
+	            orderRepository.updateMainOrder(order);
+	        } else {
+	            throw new NegativeException(MCode.V_1, "订单处于不可删除状态！");
+	        }
+    	}
+    	else {
+    		DealerOrder d = orderRepository.getDealerOrderById(cmd.getOrderId(), cmd.getUserId(), cmd.getDealerOrderId());
+    		if (d.del()) {
+	            orderRepository.updateDealerOrder(d);
+	        } else {
+	            throw new NegativeException(MCode.V_1, "订单处于不可删除状态！");
+	        }
+    	}
     }
 
     /***
@@ -633,4 +643,21 @@ public class OrderApplication {
         }
     }
 
+    /***
+     * 取消所有24小时还未支付的订单
+     */
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+    @EventListener(isListening = true)
+    public void cancelAllNotPayed() throws NegativeException {
+    	List<MainOrder> mainOrders = orderRepository.getNotPayedOrders();
+    	
+    	if (mainOrders == null || mainOrders.size() < 1)
+    		return;
+    	
+    	for (MainOrder m : mainOrders) {
+    		m.jobCancel();
+    		orderRepository.save(m);
+    	}
+    	return ;
+    }
 }

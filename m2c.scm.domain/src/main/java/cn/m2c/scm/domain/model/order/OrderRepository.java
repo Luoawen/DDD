@@ -55,4 +55,11 @@ public interface OrderRepository {
 	 * @return
 	 */
 	public <T> List<T> getOrderGoodsForCal(String orderNo, Class<T> clss);
+	/***
+	 * 获取未支付的订单
+	 * @return
+	 */
+	public List<MainOrder> getNotPayedOrders();
+	
+	public DealerOrder getDealerOrderById(String orderId, String userId, String dealerOrderId);
 }

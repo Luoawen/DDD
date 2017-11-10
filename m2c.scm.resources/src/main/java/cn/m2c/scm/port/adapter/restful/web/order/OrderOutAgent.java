@@ -65,8 +65,9 @@ public class OrderOutAgent {
     public ResponseEntity<MResult> testForMedia(@RequestParam(value="userId", required=false) String userId){
     	MResult result = new MResult(MCode.V_1);
     	try {
-    		OrderPayedCmd cmd = new OrderPayedCmd("20171107141115DTB1MRW", userId, "89555555555555551", 1, new Date());
-    		orderApp.orderPayed(cmd);
+    		/*OrderPayedCmd cmd = new OrderPayedCmd("20171107141115DTB1MRW", userId, "89555555555555551", 1, new Date());
+    		orderApp.orderPayed(cmd);*/
+    		orderApp.cancelAllNotPayed();
     		result.setContent("ok");
     		result.setStatus(MCode.V_200);
 		} 

@@ -95,11 +95,12 @@ public class AppOrderAgent {
             ,@RequestParam(value = "noted", required = false) String noted
             ,@RequestParam(value = "coupons", required = false) String coupons
             ,@RequestParam(value = "latitude", required = false) Double latitude
-            ,@RequestParam(value = "longitude", required = false) Double longitude) {
+            ,@RequestParam(value = "longitude", required = false) Double longitude
+            ,@RequestParam(value = "from", required = false, defaultValue="0") Integer from) {
     	MResult result = new MResult(MCode.V_1);
         try {
         	OrderAddCommand cmd = new OrderAddCommand(orderId, userId, noted, goodses, invoice, addr, coupons,
-        			latitude, longitude);
+        			latitude, longitude, from);
             result.setContent(orderApp.submitOrder(cmd));
             result.setStatus(MCode.V_200);
         } 
@@ -372,10 +373,11 @@ public class AppOrderAgent {
     public ResponseEntity<MResult> delOrder(
             @RequestParam(value = "userId", required = false) String userId
             ,@RequestParam(value = "orderId", required = false) String orderId
+            ,@RequestParam(value = "dealerOrderId", required = false) String dealerOrderId
             ) {
     	MResult result = new MResult(MCode.V_1);
         try {
-        	CancelOrderCmd cmd = new CancelOrderCmd(orderId, userId);
+        	CancelOrderCmd cmd = new CancelOrderCmd(orderId, userId, dealerOrderId);
         	orderApp.delOrder(cmd);
         	//result.setContent(orderBean);
             result.setStatus(MCode.V_200);

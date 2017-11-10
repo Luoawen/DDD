@@ -55,7 +55,7 @@ public class DealerOrder extends ConcurrencySafeEntity {
 	/***
 	 * 删除订单(用户主动操作)
 	 */
-	boolean del() {
+	public boolean del() {
 		// 检查是否可以取消，只有在未支付的状态下用户可以取消
 		if (status > 0 && status < 3) {
 			return false;
@@ -302,4 +302,6 @@ public class DealerOrder extends ConcurrencySafeEntity {
 	public String getOrderNo() {
 		return orderId;
 	}
+	
+	
 }
