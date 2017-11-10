@@ -37,6 +37,7 @@ public class AppGoodsDetailRepresentation {
     private Integer skuFlag;
     private String favoriteId;
     private List<Map> goodsTags;
+    private String desc;
 
     public AppGoodsDetailRepresentation(GoodsBean bean, List<GoodsGuaranteeBean> goodsGuaranteeBeans,
                                         String goodsUnitName, String mresId, Integer commentTotal, GoodsCommentBean goodsCommentBean,
@@ -105,6 +106,7 @@ public class AppGoodsDetailRepresentation {
         if (null != goodsTags && goodsTags.size() > 0) {
             this.goodsTags = goodsTags;
         }
+        this.desc = bean.getGoodsDesc();
     }
 
     public String getGoodsName() {
@@ -257,5 +259,13 @@ public class AppGoodsDetailRepresentation {
 
     public void setGoodsTags(List<Map> goodsTags) {
         this.goodsTags = goodsTags;
+    }
+
+    public String getDesc() {
+        return desc;
+    }
+
+    public void setDesc(String desc) {
+        this.desc = desc;
     }
 }
