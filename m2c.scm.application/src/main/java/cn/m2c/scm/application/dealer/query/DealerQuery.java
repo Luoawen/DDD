@@ -13,6 +13,7 @@ import javax.annotation.Resource;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public class DealerQuery {
@@ -260,6 +261,40 @@ public class DealerQuery {
 		List<DealerBean> result = new ArrayList<DealerBean>();
 		try {
 			result = this.supportJdbcTemplate.queryForBeanList(sql.toString(), DealerBean.class,dealerName);
+		} catch (Exception e) {
+			log.error("查询经销商列表出错",e);
+			throw new NegativeException(500, "经销商查询列表出错");
+		}
+		return result;
+	}
+
+
+	/**
+	 * 根据多个商家id获取商家的状态
+	 * @param dealerIds
+	 * @return
+	 * @throws NegativeException 
+	 */
+	public List<Map<String, Object>> getDealerStatus(String dealerIds) throws NegativeException {
+		List<Map<String, Object>> result = new ArrayList<Map<String,Object>>();
+		try {
+			StringBuffer sql = new StringBuffer( " SELECT  dealer_id AS dealerId,dealer_status dealerStatus FROM  t_scm_dealer WHERE  dealer_id in (");
+			String[] dealer = dealerIds.split(",");
+			for (int i = 0; i < dealer.length; i++) {
+				if(i==(dealer.length-1)){
+					sql.append("'");
+					sql.append(dealer[i]);
+					sql.append("'");
+				}else{
+					sql.append("'");
+					sql.append(dealer[i]);
+					sql.append("'");
+					sql.append(",");
+				}
+			}
+			sql.append(")");
+			System.out.println("sql==="+sql.toString());
+			result = this.supportJdbcTemplate.jdbcTemplate().queryForList(sql.toString());
 		} catch (Exception e) {
 			log.error("查询经销商列表出错",e);
 			throw new NegativeException(500, "经销商查询列表出错");

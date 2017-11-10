@@ -28,6 +28,7 @@ import cn.m2c.scm.application.dealer.data.representation.DealerRepresentation;
 import cn.m2c.scm.application.dealer.data.representation.DealerShopRepresentation;
 import cn.m2c.scm.application.dealer.query.DealerQuery;
 import cn.m2c.scm.application.dealerclassify.query.DealerClassifyQuery;
+import cn.m2c.scm.application.goods.query.data.bean.GoodsBean;
 import cn.m2c.scm.domain.IDGenerator;
 import cn.m2c.scm.domain.NegativeException;
 
@@ -301,5 +302,30 @@ public class DealerAgent {
 		        }
 		        return new ResponseEntity<MResult>(result, HttpStatus.OK);
 		    }
-		 
+		 /**
+		  * 根据多个商家id获取商家的状态返回List<Map>
+		  */
+		 @RequestMapping(value = "/dealerStatus-out", method = RequestMethod.GET)
+		    public ResponseEntity<MResult> queryDealerStatus(
+		            @RequestParam(value = "dealerIds", required = true) String dealerIds
+		            ) {
+			 MResult result = new MResult(MCode.V_1);
+			 Map<String,Object> resultMap = new HashMap<String, Object>();
+		        try {
+		        	List<Map<String,Object>> dealerStatus = dealerQuery.getDealerStatus(dealerIds);
+		        	if (null != dealerStatus && dealerStatus.size() > 0) {
+		        		for (Map<String, Object> map : dealerStatus) {
+							String dealerId = (String) map.get("dealerId")==null?"":(String) map.get("dealerId");
+							Integer dealerstatus = (Integer) map.get("dealerStatus")==null?-1:(Integer) map.get("dealerStatus");
+							resultMap.put(dealerId, dealerstatus);
+						}
+		        		result.setContent(resultMap);
+		        		result.setStatus(MCode.V_200);
+		        	}
+		        } catch (Exception e) {
+		        	log.error("经销商状态列表出错", e);
+		            result = new MPager(MCode.V_400, "服务器开小差了，请稍后再试");
+		        }
+		        return new ResponseEntity<MResult>(result, HttpStatus.OK);
+		    }
 }
