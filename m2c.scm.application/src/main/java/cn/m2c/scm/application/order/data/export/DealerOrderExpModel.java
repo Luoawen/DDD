@@ -4,6 +4,7 @@ import cn.m2c.scm.application.dealerorder.data.bean.DealerGoodsBean;
 import cn.m2c.scm.application.dealerorder.data.bean.DealerOrderQB;
 import cn.m2c.scm.application.utils.ExcelField;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -17,9 +18,9 @@ public class DealerOrderExpModel {
     @ExcelField(title = "支付单号")
     private String payNo;
     @ExcelField(title = "下单时间")
-    private Date createdDate;
+    private String createdDate;
     @ExcelField(title = "支付时间")
-    private Date payDate;
+    private String payDate;
     @ExcelField(title = "商品名称")
     private String goodsName;
     @ExcelField(title = "规格")
@@ -45,7 +46,7 @@ public class DealerOrderExpModel {
     @ExcelField(title = "售后状态")
     private String saleAfterStatus;
     @ExcelField(title = "售后数量")
-    private Integer saleAfterNum;
+    private String saleAfterNum;
     @ExcelField(title = "售后金额")
     private String saleAfterMoney;
 
@@ -53,9 +54,10 @@ public class DealerOrderExpModel {
         this.dealerOrderId = dealerOrderQB.getDealerOrderId();
         //订单状态, 0待付款，1等发货，2待收货，3完成，4交易完成，5交易关闭，-1已取消
         this.orderStatus = getStatusStr(dealerOrderQB.getOrderStatus());
-        this.payNo = dealerOrderQB.getPayNo();
-        this.createdDate = new Date(dealerOrderQB.getCreatedDate());
-        this.payDate = new Date(dealerOrderQB.getPayTime());
+        this.payNo = null == dealerOrderQB.getPayNo() ? "" : dealerOrderQB.getPayNo();
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        this.createdDate = null != new Date(dealerOrderQB.getCreatedDate()) ? df.format(new Date(dealerOrderQB.getCreatedDate())) : "";
+        this.payDate = null != dealerOrderQB.getPayTime() ? df.format(new Date(dealerOrderQB.getPayTime())) : "";
         this.goodsName = goodsBean.getGoodsName();
         this.skuName = goodsBean.getSkuName();
         this.goodsPrice = String.valueOf(goodsBean.getDiscountPrice() / 100);
@@ -65,17 +67,16 @@ public class DealerOrderExpModel {
         this.revPerson = dealerOrderQB.getRevPerson();
         this.revPhone = dealerOrderQB.getRevPhone();
         this.revAddress = dealerOrderQB.getRevAddress();
-        this.saleAfterNo = dealerOrderQB.getAfterSellDealerOrderId();
+        this.saleAfterNo = null == dealerOrderQB.getAfterSellDealerOrderId() ? "" : dealerOrderQB.getAfterSellDealerOrderId();
         this.saleAfterType = getAfterType(dealerOrderQB.getAfterOrderType());
         this.saleAfterStatus = getAfterStatusStr(dealerOrderQB.getOrderStatus());
-        this.saleAfterNum = dealerOrderQB.getAfterNum();
+        this.saleAfterNum = null == dealerOrderQB.getAfterNum() ? "" : String.valueOf(dealerOrderQB.getAfterNum());
         this.saleAfterMoney = String.valueOf(dealerOrderQB.getAfterMoney() / 100);
-        ;
     }
 
     private String getStatusStr(Integer status) {
         String statusStr = "";
-        if (null == status) {
+        if (null != status) {
             switch (status) {
                 case 0:
                     statusStr = "待付款";
@@ -106,7 +107,7 @@ public class DealerOrderExpModel {
     // 订单类型，0换货， 1退货，2仅退款
     private String getAfterType(Integer status) {
         String statusStr = "";
-        if (null == status) {
+        if (null != status) {
             switch (status) {
                 case 0:
                     statusStr = "换货";
@@ -126,7 +127,7 @@ public class DealerOrderExpModel {
     // 状态，0申请退货,1申请换货,2申请退款,3拒绝,4同意(退换货),5客户寄出,6商家收到,7商家寄出,8客户收到,9同意退款, 10确认退款,11交易完成，12交易关闭
     private String getAfterStatusStr(Integer status) {
         String statusStr = "";
-        if (null == status) {
+        if (null != status) {
             switch (status) {
                 case 0:
                     statusStr = "申请退货";
