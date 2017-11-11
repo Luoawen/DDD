@@ -516,6 +516,9 @@ public class OrderApplication {
     public void confirmSku(ConfirmSkuCmd cmd) throws NegativeException {
 
         DealerOrderDtl dtl = orderRepository.getDealerOrderDtlBySku(cmd.getDealerOrderId(), cmd.getSkuId());
+        if (dtl == null) {
+        	throw new NegativeException(MCode.V_1, "无此商品！");
+        }
         // 检查是否可确认收货
         if (dtl.confirmRev(cmd.getUserId())) {
             // 可能是逻辑删除或是改成取消状态(子订单也要改)

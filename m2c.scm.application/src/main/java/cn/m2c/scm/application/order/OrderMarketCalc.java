@@ -2,6 +2,7 @@ package cn.m2c.scm.application.order;
 
 import cn.m2c.common.MCode;
 import cn.m2c.scm.application.order.data.bean.MarketBean;
+import cn.m2c.scm.application.order.data.bean.MarketLevelBean;
 import cn.m2c.scm.application.order.data.bean.MarketRangeSuit;
 import cn.m2c.scm.application.order.data.bean.MarketSku;
 import cn.m2c.scm.application.order.data.bean.SimpleMarket;
@@ -127,8 +128,12 @@ public class OrderMarketCalc {
                 }
             } else {
                 // 判断下换购商品是否满足要求
-                changeMoney += d.getChangePrice() * d.getPurNum();
-                changeNum += d.getPurNum();
+                //changeMoney += d.getChangePrice() * d.getPurNum();
+            	if (judgeChange(bean, d)) {
+            		d.setChangePrice(as);
+	            	changeMoney += as * d.getPurNum();
+	                changeNum += d.getPurNum();
+            	}
             }
         }
 
@@ -209,6 +214,32 @@ public class OrderMarketCalc {
             if (s.getSkuFlag() == 0)
                 return true;
             if (d.getGoodsId().equals(s.getId()) && isSkuOk(d, s.getSkuList())) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    /***
+     * 判断换购商品是否满足条件
+     *
+     * @param bean
+     * @param d
+     * @return true满足
+     */
+    private static boolean judgeChange(MarketBean bean, GoodsDto d) {
+        if (bean.getRangeType() != 2)
+            return true;
+
+        List<MarketLevelBean> suits = bean.getItemList();
+        if (suits == null) {
+            d.setMarketingId(null);
+            return false;
+        }
+        for (MarketLevelBean s : suits) {
+            if (s.getGoodsIds() == null)
+                return true;
+            if (s.getGoodsIds().indexOf(d.getGoodsId()) != -1) {
                 return true;
             }
         }
