@@ -40,6 +40,7 @@ public class DealerUnbundleSellerListener extends ExchangeListener{
 			Integer newGroupType = reader.eventIntegerValue("newGroupType");
 			if (oldGroupType == 4) {
 				if (oldGroupType != newGroupType) {
+					log.info("事件需要被消费");
 					dealerApplication.unbundleUser(userId);
 				}
 			}

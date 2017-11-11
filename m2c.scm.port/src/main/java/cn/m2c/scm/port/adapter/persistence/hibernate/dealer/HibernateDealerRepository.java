@@ -39,10 +39,12 @@ public class HibernateDealerRepository extends HibernateSupperRepository impleme
 		return dealer;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<Dealer> getDealerByUserId(String userId) {
-		List<Dealer> list = this.session().createQuery(" FROM Dealer WHERE userId = :userId").list();
-		return list;
+		return (List<Dealer>)this.session().createQuery(" FROM Dealer WHERE userId = :userId")
+                .setString("userId", userId)
+                .list();
 		
 	}
 
