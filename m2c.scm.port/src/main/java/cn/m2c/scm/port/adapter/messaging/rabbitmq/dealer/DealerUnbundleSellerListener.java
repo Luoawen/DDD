@@ -45,7 +45,7 @@ public class DealerUnbundleSellerListener extends ExchangeListener{
 			}
 			log.info("消费商家管理员用户事件ok!!!");
 		} catch (Exception e) {
-			log.info("解绑商家管理员",e.getMessage());
+			log.info("解绑商家管理员",e);
 			throw new Exception();
 		}
 	}
