@@ -80,5 +80,33 @@ public class UnitApplication {
     	unit.modify(command.getUnitId(),command.getUnitName(), command.getUnitStatus());
     	unitRepository.saveUnit(unit);
     }
+    
+    @Transactional(rollbackFor = {Exception.class,RuntimeException.class,NegativeException.class})
+    public void beUsed(String unitId) {
+    	Unit unit = unitRepository.getUnitByUnitId(unitId);
+		unit.used();
+		unitRepository.saveUnit(unit);
+    }
+    
+    @Transactional(rollbackFor = {Exception.class,RuntimeException.class,NegativeException.class})
+    public void noBeUsed(String unitId) {
+    	Unit unit = unitRepository.getUnitByUnitId(unitId);
+		if (unit.getUseNum() > 0) {
+			unit.noUsed();
+			unitRepository.saveUnit(unit);
+		}
+	}
+    
+    @Transactional(rollbackFor = {Exception.class,RuntimeException.class,NegativeException.class})
+    public void updateUsed(String oldUnitId,String newUnitId) {
+    	Unit oldUnit = unitRepository.getUnitByUnitId(oldUnitId);
+		Unit newUnit = unitRepository.getUnitByUnitId(newUnitId);
+		if (oldUnit.getUseNum() > 0) {
+			oldUnit.noUsed();
+			unitRepository.saveUnit(oldUnit);
+		}
+		newUnit.used();
+		unitRepository.saveUnit(newUnit);
+    }
 
 }

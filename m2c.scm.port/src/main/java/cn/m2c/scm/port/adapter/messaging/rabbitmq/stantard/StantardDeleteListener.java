@@ -11,6 +11,7 @@ import com.alibaba.fastjson.JSONObject;
 import cn.m2c.ddd.common.application.configuration.RabbitmqConfiguration;
 import cn.m2c.ddd.common.event.ConsumedEventStore;
 import cn.m2c.ddd.common.port.adapter.messaging.rabbitmq.ExchangeListener;
+import cn.m2c.scm.application.standstard.StandstardApplication;
 import cn.m2c.scm.domain.model.stantard.Stantard;
 import cn.m2c.scm.domain.model.stantard.StantardRepository;
 
@@ -18,6 +19,9 @@ public class StantardDeleteListener extends ExchangeListener {
 
 	@Autowired
 	StantardRepository stantardRepository;
+	
+	@Autowired
+	StandstardApplication standstardApplication;
 
 	public StantardDeleteListener(RabbitmqConfiguration rabbitmqConfiguration,
 			HibernateTransactionManager hibernateTransactionManager, ConsumedEventStore consumedEventStore) {
@@ -33,15 +37,7 @@ public class StantardDeleteListener extends ExchangeListener {
 		if (array != null) {
 			List<String> list = array.toJavaList(String.class);
 			if (list != null && list.size() > 0) {
-				for (String stantardId : list) {
-					if (null != stantardId) {
-						Stantard stantard = stantardRepository.getStantardByStantardId(stantardId);
-						if (stantard.getUseNum() > 0) {
-							stantard.noUsed();
-							stantardRepository.saveStantard(stantard);
-						}
-					}
-				}
+				standstardApplication.noBeUsed(list);
 			}
 		}
 	}
