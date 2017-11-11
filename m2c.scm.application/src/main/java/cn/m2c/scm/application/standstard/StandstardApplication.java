@@ -1,5 +1,7 @@
 package cn.m2c.scm.application.standstard;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,4 +82,28 @@ public class StandstardApplication {
 	    	stantard.modify(command.getStantardId(), command.getStantardName(), command.getStantardStatus());
 	    	stantardRepository.saveStantard(stantard);
 	    }
+	  
+	  @Transactional(rollbackFor = {Exception.class,RuntimeException.class,NegativeException.class})
+	  public void beUsed(List<String> list) {
+		  for (String stantardId : list) {
+          	if (null != stantardId) {
+          		Stantard stantard = stantardRepository.getStantardByStantardId(stantardId);
+          		stantard.used();
+          		stantardRepository.saveStantard(stantard);
+          	}
+  		}
+	  }
+	  
+	  @Transactional(rollbackFor = {Exception.class,RuntimeException.class,NegativeException.class})
+	  public void noBeUsed(List<String> list) {
+		  for (String stantardId : list) {
+				if (null != stantardId) {
+					Stantard stantard = stantardRepository.getStantardByStantardId(stantardId);
+					if (stantard.getUseNum() > 0) {
+						stantard.noUsed();
+						stantardRepository.saveStantard(stantard);
+					}
+				}
+			}
+	  }
 }
