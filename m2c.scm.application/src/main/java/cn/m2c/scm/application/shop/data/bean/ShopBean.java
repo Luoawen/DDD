@@ -21,7 +21,7 @@ public class ShopBean {
 	private String shopReceipt;
 	@ColumnAlias(value = "customer_service_tel")
 	private String customerServiceTel;
-	@ColumnAlias(value = "on_sale_goods")
+	
 	private Integer onSaleGoods;
 	
 	/** 是否已关注 0：未关注 1：已关注 **/
@@ -136,6 +136,16 @@ public class ShopBean {
 
 	public void setDealerName(String dealerName) {
 		this.dealerName = dealerName;
+	}
+
+	@Override
+	public String toString() {
+		return "ShopBean [dealerId=" + dealerId + ", shopId=" + shopId
+				+ ", shopName=" + shopName + ", dealerName=" + dealerName
+				+ ", shopIcon=" + shopIcon + ", shopIntroduce=" + shopIntroduce
+				+ ", shopReceipt=" + shopReceipt + ", customerServiceTel="
+				+ customerServiceTel + ", onSaleGoods=" + onSaleGoods
+				+ ", isFocus=" + isFocus + ", userId=" + userId + "]";
 	}
 
 }
