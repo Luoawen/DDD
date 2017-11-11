@@ -85,12 +85,28 @@ public class DealerApplication {
 			throw new NegativeException(NegativeCode.DEALER_IS_NOT_EXIST, "此管理员对应的经销商不存在.");
 		}
 		for (Dealer dealer : dealerList) {
-			dealer.unbundleSeller();
+			dealer.unbundleUser();
 			dealerRepository.save(dealer);
 		}
 	}
-
 	
 	
+	/**
+	 * 绑定管理员
+	 * @param dealerId
+	 * @param userId
+	 * @param userName
+	 * @param userPhone
+	 * @throws NegativeException 
+	 */
+	@Transactional(rollbackFor = {Exception.class,RuntimeException.class,NegativeException.class})
+	public void bindUser(String dealerId,String userId,String userName,String userPhone) throws NegativeException {
+		Dealer dealer = dealerRepository.getDealer(dealerId);
+		if (null == dealer) {
+			throw new NegativeException(NegativeCode.DEALER_IS_NOT_EXIST, "此管理员对应的经销商不存在.");
+		}
+		dealer.bindUser(userId, userName, userPhone);
+		dealerRepository.save(dealer);
+	}
 	
 }
