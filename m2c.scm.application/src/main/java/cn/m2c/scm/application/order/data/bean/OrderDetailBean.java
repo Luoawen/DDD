@@ -47,6 +47,15 @@ public class OrderDetailBean {
 	@ColumnAlias(value= "comment_status")
 	private int commentStatus;
 	
+	@ColumnAlias(value= "afterStatus")
+	private Integer afterStatus;
+	
+	@ColumnAlias(value= "goods_id")
+	private String goodsId;
+	
+	@ColumnAlias(value= "goods_type_id")
+	private String goodsTypeId;
+	
 	public long getDiscountPrice() {
 		return discountPrice;
 	}

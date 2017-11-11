@@ -244,7 +244,7 @@ public class OrderQueryApplication {
 	 * @throws NegativeException
 	 */
 	public List<AppOrderBean> getAppOrderList(String userId, Integer status, Integer commentStatus,
-			int pageIndex, int pageSize) throws NegativeException {
+			int pageIndex, int pageSize, String keyword) throws NegativeException {
 		List<AppOrderBean> result = null;
 		try {
 			List<Object> params = new ArrayList<>(4);
@@ -259,7 +259,6 @@ public class OrderQueryApplication {
 			.append("WHERE a.user_id=?  AND a.del_flag=0 ");
 			params.add(userId);
 			
-			
 			if (commentStatus != null && commentStatus == 1) {
 				sql.append(" AND b.dealer_order_id in (SELECT e.dealer_order_id FROM t_scm_order_detail e WHERE e.comment_status=0 AND e._status=?)");
 				status = 3;
@@ -270,6 +269,11 @@ public class OrderQueryApplication {
 				params.add(status);
 			}
 			
+			if (!StringUtils.isEmpty(keyword)) {
+				sql.append(" AND (b.order_id LIKE concat('%',?,'%') OR (b.dealer_order_id IN (SELECT e.dealer_order_id FROM t_scm_order_detail e WHERE e.goods_name LIKE concat('%',?,'%'))))");
+				params.add(keyword);
+				params.add(keyword);
+			}
 			sql.append(" ORDER BY a.order_id DESC, a.created_date DESC ");
 			
 			sql.append(" LIMIT ?,? ");
@@ -288,8 +292,9 @@ public class OrderQueryApplication {
 						tmp = o;
 						tmpOrderId = o.getOrderId();
 						sql.delete(0, sql.length());
-						sql.append("SELECT a.goods_icon, a.goods_name, a.goods_title, a.sku_name, a.sku_id, a.sell_num, a.discount_price, a.freight, a.goods_amount\r\n") 
-						.append(" FROM t_scm_order_detail a WHERE a.order_id=?");
+						sql.append("SELECT a.goods_icon, a.goods_name, a.goods_title, a.sku_name, a.sku_id, a.sell_num, a.discount_price, a.freight, "
+								+ " a.goods_amount, b._status afterStatus, a.goods_id, a.goods_type_id\r\n") 
+						.append(" FROM t_scm_order_detail a LEFT OUTER JOIN t_scm_order_after_sell b ON b.order_id=a.order_id AND b.dealer_order_id = a.dealer_order_id AND b._status != -1 WHERE a.order_id=? ");
 						o.setGoodses(this.supportJdbcTemplate.queryForBeanList(sql.toString(), 
 								OrderDetailBean.class, new Object[] {tmpOrderId}));
 					}
@@ -304,7 +309,8 @@ public class OrderQueryApplication {
 						tmpOrderId = o.getOrderId();
 						sql.delete(0, sql.length());
 						sql.append("SELECT a.goods_icon, a.goods_name, a.goods_title, a.sku_name, a.sku_id, a.sell_num, a.discount_price, a.freight, a.goods_amount\r\n") 
-						.append(", a.comment_status FROM t_scm_order_detail a WHERE a.order_id=? AND a.dealer_order_id=?");
+						.append(", a.comment_status , b._status afterStatus, a.goods_id, a.goods_type_id FROM t_scm_order_detail a LEFT OUTER JOIN t_scm_order_after_sell b ON b.order_id=a.order_id AND b.dealer_order_id = a.dealer_order_id AND b._status != -1"
+								+ " WHERE a.order_id=? AND a.dealer_order_id=?");
 						o.setGoodses(this.supportJdbcTemplate.queryForBeanList(sql.toString(), 
 								OrderDetailBean.class, new Object[] {tmpOrderId, o.getDealerOrderId()}));
 					}
@@ -330,7 +336,8 @@ public class OrderQueryApplication {
 	 * @return
 	 * @throws NegativeException
 	 */
-	public Integer getAppOrderListTotal(String userId, Integer status, Integer commentStatus) throws NegativeException {
+	public Integer getAppOrderListTotal(String userId, Integer status, Integer commentStatus
+			,String keyword) throws NegativeException {
 		Integer result = 0;
 		try {
 			List<Object> params = new ArrayList<>(2);
@@ -349,6 +356,12 @@ public class OrderQueryApplication {
 			else if (status != null) {
 				sql.append(" AND b._status=?");
 				params.add(status);
+			}
+			
+			if (!StringUtils.isEmpty(keyword)) {
+				sql.append(" AND (b.order_id LIKE concat('%',?,'%') OR (b.dealer_order_id IN (SELECT e.dealer_order_id FROM t_scm_order_detail e WHERE e.goods_name LIKE concat('%',?,'%'))))");
+				params.add(keyword);
+				params.add(keyword);
 			}
 			
 			result = this.getSupportJdbcTemplate().jdbcTemplate().queryForObject(sql.toString(), params.toArray(), Integer.class);
@@ -417,15 +430,17 @@ public class OrderQueryApplication {
 			
 			if (result != null) {
 				sql.delete(0, sql.length());
-				sql.append("SELECT a.goods_icon, a.goods_name, a.goods_title, a.sku_name, a.sku_id, a.sell_num, a.discount_price, a.freight, a.goods_amount\r\n") 
-				.append(" FROM t_scm_order_detail a WHERE a.order_id=? AND a.dealer_order_id=?");
+				sql.append("SELECT a.goods_icon, a.goods_name, a.goods_title, a.sku_name, a.sku_id, a.sell_num, a.discount_price, a.freight, a.goods_amount\r\n")
+				.append(", b._status afterStatus, a.goods_id, a.goods_type_id")
+				.append(" FROM t_scm_order_detail a LEFT OUTER JOIN t_scm_order_after_sell b ON b.order_id=a.order_id AND b.dealer_order_id = a.dealer_order_id AND b._status != -1")
+				.append(" WHERE a.order_id=? AND a.dealer_order_id=?");
 				result.setGoodses(this.supportJdbcTemplate.queryForBeanList(sql.toString(), 
 						OrderDetailBean.class, new Object[] {result.getOrderId(), result.getDealerOrderId()}));
 			}
 			
 		} catch (Exception e) {
-			LOGGER.error("---查询APP订单列表出错",e);
-			throw new NegativeException(500, "查询APP订单列表出错");
+			LOGGER.error("---查询APP订单详情出错",e);
+			throw new NegativeException(500, "查询APP订单详情出错");
 		}
 		return result;
 	}

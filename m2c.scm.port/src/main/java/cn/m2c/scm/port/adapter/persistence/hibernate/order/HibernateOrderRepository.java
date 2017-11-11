@@ -57,7 +57,7 @@ public class HibernateOrderRepository extends HibernateSupperRepository implemen
 			sql.append(" AND b.user_id=:userId");
 		}
 		if (!StringUtils.isEmpty(orderId)) {
-			sql.append(" AND a.orderId=:orderId");
+			sql.append(" AND a.order_id=:orderId");
 		}
 		Query query = this.session().createSQLQuery(sql.toString()).addEntity(DealerOrder.class);
 		query.setParameter("dealerOrderId", dealerOrderId);

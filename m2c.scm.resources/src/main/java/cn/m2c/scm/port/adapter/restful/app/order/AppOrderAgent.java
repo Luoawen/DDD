@@ -139,13 +139,14 @@ public class AppOrderAgent {
             ,@RequestParam(value = "pageNum", required = false, defaultValue="5") Integer pageNum
             ,@RequestParam(value = "status", required = false) Integer status
             ,@RequestParam(value = "commentStatus", required = false) Integer commentStatus
+            ,@RequestParam(value = "keyword", required = false) String keyword
             ) {
     	MPager result = new MPager(MCode.V_1);
         try {
-        	Integer total = orderQueryApp.getAppOrderListTotal(userId, status, commentStatus);
+        	Integer total = orderQueryApp.getAppOrderListTotal(userId, status, commentStatus, keyword);
         	if (pageNum == 0)
         		pageNum = 1;
-        	List<AppOrderBean> cntList = orderQueryApp.getAppOrderList(userId, status, commentStatus, pageIndex, pageNum);
+        	List<AppOrderBean> cntList = orderQueryApp.getAppOrderList(userId, status, commentStatus, pageIndex, pageNum, keyword);
             result.setPager(total, pageIndex, pageNum);
             result.setContent(cntList);
             result.setStatus(MCode.V_200);
