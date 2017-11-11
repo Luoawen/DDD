@@ -46,7 +46,7 @@ public class DomainServiceImpl implements DomainService {
     @Override
     public String generateOrderNo() {
     	String orderNo = cn.m2c.scm.domain.util.DateUtils.getDateStr(cn.m2c.scm.domain.util.DateUtils.TYPE_0) 
-    			+ RandomUtils.toStrs4Upper(6);
+    			+ RandomUtils.toStrs4Upper(2);
     	saveGenerateNo(orderNo, 1);
     	return orderNo;
     }
