@@ -35,7 +35,7 @@ public class DealerOrderDetailBean {
 	/**
 	 * 支付时间
 	 */
-	@ColumnAlias(value ="pay_date")
+	@ColumnAlias(value ="payTime")
 	private Date payDate;
 	/**
 	 * 支付单号
