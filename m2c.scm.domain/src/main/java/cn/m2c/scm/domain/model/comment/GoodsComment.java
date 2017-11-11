@@ -4,6 +4,7 @@ import cn.m2c.common.JsonUtils;
 import cn.m2c.ddd.common.domain.model.ConcurrencySafeEntity;
 import cn.m2c.ddd.common.domain.model.DomainEventPublisher;
 import cn.m2c.scm.domain.model.comment.event.GoodsCommentAddEvent;
+import cn.m2c.scm.domain.model.comment.event.GoodsCommentDeleteEvent;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
@@ -187,6 +188,9 @@ public class GoodsComment extends ConcurrencySafeEntity {
      */
     public void remove() {
         this.commentStatus = 2;
+        DomainEventPublisher
+                .instance()
+                .publish(new GoodsCommentDeleteEvent(this.orderId, this.skuId));
     }
 
     public void over24HBadCommentStatus() {
