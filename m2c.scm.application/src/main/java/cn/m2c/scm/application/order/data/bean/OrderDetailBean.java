@@ -38,6 +38,24 @@ public class OrderDetailBean {
 	@ColumnAlias(value= "order_id")
 	private String orderId;
 	
+	public Integer getAfterStatus() {
+		return afterStatus;
+	}
+	public void setAfterStatus(Integer afterStatus) {
+		this.afterStatus = afterStatus;
+	}
+	public String getGoodsId() {
+		return goodsId;
+	}
+	public void setGoodsId(String goodsId) {
+		this.goodsId = goodsId;
+	}
+	public String getGoodsTypeId() {
+		return goodsTypeId;
+	}
+	public void setGoodsTypeId(String goodsTypeId) {
+		this.goodsTypeId = goodsTypeId;
+	}
 	@ColumnAlias(value= "discount_price")
 	private long discountPrice;
 	
