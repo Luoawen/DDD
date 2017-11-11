@@ -444,5 +444,95 @@ public class OrderQueryApplication {
 		}
 		return result;
 	}
+	
+	/***
+	 * 获取APP可售后的订单列表
+	 * @param userId
+	 * @param status
+	 * @param pageIndex
+	 * @param pageSize
+	 * @return
+	 * @throws NegativeException
+	 */
+	public List<AppOrderBean> getMaySaleAfterList(String userId, int pageIndex, int pageSize) throws NegativeException {
+		List<AppOrderBean> result = null;
+		try {
+			List<Object> params = new ArrayList<>(4);
+			StringBuilder sql = new StringBuilder();
+			sql.append("SELECT a.province_code, a.province, a.city, a.city_code, a.area_code, a.area_county, a.street_addr\r\n")
+			.append(", a.order_freight, a.order_id, a.goods_amount, a.plateform_discount, a.dealer_discount\r\n")
+			.append(", b.invoice_code, b.invoice_header, b.invoice_name, b.invoice_type, a.created_date, b._status\r\n") 
+			.append(", b.dealer_id, c.dealer_name, b.dealer_order_id\r\n") 
+			.append("FROM t_scm_order_dealer b \r\n")
+			.append("LEFT OUTER JOIN t_scm_order_main a ON a.order_id=b.order_id \r\n") 
+			.append("LEFT OUTER JOIN t_scm_dealer c ON c.dealer_id = b.dealer_id \r\n")
+			.append("WHERE a.user_id=?  AND b.del_flag=0 AND (b._status=2 OR b._status=3)")
+			.append("AND b.dealer_order_id IN (SELECT DISTINCT aa.dealer_order_id FROM t_scm_order_detail aa \r\n")
+			.append("WHERE aa.sku_id NOT IN (SELECT bb.sku_id FROM t_scm_order_after_sell bb WHERE bb._status != -1 AND bb.dealer_order_id=aa.dealer_order_id AND bb.order_id=aa.order_id))");
+			
+			params.add(userId);
+			
+			sql.append(" ORDER BY a.order_id DESC, a.created_date DESC ");
+			
+			sql.append(" LIMIT ?,? ");
+			params.add((pageIndex - 1) * pageSize);
+			params.add(pageSize);
+			
+			result = this.supportJdbcTemplate.queryForBeanList(sql.toString(), AppOrderBean.class, params.toArray());
+			
+			if (result != null) {
+				int sz = result.size();
+				String tmpOrderId = null; 
+				for (int i=sz - 1; i> -1; i--) {
+					AppOrderBean o = result.get(i);
+					tmpOrderId = o.getOrderId();
+					sql.delete(0, sql.length());
+					sql.append("SELECT a.goods_icon, a.goods_name, a.goods_title, a.sku_name, a.sku_id, a.sell_num, a.discount_price, a.freight, a.goods_amount\r\n")
+					.append(", a.comment_status ,a.goods_id, a.goods_type_id FROM t_scm_order_detail a \r\n")
+					.append(" WHERE a.order_id=? AND a.dealer_order_id=? AND a.sku_id NOT IN (SELECT b.sku_id FROM t_scm_order_after_sell b WHERE b._status != -1 AND b.dealer_order_id=a.dealer_order_id AND b.order_id=a.order_id)")
+					;
+					o.setGoodses(this.supportJdbcTemplate.queryForBeanList(sql.toString(), 
+							OrderDetailBean.class, new Object[] {tmpOrderId, o.getDealerOrderId()}));
+				}
+			}
+			
+		} catch (Exception e) {
+			LOGGER.error("---查询APP可售后的订单列表出错"+e.getMessage(),e);
+			throw new NegativeException(500, "查询APP可售后的订单列表出错");
+		}
+		return result;
+	}
+	
+	/***
+	 * 获取APP可售后的订单列表
+	 * @param userId
+	 * @param status
+	 * @param pageIndex
+	 * @param pageSize
+	 * @return
+	 * @throws NegativeException
+	 */
+	public Integer getMaySaleAfterListTotal(String userId) throws NegativeException {
+		Integer result = 0;
+		try {
+			List<Object> params = new ArrayList<>(4);
+			StringBuilder sql = new StringBuilder();
+			sql.append("SELECT count(1) FROM t_scm_order_dealer b \r\n")
+			.append("LEFT OUTER JOIN t_scm_order_main a ON a.order_id=b.order_id \r\n") 
+			.append("LEFT OUTER JOIN t_scm_dealer c ON c.dealer_id = b.dealer_id \r\n")
+			.append("WHERE a.user_id=?  AND b.del_flag=0 AND (b._status=2 OR b._status=3)")
+			.append("AND b.dealer_order_id IN (SELECT DISTINCT aa.dealer_order_id FROM t_scm_order_detail aa \r\n")
+			.append("WHERE aa.sku_id NOT IN (SELECT bb.sku_id FROM t_scm_order_after_sell bb WHERE bb._status != -1 AND bb.dealer_order_id=aa.dealer_order_id AND bb.order_id=aa.order_id))");
+			
+			params.add(userId);
+			
+			result = this.getSupportJdbcTemplate().jdbcTemplate().queryForObject(sql.toString(), params.toArray(), Integer.class);
+			
+		} catch (Exception e) {
+			LOGGER.error("---查询APP可售后的订单列表出错"+e.getMessage(),e);
+			throw new NegativeException(500, "查询APP可售后的订单列表出错");
+		}
+		return result;
+	}
 }
 
