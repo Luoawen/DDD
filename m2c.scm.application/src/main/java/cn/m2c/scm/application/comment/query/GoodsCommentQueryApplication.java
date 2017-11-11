@@ -105,7 +105,7 @@ public class GoodsCommentQueryApplication {
         sql.append(" SELECT ");
         sql.append(" * ");
         sql.append(" FROM ");
-        sql.append(" t_scm_goods_comment WHERE 1 = 1 AND goods_id = ? AND comment_status = 1  AND delayed_flag =1");
+        sql.append(" t_scm_goods_comment WHERE 1 = 1 AND goods_id = ? AND comment_status = 1  AND (delayed_flag is null or delayed_flag = 1)");
         params.add(goodsId);
         if (type == 1) {
             sql.append(" AND image_status=2");
@@ -137,7 +137,7 @@ public class GoodsCommentQueryApplication {
         sql.append(" SELECT ");
         sql.append(" count(*) ");
         sql.append(" FROM ");
-        sql.append(" t_scm_goods_comment WHERE 1 = 1 AND goods_id = ? AND comment_status = 1 AND delayed_flag =1");
+        sql.append(" t_scm_goods_comment WHERE 1 = 1 AND goods_id = ? AND comment_status = 1 AND (delayed_flag is null or delayed_flag = 1)");
         params.add(goodsId);
         if (type == 1) {
             sql.append(" AND image_status=2");

@@ -1,6 +1,5 @@
 package cn.m2c.scm.application.dealerorder.data.bean;
 
-import java.util.Date;
 import java.util.List;
 
 /***
@@ -28,6 +27,9 @@ public class DealerOrderQB {
 	 * 收货人电话
 	 */
 	private String revPhone;
+
+	private String revAddress;
+
 	/**
 	 * 订货单状态
 	 */
@@ -38,6 +40,11 @@ public class DealerOrderQB {
 	private String dealerId;
 	
 	private String payNo;
+
+	/**
+	 * 支付时间
+	 */
+	private Long payTime;
 	
 	/**运费 */
 	private long orderFreight;
@@ -47,6 +54,23 @@ public class DealerOrderQB {
 	private long dealerDiscount;
 	
 	private String orderId;
+
+	/**
+	 * 售后期望(退货、换货、仅退款)
+	 */
+	private Integer afterOrderType;
+	/**
+	 * 售后单号
+	 */
+	private String afterSellDealerOrderId;
+	/**
+	 * 售后总额
+	 */
+	private long afterMoney;
+	/**
+	 * 售后数量
+	 */
+	private Integer afterNum;
 	
 	public String getOrderId() {
 		return orderId;
@@ -160,4 +184,51 @@ public class DealerOrderQB {
 				+ "]";
 	}
 
+	public Long getPayTime() {
+		return payTime;
+	}
+
+	public void setPayTime(Long payTime) {
+		this.payTime = payTime;
+	}
+
+	public String getRevAddress() {
+		return revAddress;
+	}
+
+	public void setRevAddress(String revAddress) {
+		this.revAddress = revAddress;
+	}
+
+	public Integer getAfterOrderType() {
+		return afterOrderType;
+	}
+
+	public void setAfterOrderType(Integer afterOrderType) {
+		this.afterOrderType = afterOrderType;
+	}
+
+	public String getAfterSellDealerOrderId() {
+		return afterSellDealerOrderId;
+	}
+
+	public void setAfterSellDealerOrderId(String afterSellDealerOrderId) {
+		this.afterSellDealerOrderId = afterSellDealerOrderId;
+	}
+
+	public long getAfterMoney() {
+		return afterMoney;
+	}
+
+	public void setAfterMoney(long afterMoney) {
+		this.afterMoney = afterMoney;
+	}
+
+	public Integer getAfterNum() {
+		return afterNum;
+	}
+
+	public void setAfterNum(Integer afterNum) {
+		this.afterNum = afterNum;
+	}
 }

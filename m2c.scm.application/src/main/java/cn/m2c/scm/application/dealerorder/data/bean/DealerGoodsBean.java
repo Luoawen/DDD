@@ -33,7 +33,11 @@ public class DealerGoodsBean {
 	private String goodsTitle;
 	
 	private String goodsIcon;
-	
+
+	/**
+	 * 运费
+	 */
+	private long freight;
 	
 	public String getGoodsTitle() {
 		return goodsTitle;
@@ -115,5 +119,12 @@ public class DealerGoodsBean {
 	public void setSkuId(String skuId) {
 		this.skuId = skuId;
 	}
-	
+
+	public long getFreight() {
+		return freight;
+	}
+
+	public void setFreight(long freight) {
+		this.freight = freight;
+	}
 }
