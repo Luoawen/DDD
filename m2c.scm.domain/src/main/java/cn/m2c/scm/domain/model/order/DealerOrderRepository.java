@@ -39,5 +39,5 @@ public interface DealerOrderRepository {
 	/**
 	 * 更新评论状态
 	 */
-	public void updateComment(String orderId, String skuId);
+	public void updateComment(String orderId, String skuId, int flag);
 }

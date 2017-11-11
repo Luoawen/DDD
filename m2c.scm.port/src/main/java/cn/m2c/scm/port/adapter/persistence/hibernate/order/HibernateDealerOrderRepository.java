@@ -66,8 +66,9 @@ public class HibernateDealerOrderRepository extends HibernateSupperRepository im
 	/***
 	 * 设置评论状态
 	 */
-	public void updateComment(String orderId, String skuId) {
-		session().createSQLQuery("update t_scm_order_detail set comment_status = 1 where order_id=:orderId and sku_id=:skuId")
-		.setParameter("orderId", orderId).setParameter("skuId", skuId).executeUpdate();
+	public void updateComment(String orderId, String skuId, int flag) {
+		session().createSQLQuery("update t_scm_order_detail set comment_status = :flag where order_id=:orderId and sku_id=:skuId")
+		.setParameter("flag", flag).setParameter("orderId", orderId)
+		.setParameter("skuId", skuId).executeUpdate();
 	}
 }

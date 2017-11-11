@@ -9,12 +9,12 @@ import cn.m2c.ddd.common.notification.NotificationReader;
 import cn.m2c.ddd.common.port.adapter.messaging.rabbitmq.ExchangeListener;
 import cn.m2c.scm.application.order.DealerOrderApplication;
 
-public class GoodsCommentListener extends ExchangeListener {
+public class GoodsCmtDelListener extends ExchangeListener {
 
 	@Autowired
 	private DealerOrderApplication orderApp;
 	
-	public GoodsCommentListener(RabbitmqConfiguration rabbitmqConfiguration,
+	public GoodsCmtDelListener(RabbitmqConfiguration rabbitmqConfiguration,
 			HibernateTransactionManager hibernateTransactionManager, ConsumedEventStore consumedEventStore) {
 		super(rabbitmqConfiguration, hibernateTransactionManager, consumedEventStore);
 		// TODO Auto-generated constructor stub
@@ -23,7 +23,7 @@ public class GoodsCommentListener extends ExchangeListener {
 	@Override
 	protected String[] listensTo() {
 		// TODO Auto-generated method stub
-		return new String[] {"cn.m2c.scm.domain.model.comment.event.GoodsCommentAddEvent"};
+		return new String[] {"cn.m2c.scm.domain.model.comment.event.GoodsCommentDeleteEvent"};
 	}
 
 	@Override
@@ -40,6 +40,6 @@ public class GoodsCommentListener extends ExchangeListener {
 		String orderNo = reader.eventStringValue("orderId");
 		String skuId = reader.eventStringValue("skuId");
 		
-		orderApp.commentSku(orderNo, skuId, 1);
+		orderApp.commentSku(orderNo, skuId, 0);
 	}
 }
