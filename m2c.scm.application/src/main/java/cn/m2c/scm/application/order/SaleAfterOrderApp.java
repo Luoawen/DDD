@@ -64,11 +64,6 @@ public class SaleAfterOrderApp {
 			List<SkuNumBean> skuBeanLs =saleOrderQuery.getOrderDtlByMarketId(mkId, cmd.getOrderId());
 			
 			discountMoney = OrderMarketCalc.calcReturnMoney(marketInfo, skuBeanLs, cmd.getSkuId());
-			
-			if (marketInfo != null && !marketInfo.isFull()) {
-				// 更新已使用营销 为不可用状态
-				saleAfterRepository.disabledOrderMarket(cmd.getOrderId(), mkId);
-			}
 		}		
 		long money = itemDtl.sumGoodsMoney() - discountMoney;
 		SaleAfterOrder afterOrder = new SaleAfterOrder(cmd.getSaleAfterNo(), cmd.getUserId(), cmd.getOrderId(),
@@ -97,6 +92,12 @@ public class SaleAfterOrderApp {
 		if (order == null) {
 			throw new NegativeException(MCode.V_101, "无此售后单！");
 		}
+		SimpleMarket marketInfo = saleOrderQuery.getMarketBySkuIdAndOrderId(order.skuId(), order.orderId());
+		if (marketInfo != null && !marketInfo.isFull()) {
+			// 更新已使用营销 为不可用状态
+			saleAfterRepository.disabledOrderMarket(order.orderId(), marketInfo.getMarketingId());
+		}
+		
 		order.agreeApply(cmd.getUserId());
 		saleAfterRepository.updateSaleAfterOrder(order);
 	}

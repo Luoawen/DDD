@@ -256,7 +256,7 @@ public class OrderQueryApplication {
 			.append("FROM t_scm_order_dealer b \r\n")
 			.append("LEFT OUTER JOIN t_scm_order_main a ON a.order_id=b.order_id \r\n") 
 			.append("LEFT OUTER JOIN t_scm_dealer c ON c.dealer_id = b.dealer_id \r\n")
-			.append("WHERE a.user_id=? ");
+			.append("WHERE a.user_id=?  AND a.del_flag=0 ");
 			params.add(userId);
 			
 			
@@ -274,7 +274,7 @@ public class OrderQueryApplication {
 			
 			sql.append(" LIMIT ?,? ");
 			params.add((pageIndex - 1) * pageSize);
-			params.add(pageIndex * pageSize);
+			params.add(pageSize);
 			
 			result = this.supportJdbcTemplate.queryForBeanList(sql.toString(), AppOrderBean.class, params.toArray());
 			
@@ -338,7 +338,7 @@ public class OrderQueryApplication {
 			sql.append("SELECT count(1) FROM t_scm_order_dealer b \r\n")
 			.append("LEFT OUTER JOIN t_scm_order_main a ON a.order_id=b.order_id \r\n") 
 			.append("LEFT OUTER JOIN t_scm_dealer c ON c.dealer_id = b.dealer_id \r\n")
-			.append("WHERE a.user_id=? ");
+			.append("WHERE a.user_id=? AND a.del_flag=0 ");
 			params.add(userId);
 			
 			if (commentStatus != null && commentStatus == 1) {
@@ -375,7 +375,7 @@ public class OrderQueryApplication {
 				sql.append("SELECT a.province_code, a.province, a.city, a.city_code, a.area_code, a.area_county, a.street_addr\r\n")
 				.append(", a.order_freight, a.order_id, a.goods_amount, a.plateform_discount, a.dealer_discount\r\n")
 				.append(", b.invoice_code, b.invoice_header, b.invoice_name, b.invoice_type, a.created_date, b._status\r\n") 
-				.append(", b.dealer_id, c.dealer_name, b.dealer_order_id\r\n") 
+				.append(", b.dealer_id, c.dealer_name, b.dealer_order_id, b.rev_phone, b.rev_person, a.pay_way, a.pay_no\r\n") 
 				.append("FROM t_scm_order_dealer b \r\n")
 				.append("LEFT OUTER JOIN t_scm_order_main a ON a.order_id=b.order_id \r\n") 
 				.append("LEFT OUTER JOIN t_scm_dealer c ON c.dealer_id = b.dealer_id \r\n")
@@ -396,7 +396,7 @@ public class OrderQueryApplication {
 				sql.append("SELECT a.province_code, a.province, a.city, a.city_code, a.area_code, a.area_county, a.street_addr\r\n")
 				.append(", a.order_freight, a.order_id, a.goods_amount, a.plateform_discount, a.dealer_discount\r\n")
 				.append(", b.invoice_code, b.invoice_header, b.invoice_name, b.invoice_type, a.created_date, b._status\r\n") 
-				.append(", b.dealer_id, c.dealer_name, b.dealer_order_id\r\n") 
+				.append(", b.dealer_id, c.dealer_name, b.dealer_order_id,b.rev_phone, b.rev_person, a.pay_way, a.pay_no\r\n") 
 				.append("FROM t_scm_order_dealer b \r\n")
 				.append("LEFT OUTER JOIN t_scm_order_main a ON a.order_id=b.order_id \r\n") 
 				.append("LEFT OUTER JOIN t_scm_dealer c ON c.dealer_id = b.dealer_id \r\n")

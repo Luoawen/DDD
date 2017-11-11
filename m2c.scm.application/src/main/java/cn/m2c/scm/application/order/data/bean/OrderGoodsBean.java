@@ -72,6 +72,36 @@ public class OrderGoodsBean {
 	private long changePrice;
 	@ColumnAlias(value="is_change")
 	private Integer isChange;
+	@ColumnAlias(value="res_rate")
+	private Float resRate;
+	@ColumnAlias(value="marketing_id")
+	private String marketId;
+	@ColumnAlias(value="market_level")
+	private Integer level;
+	
+	public Integer getLevel() {
+		return level;
+	}
+
+	public void setLevel(Integer level) {
+		this.level = level;
+	}
+
+	public String getMarketId() {
+		return marketId;
+	}
+
+	public void setMarketId(String marketId) {
+		this.marketId = marketId;
+	}
+
+	public Float getResRate() {
+		return resRate;
+	}
+
+	public void setResRate(Float resRate) {
+		this.resRate = resRate;
+	}
 	
 	public long getChangePrice() {
 		return changePrice;

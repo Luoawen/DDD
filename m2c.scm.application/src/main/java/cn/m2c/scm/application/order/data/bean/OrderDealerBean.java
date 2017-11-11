@@ -48,7 +48,7 @@ public class OrderDealerBean {
 	private long dealerDiscount;
 	/**结算方式*/
 	private Integer termOfPayment;
-
+	
 	public Integer getTermOfPayment() {
 		return termOfPayment;
 	}

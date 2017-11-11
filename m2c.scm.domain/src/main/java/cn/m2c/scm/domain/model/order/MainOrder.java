@@ -58,6 +58,8 @@ public class MainOrder extends ConcurrencySafeEntity {
 	/**经度*/
 	private Double longitude;
 	
+	private Integer delFlag = 0;
+	
 	public MainOrder() {
 		super();
 	}
@@ -82,8 +84,8 @@ public class MainOrder extends ConcurrencySafeEntity {
 	/**
 	 * 增加订单
 	 */
-	public void add(Map<String, Integer> skus) {
-		DomainEventPublisher.instance().publish(new OrderAddedEvent(userId, skus, orderId));
+	public void add(Map<String, Integer> skus, Integer from) {
+		DomainEventPublisher.instance().publish(new OrderAddedEvent(userId, skus, orderId, from));
 		DomainEventPublisher.instance().publish(new OrderOptLogEvent(orderId, null, "订单提交成功", userId));
 	}
 	/***
@@ -116,6 +118,22 @@ public class MainOrder extends ConcurrencySafeEntity {
 		DomainEventPublisher.instance().publish(new OrderCancelEvent(orderId, allSales, markets));
 		allSales = null;
 		DomainEventPublisher.instance().publish(new OrderOptLogEvent(orderId, null, "订单取消成功", userId));
+		return true;
+	}
+	
+	/***
+	 * 删除订单(用户主动操作)
+	 */
+	public boolean del() {
+		// 检查是否可以取消，只有在未支付的状态下用户可以取消
+		if (status > 0 && status < 3) {
+			return false;
+		}
+		if (dealerOrders != null) {
+			for(DealerOrder d : dealerOrders)
+				d.del();
+		}
+		delFlag = 1;
 		return true;
 	}
 	/***
@@ -231,5 +249,50 @@ public class MainOrder extends ConcurrencySafeEntity {
 			plateformDiscount += d.getPlateformDiscount();
 			dealerDiscount += d.getDealerDiscount();
 		}
+	}
+	
+	public boolean isSameUser(String userId) {
+		if (userId != null && userId.equals(this.userId))
+			return true;
+		return false;
+	}
+	
+	/***
+	 * 取消订单(用户主动操作，系统自动操作)
+	 */
+	public boolean jobCancel() {
+		// 检查是否可以取消，只有在未支付的状态下用户可以取消
+		if (status != 0) {
+			return false;
+		}
+		status = -1;
+		Map<String, Integer> allSales = new HashMap<String, Integer>();
+		for (DealerOrder d : dealerOrders) {
+			d.cancel();
+			allSales.putAll(d.getSaleNums());
+		}
+		
+		Map<String, Object> markets = null;
+		if (marketings != null) {
+			markets = new HashMap<String, Object>();
+			StringBuilder sb = new StringBuilder(200);
+			int c = 0;
+			for (SimpleMarketing m : marketings) {
+				if (c > 0)
+					sb.append(",");
+				sb.append(m.getMarketingId());
+				c ++;
+			}
+			if (c > 0) {
+				markets.put("marketIds", sb.toString());
+				markets.put("userId", userId);
+				markets.put("status", 0);
+			}
+		}
+		
+		DomainEventPublisher.instance().publish(new OrderCancelEvent(orderId, allSales, markets));
+		allSales = null;
+		DomainEventPublisher.instance().publish(new OrderOptLogEvent(orderId, null, "订单取消成功", "m2c_job_scm"));
+		return true;
 	}
 }

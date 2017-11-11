@@ -35,4 +35,9 @@ public interface DealerOrderRepository {
 	 * 更新运费及收货信息
 	 */
 	public void updateFreight(DealerOrder dealerOrder);
+	
+	/**
+	 * 更新评论状态
+	 */
+	public void updateComment(String orderId, String skuId);
 }

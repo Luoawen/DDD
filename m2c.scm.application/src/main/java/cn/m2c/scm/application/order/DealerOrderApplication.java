@@ -27,7 +27,6 @@ public class DealerOrderApplication {
 
 	@Autowired
 	DealerOrderRepository dealerOrderRepository;
-
 	/**
 	 * 更新物流信息
 	 * 
@@ -36,6 +35,8 @@ public class DealerOrderApplication {
 	 */
 	@Transactional(rollbackFor = { Exception.class, RuntimeException.class, NegativeException.class })
 	public void updateExpress(SendOrderCommand command) throws NegativeException {
+		
+		LOGGER.info("更新物流信息");
 		DealerOrder dealerOrder = dealerOrderRepository.getDealerOrderById(command.getDealerOrderId());
 		if (dealerOrder == null)
 			throw new NegativeException(NegativeCode.DEALER_ORDER_IS_NOT_EXIST, "此商家订单不存在.");
@@ -180,5 +181,10 @@ public class DealerOrderApplication {
 				list.add(bean);
 		}
 		return list;
+	}
+	
+	@Transactional(rollbackFor = { Exception.class, RuntimeException.class, NegativeException.class })
+	public void commentSku(String orderId, String skuId) {
+		dealerOrderRepository.updateComment(orderId, skuId);
 	}
 }

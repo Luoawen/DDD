@@ -25,6 +25,8 @@ public class OrderAddedEvent implements DomainEvent {
     
     private String orderNo;
     
+    private Integer from;
+    
 	@Override
 	public int eventVersion() {
 		// TODO Auto-generated method stub
@@ -42,11 +44,12 @@ public class OrderAddedEvent implements DomainEvent {
 		occurredOn = new Date();
 		eventVersion = 1;
 	}
-	public OrderAddedEvent(String userId, Map<String, Integer> skus, String orderNo) {
+	public OrderAddedEvent(String userId, Map<String, Integer> skus, String orderNo, Integer from) {
 		this();
 		this.userId = userId;
 		this.skus = skus;
 		this.orderNo = orderNo;
+		this.from = from;
 	}
 	
 	public Map<String, Integer> getSkus() {
@@ -65,7 +68,7 @@ public class OrderAddedEvent implements DomainEvent {
 		Gson gson = new Gson();
 		Map<String, Integer> s = new HashMap<String, Integer>();
 		s.put("2222", 2);
-		OrderAddedEvent a = new OrderAddedEvent("123456",  s, "114");
+		OrderAddedEvent a = new OrderAddedEvent("123456",  s, "114", 0);
 		System.out.print(gson.toJson(a));
 	}
 }

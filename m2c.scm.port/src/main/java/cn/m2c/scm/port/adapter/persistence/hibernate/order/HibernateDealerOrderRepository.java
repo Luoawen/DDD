@@ -63,4 +63,11 @@ public class HibernateDealerOrderRepository extends HibernateSupperRepository im
 		session().createSQLQuery("update t_scm_order_main set order_freight = (select sum(a.order_freight) from t_scm_order_dealer a where a.order_id=:orderId) where order_id=:orderId")
 		.setParameter("orderId", dealerOrder.getOrderNo()).executeUpdate();
 	}
+	/***
+	 * 设置评论状态
+	 */
+	public void updateComment(String orderId, String skuId) {
+		session().createSQLQuery("update t_scm_order_detail set comment_status = 1 where order_id=:orderId and sku_id=:skuId")
+		.setParameter("orderId", orderId).setParameter("skuId", skuId).executeUpdate();
+	}
 }

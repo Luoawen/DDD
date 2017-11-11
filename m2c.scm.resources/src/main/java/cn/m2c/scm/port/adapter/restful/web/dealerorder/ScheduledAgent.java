@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import cn.m2c.common.MCode;
 import cn.m2c.common.MResult;
 import cn.m2c.scm.application.order.DealerOrderApplication;
+import cn.m2c.scm.application.order.OrderApplication;
 import cn.m2c.scm.application.order.SaleAfterOrderApp;
 import cn.m2c.scm.domain.NegativeException;
 
@@ -26,6 +27,9 @@ public class ScheduledAgent {
 	
 	@Autowired
 	SaleAfterOrderApp saleAfterOrderApplication;
+	
+	@Autowired
+	OrderApplication orderApp;
 
 	/**
 	 * 判断是否已满足确认收货条件<待收货状态下七天后自动收货为完成状态>
@@ -77,9 +81,10 @@ public class ScheduledAgent {
 	@RequestMapping(value = "/statusWaitPay",method = RequestMethod.PUT)
 	public ResponseEntity<MResult> waitPay() {
 		MResult result = new MResult(MCode.V_1);
-		System.out.println("请求过来le ------------------------------------------");
+		LOGGER.error("--定时请求检查是否有要取消的订单------------------------------------------");
 		try {
-			dealerOrderApplication.updateWaitPay();
+			//dealerOrderApplication.updateWaitPay();
+			orderApp.cancelAllNotPayed();
 			result.setStatus(MCode.V_200);
 		} catch (NegativeException ne) {
 			result = new MResult(ne.getStatus(), ne.getMessage());

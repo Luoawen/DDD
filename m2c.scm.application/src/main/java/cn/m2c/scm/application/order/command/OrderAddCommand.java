@@ -47,9 +47,15 @@ public class OrderAddCommand extends AssertionConcern implements Serializable {
 		return longitude;
 	}
 	
+	private Integer from;
+	
+	public Integer getFrom() {
+		return from;
+	}
+	
 	public OrderAddCommand(String orderId, String userId, String noted
 			,String goodses, String invoice, String addr, String coupons
-			, Double latitude, Double longitude) throws NegativeException {
+			, Double latitude, Double longitude, Integer from) throws NegativeException {
 		// 检验必传参数, 若不符合条件则直接抛出异常
 		if (StringUtils.isEmpty(orderId)) {
 			throw new NegativeException(MCode.V_1, "订单号为空(orderId)");
@@ -61,6 +67,7 @@ public class OrderAddCommand extends AssertionConcern implements Serializable {
 		this.userId = userId;
 		this.orderId = orderId;
 		this.noted = noted;
+		this.from = from;
 		checkGoodses(goodses);
 		
 		if (!StringUtils.isEmpty(coupons)) {

@@ -14,9 +14,11 @@ import cn.m2c.scm.application.order.command.OrderAddCommand;
 import cn.m2c.scm.application.order.command.PayOrderCmd;
 import cn.m2c.scm.application.order.command.SaleAfterCmd;
 import cn.m2c.scm.application.order.command.SaleAfterShipCmd;
+import cn.m2c.scm.application.order.data.bean.AfterSellBean;
 import cn.m2c.scm.application.order.data.bean.AppOrderBean;
 import cn.m2c.scm.application.order.data.bean.AppOrderDtl;
 import cn.m2c.scm.application.order.data.representation.OrderNo;
+import cn.m2c.scm.application.order.query.AfterSellOrderQuery;
 import cn.m2c.scm.application.order.query.OrderQueryApplication;
 import cn.m2c.scm.domain.NegativeException;
 
@@ -51,6 +53,9 @@ public class AppOrderAgent {
     
     @Autowired
     SaleAfterOrderApp saleAfterApp;
+    
+    @Autowired
+    AfterSellOrderQuery saleAfterQuery;
     
     @Autowired
     OrderQueryApplication orderQueryApp;
@@ -95,16 +100,25 @@ public class AppOrderAgent {
             ,@RequestParam(value = "noted", required = false) String noted
             ,@RequestParam(value = "coupons", required = false) String coupons
             ,@RequestParam(value = "latitude", required = false) Double latitude
-            ,@RequestParam(value = "longitude", required = false) Double longitude) {
+            ,@RequestParam(value = "longitude", required = false) Double longitude
+            ,@RequestParam(value = "from", required = false, defaultValue="0") Integer from) {
     	MResult result = new MResult(MCode.V_1);
         try {
         	OrderAddCommand cmd = new OrderAddCommand(orderId, userId, noted, goodses, invoice, addr, coupons,
-        			latitude, longitude);
+        			latitude, longitude, from);
             result.setContent(orderApp.submitOrder(cmd));
             result.setStatus(MCode.V_200);
         } 
         catch (NegativeException e) {
-        	result = new MResult(e.getStatus(), e.getMessage());
+        	int st = e.getStatus();
+        	if (st == MCode.V_100) {
+        		result.setStatus(e.getStatus());
+        		result.setContent(e.getMessage());
+        	}
+        	else {
+        		result.setStatus(e.getStatus());
+        		result.setErrorMessage(e.getMessage());
+        	}
         }
         catch (Exception e) {
             LOGGER.error("order add Exception e:", e);
@@ -146,7 +160,7 @@ public class AppOrderAgent {
      * @param orderId
      * @return
      */
-    @RequestMapping(value = "/app/cancel", method = RequestMethod.PUT)
+    @RequestMapping(value = "/app/cancel", method = {RequestMethod.PUT, RequestMethod.POST})
     public ResponseEntity<MResult> cancelOrder(
             @RequestParam(value = "userId", required = false) String userId
             ,@RequestParam(value = "orderId", required = false) String orderId
@@ -205,7 +219,7 @@ public class AppOrderAgent {
      * @param skuId
      * @return
      */
-    @RequestMapping(value = "/app/confirm", method = RequestMethod.PUT)
+    @RequestMapping(value = "/app/confirm", method = {RequestMethod.PUT, RequestMethod.POST})
     public ResponseEntity<MResult> confirmReceive(
             @RequestParam(value = "userId", required = false) String userId
             ,@RequestParam(value = "orderId", required = false) String orderId
@@ -274,7 +288,7 @@ public class AppOrderAgent {
      * @param orderId
      * @return
      */
-    @RequestMapping(value = "/app/aftersale/ship", method = RequestMethod.PUT)
+    @RequestMapping(value = "/app/aftersale/ship", method = {RequestMethod.PUT, RequestMethod.POST})
     public ResponseEntity<MResult> afterSaleShip(
             @RequestParam(value = "userId", required = false) String userId
             ,@RequestParam(value = "expressNo", required = false) String expressNo
@@ -307,7 +321,7 @@ public class AppOrderAgent {
      * @param orderId
      * @return
      */
-    @RequestMapping(value = "/app/aftersale/user-rev", method = RequestMethod.PUT)
+    @RequestMapping(value = "/app/aftersale/user-rev", method = {RequestMethod.PUT, RequestMethod.POST})
     public ResponseEntity<MResult> userConfirmRev(
             @RequestParam(value = "userId", required = false) String userId
             ,@RequestParam(value = "skuId", required = false) String skuId
@@ -358,5 +372,63 @@ public class AppOrderAgent {
             result = new MResult(MCode.V_400, e.getMessage());
         }
         return new ResponseEntity<MResult>(result, HttpStatus.OK);
+    }
+    
+    @RequestMapping(value = "/app/del", method = {RequestMethod.POST,RequestMethod.PUT})
+    public ResponseEntity<MResult> delOrder(
+            @RequestParam(value = "userId", required = false) String userId
+            ,@RequestParam(value = "orderId", required = false) String orderId
+            ,@RequestParam(value = "dealerOrderId", required = false) String dealerOrderId
+            ) {
+    	MResult result = new MResult(MCode.V_1);
+        try {
+        	CancelOrderCmd cmd = new CancelOrderCmd(orderId, userId, dealerOrderId);
+        	orderApp.delOrder(cmd);
+        	//result.setContent(orderBean);
+            result.setStatus(MCode.V_200);
+        } 
+        catch (NegativeException e) {
+        	result.setStatus(e.getStatus());
+        	result.setErrorMessage(e.getMessage());
+        }
+        catch (Exception e) {
+            LOGGER.error("Aplly after sale Exception e:", e);
+            result = new MResult(MCode.V_400, e.getMessage());
+        }
+        return new ResponseEntity<MResult>(result, HttpStatus.OK);
+    }
+    
+    /**
+     * 获取订单列表
+     * @param userId 当前登录用户ID,app用户id
+     * @param status 0申请退货,1申请换货,2申请退款,3拒绝,4同意(退换货),5客户寄出,6商家收到,7商家寄出,8客户收到,9同意退款, 10确认退款,11交易完成，12交易关闭
+     * @return
+     */
+    @RequestMapping(value = "/app/saleAfter/list", method = RequestMethod.GET)
+    public ResponseEntity<MPager> getSaleAfterOrderListByUser(
+            @RequestParam(value = "userId", required = false) String userId
+            ,@RequestParam(value = "pageIndex", required = false, defaultValue="1") Integer pageIndex
+            ,@RequestParam(value = "pageNum", required = false, defaultValue="5") Integer pageNum
+            ,@RequestParam(value = "status", required = false) Integer status
+            ) {
+    	MPager result = new MPager(MCode.V_1);
+    	
+        try {
+        	
+        	if (StringUtils.isEmpty(userId)) {
+        		throw new NegativeException(MCode.V_1, "用户id为空！");
+        	}
+        	
+        	Integer total = saleAfterQuery.getAppSaleAfterTotal(userId, status);
+        	List<AfterSellBean> cntList = saleAfterQuery.getAppSaleAfterList(userId, status, pageIndex, pageNum);
+            result.setPager(total, pageIndex, pageNum);
+            result.setContent(cntList);
+            result.setStatus(MCode.V_200);
+        } catch (Exception e) {
+            LOGGER.error("app get order list error, e:", e);
+            result.setStatus(MCode.V_400);
+            result.setErrorMessage(e.getMessage());
+        }
+        return new ResponseEntity<MPager>(result, HttpStatus.OK);
     }
 }

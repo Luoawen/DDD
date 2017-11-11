@@ -385,7 +385,7 @@ public class OrderQuery {
 		//获取商品
 		sql.delete(0, sql.length());
 		sql.append("SELECT dealer_order_id, _status, freight, plateform_discount, goods_amount, rate,goods_id, sku_id, sku_name,supply_price, discount_price, \r\n")
-		.append(" sell_num, bds_rate, media_id, media_res_id, saler_user_id, saler_user_rate, is_change, change_price\r\n")
+		.append(" sell_num, bds_rate, media_id, media_res_id, saler_user_id, saler_user_rate, is_change, change_price, res_rate, marketing_id,market_level\r\n")
 		.append(" FROM t_scm_order_detail WHERE order_id=? ORDER BY dealer_order_id");
 		List<OrderGoodsBean> ls = supportJdbcTemplate.queryForBeanList(sql.toString(), OrderGoodsBean.class, orderNo);
 		
@@ -408,5 +408,29 @@ public class OrderQuery {
 		order.setMarkets(supportJdbcTemplate.queryForBeanList(sql.toString(), SimpleMarket.class, orderNo));
 		sql = null;
 		return order;
+	}
+	
+	/***
+	 * 获取成效订单数
+	 * @param startTime
+	 * @param endTime
+	 * @return
+	 */
+	public Integer getPayedOrders(String startTime, String endTime) throws NegativeException {
+		
+		if (StringUtils.isEmpty(startTime)) {
+			throw new NegativeException(MCode.V_1, "开始时间参数为空！");
+		}
+		
+		if (StringUtils.isEmpty(endTime)) {
+			throw new NegativeException(MCode.V_1, "结束时间参数为空！");
+		}
+		StringBuilder sql = new StringBuilder();
+		sql.append(" SELECT count(1)\r\n")
+		.append(" FROM t_scm_order_main WHERE pay_time BETWEEN ? AND ?");
+		
+		Integer orders = supportJdbcTemplate.jdbcTemplate().queryForObject(sql.toString(), Integer.class, startTime, endTime);
+		
+		return orders;
 	}
 }
