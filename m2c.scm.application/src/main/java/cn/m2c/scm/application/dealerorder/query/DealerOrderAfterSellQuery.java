@@ -227,10 +227,11 @@ public class DealerOrderAfterSellQuery {
 		GoodsInfoBean goodsInfo = aftetSellDealerOrderDetailGoodsInfoQuery(afterSellOrderId, dealerId);
 		long totalPrice = 0; // 商品总价格
 		long orderTotalPrice = 0; // 订单总价格
-
-		totalPrice += (goodsInfo.getPrice() * goodsInfo.getSellNum() + goodsInfo.getFreight());
-		goodsInfo.setTotalPrice(totalPrice);
-		orderTotalPrice += totalPrice;
+		if (goodsInfo != null) {
+			totalPrice += (goodsInfo.getPrice() * goodsInfo.getSellNum() + goodsInfo.getFreight());
+			goodsInfo.setTotalPrice(totalPrice);
+			orderTotalPrice += totalPrice;
+		}
 
 		if (bean != null) {
 			bean.setOrderTotalMoney(orderTotalPrice);

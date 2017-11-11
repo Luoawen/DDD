@@ -107,10 +107,14 @@ public class MainOrder extends ConcurrencySafeEntity {
 		if (marketings != null) {
 			markets = new HashMap<String, Object>();
 			StringBuilder sb = new StringBuilder(200);
+			int c = 0;
 			for (SimpleMarketing m : marketings) {
-				sb.append(m.getMarketingId()).append(",");
+				if (c > 0)
+					sb.append(",");
+				sb.append(m.getMarketingId());
+				c ++;
 			}
-			markets.put("marketIds", sb.toString().substring(0, sb.length() - 1));
+			markets.put("marketIds", sb.toString());
 			markets.put("userId", userId);
 			markets.put("status", 0);
 		}

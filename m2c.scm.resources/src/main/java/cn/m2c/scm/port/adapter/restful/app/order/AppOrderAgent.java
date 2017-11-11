@@ -143,6 +143,8 @@ public class AppOrderAgent {
     	MPager result = new MPager(MCode.V_1);
         try {
         	Integer total = orderQueryApp.getAppOrderListTotal(userId, status, commentStatus);
+        	if (pageNum == 0)
+        		pageNum = 1;
         	List<AppOrderBean> cntList = orderQueryApp.getAppOrderList(userId, status, commentStatus, pageIndex, pageNum);
             result.setPager(total, pageIndex, pageNum);
             result.setContent(cntList);
