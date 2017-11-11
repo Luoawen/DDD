@@ -67,6 +67,7 @@ public class DealerOrderDetailBean {
 	 */
 	@ColumnAlias(value = "area_county")
 	private String areaCounty;
+	
 	/**
 	 * 街道详细地址
 	 */
@@ -138,11 +139,11 @@ public class DealerOrderDetailBean {
 	@ColumnAlias(value = "noted")
 	private String  noted;
 	
-	@ColumnAlias(value = "province_code")
+	@ColumnAlias(value = "provinceCode")
 	private String  privinceCode;
-	@ColumnAlias(value = "city_code")
+	@ColumnAlias(value = "cityCode")
 	private String  cityCode;
-	@ColumnAlias(value = "area_code")
+	@ColumnAlias(value = "areaCode")
 	private String  areaCode;
 	
 	private String dealerOrderId;

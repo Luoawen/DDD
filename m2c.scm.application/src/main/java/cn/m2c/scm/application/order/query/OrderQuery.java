@@ -300,7 +300,7 @@ public class OrderQuery {
 	public DealerOrderDetailBean dealerOrderDetailQuery1(String dealerOrderId) {
 		StringBuilder sql = new StringBuilder();
 		sql.append(" SELECT t1._status orderStatus,t1.order_id orderId,t1.created_date createdDate, t3.pay_way payWay,t3.pay_time payTime,t3.pay_no payNo, \r\n") 
-		.append(" t1.rev_person revPerson,t1.rev_phone revPhone,t1.province province,t1.city city,t1.area_county areaCounty,t1.street_addr streetAddr, \r\n")
+		.append(" t1.rev_person revPerson,t1.rev_phone revPhone,t1.province province,t1.city city,t1.area_county areaCounty,t1.province_code provinceCode,t1.city_code cityCode,t1.area_code areaCode,t1.street_addr streetAddr, \r\n")
 		.append(" t1.dealer_id dealerId, t1.noted, t1.invoice_header, t1.invoice_name, t1.invoice_code, t1.invoice_type, \r\n")
 		.append(" t1.plateform_discount plateformDiscount,t1.dealer_discount dealerDiscount, t1.goods_amount, t1.order_freight, \r\n")
 		.append(" t1.area_code ,t1.city_code, t1.province_code \r\n")
