@@ -54,10 +54,10 @@ public class HibernateOrderRepository extends HibernateSupperRepository implemen
 		StringBuilder sql = new StringBuilder("select a.* from t_scm_order_dealer a LEFT OUTER JOIN t_scm_order_main b\r\n");
 		sql.append(" ON a.order_id=b.order_id where a.dealer_order_id =:dealerOrderId ");
 		if (!StringUtils.isEmpty(userId)) {
-			sql.append("AND b.user_id=:userId");
+			sql.append(" AND b.user_id=:userId");
 		}
 		if (!StringUtils.isEmpty(orderId)) {
-			sql.append("AND orderId=:orderId");
+			sql.append(" AND orderId=:orderId");
 		}
 		Query query = this.session().createSQLQuery(sql.toString()).addEntity(DealerOrder.class);
 		query.setParameter("dealerOrderId", dealerOrderId);
