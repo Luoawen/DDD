@@ -86,6 +86,7 @@ public class DealerApplication {
 		}
 		for (Dealer dealer : dealerList) {
 			dealer.unbundleSeller();
+			dealerRepository.save(dealer);
 		}
 	}
 

@@ -127,10 +127,8 @@ public class OrderAgent {
 		MResult result = new MResult(MCode.V_1);
 		try {
 			DealerOrderDetailBean dealerDetail = orderQuery.dealerOrderDetailQuery1(dealerOrderId);
-			if (null != dealerDetail) {
-				result.setContent(dealerDetail);
-				result.setStatus(MCode.V_200);
-			}
+			result.setContent(dealerDetail);
+			result.setStatus(MCode.V_200);
 		} catch (Exception e) {
 			LOGGER.error("获取商家订单出错" + e.getMessage(), e);
             result = new MPager(MCode.V_400, "服务器开小差了");

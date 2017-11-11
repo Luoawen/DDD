@@ -33,17 +33,20 @@ public class DealerUnbundleSellerListener extends ExchangeListener{
 	@Override
 	protected void filteredDispatch(String aType, String aTextMessage) throws Exception {
 		try {
+			log.info("消费商家管理员用户事件======>"+aTextMessage);
 			NotificationReader reader = new NotificationReader(aTextMessage);
 			String userId = reader.eventStringValue("userId");
 			Integer oldGroupType = reader.eventIntegerValue("oldGroupType");
 			Integer newGroupType = reader.eventIntegerValue("newGroupType");
 			if (oldGroupType == 4) {
 				if (oldGroupType != newGroupType) {
+					log.info("事件需要被消费");
 					dealerApplication.unbundleUser(userId);
 				}
 			}
+			log.info("消费商家管理员用户事件ok!!!");
 		} catch (Exception e) {
-			log.info("解绑商家管理员",e.getMessage());
+			log.info("解绑商家管理员",e);
 			throw new Exception();
 		}
 	}
