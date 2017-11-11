@@ -7,7 +7,7 @@ import cn.m2c.ddd.common.application.configuration.RabbitmqConfiguration;
 import cn.m2c.ddd.common.event.ConsumedEventStore;
 import cn.m2c.ddd.common.notification.NotificationReader;
 import cn.m2c.ddd.common.port.adapter.messaging.rabbitmq.ExchangeListener;
-import cn.m2c.scm.domain.model.unit.Unit;
+import cn.m2c.scm.application.unit.UnitApplication;
 import cn.m2c.scm.domain.model.unit.UnitRepository;
 
 public class UnitUpdateListener  extends ExchangeListener {
@@ -15,6 +15,9 @@ public class UnitUpdateListener  extends ExchangeListener {
 
 	@Autowired
     UnitRepository unitRepository;
+	
+	@Autowired
+	UnitApplication unitApplication;
 	
 	public UnitUpdateListener(RabbitmqConfiguration rabbitmqConfiguration,
 			HibernateTransactionManager hibernateTransactionManager, ConsumedEventStore consumedEventStore) {
@@ -28,14 +31,7 @@ public class UnitUpdateListener  extends ExchangeListener {
         String newGoodsUnitId = reader.eventStringValue("newGoodsUnitId");
         if (!oldUnitId.equals(newGoodsUnitId) && oldUnitId != newGoodsUnitId) {
         	if (null != oldUnitId && null != newGoodsUnitId) {
-    			Unit oldUnit = unitRepository.getUnitByUnitId(oldUnitId);
-    			Unit newUnit = unitRepository.getUnitByUnitId(newGoodsUnitId);
-    			if (oldUnit.getUseNum() > 0) {
-    				oldUnit.noUsed();
-        			unitRepository.saveUnit(oldUnit);
-				}
-    			newUnit.used();
-    			unitRepository.saveUnit(newUnit);
+    			unitApplication.updateUsed(oldUnitId, newGoodsUnitId);
     		}
 		}
 	}

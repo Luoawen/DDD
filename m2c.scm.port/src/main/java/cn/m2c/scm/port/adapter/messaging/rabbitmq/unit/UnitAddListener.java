@@ -7,13 +7,12 @@ import cn.m2c.ddd.common.application.configuration.RabbitmqConfiguration;
 import cn.m2c.ddd.common.event.ConsumedEventStore;
 import cn.m2c.ddd.common.notification.NotificationReader;
 import cn.m2c.ddd.common.port.adapter.messaging.rabbitmq.ExchangeListener;
-import cn.m2c.scm.domain.model.unit.Unit;
-import cn.m2c.scm.domain.model.unit.UnitRepository;
+import cn.m2c.scm.application.unit.UnitApplication;
 
 public class UnitAddListener extends ExchangeListener {
 
 	@Autowired
-    UnitRepository unitRepository;
+	UnitApplication unitApplication;
 	
 	public UnitAddListener(RabbitmqConfiguration rabbitmqConfiguration,
 			HibernateTransactionManager hibernateTransactionManager, ConsumedEventStore consumedEventStore) {
@@ -25,9 +24,7 @@ public class UnitAddListener extends ExchangeListener {
 		NotificationReader reader = new NotificationReader(aTextMessage);
         String unitId = reader.eventStringValue("goodsUnitId");
         if (null != unitId) {
-			Unit unit = unitRepository.getUnitByUnitId(unitId);
-			unit.used();
-			unitRepository.saveUnit(unit);
+			unitApplication.beUsed(unitId);
 		}
 		
 	}
