@@ -389,4 +389,29 @@ public class DealerOrderDetailBean {
 				+ dealerDiscount + ", orderPrice=" + orderPrice + "]";
 	}
 
+	public String getPrivinceCode() {
+		return privinceCode;
+	}
+
+	public void setPrivinceCode(String privinceCode) {
+		this.privinceCode = privinceCode;
+	}
+
+	public String getCityCode() {
+		return cityCode;
+	}
+
+	public void setCityCode(String cityCode) {
+		this.cityCode = cityCode;
+	}
+
+	public String getAreaCode() {
+		return areaCode;
+	}
+
+	public void setAreaCode(String areaCode) {
+		this.areaCode = areaCode;
+	}
+
+	
 }
