@@ -302,4 +302,65 @@ public class DealerQuery {
 		return result;
 	}
 
+	/**
+	 * 根据商家Id/商家名(模糊查询)查询商家总数
+	 * 
+	 * @param dealerMessage
+	 * @return
+	 * @throws NegativeException
+	 */
+	public Integer queryDealerByDealerIdOrNameTotal(String dealerMessage) throws NegativeException {
+		try {
+			List<Object> params = new ArrayList<Object>();
+	        StringBuilder sql = new StringBuilder();
+	        sql.append(" SELECT ");
+	        sql.append(" COUNT(DISTINCT d.dealer_id) ");
+	        sql.append(" FROM ");
+	        sql.append(" t_scm_dealer d WHERE d.dealer_status = 1 ");
+	        if(null != dealerMessage && !"".equals(dealerMessage)) {
+	        	sql.append("AND dealer_name LIKE ? OR dealer_id=?");
+	        	params.add("%"+dealerMessage+"%");
+	        	params.add(dealerMessage);
+	        }
+	        return this.supportJdbcTemplate.jdbcTemplate().queryForObject(sql.toString(), Integer.class, params.toArray());
+		} catch (Exception e) {
+			log.error("查询经销商总数出错",e);
+			throw new NegativeException(500, "经销商查询总数出错");
+		}
+	}
+
+	/**
+	 * 根据商家Id/商家名(模糊查询)查询商家信息
+	 * 
+	 * @param dealerMessage
+	 * @param pageOrNot
+	 * @param pageNum
+	 * @param rows
+	 * @return
+	 * @throws NegativeException
+	 */
+	public List<DealerBean> queryDealerByDealerIdOrName(String dealerMessage, Integer pageOrNot, Integer pageNum, Integer rows) throws NegativeException {
+		try {
+			List<Object> params = new ArrayList<Object>();
+	        StringBuilder sql = new StringBuilder();
+	        sql.append(" SELECT ");
+	        sql.append(" * ");
+	        sql.append(" FROM ");
+	        sql.append(" t_scm_dealer d WHERE d.dealer_status = 1 ");
+	        if(null != dealerMessage && !"".equals(dealerMessage)) {
+	        	sql.append("AND dealer_name LIKE ? OR dealer_id=?");
+	        	params.add("%"+dealerMessage+"%");
+	        	params.add(dealerMessage);
+	        }
+	        if (0 != pageOrNot) {
+	        	sql.append(" LIMIT ?,?");
+            	params.add(rows * (pageNum - 1));
+            	params.add(rows);
+	        }
+	        return this.supportJdbcTemplate.queryForBeanList(sql.toString(), DealerBean.class, params.toArray());
+		} catch (Exception e) {
+			log.error("查询经销商出错",e);
+			throw new NegativeException(500, "经销商查询出错");
+		}
+	}
 }
