@@ -1,10 +1,12 @@
 package cn.m2c.scm.application.order.data.bean;
 
+import java.io.Serializable;
 import java.util.Date;
 
+import cn.m2c.ddd.common.AssertionConcern;
 import cn.m2c.ddd.common.persistence.orm.ColumnAlias;
 
-public class AllOrderBean {
+public class AllOrderBean extends AssertionConcern implements Serializable {
 	/** 商家订单号 **/
 	@ColumnAlias(value = "dealer_order_id")
 	private String dealerOrderId;

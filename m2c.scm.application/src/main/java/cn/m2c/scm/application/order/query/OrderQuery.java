@@ -117,6 +117,7 @@ public class OrderQuery {
 				mainOrder.setOderFreight(allOrder.getMainOrderFreight());
 				mainOrder.setDealerDiscount(allOrder.getDealerDiscount());
 				mainOrder.setPlateFormDiscount(allOrder.getPlateformDiscount());
+				mainOrder.setStatus(allOrder.getStatus() == null? 0 : allOrder.getStatus());
 				List<OrderDealerBean> dealerOrderList = new ArrayList<OrderDealerBean>();
 				mainOrder.setDealerOrderBeans(dealerOrderList);
 			}
