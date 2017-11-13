@@ -101,16 +101,16 @@ public class ShopQuery {
 			params.add(rows);
 			List<ShopBean> shopList = this.supportJdbcTemplate.queryForBeanList(sql.toString(), ShopBean.class,
 					params.toArray());
-			System.out.println(shopList);
-			/*if (dealerList != null && dealerList.size() > 0) {
-				for (DealerBean dealerBean : dealerList) {
-					ShopBean shopInfo = getShopInfo(dealerBean.getDealerId(), dealerBean.getDealerName());
-					if (shopInfo != null)
-						shopBeanList.add(shopInfo);
+			System.out.println(shopList.toString());
+			//设置在售数量
+			if(shopList!=null && shopList.size()>0){
+				for (ShopBean shopBean : shopList) {
+					shopBean.setOnSaleGoods(getOnSaleGoodsCount(shopBean.getDealerId()));
 				}
-			}*/
+			}
 		return shopList;
 	}
+
 
 	public ShopBean getShop(String dealerId) {
 		ShopBean shop = null;

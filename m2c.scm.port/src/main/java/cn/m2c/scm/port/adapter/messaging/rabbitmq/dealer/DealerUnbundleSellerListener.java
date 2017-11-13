@@ -38,10 +38,19 @@ public class DealerUnbundleSellerListener extends ExchangeListener{
 			String userId = reader.eventStringValue("userId");
 			Integer oldGroupType = reader.eventIntegerValue("oldGroupType");
 			Integer newGroupType = reader.eventIntegerValue("newGroupType");
+			String userName = reader.eventStringValue("userName");
+			String dealerId = reader.eventStringValue("dealerId");
+			String userPhone = reader.eventStringValue("mobile");
 			if (oldGroupType == 4) {
 				if (oldGroupType != newGroupType) {
 					log.info("事件需要被消费");
 					dealerApplication.unbundleUser(userId);
+				}
+			}
+			if (newGroupType == 4) {
+				if (oldGroupType != newGroupType) {
+					log.info("事件需要被消费");
+					dealerApplication.bindUser(dealerId, userId, userName, userPhone);
 				}
 			}
 			log.info("消费商家管理员用户事件ok!!!");
