@@ -826,7 +826,7 @@ public class GoodsQueryApplication {
         sql.append(" FROM ");
         sql.append(" t_scm_goods WHERE ");
         sql.append(" dealer_id = ? ");
-        sql.append(" AND del_status= 1 ORDER BY created_date DESC ");
+        sql.append(" AND del_status= 1 AND goods_status <> 1 ORDER BY created_date DESC ");
         sql.append(" LIMIT ?,?");
         params.add(dealerId);
         params.add(rows * (pageNum - 1));
@@ -849,7 +849,7 @@ public class GoodsQueryApplication {
         sql.append(" FROM ");
         sql.append(" t_scm_goods WHERE ");
         sql.append(" dealer_id = ? ");
-        sql.append(" AND del_status= 1");
+        sql.append(" AND del_status= 1 AND goods_status <> 1");
         params.add(dealerId);
 
         List<GoodsBean> goodsBeanList = this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsBean.class, params.toArray());
