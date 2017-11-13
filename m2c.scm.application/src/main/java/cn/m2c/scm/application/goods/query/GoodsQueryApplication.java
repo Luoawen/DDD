@@ -41,7 +41,7 @@ public class GoodsQueryApplication {
         return supportJdbcTemplate;
     }
 
-//    @Autowired
+    //    @Autowired
 //    RedisUtil redisUtil;
     @Autowired
     GoodsClassifyQueryApplication goodsClassifyQueryApplication;
@@ -370,7 +370,7 @@ public class GoodsQueryApplication {
         }
         if (null == goodsIds) {
             if (null != goodsBeans && goodsBeans.size() > 0) {
-            	RedisUtil.setString(key, 24 * 3600, JsonUtils.toStr(goodsBeans));
+                RedisUtil.setString(key, 24 * 3600, JsonUtils.toStr(goodsBeans));
             }
         }
         return goodsBeans;
@@ -582,7 +582,7 @@ public class GoodsQueryApplication {
         }
         if (StringUtils.isNotEmpty(condition)) {
             //商品标题、商品副标题、SKU、品牌、所属分类、商品关键词、商品图文详情文本内容
-            sql.append(" AND (g.goods_name LIKE ? OR g.goods_sub_title LIKE ? OR s.sku_id LIKE ? OR g.goods_brand_name LIKE ? OR g.goods_key_word LIKE ? OR g.goods_desc LIKE ?");
+            /*sql.append(" AND (g.goods_name LIKE ? OR g.goods_sub_title LIKE ? OR s.sku_id LIKE ? OR g.goods_brand_name LIKE ? OR g.goods_key_word LIKE ? OR g.goods_desc LIKE ?");
             params.add("%" + condition + "%");
             params.add("%" + condition + "%");
             params.add("%" + condition + "%");
@@ -593,7 +593,8 @@ public class GoodsQueryApplication {
             if (null != goodsClassifyIds && goodsClassifyIds.size() > 0) {
                 sql.append("  OR g.goods_classify_id in (" + Utils.listParseString(goodsClassifyIds) + ")");
             }
-            sql.append(")");
+            sql.append(")");*/
+            sql.append(" AND g.goods_name LIKE ?");
         }
         sql.append(" AND g.del_status= 1 AND g.goods_status <> 1 group by g.goods_id");
 
@@ -664,7 +665,7 @@ public class GoodsQueryApplication {
         }
         if (StringUtils.isNotEmpty(condition)) {
             //商品标题、商品副标题、SKU、品牌、所属分类、商品关键词、商品图文详情文本内容
-            sql.append(" AND (g.goods_name LIKE ? OR g.goods_sub_title LIKE ? OR s.sku_id LIKE ? OR g.goods_brand_name LIKE ? OR g.goods_key_word LIKE ? OR g.goods_desc LIKE ?");
+/*            sql.append(" AND (g.goods_name LIKE ? OR g.goods_sub_title LIKE ? OR s.sku_id LIKE ? OR g.goods_brand_name LIKE ? OR g.goods_key_word LIKE ? OR g.goods_desc LIKE ?");
             params.add("%" + condition + "%");
             params.add("%" + condition + "%");
             params.add("%" + condition + "%");
@@ -675,7 +676,8 @@ public class GoodsQueryApplication {
             if (null != goodsClassifyIds && goodsClassifyIds.size() > 0) {
                 sql.append("  OR g.goods_classify_id in (" + Utils.listParseString(goodsClassifyIds) + ")");
             }
-            sql.append(")");
+            sql.append(")");*/
+            sql.append(" AND g.goods_name LIKE ?");
         }
         sql.append(" AND g.del_status= 1 AND g.goods_status <> 1");
         return supportJdbcTemplate.jdbcTemplate().queryForObject(sql.toString(), params.toArray(), Integer.class);
