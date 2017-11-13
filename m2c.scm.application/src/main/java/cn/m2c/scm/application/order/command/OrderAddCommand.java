@@ -225,6 +225,7 @@ public class OrderAddCommand extends AssertionConcern implements Serializable {
 		}*/
 		//this.invoice = JSONObject.parseObject(invoice1.toJSONString(), InvoiceInfo.class);
 		this.invoice = gson.fromJson(invoice1.toJSONString(), InvoiceInfo.class);
+		this.invoice.checkType();
 	}
 
 	public String getOrderId() {

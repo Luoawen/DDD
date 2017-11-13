@@ -54,4 +54,16 @@ public class InvoiceInfo extends ValueObject {
         }
 
     }
+    /***
+     * 检查发票类型
+     */
+    public void checkType() {
+    	if (StringUtils.isNotEmpty(header)) {
+            if (StringUtil.isEmpty(code)) {
+                type = 0;
+            } else {
+                type = 1;
+            }
+        }
+    }
 }

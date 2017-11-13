@@ -63,7 +63,7 @@ public class AddSaleAfterCmd extends AssertionConcern {
 			throw new NegativeException(MCode.V_1, "售后单号参数为空(saleAfterNo)！");
 		}
 		
-		if (type < 0 || type > 2) {
+		if (type < 0 || type > 3) {
 			throw new NegativeException(MCode.V_1, "售后单类型参数不正确(type)！");
 		}
 		

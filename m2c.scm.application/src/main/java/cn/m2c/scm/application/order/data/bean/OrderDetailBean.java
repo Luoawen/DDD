@@ -38,7 +38,27 @@ public class OrderDetailBean {
 	@ColumnAlias(value= "order_id")
 	private String orderId;
 	
+	@ColumnAlias(value= "is_change")
+	private Integer isChange;
+	
+	@ColumnAlias(value= "change_price")
+	private Long changePrice;
+	
+	public Integer getIsChange() {
+		return isChange;
+	}
+	public void setIsChange(Integer isChange) {
+		this.isChange = isChange;
+	}
+	public Long getChangePrice() {
+		return changePrice;
+	}
+	public void setChangePrice(Long changePrice) {
+		this.changePrice = changePrice;
+	}
 	public Integer getAfterStatus() {
+		if (null == afterStatus)
+			afterStatus = -2;
 		return afterStatus;
 	}
 	public void setAfterStatus(Integer afterStatus) {
