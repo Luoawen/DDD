@@ -3,6 +3,10 @@ package cn.m2c.scm.domain.service.order;
 import java.util.List;
 import java.util.Map;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+
+
 /***
  * 订单领域服务
  * @author fanjc
@@ -80,5 +84,12 @@ public interface OrderService {
 	 * @return
 	 */
 	public <T> Map<String, Object> getMediaBdByResIds(List<T> resIds, long time);
+	
+	/***
+	 * 获取第三方物流信息
+	 * @param resIds
+	 * @return
+	 */
+	public JSONObject getExpressInfo(String com,String nu);
 	
 }

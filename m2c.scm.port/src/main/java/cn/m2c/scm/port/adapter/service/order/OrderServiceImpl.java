@@ -1,6 +1,10 @@
 package cn.m2c.scm.port.adapter.service.order;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.lang.reflect.Type;
+import java.net.URL;
+import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
@@ -8,16 +12,22 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.http.protocol.HttpRequestExecutor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baidu.disconf.client.usertools.DisconfDataGetter;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import cn.m2c.scm.application.order.data.bean.MediaResBean;
+import cn.m2c.scm.application.utils.HttpUtils;
 import cn.m2c.scm.domain.service.order.OrderService;
 /***
  * 订单领域服务实现类
@@ -29,6 +39,7 @@ import cn.m2c.scm.domain.service.order.OrderService;
 public class OrderServiceImpl implements OrderService {
 	/***/
 	private static final String M2C_HOST_URL = DisconfDataGetter.getByFileItem("constants.properties", "m2c.host.url").toString().trim();
+	private static final String KUAIDI_100_URL = "http://api.kuaidi100.com/api";
 	
 	@Autowired
     RestTemplate restTemplate;
@@ -174,5 +185,18 @@ public class OrderServiceImpl implements OrderService {
         	result = Arrays.asList(gson.fromJson(content, clss));
         }
 		return result;
+	}
+
+	/**
+	 * 获取第三方物流信息
+	 */
+	@Override
+	public JSONObject getExpressInfo(String com, String nu) {
+		StringBuffer sb = new StringBuffer("id=f2b9f516cd3f103f&show=0&muti=1&order=desc");
+		sb.append("&com="+com);
+		sb.append("&nu="+nu);
+		String rtResult = HttpUtils.sendGet(KUAIDI_100_URL, sb.toString());
+		JSONObject obj = JSONObject.parseObject(rtResult);
+		return obj;
 	}
 }

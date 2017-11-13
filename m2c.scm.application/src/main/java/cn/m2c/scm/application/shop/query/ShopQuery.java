@@ -189,4 +189,20 @@ public class ShopQuery {
 		}
 		return resultCount;
 	}
+
+	/**
+	 * 根据店铺id查询店铺详情
+	 * @param shopId
+	 * @return
+	 */
+	public ShopBean getShopInfoByShopId(String shopId) {
+		ShopBean shop = null;
+		try {
+			StringBuffer sql = new StringBuffer("SELECT * FROM t_scm_dealer_shop shop WHERE 1=1 AND shop.shop_id=?");
+			shop = this.supportJdbcTemplate.queryForBean(sql.toString(), ShopBean.class, shopId);
+		} catch (Exception e) {
+			log.error("查询店铺详情出错", e);
+		}
+		return shop;
+	}
 }

@@ -67,7 +67,7 @@ public class GoodsCommentQueryApplication {
      * @return
      */
     public Integer queryGoodsCommentTotal(String goodsId) {
-        String sql = "select count(*) from t_scm_goods_comment where goods_id = ? and comment_status = 1";
+        String sql = "select count(*) from t_scm_goods_comment where goods_id = ? and comment_status = 1 AND (delayed_flag is null or delayed_flag = 1)";
         return supportJdbcTemplate.jdbcTemplate().queryForObject(sql.toString(), new Object[]{goodsId}, Integer.class);
     }
 
@@ -78,7 +78,7 @@ public class GoodsCommentQueryApplication {
      * @return
      */
     public Integer queryGoodsImageCommentTotal(String goodsId) {
-        String sql = "select count(*) from t_scm_goods_comment where goods_id = ? and comment_status = 1 and image_status=2";
+        String sql = "select count(*) from t_scm_goods_comment where goods_id = ? and comment_status = 1 and image_status=2 AND (delayed_flag is null or delayed_flag = 1)";
         return supportJdbcTemplate.jdbcTemplate().queryForObject(sql.toString(), new Object[]{goodsId}, Integer.class);
     }
 
