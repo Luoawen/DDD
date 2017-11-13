@@ -328,4 +328,23 @@ public class DealerAgent {
 		        }
 		        return new ResponseEntity<MResult>(result, HttpStatus.OK);
 		    }
+		 
+		 /**
+		  * 获取平台的押金
+		  */
+		 @RequestMapping(value = "/dealerDeposit", method = RequestMethod.GET)
+		    public ResponseEntity<MResult> getDealerDeposit(
+		            @RequestParam(value = "dealerId", required = true) String dealerId
+		            ) {
+			 MResult result = new MResult(MCode.V_1);
+		        try {
+		        	Long dealerDesposit = dealerQuery.getDespositByDealerId(dealerId);
+		        	result.setContent(dealerDesposit);
+		        	result.setStatus(MCode.V_200);
+		        } catch (Exception e) {
+		        	log.error("经销商状态列表出错", e);
+		            result = new MPager(MCode.V_400, "服务器开小差了，请稍后再试");
+		        }
+		        return new ResponseEntity<MResult>(result, HttpStatus.OK);
+		    }
 }

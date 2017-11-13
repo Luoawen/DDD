@@ -363,4 +363,23 @@ public class DealerQuery {
 			throw new NegativeException(500, "经销商查询出错");
 		}
 	}
+
+
+	/**
+	 * 获取平台的押金
+	 * @param dealerId
+	 * @return
+	 * @throws NegativeException 
+	 */
+	public Long getDespositByDealerId(String dealerId) throws NegativeException {
+		Long result = 0l;
+		try {
+			String sql = "select deposit from t_scm_dealer where dealer_id=?";
+			result = this.supportJdbcTemplate.jdbcTemplate().queryForObject(sql, Long.class,dealerId);
+		} catch (Exception e) {
+			log.error("查询经销商平台押金出错",e);
+			throw new NegativeException(500, "经销商平台押金查询出错");
+		}
+		return result;
+	}
 }
