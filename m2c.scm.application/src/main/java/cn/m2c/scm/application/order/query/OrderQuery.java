@@ -57,7 +57,7 @@ public class OrderQuery {
         sql.append("  FROM t_scm_order_dealer d ");
         sql.append(" LEFT OUTER JOIN t_scm_order_main m ON d.order_id = m.order_id ");
         sql.append(" LEFT OUTER JOIN t_scm_dealer dealer ON d.dealer_id = dealer.dealer_id ");
-        sql.append(" LEFT OUTER JOIN t_scm_order_detail dl ON d.dealer_id = dl.dealer_id ");
+        sql.append(" LEFT OUTER JOIN t_scm_order_detail dl ON d.order_id = dl.order_id AND d.dealer_order_id = dl.dealer_order_id");
         sql.append(" WHERE 1=1 ");
         if (orderStatus != null) {
             sql.append(" AND d._status =  ? ");
@@ -218,7 +218,7 @@ public class OrderQuery {
         sql.append("  FROM t_scm_order_dealer d");
         sql.append(" LEFT OUTER JOIN t_scm_order_main m ON d.order_id = m.order_id ");
         sql.append(" LEFT OUTER JOIN t_scm_dealer dealer ON d.dealer_id = dealer.dealer_id ");
-        sql.append(" LEFT OUTER JOIN t_scm_order_detail dl ON d.dealer_id = dl.dealer_id ");
+        sql.append(" LEFT OUTER JOIN t_scm_order_detail dl ON d.order_id = dl.order_id AND d.dealer_order_id = dl.dealer_order_id");
         sql.append(" WHERE 1=1 ");
         if (orderStatus != null) {
             sql.append(" AND d._status =  ? ");
