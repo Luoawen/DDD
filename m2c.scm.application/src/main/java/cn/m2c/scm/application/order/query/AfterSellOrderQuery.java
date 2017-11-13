@@ -302,7 +302,7 @@ public class AfterSellOrderQuery {
 	 */
 	public List<SkuNumBean> getOrderDtlByMarketId(String marketId, String orderId) {
 		StringBuilder sql = new StringBuilder();
-		sql.append(" SELECT sku_id,	sell_num,	is_change, goods_amount,	marketing_id\r\n")
+		sql.append(" SELECT sku_id,	sell_num,	is_change, goods_amount, marketing_id, change_price\r\n")
 		.append("FROM	t_scm_order_detail\r\n")
 		.append("WHERE	order_id = ?\r\n")
 		.append("AND marketing_id = ? ");
@@ -352,7 +352,7 @@ public class AfterSellOrderQuery {
 			List<Object> params = new ArrayList<>(4);
 			StringBuilder sql = new StringBuilder();
 			sql.append("SELECT a.created_date, a.after_sell_order_id, a.order_id, a.dealer_order_id, a.dealer_id, a.goods_id, a.sku_id, a.sell_num, a._status, a.back_money, a.order_type\r\n")
-			.append(",c.dealer_name, b.goods_name, b.sku_name, b.goods_type, b.goods_type_id, b.discount_price\r\n") 
+			.append(",c.dealer_name, b.goods_name, b.sku_name, b.goods_type, b.goods_type_id, b.discount_price, b.goods_icon\r\n") 
 			.append("FROM t_scm_order_after_sell a \r\n")
 			.append("LEFT OUTER JOIN t_scm_order_detail b ON a.order_id=b.order_id AND a.dealer_order_id=b.dealer_order_id AND a.sku_id = b.sku_id\r\n")
 			.append("LEFT OUTER JOIN t_scm_dealer c ON a.dealer_id = c.dealer_id \r\n")

@@ -46,8 +46,14 @@ public class SaleAfterOrder extends ConcurrencySafeEntity {
 	private Integer orderType;
 	/**退款金额*/
 	private Long backMoney;
+	/**退款中包含的*/
+	private Long returnFreight;
+	/**退款单号*/
+	private String refundNo;
+	/**退款时间*/
+	private Date refundTime;
 	
-	/**退货原因*/
+	/**退货原因  99其他*/
 	private Integer reasonCode;
 	/**拒绝原因*/
 	private Integer rejectReasonCode;
@@ -59,7 +65,7 @@ public class SaleAfterOrder extends ConcurrencySafeEntity {
 	public SaleAfterOrder(String saleAfterNo, String userId, String orderId
 			,String dealerOrderId, String dealerId, String goodsId, String skuId
 			,String reason, int backNum, int status, int orderType, long backMoney
-			, int reasonCode) {
+			, int reasonCode, long returnFreight) {
 		this.reason = reason;
 		this.saleAfterNo = saleAfterNo;
 		this.userId = userId;
@@ -159,6 +165,20 @@ public class SaleAfterOrder extends ConcurrencySafeEntity {
 			return false;
 		status = 9;
 		DomainEventPublisher.instance().publish(new OrderOptLogEvent(saleAfterNo, null, "同意退款", userId));
+		return true;
+	}
+	/***
+	 * 退款成功
+	 * @param refundNo
+	 * @param time
+	 * @return
+	 */
+	public boolean updateRefound(String refundNo, Date time) {
+		if (status != 9) {
+			return false;
+		}
+		this.refundNo = refundNo;
+		refundTime = time;
 		return true;
 	}
 	

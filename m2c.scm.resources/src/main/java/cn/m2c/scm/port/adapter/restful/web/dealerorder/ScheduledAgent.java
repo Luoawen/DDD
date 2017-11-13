@@ -86,8 +86,6 @@ public class ScheduledAgent {
 			//dealerOrderApplication.updateWaitPay();
 			orderApp.cancelAllNotPayed();
 			result.setStatus(MCode.V_200);
-		} catch (NegativeException ne) {
-			result = new MResult(ne.getStatus(), ne.getMessage());
 		} catch (Exception e) {
 			LOGGER.error("修改订单状态发生错误", e);
 			result = new MResult(MCode.V_400, e.getMessage());

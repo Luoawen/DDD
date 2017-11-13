@@ -649,18 +649,28 @@ public class OrderApplication {
     /***
      * 取消所有24小时还未支付的订单
      */
-    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
-    @EventListener(isListening = true)
-    public void cancelAllNotPayed() throws NegativeException {
-    	List<MainOrder> mainOrders = orderRepository.getNotPayedOrders();
-    	
-    	if (mainOrders == null || mainOrders.size() < 1)
-    		return;
-    	
-    	for (MainOrder m : mainOrders) {
-    		m.jobCancel();
-    		orderRepository.save(m);
+    public void cancelAllNotPayed() {
+    	try {
+	    	List<MainOrder> mainOrders = orderRepository.getNotPayedOrders();
+	    	
+	    	if (mainOrders == null || mainOrders.size() < 1)
+	    		return;
+	    	
+	    	for (MainOrder m : mainOrders) {
+	    		jobCancelOrder(m);
+	    	}
+    	}
+    	catch (Exception e) {
+    		e.printStackTrace();
+    		LOGGER.error(e.getMessage());
     	}
     	return ;
+    }
+    
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+    @EventListener(isListening = true)
+    private void jobCancelOrder(MainOrder m) {
+    	m.jobCancel();
+		orderRepository.save(m);
     }
 }

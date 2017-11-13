@@ -223,7 +223,7 @@ public class DealerOrderDtl extends ConcurrencySafeEntity {
 		return goodsAmount;
 	}
 	
-	long getFreight() {
+	public long getFreight() {
 		return goodsInfo.getFreight();
 	}
 	
@@ -253,8 +253,18 @@ public class DealerOrderDtl extends ConcurrencySafeEntity {
 		
 		return null;
 	}
-	
+	/***
+	 * 获取商品价格
+	 * @return
+	 */
 	public long sumGoodsMoney() {
 		return goodsAmount;
+	}
+	
+	public boolean isDeliver() {
+		if (status != null && status>=2)
+			return true;
+		
+		return false;
 	}
 }

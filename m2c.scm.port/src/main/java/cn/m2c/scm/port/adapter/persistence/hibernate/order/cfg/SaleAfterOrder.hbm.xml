@@ -45,5 +45,9 @@
         <property name="rejectReason" column="reject_reason" type="string"/>
         <property name="reasonCode" column="reason_code" type="int"/>
         <property name="rejectReasonCode" column="reject_reason_code" type="int"/>
+        
+        <property name="returnFreight" column="return_freight" type="long"/>
+        <property name="refundNo" column="refund_no" type="string"/>
+        <property name="refundTime" column="refund_time" type="date"/>
     </class>
 </hibernate-mapping>

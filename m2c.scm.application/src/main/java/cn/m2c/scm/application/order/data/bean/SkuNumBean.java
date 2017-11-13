@@ -23,8 +23,21 @@ public class SkuNumBean {
 	
 	@ColumnAlias(value = "marketing_id")
 	private String marketId; // 营销活动
+	
+	@ColumnAlias(value = "change_price")
+	private Long changePrice; // 换购价
 	/**优惠金额*/
 	private long discountMoney = 0;
+	
+	public Long getChangePrice() {
+		if (changePrice == null)
+			changePrice = 0l;
+		return changePrice;
+	}
+
+	public void setChangePrice(Long changePrice) {
+		this.changePrice = changePrice;
+	}
 	
 	public long getDiscountMoney() {
 		return discountMoney;

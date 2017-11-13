@@ -71,10 +71,6 @@ public class OrderOutAgent {
     		result.setContent("ok");
     		result.setStatus(MCode.V_200);
 		} 
-    	catch (NegativeException e) {
-    		result.setStatus(e.getStatus());
-			result.setContent(e.getMessage());
-    	}
     	catch (Exception e) {
 			LOGGER.info("获取test失败,e:" + e.getMessage());
 			result.setStatus(MCode.V_400);

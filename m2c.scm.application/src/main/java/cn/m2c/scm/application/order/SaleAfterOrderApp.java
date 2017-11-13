@@ -1,6 +1,7 @@
 package cn.m2c.scm.application.order;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -15,6 +16,7 @@ import cn.m2c.scm.application.order.command.AddSaleAfterCmd;
 import cn.m2c.scm.application.order.command.AproveSaleAfterCmd;
 import cn.m2c.scm.application.order.command.SaleAfterCmd;
 import cn.m2c.scm.application.order.command.SaleAfterShipCmd;
+import cn.m2c.scm.application.order.data.bean.RefundEvtBean;
 import cn.m2c.scm.application.order.data.bean.SimpleMarket;
 import cn.m2c.scm.application.order.data.bean.SkuNumBean;
 import cn.m2c.scm.application.order.query.AfterSellOrderQuery;
@@ -64,11 +66,12 @@ public class SaleAfterOrderApp {
 			List<SkuNumBean> skuBeanLs =saleOrderQuery.getOrderDtlByMarketId(mkId, cmd.getOrderId());
 			
 			discountMoney = OrderMarketCalc.calcReturnMoney(marketInfo, skuBeanLs, cmd.getSkuId());
-		}		
-		long money = itemDtl.sumGoodsMoney() - discountMoney;
+		}
+		long ft = itemDtl.isDeliver() ? 0 : itemDtl.getFreight();
+		long money = itemDtl.sumGoodsMoney() - discountMoney + ft;
 		SaleAfterOrder afterOrder = new SaleAfterOrder(cmd.getSaleAfterNo(), cmd.getUserId(), cmd.getOrderId(),
 				cmd.getDealerOrderId(), cmd.getDealerId(), cmd.getGoodsId(), cmd.getSkuId(), cmd.getReason()
-				, cmd.getBackNum(), 0, cmd.getType(), money, cmd.getReasonCode());
+				, cmd.getBackNum(), 0, cmd.getType(), money, cmd.getReasonCode(), ft);
 		
 		saleAfterRepository.save(afterOrder);
 		LOGGER.info("新增加售后申请成功！");
@@ -92,7 +95,13 @@ public class SaleAfterOrderApp {
 		if (order == null) {
 			throw new NegativeException(MCode.V_101, "无此售后单！");
 		}
+		
 		SimpleMarket marketInfo = saleOrderQuery.getMarketBySkuIdAndOrderId(order.skuId(), order.orderId());
+		if (marketInfo != null) {//计算售后需要退的钱
+			List<SkuNumBean> skuBeanLs = saleOrderQuery.getOrderDtlByMarketId(marketInfo.getMarketingId(), order.orderId());
+			OrderMarketCalc.calcReturnMoney(marketInfo, skuBeanLs, order.skuId());
+		}
+		
 		if (marketInfo != null && !marketInfo.isFull()) {
 			// 更新已使用营销 为不可用状态
 			saleAfterRepository.disabledOrderMarket(order.orderId(), marketInfo.getMarketingId());
@@ -165,6 +174,24 @@ public class SaleAfterOrderApp {
 		}
 		if (!order.confirmBackMoney(cmd.getUserId())) {
 			throw new NegativeException(MCode.V_103, "状态不正确，不能进行发货操作！");
+		}
+		saleAfterRepository.updateSaleAfterOrder(order);
+	}
+	
+	/***
+	 * 确认退款
+	 * @param cmd
+	 */
+	@Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+	@EventListener(isListening=true)
+	public void refundSuccess(RefundEvtBean bean) throws NegativeException {
+		SaleAfterOrder order = saleAfterRepository.getSaleAfterOrderByNo(bean.getAfterSellOrderId());
+		if (order == null) {
+			throw new NegativeException(MCode.V_101, "无此售后单！");
+		}
+		Date d = new Date(bean.getRefundTime());
+		if (!order.updateRefound(bean.getOrderRefundId(), d)) {
+			throw new NegativeException(MCode.V_103, "状态不正确，不能进行退款操作！");
 		}
 		saleAfterRepository.updateSaleAfterOrder(order);
 	}

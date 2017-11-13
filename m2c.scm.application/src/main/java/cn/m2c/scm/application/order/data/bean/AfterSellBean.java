@@ -70,6 +70,17 @@ public class AfterSellBean {
 	@ColumnAlias(value = "discount_price")
 	private Long discountPrice;
 	
+	@ColumnAlias(value= "goods_icon")
+	private String goodsIcon;
+	
+	public String getGoodsIcon() {
+		return goodsIcon;
+	}
+
+	public void setGoodsIcon(String goodsIcon) {
+		this.goodsIcon = goodsIcon;
+	}
+
 	public String getDealerName() {
 		return dealerName;
 	}

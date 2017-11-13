@@ -323,6 +323,10 @@ public class OrderMarketCalc {
 
             if (a == 2)
                 rtMoney = (long) (tmp.getGoodsAmount() * discount / 1000.0);
+            else if (a == 3 && tmp != null && tmp.getIsChange() == 1) {
+            	rtMoney = tmp.getGoodsAmount() - (tmp.getChangePrice() * tmp.getNum());
+            	marketInfo.setIsFull(false);
+            }
         } else { // 不满足
             marketInfo.setIsFull(false);
             for (SkuNumBean bean : skuBeanLs) {
