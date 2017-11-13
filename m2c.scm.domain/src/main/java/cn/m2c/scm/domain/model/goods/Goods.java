@@ -315,9 +315,7 @@ public class Goods extends ConcurrencySafeEntity {
         this.goodsGuarantee = goodsGuarantee;
         this.goodsMainImages = goodsMainImages;
         this.goodsDesc = goodsDesc;
-        if (this.goodsStatus == 3) {
-            this.goodsStatus = 2;
-        }
+
         if (null != this.skuFlag && this.skuFlag == 1) {//是否是多规格：0：单规格，1：多规格
             this.goodsSpecifications = goodsSpecifications;
         }
@@ -325,6 +323,7 @@ public class Goods extends ConcurrencySafeEntity {
         if (null != skuList && skuList.size() > 0) {
             //修改供货价、拍获价、规格需要审批
             boolean isNeedApprove = false;
+            boolean goodsNum = false;
             for (Map map : skuList) {
                 String skuId = GetMapValueUtils.getStringFromMapKey(map, "skuId");
                 // 判断商品规格sku是否存在,存在就修改供货价和拍获价，不存在就增加商品sku
@@ -333,6 +332,9 @@ public class Goods extends ConcurrencySafeEntity {
                     isNeedApprove = true;
                 } else {
                     Integer availableNum = GetMapValueUtils.getIntFromMapKey(map, "availableNum");
+                    if (availableNum > 0) {
+                        goodsNum = true;
+                    }
                     Float weight = GetMapValueUtils.getFloatFromMapKey(map, "weight");
                     Long marketPrice = GetMapValueUtils.getLongFromMapKey(map, "marketPrice");
                     String goodsCode = GetMapValueUtils.getStringFromMapKey(map, "goodsCode");
@@ -356,6 +358,9 @@ public class Goods extends ConcurrencySafeEntity {
                         isNeedApprove = true;
                     }
                 }
+            }
+            if (goodsNum && this.goodsStatus == 3) {
+                this.goodsStatus = 2;
             }
             if (isNeedApprove) {//发布事件，增加一条待审核商品记录
                 DomainEventPublisher
