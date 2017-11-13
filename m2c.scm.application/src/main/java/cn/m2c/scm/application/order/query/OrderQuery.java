@@ -68,8 +68,8 @@ public class OrderQuery {
 		}
 		if (StringUtils.isNotEmpty(endTime) && StringUtils.isNotEmpty(endTime)) {
 			sql.append(" AND (d.created_date BETWEEN ? AND ?)");
-			params.add(startTime);
-			params.add(endTime);
+			params.add(startTime + " 00:00:00");
+			params.add(endTime+ " 23:59:59");
 		}
 		if (StringUtils.isNotEmpty(condition) && condition != null && !"".equals(condition)) {
 			sql.append(" AND (d.dealer_order_id LIKE ?	OR m.pay_no LIKE ? OR dealer.dealer_name LIKE ?) ");
@@ -220,8 +220,8 @@ public class OrderQuery {
 		}
 		if (StringUtils.isNotEmpty(endTime) && StringUtils.isNotEmpty(endTime)) {
 			sql.append(" AND (d.created_date BETWEEN ? AND ?)");
-			params.add(startTime);
-			params.add(endTime);
+			params.add(startTime + " 00:00:00");
+			params.add(endTime+ " 23:59:59");
 		}
 		if (StringUtils.isNotEmpty(condition) && condition != null && !"".equals(condition)) {
 			sql.append(" AND (d.dealer_order_id LIKE ?	OR m.pay_no LIKE ? OR dealer.dealer_name LIKE ?) ");
