@@ -180,4 +180,24 @@ public class ShopAgent {
 		        return new ResponseEntity<MResult>(result, HttpStatus.OK);
 		    }
 	
+		 /**
+		  * 查询店铺信息
+		  * @param dealerId
+		  * @return
+		  */
+		 @RequestMapping(value = "/shopInfo-out", method = RequestMethod.GET)
+		    public ResponseEntity<MResult> queryShopInfoById(
+		            @RequestParam(value = "shopId", required = true) String shopId
+		            ) {
+			 MResult result = new MResult(MCode.V_1);
+		        try {
+		        	ShopBean resultData = query.getShopInfoByShopId(shopId);
+		        	result.setContent(resultData);
+		            result.setStatus(MCode.V_200);
+		        } catch (Exception e) {
+		        	log.error("根据id查询店铺详情出错", e);
+		            result = new MPager(MCode.V_400, "服务器开小差了，请稍后再试");
+		        }
+		        return new ResponseEntity<MResult>(result, HttpStatus.OK);
+		    }
 }
