@@ -10,7 +10,11 @@ import javax.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 
 import cn.m2c.ddd.common.port.adapter.persistence.springJdbc.SupportJdbcTemplate;
 import cn.m2c.scm.application.order.command.GetOrderCmd;
@@ -22,6 +26,7 @@ import cn.m2c.scm.application.order.data.bean.OrderExpressBean;
 import cn.m2c.scm.application.order.data.bean.SkuNumBean;
 import cn.m2c.scm.application.order.data.representation.OptLogBean;
 import cn.m2c.scm.domain.NegativeException;
+import cn.m2c.scm.domain.service.order.OrderService;
 
 /**
  * 订单查询
@@ -36,6 +41,8 @@ public class OrderQueryApplication {
 	
 	@Resource
     private SupportJdbcTemplate supportJdbcTemplate;
+	@Autowired
+	OrderService orderService;
 
     public SupportJdbcTemplate getSupportJdbcTemplate() {
         return supportJdbcTemplate;
@@ -533,6 +540,23 @@ public class OrderQueryApplication {
 			throw new NegativeException(500, "查询APP可售后的订单列表出错");
 		}
 		return result;
+	}
+	/**
+	 * 调用第三方查询物流信息
+	 * @param com
+	 * @param nu
+	 * @return
+	 * @throws NegativeException 
+	 */
+	public JSONObject getExpressJson(String com, String nu) throws NegativeException {
+		JSONObject expressInfo = null;
+		try {
+			 expressInfo = orderService.getExpressInfo(com, nu);
+		} catch (Exception e) {
+			LOGGER.error("---查询APP物流列表出错"+e.getMessage(),e);
+			throw new NegativeException(500, "查询APP物流列表出错");
+		}
+		return expressInfo;
 	}
 }
 

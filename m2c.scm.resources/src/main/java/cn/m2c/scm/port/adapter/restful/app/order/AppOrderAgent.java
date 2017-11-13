@@ -33,6 +33,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.google.gson.JsonObject;
+
 import java.util.List;
 
 /***
@@ -457,6 +461,36 @@ public class AppOrderAgent {
             result.setStatus(MCode.V_200);
         } catch (Exception e) {
             LOGGER.error("app get order list error, e:", e);
+            result = new MPager(MCode.V_400, e.getMessage());
+        }
+        return new ResponseEntity<MPager>(result, HttpStatus.OK);
+    }
+    
+    /**
+     * 获取物流信息
+     * @param userId 当前登录用户ID,app用户id
+     * @return
+     */
+    @RequestMapping(value = "/app/getExpressInfo", method = RequestMethod.GET)
+    public ResponseEntity<MPager> getExpressInfo(
+            @RequestParam(value = "com",defaultValue="") String com
+            ,@RequestParam(value = "nu", defaultValue="") String nu
+            ) {
+    	MPager result = new MPager(MCode.V_1);
+        try {
+        	if(com==null||"".equals(com)){
+        		result.setContent("物流公司编码不能为空");
+        		 return new ResponseEntity<MPager>(result, HttpStatus.OK);
+        	}
+        	if(nu==null||"".equals(nu)){
+        		result.setContent("物流号不能为空");
+        		 return new ResponseEntity<MPager>(result, HttpStatus.OK);
+        	}
+        	JSONObject rtResult = orderQueryApp.getExpressJson(com,nu);
+        	result.setContent(rtResult);
+            result.setStatus(MCode.V_200);
+        } catch (Exception e) {
+            LOGGER.error("app查询物流列表出错", e);
             result = new MPager(MCode.V_400, e.getMessage());
         }
         return new ResponseEntity<MPager>(result, HttpStatus.OK);
