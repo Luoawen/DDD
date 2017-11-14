@@ -3,6 +3,7 @@ package cn.m2c.scm.application.goods.query.data.export;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsBean;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsSkuBean;
 import cn.m2c.scm.application.utils.ExcelField;
+import org.apache.commons.lang3.StringUtils;
 
 import java.text.DecimalFormat;
 import java.util.Map;
@@ -30,7 +31,7 @@ public class GoodsServiceRateModel {
     @ExcelField(title = "拍获价/元")
     private String photographPrice;
     @ExcelField(title = "服务费率/%")
-    private Float serviceRate;
+    private String serviceRate;
     @ExcelField(title = "商品库存")
     private Integer availableNum;
     @ExcelField(title = "商品销量")
@@ -43,16 +44,16 @@ public class GoodsServiceRateModel {
     public GoodsServiceRateModel(GoodsBean goodsBean, GoodsSkuBean goodsSkuBean, Map goodsClassifyMap, Float serviceRate, String goodsPostageName) {
         this.dealerName = goodsBean.getDealerName();
         this.goodsName = goodsBean.getGoodsName();
-        this.goodsBarCode = goodsBean.getGoodsBarCode();
+        this.goodsBarCode = StringUtils.isEmpty(goodsBean.getGoodsBarCode()) ? "" : goodsSkuBean.getGoodsCode();
         if (null != goodsClassifyMap) {
             this.goodsClassify = null == goodsClassifyMap.get("name") ? "" : (String) goodsClassifyMap.get("name");
         }
         this.goodsBrandName = goodsBean.getGoodsBrandName();
-        this.goodsCode = goodsSkuBean.getGoodsCode();
+        this.goodsCode = StringUtils.isEmpty(goodsSkuBean.getGoodsCode()) ? "" : goodsSkuBean.getGoodsCode();
         this.goodsSkuId = goodsSkuBean.getSkuId();
         this.goodsSkuName = goodsSkuBean.getSkuName();
         DecimalFormat df = new DecimalFormat("0.00");
-        this.photographPrice = df.format(goodsSkuBean.getPhotographPrice().floatValue()/100);
+        this.photographPrice = df.format(goodsSkuBean.getPhotographPrice().floatValue() / 100);
         this.availableNum = goodsSkuBean.getAvailableNum();
         this.sellerNum = goodsSkuBean.getSellerNum();
         //商品状态，1：仓库中，2：出售中，3：已售罄
@@ -64,6 +65,6 @@ public class GoodsServiceRateModel {
             this.goodsStatus = "已售罄";
         }
         this.goodsPostageName = goodsPostageName;
-        this.serviceRate = serviceRate;
+        this.serviceRate = null == serviceRate ? "" : String.valueOf(serviceRate);
     }
 }

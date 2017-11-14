@@ -3,6 +3,7 @@ package cn.m2c.scm.application.goods.query.data.export;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsBean;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsSkuBean;
 import cn.m2c.scm.application.utils.ExcelField;
+import org.apache.commons.lang3.StringUtils;
 
 import java.text.DecimalFormat;
 import java.util.Map;
@@ -44,12 +45,12 @@ public class GoodsSupplyPriceModel {
     public GoodsSupplyPriceModel(GoodsBean goodsBean, GoodsSkuBean goodsSkuBean, Map goodsClassifyMap, String goodsPostageName) {
         this.dealerName = goodsBean.getDealerName();
         this.goodsName = goodsBean.getGoodsName();
-        this.goodsBarCode = goodsBean.getGoodsBarCode();
+        this.goodsBarCode = StringUtils.isEmpty(goodsBean.getGoodsBarCode()) ? "" : goodsSkuBean.getGoodsCode();
         if (null != goodsClassifyMap) {
             this.goodsClassify = null == goodsClassifyMap.get("name") ? "" : (String) goodsClassifyMap.get("name");
         }
         this.goodsBrandName = goodsBean.getGoodsBrandName();
-        this.goodsCode = goodsSkuBean.getGoodsCode();
+        this.goodsCode = StringUtils.isEmpty(goodsSkuBean.getGoodsCode()) ? "" : goodsSkuBean.getGoodsCode();
         this.goodsSkuId = goodsSkuBean.getSkuId();
         this.goodsSkuName = goodsSkuBean.getSkuName();
         DecimalFormat df = new DecimalFormat("0.00");
