@@ -116,7 +116,6 @@ public class DealerOrderAfterSellQuery {
 		params.add(dealerOrderId);
 		sql.append(" AND after.goods_id = goods.goods_id ");
 
-		System.out.println("SHOW  SQL -----------------------------------------"+sql);
 		List<GoodsInfoBean> goodsInfoList = this.supportJdbcTemplate.queryForBeanList(sql.toString(),
 				GoodsInfoBean.class, params.toArray());
 		return goodsInfoList;
@@ -133,7 +132,7 @@ public class DealerOrderAfterSellQuery {
 	public GoodsInfoBean afterSellGoodsInfoQuery(String skuId, String dealerOrderId) {
 		List<Object> params = new ArrayList<Object>();
 		StringBuilder sql = new StringBuilder();
-		sql.append(" SELECT g.goods_main_images, g.goods_name, g.goods_sub_title, sku.sku_name, ")
+		sql.append(" SELECT detail.goods_icon, g.goods_name, g.goods_sub_title, sku.sku_name, ")
 				.append(" detail.discount_price,after.sell_num ").append(" FROM t_scm_goods_sku sku")
 				.append(" LEFT OUTER JOIN t_scm_goods g ON sku.goods_id=g.id")
 				.append(" LEFT OUTER JOIN t_scm_order_after_sell after ON sku.sku_id = after.sku_id ")
@@ -141,7 +140,6 @@ public class DealerOrderAfterSellQuery {
 				.append(" where sku.sku_id=?");
 		params.add(skuId);
 		// params.add(dealerOrderId);
-		System.out.println("GOODS   SHOW  SQL-----------------------------------"+sql);
 		GoodsInfoBean goodsInfoList = this.supportJdbcTemplate.queryForBean(sql.toString(), GoodsInfoBean.class,
 				params.toArray());
 		return goodsInfoList;
