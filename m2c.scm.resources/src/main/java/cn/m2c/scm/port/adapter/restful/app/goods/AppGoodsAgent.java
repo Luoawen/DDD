@@ -234,11 +234,15 @@ public class AppGoodsAgent {
                     // 获取商品分类的一级大类
                     List<GoodsClassifyBean> goodsClassifyBeanList = goodsClassifyQueryApplication.getFirstClassifyByClassifyIds(goodsClassifyIds);
                     List<Map> classifyMap = new ArrayList<>();
+                    List<String> classifyIds = new ArrayList<>();
                     for (GoodsClassifyBean bean : goodsClassifyBeanList) {
-                        Map map = new HashMap<>();
-                        map.put("classifyId", bean.getClassifyId());
-                        map.put("classifyName", bean.getClassifyName());
-                        classifyMap.add(map);
+                        if (!classifyIds.contains(bean.getClassifyId())){
+                            classifyIds.add(bean.getClassifyId());
+                            Map map = new HashMap<>();
+                            map.put("classifyId", bean.getClassifyId());
+                            map.put("classifyName", bean.getClassifyName());
+                            classifyMap.add(map);
+                        }
                     }
                     resultMap.put("goodsClassify", classifyMap);
 
