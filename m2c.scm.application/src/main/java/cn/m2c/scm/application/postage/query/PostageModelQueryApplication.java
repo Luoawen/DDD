@@ -4,6 +4,7 @@ import cn.m2c.ddd.common.port.adapter.persistence.springJdbc.SupportJdbcTemplate
 import cn.m2c.scm.application.dealer.data.bean.DealerBean;
 import cn.m2c.scm.application.dealer.query.DealerQuery;
 import cn.m2c.scm.application.goods.query.GoodsQueryApplication;
+import cn.m2c.scm.application.goods.query.data.bean.GoodsBean;
 import cn.m2c.scm.application.goods.query.data.representation.GoodsSkuInfoRepresentation;
 import cn.m2c.scm.application.postage.data.bean.PostageModelBean;
 import cn.m2c.scm.application.postage.data.bean.PostageModelRuleBean;
@@ -88,8 +89,8 @@ public class PostageModelQueryApplication {
             for (GoodsSkuInfoRepresentation info : goodsInfoList) {
                 PostageModelBean postageModelBean = queryPostageModelsByModelId(info.getGoodsPostageId());
                 if (postageModelBean == null) {
-                	map.put(info.getSkuId(), null);
-                	continue;
+                    map.put(info.getSkuId(), null);
+                    continue;
                 }
                 List<DealerBean> dealerBeanList = dealerQuery.getDealers(postageModelBean.getDealerId());
                 String dealerName = "";
@@ -118,6 +119,59 @@ public class PostageModelQueryApplication {
                         }
                         if (!specialFlag && null != defaultBean) {
                             map.put(info.getSkuId(), new PostageModelRuleRepresentation(defaultBean, postageModelBean, dealerName));
+                        }
+                    }
+
+                }
+            }
+        }
+        return map;
+    }
+
+    /**
+     * 根据商品ids查询运费规则
+     *
+     * @param goodsIds
+     * @param cityCode
+     * @return
+     */
+    public Map<String, PostageModelRuleRepresentation> getGoodsPostageRuleByGoodsId(List<String> goodsIds, String cityCode) throws NegativeException {
+        Map<String, PostageModelRuleRepresentation> map = new HashMap<>();
+        List<GoodsBean> goodsInfoList = goodsQueryApplication.queryGoodsByGoodsIds(goodsIds);
+        if (null != goodsInfoList && goodsInfoList.size() > 0) {
+            for (GoodsBean info : goodsInfoList) {
+                PostageModelBean postageModelBean = queryPostageModelsByModelId(info.getGoodsPostageId());
+                if (postageModelBean == null) {
+                    map.put(info.getGoodsId(), null);
+                    continue;
+                }
+                List<DealerBean> dealerBeanList = dealerQuery.getDealers(postageModelBean.getDealerId());
+                String dealerName = "";
+                if (null != dealerBeanList && dealerBeanList.size() > 0) {
+                    dealerName = dealerBeanList.get(0).getDealerName();
+                }
+                if (null != postageModelBean) {
+                    List<PostageModelRuleBean> ruleBeans = postageModelBean.getPostageModelRuleBeans();
+                    if (null != ruleBeans && ruleBeans.size() > 0) {
+                        boolean specialFlag = false;
+                        PostageModelRuleBean defaultBean = null;
+                        for (PostageModelRuleBean bean : ruleBeans) {
+                            Integer defaultFlag = bean.getDefaultFlag();//全国（默认运费），0：是，1：不是
+                            if (defaultFlag == 1) { // 不是全国默认
+                                if (StringUtils.isNotEmpty(bean.getCityCode())) {
+                                    List<String> codes = Arrays.asList(bean.getCityCode().split(","));
+                                    if (codes.contains(cityCode)) {
+                                        map.put(info.getGoodsId(), new PostageModelRuleRepresentation(bean, postageModelBean, dealerName));
+                                        specialFlag = true;
+                                        break;
+                                    }
+                                }
+                            } else {
+                                defaultBean = bean;
+                            }
+                        }
+                        if (!specialFlag && null != defaultBean) {
+                            map.put(info.getGoodsId(), new PostageModelRuleRepresentation(defaultBean, postageModelBean, dealerName));
                         }
                     }
 
