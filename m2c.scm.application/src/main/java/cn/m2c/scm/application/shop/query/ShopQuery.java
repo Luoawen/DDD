@@ -50,6 +50,13 @@ public class ShopQuery {
 		return bean;
 	}
 
+	
+	/**
+	 * 查询店铺是否被关注
+	 * @param dealerId
+	 * @param userId
+	 * @return
+	 */
 	public ShopBean getAppShopInfo(String dealerId, String userId) {
 		ShopBean bean = null;
 		try {
@@ -57,7 +64,7 @@ public class ShopQuery {
 			Integer isFucos = shopService.shopIsOrNotFucos(dealerId, userId);
 			bean = this.supportJdbcTemplate.queryForBean(sql, ShopBean.class, dealerId);
 			if (StringUtils.isEmpty(userId)) {
-				bean.setIsFocus(0);
+				bean.setUserId(userId);
 			}else {
 				bean.setIsFocus(isFucos);
 			}
