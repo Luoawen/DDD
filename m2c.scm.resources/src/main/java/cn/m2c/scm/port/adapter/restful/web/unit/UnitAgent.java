@@ -157,7 +157,7 @@ public class UnitAgent {
 		MResult result = new MResult(MCode.V_1);
 		String suibian = IDGenerator.get(IDGenerator.SCM_SUIBIAN_PREFIX_TITLE);
 		result.setContent(suibian);
-		
+		result.setStatus(MCode.V_200);
 		return new ResponseEntity<MResult>(result,HttpStatus.OK);
 		
 	}
