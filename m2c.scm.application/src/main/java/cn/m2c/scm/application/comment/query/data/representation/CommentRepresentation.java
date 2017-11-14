@@ -43,7 +43,7 @@ public class CommentRepresentation {
         List<String> imageList = JsonUtils.toList(images, String.class);
         this.commentImages = imageList;
 
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         if (null != bean.getGoodsReplyCommentBean()) {
             this.replyCommentContent = bean.getGoodsReplyCommentBean().getReplyContent();
             this.replyTime = format.format(bean.getGoodsReplyCommentBean().getCreatedDate());
