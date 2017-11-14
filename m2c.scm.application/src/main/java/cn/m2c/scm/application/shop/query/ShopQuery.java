@@ -59,13 +59,16 @@ public class ShopQuery {
 	 */
 	public ShopBean getAppShopInfo(String dealerId, String userId) {
 		ShopBean bean = null;
+		
 		try {
 			String sql = "SELECT * FROM t_scm_dealer_shop WHERE dealer_id=?";
 			Integer isFucos = shopService.shopIsOrNotFucos(dealerId, userId);
 			bean = this.supportJdbcTemplate.queryForBean(sql, ShopBean.class, dealerId);
 			if (StringUtils.isEmpty(userId)) {
-				bean.setUserId(userId);
+				bean.setIsFocus(0);
+				bean.setUserId("");
 			}else {
+				bean.setUserId(userId);
 				bean.setIsFocus(isFucos);
 			}
 		} catch (Exception e) {
