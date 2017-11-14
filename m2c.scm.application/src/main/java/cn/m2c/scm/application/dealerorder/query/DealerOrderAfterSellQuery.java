@@ -208,15 +208,15 @@ public class DealerOrderAfterSellQuery {
 	public DealerOrderAfterSellDetailBean afterSellDealerOrderDetailQeury(String afterSellOrderId, String dealerId) {
 		StringBuilder sql = new StringBuilder();
 		List<Object> param = new ArrayList<Object>();
-		sql.append(" SELECT after._status,after.order_type,after.after_sell_order_id,after.back_money,after.reason,after.created_date,after.return_freight ")
-		.append(" ,after.reject_reason ");
-		sql.append(" ,after.order_id,main.goods_amount,main.order_freight,main.plateform_discount,main.dealer_discount ");
+		sql.append(" SELECT after._status,after.order_type,after.after_sell_order_id,after.back_money,after.reason, ")
+		.append(" after.created_date,after.return_freight,after.reject_reason, dealer.dealer_order_id ");
+		sql.append(" ,after.order_id,dealer.goods_amount,dealer.order_freight,dealer.plateform_discount,dealer.dealer_discount ");
 		sql.append("  FROM t_scm_order_after_sell after ");
-		sql.append("  left JOIN t_scm_order_dealer dealer   ON after.dealer_order_id = dealer.dealer_order_id   ");
-		sql.append("  left JOIN t_scm_order_detail detail  on after.dealer_order_id = detail.dealer_order_id AND after.sku_id = detail.sku_id  ");
-		sql.append("  left JOIN t_scm_dealer_seller seller  on detail.saler_user_id = seller.seller_id   ")
-		.append(" LEFT JOIN t_scm_order_main main ON after.order_id = main.order_id ");
-		sql.append(" WHERE 1 = 1 AND after.after_sell_order_id = ? ");
+		sql.append("  LEFT OUTER JOIN t_scm_order_dealer dealer   ON after.dealer_order_id = dealer.dealer_order_id   ");
+		sql.append("  LEFT OUTER JOIN t_scm_order_detail detail  ON after.dealer_order_id = detail.dealer_order_id AND after.sku_id = detail.sku_id  ");
+		sql.append("  LEFT OUTER JOIN t_scm_dealer_seller seller  ON detail.saler_user_id = seller.seller_id   ")
+		.append(" LEFT OUTER JOIN t_scm_order_main main ON after.order_id = main.order_id ");
+		sql.append(" WHERE after.after_sell_order_id = ? ");
 		param.add(afterSellOrderId);
 		sql.append(" AND after.dealer_id = ? ");
 		param.add(dealerId);
@@ -226,15 +226,13 @@ public class DealerOrderAfterSellQuery {
 		bean.setDealerId(dealerId);
 		GoodsInfoBean goodsInfo = aftetSellDealerOrderDetailGoodsInfoQuery(afterSellOrderId, dealerId);
 		long totalPrice = 0; // 商品总价格
-		long orderTotalPrice = 0; // 订单总价格
+		//long orderTotalPrice = 0; // 订单总价格
 		if (goodsInfo != null) {
 			totalPrice += (goodsInfo.getPrice() * goodsInfo.getSellNum());// + goodsInfo.getFreight()
 			goodsInfo.setTotalPrice(totalPrice);
-			orderTotalPrice += totalPrice;
 		}
 
 		if (bean != null) {
-			bean.setOrderTotalMoney(orderTotalPrice);
 			bean.setGoodsInfo(aftetSellDealerOrderDetailGoodsInfoQuery(afterSellOrderId, dealerId));
 		}
 		return bean;
