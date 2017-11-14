@@ -123,7 +123,7 @@ public class OrderAddCommand extends AssertionConcern implements Serializable {
 			throw new NegativeException(MCode.V_1, "地址参数格式不正确！");
 		}
 		
-		String tmp = addr.getString("province");
+		/*String tmp = addr.getString("province");
 		if (StringUtils.isEmpty(tmp)) {
 			throw new NegativeException(MCode.V_1, "收货地址省为空！");
 		}
@@ -131,9 +131,9 @@ public class OrderAddCommand extends AssertionConcern implements Serializable {
 		tmp = addr.getString("provinceCode");
 		if (StringUtils.isEmpty(tmp)) {
 			throw new NegativeException(MCode.V_1, "收货地址省编码为空！");
-		}
+		}*/
 		
-		tmp = addr.getString("city");
+		String tmp = addr.getString("city");
 		if (StringUtils.isEmpty(tmp)) {
 			throw new NegativeException(MCode.V_1, "收货地址市为空！");
 		}

@@ -398,23 +398,33 @@ public class OrderApplication {
     private void calFreight(Map<String, GoodsReqBean> skus, List<GoodsDto> ls, String cityCode) throws NegativeException {
         LOGGER.info("==fanjc==计算运费.");
         Iterator<String> it = skus.keySet().iterator();
-        List<String> skuIds = new ArrayList<String>();
+        /*List<String> skuIds = new ArrayList<String>();
         while (it.hasNext()) {
             skuIds.add(it.next());
         }
-
         Map<String, PostageModelRuleRepresentation> postMap = postApp.getGoodsPostageRule(skuIds, cityCode);
+        */
+        List<String> goodsIds = new ArrayList<String>();
+        for (GoodsDto bean : ls) {
+        	String id = bean.getGoodsId();
+        	if (!goodsIds.contains(id)) {
+        		goodsIds.add(id);
+        	}
+        }
+
+        Map<String, PostageModelRuleRepresentation> postMap = postApp.getGoodsPostageRuleByGoodsId(goodsIds, cityCode);
 
         for (GoodsDto bean : ls) {
             String skuId = bean.getSkuId();
+        	String goodsId = bean.getGoodsId();
             GoodsReqBean gdb = skus.get(skuId);
             bean.setPurNum(gdb.getPurNum());
             bean.setMarketingId(gdb.getMarketId());
             bean.setMarketLevel(gdb.getLevel());
             bean.setIsChange(gdb.getIsChange());
-            //bean.setThreshold(gdb.get);
-            calFrt(bean, postMap.get(skuId));
-            // bean.setFreight(1000);
+            
+            //calFrt(bean, postMap.get(skuId));
+            calFrt(bean, postMap.get(goodsId));
         }
     }
 

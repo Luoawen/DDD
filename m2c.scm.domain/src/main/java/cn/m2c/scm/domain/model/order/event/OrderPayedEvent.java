@@ -7,6 +7,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
+import java.util.UUID;
 
 /***
  * 订单支付成功时的商品销量事件
@@ -78,10 +80,14 @@ public class OrderPayedEvent implements DomainEvent {
 	}
 	
 	public static void main(String[] args) {
-		Gson gson = new Gson();
+		/*Gson gson = new Gson();
 		Map<String, Integer> s = new HashMap<String, Integer>();
 		s.put("2222", 2);
 		OrderPayedEvent a = new OrderPayedEvent("123456",  s, null, null, null);
-		System.out.print(gson.toJson(a));
+		System.out.print(gson.toJson(a));*/
+		
+		/*for(int i=0; i<8; i++) {
+			System.out.println(UUID.randomUUID().toString().replace("-", ""));
+		}*/
 	}
 }
