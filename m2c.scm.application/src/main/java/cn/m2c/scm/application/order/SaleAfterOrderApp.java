@@ -70,9 +70,11 @@ public class SaleAfterOrderApp {
 		}
 		long ft = itemDtl.isDeliver() ? 0 : itemDtl.getFreight();
 		long money = itemDtl.sumGoodsMoney() - discountMoney + ft;
+		
+		int status = cmd.getType() == 3 ? 0 : cmd.getType(); //0换货， 1退货，2仅退款                   1退货，2退款，3换货
 		SaleAfterOrder afterOrder = new SaleAfterOrder(cmd.getSaleAfterNo(), cmd.getUserId(), cmd.getOrderId(),
 				cmd.getDealerOrderId(), cmd.getDealerId(), cmd.getGoodsId(), cmd.getSkuId(), cmd.getReason()
-				, cmd.getBackNum(), 0, cmd.getType(), money, cmd.getReasonCode(), ft);
+				, cmd.getBackNum(), status, cmd.getType(), money, cmd.getReasonCode(), ft);
 		
 		saleAfterRepository.save(afterOrder);
 		LOGGER.info("新增加售后申请成功！");
