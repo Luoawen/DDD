@@ -37,6 +37,7 @@ public abstract class IDGenerator {
     public static final String SCM_UNIT_PREFIX_TITLE = "JLDW";//计量单位前缀
     public static final String SCM_GOODS_COMMENT_PREFIX_TITLE = "SPPL";//商品评论前缀
     public static final String SCM_GOODS_REPLY_COMMENT_PREFIX_TITLE = "SPHP";//商品回评前缀
+    public static final String SCM_SUIBIAN_PREFIX_TITLE = "SB";    
 
     /**
      * 鐢熸垚搴忓垪ID

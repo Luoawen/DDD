@@ -50,15 +50,25 @@ public class ShopQuery {
 		return bean;
 	}
 
+	
+	/**
+	 * 查询店铺是否被关注
+	 * @param dealerId
+	 * @param userId
+	 * @return
+	 */
 	public ShopBean getAppShopInfo(String dealerId, String userId) {
 		ShopBean bean = null;
+		
 		try {
 			String sql = "SELECT * FROM t_scm_dealer_shop WHERE dealer_id=?";
 			Integer isFucos = shopService.shopIsOrNotFucos(dealerId, userId);
 			bean = this.supportJdbcTemplate.queryForBean(sql, ShopBean.class, dealerId);
 			if (StringUtils.isEmpty(userId)) {
 				bean.setIsFocus(0);
+				bean.setUserId("");
 			}else {
+				bean.setUserId(userId);
 				bean.setIsFocus(isFucos);
 			}
 		} catch (Exception e) {
