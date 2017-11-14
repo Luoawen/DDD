@@ -72,6 +72,11 @@ public class GoodsSkuInfoRepresentation {
 
     private String goodsImageUrl;
 
+    /**
+     * 最小起订量
+     */
+    private Integer goodsMinQuantity;
+
     public GoodsSkuInfoRepresentation(GoodsBean goodsBean, GoodsSkuBean bean) {
         this.goodsId = goodsBean.getGoodsId();
         this.goodsName = goodsBean.getGoodsName();
@@ -99,6 +104,7 @@ public class GoodsSkuInfoRepresentation {
         } else {
             this.skuAvailableStatus = 0;
         }
+        this.goodsMinQuantity = goodsBean.getGoodsMinQuantity();
     }
 
     public String getGoodsId() {
@@ -211,5 +217,13 @@ public class GoodsSkuInfoRepresentation {
 
     public void setSkuAvailableStatus(Integer skuAvailableStatus) {
         this.skuAvailableStatus = skuAvailableStatus;
+    }
+
+    public Integer getGoodsMinQuantity() {
+        return goodsMinQuantity;
+    }
+
+    public void setGoodsMinQuantity(Integer goodsMinQuantity) {
+        this.goodsMinQuantity = goodsMinQuantity;
     }
 }
