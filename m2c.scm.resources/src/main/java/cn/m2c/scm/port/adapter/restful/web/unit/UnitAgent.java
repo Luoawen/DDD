@@ -149,6 +149,16 @@ public class UnitAgent {
 			result = new MResult(MCode.V_400, "服务器开小差了");
 		}
 		return new ResponseEntity<MResult>(result,HttpStatus.OK);
+	}
+	
+	@RequestMapping(value = "/suibian", method = RequestMethod.GET)
+	public ResponseEntity<MResult> mathMonde(){
+		
+		MResult result = new MResult(MCode.V_1);
+		String suibian = IDGenerator.get(IDGenerator.SCM_SUIBIAN_PREFIX_TITLE);
+		result.setContent(suibian);
+		
+		return new ResponseEntity<MResult>(result,HttpStatus.OK);
 		
 	}
 	
