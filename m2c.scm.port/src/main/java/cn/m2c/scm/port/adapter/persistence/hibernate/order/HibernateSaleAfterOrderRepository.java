@@ -83,7 +83,7 @@ public class HibernateSaleAfterOrderRepository extends HibernateSupperRepository
 	@Override
 	public int disabledOrderMarket(String orderId, String marketId) {
 		// TODO Auto-generated method stub
-		int rs = this.session().createQuery("UPDATE t_scm_order_marketing_used set _status=0 WHERE order_id=:orderId AND marketing_id=:marketId")
+		int rs = this.session().createSQLQuery("UPDATE t_scm_order_marketing_used set _status=0 WHERE order_id=:orderId AND marketing_id=:marketId")
 				.setParameter("orderId", orderId).setParameter("marketId", marketId)
 				.executeUpdate();
 		return rs;

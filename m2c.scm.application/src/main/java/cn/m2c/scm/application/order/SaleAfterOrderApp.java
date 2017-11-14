@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -207,7 +208,11 @@ public class SaleAfterOrderApp {
 		if (order == null || !order.isSame(cmd.getSkuId())) {
 			throw new NegativeException(MCode.V_101, "无此售后单！");
 		}
-		if (!order.agreeBackMoney(cmd.getUserId())) {
+		String payNo = saleOrderQuery.getMainOrderPayNo(order.orderId());
+		if (StringUtils.isEmpty(payNo)) {
+			throw new NegativeException(MCode.V_101, "售后单状态不正确！");
+		}
+		if (!order.agreeBackMoney(cmd.getUserId(), payNo)) {
 			throw new NegativeException(MCode.V_103, "状态不正确，不能进行此操作！");
 		}
 		saleAfterRepository.updateSaleAfterOrder(order);

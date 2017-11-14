@@ -408,4 +408,22 @@ public class AfterSellOrderQuery {
 		}
 		return result;
 	}
+	
+	public String getMainOrderPayNo(String orderNo) throws NegativeException {
+		String result = null;
+		try {
+			List<Object> params = new ArrayList<>(4);
+			StringBuilder sql = new StringBuilder();
+			sql.append("SELECT pay_no FROM t_scm_order_main a \r\n")
+			.append(" WHERE a.order_id=?");
+			
+			params.add(orderNo);
+			
+			result = this.supportJdbcTemplate.jdbcTemplate().queryForObject(sql.toString(), params.toArray(), String.class);
+			
+		} catch (Exception e) {
+			throw new NegativeException(MCode.V_500, "查询Order 支付单号出错！");
+		}
+		return result;
+	}
 }

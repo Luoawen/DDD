@@ -4,6 +4,7 @@ import java.util.Date;
 
 import cn.m2c.ddd.common.domain.model.ConcurrencySafeEntity;
 import cn.m2c.ddd.common.domain.model.DomainEventPublisher;
+import cn.m2c.scm.domain.model.order.event.SaleAfterRefundEvt;
 import cn.m2c.scm.domain.model.order.log.event.OrderOptLogEvent;
 /***
  * 售后订单实体
@@ -160,11 +161,12 @@ public class SaleAfterOrder extends ConcurrencySafeEntity {
 	/***
 	 * 同意退款
 	 */
-	public boolean agreeBackMoney(String userId) {
+	public boolean agreeBackMoney(String userId, String payNo) {
 		if (status < 4)
 			return false;
 		status = 9;
 		DomainEventPublisher.instance().publish(new OrderOptLogEvent(saleAfterNo, null, "同意退款", userId));
+		DomainEventPublisher.instance().publish(new SaleAfterRefundEvt(saleAfterNo, dealerId, backMoney, payNo));
 		return true;
 	}
 	/***
