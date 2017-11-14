@@ -595,6 +595,7 @@ public class GoodsQueryApplication {
             }
             sql.append(")");*/
             sql.append(" AND g.goods_name LIKE ?");
+            params.add("%" + condition + "%");
         }
         sql.append(" AND g.del_status= 1 AND g.goods_status <> 1 group by g.goods_id");
 
@@ -678,6 +679,7 @@ public class GoodsQueryApplication {
             }
             sql.append(")");*/
             sql.append(" AND g.goods_name LIKE ?");
+            params.add("%" + condition + "%");
         }
         sql.append(" AND g.del_status= 1 AND g.goods_status <> 1");
         return supportJdbcTemplate.jdbcTemplate().queryForObject(sql.toString(), params.toArray(), Integer.class);

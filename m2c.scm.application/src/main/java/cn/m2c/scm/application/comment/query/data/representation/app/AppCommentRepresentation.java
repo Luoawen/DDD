@@ -2,6 +2,7 @@ package cn.m2c.scm.application.comment.query.data.representation.app;
 
 import cn.m2c.common.JsonUtils;
 import cn.m2c.scm.application.comment.query.data.bean.GoodsCommentBean;
+import org.apache.commons.lang3.StringUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -25,7 +26,11 @@ public class AppCommentRepresentation {
         this.buyerIcon = bean.getBuyerIcon();
         this.buyerPhoneNumber = bean.getBuyerPhoneNumber();
         this.buyerName = bean.getBuyerName();
-        this.skuName = bean.getSkuName();
+        if (StringUtils.isEmpty(bean.getSkuName())) {
+            this.skuName = "默认";
+        } else {
+            this.skuName = bean.getSkuName();
+        }
         this.goodsNum = bean.getGoodsNum();
         this.starLevel = bean.getStarLevel();
         this.commentContent = bean.getCommentContent();
