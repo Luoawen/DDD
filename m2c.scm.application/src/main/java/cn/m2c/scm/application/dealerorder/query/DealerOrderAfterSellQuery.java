@@ -210,7 +210,7 @@ public class DealerOrderAfterSellQuery {
 	public DealerOrderAfterSellDetailBean afterSellDealerOrderDetailQeury(String afterSellOrderId, String dealerId) {
 		StringBuilder sql = new StringBuilder();
 		List<Object> param = new ArrayList<Object>();
-		sql.append(" SELECT after._status,after.order_type,after.after_sell_order_id,after.back_money,after.reason,after.created_date,detail.freight ")
+		sql.append(" SELECT after._status,after.order_type,after.after_sell_order_id,after.back_money,after.reason,after.created_date,after.return_freight ")
 		.append(" ,after.reject_reason ");
 		sql.append(" ,after.order_id,main.goods_amount,main.order_freight,main.plateform_discount,main.dealer_discount ");
 		sql.append("  FROM t_scm_order_after_sell after ");
@@ -224,11 +224,13 @@ public class DealerOrderAfterSellQuery {
 		param.add(dealerId);
 		DealerOrderAfterSellDetailBean bean = this.supportJdbcTemplate.queryForBean(sql.toString(),
 				DealerOrderAfterSellDetailBean.class, param.toArray());
+		
+		bean.setDealerId(dealerId);
 		GoodsInfoBean goodsInfo = aftetSellDealerOrderDetailGoodsInfoQuery(afterSellOrderId, dealerId);
 		long totalPrice = 0; // 商品总价格
 		long orderTotalPrice = 0; // 订单总价格
 		if (goodsInfo != null) {
-			totalPrice += (goodsInfo.getPrice() * goodsInfo.getSellNum() + goodsInfo.getFreight());
+			totalPrice += (goodsInfo.getPrice() * goodsInfo.getSellNum());// + goodsInfo.getFreight()
 			goodsInfo.setTotalPrice(totalPrice);
 			orderTotalPrice += totalPrice;
 		}

@@ -58,9 +58,9 @@ public class DealerOrderAfterSellDetailBean {
 	@ColumnAlias(value = "order_freight")
 	private long orderFreight;
 	/**
-	 * 售后运费
+	 * 售后退回的运费
 	 */
-	@ColumnAlias(value = "freight")
+	@ColumnAlias(value = "return_freight")
 	private long backFreight;
 
 	/** 平台优惠金额 **/
@@ -70,6 +70,18 @@ public class DealerOrderAfterSellDetailBean {
 	/** 商家优惠金额 **/
 	@ColumnAlias(value = "dealer_discount")
 	private long dealerDiscount;
+	
+	private String dealerId;
+	
+	
+	public String getDealerId() {
+		return dealerId;
+	}
+
+	public void setDealerId(String dealerId) {
+		this.dealerId = dealerId;
+	}
+
 	/**
 	 * 商品信息
 	 */
