@@ -45,7 +45,8 @@ public class DealerOrderAfterSellDetailBean {
 	/**
 	 * 关联订单号
 	 */
-	@ColumnAlias(value = "order_id")
+	//@ColumnAlias(value = "order_id")
+	@ColumnAlias(value = "dealer_order_id")
 	private String orderId;
 	/**
 	 * 订单总额
