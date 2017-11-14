@@ -37,6 +37,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
@@ -649,6 +650,7 @@ public class OrderApplication {
     /***
      * 取消所有24小时还未支付的订单
      */
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
     public void cancelAllNotPayed() {
     	try {
 	    	List<MainOrder> mainOrders = orderRepository.getNotPayedOrders();
@@ -667,7 +669,7 @@ public class OrderApplication {
     	return ;
     }
     
-    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class},propagation= Propagation.REQUIRES_NEW)
     @EventListener(isListening = true)
     private void jobCancelOrder(MainOrder m) {
     	m.jobCancel();
