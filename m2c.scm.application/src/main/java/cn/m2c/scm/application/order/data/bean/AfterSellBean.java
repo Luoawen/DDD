@@ -73,6 +73,39 @@ public class AfterSellBean {
 	@ColumnAlias(value= "goods_icon")
 	private String goodsIcon;
 	
+	@ColumnAlias(value= "last_updated_date")
+	private Date updateTime;
+	
+	@ColumnAlias(value= "reject_reason")
+	private String rejectReason;
+	
+	@ColumnAlias(value= "reason")
+	private String reason;
+	
+	public Date getUpdateTime() {
+		return updateTime;
+	}
+
+	public void setUpdateTime(Date updateTime) {
+		this.updateTime = updateTime;
+	}
+
+	public String getRejectReason() {
+		return rejectReason;
+	}
+
+	public void setRejectReason(String rejectReason) {
+		this.rejectReason = rejectReason;
+	}
+
+	public String getReason() {
+		return reason;
+	}
+
+	public void setReason(String reason) {
+		this.reason = reason;
+	}
+
 	public String getGoodsIcon() {
 		return goodsIcon;
 	}

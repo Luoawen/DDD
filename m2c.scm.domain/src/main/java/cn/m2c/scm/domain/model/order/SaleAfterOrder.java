@@ -179,6 +179,7 @@ public class SaleAfterOrder extends ConcurrencySafeEntity {
 		if (status != 9) {
 			return false;
 		}
+		status = 10;
 		this.refundNo = refundNo;
 		refundTime = time;
 		return true;
