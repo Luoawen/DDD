@@ -74,10 +74,10 @@ public class DealerOrderAfterSellQuery {
 		}
 		if (!StringUtils.isEmpty(mediaInfo)) {
 			if ("1".equals(mediaInfo)) {
-				sql.append(" AND detail.media_id != '' ");
+				sql.append(" AND detail.media_id IS NOT NULL ");
 			}
 			if ("0".equals(mediaInfo)) {
-				sql.append(" AND detail.media_id = '' ");
+				sql.append(" AND detail.media_id IS NULL ");
 			}
 		}
 
@@ -189,10 +189,10 @@ public class DealerOrderAfterSellQuery {
 			params.add(endTime);
 		}
 		if ("1".equals(mediaInfo)) {
-			sql.append(" AND detail.media_id != '' ");
+			sql.append(" AND detail.media_id IS NOT NULL ");
 		}
 		if ("0".equals(mediaInfo)) {
-			sql.append(" AND detail.media_id = '' ");
+			sql.append(" AND detail.media_id IS NULL ");
 		}
 		return this.supportJdbcTemplate.jdbcTemplate().queryForObject(sql.toString(), Integer.class, params.toArray());
 	}
