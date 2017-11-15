@@ -271,6 +271,11 @@ public class OrderQueryApplication {
 				status = 3;
 				params.add(status);
 			}
+			else if (status != null && status==2) {
+				sql.append(" AND b._status IN (?, ?) ");
+				params.add(1);
+				params.add(2);
+			}
 			else if (status != null && status> -2) {
 				sql.append(" AND b._status=?");
 				params.add(status);
@@ -299,9 +304,10 @@ public class OrderQueryApplication {
 						tmp = o;
 						tmpOrderId = o.getOrderId();
 						sql.delete(0, sql.length());
-						sql.append("SELECT a.goods_icon, a.goods_name, a.goods_title, a.sku_name, a.sku_id, a.sell_num, a.discount_price, a.freight, "
-								+ " a.goods_amount, b._status afterStatus, a.goods_id, a.goods_type_id\r\n") 
-						.append(" FROM t_scm_order_detail a LEFT OUTER JOIN t_scm_order_after_sell b ON b.order_id=a.order_id AND b.dealer_order_id = a.dealer_order_id AND b._status != -1 WHERE a.order_id=? ");
+						sql.append("SELECT a.goods_icon, a.goods_name, a.goods_title, a.sku_name, a.sku_id, a.sell_num, a.discount_price, a.freight, ")
+						.append(" a.goods_amount, b._status afterStatus, a.goods_id, a.goods_type_id\r\n") 
+						.append(" FROM t_scm_order_detail a LEFT OUTER JOIN t_scm_order_after_sell b ON b.order_id=a.order_id AND b.dealer_order_id = a.dealer_order_id AND b._status != -1 "
+								+ " AND b._status != -1 AND b.sku_id=a.sku_id WHERE a.order_id=? ");
 						o.setGoodses(this.supportJdbcTemplate.queryForBeanList(sql.toString(), 
 								OrderDetailBean.class, new Object[] {tmpOrderId}));
 					}
@@ -315,8 +321,10 @@ public class OrderQueryApplication {
 					else {
 						tmpOrderId = o.getOrderId();
 						sql.delete(0, sql.length());
-						sql.append("SELECT a.goods_icon, a.goods_name, a.goods_title, a.sku_name, a.sku_id, a.sell_num, a.discount_price, a.freight, a.goods_amount\r\n") 
-						.append(", a.comment_status , b._status afterStatus, a.goods_id, a.goods_type_id FROM t_scm_order_detail a LEFT OUTER JOIN t_scm_order_after_sell b ON b.order_id=a.order_id AND b.dealer_order_id = a.dealer_order_id AND b._status != -1"
+						sql.append("SELECT a.goods_icon, a.goods_name, a.goods_title, a.sku_name, a.sku_id, a.sell_num, a.discount_price, a.freight, a.goods_amount\r\n")
+						.append(", a.express_way , a.express_phone, a.express_no , a.express_code, a.express_name\r\n")
+						.append(", a.comment_status , b._status afterStatus, a.goods_id, a.goods_type_id FROM t_scm_order_detail a\r\n")
+						.append(" LEFT OUTER JOIN t_scm_order_after_sell b ON b.order_id=a.order_id AND b.dealer_order_id = a.dealer_order_id AND b._status != -1 AND b.sku_id=a.sku_id"
 								+ " WHERE a.order_id=? AND a.dealer_order_id=?");
 						o.setGoodses(this.supportJdbcTemplate.queryForBeanList(sql.toString(), 
 								OrderDetailBean.class, new Object[] {tmpOrderId, o.getDealerOrderId()}));
