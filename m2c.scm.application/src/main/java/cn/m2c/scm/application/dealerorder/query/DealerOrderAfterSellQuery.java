@@ -220,11 +220,12 @@ public class DealerOrderAfterSellQuery {
 		if (!StringUtils.isEmpty(dealerId)) {
 			sql.append(" AND after.dealer_id = ? ");
 			param.add(dealerId);
-			bean.setDealerId(dealerId);
 		}
 		bean = this.supportJdbcTemplate.queryForBean(sql.toString(),
 				DealerOrderAfterSellDetailBean.class, param.toArray());
-		
+		if (!StringUtils.isEmpty(dealerId)) {
+			bean.setDealerId(dealerId);
+		}
 		GoodsInfoBean goodsInfo = aftetSellDealerOrderDetailGoodsInfoQuery(afterSellOrderId, dealerId);
 		System.out.println(goodsInfo);
 		long totalPrice = 0; // 商品总价格
