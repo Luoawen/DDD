@@ -140,7 +140,7 @@ public class OrderAddCommand extends AssertionConcern implements Serializable {
 		
 		tmp = addr.getString("cityCode");
 		if (StringUtils.isEmpty(tmp)) {
-			throw new NegativeException(MCode.V_1, "收货地址省为空！");
+			throw new NegativeException(MCode.V_1, "收货地址市编码为空！");
 		}
 		
 		tmp = addr.getString("area");

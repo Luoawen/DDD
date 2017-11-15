@@ -229,10 +229,10 @@ public class DealerOrderQuery {
         sql.append(" SELECT dtl.sku_id, dtl.sku_name, dtl.goods_name, dtl.goods_title, a.dealer_id, a.created_date, dtl.discount_price, \r\n")
                 .append("dtl.sell_num, af._status afStatus, a._status, om.pay_no, a.dealer_order_id, dtl.goods_icon, a.created_date,\r\n")
                 .append(" a.rev_person, a.rev_phone, a.goods_amount, a.order_freight, a.plateform_discount, a.dealer_discount, a.order_id, af.after_sell_order_id\r\n")
-                .append(" , af.reject_reason FROM t_scm_order_dealer a \r\n")
-                .append(" LEFT OUTER JOIN t_scm_order_detail dtl ON dtl.dealer_order_id = a.dealer_order_id\r\n")
-                .append(" LEFT OUTER JOIN t_scm_order_after_sell af ON af.dealer_order_id = a.dealer_order_id\r\n")
-                .append(" LEFT OUTER JOIN t_scm_order_main om ON a.order_id = om.order_id\r\n")
+                .append(" , af.reject_reason FROM t_scm_order_detail dtl \r\n")
+                .append(" LEFT OUTER JOIN t_scm_order_dealer a ON dtl.dealer_order_id = a.dealer_order_id\r\n")
+                .append(" LEFT OUTER JOIN t_scm_order_after_sell af ON af.dealer_order_id = dtl.dealer_order_id AND af.sku_id=dtl.sku_id\r\n")
+                .append(" LEFT OUTER JOIN t_scm_order_main om ON dtl.order_id = om.order_id\r\n")
                 .append(" WHERE a.dealer_id = ?  \r\n");
 
         params.add(dealerId);
