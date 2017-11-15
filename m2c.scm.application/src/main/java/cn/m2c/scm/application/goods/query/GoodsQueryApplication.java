@@ -901,7 +901,7 @@ public class GoodsQueryApplication {
         sql.append(" SELECT ");
         sql.append(" COUNT(DISTINCT g.goods_id) ");
         sql.append(" FROM ");
-        sql.append(" t_scm_goods g WHERE g.del_status = 1 ");
+        sql.append(" t_scm_goods g WHERE g.del_status = 1 AND g.goods_status = 2 ");
         if (null != goodsLaunchStatus) {
             sql.append(" AND g.goods_launch_status = ? ");
             params.add(goodsLaunchStatus);
@@ -925,7 +925,7 @@ public class GoodsQueryApplication {
         sql.append(" SELECT ");
         sql.append(" * ");
         sql.append(" FROM ");
-        sql.append(" t_scm_goods g WHERE g.del_status = 1 ");
+        sql.append(" t_scm_goods g WHERE g.del_status = 1 AND g.goods_status = 2 ");
         if (null != goodsLaunchStatus) {
             sql.append(" AND g.goods_launch_status = ? ");
             params.add(goodsLaunchStatus);
