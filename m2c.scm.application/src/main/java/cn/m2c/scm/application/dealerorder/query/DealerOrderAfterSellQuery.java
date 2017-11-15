@@ -226,6 +226,7 @@ public class DealerOrderAfterSellQuery {
 				DealerOrderAfterSellDetailBean.class, param.toArray());
 		
 		GoodsInfoBean goodsInfo = aftetSellDealerOrderDetailGoodsInfoQuery(afterSellOrderId, dealerId);
+		System.out.println(goodsInfo);
 		long totalPrice = 0; // 商品总价格
 		//long orderTotalPrice = 0; // 订单总价格
 		if (goodsInfo != null) {
@@ -255,8 +256,10 @@ public class DealerOrderAfterSellQuery {
 		sql.append(" INNER JOIN t_scm_order_after_sell after ");
 		sql.append(" WHERE 1 = 1 AND after.after_sell_order_id = ? ");
 		param.add(afterSellOrderId);
-		sql.append(" AND after.dealer_id = ? ");
-		param.add(dealerId);
+		if(!StringUtils.isEmpty(dealerId)) {
+			sql.append(" AND after.dealer_id = ? ");
+			param.add(dealerId);
+		}
 		sql.append(" AND detail.sku_id = after.sku_id AND detail.dealer_order_id = after.dealer_order_id ");
 		return this.supportJdbcTemplate.queryForBean(sql.toString(), GoodsInfoBean.class, param.toArray());
 	}
