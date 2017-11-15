@@ -4,6 +4,7 @@ import cn.m2c.common.MCode;
 import cn.m2c.ddd.common.event.annotation.EventListener;
 import cn.m2c.scm.application.comment.command.AddGoodsCommentCommand;
 import cn.m2c.scm.application.comment.command.ReplyGoodsCommentCommand;
+import cn.m2c.scm.application.order.DealerOrderApplication;
 import cn.m2c.scm.domain.NegativeException;
 import cn.m2c.scm.domain.model.comment.GoodsComment;
 import cn.m2c.scm.domain.model.comment.GoodsCommentRepository;
@@ -25,6 +26,8 @@ public class GoodsCommentApplication {
 
     @Autowired
     GoodsCommentRepository goodsCommentRepository;
+    @Autowired
+    private DealerOrderApplication orderApp;
 
     /**
      * 增加评论
@@ -44,6 +47,9 @@ public class GoodsCommentApplication {
                     command.getBuyerPhoneNumber(), command.getBuyerIcon(), command.getCommentContent(), command.getCommentImages(),
                     command.getStarLevel());
             goodsCommentRepository.save(goodsComment);
+
+            // 更新订单状态
+            orderApp.commentSku(command.getOrderId(), command.getSkuId(), 1);
         }
     }
 
@@ -70,6 +76,9 @@ public class GoodsCommentApplication {
             throw new NegativeException(MCode.V_300, "评论信息不存在");
         }
         goodsComment.remove();
+
+        // 更新订单状态
+        orderApp.commentSku(goodsComment.orderId(), goodsComment.skuId(), 0);
     }
 
     /**
