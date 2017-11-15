@@ -68,8 +68,9 @@ public class SaleAfterOrderApp {
 			
 			discountMoney = OrderMarketCalc.calcReturnMoney(marketInfo, skuBeanLs, cmd.getSkuId());
 		}
-		long ft = itemDtl.isDeliver() ? 0 : itemDtl.getFreight();
-		long money = itemDtl.sumGoodsMoney() - discountMoney + ft;
+		//long ft = itemDtl.isDeliver() ? 0 : itemDtl.getFreight();
+		long ft = 0;
+		long money = itemDtl.sumGoodsMoney() - discountMoney;
 		
 		int status = cmd.getType() == 3 ? 0 : cmd.getType(); //0换货， 1退货，2仅退款                   1退货，2退款，3换货
 		SaleAfterOrder afterOrder = new SaleAfterOrder(cmd.getSaleAfterNo(), cmd.getUserId(), cmd.getOrderId(),
