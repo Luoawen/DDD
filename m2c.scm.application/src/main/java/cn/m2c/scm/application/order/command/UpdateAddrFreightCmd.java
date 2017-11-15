@@ -46,11 +46,13 @@ public class UpdateAddrFreightCmd {
 	/** 联系电话 */
 	private String phone;
 	
+	private String userId;
+	
 	/** SKU及对应的运费 */
 	private Map<String, Integer> freights;
 
 	public UpdateAddrFreightCmd(String dealerOrderId, String province, String provCode, String city, String cityCode,
-			String area, String areaCode, String street,String revPerson,String phone, String freights) {
+			String area, String areaCode, String street,String revPerson,String phone, String freights, String userId) {
 		super();
 		this.dealerOrderId = dealerOrderId;
 		this.province = province;
@@ -62,6 +64,7 @@ public class UpdateAddrFreightCmd {
 		this.street = street;
 		this.revPerson = revPerson;
 		this.phone = phone;
+		this.userId = userId;
 		
 		if (!StringUtils.isEmpty(freights)) {
 			java.lang.reflect.Type type = new TypeToken<HashMap<String, Integer>>() {  
@@ -71,6 +74,12 @@ public class UpdateAddrFreightCmd {
 		    gson = null;
 		}
 	}
+
+	
+	public String getUserId() {
+		return userId;
+	}
+
 
 	public String getDealerOrderId() {
 		return dealerOrderId;

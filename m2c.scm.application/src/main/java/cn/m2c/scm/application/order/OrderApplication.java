@@ -12,6 +12,7 @@ import cn.m2c.scm.application.order.command.ConfirmSkuCmd;
 import cn.m2c.scm.application.order.command.OrderAddCommand;
 import cn.m2c.scm.application.order.command.OrderPayedCmd;
 import cn.m2c.scm.application.order.command.PayOrderCmd;
+import cn.m2c.scm.application.order.data.bean.FreightCalBean;
 import cn.m2c.scm.application.order.data.bean.GoodsReqBean;
 import cn.m2c.scm.application.order.data.bean.MarketBean;
 import cn.m2c.scm.application.order.data.bean.MarketUseBean;
@@ -22,6 +23,7 @@ import cn.m2c.scm.application.order.query.OrderQueryApplication;
 import cn.m2c.scm.application.order.query.dto.GoodsDto;
 import cn.m2c.scm.application.postage.data.representation.PostageModelRuleRepresentation;
 import cn.m2c.scm.application.postage.query.PostageModelQueryApplication;
+import cn.m2c.scm.domain.NegativeCode;
 import cn.m2c.scm.domain.NegativeException;
 import cn.m2c.scm.domain.model.order.DealerOrder;
 import cn.m2c.scm.domain.model.order.DealerOrderDtl;
@@ -165,15 +167,18 @@ public class OrderApplication {
             }
             resMap = orderDomainService.getMediaBdByResIds(lsMd, orderTime);
         }
-        // 获取运费模板，计算运费
-        calFreight(skuBeans, list, cmd.getAddr().getCityCode());
 
-        List<MarketBean> mks = orderDomainService.getMarketingsByIds(marketIds, cmd.getUserId(), MarketBean[].class);
-        // 计算营销活动优惠
-        OrderMarketCalc.calMarkets(mks, list);
         // 拆单 设置商品数量即按商家来拆分
         Set<String> idsSet = new HashSet<String>();
         Map<String, List<GoodsDto>> dealerOrderMap = splitOrder(list, idsSet);
+        // 获取运费模板，计算运费
+        //calFreight(skuBeans, list, cmd.getAddr().getCityCode());
+        calFreight(dealerOrderMap, cmd.getAddr().getCityCode(), skuBeans);
+        
+        List<MarketBean> mks = orderDomainService.getMarketingsByIds(marketIds, cmd.getUserId(), MarketBean[].class);
+        // 计算营销活动优惠
+        OrderMarketCalc.calMarkets(mks, list);
+        
         // 计算是否满足营销策略, 若满足选择最优
         Map<String, Integer> dealerCount = getDealerWay(idsSet);
         List<DealerOrder> dealerOrders = trueSplit(dealerOrderMap, cmd, dealerCount,
@@ -391,7 +396,6 @@ public class OrderApplication {
 
     /***
      * 计算运费
-     *
      * @param skus
      * @param ls
      * @param cityCode
@@ -399,36 +403,114 @@ public class OrderApplication {
     private void calFreight(Map<String, GoodsReqBean> skus, List<GoodsDto> ls, String cityCode) throws NegativeException {
         LOGGER.info("==fanjc==计算运费.");
         Iterator<String> it = skus.keySet().iterator();
-        /*List<String> skuIds = new ArrayList<String>();
+        List<String> skuIds = new ArrayList<String>();
         while (it.hasNext()) {
             skuIds.add(it.next());
         }
-        Map<String, PostageModelRuleRepresentation> postMap = postApp.getGoodsPostageRule(skuIds, cityCode);
-        */
-        List<String> goodsIds = new ArrayList<String>();
-        for (GoodsDto bean : ls) {
-        	String id = bean.getGoodsId();
-        	if (!goodsIds.contains(id)) {
-        		goodsIds.add(id);
-        	}
-        }
 
-        Map<String, PostageModelRuleRepresentation> postMap = postApp.getGoodsPostageRuleByGoodsId(goodsIds, cityCode);
+        Map<String, PostageModelRuleRepresentation> postMap = postApp.getGoodsPostageRule(skuIds, cityCode);
 
         for (GoodsDto bean : ls) {
             String skuId = bean.getSkuId();
-        	String goodsId = bean.getGoodsId();
             GoodsReqBean gdb = skus.get(skuId);
             bean.setPurNum(gdb.getPurNum());
             bean.setMarketingId(gdb.getMarketId());
             bean.setMarketLevel(gdb.getLevel());
             bean.setIsChange(gdb.getIsChange());
-            
-            //calFrt(bean, postMap.get(skuId));
-            calFrt(bean, postMap.get(goodsId));
+            //bean.setThreshold(gdb.get);
+            calFrt(bean, postMap.get(skuId));
+            // bean.setFreight(1000);
+        }
+    }
+    
+    /***
+     * 计算运费
+     * @param map 拆分后的商家订货单
+     * @param cityCode 城市code
+     * @param skus 带营销相关的东东
+     */
+    private void calFreight(Map<String, List<GoodsDto>> map, String cityCode, Map<String, GoodsReqBean> skus) throws NegativeException {
+        LOGGER.info("==fanjc==计算运费.");
+        
+        Iterator<String> it = map.keySet().iterator();
+        
+        while(it.hasNext()) {
+        	List<GoodsDto> ls = map.get(it.next());
+	        List<String> goodsIds = new ArrayList<String>();
+	        
+	        int sumNum = 0;
+	        float sumWeight = 0;
+	        Map<String, FreightCalBean> calMap = new HashMap<String, FreightCalBean>();// 按商品ID分
+	        FreightCalBean fBean = null;
+	        for (GoodsDto bean : ls) {
+	        	String id = bean.getGoodsId();
+	        	if (!goodsIds.contains(id)) {
+	        		goodsIds.add(id);
+	        		fBean = new FreightCalBean();
+	        		fBean.setBean(bean);
+	        		calMap.put(id, fBean);
+	        		sumNum = 0;
+	        		sumWeight = 0;
+	        	}
+	        	String skuId = bean.getSkuId();
+	            GoodsReqBean gdb = skus.get(skuId);
+	            bean.setPurNum(gdb.getPurNum());
+	            bean.setMarketingId(gdb.getMarketId());
+	            bean.setMarketLevel(gdb.getLevel());
+	            bean.setIsChange(gdb.getIsChange());
+	            
+	            sumNum += bean.getPurNum();
+	            sumWeight += bean.getPurNum() * bean.getWeight();
+	            fBean.setNums(sumNum);
+	            fBean.setWeight(sumWeight);
+	        }
+	
+	        Map<String, PostageModelRuleRepresentation> postMap = postApp.getGoodsPostageRuleByGoodsId(goodsIds, cityCode);
+	        
+	        Iterator<String> goodsIt = calMap.keySet().iterator();
+	        while(goodsIt.hasNext()) {
+	        	String goodsId = goodsIt.next();
+	            calFrt(calMap.get(goodsId), postMap.get(goodsId));
+	        }
         }
     }
 
+    /***
+     * 计算单个物品运费
+     *
+     * @param b
+     * @param pb
+     * @return
+     */
+    private void calFrt(FreightCalBean b, PostageModelRuleRepresentation pb) {
+        if (pb == null) {
+            b.getBean().setFreight(0);
+            return;
+        }
+
+        if (pb.getChargeType() == 1) {//0:按重量,1:按件数
+            long ft = pb.getFirstPostage();
+            long ct = pb.getContinuedPostage();
+            int fpt = pb.getFirstPiece();
+            int cpt = pb.getContinuedPiece();
+            int ss = b.getNums() - fpt; // 续件
+            if (ss > 0) {
+            	b.getBean().setFreight(ft + (ss / cpt + (ss % cpt > 0 ? 1 : 0)) * ct);
+            } else
+            	b.getBean().setFreight(ft);
+        } else {
+            long ft = pb.getFirstPostage();
+            long ct = pb.getContinuedPostage();
+            float fpt = pb.getFirstWeight();
+            float cpt = pb.getContinuedWeight();
+            float ss = b.getWeight() - fpt; // 续件
+            if (ss > 0) {
+                int t = (int) (ss / cpt); //倍数
+                b.getBean().setFreight(ft + (t + (ss > (t * cpt) ? 1 : 0)) * ct);
+            } else
+            	b.getBean().setFreight(ft);
+        }
+    }
     /***
      * 计算单个物品运费
      *
@@ -666,7 +748,7 @@ public class OrderApplication {
 	    	List<MainOrder> mainOrders = orderRepository.getNotPayedOrders();
 	    	
 	    	if (mainOrders == null || mainOrders.size() < 1)
-	    		return;
+	    		throw new NegativeException(NegativeCode.DEALER_ORDER_IS_NOT_EXIST, "没有满足条件的商家订单.");
 	    	
 	    	for (MainOrder m : mainOrders) {
 	    		jobCancelOrder(m);

@@ -47,12 +47,6 @@ public class DealerUnbundleSellerListener extends ExchangeListener{
 					dealerApplication.unbundleUser(userId);
 				}
 			}
-			if (newGroupType == 4) {
-				if (oldGroupType != newGroupType) {
-					log.info("事件需要被消费");
-					dealerApplication.bindUser(dealerId, userId, userName, userPhone);
-				}
-			}
 			log.info("消费商家管理员用户事件ok!!!");
 		} catch (Exception e) {
 			log.info("解绑商家管理员",e);

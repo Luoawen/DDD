@@ -228,11 +228,11 @@ public class DealerOrderQuery {
         StringBuilder sql = new StringBuilder();
         sql.append(" SELECT dtl.sku_id, dtl.sku_name, dtl.goods_name, dtl.goods_title, a.dealer_id, a.created_date, dtl.discount_price, \r\n")
                 .append("dtl.sell_num, af._status afStatus, a._status, om.pay_no, a.dealer_order_id, dtl.goods_icon, a.created_date,\r\n")
-                .append(" a.rev_person, a.rev_phone, a.goods_amount, a.order_freight, a.plateform_discount, a.dealer_discount, a.order_id\r\n")
-                .append(" FROM t_scm_order_dealer a \r\n")
-                .append(" LEFT OUTER JOIN t_scm_order_detail dtl ON dtl.dealer_order_id = a.dealer_order_id\r\n")
-                .append(" LEFT OUTER JOIN t_scm_order_after_sell af ON af.dealer_order_id = a.dealer_order_id\r\n")
-                .append(" LEFT OUTER JOIN t_scm_order_main om ON a.order_id = om.order_id\r\n")
+                .append(" a.rev_person, a.rev_phone, a.goods_amount, a.order_freight, a.plateform_discount, a.dealer_discount, a.order_id, af.after_sell_order_id\r\n")
+                .append(" , af.reject_reason FROM t_scm_order_detail dtl \r\n")
+                .append(" LEFT OUTER JOIN t_scm_order_dealer a ON dtl.dealer_order_id = a.dealer_order_id\r\n")
+                .append(" LEFT OUTER JOIN t_scm_order_after_sell af ON af.dealer_order_id = dtl.dealer_order_id AND af.sku_id=dtl.sku_id\r\n")
+                .append(" LEFT OUTER JOIN t_scm_order_main om ON dtl.order_id = om.order_id\r\n")
                 .append(" WHERE a.dealer_id = ?  \r\n");
 
         params.add(dealerId);
@@ -255,6 +255,14 @@ public class DealerOrderQuery {
             params.add(hasInvoice);
         }
 
+        if (null != hasMedia) {
+			if (hasMedia == 1) {
+				sql.append(" AND media_res_id IS NOT NULL ");
+			}if (hasMedia == 0) {
+				sql.append(" AND media_res_id IS NULL ");
+			}
+		}
+        
         if (hasComment != null && hasComment >= 0) {
             sql.append(" AND dtl.comment_status = ?\r\n");
             params.add(hasComment);
@@ -326,6 +334,8 @@ public class DealerOrderQuery {
             dgb.setSellNum((Integer) item.get("sell_num"));
             dgb.setAfStatus((Integer) item.get("afStatus"));
             dgb.setGoodsImage((String) item.get("goods_icon"));
+            dgb.setSaleAfterNo((String) item.get("after_sell_order_id"));
+            dgb.setRejectReason((String) item.get("reject_reason"));
 
             midBean.getGoodsList().add(dgb);
         }
@@ -348,8 +358,7 @@ public class DealerOrderQuery {
      * @param invoice
      * @return
      */
-    public Integer dealerOrderTotalQuery1(String dealerId,
-                                          Integer orderStatus, Integer afterSellStatus,
+    public Integer dealerOrderTotalQuery1(String dealerId,Integer orderStatus, Integer afterSellStatus,
                                           String startTime, String endTime, String condition,
                                           Integer payWay, Integer hasComment, Integer orderType, Integer hasMedia,
                                           Integer hasInvoice) {
@@ -406,6 +415,7 @@ public class DealerOrderQuery {
             params.add(startTime);
             params.add(endTime);
         }
+        System.out.println("SHOW  sQL-------------------------->"+sql);
         return this.supportJdbcTemplate.jdbcTemplate().queryForObject(sql.toString(), Integer.class, params.toArray());
 
     }
@@ -626,6 +636,7 @@ public class DealerOrderQuery {
             dgb.setDiscountPrice((long) item.get("discount_price"));
             dgb.setSellNum((Integer) item.get("sell_num"));
             dgb.setAfStatus((Integer) item.get("afStatus"));
+            item.get("goods_icon").getClass().getTypeName();
             dgb.setGoodsImage((String) item.get("goods_icon"));
 
             midBean.getGoodsList().add(dgb);

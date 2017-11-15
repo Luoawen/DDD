@@ -90,7 +90,7 @@ public class SaleAfterOrder extends ConcurrencySafeEntity {
 			status = 4;
 		else 
 			return;
-		DomainEventPublisher.instance().publish(new OrderOptLogEvent(saleAfterNo, null, "同意售后申请！", userId));
+		DomainEventPublisher.instance().publish(new OrderOptLogEvent(saleAfterNo, dealerOrderId, "同意售后申请！", userId));
 	}
 	/***
 	 * 拒绝申请
@@ -103,7 +103,7 @@ public class SaleAfterOrder extends ConcurrencySafeEntity {
 			return false;
 		rejectReason = r;
 		rejectReasonCode = rCode;
-		DomainEventPublisher.instance().publish(new OrderOptLogEvent(saleAfterNo, null, "拒绝售后申请！", userId));
+		DomainEventPublisher.instance().publish(new OrderOptLogEvent(saleAfterNo, dealerOrderId, "拒绝售后申请！", userId));
 		return true;
 	}
 	/**
@@ -132,7 +132,7 @@ public class SaleAfterOrder extends ConcurrencySafeEntity {
 		if (status < 5)
 			return false;
 		sendExpress = e;
-		DomainEventPublisher.instance().publish(new OrderOptLogEvent(saleAfterNo, null, "商家换货发货！", userId));
+		DomainEventPublisher.instance().publish(new OrderOptLogEvent(saleAfterNo, dealerOrderId, "商家换货发货！", userId));
 		return true;
 	}
 	/***
@@ -142,7 +142,7 @@ public class SaleAfterOrder extends ConcurrencySafeEntity {
 		if (status < 5)
 			return false;
 		status = 6;
-		DomainEventPublisher.instance().publish(new OrderOptLogEvent(saleAfterNo, null, "商家确认收货", userId));
+		DomainEventPublisher.instance().publish(new OrderOptLogEvent(saleAfterNo, dealerOrderId, "商家确认收货", userId));
 		
 		return true;
 	}
@@ -165,8 +165,10 @@ public class SaleAfterOrder extends ConcurrencySafeEntity {
 		if (status < 4)
 			return false;
 		status = 9;
+		if (returnFreight == null)
+			returnFreight = 0l;
 		DomainEventPublisher.instance().publish(new OrderOptLogEvent(saleAfterNo, null, "同意退款", userId));
-		DomainEventPublisher.instance().publish(new SaleAfterRefundEvt(saleAfterNo, dealerId, backMoney, payNo));
+		DomainEventPublisher.instance().publish(new SaleAfterRefundEvt(saleAfterNo, dealerId, backMoney + returnFreight, payNo));
 		return true;
 	}
 	/***
@@ -192,14 +194,14 @@ public class SaleAfterOrder extends ConcurrencySafeEntity {
 		if (status < 9)
 			return false;
 		status = 10;
-		DomainEventPublisher.instance().publish(new OrderOptLogEvent(saleAfterNo, null, "确认退款", userId));
+		DomainEventPublisher.instance().publish(new OrderOptLogEvent(saleAfterNo, dealerOrderId, "确认退款", userId));
 		return true;
 	}
 	/***
 	 * 创建售后申请
 	 */
 	public void createApply() {
-		DomainEventPublisher.instance().publish(new OrderOptLogEvent(saleAfterNo, null, "创建售后申请成功", userId));
+		DomainEventPublisher.instance().publish(new OrderOptLogEvent(saleAfterNo, dealerOrderId, "创建售后申请成功", userId));
 	}
 	
 	public boolean isSame(String sku) {

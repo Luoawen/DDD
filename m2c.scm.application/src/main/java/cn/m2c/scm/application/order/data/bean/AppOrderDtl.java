@@ -81,6 +81,17 @@ public class AppOrderDtl extends AssertionConcern implements Serializable {
 	
 	@ColumnAlias(value = "pay_way")
 	private Integer payWay;
+	
+	@ColumnAlias(value = "customer_service_tel")
+	private String shopPhone;
+
+	public String getShopPhone() {
+		return shopPhone;
+	}
+
+	public void setShopPhone(String shopPhone) {
+		this.shopPhone = shopPhone;
+	}
 
 	public Integer getPayWay() {
 		return payWay;

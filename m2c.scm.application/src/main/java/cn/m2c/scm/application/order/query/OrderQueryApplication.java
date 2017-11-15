@@ -414,12 +414,13 @@ public class OrderQueryApplication {
 			}
 			else {
 				sql.append("SELECT a.province_code, a.province, a.city, a.city_code, a.area_code, a.area_county, a.street_addr\r\n")
-				.append(", a.order_freight, a.order_id, a.goods_amount, a.plateform_discount, a.dealer_discount\r\n")
+				.append(", a.order_freight, a.order_id, a.goods_amount, a.plateform_discount, a.dealer_discount, d.customer_service_tel\r\n")
 				.append(", b.invoice_code, b.invoice_header, b.invoice_name, b.invoice_type, a.created_date, b._status\r\n") 
 				.append(", b.dealer_id, c.dealer_name, b.dealer_order_id,b.rev_phone, b.rev_person, a.pay_way, a.pay_no\r\n") 
 				.append("FROM t_scm_order_dealer b \r\n")
 				.append("LEFT OUTER JOIN t_scm_order_main a ON a.order_id=b.order_id \r\n") 
 				.append("LEFT OUTER JOIN t_scm_dealer c ON c.dealer_id = b.dealer_id \r\n")
+				.append("LEFT OUTER JOIN t_scm_dealer_shop d ON b.dealer_id = d.dealer_id \r\n")
 				.append("WHERE a.user_id=? ");
 				params.add(cmd.getUserId());		
 				
@@ -473,7 +474,7 @@ public class OrderQueryApplication {
 			.append("FROM t_scm_order_dealer b \r\n")
 			.append("LEFT OUTER JOIN t_scm_order_main a ON a.order_id=b.order_id \r\n") 
 			.append("LEFT OUTER JOIN t_scm_dealer c ON c.dealer_id = b.dealer_id \r\n")
-			.append("WHERE a.user_id=?  AND b.del_flag=0 AND (b._status=2 OR b._status=3)")
+			.append("WHERE a.user_id=?  AND b.del_flag=0 AND (b._status IN (1, 2, 3))")
 			.append("AND b.dealer_order_id IN (SELECT DISTINCT aa.dealer_order_id FROM t_scm_order_detail aa \r\n")
 			.append("WHERE aa.sku_id NOT IN (SELECT bb.sku_id FROM t_scm_order_after_sell bb WHERE bb._status != -1 AND bb.dealer_order_id=aa.dealer_order_id AND bb.order_id=aa.order_id))");
 			

@@ -418,8 +418,8 @@ public class Goods extends ConcurrencySafeEntity {
      * 修改商品识别图
      */
     public void modifyRecognized(String recognizedId, String recognizedUrl) {
-        this.recognizedId = recognizedId;
-        this.recognizedUrl = recognizedUrl;
+        this.recognizedId = StringUtils.isEmpty(recognizedId) ? null : recognizedId;
+        this.recognizedUrl = StringUtils.isEmpty(recognizedUrl) ? null : recognizedUrl;
     }
 
     public Integer getId() {

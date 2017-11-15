@@ -37,9 +37,11 @@ public class UpdateAddrCommand {
 	private String revPerson;
 	/** 联系电话 */
 	private String phone;
+	
+	private String userId;
 
 	public UpdateAddrCommand(String dealerOrderId, String province, String provCode, String city, String cityCode,
-			String area, String areaCode, String street,String revPerson,String phone) {
+			String area, String areaCode, String street,String revPerson,String phone, String userId) {
 		super();
 		this.dealerOrderId = dealerOrderId;
 		this.province = province;
@@ -51,6 +53,10 @@ public class UpdateAddrCommand {
 		this.street = street;
 		this.revPerson = revPerson;
 		this.phone = phone;
+	}
+
+	public String getUserId() {
+		return userId;
 	}
 
 	public String getDealerOrderId() {

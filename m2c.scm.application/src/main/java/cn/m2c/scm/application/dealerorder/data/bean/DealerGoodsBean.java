@@ -1,5 +1,7 @@
 package cn.m2c.scm.application.dealerorder.data.bean;
 
+
+
 /***
  * 订单中 商家 商品Bean
  * @author fanjc
@@ -33,12 +35,32 @@ public class DealerGoodsBean {
 	private String goodsTitle;
 	
 	private String goodsIcon;
+	
+	private String saleAfterNo;
+	
+	private String rejectReason;
 
 	/**
 	 * 运费
 	 */
 	private long freight;
 	
+	public String getSaleAfterNo() {
+		return saleAfterNo;
+	}
+
+	public String getRejectReason() {
+		return rejectReason;
+	}
+
+	public void setRejectReason(String rejectReason) {
+		this.rejectReason = rejectReason;
+	}
+
+	public void setSaleAfterNo(String saleAfterNo) {
+		this.saleAfterNo = saleAfterNo;
+	}
+
 	public String getGoodsTitle() {
 		return goodsTitle;
 	}
@@ -52,9 +74,6 @@ public class DealerGoodsBean {
 	 */
 	private Integer afStatus = -2;
 
-	public String getGoodsImage() {
-		return goodsImage;
-	}
 
 	public String getGoodsName() {
 		return goodsName;
@@ -67,8 +86,9 @@ public class DealerGoodsBean {
 
 	
 	public String getGoodsIcon() {
-		String string = this.goodsImage.split(",")[0];
-		return string.substring(2, string.length()-1);
+		String arr = this.goodsImage;
+		
+		return arr;
 	}
 
 	public void setGoodsIcon(String goodsIcon) {
@@ -77,6 +97,10 @@ public class DealerGoodsBean {
 
 	public Integer getSellNum() {
 		return sellNum;
+	}
+
+	public String getGoodsImage() {
+		return goodsImage;
 	}
 
 	public void setGoodsImage(String goodsImage) {

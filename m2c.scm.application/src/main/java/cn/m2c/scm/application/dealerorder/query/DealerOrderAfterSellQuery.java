@@ -74,10 +74,10 @@ public class DealerOrderAfterSellQuery {
 		}
 		if (!StringUtils.isEmpty(mediaInfo)) {
 			if ("1".equals(mediaInfo)) {
-				sql.append(" AND detail.media_id != '' ");
+				sql.append(" AND detail.media_id IS NOT NULL ");
 			}
 			if ("0".equals(mediaInfo)) {
-				sql.append(" AND detail.media_id = '' ");
+				sql.append(" AND detail.media_id IS NULL ");
 			}
 		}
 
@@ -162,7 +162,7 @@ public class DealerOrderAfterSellQuery {
 			String startTime, String endTime, String mediaInfo) {
 		List<Object> params = new ArrayList<Object>();
 		StringBuilder sql = new StringBuilder();
-		sql.append(" SELECT COUNT( DISTINCT after.dealer_order_id)  ");
+		sql.append(" SELECT COUNT( DISTINCT after.id)  ");
 		sql.append(" FROM t_scm_order_after_sell after");
 		sql.append(" LEFT JOIN t_scm_dealer dealer ON after.dealer_id = dealer.dealer_id ");
 		sql.append(" LEFT JOIN t_scm_goods goods ON after.goods_id = goods.goods_id ");
@@ -189,10 +189,10 @@ public class DealerOrderAfterSellQuery {
 			params.add(endTime);
 		}
 		if ("1".equals(mediaInfo)) {
-			sql.append(" AND detail.media_id != '' ");
+			sql.append(" AND detail.media_id IS NOT NULL ");
 		}
 		if ("0".equals(mediaInfo)) {
-			sql.append(" AND detail.media_id = '' ");
+			sql.append(" AND detail.media_id IS NULL ");
 		}
 		return this.supportJdbcTemplate.jdbcTemplate().queryForObject(sql.toString(), Integer.class, params.toArray());
 	}
@@ -206,6 +206,7 @@ public class DealerOrderAfterSellQuery {
 	public DealerOrderAfterSellDetailBean afterSellDealerOrderDetailQeury(String afterSellOrderId, String dealerId) {
 		StringBuilder sql = new StringBuilder();
 		List<Object> param = new ArrayList<Object>();
+		DealerOrderAfterSellDetailBean bean = null;
 		sql.append(" SELECT after._status,after.order_type,after.after_sell_order_id,after.back_money,after.reason, ")
 		.append(" after.created_date,after.return_freight,after.reject_reason, dealer.dealer_order_id ");
 		sql.append(" ,after.order_id,dealer.goods_amount,dealer.order_freight,dealer.plateform_discount,dealer.dealer_discount ");
@@ -216,13 +217,17 @@ public class DealerOrderAfterSellQuery {
 		.append(" LEFT OUTER JOIN t_scm_order_main main ON after.order_id = main.order_id ");
 		sql.append(" WHERE after.after_sell_order_id = ? ");
 		param.add(afterSellOrderId);
-		sql.append(" AND after.dealer_id = ? ");
-		param.add(dealerId);
-		DealerOrderAfterSellDetailBean bean = this.supportJdbcTemplate.queryForBean(sql.toString(),
+		if (!StringUtils.isEmpty(dealerId)) {
+			sql.append(" AND after.dealer_id = ? ");
+			param.add(dealerId);
+		}
+		bean = this.supportJdbcTemplate.queryForBean(sql.toString(),
 				DealerOrderAfterSellDetailBean.class, param.toArray());
-		
-		bean.setDealerId(dealerId);
+		if (!StringUtils.isEmpty(dealerId)) {
+			bean.setDealerId(dealerId);
+		}
 		GoodsInfoBean goodsInfo = aftetSellDealerOrderDetailGoodsInfoQuery(afterSellOrderId, dealerId);
+		System.out.println(goodsInfo);
 		long totalPrice = 0; // 商品总价格
 		//long orderTotalPrice = 0; // 订单总价格
 		if (goodsInfo != null) {
@@ -252,8 +257,10 @@ public class DealerOrderAfterSellQuery {
 		sql.append(" INNER JOIN t_scm_order_after_sell after ");
 		sql.append(" WHERE 1 = 1 AND after.after_sell_order_id = ? ");
 		param.add(afterSellOrderId);
-		sql.append(" AND after.dealer_id = ? ");
-		param.add(dealerId);
+		if(!StringUtils.isEmpty(dealerId)) {
+			sql.append(" AND after.dealer_id = ? ");
+			param.add(dealerId);
+		}
 		sql.append(" AND detail.sku_id = after.sku_id AND detail.dealer_order_id = after.dealer_order_id ");
 		return this.supportJdbcTemplate.queryForBean(sql.toString(), GoodsInfoBean.class, param.toArray());
 	}
