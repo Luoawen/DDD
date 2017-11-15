@@ -255,6 +255,14 @@ public class DealerOrderQuery {
             params.add(hasInvoice);
         }
 
+        if (null != hasMedia) {
+			if (hasMedia == 1) {
+				sql.append(" AND media_res_id IS NOT NULL ");
+			}if (hasMedia == 0) {
+				sql.append(" AND media_res_id IS NULL ");
+			}
+		}
+        
         if (hasComment != null && hasComment >= 0) {
             sql.append(" AND dtl.comment_status = ?\r\n");
             params.add(hasComment);
