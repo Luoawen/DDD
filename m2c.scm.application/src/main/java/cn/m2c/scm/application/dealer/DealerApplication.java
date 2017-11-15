@@ -109,4 +109,23 @@ public class DealerApplication {
 		dealerRepository.save(dealer);
 	}
 	
+	
+	/**
+	 * 更新管理员信息
+	 * @param dealerId
+	 * @param userId
+	 * @param userName
+	 * @param mobile
+	 * @throws NegativeException
+	 */
+	@Transactional(rollbackFor = {Exception.class,RuntimeException.class,NegativeException.class})
+	public void addOrUpdateUser(String dealerId,String userId,String userName,String mobile) throws NegativeException {
+		Dealer dealer = dealerRepository.getDealer(dealerId);
+		if (null == dealer) {
+			throw new NegativeException(NegativeCode.DEALER_IS_NOT_EXIST, "经销商不存在.");
+		}
+		dealer.bindUser(userId, userName, mobile);
+		dealerRepository.save(dealer);
+	}
+	
 }
