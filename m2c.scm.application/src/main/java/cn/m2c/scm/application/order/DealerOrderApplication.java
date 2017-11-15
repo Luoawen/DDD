@@ -66,7 +66,7 @@ public class DealerOrderApplication {
 		addr.updateAddr(command.getProvince(), command.getProvCode(), command.getCity(), command.getCityCode(),
 				command.getArea(), command.getAreaCode(), command.getStreet(), command.getRevPerson(),
 				command.getPhone());
-		dealerOrder.updateAddr(addr);
+		dealerOrder.updateAddr(addr, command.getUserId());
 		dealerOrderRepository.save(dealerOrder);
 	}
 
@@ -77,11 +77,12 @@ public class DealerOrderApplication {
 	 * @throws NegativeException
 	 */
 	@Transactional(rollbackFor = { Exception.class, RuntimeException.class, NegativeException.class })
+	@EventListener
 	public void updateOrderFreight(UpdateOrderFreightCmd command) throws NegativeException {
 		DealerOrder dealerOrder = dealerOrderRepository.getDealerOrderById(command.getDealerOrderId());
 		if (dealerOrder == null)
 			throw new NegativeException(NegativeCode.DEALER_ORDER_IS_NOT_EXIST, "此商家订单不存在.");
-		dealerOrder.updateOrderFreight(command.getOrderFreight());
+		dealerOrder.updateOrderFreight(command.getOrderFreight(), command.getUserId());
 		dealerOrderRepository.save(dealerOrder);
 	}
 
@@ -106,9 +107,9 @@ public class DealerOrderApplication {
 				cmd.getArea(), cmd.getAreaCode(), cmd.getStreet(), cmd.getRevPerson(), cmd.getPhone());
 
 		if (updatedAddr)
-			dealerOrder.updateAddr(addr);
+			dealerOrder.updateAddr(addr, cmd.getUserId());
 
-		boolean updatedFreight = dealerOrder.updateOrderFreight(cmd.getFreights());
+		boolean updatedFreight = dealerOrder.updateOrderFreight(cmd.getFreights(), cmd.getUserId());
 
 		if (updatedFreight || updatedAddr)
 			dealerOrderRepository.updateFreight(dealerOrder);

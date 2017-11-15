@@ -183,7 +183,9 @@ public class DealerOrderAgent {
 			@RequestParam(value = "areaCode", required = false) String areaCode,
 			@RequestParam(value = "street", required = false) String street,
 			@RequestParam(value = "revPerson", required = false) String revPerson,
-			@RequestParam(value = "phone", required = false) String phone) {
+			@RequestParam(value = "phone", required = false) String phone
+			,@RequestParam(value = "userId", required = false) String userId
+			) {
 
 		MResult result = new MResult(MCode.V_1);
 
@@ -191,7 +193,7 @@ public class DealerOrderAgent {
 			if (StringUtil.isEmpty(dealerOrderId))
 				throw new NegativeException(MCode.V_1,"请传入商家订单ID");
 			UpdateAddrCommand command = new UpdateAddrCommand(dealerOrderId, province, provCode, city, cityCode, area,
-					areaCode, street, revPerson, phone);
+					areaCode, street, revPerson, phone, userId);
 			dealerOrderApplication.updateAddress(command);
 			result.setStatus(MCode.V_200);
 		} catch (NegativeException ne) {
@@ -213,14 +215,16 @@ public class DealerOrderAgent {
 	@RequestMapping(value = "/freight", method = RequestMethod.PUT)
 	public ResponseEntity<MResult> updateFreight(
 			@RequestParam(value = "dealerOrderId", required = false) String dealerOrderId,
-			@RequestParam(value = "freight", required = false) long freight) {
+			@RequestParam(value = "freight", required = false) long freight
+			,@RequestParam(value = "userId", required = false) String userId
+			) {
 
 		MResult result = new MResult(MCode.V_1);
 
 		try {
 			if (StringUtil.isEmpty(dealerOrderId))
 				throw new NegativeException(MCode.V_1,"请传入商家订单ID");
-			UpdateOrderFreightCmd command = new UpdateOrderFreightCmd(dealerOrderId, freight);
+			UpdateOrderFreightCmd command = new UpdateOrderFreightCmd(dealerOrderId, freight, userId);
 			dealerOrderApplication.updateOrderFreight(command);
 			result.setStatus(MCode.V_200);
 		} catch (NegativeException ne) {
@@ -244,7 +248,9 @@ public class DealerOrderAgent {
 			@RequestParam(value = "street", required = false) String street,
 			@RequestParam(value = "revPerson", required = false) String revPerson,
 			@RequestParam(value = "phone", required = false) String phone
-			,@RequestParam(value = "freights", required = false) String freights) {
+			,@RequestParam(value = "freights", required = false) String freights
+			,@RequestParam(value = "userId", required = false) String userId
+			) {
 
 		MResult result = new MResult(MCode.V_1);
 
@@ -252,7 +258,7 @@ public class DealerOrderAgent {
 			if (StringUtil.isEmpty(dealerOrderId))
 				throw new NegativeException(MCode.V_1, "商家订单号为空");
 			UpdateAddrFreightCmd cmd = new UpdateAddrFreightCmd(dealerOrderId, province, provCode, city, cityCode, area,
-					areaCode, street, revPerson, phone, freights);
+					areaCode, street, revPerson, phone, freights, userId);
 			dealerOrderApplication.updateAddrFreight(cmd);
 			result.setStatus(MCode.V_200);
 		} catch (NegativeException ne) {

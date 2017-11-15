@@ -9,7 +9,9 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 
 import cn.m2c.ddd.common.domain.model.ConcurrencySafeEntity;
+import cn.m2c.ddd.common.domain.model.DomainEventPublisher;
 import cn.m2c.scm.domain.model.order.event.SimpleMediaRes;
+import cn.m2c.scm.domain.model.order.log.event.OrderOptLogEvent;
 /**
  * 商家订单
  * @author fanjc
@@ -229,16 +231,18 @@ public class DealerOrder extends ConcurrencySafeEntity {
 	 * 修改收货地址
 	 * @param addr
 	 */
-	public void updateAddr(ReceiveAddr addr) {
+	public void updateAddr(ReceiveAddr addr, String userId) {
 		this.addr = addr;
+		DomainEventPublisher.instance().publish(new OrderOptLogEvent(orderId, dealerOrderId, "修改收货地址", userId));
 	}
 	
 	/**
 	 * 更新订单运费
 	 * @param orderFreight
 	 */
-	public void updateOrderFreight(long orderFreight) {
+	public void updateOrderFreight(long orderFreight, String userId) {
 		this.orderFreight = orderFreight;
+		DomainEventPublisher.instance().publish(new OrderOptLogEvent(orderId, dealerOrderId, "更新订单运费", userId));
 	}
 	
 	/**
@@ -272,7 +276,7 @@ public class DealerOrder extends ConcurrencySafeEntity {
 	 * 更新运费 主要用于商家修改
 	 * @param freights
 	 */
-	public boolean updateOrderFreight(Map<String, Integer> freights) {
+	public boolean updateOrderFreight(Map<String, Integer> freights, String userId) {
 		if (freights == null)
 			return true;
 		long frg = 0;
@@ -286,6 +290,7 @@ public class DealerOrder extends ConcurrencySafeEntity {
 				frg += d.getFreight();
 		}
 		orderFreight = frg;
+		DomainEventPublisher.instance().publish(new OrderOptLogEvent(orderId, dealerOrderId, "更新订单运费", userId));
 		return true;
 	}
 	/***

@@ -178,6 +178,8 @@ public class OrderMarketCalc {
      */
     private static void calcItem(int fullType, int fullNum, double totalMoney, int totalNum, int changeMoney, List<GoodsDto> goodsLs
             , int thresholdType, int threshold, String marketName, String sharePercent) {
+    	int last = goodsLs.size() - 1;
+    	long subSum = 0;//前多少个的处理
         for (GoodsDto d : goodsLs) {
             if (d.isChange() != 0)
                 continue;
@@ -187,7 +189,14 @@ public class OrderMarketCalc {
             d.setSharePercent(sharePercent);
             d.setDiscount(fullNum);// 若是折扣就已经乘了100了，所以需要除1000
             if (fullType == 1) {
-                d.setPlateformDiscount((long) (fullNum * d.getDiscountPrice() * d.getPurNum() / totalMoney));
+            	long a = (long) (fullNum * d.getDiscountPrice() * d.getPurNum() / totalMoney);
+            	if (d == goodsLs.get(last)) {
+            		d.setPlateformDiscount(fullNum - subSum);
+            	}
+            	else {
+            		d.setPlateformDiscount(a);
+            		subSum += a;
+            	}
             } else if (fullType == 2) { // 除以1000是因为前面已经乘以100了，因存的是8表示8折优惠
                 d.setPlateformDiscount((long) (fullNum * d.getDiscountPrice() * d.getPurNum() / 1000.0));
             }

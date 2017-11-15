@@ -33,12 +33,22 @@ public class DealerGoodsBean {
 	private String goodsTitle;
 	
 	private String goodsIcon;
+	
+	private String saleAfterNo;
 
 	/**
 	 * 运费
 	 */
 	private long freight;
 	
+	public String getSaleAfterNo() {
+		return saleAfterNo;
+	}
+
+	public void setSaleAfterNo(String saleAfterNo) {
+		this.saleAfterNo = saleAfterNo;
+	}
+
 	public String getGoodsTitle() {
 		return goodsTitle;
 	}
