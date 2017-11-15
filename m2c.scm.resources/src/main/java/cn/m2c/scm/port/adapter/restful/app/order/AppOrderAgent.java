@@ -466,7 +466,7 @@ public class AppOrderAgent {
     
     /**
      * 获取物流信息
-     * @param userId 当前登录用户ID,app用户id
+     * @param 
      * @return
      */
     @RequestMapping(value = "/app/getExpressInfo", method = RequestMethod.GET)
@@ -488,7 +488,7 @@ public class AppOrderAgent {
         	result.setContent(rtResult);
             result.setStatus(MCode.V_200);
         } catch (Exception e) {
-            LOGGER.error("app查询物流列表出错", e);
+            LOGGER.error("查询物流列表出错", e);
             result = new MPager(MCode.V_400, e.getMessage());
         }
         return new ResponseEntity<MPager>(result, HttpStatus.OK);
