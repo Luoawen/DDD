@@ -350,8 +350,7 @@ public class DealerOrderQuery {
      * @param invoice
      * @return
      */
-    public Integer dealerOrderTotalQuery1(String dealerId,
-                                          Integer orderStatus, Integer afterSellStatus,
+    public Integer dealerOrderTotalQuery1(String dealerId,Integer orderStatus, Integer afterSellStatus,
                                           String startTime, String endTime, String condition,
                                           Integer payWay, Integer hasComment, Integer orderType, Integer hasMedia,
                                           Integer hasInvoice) {
@@ -408,6 +407,7 @@ public class DealerOrderQuery {
             params.add(startTime);
             params.add(endTime);
         }
+        System.out.println("SHOW  sQL-------------------------->"+sql);
         return this.supportJdbcTemplate.jdbcTemplate().queryForObject(sql.toString(), Integer.class, params.toArray());
 
     }
@@ -628,6 +628,7 @@ public class DealerOrderQuery {
             dgb.setDiscountPrice((long) item.get("discount_price"));
             dgb.setSellNum((Integer) item.get("sell_num"));
             dgb.setAfStatus((Integer) item.get("afStatus"));
+            item.get("goods_icon").getClass().getTypeName();
             dgb.setGoodsImage((String) item.get("goods_icon"));
 
             midBean.getGoodsList().add(dgb);
