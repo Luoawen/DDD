@@ -35,6 +35,8 @@ public class DealerGoodsBean {
 	private String goodsIcon;
 	
 	private String saleAfterNo;
+	
+	private String rejectReason;
 
 	/**
 	 * 运费
@@ -43,6 +45,14 @@ public class DealerGoodsBean {
 	
 	public String getSaleAfterNo() {
 		return saleAfterNo;
+	}
+
+	public String getRejectReason() {
+		return rejectReason;
+	}
+
+	public void setRejectReason(String rejectReason) {
+		this.rejectReason = rejectReason;
 	}
 
 	public void setSaleAfterNo(String saleAfterNo) {
