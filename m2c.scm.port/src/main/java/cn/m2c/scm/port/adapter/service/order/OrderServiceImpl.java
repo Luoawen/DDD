@@ -27,7 +27,8 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import cn.m2c.scm.application.order.data.bean.MediaResBean;
-import cn.m2c.scm.application.utils.HttpUtils;
+import cn.m2c.scm.application.utils.EXPRESSMD5;
+import cn.m2c.scm.application.utils.HttpRequest;
 import cn.m2c.scm.domain.service.order.OrderService;
 /***
  * 订单领域服务实现类
@@ -39,7 +40,9 @@ import cn.m2c.scm.domain.service.order.OrderService;
 public class OrderServiceImpl implements OrderService {
 	/***/
 	private static final String M2C_HOST_URL = DisconfDataGetter.getByFileItem("constants.properties", "m2c.host.url").toString().trim();
-	private static final String KUAIDI_100_URL = "http://api.kuaidi100.com/api";
+	private static final String KUAIDI_100_URL = DisconfDataGetter.getByFileItem("constants.properties", "express.url").toString().trim();
+	private static final String KUAIDI_100_KEY = DisconfDataGetter.getByFileItem("constants.properties", "express.key").toString().trim();
+	private static final String KUAIDI_100_CUSTOMER = DisconfDataGetter.getByFileItem("constants.properties", "express.customer").toString().trim();
 	
 	@Autowired
     RestTemplate restTemplate;
@@ -189,14 +192,40 @@ public class OrderServiceImpl implements OrderService {
 
 	/**
 	 * 获取第三方物流信息
+	 * @throws Exception 
 	 */
 	@Override
-	public JSONObject getExpressInfo(String com, String nu) {
-		StringBuffer sb = new StringBuffer("id=f2b9f516cd3f103f&show=0&muti=1&order=desc");
-		sb.append("&com="+com);
-		sb.append("&nu="+nu);
-		String rtResult = HttpUtils.sendGet(KUAIDI_100_URL, sb.toString());
-		JSONObject obj = JSONObject.parseObject(rtResult);
-		return obj;
+	public String getExpressInfo(String com, String nu) throws Exception {
+		String param ="{\"com\":\""+com+"\",\"num\":\""+nu+"\"}";
+		String key = KUAIDI_100_KEY;
+		String customer = KUAIDI_100_CUSTOMER;
+		String sign = EXPRESSMD5.encode(param+key+customer);
+		HashMap<String, String> params = dealData(param,sign,customer);
+		String resp = "";
+		try {
+			resp = new HttpRequest().postData(KUAIDI_100_URL, params, "utf-8").toString();
+			System.out.println("----------"+resp);
+		} catch (Exception e) {
+			throw e;
+		}		
+		return resp;
 	}
+
+	/**
+	 * 封装参数map
+	 * @param param
+	 * @param sign
+	 * @param customer
+	 * @return
+	 */
+	private HashMap<String, String> dealData(String param, String sign,
+			String customer) {
+		HashMap<String, String> map = new HashMap<String, String>();
+		map.put("param",param);
+		map.put("sign",sign);
+		map.put("customer",customer);
+		return map;
+	}
+	
+	
 }

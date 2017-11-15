@@ -90,6 +90,6 @@ public interface OrderService {
 	 * @param resIds
 	 * @return
 	 */
-	public JSONObject getExpressInfo(String com,String nu);
+	public String getExpressInfo(String com,String nu) throws Exception;
 	
 }
