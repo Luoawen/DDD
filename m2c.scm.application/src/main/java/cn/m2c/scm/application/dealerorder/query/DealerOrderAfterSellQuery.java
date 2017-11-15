@@ -162,7 +162,7 @@ public class DealerOrderAfterSellQuery {
 			String startTime, String endTime, String mediaInfo) {
 		List<Object> params = new ArrayList<Object>();
 		StringBuilder sql = new StringBuilder();
-		sql.append(" SELECT COUNT( DISTINCT after.dealer_order_id)  ");
+		sql.append(" SELECT COUNT( DISTINCT after.id)  ");
 		sql.append(" FROM t_scm_order_after_sell after");
 		sql.append(" LEFT JOIN t_scm_dealer dealer ON after.dealer_id = dealer.dealer_id ");
 		sql.append(" LEFT JOIN t_scm_goods goods ON after.goods_id = goods.goods_id ");
