@@ -1,6 +1,5 @@
 package cn.m2c.scm.domain.model.order;
 
-import cn.m2c.common.StringUtil;
 import cn.m2c.ddd.common.domain.model.ValueObject;
 import org.apache.commons.lang3.StringUtils;
 
@@ -46,7 +45,7 @@ public class InvoiceInfo extends ValueObject {
         invoiceDes = des;
         this.type = invoiceType;
         if (StringUtils.isNotEmpty(header)) {
-            if (StringUtil.isEmpty(code)) {
+            if (StringUtils.isEmpty(code)) {
                 type = 0;
             } else {
                 type = 1;
@@ -59,7 +58,7 @@ public class InvoiceInfo extends ValueObject {
      */
     public void checkType() {
     	if (StringUtils.isNotEmpty(header)) {
-            if (StringUtil.isEmpty(code)) {
+            if (StringUtils.isEmpty(code)) {
                 type = 0;
             } else {
                 type = 1;
