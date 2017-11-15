@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import cn.m2c.common.MCode;
@@ -262,18 +263,22 @@ public class SaleAfterOrderApp {
 	public void updataStatusAgreeAfterSale() throws NegativeException {
 		List<SaleAfterOrder> saleAfterOrders= saleAfterRepository.getSaleAfterOrderStatusAgree();
 		List<SaleAfterOrder> list = new ArrayList<SaleAfterOrder>();
-		if (saleAfterOrders == null)
+		if (saleAfterOrders.size() == 0)
 			throw new NegativeException(NegativeCode.DEALER_ORDER_IS_NOT_EXIST, "没有满足条件的商家订单.");
 		
 		for (SaleAfterOrder bean : saleAfterOrders) {
 			if (((System.currentTimeMillis() - bean.dateToLong()) / (1000 * 60 * 60 * 24 )) > 7)
 				list.add(bean);
 		}
-		
 		for (SaleAfterOrder afterOrder : list) {
-			afterOrder.updateStatusAgreeAfterSale();
-			saleAfterRepository.save(afterOrder);
+			jobCancleOrder(afterOrder);
 		}
+	}
+	@Transactional(rollbackFor = { Exception.class, RuntimeException.class,NegativeException.class }, propagation = Propagation.REQUIRES_NEW)
+	@EventListener(isListening = true)
+	private void jobCancleOrder(SaleAfterOrder afterOrder) {
+		afterOrder.updateStatusAgreeAfterSale();
+		saleAfterRepository.save(afterOrder);
 	}
 	
 	
