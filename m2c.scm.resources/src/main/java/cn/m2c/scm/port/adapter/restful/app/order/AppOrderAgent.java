@@ -484,7 +484,7 @@ public class AppOrderAgent {
         		result.setContent("物流号不能为空");
         		 return new ResponseEntity<MPager>(result, HttpStatus.OK);
         	}
-        	JSONObject rtResult = orderQueryApp.getExpressJson(com,nu);
+        	String rtResult = orderQueryApp.getExpressJson(com,nu);
         	result.setContent(rtResult);
             result.setStatus(MCode.V_200);
         } catch (Exception e) {

@@ -548,8 +548,8 @@ public class OrderQueryApplication {
 	 * @return
 	 * @throws NegativeException 
 	 */
-	public JSONObject getExpressJson(String com, String nu) throws NegativeException {
-		JSONObject expressInfo = null;
+	public String getExpressJson(String com, String nu) throws NegativeException {
+		String expressInfo = null;
 		try {
 			 expressInfo = orderService.getExpressInfo(com, nu);
 		} catch (Exception e) {
