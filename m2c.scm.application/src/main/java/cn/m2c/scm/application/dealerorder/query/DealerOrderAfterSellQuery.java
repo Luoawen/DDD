@@ -206,6 +206,7 @@ public class DealerOrderAfterSellQuery {
 	public DealerOrderAfterSellDetailBean afterSellDealerOrderDetailQeury(String afterSellOrderId, String dealerId) {
 		StringBuilder sql = new StringBuilder();
 		List<Object> param = new ArrayList<Object>();
+		DealerOrderAfterSellDetailBean bean = null;
 		sql.append(" SELECT after._status,after.order_type,after.after_sell_order_id,after.back_money,after.reason, ")
 		.append(" after.created_date,after.return_freight,after.reject_reason, dealer.dealer_order_id ");
 		sql.append(" ,after.order_id,dealer.goods_amount,dealer.order_freight,dealer.plateform_discount,dealer.dealer_discount ");
@@ -216,12 +217,14 @@ public class DealerOrderAfterSellQuery {
 		.append(" LEFT OUTER JOIN t_scm_order_main main ON after.order_id = main.order_id ");
 		sql.append(" WHERE after.after_sell_order_id = ? ");
 		param.add(afterSellOrderId);
-		sql.append(" AND after.dealer_id = ? ");
-		param.add(dealerId);
-		DealerOrderAfterSellDetailBean bean = this.supportJdbcTemplate.queryForBean(sql.toString(),
+		if (!StringUtils.isEmpty(dealerId)) {
+			sql.append(" AND after.dealer_id = ? ");
+			param.add(dealerId);
+			bean.setDealerId(dealerId);
+		}
+		bean = this.supportJdbcTemplate.queryForBean(sql.toString(),
 				DealerOrderAfterSellDetailBean.class, param.toArray());
 		
-		bean.setDealerId(dealerId);
 		GoodsInfoBean goodsInfo = aftetSellDealerOrderDetailGoodsInfoQuery(afterSellOrderId, dealerId);
 		long totalPrice = 0; // 商品总价格
 		//long orderTotalPrice = 0; // 订单总价格
