@@ -22,6 +22,7 @@ import cn.m2c.scm.application.order.query.OrderQueryApplication;
 import cn.m2c.scm.application.order.query.dto.GoodsDto;
 import cn.m2c.scm.application.postage.data.representation.PostageModelRuleRepresentation;
 import cn.m2c.scm.application.postage.query.PostageModelQueryApplication;
+import cn.m2c.scm.domain.NegativeCode;
 import cn.m2c.scm.domain.NegativeException;
 import cn.m2c.scm.domain.model.order.DealerOrder;
 import cn.m2c.scm.domain.model.order.DealerOrderDtl;
@@ -656,7 +657,7 @@ public class OrderApplication {
 	    	List<MainOrder> mainOrders = orderRepository.getNotPayedOrders();
 	    	
 	    	if (mainOrders == null || mainOrders.size() < 1)
-	    		return;
+	    		throw new NegativeException(NegativeCode.DEALER_ORDER_IS_NOT_EXIST, "没有满足条件的商家订单.");
 	    	
 	    	for (MainOrder m : mainOrders) {
 	    		jobCancelOrder(m);
