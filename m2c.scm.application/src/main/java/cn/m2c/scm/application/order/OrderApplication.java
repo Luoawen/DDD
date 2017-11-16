@@ -761,6 +761,7 @@ public class OrderApplication {
     	return ;
     }
     
+    
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class},propagation= Propagation.REQUIRES_NEW)
     @EventListener(isListening = true)
     private void jobCancelOrder(MainOrder m) {
