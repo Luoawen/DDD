@@ -197,13 +197,29 @@ public class PostageAgent {
         return new ResponseEntity<MResult>(result, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/rule", method = RequestMethod.GET)
+   /* @RequestMapping(value = "/rule", method = RequestMethod.GET)
     public ResponseEntity<MResult> postageModelRule(
             @RequestParam(value = "skuIds", required = false) List<String> skuIds,
             @RequestParam(value = "cityCode", required = false) String cityCode) {
         MResult result = new MResult(MCode.V_1);
         try {
             Map<String, PostageModelRuleRepresentation> map = postageModelQueryApplication.getGoodsPostageRule(skuIds, cityCode);
+            result.setContent(map);
+            result.setStatus(MCode.V_200);
+        } catch (Exception e) {
+            LOGGER.error("postageModelRule Exception e:", e);
+            result = new MResult(MCode.V_400, "查询运费模板规则失败");
+        }
+        return new ResponseEntity<MResult>(result, HttpStatus.OK);
+    }*/
+
+    @RequestMapping(value = "/rule", method = RequestMethod.GET)
+    public ResponseEntity<MResult> postageModelRule(
+            @RequestParam(value = "goodsIds", required = false) List<String> goodsIds,
+            @RequestParam(value = "cityCode", required = false) String cityCode) {
+        MResult result = new MResult(MCode.V_1);
+        try {
+            Map<String, PostageModelRuleRepresentation> map = postageModelQueryApplication.getGoodsPostageRuleByGoodsId(goodsIds, cityCode);
             result.setContent(map);
             result.setStatus(MCode.V_200);
         } catch (Exception e) {
