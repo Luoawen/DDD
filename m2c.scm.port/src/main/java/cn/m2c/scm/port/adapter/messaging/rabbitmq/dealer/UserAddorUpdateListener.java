@@ -41,13 +41,11 @@ public class UserAddorUpdateListener  extends ExchangeListener{
 			String userPhone = reader.eventStringValue("mobile");
 			
 			if (!StringUtils.isEmpty(dealerId)) {
-				if (GroupType == 4) {
 					if (StringUtils.isEmpty(userId)) {
 						log.info("用户Id为空");
 						throw new Exception();
 					}
 					dealerApplication.addOrUpdateUser(dealerId, userId, userName, userPhone);
-				}
 			}
 		} catch (Exception e) {
 			log.info("更新业务员事件失败",e.getMessage());
