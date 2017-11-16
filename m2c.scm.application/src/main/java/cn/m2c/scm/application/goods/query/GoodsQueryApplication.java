@@ -348,7 +348,7 @@ public class GoodsQueryApplication {
                     Integer removeSize = guessInfoList.size();
                     if (size > removeSize) {
                         guessInfoList.addAll(queryGoodsGuess((size - removeSize), i, goodsIds));
-                        RedisUtil.setString(key, Integer.parseInt(RedisUtil.ttl(key).toString()), JsonUtils.toStr(guessInfoList));
+                        RedisUtil.setString(key, 24 * 3600, JsonUtils.toStr(guessInfoList));
                     }
                 }
             }
