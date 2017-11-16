@@ -485,7 +485,7 @@ public class OrderQueryApplication {
 			.append("LEFT OUTER JOIN t_scm_dealer c ON c.dealer_id = b.dealer_id \r\n")
 			.append("WHERE a.user_id=?  AND b.del_flag=0 AND (b._status IN (1, 2, 3))")
 			.append("AND b.dealer_order_id IN (SELECT DISTINCT aa.dealer_order_id FROM t_scm_order_detail aa \r\n")
-			.append("WHERE aa.sku_id NOT IN (SELECT bb.sku_id FROM t_scm_order_after_sell bb WHERE bb._status != -1 AND bb.dealer_order_id=aa.dealer_order_id AND bb.order_id=aa.order_id))");
+			.append("WHERE aa.sku_id NOT IN (SELECT bb.sku_id FROM t_scm_order_after_sell bb WHERE bb._status NOT IN(-1, 3) AND bb.dealer_order_id=aa.dealer_order_id AND bb.order_id=aa.order_id))");
 			
 			params.add(userId);
 			
@@ -537,9 +537,9 @@ public class OrderQueryApplication {
 			sql.append("SELECT count(1) FROM t_scm_order_dealer b \r\n")
 			.append("LEFT OUTER JOIN t_scm_order_main a ON a.order_id=b.order_id \r\n") 
 			.append("LEFT OUTER JOIN t_scm_dealer c ON c.dealer_id = b.dealer_id \r\n")
-			.append("WHERE a.user_id=?  AND b.del_flag=0 AND (b._status=2 OR b._status=3)")
+			.append("WHERE a.user_id=?  AND b.del_flag=0 AND (b._status IN (1, 2, 3))")
 			.append("AND b.dealer_order_id IN (SELECT DISTINCT aa.dealer_order_id FROM t_scm_order_detail aa \r\n")
-			.append("WHERE aa.sku_id NOT IN (SELECT bb.sku_id FROM t_scm_order_after_sell bb WHERE bb._status != -1 AND bb.dealer_order_id=aa.dealer_order_id AND bb.order_id=aa.order_id))");
+			.append("WHERE aa.sku_id NOT IN (SELECT bb.sku_id FROM t_scm_order_after_sell bb WHERE bb._status NOT IN(-1, 3) AND bb.dealer_order_id=aa.dealer_order_id AND bb.order_id=aa.order_id))");
 			
 			params.add(userId);
 			
