@@ -8,6 +8,8 @@ import cn.m2c.scm.application.goods.query.data.bean.GoodsBean;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsSkuBean;
 import cn.m2c.scm.application.goods.query.data.representation.GoodsSkuInfoRepresentation;
 import cn.m2c.scm.application.order.query.dto.GoodsDto;
+import cn.m2c.scm.application.shop.data.bean.ShopBean;
+import cn.m2c.scm.application.shop.query.ShopQuery;
 import cn.m2c.scm.application.utils.Utils;
 import cn.m2c.scm.domain.NegativeException;
 import cn.m2c.scm.domain.service.goods.GoodsService;
@@ -40,6 +42,9 @@ public class GoodsQueryApplication {
     public SupportJdbcTemplate getSupportJdbcTemplate() {
         return supportJdbcTemplate;
     }
+
+    @Autowired
+    ShopQuery shopQuery;
 
     //    @Autowired
 //    RedisUtil redisUtil;
@@ -412,7 +417,8 @@ public class GoodsQueryApplication {
             for (GoodsSkuBean goodsSkuBean : goodsSkuBeans) {
                 GoodsBean goodsBean = queryGoodsById(goodsSkuBean.getGoodsId());
                 if (null != goodsBean) {
-                    resultList.add(new GoodsSkuInfoRepresentation(goodsBean, goodsSkuBean));
+                    ShopBean shopBean = shopQuery.getShop(goodsBean.getDealerId());
+                    resultList.add(new GoodsSkuInfoRepresentation(goodsBean, goodsSkuBean, shopBean));
                 }
             }
         }
@@ -446,7 +452,8 @@ public class GoodsQueryApplication {
                             }
                         }
                     });
-                    resultList.add(new GoodsSkuInfoRepresentation(goodsBean, goodsSkuBeans.get(goodsSkuBeans.size() - 1)));
+                    ShopBean shopBean = shopQuery.getShop(goodsBean.getDealerId());
+                    resultList.add(new GoodsSkuInfoRepresentation(goodsBean, goodsSkuBeans.get(goodsSkuBeans.size() - 1), shopBean));
                 }
             }
             if (null != resultList && resultList.size() > 0) {
@@ -814,7 +821,8 @@ public class GoodsQueryApplication {
         if (null != goodsSkuBean) {
             GoodsBean goodsBean = queryGoodsById(goodsSkuBean.getGoodsId());
             if (null != goodsBean) {
-                return new GoodsSkuInfoRepresentation(goodsBean, goodsSkuBean);
+                ShopBean shopBean = shopQuery.getShop(goodsBean.getDealerId());
+                return new GoodsSkuInfoRepresentation(goodsBean, goodsSkuBean, shopBean);
             }
         }
         return null;

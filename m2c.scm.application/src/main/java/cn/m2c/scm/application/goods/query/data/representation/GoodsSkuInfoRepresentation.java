@@ -3,6 +3,7 @@ package cn.m2c.scm.application.goods.query.data.representation;
 import cn.m2c.common.JsonUtils;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsBean;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsSkuBean;
+import cn.m2c.scm.application.shop.data.bean.ShopBean;
 
 import java.util.List;
 
@@ -27,6 +28,17 @@ public class GoodsSkuInfoRepresentation {
      * 商家名称
      */
     private String dealerName;
+
+    /**
+     * 店铺名称
+     */
+    private String shopId;
+
+    /**
+     * 店铺名称
+     */
+    private String shopName;
+
     /**
      * 商品分类id
      */
@@ -77,7 +89,7 @@ public class GoodsSkuInfoRepresentation {
      */
     private Integer goodsMinQuantity;
 
-    public GoodsSkuInfoRepresentation(GoodsBean goodsBean, GoodsSkuBean bean) {
+    public GoodsSkuInfoRepresentation(GoodsBean goodsBean, GoodsSkuBean bean, ShopBean shopBean) {
         this.goodsId = goodsBean.getGoodsId();
         this.goodsName = goodsBean.getGoodsName();
         this.dealerId = goodsBean.getDealerId();
@@ -105,6 +117,8 @@ public class GoodsSkuInfoRepresentation {
             this.skuAvailableStatus = 0;
         }
         this.goodsMinQuantity = goodsBean.getGoodsMinQuantity();
+        this.shopId = null != shopBean ? shopBean.getShopId() : "";
+        this.shopName = null != shopBean ? shopBean.getShopName() : "";
     }
 
     public String getGoodsId() {
@@ -225,5 +239,21 @@ public class GoodsSkuInfoRepresentation {
 
     public void setGoodsMinQuantity(Integer goodsMinQuantity) {
         this.goodsMinQuantity = goodsMinQuantity;
+    }
+
+    public String getShopName() {
+        return shopName;
+    }
+
+    public void setShopName(String shopName) {
+        this.shopName = shopName;
+    }
+
+    public String getShopId() {
+        return shopId;
+    }
+
+    public void setShopId(String shopId) {
+        this.shopId = shopId;
     }
 }
