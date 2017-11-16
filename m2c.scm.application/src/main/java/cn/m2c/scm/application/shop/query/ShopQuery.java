@@ -122,17 +122,25 @@ public class ShopQuery {
 	}
 
 
-	public ShopBean getShop1(String dealerId) {
-		StringBuffer sql = new StringBuffer();
-		List<Object> params = new ArrayList<Object>();
-		sql.append(" SELECT * FROM t_scm_dealer_shop shop ")
-		.append(" INNER JOIN t_scm_dealer dealer ")
-		.append(" WHERE dealer.dealer_status = 1 ")
-		.append(" AND shop.dealer_id = ? or shop.shop_id = ? ")
-		.append(" AND dealer.dealer_id = shop.dealer_id ");
-		params.add(dealerId);
-		params.add(dealerId);
-		ShopBean shop = this.supportJdbcTemplate.queryForBean(sql.toString(), ShopBean.class, params.toArray());
+	/**
+	 * 根据商家id或者店铺id获取店铺信息
+	 * @param dealerId
+	 * @return
+	 */
+	public ShopBean getByDealerIdorShopId(String dealerId) {
+		ShopBean shop  = null;
+		try {
+			StringBuffer sql = new StringBuffer("SELECT * FROM t_scm_dealer_shop shop INNER JOIN t_scm_dealer dealer WHERE dealer.dealer_status = 1 AND dealer.dealer_id = shop.dealer_id ");
+			List<Object> params = new ArrayList<Object>();
+			if(dealerId!=null && !"".equals(dealerId.trim())){
+				sql.append(" AND shop.dealer_id = ? or shop.shop_id = ? ");
+				params.add(dealerId);
+				params.add(dealerId);
+			}
+			shop = this.supportJdbcTemplate.queryForBean(sql.toString(), ShopBean.class, params.toArray());
+		} catch (Exception e) {
+			log.error("根据商家id或者店铺id获取店铺信息出错",e);
+		}
 		return shop;
 		
 	}

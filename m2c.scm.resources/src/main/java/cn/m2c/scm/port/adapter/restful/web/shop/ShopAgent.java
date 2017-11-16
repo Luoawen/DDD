@@ -90,7 +90,7 @@ public class ShopAgent {
 //		            map.put("shopIcon", "http://dl.m2c2017.com/3pics/20170822/W8bq135021.jpg");
 //		            map.put("onSaleGoods", 100);
 //		            result.setContent(map);
-		        	ShopBean shop = query.getShop1(dealerId);
+		        	ShopBean shop = query.getByDealerIdorShopId(dealerId);
 		        	result.setContent(shop);
 		            result.setStatus(MCode.V_200);
 		        } catch (Exception e) {
