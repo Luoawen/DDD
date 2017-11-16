@@ -192,8 +192,6 @@ public class Goods extends ConcurrencySafeEntity {
                     .publish(new GoodsUpShelfEvent(this.goodsId, this.goodsPostageId));
         }
         this.goodsSpecifications = goodsSpecifications;
-        //[{"itemName":"发送","itemValue":[{"spec_name":"16G"},{"spec_name":"32G"}],"state1":"","standardId":"GG1B487E5857C44367AB50C05A5E4B5A5E"},{"itemName":"规格是嘛","itemValue":[{"spec_name":"红"},{"spec_name":"黑"}],"state1":"","standardId":"GGF01849F898A54B5E9FB565388272C2FA"}]
-
 
         this.createdDate = new Date();
         if (null == this.goodsSKUs) {
@@ -207,6 +205,10 @@ public class Goods extends ConcurrencySafeEntity {
                 this.goodsSKUs.add(createGoodsSku(map));
             }
         }
+
+        // 已售罄
+        soldOut();
+
         DomainEventPublisher
                 .instance()
                 .publish(new GoodsAddEvent(this.goodsId, this.goodsUnitId, getStandardId(goodsSpecifications)));
@@ -323,7 +325,7 @@ public class Goods extends ConcurrencySafeEntity {
         if (null != skuList && skuList.size() > 0) {
             //修改供货价、拍获价、规格需要审批
             boolean isNeedApprove = false;
-            boolean goodsNum = false;
+            boolean goodsNumThanZero = false;
             for (Map map : skuList) {
                 String skuId = GetMapValueUtils.getStringFromMapKey(map, "skuId");
                 // 判断商品规格sku是否存在,存在就修改供货价和拍获价，不存在就增加商品sku
@@ -333,7 +335,7 @@ public class Goods extends ConcurrencySafeEntity {
                 } else {
                     Integer availableNum = GetMapValueUtils.getIntFromMapKey(map, "availableNum");
                     if (availableNum > 0) {
-                        goodsNum = true;
+                        goodsNumThanZero = true;
                     }
                     Float weight = GetMapValueUtils.getFloatFromMapKey(map, "weight");
                     Long marketPrice = GetMapValueUtils.getLongFromMapKey(map, "marketPrice");
@@ -359,7 +361,7 @@ public class Goods extends ConcurrencySafeEntity {
                     }
                 }
             }
-            if (goodsNum && this.goodsStatus == 3) {
+            if (goodsNumThanZero && this.goodsStatus == 3) {
                 this.goodsStatus = 2;
             }
             if (isNeedApprove) {//发布事件，增加一条待审核商品记录
