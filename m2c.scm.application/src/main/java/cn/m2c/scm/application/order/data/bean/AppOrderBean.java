@@ -65,6 +65,31 @@ public class AppOrderBean extends AssertionConcern implements Serializable {
 	
 	@ColumnAlias(value = "dealer_order_id")
 	private String dealerOrderId;
+	
+	@ColumnAlias(value = "dOrderFreight")
+	private long dOrderFreight;
+	@ColumnAlias(value = "dGoodsAmount")
+	private long dGoodsAmount;
+	@ColumnAlias(value = "dPlateformDiscount")
+	private long dPlateformDiscount;
+	@ColumnAlias(value = "dDealerDiscount")
+	private long dDealerDiscount;
+	
+	public void setdOrderFreight(long dOrderFreight) {
+		this.dOrderFreight = dOrderFreight;
+	}
+
+	public void setdGoodsAmount(long dGoodsAmount) {
+		this.dGoodsAmount = dGoodsAmount;
+	}
+
+	public void setdPlateformDiscount(long dPlateformDiscount) {
+		this.dPlateformDiscount = dPlateformDiscount;
+	}
+
+	public void setdDealerDiscount(long dDealerDiscount) {
+		this.dDealerDiscount = dDealerDiscount;
+	}
 
 	public String getDealerOrderId() {
 		return dealerOrderId;
@@ -87,18 +112,26 @@ public class AppOrderBean extends AssertionConcern implements Serializable {
 	}
 
 	public Long getGoodAmount() {
+		if (status != null && status >=1)
+			return dGoodsAmount;
 		return goodAmount;
 	}
 
 	public Long getOderFreight() {
+		if (status != null && status >=1)
+			return dOrderFreight;
 		return oderFreight;
 	}
 
 	public Long getPlateFormDiscount() {
+		if (status != null && status >=1)
+			return dPlateformDiscount;
 		return plateFormDiscount;
 	}
 
 	public Long getDealerDiscount() {
+		if (status != null && status >=1)
+			return dDealerDiscount;
 		return dealerDiscount;
 	}
 
