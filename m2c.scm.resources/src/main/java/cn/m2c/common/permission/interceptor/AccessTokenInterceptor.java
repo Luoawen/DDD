@@ -80,9 +80,20 @@ public class AccessTokenInterceptor implements HandlerInterceptor
             return false;
         }
 
-        validateJwtToken(accessToken, request, response);
+        try
+        {
+          return  validateJwtToken(accessToken, request, response);
+            
+        }
+        catch (Exception e)
+        {
+            logger.error(
+                    "validateJwtToken preHandle Exception e:" + e.getMessage(),
+                    e);
+            writeResult(response, TOKEN_VERIFY_EXCEPTION, "Token校验异常不存在！");
+            return false;
 
-        return true;
+        }
     }
 
     public void postHandle(HttpServletRequest request,
@@ -118,8 +129,15 @@ public class AccessTokenInterceptor implements HandlerInterceptor
                         "ACCESS_TOKEN:已过期！");
                 return false;
             }
+
+            if (StringUtils.isBlank(json) && StringUtils.isEmpty(json))
+            {
+                writeResult(response, TOKEN_EXPIRATION_EXCEPTION, "认证信息被未认证！");
+                return false;
+            }
+
             String key = GlobalConstants.USER_LOGIN_SESSION_KEY.replace(
-                    "{key}", DigestUtils.md5Hex(accessToken));
+                    "{key}", DigestUtils.md5Hex(json));
 
             String auth = RedisUtil.get(key);
             JwtSubject jwtSubject = ObjectSerializer.instance().deserialize(
@@ -145,14 +163,14 @@ public class AccessTokenInterceptor implements HandlerInterceptor
         {
 
             logger.error("validateJwtToken Exception e:" + e.getMessage(), e);
-            writeResult(response, TOKEN_VERIFY_EXCEPTION, "ACCESS_TOKEN:校验异常！");
+            writeResult(response, TOKEN_VERIFY_EXCEPTION, "ACCESS_TOKEN校验异常！");
             return false;
         }
     }
 
     private String getAccessToken(HttpServletRequest request)
     {
-        String accessToken = request.getHeader("ACCESS_TOKEN");
+        String accessToken = request.getHeader("access_token");
         accessToken = accessToken != null ? accessToken : request
                 .getParameter(ACCESS_TOKEN);
         return accessToken;
