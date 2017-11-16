@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -32,6 +33,7 @@ import cn.m2c.ddd.common.port.adapter.util.JwtUtil;
 import cn.m2c.ddd.common.port.adapter.util.RSAUtil;
 import cn.m2c.ddd.common.serializer.ObjectSerializer;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 
 public class GlobalPermissionInterceptor extends HandlerInterceptorAdapter
@@ -61,7 +63,7 @@ public class GlobalPermissionInterceptor extends HandlerInterceptorAdapter
     }
 
     private boolean permissionControl(HttpServletRequest request,
-            HttpServletResponse response, Object handler)
+            HttpServletResponse response, Object handler) throws IOException
     {
         logger.debug("current handler--->" + handler.getClass().getName());
         try
@@ -84,7 +86,8 @@ public class GlobalPermissionInterceptor extends HandlerInterceptorAdapter
                     String[] permission = rc.value();// 方法上面的权限
                     if (permission != null && permission.length > 0)
                     {
-                        Set<String> anp = new HashSet<String>(Arrays.asList(permission));
+                        Set<String> anp = new HashSet<String>(
+                                Arrays.asList(permission));
                         if (anp.contains("sys:permissions:all")) // 默认全局权限-直接通过-无需验证
                             return true;
                         else
@@ -96,8 +99,12 @@ public class GlobalPermissionInterceptor extends HandlerInterceptorAdapter
         }
         catch (IOException e)
         {
+            
             logger.error("permission auth is error message:" + e.getMessage(),
                     e);
+            writeResult(response, TOKEN_EXPIRATION_EXCEPTION,
+                    "accessToken认证无效,系统拒绝访问!");
+            return false;
         }
         return true;
     }
@@ -110,55 +117,76 @@ public class GlobalPermissionInterceptor extends HandlerInterceptorAdapter
 
         String accessToken = getAccessToken(request);
 
-        key = GlobalConstants.USER_LOGIN_SESSION_KEY.replace("{key}",
-                DigestUtils.md5Hex(accessToken));
-
-        String auth = RedisUtil.get(key);
-        JwtSubject jwtSubject = ObjectSerializer.instance().deserialize(auth,
-                JwtSubject.class);
-
         Claims claims = null;
         try
         {
             claims = JwtUtil.parseJWT(accessToken,
                     RSAUtil.getPublicKey(GlobalConstants.JWT_TOKEN_PUBLIC_KEY));
+
+            Date exprirarionDate = claims.getExpiration();
+            Date now = new Date();
+            if (now.after(exprirarionDate))
+            {
+                writeResult(response, TOKEN_EXPIRATION_EXCEPTION,
+                        "accessToken有效期已过,系统拒绝访问!");
+            }
+
         }
         catch (Exception e)
         {
-            writeResult(response, TOKEN_EXPIRATION_EXCEPTION, "accessToken认证无效,系统拒绝访问!");
+            writeResult(response, TOKEN_EXPIRATION_EXCEPTION,
+                    "accessToken认证无效,系统拒绝访问!");
         }
+        String json = claims.getSubject();
+
+        if (StringUtils.isBlank(json) && StringUtils.isEmpty(json))
+        {
+            writeResult(response, TOKEN_EXPIRATION_EXCEPTION, "认证信息被未认证！");
+            return false;
+        }
+
+        key = GlobalConstants.USER_LOGIN_SESSION_KEY.replace("{key}",
+                DigestUtils.md5Hex(json));
+
+        if (StringUtils.isEmpty(key) && StringUtils.isBlank(key))
+
+        {
+            writeResult(response, TOKEN_EXPIRATION_EXCEPTION,
+                    "accessToken认证无效,系统拒绝访问!");
+        }
+
+        String auth = RedisUtil.get(key);
+        JwtSubject jwtSubject = ObjectSerializer.instance().deserialize(auth,
+                JwtSubject.class);
 
         subject = claims.getSubject();
 
         if (StringUtils.isEmpty(subject) && StringUtils.isBlank(subject))
 
         {
-            writeResult(response, TOKEN_EXPIRATION_EXCEPTION, "accessToken认证无效,系统拒绝访问!");
+            writeResult(response, TOKEN_EXPIRATION_EXCEPTION,
+                    "accessToken认证无效,系统拒绝访问!");
         }
 
-        key = GlobalConstants.USER_LOGIN_SESSION_KEY.replace("{key}",DigestUtils.md5Hex(accessToken));
-
-        if (StringUtils.isEmpty(key) && StringUtils.isBlank(key))
-
-        {
-            writeResult(response, TOKEN_EXPIRATION_EXCEPTION, "accessToken认证无效,系统拒绝访问!");
-        }
-
-        Date exprirarionDate = claims.getExpiration();
-        Date now = new Date();
-        if (now.after(exprirarionDate))
-        {
-            writeResult(response, TOKEN_EXPIRATION_EXCEPTION,"accessToken有效期已过,系统拒绝访问!");
-        }
 
         if (jwtSubject == null)
         {
-            writeResult(response, TOKEN_EXPIRATION_EXCEPTION,"accessToken有效期已过,系统拒绝访问!");
+            writeResult(response, TOKEN_EXPIRATION_EXCEPTION,
+                    "accessToken有效期已过,系统拒绝访问!");
             return false;
         }
-      
+
         Set<String> persSet = new HashSet<String>(Arrays.asList(permission));
-        if (!Collections.disjoint(jwtSubject.getPermissions(),persSet)) /* false: 有交集   true: 没有交集*/
+        
+        String perms = RedisUtil.get(jwtSubject.getPermissionKey());
+        List<String> permissions = JSON.parseArray(perms, String.class);  
+        if (!Collections.disjoint(permissions, persSet)) /*
+                                                                          * false:
+                                                                          * 有交集
+                                                                          * true
+                                                                          * :
+                                                                          * 没有交集
+                                                                          */
         {
             return true;
         }
@@ -168,9 +196,11 @@ public class GlobalPermissionInterceptor extends HandlerInterceptorAdapter
 
     private String getAccessToken(HttpServletRequest request)
     {
-        logger.info("headers:"+ JSONObject.toJSONString(request.getHeaderNames()));
+        logger.info("headers:"
+                + JSONObject.toJSONString(request.getHeaderNames()));
         String accessToken = request.getHeader("ACCESS_TOKEN");
-        accessToken = accessToken != null ? accessToken : request.getParameter(ACCESS_TOKEN);
+        accessToken = accessToken != null ? accessToken : request
+                .getParameter(ACCESS_TOKEN);
         return accessToken;
     }
 
