@@ -32,20 +32,24 @@ public class UserAddorUpdateListener  extends ExchangeListener{
 	@Override
 	protected void filteredDispatch(String aType, String aTextMessage) throws Exception {
 		log.info("消费商家管理员用户事件======>"+aTextMessage);
-		NotificationReader reader = new NotificationReader(aTextMessage);
-		String userId = reader.eventStringValue("userId");
-		Integer GroupType = reader.eventIntegerValue("groupType");
-		String userName = reader.eventStringValue("userName");
-		String dealerId = reader.eventStringValue("dealerId");
-		String userPhone = reader.eventStringValue("mobile");
-		
-		if (!StringUtils.isEmpty(dealerId)) {
-			if (GroupType == 4) {
-				if (StringUtils.isEmpty(userId)) {
-					log.error("用户Id为空");
-				}
-				dealerApplication.addOrUpdateUser(dealerId, userId, userName, userPhone);
+		try {
+			NotificationReader reader = new NotificationReader(aTextMessage);
+			String userId = reader.eventStringValue("userId");
+			Integer GroupType = reader.eventIntegerValue("groupType");
+			String userName = reader.eventStringValue("userName");
+			String dealerId = reader.eventStringValue("dealerId");
+			String userPhone = reader.eventStringValue("mobile");
+			
+			if (!StringUtils.isEmpty(dealerId)) {
+					if (StringUtils.isEmpty(userId)) {
+						log.info("用户Id为空");
+						throw new Exception();
+					}
+					dealerApplication.addOrUpdateUser(dealerId, userId, userName, userPhone);
 			}
+		} catch (Exception e) {
+			log.info("更新业务员事件失败",e.getMessage());
+			throw new Exception();
 		}
 		
 	}
