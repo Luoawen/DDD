@@ -122,6 +122,7 @@ public class HibernateOrderRepository extends HibernateSupperRepository implemen
 		// TODO Auto-generated method stub
 		StringBuilder sql = new StringBuilder("select * from t_scm_order_main where round((UNIX_TIMESTAMP(now())-UNIX_TIMESTAMP(created_date))/60)/60/24 >= 1");
 		Query query = this.session().createSQLQuery(sql.toString()).addEntity(MainOrder.class);
-		return (List<MainOrder>)query.list();
+		List<MainOrder> list = (List<MainOrder>)query.list();
+		return list;
 	}
 }
