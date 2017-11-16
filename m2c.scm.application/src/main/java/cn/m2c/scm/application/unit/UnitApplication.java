@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import cn.m2c.common.MCode;
+import cn.m2c.ddd.common.event.annotation.EventListener;
 import cn.m2c.scm.application.unit.command.UnitCommand;
 import cn.m2c.scm.domain.NegativeException;
 import cn.m2c.scm.domain.model.unit.Unit;
@@ -89,8 +90,12 @@ public class UnitApplication {
     }
     
     @Transactional(rollbackFor = {Exception.class,RuntimeException.class,NegativeException.class})
-    public void noBeUsed(String unitId) {
+    @EventListener(isListening = true)
+    public void noBeUsed(String unitId) throws NegativeException {
     	Unit unit = unitRepository.getUnitByUnitId(unitId);
+    	if (unit == null) {
+			throw new NegativeException(MCode.V_300,"计量单位不存在");
+		}
 		if (unit.getUseNum() > 0) {
 			unit.noUsed();
 			unitRepository.saveUnit(unit);
@@ -98,6 +103,7 @@ public class UnitApplication {
 	}
     
     @Transactional(rollbackFor = {Exception.class,RuntimeException.class,NegativeException.class})
+    @EventListener(isListening = true)
     public void updateUsed(String oldUnitId,String newUnitId) {
     	Unit oldUnit = unitRepository.getUnitByUnitId(oldUnitId);
 		Unit newUnit = unitRepository.getUnitByUnitId(newUnitId);
