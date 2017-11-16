@@ -25,6 +25,7 @@ import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -324,6 +325,34 @@ public class GoodsQueryApplication {
             }
         }
         return keyWords;
+    }
+
+    public void updateGoodsGuessCache(String goodsId) {
+        for (int i = 1; i < 5; i++) {
+            String key = "scm.goods.guess." + i;
+            String guess = RedisUtil.getString(key); //从缓存中取数据
+            if (StringUtils.isNotEmpty(guess)) { // 缓存不为空
+                List<GoodsBean> guessInfoList = JsonUtils.toList(guess, GoodsBean.class);
+                if (null != guessInfoList && guessInfoList.size() > 0) {
+                    Integer size = guessInfoList.size();
+                    List<String> goodsIds = new ArrayList<>();
+                    Iterator<GoodsBean> it = guessInfoList.iterator();
+                    while (it.hasNext()) {
+                        GoodsBean goodsBean = it.next();
+                        if (goodsId.equals(goodsBean.getGoodsId())) {
+                            it.remove();
+                        } else {
+                            goodsIds.add(goodsBean.getGoodsId());
+                        }
+                    }
+                    Integer removeSize = guessInfoList.size();
+                    if (size > removeSize) {
+                        guessInfoList.addAll(queryGoodsGuess((size - removeSize), i, goodsIds));
+                        RedisUtil.setString(key, 24 * 3600, JsonUtils.toStr(guessInfoList));
+                    }
+                }
+            }
+        }
     }
 
     public List<GoodsBean> queryGoodsGuessCache(Integer positionType) {
