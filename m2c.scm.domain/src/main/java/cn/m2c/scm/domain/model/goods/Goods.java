@@ -361,8 +361,14 @@ public class Goods extends ConcurrencySafeEntity {
                     }
                 }
             }
-            if (goodsNumThanZero && this.goodsStatus == 3) {
-                this.goodsStatus = 2;
+            if (goodsNumThanZero) {  // 库存不为0
+                if (this.goodsStatus == 3){ // 若商品为已售罄则改为在售中
+                    this.goodsStatus = 2;
+                }
+            }else{ // 库存为0
+                if (this.goodsStatus == 2){ // 若商品为在售中改为已售罄
+                    this.goodsStatus = 3;
+                }
             }
             if (isNeedApprove) {//发布事件，增加一条待审核商品记录
                 DomainEventPublisher
