@@ -25,16 +25,16 @@ public class AppOrderDtl extends AssertionConcern implements Serializable {
 	private Date createDate;
 	/*** 订单商品金额 */
 	@ColumnAlias(value = "goods_amount")
-	private int goodAmount;
+	private long goodAmount;
 	/**订单运费 */
 	@ColumnAlias(value = "order_freight")
-	private int oderFreight;
+	private long oderFreight;
 	/*** 平台优惠 */
 	@ColumnAlias(value = "plateform_discount")
-	private int plateFormDiscount;
+	private long plateFormDiscount;
 	/***商家优惠*/
 	@ColumnAlias(value = "dealer_discount")
-	private int dealerDiscount;
+	private long dealerDiscount;
 	
 	@ColumnAlias(value = "dealer_id")
 	private String dealerId;
@@ -84,7 +84,34 @@ public class AppOrderDtl extends AssertionConcern implements Serializable {
 	
 	@ColumnAlias(value = "customer_service_tel")
 	private String shopPhone;
+	
+	@ColumnAlias(value = "dOrderFreight")
+	private long dOrderFreight;
+	@ColumnAlias(value = "dGoodsAmount")
+	private long dGoodsAmount;
+	@ColumnAlias(value = "dPlateformDiscount")
+	private long dPlateformDiscount;
+	@ColumnAlias(value = "dDealerDiscount")
+	private long dDealerDiscount;
+	
+	
+	public void setdOrderFreight(long dOrderFreight) {
+		this.dOrderFreight = dOrderFreight;
+	}
 
+	public void setdGoodsAmount(long dGoodsAmount) {
+		this.dGoodsAmount = dGoodsAmount;
+	}
+
+	public void setdPlateformDiscount(long dPlateformDiscount) {
+		this.dPlateformDiscount = dPlateformDiscount;
+	}
+
+	public void setdDealerDiscount(long dDealerDiscount) {
+		this.dDealerDiscount = dDealerDiscount;
+	}
+
+	
 	public String getShopPhone() {
 		return shopPhone;
 	}
@@ -225,19 +252,27 @@ public class AppOrderDtl extends AssertionConcern implements Serializable {
 		return createDate;
 	}
 
-	public int getGoodAmount() {
+	public long getGoodAmount() {
+		if (status != null && status >=1)
+			return dGoodsAmount;
 		return goodAmount;
 	}
 
-	public int getOderFreight() {
+	public long getOderFreight() {
+		if (status != null && status >=1)
+			return dOrderFreight;
 		return oderFreight;
 	}
 
-	public int getPlateFormDiscount() {
+	public long getPlateFormDiscount() {
+		if (status != null && status >=1)
+			return dPlateformDiscount;
 		return plateFormDiscount;
 	}
 
-	public int getDealerDiscount() {
+	public long getDealerDiscount() {
+		if (status != null && status >=1)
+			return dDealerDiscount;
 		return dealerDiscount;
 	}
 
