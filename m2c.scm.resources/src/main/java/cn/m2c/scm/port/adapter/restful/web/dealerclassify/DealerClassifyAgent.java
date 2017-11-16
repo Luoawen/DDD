@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import cn.m2c.common.MCode;
 import cn.m2c.common.MPager;
 import cn.m2c.common.MResult;
+import cn.m2c.scm.application.dealer.data.representation.DealerClassifyTreeRepresentation;
 import cn.m2c.scm.application.dealerclassify.data.bean.DealerClassifyBean;
 import cn.m2c.scm.application.dealerclassify.data.representation.DealerFirstClassifyRepresentation;
 import cn.m2c.scm.application.dealerclassify.data.representation.DealerSecondClassifyRepresentation;
@@ -64,4 +65,30 @@ public class DealerClassifyAgent {
 	        }
 	        return new ResponseEntity<MResult>(result, HttpStatus.OK);
 	    }
+	 
+	 /**
+	  * 获取商家分类树
+	  * @return
+	  */
+	 @RequestMapping(value = "/tree", method = RequestMethod.GET)
+	    public ResponseEntity<MResult> classifyTree() {
+		 MResult result = new MResult(MCode.V_1);
+	        try {
+	        	List<DealerClassifyTreeRepresentation> treeList = new ArrayList<DealerClassifyTreeRepresentation>();
+	        	List<DealerClassifyBean> firstClassifyBeanList = dealerClassifyQuery.getFirstClassifyList();
+	        	for (DealerClassifyBean dealerClassifyBean : firstClassifyBeanList) {
+	        		//查询二级分类
+	        		List<DealerClassifyBean> secondClassifyBeanList = dealerClassifyQuery.getSecondClassifyList(dealerClassifyBean.getDealerClassifyId());
+	        		treeList.add(new DealerClassifyTreeRepresentation(dealerClassifyBean,secondClassifyBeanList));
+				}
+	        	result.setContent(treeList);
+	            result.setStatus(MCode.V_200);
+	        } catch (Exception e) {
+	        	log.error("商家分类树", e);
+	            result = new MPager(MCode.V_400, "服务器开小差了，请稍后再试");
+	        }
+	        return new ResponseEntity<MResult>(result, HttpStatus.OK);
+	    }
+	 
+	 
 }
