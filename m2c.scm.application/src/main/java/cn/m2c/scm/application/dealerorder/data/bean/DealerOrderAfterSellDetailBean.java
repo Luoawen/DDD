@@ -12,6 +12,9 @@ public class DealerOrderAfterSellDetailBean {
 	 */
 	@ColumnAlias(value = "_status")
 	private Integer status;
+	
+	@ColumnAlias(value = "doStatus")
+	private Integer doStatus;
 	/**
 	 * 售后期望(退货、换货、仅退款)
 	 */
@@ -75,6 +78,14 @@ public class DealerOrderAfterSellDetailBean {
 	private String dealerId;
 	
 	
+	public Integer getDoStatus() {
+		return doStatus;
+	}
+
+	public void setDoStatus(Integer doStatus) {
+		this.doStatus = doStatus;
+	}
+
 	public String getDealerId() {
 		return dealerId;
 	}

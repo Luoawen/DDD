@@ -102,6 +102,8 @@ public class AddSaleAfterCmd extends AssertionConcern {
 	}
 
 	public int getType() {
+		if (type == 3)
+			type = 0;
 		return type;
 	}
 

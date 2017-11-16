@@ -4,6 +4,7 @@ import java.util.Date;
 
 import cn.m2c.ddd.common.domain.model.ConcurrencySafeEntity;
 import cn.m2c.ddd.common.domain.model.DomainEventPublisher;
+import cn.m2c.scm.domain.model.order.event.AfterRefundSuccEvt;
 import cn.m2c.scm.domain.model.order.event.SaleAfterRefundEvt;
 import cn.m2c.scm.domain.model.order.log.event.OrderOptLogEvent;
 /***
@@ -85,12 +86,26 @@ public class SaleAfterOrder extends ConcurrencySafeEntity {
 	/***
 	 * 同意售后申请
 	 */
-	public void agreeApply(String userId) {
+	public void agreeApply(String userId, int rtFreight) {
+		
+		if (rtFreight < 0)
+			return ;
+		else if(status == 2) {
+			returnFreight = rtFreight * 100l;			
+		}
+		
 		if (status < 4 && status != 3)
 			status = 4;
 		else 
 			return;
 		DomainEventPublisher.instance().publish(new OrderOptLogEvent(saleAfterNo, dealerOrderId, "同意售后申请！", userId));
+	}
+	/**
+	 * 是否仅退款
+	 * @return
+	 */
+	public boolean isOnlyRtMoney() {
+		return status == 2;
 	}
 	/***
 	 * 拒绝申请
@@ -184,6 +199,9 @@ public class SaleAfterOrder extends ConcurrencySafeEntity {
 		status = 10;
 		this.refundNo = refundNo;
 		refundTime = time;
+		
+		DomainEventPublisher.instance().publish(new AfterRefundSuccEvt(saleAfterNo, orderId, dealerOrderId, dealerId, backMoney
+				, returnFreight, backNum));
 		return true;
 	}
 	
@@ -221,5 +239,9 @@ public class SaleAfterOrder extends ConcurrencySafeEntity {
 	
 	public String skuId() {
 		return skuId;
+	}
+	
+	public String dealerOrderId() {
+		return dealerOrderId;
 	}
 }

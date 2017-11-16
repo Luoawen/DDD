@@ -146,10 +146,12 @@ public class OrderAgent {
 	@RequirePermissions(value ={"sys:schedule:save","sys:schedule:ssss"})
 	public ResponseEntity<MResult> agreeApplySaleAfter(@RequestParam(value = "userId", required = false) String userId
             ,@RequestParam(value = "saleAfterNo", required = false) String saleAfterNo
-            ,@RequestParam(value = "dealerId", required = false) String dealerId) {
+            ,@RequestParam(value = "dealerId", required = false) String dealerId
+            ,@RequestParam(value = "rtFreight", required = false, defaultValue="0") int rtFreight
+			) {
 		MResult result = new MResult(MCode.V_1);
 		try {
-			AproveSaleAfterCmd cmd = new AproveSaleAfterCmd(userId, saleAfterNo, dealerId);
+			AproveSaleAfterCmd cmd = new AproveSaleAfterCmd(userId, saleAfterNo, dealerId, rtFreight);
 			saleAfterApp.agreeApply(cmd);
 			result.setStatus(MCode.V_200);
 		}

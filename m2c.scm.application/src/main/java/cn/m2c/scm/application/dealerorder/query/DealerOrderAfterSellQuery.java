@@ -208,7 +208,7 @@ public class DealerOrderAfterSellQuery {
 		List<Object> param = new ArrayList<Object>();
 		DealerOrderAfterSellDetailBean bean = null;
 		sql.append(" SELECT after._status,after.order_type,after.after_sell_order_id,after.back_money,after.reason, ")
-		.append(" after.created_date,after.return_freight,after.reject_reason, dealer.dealer_order_id ");
+		.append(" after.created_date,after.return_freight,after.reject_reason, dealer.dealer_order_id, dealer._status doStatus");
 		sql.append(" ,after.order_id,dealer.goods_amount,dealer.order_freight,dealer.plateform_discount,dealer.dealer_discount ");
 		sql.append("  FROM t_scm_order_after_sell after ");
 		sql.append("  LEFT OUTER JOIN t_scm_order_dealer dealer   ON after.dealer_order_id = dealer.dealer_order_id   ");
