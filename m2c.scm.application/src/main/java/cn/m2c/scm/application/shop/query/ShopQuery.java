@@ -122,6 +122,21 @@ public class ShopQuery {
 	}
 
 
+	public ShopBean getShop1(String dealerId) {
+		StringBuffer sql = new StringBuffer();
+		List<Object> params = new ArrayList<Object>();
+		sql.append(" SELECT * FROM t_scm_dealer_shop shop ")
+		.append(" INNER JOIN t_scm_dealer dealer ")
+		.append(" WHERE dealer.dealer_status = 1 ")
+		.append(" AND shop.dealer_id = ? or shop.shop_id = ? ")
+		.append(" AND dealer.dealer_id = shop.dealer_id ");
+		params.add(dealerId);
+		params.add(dealerId);
+		ShopBean shop = this.supportJdbcTemplate.queryForBean(sql.toString(), ShopBean.class, params.toArray());
+		return shop;
+		
+	}
+	
 	public ShopBean getShop(String dealerId) {
 		ShopBean shop = null;
 		try {
