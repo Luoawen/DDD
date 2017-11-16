@@ -28,6 +28,7 @@ import cn.m2c.scm.domain.NegativeException;
 import cn.m2c.scm.domain.model.order.DealerOrderDtl;
 import cn.m2c.scm.domain.model.order.SaleAfterOrder;
 import cn.m2c.scm.domain.model.order.SaleAfterOrderRepository;
+import cn.m2c.scm.domain.util.GetDisconfDataGetter;
 
 /***
  * 售后应用层服务
@@ -280,7 +281,7 @@ public class SaleAfterOrderApp {
 			throw new NegativeException(NegativeCode.DEALER_ORDER_IS_NOT_EXIST, "没有满足条件的商家订单.");
 		
 		for (SaleAfterOrder bean : saleAfterOrders) {
-			if (((System.currentTimeMillis() - bean.dateToLong()) / (1000 * 60 * 60 * 24 )) > 7)
+			if (((System.currentTimeMillis() - bean.dateToLong()) / (1000 * 60 * 60 * 24 )) > Long.parseLong(GetDisconfDataGetter.getFinalDisconfDataGetter("order.agreeAfterSale")))
 				list.add(bean);
 		}
 		for (SaleAfterOrder afterOrder : list) {

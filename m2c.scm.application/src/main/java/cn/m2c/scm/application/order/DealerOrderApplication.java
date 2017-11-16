@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.baidu.disconf.client.usertools.DisconfDataGetter;
+
 import cn.m2c.common.MCode;
 import cn.m2c.ddd.common.event.annotation.EventListener;
 import cn.m2c.scm.application.order.command.SendOrderCommand;
@@ -21,15 +23,18 @@ import cn.m2c.scm.domain.NegativeException;
 import cn.m2c.scm.domain.model.order.DealerOrder;
 import cn.m2c.scm.domain.model.order.DealerOrderRepository;
 import cn.m2c.scm.domain.model.order.ReceiveAddr;
+import cn.m2c.scm.domain.util.GetDisconfDataGetter;
 
 @Service
 @Transactional
 public class DealerOrderApplication {
 	private static final Logger LOGGER = LoggerFactory.getLogger(DealerOrderApplication.class);
 
+	
 	@Autowired
 	DealerOrderRepository dealerOrderRepository;
 
+	
 	/**
 	 * 更新物流信息
 	 * 
@@ -125,7 +130,7 @@ public class DealerOrderApplication {
 	public void updateOrderStatus() throws NegativeException {
 		List<DealerOrder> dealerOrders = dealerOrderRepository.getDealerOrderStatusQeury();
 
-		List<DealerOrder> beans = commondMethod(dealerOrders, 1);
+		List<DealerOrder> beans = commondMethod(dealerOrders, Long.parseLong(GetDisconfDataGetter.getFinalDisconfDataGetter("order.cinfirm")));
 
 		for (DealerOrder dealerOrder : beans) {
 			jobFinishiedOrder(dealerOrder);
@@ -148,7 +153,7 @@ public class DealerOrderApplication {
 	public void updateDealFinished() throws NegativeException {
 		List<DealerOrder> dealerOrders = dealerOrderRepository.getDealerOrderFinishied();
 
-		List<DealerOrder> beans = commondMethod(dealerOrders, 1);
+		List<DealerOrder> beans = commondMethod(dealerOrders, Long.parseLong(GetDisconfDataGetter.getFinalDisconfDataGetter("order.finished")));
 
 		for (DealerOrder dealerOrder : beans) {
 			jobFinishedBuss(dealerOrder);
@@ -168,7 +173,7 @@ public class DealerOrderApplication {
 	 * @return
 	 * @throws NegativeException
 	 */
-	public List<DealerOrder> commondMethod(List<DealerOrder> dealerOrders, Integer days) throws NegativeException {
+	public List<DealerOrder> commondMethod(List<DealerOrder> dealerOrders, long hours) throws NegativeException {
 		List<DealerOrder> list = new ArrayList<DealerOrder>();
 		if (dealerOrders.size() == 0)
 			throw new NegativeException(NegativeCode.DEALER_ORDER_IS_NOT_EXIST, "没有满足条件的商家订单.");
@@ -176,7 +181,7 @@ public class DealerOrderApplication {
 		 * 计算出超过7天的订单
 		 */
 		for (DealerOrder bean : dealerOrders) {
-			if (((System.currentTimeMillis() - bean.dateToLong()) / (1000 * 60 * 60 * 24)) > days)
+			if (((System.currentTimeMillis() - bean.dateToLong()) / (1000 * 60 * 60)) > hours)
 				list.add(bean);
 		}
 		return list;
