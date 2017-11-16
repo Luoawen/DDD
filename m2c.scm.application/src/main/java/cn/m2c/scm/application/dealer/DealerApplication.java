@@ -59,6 +59,7 @@ public class DealerApplication {
 	 * @throws NegativeException 
 	 */
 	@Transactional(rollbackFor = {Exception.class,RuntimeException.class,NegativeException.class})
+	@EventListener(isListening = true)
 	public void updateSeller(SellerCommand command) throws NegativeException {
 		log.info("---修改经业务员信息");
 		//1sellerId 取出经销商列表
@@ -79,6 +80,7 @@ public class DealerApplication {
 	 * @throws NegativeException
 	 */
 	@Transactional(rollbackFor = {Exception.class,RuntimeException.class,NegativeException.class})
+	@EventListener(isListening = true)
 	public void unbundleUser(String userId) throws NegativeException {
 		List<Dealer> dealerList = dealerRepository.getDealerByUserId(userId);
 		if (null == dealerList && dealerList.size() >0) {
@@ -100,6 +102,7 @@ public class DealerApplication {
 	 * @throws NegativeException 
 	 */
 	@Transactional(rollbackFor = {Exception.class,RuntimeException.class,NegativeException.class})
+	@EventListener(isListening = true)
 	public void bindUser(String dealerId,String userId,String userName,String userPhone) throws NegativeException {
 		Dealer dealer = dealerRepository.getDealer(dealerId);
 		if (null == dealer) {
@@ -119,6 +122,7 @@ public class DealerApplication {
 	 * @throws NegativeException
 	 */
 	@Transactional(rollbackFor = {Exception.class,RuntimeException.class,NegativeException.class})
+	@EventListener(isListening = true)
 	public void addOrUpdateUser(String dealerId,String userId,String userName,String mobile) throws NegativeException {
 		Dealer dealer = dealerRepository.getDealer(dealerId);
 		if (null == dealer) {
