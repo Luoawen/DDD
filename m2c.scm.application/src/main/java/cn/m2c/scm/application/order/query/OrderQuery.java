@@ -259,19 +259,12 @@ public class OrderQuery {
 		StringBuilder sql = new StringBuilder();
 		sql.append(" SELECT t1._status orderStatus,t1.order_id orderId,t1.created_date createdDate, t3.pay_way payWay,t3.pay_time payTime,t3.pay_no payNo, ");
 		sql.append(" t1.rev_person revPerson,t1.rev_phone revPhone,t1.province province,t1.city city,t1.area_county areaCounty,t1.street_addr streetAddr, ");
-		sql.append(" t4.dealer_name dealerName,t4.dealer_classify dealerClassify,t1.dealer_id dealerId,  t6.seller_name sellerName,t6.seller_phone sellerPhone, ");
-		sql.append(" t2.plateform_discount plateformDiscount,t2.dealer_discount dealerDiscount ");
+		sql.append(" t4.dealer_name dealerName,t4.dealer_classify dealerClassify,t1.dealer_id dealerId, ");
+		sql.append(" t1.plateform_discount plateformDiscount,t1.dealer_discount dealerDiscount ");
 		sql.append(" FROM t_scm_order_dealer t1 ");
-		sql.append(" INNER JOIN t_scm_order_detail t2 ");
-		sql.append(" INNER JOIN t_scm_order_main t3 ");
-		sql.append(" INNER JOIN t_scm_dealer t4");
-		sql.append(" INNER JOIN t_scm_goods t5 ");
-		sql.append(" INNER JOIN t_scm_dealer_seller t6");
-		sql.append(" WHERE 1 = 1 AND t1.dealer_order_id = ? ");
-		sql.append(" AND t1.dealer_order_id = t2.dealer_order_id ");
-		sql.append(" AND t1.order_id = t3.order_id AND t1.dealer_id = t4.dealer_id ");
-		sql.append(" AND t2.goods_id = t5.goods_id ");
-		sql.append(" AND t2.saler_user_id  = t6.seller_id ");
+		sql.append(" LEFT OUTER JOIN t_scm_order_main t3 ON t1.order_id = t3.order_id");
+		sql.append(" LEFT OUTER JOIN t_scm_dealer t4 ON t1.dealer_id = t4.dealer_id");
+		sql.append(" WHERE t1.dealer_order_id = ? ");
 		DealerOrderDetailBean dealerOrderDetailBean = this.supportJdbcTemplate.queryForBean(sql.toString(), DealerOrderDetailBean.class, dealerOrderId);
 		long totalPrice = 0; // 商品总价格
 		long totalFrieght = 0; // 运费总价格
