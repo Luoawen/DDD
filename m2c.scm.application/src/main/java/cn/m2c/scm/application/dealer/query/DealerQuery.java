@@ -382,4 +382,6 @@ public class DealerQuery {
 		}
 		return result;
 	}
+	
+	
 }
