@@ -1,9 +1,5 @@
 package cn.m2c.scm.port.adapter.service.dealer;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +9,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.baidu.disconf.client.usertools.DisconfDataGetter;
 
 import cn.m2c.scm.domain.service.dealer.DealerService;
-
 
 public class DealerServiceImpl implements DealerService{
 	
@@ -25,12 +20,10 @@ public class DealerServiceImpl implements DealerService{
 	@Autowired
 	RestTemplate restTemplate;
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void addShop(String dealerId, String dealerName) {
-		List<Map> resultList = new ArrayList<>();
 		try {
 			String url = M2C_HOST_URL + "/m2c.scm/shop/sys/shopInfo?dealerId={0}&shopName={1}&shopIcon={2}";
-			String result = restTemplate.getForObject(url, String.class,dealerId,dealerName,DEFAULT_SHOP_ICON);
+			String result = restTemplate.getForObject(url, String.class,dealerId,dealerName, DEFAULT_SHOP_ICON);
 			JSONObject json = JSONObject.parseObject(result);
 			if (json.getInteger("status") == 200) {
 				log.info("添加店铺成功!",this.getClass().getName());
