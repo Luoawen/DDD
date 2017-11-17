@@ -24,6 +24,7 @@ import cn.m2c.scm.application.order.data.bean.DealerOrderBean;
 import cn.m2c.scm.application.order.data.bean.OrderDetailBean;
 import cn.m2c.scm.application.order.data.bean.OrderExpressBean;
 import cn.m2c.scm.application.order.data.bean.SkuNumBean;
+import cn.m2c.scm.application.order.data.bean.UserOrderStatic;
 import cn.m2c.scm.application.order.data.representation.OptLogBean;
 import cn.m2c.scm.domain.NegativeException;
 import cn.m2c.scm.domain.service.order.OrderService;
@@ -569,6 +570,58 @@ public class OrderQueryApplication {
 			throw new NegativeException(500, "查询APP物流列表出错");
 		}
 		return expressInfo;
+	}
+	/***
+	 * 获取用户对应的订单统计
+	 */
+	public UserOrderStatic getUserOrderStatics(String userId) throws NegativeException {
+		UserOrderStatic result = null;
+		try {
+			List<Object> params = new ArrayList<>(4);
+			StringBuilder sql = new StringBuilder();
+			sql.append("SELECT count(1) aa\r\n") // 未付订单数
+			.append("FROM	t_scm_order_dealer b,	t_scm_order_main a\r\n") 
+			.append("WHERE	a.user_id = ? AND b._status IN (1, 2)\r\n") 
+			.append("UNION ALL\r\n") 
+			.append("	SELECT count(1) aa	FROM	t_scm_order_main a\r\n") // 待收货数
+			.append("	WHERE	a.user_id = ? AND a._status = 0\r\n") 
+			.append("	UNION ALL\r\n") 
+			.append("  SELECT	count(1) aa	\r\n") // 待评论数
+			.append("  FROM t_scm_order_main a,	t_scm_order_dealer b\r\n") 
+			.append("	WHERE	a.user_id = ? AND b._status >= 3\r\n") 
+			.append("	AND b.dealer_order_id IN (\r\n") 
+			.append("	SELECT DISTINCT	c.dealer_order_id\r\n") 
+			.append("	FROM t_scm_order_detail c\r\n")
+			.append("    WHERE	c.comment_status = 0)");
+			
+			params.add(userId);
+			params.add(userId);
+			params.add(userId);
+			
+			List<Map<String, Object>> datas = supportJdbcTemplate.jdbcTemplate().queryForList(sql.toString(), params.toArray());
+			result = new UserOrderStatic();
+			if (datas != null) {
+				for (int i=0; i< datas.size(); i++) {
+					Map<String, Object> a = datas.get(i);
+					switch (i) {
+					case 0:
+						result.setWaitPays(((Long)a.get("aa")).intValue());
+						break;
+					case 1:
+						result.setWaitRecs(((Long)a.get("aa")).intValue());
+						break;
+					case 2:
+						result.setWaitComments(((Long)a.get("aa")).intValue());
+						break;
+					}
+				}
+			}
+			
+		} catch (Exception e) {
+			LOGGER.error("---查询用户对应的订单统计出错"+e.getMessage(),e);
+			throw new NegativeException(500, "查询用户对应的订单统计出错");
+		}
+		return result;
 	}
 }
 
