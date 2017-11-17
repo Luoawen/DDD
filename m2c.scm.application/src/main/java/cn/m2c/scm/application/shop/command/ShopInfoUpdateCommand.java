@@ -33,7 +33,7 @@ public class ShopInfoUpdateCommand extends AssertionConcern implements Serializa
 		assertArgumentNotEmpty(shopIcon, "店铺图标不能为空");
 		assertArgumentLength(shopIcon, 100, "店铺图标过长");
 		
-		assertArgumentNotEmpty(customerServiceTel, "客服电话不能为空");
+//		assertArgumentNotEmpty(customerServiceTel, "客服电话不能为空");
 		
 		this.dealerId = dealerId;
 		this.shopId = shopId;

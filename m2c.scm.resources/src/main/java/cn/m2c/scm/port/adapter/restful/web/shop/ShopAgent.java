@@ -112,7 +112,7 @@ public class ShopAgent {
 		            @RequestParam(value = "shopIcon",defaultValue="") String shopIcon,
 		            @RequestParam(value = "shopReceipt", required = false) String shopReceipt,
 		            @RequestParam(value = "shopIntroduce", required = false) String shopIntroduce,
-		            @RequestParam(value = "customerServiceTel", required = true) String customerServiceTel
+		            @RequestParam(value = "customerServiceTel", required = false) String customerServiceTel
 		            ) {
 			 MResult result = new MResult(MCode.V_1);
 		        try {
@@ -142,7 +142,7 @@ public class ShopAgent {
 		            @RequestParam(value = "shopIcon",defaultValue="") String shopIcon,
 		            @RequestParam(value = "shopIntroduce", required = false) String shopIntroduce,
 		            @RequestParam(value = "shopReceipt", required = false) String shopReceipt,
-		            @RequestParam(value = "customerServiceTel", required = true) String customerServiceTel
+		            @RequestParam(value = "customerServiceTel", required = false) String customerServiceTel
 		            ) {
 			 MResult result = new MResult(MCode.V_1);
 		        try {
