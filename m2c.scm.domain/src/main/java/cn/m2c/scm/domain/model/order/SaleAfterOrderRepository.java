@@ -55,4 +55,28 @@ public interface SaleAfterOrderRepository {
 	 * @param marketId
 	 */
 	public int disabledOrderMarket(String orderId, String marketId);
+	/***
+	 * 获取申请的满足要求的售后数据
+	 * @param hour
+	 * @return
+	 */
+	public List<SaleAfterOrder> getSaleAfterApplyed(int hour);
+	/***
+	 * 获取退款 且商家同意退款了
+	 * @param hour
+	 * @return
+	 */
+	public List<SaleAfterOrder> getAgreeRtMoney(int hour);
+	/***
+	 * 获取售后用户已发货
+	 * @param hour
+	 * @return
+	 */
+	public List<SaleAfterOrder> getUserSend(int hour);
+	/***
+	 * 获取售后商户已发货
+	 * @param hour
+	 * @return
+	 */
+	public List<SaleAfterOrder> getDealerSend(int hour);
 }

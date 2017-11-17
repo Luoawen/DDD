@@ -270,7 +270,7 @@ public class SaleAfterOrderApp {
 	}
 	
 	/**
-	 * 商家同意售后状态下7天变更为交易关闭
+	 * 商家同意退款或是换货商家已发出态下7天变更为交易关闭
 	 * @throws NegativeException 
 	 */
 	@Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
@@ -285,15 +285,156 @@ public class SaleAfterOrderApp {
 				list.add(bean);
 		}
 		for (SaleAfterOrder afterOrder : list) {
-			jobCancleOrder(afterOrder);
+			jobUpdateSaleAfter(afterOrder);
 		}
 	}
 	@Transactional(rollbackFor = { Exception.class, RuntimeException.class,NegativeException.class }, propagation = Propagation.REQUIRES_NEW)
 	@EventListener(isListening = true)
-	private void jobCancleOrder(SaleAfterOrder afterOrder) {
+	private void jobUpdateSaleAfter(SaleAfterOrder afterOrder) {
 		afterOrder.updateStatusAgreeAfterSale();
 		saleAfterRepository.save(afterOrder);
 	}
 	
+	/**
+	 * 申请的售后3天未来同意，则需要取消
+	 * @throws NegativeException 
+	 */
+	@Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+	public void cancelApply(String userId) throws NegativeException {
+		int hour = 72;
+		try {
+			Integer.parseInt(GetDisconfDataGetter.getFinalDisconfDataGetter("sale.after.cancel.apply"));
+			if (hour < 1)
+				hour = 1;
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		List<SaleAfterOrder> saleAfterOrders= saleAfterRepository.getSaleAfterApplyed(hour);
+		if (saleAfterOrders.size() == 0)
+			return ;
+		
+		for (SaleAfterOrder afterOrder : saleAfterOrders) {
+			jobCancleAfterOrder(afterOrder);
+		}
+	}
 	
+	@Transactional(rollbackFor = { Exception.class, RuntimeException.class,NegativeException.class }, propagation = Propagation.REQUIRES_NEW)
+	private void jobCancleAfterOrder(SaleAfterOrder afterOrder) {
+		if (afterOrder.cancel())
+			saleAfterRepository.save(afterOrder);
+	}
+	
+	/**
+	 * 售后申请同意后，七天没有确认退款的则直接退款
+	 * @throws NegativeException 
+	 */
+	@Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+	public void afterAgreed(String userId) throws NegativeException {
+		int hour = 168;
+		try {
+			Integer.parseInt(GetDisconfDataGetter.getFinalDisconfDataGetter("sale.after.apply.agreed"));
+			if (hour < 1)
+				hour = 1;
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		List<SaleAfterOrder> saleAfterOrders = saleAfterRepository.getAgreeRtMoney(hour);
+		if (saleAfterOrders.size() == 0)
+			return ;
+		try {
+			for (SaleAfterOrder afterOrder : saleAfterOrders) {
+				jobAfterAgreed(afterOrder, userId);
+			}
+		} catch (NegativeException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@Transactional(rollbackFor = { Exception.class, RuntimeException.class,NegativeException.class }, propagation = Propagation.REQUIRES_NEW)
+	private void jobAfterAgreed(SaleAfterOrder afterOrder, String userId) throws NegativeException {
+		String payNo = saleOrderQuery.getMainOrderPayNo(afterOrder.orderId());
+		if (StringUtils.isEmpty(payNo)) {
+			throw new NegativeException(MCode.V_101, "售后单状态不正确！");
+		}
+		if (!afterOrder.agreeBackMoney(userId, payNo)) {
+			throw new NegativeException(MCode.V_103, "状态不正确，不能进行此操作！");
+		}
+		
+		saleAfterRepository.save(afterOrder);
+	}
+	
+	/**
+	 * 当商家同意售后， 退货类型且用户发货， 过七天需要自动收货商家
+	 * @throws NegativeException 
+	 */
+	@Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+	public void dealerAutoRec(String userId) throws NegativeException {
+		int hour = 168;
+		try {
+			Integer.parseInt(GetDisconfDataGetter.getFinalDisconfDataGetter("sale.after.dealer.autoRec"));
+			if (hour < 1)
+				hour = 1;
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		List<SaleAfterOrder> saleAfterOrders = saleAfterRepository.getUserSend(hour);
+		if (saleAfterOrders.size() == 0)
+			return ;
+		try {
+			for (SaleAfterOrder afterOrder : saleAfterOrders) {
+				jobDealerAutoRec(afterOrder, userId);
+			}
+		} catch (NegativeException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@Transactional(rollbackFor = { Exception.class, RuntimeException.class,NegativeException.class }, propagation = Propagation.REQUIRES_NEW)
+	private void jobDealerAutoRec(SaleAfterOrder afterOrder, String userId) throws NegativeException {
+		
+		if (!afterOrder.dealerConfirmRev(userId)) {
+			throw new NegativeException(MCode.V_103, "状态不正确，不能进行此操作！");
+		}
+		
+		saleAfterRepository.save(afterOrder);
+	}
+	
+	/**
+	 * 当商家同意售后， 换货类型且商家发货， 过七天需要用户自动收货
+	 * @throws NegativeException 
+	 */
+	@Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+	public void userAutoRec(String userId) throws NegativeException {
+		int hour = 168;
+		try {
+			Integer.parseInt(GetDisconfDataGetter.getFinalDisconfDataGetter("sale.after.user.autoRec"));
+			if (hour < 1)
+				hour = 1;
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		List<SaleAfterOrder> saleAfterOrders = saleAfterRepository.getDealerSend(hour);
+		if (saleAfterOrders.size() == 0)
+			return ;
+		try {
+			for (SaleAfterOrder afterOrder : saleAfterOrders) {
+				jobUserAutoRec(afterOrder, userId);
+			}
+		} catch (NegativeException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@Transactional(rollbackFor = { Exception.class, RuntimeException.class,NegativeException.class }, propagation = Propagation.REQUIRES_NEW)
+	private void jobUserAutoRec(SaleAfterOrder afterOrder, String userId) throws NegativeException {
+		
+		if (!afterOrder.userConfirmRev(userId)) {
+			throw new NegativeException(MCode.V_103, "状态不正确，不能进行此操作！");
+		}		
+		saleAfterRepository.save(afterOrder);
+	}
 }

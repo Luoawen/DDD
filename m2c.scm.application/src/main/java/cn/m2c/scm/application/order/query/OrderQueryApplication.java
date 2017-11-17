@@ -580,16 +580,16 @@ public class OrderQueryApplication {
 			List<Object> params = new ArrayList<>(4);
 			StringBuilder sql = new StringBuilder();
 			sql.append("SELECT count(1) aa\r\n") // 未付订单数
-			.append("FROM	t_scm_order_dealer b,	t_scm_order_main a\r\n") 
+			.append("FROM t_scm_order_dealer b LEFT OUTER JOIN t_scm_order_main a ON a.order_id = b.order_id\r\n") 
 			.append("WHERE	a.user_id = ? AND b._status IN (1, 2)\r\n") 
 			.append("UNION ALL\r\n") 
-			.append("	SELECT count(1) aa	FROM	t_scm_order_main a\r\n") // 待收货数
+			.append("	SELECT count(1) aa	FROM t_scm_order_main a\r\n") // 待收货数
 			.append("	WHERE	a.user_id = ? AND a._status = 0\r\n") 
 			.append("	UNION ALL\r\n") 
 			.append("  SELECT	count(1) aa	\r\n") // 待评论数
 			.append("  FROM t_scm_order_main a,	t_scm_order_dealer b\r\n") 
 			.append("	WHERE	a.user_id = ? AND b._status >= 3\r\n") 
-			.append("	AND b.dealer_order_id IN (\r\n") 
+			.append("	AND a.order_id=b.order_id AND b.dealer_order_id IN (\r\n") 
 			.append("	SELECT DISTINCT	c.dealer_order_id\r\n") 
 			.append("	FROM t_scm_order_detail c\r\n")
 			.append("    WHERE	c.comment_status = 0)");
@@ -605,10 +605,10 @@ public class OrderQueryApplication {
 					Map<String, Object> a = datas.get(i);
 					switch (i) {
 					case 0:
-						result.setWaitPays(((Long)a.get("aa")).intValue());
+						result.setWaitRecs(((Long)a.get("aa")).intValue());
 						break;
 					case 1:
-						result.setWaitRecs(((Long)a.get("aa")).intValue());
+						result.setWaitPays(((Long)a.get("aa")).intValue());						
 						break;
 					case 2:
 						result.setWaitComments(((Long)a.get("aa")).intValue());

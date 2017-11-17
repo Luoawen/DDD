@@ -158,7 +158,6 @@ public class SaleAfterOrder extends ConcurrencySafeEntity {
 			return false;
 		status = 6;
 		DomainEventPublisher.instance().publish(new OrderOptLogEvent(saleAfterNo, dealerOrderId, "商家确认收货", userId));
-		
 		return true;
 	}
 	
@@ -243,5 +242,14 @@ public class SaleAfterOrder extends ConcurrencySafeEntity {
 	
 	public String dealerOrderId() {
 		return dealerOrderId;
+	}
+	
+	public boolean cancel() {
+		if (status < 3 && status > -1) {
+			status = -1;
+			return true;
+		}
+		
+		return false;
 	}
 }

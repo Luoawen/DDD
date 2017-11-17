@@ -15,6 +15,7 @@ import cn.m2c.scm.application.order.DealerOrderApplication;
 import cn.m2c.scm.application.order.OrderApplication;
 import cn.m2c.scm.application.order.SaleAfterOrderApp;
 import cn.m2c.scm.domain.NegativeException;
+import cn.m2c.scm.domain.util.GetDisconfDataGetter;
 
 @RestController
 @RequestMapping("/scheduled")
@@ -108,6 +109,89 @@ public class ScheduledAgent {
 			result = new MResult(ne.getStatus(), ne.getMessage());
 		} catch (Exception e) {
 			LOGGER.error("修改订单状态发生错误", e);
+			result = new MResult(MCode.V_400, e.getMessage());
+		}
+		return new ResponseEntity<MResult>(result, HttpStatus.OK);
+	}
+	/***
+	 * 已经申请售后的但还没有同意的状态，自动取消售后
+	 * @return
+	 */
+	@RequestMapping(value = "/after/sale/applyed",method = RequestMethod.PUT)
+	public ResponseEntity<MResult> afterSaleApply() {
+		
+		MResult result = new MResult(MCode.V_1);
+		try {
+			String val = GetDisconfDataGetter.getDisconfProperty("scm.job.user");
+			saleAfterOrderApplication.cancelApply(val);
+			result.setStatus(MCode.V_200);
+		} catch (NegativeException ne) {
+			result = new MResult(ne.getStatus(), ne.getMessage());
+		} catch (Exception e) {
+			LOGGER.error("修改售后订单状态", e);
+			result = new MResult(MCode.V_400, e.getMessage());
+		}
+		return new ResponseEntity<MResult>(result, HttpStatus.OK);
+	}
+	
+	/***
+	 * 当商家同意售后， 7天没有同意退款，则自动退款
+	 * @return
+	 */
+	@RequestMapping(value = "/after/sale/agreed",method = RequestMethod.PUT)
+	public ResponseEntity<MResult> afterSaleAgreed() {
+		
+		MResult result = new MResult(MCode.V_1);
+		try {
+			String val = GetDisconfDataGetter.getDisconfProperty("scm.job.user");
+			saleAfterOrderApplication.afterAgreed(val);
+			result.setStatus(MCode.V_200);
+		} catch (NegativeException ne) {
+			result = new MResult(ne.getStatus(), ne.getMessage());
+		} catch (Exception e) {
+			LOGGER.error("自动退款状态", e);
+			result = new MResult(MCode.V_400, e.getMessage());
+		}
+		return new ResponseEntity<MResult>(result, HttpStatus.OK);
+	}
+	
+	/***
+	 * 当商家同意售后， 退货类型且用户发货， 过七天需要自动收货商家
+	 * @return
+	 */
+	@RequestMapping(value = "/after/sale/user-send",method = RequestMethod.PUT)
+	public ResponseEntity<MResult> userSend2DealerAuto() {
+		
+		MResult result = new MResult(MCode.V_1);
+		try {
+			String val = GetDisconfDataGetter.getDisconfProperty("scm.job.user");
+			saleAfterOrderApplication.dealerAutoRec(val);
+			result.setStatus(MCode.V_200);
+		} catch (NegativeException ne) {
+			result = new MResult(ne.getStatus(), ne.getMessage());
+		} catch (Exception e) {
+			LOGGER.error("自动退款状态", e);
+			result = new MResult(MCode.V_400, e.getMessage());
+		}
+		return new ResponseEntity<MResult>(result, HttpStatus.OK);
+	}
+	
+	/***
+	 * 当商家同意售后， 换货类型且商家发货， 过七天需要用户自动收货
+	 * @return
+	 */
+	@RequestMapping(value = "/after/sale/dealer-send",method = RequestMethod.PUT)
+	public ResponseEntity<MResult> dealerSend2UserAuto() {
+		
+		MResult result = new MResult(MCode.V_1);
+		try {
+			String val = GetDisconfDataGetter.getDisconfProperty("scm.job.user");
+			saleAfterOrderApplication.userAutoRec(val);
+			result.setStatus(MCode.V_200);
+		} catch (NegativeException ne) {
+			result = new MResult(ne.getStatus(), ne.getMessage());
+		} catch (Exception e) {
+			LOGGER.error("自动退款状态", e);
 			result = new MResult(MCode.V_400, e.getMessage());
 		}
 		return new ResponseEntity<MResult>(result, HttpStatus.OK);
