@@ -106,4 +106,20 @@ public class PostageModelApplication {
         }
         postageModel.outGoodsUserNum();
     }
+
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+    public void modifyGoodsUserNum(String oldModelId, String newModelId) throws NegativeException {
+        LOGGER.info("outGoodsUserNum oldModelId >>{},newModelId >>{}", oldModelId, newModelId);
+        PostageModel postageModel = postageModelRepository.getPostageModelById(oldModelId);
+        if (null == postageModel) {
+            throw new NegativeException(MCode.V_300, "运费模板不存在");
+        }
+        postageModel.outGoodsUserNum();
+
+        PostageModel newPostageModel = postageModelRepository.getPostageModelById(newModelId);
+        if (null == newPostageModel) {
+            throw new NegativeException(MCode.V_300, "运费模板不存在");
+        }
+        newPostageModel.addGoodsUserNum();
+    }
 }
