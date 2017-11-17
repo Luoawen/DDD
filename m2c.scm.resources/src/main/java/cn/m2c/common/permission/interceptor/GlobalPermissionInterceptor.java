@@ -35,7 +35,7 @@ import cn.m2c.ddd.common.serializer.ObjectSerializer;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-
+ 
 public class GlobalPermissionInterceptor extends HandlerInterceptorAdapter
 {
 
