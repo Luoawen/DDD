@@ -20,8 +20,7 @@ public class GetDisconfDataGetter {
 	 */
 	public static String getFinalDisconfDataGetter(String fileName) {
 		final String PROPERTIS_NAME = DisconfDataGetter.getByFileItem("constants.properties", fileName).toString().trim();
-		return PROPERTIS_NAME;
-		
+		return PROPERTIS_NAME;		
 	}
 	
 	
@@ -35,6 +34,17 @@ public class GetDisconfDataGetter {
 		String trim = DisconfDataGetter.getByFileItem("constants.properties", fileName).toString().trim();
 		return trim;
 		
+	}
+	
+	/**
+	 * 获取disonf配置constants中的属性值
+	 * @param properties
+	 * @param fileName
+	 * @return
+	 */
+	public static String getDisconfProperty(String prop) {
+		String pVal = DisconfDataGetter.getByFileItem("constants.properties", prop).toString().trim();
+		return pVal;
 	}
 
 }

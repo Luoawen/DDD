@@ -59,7 +59,7 @@ public interface OrderRepository {
 	 * 获取未支付的订单
 	 * @return
 	 */
-	public List<MainOrder> getNotPayedOrders();
+	public List<MainOrder> getNotPayedOrders(int h);
 	
 	public DealerOrder getDealerOrderById(String orderId, String userId, String dealerOrderId);
 }
