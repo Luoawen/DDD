@@ -177,7 +177,7 @@ public class DealerOrderApplication {
 		List<DealerOrder> list = new ArrayList<DealerOrder>();
 		if (dealerOrders.size() == 0)
 			throw new NegativeException(NegativeCode.DEALER_ORDER_IS_NOT_EXIST, "没有满足条件的商家订单.");
-		/**
+		/** 
 		 * 计算出超过7天的订单
 		 */
 		for (DealerOrder bean : dealerOrders) {
