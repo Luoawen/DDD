@@ -69,8 +69,10 @@ public class DealerRepresentation {
 		this.sellerPhone = model.getSellerPhone();
 		this.createdDate = model.getCreatedDate();
 		this.dealerClassify = model.getDealerClassify();
-		this.dealerFristClassifyName = model.getDealerClassifyBean().getDealerFirstClassifyName();
-		this.dealerSecondClassifyName = model.getDealerClassifyBean().getDealerSecondClassifyName();
+		if(model.getDealerClassifyBean()!=null){
+			this.dealerFristClassifyName = model.getDealerClassifyBean().getDealerFirstClassifyName();
+			this.dealerSecondClassifyName = model.getDealerClassifyBean().getDealerSecondClassifyName();
+		}
 	}
 
 	public String getDealerName() {
