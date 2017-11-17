@@ -32,6 +32,8 @@ import cn.m2c.scm.domain.model.order.OrderRepository;
 import cn.m2c.scm.domain.model.order.SimpleMarketInfo;
 import cn.m2c.scm.domain.model.order.SimpleMarketing;
 import cn.m2c.scm.domain.service.order.OrderService;
+import cn.m2c.scm.domain.util.GetDisconfDataGetter;
+
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.lang3.StringUtils;
@@ -745,7 +747,17 @@ public class OrderApplication {
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
     public void cancelAllNotPayed() {
     	try {
-	    	List<MainOrder> mainOrders = orderRepository.getNotPayedOrders();
+    		int hour = 24;
+    		try {
+    			String val = GetDisconfDataGetter.getDisconfProperty("order.waitPay");
+    			hour = Integer.parseInt(val);
+    			if (hour < 1) {
+    				hour = 1;
+    			}
+    		}
+    		catch (Exception e) {    			
+    		}
+	    	List<MainOrder> mainOrders = orderRepository.getNotPayedOrders(hour);
 	    	
 	    	if (mainOrders == null || mainOrders.size() < 1)
 	    		throw new NegativeException(NegativeCode.DEALER_ORDER_IS_NOT_EXIST, "没有满足条件的商家订单.");
