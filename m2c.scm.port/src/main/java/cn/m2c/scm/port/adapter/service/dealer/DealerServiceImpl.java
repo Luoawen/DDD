@@ -1,20 +1,29 @@
 package cn.m2c.scm.port.adapter.service.dealer;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import com.alibaba.fastjson.JSONObject;
 import com.baidu.disconf.client.usertools.DisconfDataGetter;
 
+import cn.m2c.scm.application.utils.EXPRESSMD5;
+import cn.m2c.scm.application.utils.HttpRequest;
+import cn.m2c.scm.domain.NegativeException;
 import cn.m2c.scm.domain.service.dealer.DealerService;
 
-
+@Service("dealerRestService")
 public class DealerServiceImpl implements DealerService{
 	
 	private final static Logger log = LoggerFactory.getLogger(DealerServiceImpl.class);
@@ -25,13 +34,17 @@ public class DealerServiceImpl implements DealerService{
 	@Autowired
 	RestTemplate restTemplate;
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public void addShop(String dealerId, String dealerName) {
+	public void addShop(String dealerId, String dealerName) throws NegativeException {
 		List<Map> resultList = new ArrayList<>();
 		try {
-			String url = M2C_HOST_URL + "/m2c.scm/shop/sys/shopInfo?dealerId={0}&shopName={1}&shopIcon={2}";
-			String result = restTemplate.getForObject(url, String.class,dealerId,dealerName,DEFAULT_SHOP_ICON);
-			JSONObject json = JSONObject.parseObject(result);
+			String url = M2C_HOST_URL + "/m2c.scm/shop/sys/shopInfo";
+			HashMap<String, String> params = new HashMap<String, String>();
+			params.put("dealerId",dealerId);
+			params.put("shopName",dealerName);
+			params.put("shopIcon",DEFAULT_SHOP_ICON);
+			String resp = new HttpRequest().postData(url, params, "utf-8").toString();
+				System.out.println("----------"+resp);
+			JSONObject json = JSONObject.parseObject(resp);
 			if (json.getInteger("status") == 200) {
 				log.info("添加店铺成功!",this.getClass().getName());
 			}else {
@@ -40,7 +53,7 @@ public class DealerServiceImpl implements DealerService{
 			}
 		} catch (Exception e) {
 			log.info("添加店铺出现异常",e.getMessage());
-			throw e;
+			throw new NegativeException();
 		}
 	}
 
