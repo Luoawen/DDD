@@ -3,13 +3,14 @@ package cn.m2c.scm.port.adapter.service.dealer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import com.alibaba.fastjson.JSONObject;
 import com.baidu.disconf.client.usertools.DisconfDataGetter;
 
 import cn.m2c.scm.domain.service.dealer.DealerService;
-
+@Service
 public class DealerServiceImpl implements DealerService{
 	
 	private final static Logger log = LoggerFactory.getLogger(DealerServiceImpl.class);
