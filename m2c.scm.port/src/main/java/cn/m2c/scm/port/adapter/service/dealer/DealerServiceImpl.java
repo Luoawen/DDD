@@ -7,18 +7,10 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.RestTemplate;
-
 import com.alibaba.fastjson.JSONObject;
 import com.baidu.disconf.client.usertools.DisconfDataGetter;
 
-import cn.m2c.scm.application.utils.EXPRESSMD5;
 import cn.m2c.scm.application.utils.HttpRequest;
 import cn.m2c.scm.domain.NegativeException;
 import cn.m2c.scm.domain.service.dealer.DealerService;
@@ -31,8 +23,6 @@ public class DealerServiceImpl implements DealerService{
 	private static final String M2C_HOST_URL = DisconfDataGetter.getByFileItem("constants.properties", "m2c.host.url").toString().trim();
 	private static final String DEFAULT_SHOP_ICON = DisconfDataGetter.getByFileItem("constants.properties", "default.shopIcon").toString().trim();
 	
-	@Autowired
-	RestTemplate restTemplate;
 
 	public void addShop(String dealerId, String dealerName) throws NegativeException {
 		List<Map> resultList = new ArrayList<>();
