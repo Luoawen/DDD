@@ -17,6 +17,7 @@ import cn.m2c.scm.application.order.command.SaleAfterShipCmd;
 import cn.m2c.scm.application.order.data.bean.AfterSellBean;
 import cn.m2c.scm.application.order.data.bean.AppOrderBean;
 import cn.m2c.scm.application.order.data.bean.AppOrderDtl;
+import cn.m2c.scm.application.order.data.bean.UserOrderStatic;
 import cn.m2c.scm.application.order.data.representation.OrderNo;
 import cn.m2c.scm.application.order.query.AfterSellOrderQuery;
 import cn.m2c.scm.application.order.query.OrderQueryApplication;
@@ -490,5 +491,26 @@ public class AppOrderAgent {
             result = new MPager(MCode.V_400, e.getMessage());
         }
         return new ResponseEntity<MPager>(result, HttpStatus.OK);
+    }
+    
+    @RequestMapping(value = "/app/dealer/statics", method = RequestMethod.GET)
+    public ResponseEntity<MResult> getUserOrderStatics(
+            @RequestParam(value = "userId",defaultValue="") String userId
+            ) {
+    	MResult result = new MResult(MCode.V_1);
+        try {
+        	if(StringUtils.isEmpty(userId)){
+        		result.setContent("用户id为空!");
+        		return new ResponseEntity<MResult>(result, HttpStatus.OK);
+        	}
+        	
+        	UserOrderStatic data = orderQueryApp.getUserOrderStatics(userId);
+        	result.setContent(data);
+            result.setStatus(MCode.V_200);
+        } catch (Exception e) {
+            LOGGER.error("查询物流列表出错", e);
+            result = new MPager(MCode.V_400, e.getMessage());
+        }
+        return new ResponseEntity<MResult>(result, HttpStatus.OK);
     }
 }
