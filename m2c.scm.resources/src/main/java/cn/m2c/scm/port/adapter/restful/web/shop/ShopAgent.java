@@ -200,4 +200,25 @@ public class ShopAgent {
 		        }
 		        return new ResponseEntity<MResult>(result, HttpStatus.OK);
 		    }
+		 
+		 
+		 /**
+		  * 商家ID获取客服电话
+		  * @param dealerId
+		  * @return
+		  */
+		 @RequestMapping(value = "/dealerShopDetail",method = RequestMethod.GET)
+		 public ResponseEntity<MResult> getDealerShopDetail(@RequestParam(value = "dealerId",required = false)String dealerId){
+			 MResult result = new MResult(MCode.V_1);
+			 try {
+				String custmerTel = query.getDealerShop(dealerId);
+				 result.setContent(custmerTel);
+				 result.setStatus(MCode.V_200);
+			} catch (Exception e) {
+				log.error("查询信息失败！",e.getMessage());
+				result = new MPager(MCode.V_400, "服务器开小差了，请稍后再试");
+			}
+			return new ResponseEntity<MResult>(result,HttpStatus.OK);
+			 
+		 }
 }

@@ -29,17 +29,26 @@ public class GoodsChangedEvent implements DomainEvent {
 
     private String newGoodsUnitId;
 
+    private String oldGoodsPostageId;
+
+    private String newGoodsPostageId;
+
+    private Integer goodsStatus;
+
     private Date occurredOn;
     private int eventVersion;
 
     public GoodsChangedEvent(String goodsId, String goodsName, String dealerId, String dealerName,
-                             String oldGoodsUnitId, String newGoodsUnitId) {
+                             String oldGoodsUnitId, String newGoodsUnitId, String oldGoodsPostageId, String newGoodsPostageId, Integer goodsStatus) {
         this.goodsId = goodsId;
         this.goodsName = goodsName;
         this.dealerId = dealerId;
         this.dealerName = dealerName;
         this.oldGoodsUnitId = oldGoodsUnitId;
         this.newGoodsUnitId = newGoodsUnitId;
+        this.newGoodsPostageId = newGoodsPostageId;
+        this.oldGoodsPostageId = oldGoodsPostageId;
+        this.goodsStatus = goodsStatus;
         this.occurredOn = new Date();
         this.eventVersion = 1;
     }

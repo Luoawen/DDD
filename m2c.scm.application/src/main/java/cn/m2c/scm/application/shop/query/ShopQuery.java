@@ -8,6 +8,7 @@ import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
@@ -237,5 +238,23 @@ public class ShopQuery {
 			log.error("查询店铺详情出错", e);
 		}
 		return shop;
+	}
+	
+	
+	/**
+	 * 通过商家Id查询客服号码
+	 * @param dealerId
+	 * @return
+	 */
+	public String getDealerShop(String dealerId) {
+		String custmerTel = "";
+		try {
+			StringBuffer sql = new StringBuffer(" SELECT customer_service_tel from t_scm_dealer_shop where dealer_id = ? ");
+			custmerTel = this.supportJdbcTemplate.jdbcTemplate().queryForObject(sql.toString(), String.class,dealerId);
+		} catch (DataAccessException e) {
+			log.error("查询出错", e);
+		}
+		return custmerTel;
+		
 	}
 }

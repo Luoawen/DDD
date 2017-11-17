@@ -76,7 +76,7 @@ public class DealerOrderDetailBean {
 	/**
 	 * 商家名
 	 */
-	@ColumnAlias(value = "dealer_name")
+	@ColumnAlias(value = "dealerName")
 	private String dealerName;
 	/**
 	 * 商家类型

@@ -311,6 +311,7 @@ public class Goods extends ConcurrencySafeEntity {
         this.goodsBrandName = goodsBrandName;
         this.goodsUnitId = goodsUnitId;
         this.goodsMinQuantity = goodsMinQuantity;
+        String oldGoodsPostageId = this.goodsPostageId;
         this.goodsPostageId = goodsPostageId;
         this.goodsBarCode = goodsBarCode;
         this.goodsKeyWord = goodsKeyWord;
@@ -362,11 +363,11 @@ public class Goods extends ConcurrencySafeEntity {
                 }
             }
             if (goodsNumThanZero) {  // 库存不为0
-                if (this.goodsStatus == 3){ // 若商品为已售罄则改为在售中
+                if (this.goodsStatus == 3) { // 若商品为已售罄则改为在售中
                     this.goodsStatus = 2;
                 }
-            }else{ // 库存为0
-                if (this.goodsStatus == 2){ // 若商品为在售中改为已售罄
+            } else { // 库存为0
+                if (this.goodsStatus == 2) { // 若商品为在售中改为已售罄
                     this.goodsStatus = 3;
                 }
             }
@@ -382,7 +383,7 @@ public class Goods extends ConcurrencySafeEntity {
         }
 
         DomainEventPublisher.instance().publish(new GoodsChangedEvent(this.goodsId, this.goodsName, this.dealerId, this.dealerName,
-                oldGoodsUnitId, newGoodsUnitId));
+                oldGoodsUnitId, newGoodsUnitId, oldGoodsPostageId, this.goodsPostageId, this.goodsStatus));
     }
 
     /**
