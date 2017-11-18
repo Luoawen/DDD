@@ -67,8 +67,8 @@ public class SellerAgent {
 			@RequestParam(value = "sellerPhone", required = false) String sellerPhone,
 			@RequestParam(value = "sellerSex", required = false) Integer sellerSex,
 			@RequestParam(value = "sellerNo", required = false) String sellerNo,
-			@RequestParam(value = "sellerPass", required = false) String sellerPass,
-			@RequestParam(value = "sellerConfirmPass", required = false) String sellerConfirmPass,
+			@RequestParam(value = "sellerPass", required = false,defaultValue="") String sellerPass,
+			@RequestParam(value = "sellerConfirmPass", required = false,defaultValue="") String sellerConfirmPass,
 			@RequestParam(value = "sellerProvince", required = false) String sellerProvince,
 			@RequestParam(value = "sellerCity", required = false) String sellerCity,
 			@RequestParam(value = "sellerArea", required = false) String sellerArea,
@@ -81,6 +81,10 @@ public class SellerAgent {
 		MResult result = new MResult(MCode.V_1);
 		try {
 			String sellerId = IDGenerator.get(IDGenerator.SALE_PREFIX_TITLE);
+			if("".equals(sellerPass) || "".equals(sellerConfirmPass)){
+				result.setErrorMessage("请输入业务员密码");
+				return new ResponseEntity<MResult>(result, HttpStatus.OK);
+			}
 			SellerCommand command = new SellerCommand(sellerId, sellerName, sellerPhone, sellerSex, sellerNo,
 					sellerPass, sellerConfirmPass, sellerProvince, sellerCity, sellerArea, sellerPcode, sellerCcode,
 					sellerAcode, sellerqq, sellerWechat, sellerRemark);
@@ -126,8 +130,8 @@ public class SellerAgent {
 			@RequestParam(value = "sellerPhone", required = true) String sellerPhone,
 			@RequestParam(value = "sellerSex", required = true) Integer sellerSex,
 			@RequestParam(value = "sellerNo", required = false) String sellerNo,
-			@RequestParam(value = "sellerPass", required = true) String sellerPass,
-			@RequestParam(value = "sellerConfirmPass", required = true) String sellerConfirmPass,
+			@RequestParam(value = "sellerPass", required = true,defaultValue="") String sellerPass,
+			@RequestParam(value = "sellerConfirmPass", required = true,defaultValue="") String sellerConfirmPass,
 			@RequestParam(value = "sellerProvince", required = true) String sellerProvince,
 			@RequestParam(value = "sellerCity", required = true) String sellerCity,
 			@RequestParam(value = "sellerArea", required = true) String sellerArea,
