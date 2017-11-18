@@ -130,7 +130,7 @@ public class DealerOrderApplication {
 	public void updateOrderStatus() throws NegativeException {
 		List<DealerOrder> dealerOrders = dealerOrderRepository.getDealerOrderStatusQeury();
 
-		List<DealerOrder> beans = commondMethod(dealerOrders, Long.parseLong(GetDisconfDataGetter.getFinalDisconfDataGetter("order.cinfirm")));
+		List<DealerOrder> beans = commondMethod(dealerOrders, Long.parseLong(GetDisconfDataGetter.getDisconfProperty("order.cinfirm")));
 
 		for (DealerOrder dealerOrder : beans) {
 			jobFinishiedOrder(dealerOrder);
@@ -153,7 +153,7 @@ public class DealerOrderApplication {
 	public void updateDealFinished() throws NegativeException {
 		List<DealerOrder> dealerOrders = dealerOrderRepository.getDealerOrderFinishied();
 
-		List<DealerOrder> beans = commondMethod(dealerOrders, Long.parseLong(GetDisconfDataGetter.getFinalDisconfDataGetter("order.finished")));
+		List<DealerOrder> beans = commondMethod(dealerOrders, Long.parseLong(GetDisconfDataGetter.getDisconfProperty("order.finished")));
 
 		for (DealerOrder dealerOrder : beans) {
 			jobFinishedBuss(dealerOrder);

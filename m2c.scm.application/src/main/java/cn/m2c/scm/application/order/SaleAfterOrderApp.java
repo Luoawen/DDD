@@ -281,7 +281,7 @@ public class SaleAfterOrderApp {
 			throw new NegativeException(NegativeCode.DEALER_ORDER_IS_NOT_EXIST, "没有满足条件的商家订单.");
 		
 		for (SaleAfterOrder bean : saleAfterOrders) {
-			if (((System.currentTimeMillis() - bean.dateToLong()) / (1000 * 60 * 60 * 24 )) > Long.parseLong(GetDisconfDataGetter.getFinalDisconfDataGetter("order.agreeAfterSale")))
+			if (((System.currentTimeMillis() - bean.dateToLong()) / (1000 * 60 * 60 * 24 )) > Long.parseLong(GetDisconfDataGetter.getDisconfProperty("order.agreeAfterSale")))
 				list.add(bean);
 		}
 		for (SaleAfterOrder afterOrder : list) {
@@ -303,7 +303,7 @@ public class SaleAfterOrderApp {
 	public void cancelApply(String userId) throws NegativeException {
 		int hour = 72;
 		try {
-			Integer.parseInt(GetDisconfDataGetter.getFinalDisconfDataGetter("sale.after.cancel.apply"));
+			Integer.parseInt(GetDisconfDataGetter.getDisconfProperty("sale.after.cancel.apply"));
 			if (hour < 1)
 				hour = 1;
 		}
@@ -333,7 +333,7 @@ public class SaleAfterOrderApp {
 	public void afterAgreed(String userId) throws NegativeException {
 		int hour = 168;
 		try {
-			Integer.parseInt(GetDisconfDataGetter.getFinalDisconfDataGetter("sale.after.apply.agreed"));
+			Integer.parseInt(GetDisconfDataGetter.getDisconfProperty("sale.after.apply.agreed"));
 			if (hour < 1)
 				hour = 1;
 		}
@@ -373,7 +373,7 @@ public class SaleAfterOrderApp {
 	public void dealerAutoRec(String userId) throws NegativeException {
 		int hour = 168;
 		try {
-			Integer.parseInt(GetDisconfDataGetter.getFinalDisconfDataGetter("sale.after.dealer.autoRec"));
+			Integer.parseInt(GetDisconfDataGetter.getDisconfProperty("sale.after.dealer.autoRec"));
 			if (hour < 1)
 				hour = 1;
 		}
@@ -410,7 +410,7 @@ public class SaleAfterOrderApp {
 	public void userAutoRec(String userId) throws NegativeException {
 		int hour = 168;
 		try {
-			Integer.parseInt(GetDisconfDataGetter.getFinalDisconfDataGetter("sale.after.user.autoRec"));
+			Integer.parseInt(GetDisconfDataGetter.getDisconfProperty("sale.after.user.autoRec"));
 			if (hour < 1)
 				hour = 1;
 		}
