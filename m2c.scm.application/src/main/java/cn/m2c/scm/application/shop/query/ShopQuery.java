@@ -134,11 +134,14 @@ public class ShopQuery {
 			StringBuffer sql = new StringBuffer("SELECT * FROM t_scm_dealer_shop shop INNER JOIN t_scm_dealer dealer WHERE dealer.dealer_status = 1 AND dealer.dealer_id = shop.dealer_id ");
 			List<Object> params = new ArrayList<Object>();
 			if(dealerId!=null && !"".equals(dealerId.trim())){
-				sql.append(" AND shop.dealer_id = ? or shop.shop_id = ? ");
+				sql.append(" AND (shop.dealer_id = ? or shop.shop_id = ?) ");
 				params.add(dealerId);
 				params.add(dealerId);
 			}
 			shop = this.supportJdbcTemplate.queryForBean(sql.toString(), ShopBean.class, params.toArray());
+			if(shop!=null){
+				shop.setOnSaleGoods(getOnSaleGoodsCount(shop.getDealerId()));
+			}
 		} catch (Exception e) {
 			log.error("根据商家id或者店铺id获取店铺信息出错",e);
 		}
