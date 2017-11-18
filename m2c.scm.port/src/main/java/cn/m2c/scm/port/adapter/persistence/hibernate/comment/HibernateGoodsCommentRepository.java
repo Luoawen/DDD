@@ -3,6 +3,7 @@ package cn.m2c.scm.port.adapter.persistence.hibernate.comment;
 import cn.m2c.ddd.common.port.adapter.persistence.hibernate.HibernateSupperRepository;
 import cn.m2c.scm.domain.model.comment.GoodsComment;
 import cn.m2c.scm.domain.model.comment.GoodsCommentRepository;
+import cn.m2c.scm.domain.util.GetDisconfDataGetter;
 import org.hibernate.Query;
 import org.springframework.stereotype.Repository;
 
@@ -28,8 +29,10 @@ public class HibernateGoodsCommentRepository extends HibernateSupperRepository i
 
     @Override
     public List<GoodsComment> queryOver24HBadComment() {
+        Integer hour = Integer.parseInt(GetDisconfDataGetter.getDisconfProperty("bad.comment.delayed"));
         StringBuilder sql = new StringBuilder("select * from t_scm_goods_comment t where t.delayed_flag=2");
-        sql.append(" and UNIX_TIMESTAMP(t.created_date) < UNIX_TIMESTAMP(NOW()) - 3600 * 24");
+        sql.append(" and UNIX_TIMESTAMP(t.created_date) < UNIX_TIMESTAMP(NOW()) - ");
+        sql.append(3600 * hour);
         Query query = this.session().createSQLQuery(sql.toString()).addEntity(GoodsComment.class);
         return query.list();
     }
