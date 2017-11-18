@@ -81,7 +81,7 @@ public class AfterSellOrderQuery {
 			params.add(createDate);
 		}
 		if (null != condition && !"".equals(condition)) {
-			sql.append(" AND (after.dealer_order_id LIKE ? OR after.after_sell_order_id LIKE ? OR goods.goods_name LIKE ?) ");
+			sql.append(" AND (after.dealer_order_id LIKE ? OR after.after_sell_order_id LIKE ? OR detail.goods_name LIKE ?) ");
 			params.add("%" + condition + "%");
 			params.add("%" + condition + "%");
 			params.add("%" + condition + "%");
