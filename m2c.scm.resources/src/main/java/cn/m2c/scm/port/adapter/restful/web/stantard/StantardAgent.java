@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import cn.m2c.common.MCode;
 import cn.m2c.common.MPager;
 import cn.m2c.common.MResult;
+import cn.m2c.ddd.common.auth.RequirePermissions;
 import cn.m2c.scm.application.standstard.StandstardApplication;
 import cn.m2c.scm.application.standstard.bean.StantardBean;
 import cn.m2c.scm.application.standstard.command.StantardCommand;
@@ -40,6 +41,7 @@ public class StantardAgent {
 	 * @return
 	 */
 	@RequestMapping(value = "", method = RequestMethod.POST)
+	@RequirePermissions(value ={"scm:size:add"})
 	public ResponseEntity<MResult> addStandart(@RequestParam(value = "stantardName",required = false) String stantardName){
 		MResult result = new MResult(MCode.V_1);
 		try {
@@ -63,6 +65,7 @@ public class StantardAgent {
 	 * @return
 	 */
 	@RequestMapping(value = "", method = RequestMethod.DELETE)
+	@RequirePermissions(value ={"scm:size:delete"})
 	public ResponseEntity<MResult> delUnit(@RequestParam(value = "stantardId", required = false) String stantardId) {
 		MResult result = new MResult(MCode.V_1);
 		try {
@@ -84,6 +87,7 @@ public class StantardAgent {
 	 * @return
 	 */
 	@RequestMapping(value = "", method = RequestMethod.PUT)
+	@RequirePermissions(value ={"scm:size:add"})
 	public ResponseEntity<MResult> updateUnit(
 			@RequestParam(value = "stantardId", required = false) String stantardId,
 			@RequestParam(value = "stantardName", required = false) String stantardName) {

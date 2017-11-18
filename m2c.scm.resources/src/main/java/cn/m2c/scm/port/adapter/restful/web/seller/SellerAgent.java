@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import cn.m2c.common.MCode;
 import cn.m2c.common.MPager;
 import cn.m2c.common.MResult;
+import cn.m2c.ddd.common.auth.RequirePermissions;
 import cn.m2c.scm.application.dealer.data.export.SellerExportModel;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsSkuBean;
 import cn.m2c.scm.application.goods.query.data.export.GoodsServiceRateModel;
@@ -63,6 +64,7 @@ public class SellerAgent {
 	 * @return
 	 */
 	@RequestMapping(value = "", method = RequestMethod.POST)
+	@RequirePermissions(value ={"scm:seller:add"})
 	public ResponseEntity<MResult> add(@RequestParam(value = "sellerName", required = false) String sellerName,
 			@RequestParam(value = "sellerPhone", required = false) String sellerPhone,
 			@RequestParam(value = "sellerSex", required = false) Integer sellerSex,
@@ -125,6 +127,7 @@ public class SellerAgent {
 	 * @return
 	 */
 	@RequestMapping(value = "", method = RequestMethod.PUT)
+	@RequirePermissions(value ={"scm:seller:add"})
 	public ResponseEntity<MResult> update(@RequestParam(value = "sellerId", required = true) String sellerId,
 			@RequestParam(value = "sellerName", required = true) String sellerName,
 			@RequestParam(value = "sellerPhone", required = true) String sellerPhone,
@@ -216,6 +219,7 @@ public class SellerAgent {
 	 * @return
 	 */
 	@RequestMapping(value = "/exportSeller", method = RequestMethod.GET)
+	@RequirePermissions(value ={"scm:seller:export"})
 	public ResponseEntity<MPager> getSellerExport(
 			HttpServletResponse response,
 			@RequestParam(value = "filter", required = false) String filter,

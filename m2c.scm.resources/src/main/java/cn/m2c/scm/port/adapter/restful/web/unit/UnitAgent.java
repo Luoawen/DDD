@@ -3,6 +3,7 @@ package cn.m2c.scm.port.adapter.restful.web.unit;
 import java.util.List;
 
 
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import cn.m2c.common.MCode;
 import cn.m2c.common.MPager;
 import cn.m2c.common.MResult;
+import cn.m2c.ddd.common.auth.RequirePermissions;
 import cn.m2c.scm.application.unit.UnitApplication;
 import cn.m2c.scm.application.unit.bean.UnitBean;
 import cn.m2c.scm.application.unit.command.UnitCommand;
@@ -42,6 +44,7 @@ public class UnitAgent {
 	 * @return
 	 */
 	@RequestMapping(value = "", method = RequestMethod.POST)
+	@RequirePermissions(value ={"scm:unit:add"})
 	public ResponseEntity<MResult> addUnit(@RequestParam(value = "unitName", required = false) String unitName) {
 		MResult result = new MResult(MCode.V_1);
 		try {
@@ -65,6 +68,7 @@ public class UnitAgent {
 	 * @return
 	 */
 	@RequestMapping(value = "", method = RequestMethod.DELETE)
+	@RequirePermissions(value ={"scm:unit:delete"})
 	public ResponseEntity<MResult> delUnit(@RequestParam(value = "unitId", required = false) String unitId) {
 		MResult result = new MResult(MCode.V_1);
 		try {
@@ -86,6 +90,7 @@ public class UnitAgent {
 	 * @return
 	 */
 	@RequestMapping(value = "", method = RequestMethod.PUT)
+	@RequirePermissions(value ={"scm:unit:add"})
 	public ResponseEntity<MResult> updateUnit(
 			@RequestParam(value = "unitId", required = false) String unitId,
 			@RequestParam(value = "unitName", required = false) String unitName) {
