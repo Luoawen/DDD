@@ -42,7 +42,7 @@ public class DealerQueryAgent {
     @RequestMapping(value = "/information",method = RequestMethod.GET)
     public ResponseEntity<MPager> getDealerByDealerIdOrName(
     		@RequestParam(value = "dealerMessage",required = false) String dealerMessage,
-            @RequestParam(value = "pageOrNot", required = false, defaultValue = "0") Integer pageOrNot,
+            @RequestParam(value = "pageOrNot", required = false, defaultValue = "1") Integer pageOrNot,
     		@RequestParam(value = "pageNum", required = false, defaultValue = "1") Integer pageNum,
             @RequestParam(value = "rows", required = false, defaultValue = "10") Integer rows){
     	MPager result = new MPager(MCode.V_1);
