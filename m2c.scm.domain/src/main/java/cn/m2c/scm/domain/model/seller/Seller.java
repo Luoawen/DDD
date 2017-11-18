@@ -113,7 +113,9 @@ public class Seller extends ConcurrencySafeEntity {
 		this.sellerPhone = sellerPhone;
 		this.sellerSex = sellerSex;
 		this.sellerNo = sellerNo;
-		this.sellerConfirmPass = sellerConfirmPass;
+		if(!"".equals(sellerConfirmPass)){
+			this.sellerConfirmPass = sellerConfirmPass;
+		}
 		this.sellerProvince = sellerProvince;
 		this.sellerCity = sellerCity;
 		this.sellerArea = sellerArea;

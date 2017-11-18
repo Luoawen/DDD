@@ -182,9 +182,6 @@ public class SellerCommand extends AssertionConcern implements Serializable{
 		if (StringUtils.isEmpty(sellerNo.replaceAll(" ", ""))) {
 			throw new NegativeException(400,"请输入业务员编号");
 		}
-		if (StringUtils.isEmpty(sellerConfirmPass.replaceAll(" ", ""))) {
-			throw new NegativeException(400,"请确认密码");
-		}
 		if (StringUtils.isEmpty(sellerProvince.replaceAll(" ", "")) || StringUtils.isEmpty(sellerPcode.replaceAll(" ", ""))) {
 			throw new NegativeException(400,"请输入省信息");
 		}
