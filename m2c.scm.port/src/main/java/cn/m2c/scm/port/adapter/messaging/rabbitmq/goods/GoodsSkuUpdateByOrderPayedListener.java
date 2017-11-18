@@ -34,7 +34,7 @@ public class GoodsSkuUpdateByOrderPayedListener extends ExchangeListener {
     protected void filteredDispatch(String aType, String aTextMessage) throws Exception {
         Map map = JsonUtils.toMap4Obj(aTextMessage);
         Map<String, Object> obj = JsonUtils.toMap4Obj(JsonUtils.toStr(map.get("sales")));
-        goodsApplication.GoodsSkuUpdateByOrderCancel(obj);
+        goodsApplication.GoodsSkuUpdateByOrderPayed(obj);
     }
 
     @Override
