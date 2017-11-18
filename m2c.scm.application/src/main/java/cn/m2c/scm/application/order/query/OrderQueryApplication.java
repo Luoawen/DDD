@@ -362,7 +362,7 @@ public class OrderQueryApplication {
 			sql.append("SELECT count(1) FROM t_scm_order_dealer b \r\n")
 			.append("LEFT OUTER JOIN t_scm_order_main a ON a.order_id=b.order_id \r\n") 
 			.append("LEFT OUTER JOIN t_scm_dealer c ON c.dealer_id = b.dealer_id \r\n")
-			.append("WHERE a.user_id=? AND a.del_flag=0 ");
+			.append("WHERE a.user_id=? AND a.del_flag=0 AND b.del_flag=0 ");
 			params.add(userId);
 			
 			if (commentStatus != null && commentStatus == 1) {
@@ -370,7 +370,12 @@ public class OrderQueryApplication {
 				status = 3;
 				params.add(status);
 			}
-			else if (status != null) {
+			else if (status != null && status==2) {
+				sql.append(" AND b._status IN (?, ?) ");
+				params.add(1);
+				params.add(2);
+			}
+			else if (status != null && status> -2) {
 				sql.append(" AND b._status=?");
 				params.add(status);
 			}
