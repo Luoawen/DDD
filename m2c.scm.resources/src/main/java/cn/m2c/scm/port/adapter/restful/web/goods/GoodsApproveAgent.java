@@ -4,6 +4,7 @@ import cn.m2c.common.JsonUtils;
 import cn.m2c.common.MCode;
 import cn.m2c.common.MPager;
 import cn.m2c.common.MResult;
+import cn.m2c.ddd.common.auth.RequirePermissions;
 import cn.m2c.scm.application.CommonApplication;
 import cn.m2c.scm.application.classify.query.GoodsClassifyQueryApplication;
 import cn.m2c.scm.application.dealer.data.bean.DealerBean;
@@ -109,6 +110,7 @@ public class GoodsApproveAgent {
      * @return
      */
     @RequestMapping(value = "", method = RequestMethod.POST)
+    @RequirePermissions(value ={"scm:goodsCheck:add"})
     public ResponseEntity<MResult> addGoodsApprove(
             @RequestParam(value = "goodsId", required = false) String goodsId,
             @RequestParam(value = "dealerId", required = false) String dealerId,
@@ -176,6 +178,7 @@ public class GoodsApproveAgent {
      * @return
      */
     @RequestMapping(value = "/agree", method = RequestMethod.POST)
+    @RequirePermissions(value ={"scm:goodsCheck:agree"})
     public ResponseEntity<MResult> agreeGoodsApprove(
             @RequestParam(value = "goodsId", required = false) String goodsId
     ) {
@@ -200,6 +203,7 @@ public class GoodsApproveAgent {
      * @return
      */
     @RequestMapping(value = "/reject", method = RequestMethod.POST)
+    @RequirePermissions(value ={"scm:goodsCheck:reject"})
     public ResponseEntity<MResult> rejectGoodsApprove(
             @RequestParam(value = "goodsId", required = false) String goodsId,
             @RequestParam(value = "rejectReason", required = false) String rejectReason
@@ -240,6 +244,7 @@ public class GoodsApproveAgent {
      * @return
      */
     @RequestMapping(value = "", method = RequestMethod.PUT)
+    @RequirePermissions(value ={"scm:goodsCheck:modify"})
     public ResponseEntity<MResult> modifyGoodsApprove(
             @RequestParam(value = "goodsId", required = false) String goodsId,
             @RequestParam(value = "dealerId", required = false) String dealerId,
@@ -296,6 +301,7 @@ public class GoodsApproveAgent {
     }
 
     @RequestMapping(value = "/{goodsId}", method = RequestMethod.DELETE)
+    @RequirePermissions(value ={"scm:goodsCheck:delete"})
     public ResponseEntity<MResult> delGoodsApprove(
             @PathVariable("goodsId") String goodsId
     ) {
