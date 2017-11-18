@@ -212,7 +212,7 @@ public class DealerQuery {
 	public List<DealerBean> getDealers(String dealerIds) throws NegativeException {
 		List<DealerBean> result = null;
 		try {
-			StringBuffer sql = new StringBuffer( " SELECT  sd.dealer_name ,sd.dealer_id ,s.shop_name FROM  t_scm_dealer sd LEFT JOIN t_scm_dealer_shop s ON s.dealer_id = sd.dealer_id WHERE  dealer_status = 1 and sd.dealer_id in (");
+			StringBuffer sql = new StringBuffer( " SELECT  sd.dealer_name ,sd.dealer_id ,s.shop_name, sd.count_mode FROM  t_scm_dealer sd LEFT JOIN t_scm_dealer_shop s ON s.dealer_id = sd.dealer_id WHERE  dealer_status = 1 and sd.dealer_id in (");
 			String[] dealer = dealerIds.split(",");
 			for (int i = 0; i < dealer.length; i++) {
 				if(i==(dealer.length-1)){
