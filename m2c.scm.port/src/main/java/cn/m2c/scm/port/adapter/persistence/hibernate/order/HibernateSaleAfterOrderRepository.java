@@ -90,13 +90,13 @@ public class HibernateSaleAfterOrderRepository extends HibernateSupperRepository
 	
 	@Override
 	public List<SaleAfterOrder> getSaleAfterApplyed(int hour) {
-		return (List<SaleAfterOrder>)this.session().createSQLQuery("SELECT * FROM t_scm_order_after_sell WHERE _status IN(0,1,2) AND round((UNIX_TIMESTAMP(now())-UNIX_TIMESTAMP(created_date))/60)/60/"+hour+" > 1")
+		return (List<SaleAfterOrder>)this.session().createSQLQuery("SELECT * FROM t_scm_order_after_sell WHERE _status IN(0,1,2) AND round((UNIX_TIMESTAMP(now())-UNIX_TIMESTAMP(last_updated_date))/60)/60/"+hour+" > 1")
 				.addEntity(SaleAfterOrder.class).list();
 	}
 	
 	@Override
 	public List<SaleAfterOrder> getAgreeRtMoney(int hour) {
-		return (List<SaleAfterOrder>)this.session().createSQLQuery("SELECT * FROM t_scm_order_after_sell WHERE _status=4 AND order_type = 2 AND round((UNIX_TIMESTAMP(now())-UNIX_TIMESTAMP(created_date))/60)/60/"+hour+" > 1")
+		return (List<SaleAfterOrder>)this.session().createSQLQuery("SELECT * FROM t_scm_order_after_sell WHERE _status=4 AND order_type = 2 AND round((UNIX_TIMESTAMP(now())-UNIX_TIMESTAMP(last_updated_date))/60)/60/"+hour+" > 1")
 				.addEntity(SaleAfterOrder.class).list();
 	}
 	/***
@@ -104,7 +104,7 @@ public class HibernateSaleAfterOrderRepository extends HibernateSupperRepository
 	 */
 	@Override
 	public List<SaleAfterOrder> getUserSend(int hour) {
-		return (List<SaleAfterOrder>)this.session().createSQLQuery("SELECT * FROM t_scm_order_after_sell WHERE _status=5 AND order_type IN(0,1) AND round((UNIX_TIMESTAMP(now())-UNIX_TIMESTAMP(created_date))/60)/60/"+hour+" > 1")
+		return (List<SaleAfterOrder>)this.session().createSQLQuery("SELECT * FROM t_scm_order_after_sell WHERE _status=5 AND order_type IN(0,1) AND round((UNIX_TIMESTAMP(now())-UNIX_TIMESTAMP(last_updated_date))/60)/60/"+hour+" > 1")
 				.addEntity(SaleAfterOrder.class).list();
 	}
 	/***
@@ -112,7 +112,7 @@ public class HibernateSaleAfterOrderRepository extends HibernateSupperRepository
 	 */
 	@Override
 	public List<SaleAfterOrder> getDealerSend(int hour) {
-		return (List<SaleAfterOrder>)this.session().createSQLQuery("SELECT * FROM t_scm_order_after_sell WHERE _status=7 AND order_type=0 AND round((UNIX_TIMESTAMP(now())-UNIX_TIMESTAMP(created_date))/60)/60/"+hour+" > 1")
+		return (List<SaleAfterOrder>)this.session().createSQLQuery("SELECT * FROM t_scm_order_after_sell WHERE _status=7 AND order_type=0 AND round((UNIX_TIMESTAMP(now())-UNIX_TIMESTAMP(last_updated_date))/60)/60/"+hour+" > 1")
 				.addEntity(SaleAfterOrder.class).list();
 	}
 }
