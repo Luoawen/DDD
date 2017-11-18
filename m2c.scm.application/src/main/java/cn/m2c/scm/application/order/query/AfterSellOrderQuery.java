@@ -82,7 +82,6 @@ public class AfterSellOrderQuery {
 		}
 		if (null != condition && !"".equals(condition)) {
 			sql.append(" AND (after.dealer_order_id LIKE ? OR after.after_sell_order_id LIKE ? OR goods.goods_name LIKE ?) ");
-			params.add(condition);
 			params.add("%" + condition + "%");
 			params.add("%" + condition + "%");
 			params.add("%" + condition + "%");
@@ -148,7 +147,6 @@ public class AfterSellOrderQuery {
 		}
 		if (null != condition && !"".equals(condition)) {
 			sql.append(" AND (after.dealer_order_id LIKE ? OR after.after_sell_order_id LIKE ? OR goods.goods_name LIKE ?) ");
-			params.add(condition);
 			params.add("%" + condition + "%");
 			params.add("%" + condition + "%");
 			params.add("%" + condition + "%");
