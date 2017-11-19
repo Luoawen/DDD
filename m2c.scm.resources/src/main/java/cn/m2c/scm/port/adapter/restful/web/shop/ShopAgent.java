@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import cn.m2c.common.MCode;
 import cn.m2c.common.MPager;
 import cn.m2c.common.MResult;
+import cn.m2c.ddd.common.auth.RequirePermissions;
 import cn.m2c.scm.application.goods.query.GoodsQueryApplication;
 import cn.m2c.scm.application.shop.ShopApplication;
 import cn.m2c.scm.application.shop.command.ShopInfoUpdateCommand;
@@ -105,6 +106,7 @@ public class ShopAgent {
 		  * @return
 		  */
 		 @RequestMapping(value = "/shopInfo", method = RequestMethod.PUT)
+		 @RequirePermissions(value ={"scm:shop:add"})
 		    public ResponseEntity<MResult> updateShopInfo(
 		            @RequestParam(value = "dealerId", required = true) String dealerId,
 		            @RequestParam(value = "shopId", required = false) String shopId,
@@ -136,6 +138,7 @@ public class ShopAgent {
 		  * @return
 		  */
 		 @RequestMapping(value = "/shopInfo", method = RequestMethod.POST)
+		 @RequirePermissions(value ={"scm:shop:add"})
 		    public ResponseEntity<MResult> addShopInfo(
 		            @RequestParam(value = "dealerId", required = true) String dealerId,
 		            @RequestParam(value = "shopName", required = true) String shopName,

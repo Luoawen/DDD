@@ -3,6 +3,7 @@ package cn.m2c.scm.port.adapter.restful.web.comment;
 import cn.m2c.common.MCode;
 import cn.m2c.common.MPager;
 import cn.m2c.common.MResult;
+import cn.m2c.ddd.common.auth.RequirePermissions;
 import cn.m2c.scm.application.comment.GoodsCommentApplication;
 import cn.m2c.scm.application.comment.command.ReplyGoodsCommentCommand;
 import cn.m2c.scm.application.comment.query.GoodsCommentQueryApplication;
@@ -81,6 +82,7 @@ public class GoodsCommentAgent {
      * @return
      */
     @RequestMapping(value = "/reply", method = RequestMethod.PUT)
+    @RequirePermissions(value ={"scm:goodsAppraise:reply"})
     public ResponseEntity<MResult> replyComment(
             @RequestParam(value = "commentId", required = false) String commentId,
             @RequestParam(value = "replyContent", required = false) String replyContent
@@ -107,6 +109,7 @@ public class GoodsCommentAgent {
      * @return
      */
     @RequestMapping(value = "/{commentId}", method = RequestMethod.DELETE)
+    @RequirePermissions(value ={"scm:goodsAppraise:delete"})
     public ResponseEntity<MResult> delComment(
             @PathVariable("commentId") String commentId
     ) {

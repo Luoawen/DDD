@@ -172,18 +172,11 @@ public class SellerCommand extends AssertionConcern implements Serializable{
 		if (null == sellerSex) {
 			throw new NegativeException(400,"请选择业务员性别");
 		}
-		if (StringUtils.isEmpty(sellerPass.replaceAll(" ", ""))) {
-			throw new NegativeException(400,"请输入业务员密码");
-		}
-		
 		if (StringUtils.isEmpty(sellerPhone.replaceAll(" ", ""))) {
 			throw new NegativeException(400,"请输入业务员电话");
 		}
 		if (StringUtils.isEmpty(sellerNo.replaceAll(" ", ""))) {
 			throw new NegativeException(400,"请输入业务员编号");
-		}
-		if (StringUtils.isEmpty(sellerConfirmPass.replaceAll(" ", ""))) {
-			throw new NegativeException(400,"请确认密码");
 		}
 		if (StringUtils.isEmpty(sellerProvince.replaceAll(" ", "")) || StringUtils.isEmpty(sellerPcode.replaceAll(" ", ""))) {
 			throw new NegativeException(400,"请输入省信息");
@@ -199,9 +192,6 @@ public class SellerCommand extends AssertionConcern implements Serializable{
 		}
 		if (sellerPhone.length() > 11) {
 			throw new NegativeException(400,"业务员电话不能超过11位");
-		}
-		if (!(sellerPass.equals(sellerConfirmPass))) {
-			throw new NegativeException(400,"两次密码不相同");
 		}
 		this.sellerId = sellerId;
 		this.sellerName = sellerName;

@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import cn.m2c.common.MCode;
 import cn.m2c.common.MPager;
 import cn.m2c.common.MResult;
+import cn.m2c.ddd.common.auth.RequirePermissions;
 import cn.m2c.scm.application.dealer.data.export.SellerExportModel;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsSkuBean;
 import cn.m2c.scm.application.goods.query.data.export.GoodsServiceRateModel;
@@ -63,12 +64,13 @@ public class SellerAgent {
 	 * @return
 	 */
 	@RequestMapping(value = "", method = RequestMethod.POST)
+	@RequirePermissions(value ={"scm:seller:add"})
 	public ResponseEntity<MResult> add(@RequestParam(value = "sellerName", required = false) String sellerName,
 			@RequestParam(value = "sellerPhone", required = false) String sellerPhone,
 			@RequestParam(value = "sellerSex", required = false) Integer sellerSex,
 			@RequestParam(value = "sellerNo", required = false) String sellerNo,
-			@RequestParam(value = "sellerPass", required = false) String sellerPass,
-			@RequestParam(value = "sellerConfirmPass", required = false) String sellerConfirmPass,
+			@RequestParam(value = "sellerPass", required = false,defaultValue="") String sellerPass,
+			@RequestParam(value = "sellerConfirmPass", required = false,defaultValue="") String sellerConfirmPass,
 			@RequestParam(value = "sellerProvince", required = false) String sellerProvince,
 			@RequestParam(value = "sellerCity", required = false) String sellerCity,
 			@RequestParam(value = "sellerArea", required = false) String sellerArea,
@@ -81,6 +83,10 @@ public class SellerAgent {
 		MResult result = new MResult(MCode.V_1);
 		try {
 			String sellerId = IDGenerator.get(IDGenerator.SALE_PREFIX_TITLE);
+			if("".equals(sellerPass) || "".equals(sellerConfirmPass)){
+				result.setErrorMessage("请输入业务员密码");
+				return new ResponseEntity<MResult>(result, HttpStatus.OK);
+			}
 			SellerCommand command = new SellerCommand(sellerId, sellerName, sellerPhone, sellerSex, sellerNo,
 					sellerPass, sellerConfirmPass, sellerProvince, sellerCity, sellerArea, sellerPcode, sellerCcode,
 					sellerAcode, sellerqq, sellerWechat, sellerRemark);
@@ -121,13 +127,14 @@ public class SellerAgent {
 	 * @return
 	 */
 	@RequestMapping(value = "", method = RequestMethod.PUT)
+	@RequirePermissions(value ={"scm:seller:add"})
 	public ResponseEntity<MResult> update(@RequestParam(value = "sellerId", required = true) String sellerId,
 			@RequestParam(value = "sellerName", required = true) String sellerName,
 			@RequestParam(value = "sellerPhone", required = true) String sellerPhone,
 			@RequestParam(value = "sellerSex", required = true) Integer sellerSex,
 			@RequestParam(value = "sellerNo", required = false) String sellerNo,
-			@RequestParam(value = "sellerPass", required = true) String sellerPass,
-			@RequestParam(value = "sellerConfirmPass", required = true) String sellerConfirmPass,
+			@RequestParam(value = "sellerPass", required = true,defaultValue="") String sellerPass,
+			@RequestParam(value = "sellerConfirmPass", required = true,defaultValue="") String sellerConfirmPass,
 			@RequestParam(value = "sellerProvince", required = true) String sellerProvince,
 			@RequestParam(value = "sellerCity", required = true) String sellerCity,
 			@RequestParam(value = "sellerArea", required = true) String sellerArea,
@@ -212,6 +219,7 @@ public class SellerAgent {
 	 * @return
 	 */
 	@RequestMapping(value = "/exportSeller", method = RequestMethod.GET)
+	@RequirePermissions(value ={"scm:seller:export"})
 	public ResponseEntity<MPager> getSellerExport(
 			HttpServletResponse response,
 			@RequestParam(value = "filter", required = false) String filter,

@@ -4,6 +4,7 @@ import cn.m2c.common.JsonUtils;
 import cn.m2c.common.MCode;
 import cn.m2c.common.MPager;
 import cn.m2c.common.MResult;
+import cn.m2c.ddd.common.auth.RequirePermissions;
 import cn.m2c.scm.application.CommonApplication;
 import cn.m2c.scm.application.classify.query.GoodsClassifyQueryApplication;
 import cn.m2c.scm.application.dealer.data.bean.DealerBean;
@@ -87,6 +88,7 @@ public class GoodsAgent {
      * @return
      */
     @RequestMapping(value = "", method = RequestMethod.PUT)
+    @RequirePermissions(value ={"scm:goodsStorage:modify"})
     public ResponseEntity<MResult> modifyGoods(
             @RequestParam(value = "goodsId", required = false) String goodsId,
             @RequestParam(value = "dealerId", required = false) String dealerId,
@@ -154,6 +156,7 @@ public class GoodsAgent {
      * @return
      */
     @RequestMapping(value = "/{goodsId}", method = RequestMethod.DELETE)
+    @RequirePermissions(value ={"scm:goodsStorage:delete"})
     public ResponseEntity<MResult> delGoods(
             @PathVariable("goodsId") String goodsId
     ) {
@@ -178,6 +181,7 @@ public class GoodsAgent {
      * @return
      */
     @RequestMapping(value = "/up/shelf/{goodsId}", method = RequestMethod.PUT)
+    @RequirePermissions(value ={"scm:goodsStorage:upShelf"})
     public ResponseEntity<MResult> upShelfGoods(
             @PathVariable("goodsId") String goodsId
     ) {
@@ -202,6 +206,7 @@ public class GoodsAgent {
      * @return
      */
     @RequestMapping(value = "/off/shelf/{goodsId}", method = RequestMethod.PUT)
+    @RequirePermissions(value ={"scm:goodsStorage:offShelf"})
     public ResponseEntity<MResult> offShelfGoods(
             @PathVariable("goodsId") String goodsId
     ) {
@@ -226,6 +231,7 @@ public class GoodsAgent {
      * @return
      */
     @RequestMapping(value = "/recognized/{goodsId}", method = RequestMethod.PUT)
+    @RequirePermissions(value ={"scm:goodsStorage:modifyRecognized"})
     public ResponseEntity<MResult> modifyRecognized(
             @PathVariable("goodsId") String goodsId,
             @RequestParam(value = "recognizedId", required = false) String recognizedId,
@@ -345,6 +351,7 @@ public class GoodsAgent {
      * @return
      */
     @RequestMapping(value = "/main/image/{goodsId}", method = RequestMethod.PUT)
+    @RequirePermissions(value ={"scm:goodsStorage:modifyMainImage"})
     public ResponseEntity<MResult> modifyGoodsMainImages(
             @PathVariable("goodsId") String goodsId,
             @RequestParam(value = "images", required = false) List images

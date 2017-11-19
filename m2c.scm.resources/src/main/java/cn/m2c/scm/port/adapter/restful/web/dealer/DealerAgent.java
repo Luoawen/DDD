@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import cn.m2c.common.MCode;
 import cn.m2c.common.MPager;
 import cn.m2c.common.MResult;
+import cn.m2c.ddd.common.auth.RequirePermissions;
 import cn.m2c.scm.application.dealer.DealerApplication;
 import cn.m2c.scm.application.dealer.command.DealerAddOrUpdateCommand;
 import cn.m2c.scm.application.dealer.data.bean.DealerBean;
@@ -73,6 +74,7 @@ public class DealerAgent {
 	 * @return
 	 */
 	@RequestMapping(value="",method = RequestMethod.POST)
+	@RequirePermissions(value ={"scm:dealer:add"})
 	public ResponseEntity<MResult> add(
 			@RequestParam(value="userId",required=true)String userId,
 			@RequestParam(value="userName",required=true)String userName,
@@ -150,6 +152,7 @@ public class DealerAgent {
 	 * @return
 	 */
 	@RequestMapping(value="",method = RequestMethod.PUT)
+	@RequirePermissions(value ={"scm:dealer:add"})
 	public ResponseEntity<MResult> update(
 			@RequestParam(value="dealerId",required=true)String dealerId,
 			@RequestParam(value="userId",required=true)String userId,
