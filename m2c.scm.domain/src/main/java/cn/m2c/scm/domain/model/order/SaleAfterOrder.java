@@ -42,7 +42,7 @@ public class SaleAfterOrder extends ConcurrencySafeEntity {
 	private String reason;
 	/**拒绝原因*/
 	private String rejectReason;
-	/**状态，0申请退货,1申请换货,2申请退款,3拒绝,4同意(退换货),5客户寄出,6商家收到,7商家寄出,8客户收到,9同意退款, 10确认退款*/
+	/**状态，0申请退货,1申请换货,2申请退款,3拒绝,4同意(退换货),5客户寄出,6商家收到,7商家寄出,8客户收到,9同意退款, 10确认退款 11交易完成，12交易关闭*/
 	private Integer status;
 	/**售后单类型*/
 	private Integer orderType;
@@ -167,7 +167,7 @@ public class SaleAfterOrder extends ConcurrencySafeEntity {
 	public boolean userConfirmRev(String userId) {
 		if (status < 7)
 			return false;
-		status = 8;
+		status = 11;
 		DomainEventPublisher.instance().publish(new OrderOptLogEvent(saleAfterNo, null, "确认收货", userId));
 		return true;
 	}

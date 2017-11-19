@@ -65,20 +65,36 @@ public class SaleAfterOrderApp {
 		// 生成售后单保存, 计算售后需要退的钱
 		String mkId = itemDtl.getMarketId(); 
 		long discountMoney = 0;
+		long money = itemDtl.sumGoodsMoney();
 		if (mkId != null) {//计算售后需要退的钱
 			SimpleMarket marketInfo = saleOrderQuery.getMarketById(mkId, cmd.getOrderId());
 			List<SkuNumBean> skuBeanLs =saleOrderQuery.getOrderDtlByMarketId(mkId, cmd.getOrderId());
 			
 			discountMoney = OrderMarketCalc.calcReturnMoney(marketInfo, skuBeanLs, cmd.getSkuId());
+			if (marketInfo != null && marketInfo.isFull())
+				money = itemDtl.changePrice();
 		}
 		//long ft = itemDtl.isDeliver() ? 0 : itemDtl.getFreight();
 		long ft = 0;
-		long money = itemDtl.sumGoodsMoney() - discountMoney;
 		
-		int status = cmd.getType() == 3 ? 0 : cmd.getType(); //0换货， 1退货，2仅退款                   1退货，2退款，3换货
+		money = money - discountMoney;
+		
+		int orderType = cmd.getType() == 3 ? 0 : cmd.getType(); //0换货， 1退货，2仅退款                  app传 1退货，2退款，3换货
+		int status = 2; //0申请退货,1申请换货,2申请退款
+		switch (cmd.getType()) {
+			case 1:
+				status = 0;
+				break;
+			case 2:
+				status = 2;
+				break;
+			case 3:
+				status = 1;
+				break;
+		}
 		SaleAfterOrder afterOrder = new SaleAfterOrder(cmd.getSaleAfterNo(), cmd.getUserId(), cmd.getOrderId(),
 				cmd.getDealerOrderId(), cmd.getDealerId(), cmd.getGoodsId(), cmd.getSkuId(), cmd.getReason()
-				, cmd.getBackNum(), status, cmd.getType(), money, cmd.getReasonCode(), ft);
+				, cmd.getBackNum(), status, orderType, money, cmd.getReasonCode(), ft);
 		
 		saleAfterRepository.save(afterOrder);
 		LOGGER.info("新增加售后申请成功！");
@@ -435,6 +451,8 @@ public class SaleAfterOrderApp {
 		if (!afterOrder.userConfirmRev(userId)) {
 			throw new NegativeException(MCode.V_103, "状态不正确，不能进行此操作！");
 		}		
+		// 查询出订单详情中的对应记录 标记为完成状态
+		// adfsaf;
 		saleAfterRepository.save(afterOrder);
 	}
 }

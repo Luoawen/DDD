@@ -267,4 +267,11 @@ public class DealerOrderDtl extends ConcurrencySafeEntity {
 		
 		return false;
 	}
+	
+	public long changePrice() {
+		if (goodsInfo != null && goodsInfo.isChange()) {
+			return goodsInfo.changePrice();
+		}
+		return goodsAmount;
+	}
 }

@@ -198,7 +198,7 @@ public class OrderMarketCalc {
             		subSum += a;
             	}
             } else if (fullType == 2) { // 除以1000是因为前面已经乘以100了，因存的是8表示8折优惠
-                d.setPlateformDiscount((long) (fullNum * d.getDiscountPrice() * d.getPurNum() / 1000.0));
+                d.setPlateformDiscount((long) (d.getDiscountPrice() * d.getPurNum() * (1 - fullNum/ 1000.0)));
             }
         }
     }
@@ -331,7 +331,7 @@ public class OrderMarketCalc {
             }
 
             if (a == 2)
-                rtMoney = (long) (tmp.getGoodsAmount() * discount / 1000.0);
+                rtMoney = (long) (tmp.getGoodsAmount() * (1 - discount / 1000.0));
             else if (a == 3 && tmp != null && tmp.getIsChange() == 1) {
             	rtMoney = tmp.getGoodsAmount() - (tmp.getChangePrice() * tmp.getNum());
             	marketInfo.setIsFull(false);
@@ -350,7 +350,7 @@ public class OrderMarketCalc {
                         bean.setDiscountMoney(0);
                         break;
                     case 2://打折就不用计算
-                        rtMoney += (bean.getGoodsAmount() * discount / 1000.0);
+                        rtMoney += (bean.getGoodsAmount() * (1 - discount / 1000.0));
                         break;
                     case 3:
                         bean.setDiscountMoney(0);
@@ -358,7 +358,7 @@ public class OrderMarketCalc {
                 }
             }
             if (a == 2) {
-                rtMoney += (tmp.getGoodsAmount() * discount / 1000.0);
+                rtMoney += (tmp.getGoodsAmount() * (1 - discount / 1000.0));
             } else
                 rtMoney = discount;
         }

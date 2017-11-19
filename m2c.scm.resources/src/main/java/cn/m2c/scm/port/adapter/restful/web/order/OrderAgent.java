@@ -133,7 +133,7 @@ public class OrderAgent {
 			LOGGER.error("获取商家订单出错" + e.getMessage(), e);
             result = new MPager(MCode.V_400, "服务器开小差了");
 		}
-		return new ResponseEntity<MResult>(result,HttpStatus.OK);
+		return new ResponseEntity<MResult>(result, HttpStatus.OK);
 	}
 	/***
 	 * 商家同意售后申请

@@ -109,4 +109,12 @@ public class GoodsInfo extends ValueObject {
 	long calGoodsAmount() {
 		return discountPrice * sellNum;
 	}
+	
+	boolean isChange() {
+		return isChange == 1;
+	}
+	
+	long changePrice() {
+		return changePrice * sellNum;
+	}
 }

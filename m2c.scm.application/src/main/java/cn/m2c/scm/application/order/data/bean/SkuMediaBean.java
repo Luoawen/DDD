@@ -5,6 +5,8 @@ public class SkuMediaBean {
 	private String skuId;
 	
 	private String mresId;
+	
+	private String goodsId;
 	/**商品顶级分类*/
 	private String goodsTypeCode;
 	
@@ -12,6 +14,14 @@ public class SkuMediaBean {
 		
 	}
 	
+	public String getGoodsId() {
+		return goodsId;
+	}
+
+	public void setGoodsId(String goodsId) {
+		this.goodsId = goodsId;
+	}
+
 	public SkuMediaBean(String skuId, String mresId) {
 		this.skuId = skuId;
 		this.mresId = mresId;

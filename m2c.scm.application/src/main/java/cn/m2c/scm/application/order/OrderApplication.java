@@ -710,6 +710,7 @@ public class OrderApplication {
                 SkuMediaBean skb = resMap.get(d.getSkuId());
                 if (skb != null) {
                     clsIdMedia.add(s);
+                    skb.setGoodsId(d.getGoodsId());
                     skb.setGoodsTypeCode(s);
                 }
             }
