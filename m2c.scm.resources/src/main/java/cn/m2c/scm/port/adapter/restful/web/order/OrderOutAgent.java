@@ -1,7 +1,10 @@
 package cn.m2c.scm.port.adapter.restful.web.order;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import cn.m2c.common.JsonUtils;
 import cn.m2c.common.MCode;
 import cn.m2c.common.MResult;
 import cn.m2c.scm.application.order.OrderApplication;
@@ -124,6 +128,38 @@ public class OrderOutAgent {
 			LOGGER.info("获取订单数失败,e:" + e.getMessage());
 			result.setStatus(MCode.V_400);
 			result.setContent("获取订单数失败");
+		}
+    	return new ResponseEntity<MResult>(result,HttpStatus.OK);
+    }
+    
+    /**
+     * 根据子订单号查询订单是否可以结算
+     */
+    @RequestMapping(value="/suborder/status", method = RequestMethod.GET)
+    public ResponseEntity<MResult> getCanCheckOutOrders(@RequestParam(value="userId", required=false) String userId
+    		,@RequestParam(value="subOrderIds", required=false) String subOrderIds
+    		){
+    	MResult result = new MResult(MCode.V_1);
+    	try {
+    		
+    		if (StringUtils.isEmpty(subOrderIds)) {
+    			result.setContent("subOrderIds参数为空！");
+    		}
+    		
+    		List<String> ls = JsonUtils.toList(subOrderIds, String.class);
+    		
+    		Map<String, Integer> rs = orderQuery.getCanCheckOrder(ls);
+    		result.setContent(rs);
+    		result.setStatus(MCode.V_200);
+		} 
+    	catch (NegativeException e) {
+    		result.setStatus(e.getStatus());
+			result.setContent(e.getMessage());
+    	}
+    	catch (Exception e) {
+			LOGGER.info("获取可结算订单失败,e:" + e.getMessage());
+			result.setStatus(MCode.V_400);
+			result.setContent("获取可结算订单失败");
 		}
     	return new ResponseEntity<MResult>(result,HttpStatus.OK);
     }

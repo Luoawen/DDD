@@ -428,4 +428,42 @@ public class OrderQuery {
 		
 		return orders;
 	}
+	
+	/***
+	 * 获取可结算订单
+	 * @param ids
+	 * @return
+	 */
+	public Map<String, Integer> getCanCheckOrder(List<String> ids) throws NegativeException {
+		
+		Map<String, Integer> result = null;
+		
+		if (ids == null || ids.size() < 1) {
+			return result;
+		}
+		
+		StringBuilder sql = new StringBuilder();
+		sql.append(" select a.dealer_order_id from t_scm_order_dealer a \r\n")
+		.append(",t_scm_order_main b \r\n")
+		.append("where a.order_id = b.order_id\r\n")
+		.append("and a._status IN (4, 5)\r\n")
+		.append("and b._status IN (4, 5)\r\n");
+		sql.append("and a.dealer_order_id IN(");
+		int sz = ids.size();
+		for(int i = 0; i<sz; i++) {
+			if (i > 0)
+				sql.append(",");
+			sql.append("?");
+		}
+		sql.append(")");
+		List<String> ls = supportJdbcTemplate.jdbcTemplate().queryForList(sql.toString(), String.class, ids.toArray());
+		if (ls == null)
+			return result;
+		
+		result = new HashMap<String, Integer>();
+		for(String a : ls) {
+			result.put(a, 1);
+		}
+		return result;
+	}
 }
