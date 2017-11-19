@@ -115,4 +115,21 @@ public class HibernateSaleAfterOrderRepository extends HibernateSupperRepository
 		return (List<SaleAfterOrder>)this.session().createSQLQuery("SELECT * FROM t_scm_order_after_sell WHERE _status=7 AND order_type=0 AND round((UNIX_TIMESTAMP(now())-UNIX_TIMESTAMP(last_updated_date))/60)/60/"+hour+" > 1")
 				.addEntity(SaleAfterOrder.class).list();
 	}
+	
+	@Override
+	public List<Long> getSpecifiedDtlGoods(int hour) {
+		List<Long> rs = this.session().createSQLQuery("SELECT a.id from t_scm_order_detail a\r\n" + 
+				",t_scm_order_after_sell b \r\n" + 
+				"WHERE a.order_id = b.order_id\r\n" + 
+				"AND a.dealer_order_id = b.dealer_order_id\r\n" + 
+				"AND a.sku_id = b.sku_id\r\n" + 
+				"AND a._status NOT IN (4,5, -1)\r\n" + 
+				"AND b._status IN (11, 12)")
+		.addEntity(Long.class).list();
+		
+		if (rs != null && rs.size() > 0) {
+			this.session().createSQLQuery("UPDATE t_scm_order_detail SET _status=5 WHERE id IN(:idList)").setParameterList("idList", rs).executeUpdate();
+		}
+		return rs;
+	}
 }

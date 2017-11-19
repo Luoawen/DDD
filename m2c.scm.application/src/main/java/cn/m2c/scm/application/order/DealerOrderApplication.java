@@ -191,4 +191,12 @@ public class DealerOrderApplication {
 	public void commentSku(String orderId, String skuId, int flag) {
 		dealerOrderRepository.updateComment(orderId, skuId, flag);
 	}
+	/***
+	 * 检测商家订单下的子单完成
+	 * @param userId
+	 */
+	@Transactional(rollbackFor = { Exception.class, RuntimeException.class, NegativeException.class })
+	public void dtlCompleteUpdated(String userId) {
+		dealerOrderRepository.getSpecifiedDtlStatus(1);
+	}
 }

@@ -79,4 +79,10 @@ public interface SaleAfterOrderRepository {
 	 * @return
 	 */
 	public List<SaleAfterOrder> getDealerSend(int hour);
+	
+	/***
+	 * 获取售后完成的需要改变状态的订单详情IDs
+	 * @return
+	 */
+	public List<Long> getSpecifiedDtlGoods(int hour);
 }

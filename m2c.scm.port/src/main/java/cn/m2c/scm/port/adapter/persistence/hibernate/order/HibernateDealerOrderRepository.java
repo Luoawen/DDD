@@ -71,4 +71,19 @@ public class HibernateDealerOrderRepository extends HibernateSupperRepository im
 		.setParameter("flag", flag).setParameter("orderId", orderId)
 		.setParameter("skuId", skuId).executeUpdate();
 	}
+	
+	public void getSpecifiedDtlStatus(int hour) {
+		List<Long> rs = this.session().createSQLQuery("select id from t_scm_order_dealer where dealer_order_id NOT IN\r\n" + 
+				"(select DISTINCT b.dealer_order_id from t_scm_order_dealer b, t_scm_order_detail a\r\n" + 
+				"where a.order_id = b.order_id\r\n" + 
+				"and a.dealer_order_id=b.dealer_order_id\r\n" + 
+				"and a._status NOT IN (4, 5, -1)\r\n" + 
+				"and b._status NOT IN (-1, 4, 5)\r\n" + 
+				") and _status != -1")
+		.addEntity(Long.class).list();
+		
+		if (rs != null && rs.size() > 0) {
+			this.session().createSQLQuery("UPDATE t_scm_order_dealer SET _status=4 WHERE id IN(:idList)").setParameterList("idList", rs).executeUpdate();
+		}
+	}
 }

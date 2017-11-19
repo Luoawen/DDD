@@ -455,4 +455,24 @@ public class SaleAfterOrderApp {
 		// adfsaf;
 		saleAfterRepository.save(afterOrder);
 	}
+	
+	/**
+	 * 当售后单完成其对应的商品也应该是完成状态。
+	 * @throws NegativeException 
+	 */
+	@Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+	public void afterSaleCompleteUpdated(String userId) throws NegativeException {
+		int hour = 168;
+		try {
+			Integer.parseInt(GetDisconfDataGetter.getDisconfProperty("sale.after.complete.upstream"));
+			if (hour < 1)
+				hour = 1;
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		List<Long> list = saleAfterRepository.getSpecifiedDtlGoods(hour);
+		LOGGER.info("=fanjc=处于完成售后的条数为==" + (list == null? 0 : list.size()));
+		return ;
+	}
 }

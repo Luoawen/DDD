@@ -196,4 +196,44 @@ public class ScheduledAgent {
 		}
 		return new ResponseEntity<MResult>(result, HttpStatus.OK);
 	}
+	
+	/***
+	 * 检查已完成的售后单对应的商品详情单是否完成， 若没有完成则需要使其完成。
+	 * @return
+	 */
+	@RequestMapping(value = "/order/detail/check",method = RequestMethod.PUT)
+	public ResponseEntity<MResult> checkSaleAfterStatus() {
+		
+		MResult result = new MResult(MCode.V_1);
+		try {
+			String val = GetDisconfDataGetter.getDisconfProperty("scm.job.user");
+			saleAfterOrderApplication.afterSaleCompleteUpdated(val);
+			result.setStatus(MCode.V_200);
+		} catch (NegativeException ne) {
+			result = new MResult(ne.getStatus(), ne.getMessage());
+		} catch (Exception e) {
+			LOGGER.error("自动退款状态", e);
+			result = new MResult(MCode.V_400, e.getMessage());
+		}
+		return new ResponseEntity<MResult>(result, HttpStatus.OK);
+	}
+	
+	/***
+	 * 检查已完成的订货单子单， 若没有完成则需要使其完成。
+	 * @return
+	 */
+	@RequestMapping(value = "/order/dealer/check",method = RequestMethod.PUT)
+	public ResponseEntity<MResult> checkDealerOrderStatus() {
+		
+		MResult result = new MResult(MCode.V_1);
+		try {
+			String val = GetDisconfDataGetter.getDisconfProperty("scm.job.user");
+			dealerOrderApplication.dtlCompleteUpdated(val);
+			result.setStatus(MCode.V_200);
+		} catch (Exception e) {
+			LOGGER.error("自动退款状态", e);
+			result = new MResult(MCode.V_400, e.getMessage());
+		}
+		return new ResponseEntity<MResult>(result, HttpStatus.OK);
+	}
 }

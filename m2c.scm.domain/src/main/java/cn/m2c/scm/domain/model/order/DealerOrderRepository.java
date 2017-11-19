@@ -40,4 +40,8 @@ public interface DealerOrderRepository {
 	 * 更新评论状态
 	 */
 	public void updateComment(String orderId, String skuId, int flag);
+	/***
+	 * 获取子单中的商品已经完成的子订单，并改变其状态
+	 */
+	public void getSpecifiedDtlStatus(int hour);
 }
