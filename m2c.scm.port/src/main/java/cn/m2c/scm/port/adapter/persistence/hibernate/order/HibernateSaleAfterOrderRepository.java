@@ -132,4 +132,10 @@ public class HibernateSaleAfterOrderRepository extends HibernateSupperRepository
 		}
 		return rs;
 	}
+	
+	@Override
+	public int getSaleAfterOrderBySkuId(String dealerOrderId, String skuId) {
+		Long ll = (Long)this.session().createSQLQuery("SELECT count(1) FROM t_scm_order_after_sell WHERE dealer_order_id = :d1 AND sku_id = :skuId").addEntity(Long.class).setParameter("d1", dealerOrderId).setParameter("skuId", skuId).uniqueResult();
+		return ll == null? 0: ll.intValue();
+	}
 }

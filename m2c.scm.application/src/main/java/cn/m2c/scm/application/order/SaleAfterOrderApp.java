@@ -59,6 +59,12 @@ public class SaleAfterOrderApp {
 			throw new NegativeException(MCode.V_1, "申请售后的商品不存在！");
 		}
 		
+		int ij = saleAfterRepository.getSaleAfterOrderBySkuId(cmd.getDealerOrderId(), 
+				cmd.getSkuId());
+		if (ij > 0) {
+			throw new NegativeException(MCode.V_100, "此商品已有一条售后还在处理中！");
+		}
+		
 		if (!itemDtl.canApplySaleAfter()) {
 			throw new NegativeException(MCode.V_100, "商品处于不可申请售后状态！");
 		}
