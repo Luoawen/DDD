@@ -35,7 +35,7 @@ import cn.m2c.ddd.common.serializer.ObjectSerializer;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
- 
+
 public class GlobalPermissionInterceptor extends HandlerInterceptorAdapter
 {
 
@@ -53,6 +53,11 @@ public class GlobalPermissionInterceptor extends HandlerInterceptorAdapter
      * 接口没有权限访问
      */
     public static Integer SYS_PERMISSION_VISIT_ERROR = 2404404;
+    
+    /**
+     * session失效
+     */
+    private static Integer SESSION_EXPIRATION_EXCEPTION = 900003;
 
     @Override
     public boolean preHandle(HttpServletRequest request,
@@ -99,7 +104,7 @@ public class GlobalPermissionInterceptor extends HandlerInterceptorAdapter
         }
         catch (IOException e)
         {
-            
+
             logger.error("permission auth is error message:" + e.getMessage(),
                     e);
             writeResult(response, TOKEN_EXPIRATION_EXCEPTION,
@@ -156,6 +161,11 @@ public class GlobalPermissionInterceptor extends HandlerInterceptorAdapter
         }
 
         String auth = RedisUtil.get(key);
+        if (StringUtils.isBlank(auth) || StringUtils.isEmpty(auth))
+        {
+            writeResult(response, SESSION_EXPIRATION_EXCEPTION,
+                    "session失效！");
+        }
         JwtSubject jwtSubject = ObjectSerializer.instance().deserialize(auth,
                 JwtSubject.class);
 
@@ -168,7 +178,6 @@ public class GlobalPermissionInterceptor extends HandlerInterceptorAdapter
                     "accessToken认证无效,系统拒绝访问!");
         }
 
-
         if (jwtSubject == null)
         {
             writeResult(response, TOKEN_EXPIRATION_EXCEPTION,
@@ -177,18 +186,22 @@ public class GlobalPermissionInterceptor extends HandlerInterceptorAdapter
         }
 
         Set<String> persSet = new HashSet<String>(Arrays.asList(permission));
-        
-        String perms = RedisUtil.get(jwtSubject.getPermissionKey());
-        List<String> permissions = JSON.parseArray(perms, String.class);  
-        if (!Collections.disjoint(permissions, persSet)) /*
-                                                                          * false:
-                                                                          * 有交集
-                                                                          * true
-                                                                          * :
-                                                                          * 没有交集
-                                                                          */
+        if ("1".equals(jwtSubject.getRoleId())
+                && "admin".equals(jwtSubject.getUserName()))
         {
             return true;
+        }
+        else
+        {
+            String perms = RedisUtil.get(jwtSubject.getPermissionKey());
+            List<String> permissions = JSON.parseArray(perms, String.class);
+            if (!Collections.disjoint(permissions, persSet)) /*
+                                                              * false: 有交集 true
+                                                              * : 没有交集
+                                                              */
+            {
+                return true;
+            }
         }
         writeResult(response, SYS_PERMISSION_VISIT_ERROR, "没有访问该接口权限,系统拒绝访问!");
         return false;
