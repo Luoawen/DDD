@@ -44,13 +44,12 @@ public class DealerOrderAfterSellQuery {
 			Integer rows) {
 		List<Object> params = new ArrayList<Object>();
 		StringBuilder sql = new StringBuilder();
-		sql.append(" SELECT DISTINCT after.sku_id,after.order_id,");
+		sql.append(" SELECT after.sku_id,after.order_id,");
 		sql.append(" after.after_sell_order_id,after.order_type,after.back_money,after._status,dealer.dealer_name,after.created_date ");
 		sql.append(" FROM t_scm_order_after_sell after");
-		sql.append(" LEFT JOIN t_scm_dealer dealer ON after.dealer_id = dealer.dealer_id ");
-		sql.append(" LEFT JOIN t_scm_goods goods ON after.goods_id = goods.goods_id ");
-		sql.append(" LEFT JOIN t_scm_order_detail detail ON after.dealer_order_id = detail.dealer_order_id ");
-		sql.append(" WHERE dealer.dealer_id = ? ");
+		sql.append(" LEFT JOIN t_scm_dealer dealer ON after.dealer_id = dealer.dealer_id \r\n");
+		sql.append(" LEFT JOIN t_scm_order_detail detail ON after.dealer_order_id = detail.dealer_order_id AND after.sku_id = detail.sku_id");
+		sql.append(" WHERE dealer.dealer_id = ? \r\n");
 		params.add(dealerId);
 		if (null != orderType) {
 			sql.append(" AND after.order_type = ? ");
@@ -62,7 +61,7 @@ public class DealerOrderAfterSellQuery {
 		}
 		if (!StringUtils.isEmpty(condition)) {
 			sql.append(
-					" AND (after.dealer_order_id LIKE concat('%',?,'%') OR after.after_sell_order_id LIKE concat('%',?,'%') OR goods.goods_name LIKE concat('%',?,'%')) ");
+					" AND (after.dealer_order_id LIKE concat('%',?,'%') OR after.after_sell_order_id LIKE concat('%',?,'%') OR detail.goods_name LIKE concat('%',?,'%')) ");
 			params.add(condition);
 			params.add(condition);
 			params.add(condition);
@@ -162,11 +161,10 @@ public class DealerOrderAfterSellQuery {
 			String startTime, String endTime, String mediaInfo) {
 		List<Object> params = new ArrayList<Object>();
 		StringBuilder sql = new StringBuilder();
-		sql.append(" SELECT COUNT( DISTINCT after.id)  ");
+		sql.append(" SELECT COUNT(1)  ");
 		sql.append(" FROM t_scm_order_after_sell after");
 		sql.append(" LEFT JOIN t_scm_dealer dealer ON after.dealer_id = dealer.dealer_id ");
-		sql.append(" LEFT JOIN t_scm_goods goods ON after.goods_id = goods.goods_id ");
-		sql.append(" LEFT JOIN t_scm_order_detail detail ON after.dealer_order_id = detail.dealer_order_id ");
+		sql.append(" LEFT JOIN t_scm_order_detail detail ON after.dealer_order_id = detail.dealer_order_id AND after.sku_id = detail.sku_id");
 		sql.append(" WHERE 1 = 1 AND dealer.dealer_id = ?");
 		params.add(dealerId);
 		if (null != orderType) {
@@ -178,7 +176,7 @@ public class DealerOrderAfterSellQuery {
 			params.add(status);
 		}
 		if (!StringUtils.isEmpty(condition)) {
-			sql.append(" AND (after.dealer_order_id LIKE concat('%',?,'%') OR after.after_sell_order_id LIKE concat('%',?,'%') OR goods.goods_name LIKE concat('%',?,'%') ) ");
+			sql.append(" AND (after.dealer_order_id LIKE concat('%',?,'%') OR after.after_sell_order_id LIKE concat('%',?,'%') OR detail.goods_name LIKE concat('%',?,'%') ) ");
 			params.add(condition);
 			params.add(condition);
 			params.add(condition);
