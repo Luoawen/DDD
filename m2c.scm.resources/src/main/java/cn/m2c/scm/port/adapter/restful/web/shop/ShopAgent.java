@@ -106,7 +106,6 @@ public class ShopAgent {
 		  * @return
 		  */
 		 @RequestMapping(value = "/shopInfo", method = RequestMethod.PUT)
-		 @RequirePermissions(value ={"scm:shop:add"})
 		    public ResponseEntity<MResult> updateShopInfo(
 		            @RequestParam(value = "dealerId", required = true) String dealerId,
 		            @RequestParam(value = "shopId", required = false) String shopId,
@@ -138,7 +137,6 @@ public class ShopAgent {
 		  * @return
 		  */
 		 @RequestMapping(value = "/shopInfo", method = RequestMethod.POST)
-		 @RequirePermissions(value ={"scm:shop:add"})
 		    public ResponseEntity<MResult> addShopInfo(
 		            @RequestParam(value = "dealerId", required = true) String dealerId,
 		            @RequestParam(value = "shopName", required = true) String shopName,
