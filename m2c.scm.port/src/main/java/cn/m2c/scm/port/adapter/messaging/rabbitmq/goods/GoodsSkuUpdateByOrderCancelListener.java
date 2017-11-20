@@ -32,9 +32,12 @@ public class GoodsSkuUpdateByOrderCancelListener extends ExchangeListener {
 
     @Override
     protected void filteredDispatch(String aType, String aTextMessage) throws Exception {
+        LOGGER.info("GoodsSkuUpdateByOrderCancelListener start...");
+        LOGGER.info("GoodsSkuUpdateByOrderCancelListener aTextMessage =>" + aTextMessage);
         Map map = JsonUtils.toMap4Obj(aTextMessage);
         Map<String, Object> obj = JsonUtils.toMap4Obj(JsonUtils.toStr(map.get("sales")));
         goodsApplication.GoodsSkuUpdateByOrderCancel(obj);
+        LOGGER.info("GoodsSkuUpdateByOrderCancelListener end...");
     }
 
     @Override
