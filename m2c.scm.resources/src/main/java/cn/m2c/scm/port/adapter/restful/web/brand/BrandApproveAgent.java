@@ -3,6 +3,7 @@ package cn.m2c.scm.port.adapter.restful.web.brand;
 import cn.m2c.common.MCode;
 import cn.m2c.common.MPager;
 import cn.m2c.common.MResult;
+import cn.m2c.ddd.common.auth.RequirePermissions;
 import cn.m2c.scm.application.brand.BrandApproveApplication;
 import cn.m2c.scm.application.brand.command.BrandApproveAgreeCommand;
 import cn.m2c.scm.application.brand.command.BrandApproveCommand;
@@ -202,7 +203,8 @@ public class BrandApproveAgent {
      * @param brandId
      * @return
      */
-    @RequestMapping(value = "/agree", method = RequestMethod.POST)
+    @RequestMapping(value = "/mng/agree", method = RequestMethod.POST)
+    @RequirePermissions(value ={"scm:brandApprove:agree"})
     public ResponseEntity<MResult> brandApproveAgree(
             @RequestParam(value = "approveId", required = false) String approveId,
             @RequestParam(value = "brandId", required = false) String brandId
@@ -229,7 +231,8 @@ public class BrandApproveAgent {
      * @param rejectReason
      * @return
      */
-    @RequestMapping(value = "/reject", method = RequestMethod.POST)
+    @RequestMapping(value = "/mng/reject", method = RequestMethod.POST)
+    @RequirePermissions(value ={"scm:brandApprove:reject"})
     public ResponseEntity<MResult> brandApproveReject(
             @RequestParam(value = "approveId", required = false) String approveId,
             @RequestParam(value = "rejectReason", required = false) String rejectReason
