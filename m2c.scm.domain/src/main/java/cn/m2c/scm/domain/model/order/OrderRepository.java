@@ -62,4 +62,9 @@ public interface OrderRepository {
 	public List<MainOrder> getNotPayedOrders(int h);
 	
 	public DealerOrder getDealerOrderById(String orderId, String userId, String dealerOrderId);
+	/***
+	 * 获取满足条件的可以交易完成的订单并改变其状态
+	 * @return
+	 */
+	public void getSpecifiedOrderStatus();
 }

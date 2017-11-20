@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import cn.m2c.ddd.common.port.adapter.persistence.hibernate.HibernateSupperRepository;
 import cn.m2c.ddd.common.port.adapter.persistence.springJdbc.SupportJdbcTemplate;
 import cn.m2c.scm.domain.model.order.DealerOrder;
+import cn.m2c.scm.domain.model.order.DealerOrderDtl;
 import cn.m2c.scm.domain.model.order.DealerOrderRepository;
 /**
  * 商家订单仓储
@@ -66,12 +67,13 @@ public class HibernateDealerOrderRepository extends HibernateSupperRepository im
 	/***
 	 * 设置评论状态
 	 */
+	@Override
 	public void updateComment(String orderId, String skuId, int flag) {
 		session().createSQLQuery("update t_scm_order_detail set comment_status = :flag where order_id=:orderId and sku_id=:skuId")
 		.setParameter("flag", flag).setParameter("orderId", orderId)
 		.setParameter("skuId", skuId).executeUpdate();
 	}
-	
+	@Override
 	public void getSpecifiedDtlStatus(int hour) {
 		List<Long> rs = this.session().createSQLQuery("select id from t_scm_order_dealer where dealer_order_id NOT IN\r\n" + 
 				"(select DISTINCT b.dealer_order_id from t_scm_order_dealer b, t_scm_order_detail a\r\n" + 

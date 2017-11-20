@@ -10,8 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.baidu.disconf.client.usertools.DisconfDataGetter;
-
 import cn.m2c.common.MCode;
 import cn.m2c.ddd.common.event.annotation.EventListener;
 import cn.m2c.scm.application.order.command.SendOrderCommand;
@@ -21,6 +19,8 @@ import cn.m2c.scm.application.order.command.UpdateOrderFreightCmd;
 import cn.m2c.scm.domain.NegativeCode;
 import cn.m2c.scm.domain.NegativeException;
 import cn.m2c.scm.domain.model.order.DealerOrder;
+import cn.m2c.scm.domain.model.order.DealerOrderDtl;
+import cn.m2c.scm.domain.model.order.DealerOrderDtlRepository;
 import cn.m2c.scm.domain.model.order.DealerOrderRepository;
 import cn.m2c.scm.domain.model.order.ReceiveAddr;
 import cn.m2c.scm.domain.util.GetDisconfDataGetter;
@@ -33,6 +33,9 @@ public class DealerOrderApplication {
 	
 	@Autowired
 	DealerOrderRepository dealerOrderRepository;
+	
+	@Autowired
+	DealerOrderDtlRepository orderDtlRepository;
 
 	
 	/**
@@ -127,45 +130,55 @@ public class DealerOrderApplication {
 	 * @throws NegativeException
 	 */
 	@Transactional(rollbackFor = { Exception.class, RuntimeException.class, NegativeException.class })
-	public void updateOrderStatus() throws NegativeException {
-		List<DealerOrder> dealerOrders = dealerOrderRepository.getDealerOrderStatusQeury();
+	public void orderDtlToFinished() throws NegativeException {
+		int hour = 168;
+		try {
+			hour = Integer.parseInt(GetDisconfDataGetter.getDisconfProperty("order.cinfirm"));
+			if (hour < 1)
+				hour = 1;
+		} catch (Exception e) {
+			
+		}
+		List<DealerOrderDtl> dealerOrders = orderDtlRepository.getOrderDtlStatusQeury(hour, 2);
 
-		List<DealerOrder> beans = commondMethod(dealerOrders, Long.parseLong(GetDisconfDataGetter.getDisconfProperty("order.cinfirm")));
-
-		for (DealerOrder dealerOrder : beans) {
-			jobFinishiedOrder(dealerOrder);
+		for (DealerOrderDtl orderDtl : dealerOrders) {
+			jobFinishiedOrder(orderDtl);
 		}
 	}
+	
 	@Transactional(rollbackFor = { Exception.class, RuntimeException.class,
 			NegativeException.class }, propagation = Propagation.REQUIRES_NEW)
 	@EventListener(isListening = true)
-	private void jobFinishiedOrder(DealerOrder dealerOrder) {
-		dealerOrder.updateOrderStatus();
-		dealerOrderRepository.save(dealerOrder);
+	private void jobFinishiedOrder(DealerOrderDtl orderDtl) {
+		orderDtl.finished();
+		orderDtlRepository.save(orderDtl);
 	}
-
-	/**
-	 * 更新状态信息<完成状态更新为订单完成>
-	 * 
-	 * @throws NegativeException
-	 */
+	
 	@Transactional(rollbackFor = { Exception.class, RuntimeException.class, NegativeException.class })
-	public void updateDealFinished() throws NegativeException {
-		List<DealerOrder> dealerOrders = dealerOrderRepository.getDealerOrderFinishied();
+	public void orderDtlToDealFinished() throws NegativeException {
+		int hour = 168;
+		try {
+			hour = Integer.parseInt(GetDisconfDataGetter.getDisconfProperty("order.cinfirm"));
+			if (hour < 1)
+				hour = 1;
+		} catch (Exception e) {
+			
+		}
+		List<DealerOrderDtl> dealerOrders = orderDtlRepository.getOrderDtlStatusQeury(hour, 3);
 
-		List<DealerOrder> beans = commondMethod(dealerOrders, Long.parseLong(GetDisconfDataGetter.getDisconfProperty("order.finished")));
-
-		for (DealerOrder dealerOrder : beans) {
-			jobFinishedBuss(dealerOrder);
+		for (DealerOrderDtl orderDtl : dealerOrders) {
+			jobOrderDealFinishied(orderDtl);
 		}
 	}
+	
 	@Transactional(rollbackFor = { Exception.class, RuntimeException.class,
 			NegativeException.class }, propagation = Propagation.REQUIRES_NEW)
 	@EventListener(isListening = true)
-	private void jobFinishedBuss(DealerOrder dealerOrder) {
-		dealerOrder.updateOrderStatusFinished();
-		dealerOrderRepository.save(dealerOrder);
+	private void jobOrderDealFinishied(DealerOrderDtl orderDtl) {
+		orderDtl.dealFinished();
+		orderDtlRepository.save(orderDtl);
 	}
+	
 
 	/**
 	 * 公用方法

@@ -497,7 +497,11 @@ public class OrderApplication {
             int cpt = pb.getContinuedPiece();
             int ss = b.getNums() - fpt; // 续件
             if (ss > 0) {
-            	b.getBean().setFreight(ft + (ss / cpt + (ss % cpt > 0 ? 1 : 0)) * ct);
+            	if (cpt == 0) {
+            		b.getBean().setFreight(0);
+            	}
+            	else 
+            		b.getBean().setFreight(ft + (ss / cpt + (ss % cpt > 0 ? 1 : 0)) * ct);
             } else
             	b.getBean().setFreight(ft);
         } else {
@@ -507,8 +511,13 @@ public class OrderApplication {
             float cpt = pb.getContinuedWeight();
             float ss = b.getWeight() - fpt; // 续件
             if (ss > 0) {
-                int t = (int) (ss / cpt); //倍数
-                b.getBean().setFreight(ft + (t + (ss > (t * cpt) ? 1 : 0)) * ct);
+            	if (cpt == 0) {
+            		b.getBean().setFreight(0);
+            	}
+            	else {
+	                int t = (int) (ss / cpt); //倍数
+	                b.getBean().setFreight(ft + (t + (ss > (t * cpt) ? 1 : 0)) * ct);
+            	}
             } else
             	b.getBean().setFreight(ft);
         }
@@ -780,5 +789,22 @@ public class OrderApplication {
     private void jobCancelOrder(MainOrder m) {
     	m.jobCancel();
 		orderRepository.save(m);
+    }
+    
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+    public void updateAllOrderStatus(String userId) {
+    	//int hour = 1;
+		/*try {
+			String val = GetDisconfDataGetter.getDisconfProperty("order.waitPay");
+			hour = Integer.parseInt(val);
+			if (hour < 1) {
+				hour = 1;
+			}
+		}
+		catch (Exception e) {    			
+		}*/
+    	
+    	// 查询所有的可以结束的订单，并更新其状态到可结算状态
+    	orderRepository.getSpecifiedOrderStatus();
     }
 }

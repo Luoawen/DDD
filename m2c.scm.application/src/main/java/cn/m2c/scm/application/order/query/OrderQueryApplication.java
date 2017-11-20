@@ -328,7 +328,7 @@ public class OrderQueryApplication {
 						sql.append("SELECT a.goods_icon, a.goods_name, a.goods_title, a.sku_name, a.sku_id, a.sell_num, a.discount_price, a.freight, a.goods_amount\r\n")
 						.append(", a.express_way , a.express_phone, a.express_no , a.express_code, a.express_name\r\n")
 						.append(", a.comment_status , b._status afterStatus, a.goods_id, a.goods_type_id FROM t_scm_order_detail a\r\n")
-						.append(" LEFT OUTER JOIN t_scm_order_after_sell b ON b.order_id=a.order_id AND b.dealer_order_id = a.dealer_order_id AND b._status != -1 AND b.sku_id=a.sku_id"
+						.append(" LEFT OUTER JOIN t_scm_order_after_sell b ON b.order_id=a.order_id AND b.dealer_order_id = a.dealer_order_id AND b._status NOT IN (-1, 3) AND b.sku_id=a.sku_id"
 								+ " WHERE a.order_id=? AND a.dealer_order_id=?");
 						o.setGoodses(this.supportJdbcTemplate.queryForBeanList(sql.toString(), 
 								OrderDetailBean.class, new Object[] {tmpOrderId, o.getDealerOrderId()}));
