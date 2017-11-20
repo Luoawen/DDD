@@ -82,8 +82,8 @@ public class AccessTokenInterceptor implements HandlerInterceptor
 
         try
         {
-          return  validateJwtToken(accessToken, request, response);
-            
+            return validateJwtToken(accessToken, request, response);
+
         }
         catch (Exception e)
         {
@@ -140,6 +140,11 @@ public class AccessTokenInterceptor implements HandlerInterceptor
                     "{key}", DigestUtils.md5Hex(json));
 
             String auth = RedisUtil.get(key);
+            if (StringUtils.isBlank(auth) || StringUtils.isEmpty(auth))
+            {
+                writeResult(response, SESSION_EXPIRATION_EXCEPTION,
+                        "session失效！");
+            }
             JwtSubject jwtSubject = ObjectSerializer.instance().deserialize(
                     auth, JwtSubject.class);
             if (jwtSubject == null)
