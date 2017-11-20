@@ -5,6 +5,7 @@ import cn.m2c.ddd.common.application.configuration.RabbitmqConfiguration;
 import cn.m2c.ddd.common.event.ConsumedEventStore;
 import cn.m2c.ddd.common.port.adapter.messaging.rabbitmq.ExchangeListener;
 import cn.m2c.scm.application.goods.GoodsApplication;
+import com.alibaba.fastjson.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +36,8 @@ public class GoodsSkuUpdateByOrderCancelListener extends ExchangeListener {
         LOGGER.info("GoodsSkuUpdateByOrderCancelListener start...");
         LOGGER.info("GoodsSkuUpdateByOrderCancelListener aTextMessage =>" + aTextMessage);
         Map map = JsonUtils.toMap4Obj(aTextMessage);
-        Map<String, Object> obj = JsonUtils.toMap4Obj(JsonUtils.toStr(map.get("sales")));
+        Map eventMap = JsonUtils.toMap4Obj(JSONObject.toJSONString(map.get("event")));
+        Map obj = JsonUtils.toMap4Obj(JSONObject.toJSONString(eventMap.get("sales")));
         goodsApplication.GoodsSkuUpdateByOrderCancel(obj);
         LOGGER.info("GoodsSkuUpdateByOrderCancelListener end...");
     }

@@ -2,6 +2,7 @@ package cn.m2c.scm.port.adapter.restful.web.classify;
 
 import cn.m2c.common.MCode;
 import cn.m2c.common.MResult;
+import cn.m2c.ddd.common.auth.RequirePermissions;
 import cn.m2c.scm.application.classify.GoodsClassifyApplication;
 import cn.m2c.scm.application.classify.command.GoodsClassifyAddCommand;
 import cn.m2c.scm.application.classify.command.GoodsClassifyModifyCommand;
@@ -46,7 +47,8 @@ public class GoodsClassifyAgent {
      * @param level            层级，1：一级分类,2：二级分类,3：三级分类...
      * @return
      */
-    @RequestMapping(value = "", method = RequestMethod.POST)
+    @RequestMapping(value = "/mng", method = RequestMethod.POST)
+    @RequirePermissions(value ={"scm:goodsClassify:add"})
     public ResponseEntity<MResult> addGoodsClassify(
             @RequestParam(value = "classifyName", required = false) String classifyName,
             @RequestParam(value = "subClassifyNames", required = false) String subClassifyNames,
@@ -98,7 +100,8 @@ public class GoodsClassifyAgent {
      * @param serviceRate
      * @return
      */
-    @RequestMapping(value = "/{classifyId}/service/rate", method = RequestMethod.PUT)
+    @RequestMapping(value = "/mng/{classifyId}/service/rate", method = RequestMethod.PUT)
+    @RequirePermissions(value ={"scm:serviceRate:modify"})
     public ResponseEntity<MResult> modifyGoodsClassifyServiceRate(
             @PathVariable("classifyId") String classifyId,
             @RequestParam(value = "serviceRate", required = false) Float serviceRate) {
@@ -123,7 +126,8 @@ public class GoodsClassifyAgent {
      * @param classifyId
      * @return
      */
-    @RequestMapping(value = "/{classifyId}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/mng/{classifyId}", method = RequestMethod.DELETE)
+    @RequirePermissions(value ={"scm:goodsClassify:delete"})
     public ResponseEntity<MResult> deleteGoodsClassify(
             @PathVariable("classifyId") String classifyId) {
         MResult result = new MResult(MCode.V_1);

@@ -335,6 +335,8 @@ public class GoodsApplication {
 
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
     public void GoodsSkuUpdateByOrderReturnGoods(Map<String, Object> map) {
+        LOGGER.info("goodsApplication GoodsSkuUpdateByOrderReturnGoods start...");
+        LOGGER.info("GoodsSkuUpdateByOrderReturnGoods param=>" + JsonUtils.toStr(map));
         if (null != map && map.size() > 0) {
             for (Map.Entry<String, Object> entry : map.entrySet()) {
                 String skuId = entry.getKey();
@@ -345,6 +347,7 @@ public class GoodsApplication {
                 }
             }
         }
+        LOGGER.info("goodsApplication GoodsSkuUpdateByOrderReturnGoods end...");
     }
 
     /**

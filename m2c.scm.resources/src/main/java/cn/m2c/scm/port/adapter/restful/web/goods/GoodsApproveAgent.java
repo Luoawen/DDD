@@ -110,7 +110,6 @@ public class GoodsApproveAgent {
      * @return
      */
     @RequestMapping(value = "", method = RequestMethod.POST)
-    @RequirePermissions(value ={"scm:goodsCheck:add"})
     public ResponseEntity<MResult> addGoodsApprove(
             @RequestParam(value = "goodsId", required = false) String goodsId,
             @RequestParam(value = "dealerId", required = false) String dealerId,
@@ -177,7 +176,7 @@ public class GoodsApproveAgent {
      * @param goodsId
      * @return
      */
-    @RequestMapping(value = "/agree", method = RequestMethod.POST)
+    @RequestMapping(value = "/mng/agree", method = RequestMethod.POST)
     @RequirePermissions(value ={"scm:goodsCheck:agree"})
     public ResponseEntity<MResult> agreeGoodsApprove(
             @RequestParam(value = "goodsId", required = false) String goodsId
@@ -202,7 +201,7 @@ public class GoodsApproveAgent {
      * @param goodsId
      * @return
      */
-    @RequestMapping(value = "/reject", method = RequestMethod.POST)
+    @RequestMapping(value = "/mng/reject", method = RequestMethod.POST)
     @RequirePermissions(value ={"scm:goodsCheck:reject"})
     public ResponseEntity<MResult> rejectGoodsApprove(
             @RequestParam(value = "goodsId", required = false) String goodsId,
@@ -244,7 +243,6 @@ public class GoodsApproveAgent {
      * @return
      */
     @RequestMapping(value = "", method = RequestMethod.PUT)
-    @RequirePermissions(value ={"scm:goodsCheck:modify"})
     public ResponseEntity<MResult> modifyGoodsApprove(
             @RequestParam(value = "goodsId", required = false) String goodsId,
             @RequestParam(value = "dealerId", required = false) String dealerId,
@@ -301,7 +299,6 @@ public class GoodsApproveAgent {
     }
 
     @RequestMapping(value = "/{goodsId}", method = RequestMethod.DELETE)
-    @RequirePermissions(value ={"scm:goodsCheck:delete"})
     public ResponseEntity<MResult> delGoodsApprove(
             @PathVariable("goodsId") String goodsId
     ) {
