@@ -1,6 +1,5 @@
 package cn.m2c.scm.port.adapter.restful.web.goods;
 
-import cn.m2c.ddd.common.auth.RequirePermissions;
 import cn.m2c.scm.application.classify.query.GoodsClassifyQueryApplication;
 import cn.m2c.scm.application.dealer.query.DealerQuery;
 import cn.m2c.scm.application.goods.query.GoodsQueryApplication;
@@ -42,8 +41,7 @@ public class GoodsExportAgent {
     @Autowired
     PostageModelQueryApplication postageModelQueryApplication;
 
-    @RequestMapping(value = {"/export","/mng/export"}, method = RequestMethod.GET)
-    @RequirePermissions(value ={"scm:goodsStorage:export"})
+    @RequestMapping(value = {"/export"}, method = RequestMethod.GET)
     public void exportExcel(HttpServletResponse response,
                             String dealerId, String goodsClassifyId, Integer goodsStatus,
                             String condition, String startTime, String endTime) throws Exception {
