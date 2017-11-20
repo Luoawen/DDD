@@ -75,22 +75,56 @@
 		</mvc:interceptor>
 	</mvc:interceptors>
 	-->
-	<!-- <mvc:interceptors>
+	 <mvc:interceptors>
 		<mvc:interceptor>
-			<mvc:mapping path="/order/app/**" />
+			<mvc:mapping path="/goods/comment/reply" />
+			<mvc:mapping path="/goods/comment/*" />
+			<mvc:mapping path="/dealer/sys" />
+			<mvc:mapping path="/goods" />
+			<mvc:mapping path="/goods/*" />
+			<mvc:mapping path="/goods/up/shelf/*" />
+			<mvc:mapping path="/goods/off/shelf/*" />
+			<mvc:mapping path="/goods/recognized/*" />
+			<mvc:mapping path="/goods/main/image/*" />
+			<mvc:mapping path="/goods/approve" />
+			<mvc:mapping path="/goods/approve/agree" />
+			<mvc:mapping path="/goods/approve/reject" />
+			<mvc:mapping path="/goods/approve/*" />
+			<mvc:mapping path="/goods/export" />
+			<mvc:mapping path="/order/dealer/agree-apply-sale" />
+			<mvc:mapping path="/seller/sys" />
+			<mvc:mapping path="/seller/sys/*" />
+			<mvc:mapping path="/seller/sys/exportSeller" />
+			<mvc:mapping path="/shop/sys/shopInfo" />
+			<mvc:mapping path="/stantard" />
+			<mvc:mapping path="/unit" />
 			<bean class="cn.m2c.common.permission.interceptor.AccessTokenInterceptor" />
 		</mvc:interceptor>
-		
 		<mvc:interceptor>
-			<mvc:mapping path="/order/web/**" />
-			<bean class="cn.m2c.common.permission.interceptor.AccessTokenInterceptor" />
-		</mvc:interceptor>
-		
-		<mvc:interceptor>
-			<mvc:mapping path="/order/app/**" />
+			<mvc:mapping path="/goods/comment/reply" />
+			<mvc:mapping path="/goods/comment/*" />
+			<mvc:mapping path="/dealer/sys" />
+			<mvc:mapping path="/goods" />
+			<mvc:mapping path="/goods/*" />
+			<mvc:mapping path="/goods/up/shelf/*" />
+			<mvc:mapping path="/goods/off/shelf/*" />
+			<mvc:mapping path="/goods/recognized/*" />
+			<mvc:mapping path="/goods/main/image/*" />
+			<mvc:mapping path="/goods/approve" />
+			<mvc:mapping path="/goods/approve/agree" />
+			<mvc:mapping path="/goods/approve/reject" />
+			<mvc:mapping path="/goods/approve/*" />
+			<mvc:mapping path="/goods/export" />
+			<mvc:mapping path="/order/dealer/agree-apply-sale" />
+			<mvc:mapping path="/seller/sys" />
+			<mvc:mapping path="/seller/sys/*" />
+			<mvc:mapping path="/seller/sys/exportSeller" />
+			<mvc:mapping path="/shop/sys/shopInfo" />
+			<mvc:mapping path="/stantard" />
+			<mvc:mapping path="/unit" />
 			<bean
 				class="cn.m2c.common.permission.interceptor.GlobalPermissionInterceptor" />
 		</mvc:interceptor>
-	</mvc:interceptors> -->
+	</mvc:interceptors> 
 	
 </beans>  
