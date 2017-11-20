@@ -63,7 +63,7 @@ public class SellerAgent {
 	 * @param sellerRemark
 	 * @return
 	 */
-	@RequestMapping(value = "", method = RequestMethod.POST)
+	@RequestMapping(value = "/mng", method = RequestMethod.POST)
 	@RequirePermissions(value ={"scm:seller:add"})
 	public ResponseEntity<MResult> add(@RequestParam(value = "sellerName", required = false) String sellerName,
 			@RequestParam(value = "sellerPhone", required = false) String sellerPhone,
@@ -126,7 +126,7 @@ public class SellerAgent {
 	 * @param sellerRemark
 	 * @return
 	 */
-	@RequestMapping(value = "", method = RequestMethod.PUT)
+	@RequestMapping(value = "/mng", method = RequestMethod.PUT)
 	@RequirePermissions(value ={"scm:seller:add"})
 	public ResponseEntity<MResult> update(@RequestParam(value = "sellerId", required = true) String sellerId,
 			@RequestParam(value = "sellerName", required = true) String sellerName,
@@ -219,7 +219,6 @@ public class SellerAgent {
 	 * @return
 	 */
 	@RequestMapping(value = "/exportSeller", method = RequestMethod.GET)
-	@RequirePermissions(value ={"scm:seller:export"})
 	public ResponseEntity<MPager> getSellerExport(
 			HttpServletResponse response,
 			@RequestParam(value = "filter", required = false) String filter,

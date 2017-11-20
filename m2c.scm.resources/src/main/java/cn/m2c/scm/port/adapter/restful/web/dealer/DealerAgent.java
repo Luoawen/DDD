@@ -73,7 +73,7 @@ public class DealerAgent {
 	 * @param sellerId
 	 * @return
 	 */
-	@RequestMapping(value="",method = RequestMethod.POST)
+	@RequestMapping(value="/mng",method = RequestMethod.POST)
 	@RequirePermissions(value ={"scm:dealer:add"})
 	public ResponseEntity<MResult> add(
 			@RequestParam(value="userId",required=true)String userId,
@@ -151,7 +151,7 @@ public class DealerAgent {
 	 * @param sellerId
 	 * @return
 	 */
-	@RequestMapping(value="",method = RequestMethod.PUT)
+	@RequestMapping(value="/mng",method = RequestMethod.PUT)
 	@RequirePermissions(value ={"scm:dealer:add"})
 	public ResponseEntity<MResult> update(
 			@RequestParam(value="dealerId",required=true)String dealerId,

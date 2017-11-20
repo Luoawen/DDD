@@ -40,7 +40,7 @@ public class StantardAgent {
 	 * @param stantardName
 	 * @return
 	 */
-	@RequestMapping(value = "", method = RequestMethod.POST)
+	@RequestMapping(value = "/mng", method = RequestMethod.POST)
 	@RequirePermissions(value ={"scm:size:add"})
 	public ResponseEntity<MResult> addStandart(@RequestParam(value = "stantardName",required = false) String stantardName){
 		MResult result = new MResult(MCode.V_1);
@@ -64,7 +64,7 @@ public class StantardAgent {
 	 * @param stantardName
 	 * @return
 	 */
-	@RequestMapping(value = "", method = RequestMethod.DELETE)
+	@RequestMapping(value = "/mng", method = RequestMethod.DELETE)
 	@RequirePermissions(value ={"scm:size:delete"})
 	public ResponseEntity<MResult> delUnit(@RequestParam(value = "stantardId", required = false) String stantardId) {
 		MResult result = new MResult(MCode.V_1);
@@ -86,7 +86,7 @@ public class StantardAgent {
 	 * @param stantardName
 	 * @return
 	 */
-	@RequestMapping(value = "", method = RequestMethod.PUT)
+	@RequestMapping(value = "/mng", method = RequestMethod.PUT)
 	@RequirePermissions(value ={"scm:size:add"})
 	public ResponseEntity<MResult> updateUnit(
 			@RequestParam(value = "stantardId", required = false) String stantardId,
