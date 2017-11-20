@@ -43,7 +43,7 @@ public class UnitAgent {
 	 * @param unitName
 	 * @return
 	 */
-	@RequestMapping(value = "", method = RequestMethod.POST)
+	@RequestMapping(value = "/mng", method = RequestMethod.POST)
 	@RequirePermissions(value ={"scm:unit:add"})
 	public ResponseEntity<MResult> addUnit(@RequestParam(value = "unitName", required = false) String unitName) {
 		MResult result = new MResult(MCode.V_1);
@@ -67,7 +67,7 @@ public class UnitAgent {
 	 * @param unitName
 	 * @return
 	 */
-	@RequestMapping(value = "", method = RequestMethod.DELETE)
+	@RequestMapping(value = "/mng", method = RequestMethod.DELETE)
 	@RequirePermissions(value ={"scm:unit:delete"})
 	public ResponseEntity<MResult> delUnit(@RequestParam(value = "unitId", required = false) String unitId) {
 		MResult result = new MResult(MCode.V_1);
@@ -89,7 +89,7 @@ public class UnitAgent {
 	 * @param unitName
 	 * @return
 	 */
-	@RequestMapping(value = "", method = RequestMethod.PUT)
+	@RequestMapping(value = "/mng", method = RequestMethod.PUT)
 	@RequirePermissions(value ={"scm:unit:add"})
 	public ResponseEntity<MResult> updateUnit(
 			@RequestParam(value = "unitId", required = false) String unitId,
