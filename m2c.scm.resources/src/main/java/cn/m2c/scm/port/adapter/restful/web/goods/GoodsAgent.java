@@ -203,7 +203,7 @@ public class GoodsAgent {
      * @param goodsId
      * @return
      */
-    @RequestMapping(value = {"/off/shelf/{goodsId},/mng/off/shelf/{goodsId}"}, method = RequestMethod.PUT)
+    @RequestMapping(value = {"/off/shelf/{goodsId}","/mng/off/shelf/{goodsId}"}, method = RequestMethod.PUT)
     @RequirePermissions(value ={"scm:goodsStorage:offShelf"})
     public ResponseEntity<MResult> offShelfGoods(
             @PathVariable("goodsId") String goodsId
