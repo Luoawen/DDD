@@ -32,9 +32,12 @@ public class GoodsSkuUpdateByOrderPayedListener extends ExchangeListener {
 
     @Override
     protected void filteredDispatch(String aType, String aTextMessage) throws Exception {
+        LOGGER.info("GoodsSkuUpdateByOrderPayedListener start...");
+        LOGGER.info("GoodsSkuUpdateByOrderPayedListener aTextMessage =>" + aTextMessage);
         Map map = JsonUtils.toMap4Obj(aTextMessage);
         Map<String, Object> obj = JsonUtils.toMap4Obj(JsonUtils.toStr(map.get("sales")));
         goodsApplication.GoodsSkuUpdateByOrderPayed(obj);
+        LOGGER.info("GoodsSkuUpdateByOrderPayedListener end...");
     }
 
     @Override
