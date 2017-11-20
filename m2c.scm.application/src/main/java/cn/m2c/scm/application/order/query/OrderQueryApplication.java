@@ -269,7 +269,7 @@ public class OrderQueryApplication {
 			params.add(userId);
 			
 			if (commentStatus != null && commentStatus == 1) {
-				sql.append(" AND b.dealer_order_id in (SELECT e.dealer_order_id FROM t_scm_order_detail e WHERE e.comment_status=0 AND e._statusIN (?,?,?))");
+				sql.append(" AND b.dealer_order_id in (SELECT e.dealer_order_id FROM t_scm_order_detail e WHERE e.comment_status=0 AND e._status IN (?,?,?))");
 				status = 3;
 				params.add(status);
 				params.add(4);

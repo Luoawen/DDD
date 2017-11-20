@@ -112,7 +112,7 @@ public class OrderServiceImpl implements OrderService {
 		}
 		
 		String url = M2C_HOST_URL + "/m2c.media/order/ad?skuListStr={0}&orderDateTime={1}";
-		//String url = "http://10.0.40.25:8080/m2c.media/order/ad?skuListStr={0}&orderDateTime={1}";
+		//String url = "http://api.m2c2017test.com/m2c.media/order/ad?skuListStr={0}&orderDateTime={1}";
 		
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		
