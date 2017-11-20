@@ -143,7 +143,6 @@ public class OrderAgent {
 	 * @return
 	 */
 	@RequestMapping(value="/dealer/agree-apply-sale", method=RequestMethod.PUT)
-	@RequirePermissions(value ={"sys:schedule:save","sys:schedule:ssss"})
 	public ResponseEntity<MResult> agreeApplySaleAfter(@RequestParam(value = "userId", required = false) String userId
             ,@RequestParam(value = "saleAfterNo", required = false) String saleAfterNo
             ,@RequestParam(value = "dealerId", required = false) String dealerId

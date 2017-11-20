@@ -3,6 +3,7 @@ package cn.m2c.scm.port.adapter.restful.web.brand;
 import cn.m2c.common.MCode;
 import cn.m2c.common.MPager;
 import cn.m2c.common.MResult;
+import cn.m2c.ddd.common.auth.RequirePermissions;
 import cn.m2c.scm.application.brand.BrandApplication;
 import cn.m2c.scm.application.brand.command.BrandCommand;
 import cn.m2c.scm.application.brand.data.bean.BrandBean;
@@ -75,7 +76,8 @@ public class BrandAgent {
      * @param threeAreaName 三级区域名称
      * @return
      */
-    @RequestMapping(value = "", method = RequestMethod.POST)
+    @RequestMapping(value = "/mng", method = RequestMethod.POST)
+    @RequirePermissions(value ={"scm:brand:add"})
     public ResponseEntity<MResult> addBrand(
             @RequestParam(value = "brandId", required = false) String brandId,
             @RequestParam(value = "brandName", required = false) String brandName,
@@ -119,7 +121,8 @@ public class BrandAgent {
      * @param threeAreaName 三级区域名称
      * @return
      */
-    @RequestMapping(value = "/{brandId}", method = RequestMethod.PUT)
+    @RequestMapping(value = "/mng/{brandId}", method = RequestMethod.PUT)
+    @RequirePermissions(value ={"scm:brand:modify"})
     public ResponseEntity<MResult> modifyBrand(
             @PathVariable("brandId") String brandId,
             @RequestParam(value = "brandName", required = false) String brandName,
@@ -154,7 +157,8 @@ public class BrandAgent {
      * @param brandId
      * @return
      */
-    @RequestMapping(value = "/{brandId}", method = RequestMethod.DELETE)
+    @RequestMapping(value = {"/{brandId}","/mng/{brandId}"}, method = RequestMethod.DELETE)
+    @RequirePermissions(value ={"scm:brand:delete"})
     public ResponseEntity<MResult> deleteBrand(
             @PathVariable("brandId") String brandId) {
         MResult result = new MResult(MCode.V_1);

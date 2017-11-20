@@ -75,6 +75,7 @@
 		</mvc:interceptor>
 	</mvc:interceptors>
 	-->
+	 <!--
 	 <mvc:interceptors>
 		<mvc:interceptor>
 			<mvc:mapping path="/goods/comment/reply" />
@@ -126,5 +127,6 @@
 				class="cn.m2c.common.permission.interceptor.GlobalPermissionInterceptor" />
 		</mvc:interceptor>
 	</mvc:interceptors> 
+	-->
 	
 </beans>  
