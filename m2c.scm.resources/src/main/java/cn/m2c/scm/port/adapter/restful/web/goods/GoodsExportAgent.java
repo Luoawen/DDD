@@ -42,7 +42,7 @@ public class GoodsExportAgent {
     @Autowired
     PostageModelQueryApplication postageModelQueryApplication;
 
-    @RequestMapping(value = "/export", method = RequestMethod.GET)
+    @RequestMapping(value = {"/export","/mng/export"}, method = RequestMethod.GET)
     @RequirePermissions(value ={"scm:goodsStorage:export"})
     public void exportExcel(HttpServletResponse response,
                             String dealerId, String goodsClassifyId, Integer goodsStatus,

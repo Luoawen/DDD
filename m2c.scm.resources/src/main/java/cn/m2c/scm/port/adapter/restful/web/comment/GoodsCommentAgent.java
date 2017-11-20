@@ -82,7 +82,6 @@ public class GoodsCommentAgent {
      * @return
      */
     @RequestMapping(value = "/reply", method = RequestMethod.PUT)
-    @RequirePermissions(value ={"scm:goodsAppraise:reply"})
     public ResponseEntity<MResult> replyComment(
             @RequestParam(value = "commentId", required = false) String commentId,
             @RequestParam(value = "replyContent", required = false) String replyContent
@@ -108,7 +107,7 @@ public class GoodsCommentAgent {
      * @param commentId
      * @return
      */
-    @RequestMapping(value = "/{commentId}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/mng/{commentId}", method = RequestMethod.DELETE)
     @RequirePermissions(value ={"scm:goodsAppraise:delete"})
     public ResponseEntity<MResult> delComment(
             @PathVariable("commentId") String commentId
