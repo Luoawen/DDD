@@ -1,16 +1,14 @@
 package cn.m2c.common.permission.interceptor;
 
+import cn.m2c.common.RedisUtil;
+import cn.m2c.ddd.common.auth.JwtSubject;
+import cn.m2c.ddd.common.port.adapter.util.GlobalConstants;
+import cn.m2c.ddd.common.port.adapter.util.JwtUtil;
+import cn.m2c.ddd.common.port.adapter.util.RSAUtil;
+import cn.m2c.ddd.common.serializer.ObjectSerializer;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import io.jsonwebtoken.Claims;
-
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -19,15 +17,13 @@ import org.springframework.http.MediaType;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
-import cn.m2c.common.RedisUtil;
-import cn.m2c.ddd.common.auth.JwtSubject;
-import cn.m2c.ddd.common.port.adapter.util.GlobalConstants;
-import cn.m2c.ddd.common.port.adapter.util.JwtUtil;
-import cn.m2c.ddd.common.port.adapter.util.RSAUtil;
-import cn.m2c.ddd.common.serializer.ObjectSerializer;
-
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 权限校验拦截器
@@ -38,6 +34,8 @@ public class AccessTokenInterceptor implements HandlerInterceptor
             .getLogger(AccessTokenInterceptor.class);
 
     private static final String ACCESS_TOKEN = "access_token";
+
+    private static final String TOKEN = "token";
 
     /**
      * token失效
@@ -177,7 +175,7 @@ public class AccessTokenInterceptor implements HandlerInterceptor
     {
         String accessToken = request.getHeader("access_token");
         accessToken = accessToken != null ? accessToken : request
-                .getParameter(ACCESS_TOKEN);
+                .getParameter(TOKEN);
         return accessToken;
     }
 
