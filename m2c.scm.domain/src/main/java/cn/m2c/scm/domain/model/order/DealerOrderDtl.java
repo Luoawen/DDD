@@ -199,6 +199,14 @@ public class DealerOrderDtl extends ConcurrencySafeEntity {
 		return goodsAmount - goodsInfo.getPlateformDiscount() - dealerDiscount;
 	}
 	
+	public void finished() {
+		status = 3;
+	}
+	
+	public void dealFinished() {
+		status = 4;
+	}
+	
 	/***
 	 * 设置计算金额
 	 * @param skuId

@@ -286,21 +286,27 @@ public class SaleAfterOrderApp {
 	}
 	
 	/**
-	 * 商家同意退款或是换货商家已发出态下7天变更为交易关闭
+	 * 商家同意退款或是换货商家已发出态下7天变更为交易完成
 	 * @throws NegativeException 
 	 */
 	@Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
 	public void updataStatusAgreeAfterSale() throws NegativeException {
-		List<SaleAfterOrder> saleAfterOrders= saleAfterRepository.getSaleAfterOrderStatusAgree();
-		List<SaleAfterOrder> list = new ArrayList<SaleAfterOrder>();
+		int hour = 168;
+		try {
+			Integer.parseInt(GetDisconfDataGetter.getDisconfProperty("sale.after.dealer.agree"));
+			if (hour < 1)
+				hour = 1;
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		List<SaleAfterOrder> saleAfterOrders = saleAfterRepository.getSaleAfterOrderStatusAgree(hour);
+		
 		if (saleAfterOrders.size() == 0)
 			throw new NegativeException(NegativeCode.DEALER_ORDER_IS_NOT_EXIST, "没有满足条件的商家订单.");
 		
-		for (SaleAfterOrder bean : saleAfterOrders) {
-			if (((System.currentTimeMillis() - bean.dateToLong()) / (1000 * 60 * 60 * 24 )) > Long.parseLong(GetDisconfDataGetter.getDisconfProperty("order.agreeAfterSale")))
-				list.add(bean);
-		}
-		for (SaleAfterOrder afterOrder : list) {
+		for (SaleAfterOrder afterOrder : saleAfterOrders) {
 			jobUpdateSaleAfter(afterOrder);
 		}
 	}

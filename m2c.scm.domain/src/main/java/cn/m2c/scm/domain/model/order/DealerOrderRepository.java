@@ -2,7 +2,6 @@ package cn.m2c.scm.domain.model.order;
 
 import java.util.List;
 
-
 public interface DealerOrderRepository {
 
 	/***

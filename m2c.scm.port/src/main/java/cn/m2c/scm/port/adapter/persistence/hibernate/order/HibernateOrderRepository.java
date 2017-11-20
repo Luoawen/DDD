@@ -125,4 +125,18 @@ public class HibernateOrderRepository extends HibernateSupperRepository implemen
 		List<MainOrder> list = (List<MainOrder>)query.list();
 		return list;
 	}
+	@Override
+	public void getSpecifiedOrderStatus() {
+		List<Long> rs = this.session().createSQLQuery("select id from t_scm_order_main where order_id NOT IN\r\n" + 
+				"(select DISTINCT b.order_id from t_scm_order_main b, t_scm_order_dealer a\r\n" + 
+				"where a.order_id = b.order_id\r\n" + 
+				"and a._status NOT IN (4, 5, -1)\r\n" + 
+				"and b._status NOT IN (-1, 4, 5)\r\n" + 
+				") and _status != -1")
+		.addEntity(Long.class).list();
+		
+		if (rs != null && rs.size() > 0) {
+			this.session().createSQLQuery("UPDATE t_scm_order_main SET _status=4 WHERE id IN(:idList)").setParameterList("idList", rs).executeUpdate();
+		}
+	}
 }

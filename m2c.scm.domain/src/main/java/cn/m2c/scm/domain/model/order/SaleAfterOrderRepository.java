@@ -46,9 +46,10 @@ public interface SaleAfterOrderRepository {
 	
 	
 	/**
-	 * 获取状态为同意售后的订单
+	 * 获取状态为同意售后的满足条件的订单
+	 * @param hour
 	 */
-	public List<SaleAfterOrder> getSaleAfterOrderStatusAgree();
+	public List<SaleAfterOrder> getSaleAfterOrderStatusAgree(int hour);
 	/***
 	 * 使某个营销不可用， 主要是用于退款时用。
 	 * @param orderId

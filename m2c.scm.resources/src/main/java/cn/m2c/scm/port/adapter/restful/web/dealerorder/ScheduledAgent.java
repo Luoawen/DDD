@@ -42,12 +42,12 @@ public class ScheduledAgent {
 		MResult result = new MResult(MCode.V_1);
 
 		try {
-			dealerOrderApplication.updateOrderStatus();
+			dealerOrderApplication.orderDtlToFinished();
 			result.setStatus(MCode.V_200);
 		} catch (NegativeException ne) {
 			result = new MResult(ne.getStatus(), ne.getMessage());
 		} catch (Exception e) {
-			LOGGER.error("修改订单状态发生错误", e);
+			LOGGER.error("修改订单详情项 状态发生错误", e);
 			result = new MResult(MCode.V_400, e.getMessage());
 		}
 		return new ResponseEntity<MResult>(result, HttpStatus.OK);
@@ -63,7 +63,7 @@ public class ScheduledAgent {
 		MResult result = new MResult(MCode.V_1);
 
 		try {
-			dealerOrderApplication.updateDealFinished();
+			dealerOrderApplication.orderDtlToDealFinished();
 			result.setStatus(MCode.V_200);
 		} catch (NegativeException ne) {
 			result = new MResult(ne.getStatus(), ne.getMessage());
@@ -95,7 +95,7 @@ public class ScheduledAgent {
 	}
 	
 	/**
-	 * 商家同意售后状态下7天变更为交易关闭
+	 * 商家同意退款或是换货商家已发出态下7天变更为交易完成
 	 * @return
 	 */
 	@RequestMapping(value = "/statusAgreeAfterSell",method = RequestMethod.PUT)
@@ -108,7 +108,7 @@ public class ScheduledAgent {
 		} catch (NegativeException ne) {
 			result = new MResult(ne.getStatus(), ne.getMessage());
 		} catch (Exception e) {
-			LOGGER.error("修改订单状态发生错误", e);
+			LOGGER.error("修改售后订单状态发生错误", e);
 			result = new MResult(MCode.V_400, e.getMessage());
 		}
 		return new ResponseEntity<MResult>(result, HttpStatus.OK);
@@ -231,9 +231,29 @@ public class ScheduledAgent {
 			dealerOrderApplication.dtlCompleteUpdated(val);
 			result.setStatus(MCode.V_200);
 		} catch (Exception e) {
-			LOGGER.error("自动退款状态", e);
+			LOGGER.error("自动检查结果状态", e);
 			result = new MResult(MCode.V_400, e.getMessage());
 		}
 		return new ResponseEntity<MResult>(result, HttpStatus.OK);
 	}
+	
+	/***
+	 * 检查已完成的订货单子单， 若没有完成则需要使其完成。
+	 * @return
+	 */
+	@RequestMapping(value = "/order/main/check",method = RequestMethod.PUT)
+	public ResponseEntity<MResult> checkOrderStatus() {
+		
+		MResult result = new MResult(MCode.V_1);
+		try {
+			String val = GetDisconfDataGetter.getDisconfProperty("scm.job.user");
+			orderApp.updateAllOrderStatus(val);
+			result.setStatus(MCode.V_200);
+		} catch (Exception e) {
+			LOGGER.error("自动检查订单下的子单状态 出错", e);
+			result = new MResult(MCode.V_400, e.getMessage());
+		}
+		return new ResponseEntity<MResult>(result, HttpStatus.OK);
+	}
+	
 }
