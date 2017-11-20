@@ -39,6 +39,6 @@ public class GoodsSkuUpdateByOrderCancelListener extends ExchangeListener {
 
     @Override
     protected String[] listensTo() {
-        return new String[]{"cn.m2c.scm.domain.model.order.event.OrderPayedEvent"};
+        return new String[]{"cn.m2c.scm.domain.model.order.event.OrderCancelEvent"};
     }
 }
