@@ -1,5 +1,8 @@
 package cn.m2c.scm.application.dealer.data.representation;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import cn.m2c.scm.application.dealer.data.bean.DealerBean;
 
 public class DealerDetailRepresentation {
@@ -15,6 +18,8 @@ public class DealerDetailRepresentation {
 		 private String userPhone;
 		 
 		 private String userId;
+		 
+		 private List<String> dealerClassifyIds = new ArrayList<String>();
 		 
 		 private String dealerClassify;
 		 private String dealerFirstClassify;
@@ -67,6 +72,8 @@ public class DealerDetailRepresentation {
 				this.dealerFirstClassify = model.getDealerClassifyBean().getDealerClassifyId();
 				this.dealerFristClassifyName = model.getDealerClassifyBean().getDealerFirstClassifyName();
 				this.dealerSecondClassifyName = model.getDealerClassifyBean().getDealerSecondClassifyName();
+				this.dealerClassifyIds.add(this.dealerFirstClassify);
+				this.dealerClassifyIds.add(this.dealerClassify);
 			}
 			this.cooperationMode = model.getCooperationMode();
 			this.countMode = model.getCountMode();
@@ -277,6 +284,13 @@ public class DealerDetailRepresentation {
 		public void setDealerDetailAddress(String dealerDetailAddress) {
 			this.dealerDetailAddress = dealerDetailAddress;
 		}
+		public List<String> getDealerClassifyIds() {
+			return dealerClassifyIds;
+		}
+		public void setDealerClassifyIds(List<String> dealerClassifyIds) {
+			this.dealerClassifyIds = dealerClassifyIds;
+		}
+		
 		
 		
 		

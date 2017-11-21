@@ -560,7 +560,13 @@ public class GoodsQueryApplication {
         sql.append(" t_scm_goods WHERE 1 = 1 AND goods_id = ?");
         GoodsBean goodsBean = this.getSupportJdbcTemplate().queryForBean(sql.toString(), GoodsBean.class, goodsId);
         if (null != goodsBean) {
-            goodsBean.setGoodsSkuBeans(queryShowGoodsSKUsByGoodsId(goodsBean.getId()));
+            List<GoodsSkuBean> skuBeans = queryShowGoodsSKUsByGoodsId(goodsBean.getId());
+            if (null != skuBeans && skuBeans.size()>0){
+                goodsBean.setGoodsSkuBeans(skuBeans);
+            }else{
+                return null;
+            }
+
         }
         return goodsBean;
     }
