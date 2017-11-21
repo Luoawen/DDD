@@ -133,7 +133,7 @@ public class HibernateOrderRepository extends HibernateSupperRepository implemen
 				"and a._status NOT IN (4, 5, -1)\r\n" + 
 				"and b._status NOT IN (-1, 4, 5)\r\n" + 
 				") and _status != -1")
-		.addEntity(Long.class).list();
+		.list();
 		
 		if (rs != null && rs.size() > 0) {
 			this.session().createSQLQuery("UPDATE t_scm_order_main SET _status=4 WHERE id IN(:idList)").setParameterList("idList", rs).executeUpdate();

@@ -126,7 +126,7 @@ public class HibernateSaleAfterOrderRepository extends HibernateSupperRepository
 				"AND a.sku_id = b.sku_id\r\n" + 
 				"AND a._status NOT IN (4,5, -1)\r\n" + 
 				"AND b._status IN (11, 12)")
-		.addEntity(Long.class).list();
+		.list();
 		
 		if (rs != null && rs.size() > 0) {
 			this.session().createSQLQuery("UPDATE t_scm_order_detail SET _status=5 WHERE id IN(:idList)").setParameterList("idList", rs).executeUpdate();

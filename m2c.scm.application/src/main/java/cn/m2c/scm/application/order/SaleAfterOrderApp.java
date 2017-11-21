@@ -86,16 +86,16 @@ public class SaleAfterOrderApp {
 		money = money - discountMoney;
 		
 		int orderType = cmd.getType() == 3 ? 0 : cmd.getType(); //0换货， 1退货，2仅退款                  app传 1退货，2退款，3换货
-		int status = 2; //0申请退货,1申请换货,2申请退款
-		switch (cmd.getType()) {
+		int status = 2; //0申请退货,1申请换货,2申请退款          订单类型，0换货， 1退货，2仅退款
+		switch (orderType) {
+			case 0:
+				status = 1;
+				break;
 			case 1:
 				status = 0;
 				break;
 			case 2:
 				status = 2;
-				break;
-			case 3:
-				status = 1;
 				break;
 		}
 		SaleAfterOrder afterOrder = new SaleAfterOrder(cmd.getSaleAfterNo(), cmd.getUserId(), cmd.getOrderId(),
