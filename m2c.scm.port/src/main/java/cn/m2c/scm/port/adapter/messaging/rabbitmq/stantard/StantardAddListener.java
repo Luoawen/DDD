@@ -30,9 +30,11 @@ public class StantardAddListener extends ExchangeListener{
 
 	@Override
 	protected void filteredDispatch(String aType, String aTextMessage) throws Exception {
+		System.out.println("--------------------------aTextMessage:"+aTextMessage);
 		JSONObject jsonObjject = JSONObject.parseObject(aTextMessage);
 		JSONObject object = jsonObjject.getJSONObject("event");
-		JSONArray array = object.getJSONArray("standardId");
+		System.out.println("--------------------------object:"+object);
+		JSONArray array = object.getJSONArray("standardIds");
 		List<String> list = array.toJavaList(String.class);
         if (list != null && list.size() > 0) {
         	stantardApplication.beUsed(list);
