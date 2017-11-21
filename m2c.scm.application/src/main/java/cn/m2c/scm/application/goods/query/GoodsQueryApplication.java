@@ -797,7 +797,7 @@ public class GoodsQueryApplication {
             //判断识别率高低
             Collections.sort(scoreList);//升序排序
             Collections.reverse(scoreList);//倒序
-            if (scoreList.get(0) > 0.75) {
+            if (scoreList.get(0) > 0.32) {
                 recognizedIds.add((String) recognizedList.get(0).get("recognizedId"));
                 return queryGoodsByRecognizedIds(recognizedIds);
             } /*else if (scoreList.get(0) > 0.01) {
