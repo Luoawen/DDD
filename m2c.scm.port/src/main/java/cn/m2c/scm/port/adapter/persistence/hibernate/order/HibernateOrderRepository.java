@@ -120,7 +120,7 @@ public class HibernateOrderRepository extends HibernateSupperRepository implemen
 	@Override
 	public List<MainOrder> getNotPayedOrders(int h) {
 		// TODO Auto-generated method stub
-		StringBuilder sql = new StringBuilder("select * from t_scm_order_main where round((UNIX_TIMESTAMP(now())-UNIX_TIMESTAMP(created_date))/60)/60/" + h +" >= 1");
+		StringBuilder sql = new StringBuilder("select * from t_scm_order_main where round((UNIX_TIMESTAMP(now())-UNIX_TIMESTAMP(created_date))/60)/" + h +" >= 1");//60/
 		Query query = this.session().createSQLQuery(sql.toString()).addEntity(MainOrder.class);
 		List<MainOrder> list = (List<MainOrder>)query.list();
 		return list;
