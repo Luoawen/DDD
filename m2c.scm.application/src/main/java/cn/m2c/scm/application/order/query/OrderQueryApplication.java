@@ -427,7 +427,7 @@ public class OrderQueryApplication {
 					sql.append(" AND b.dealer_order_id =?");
 					params.add(cmd.getDealerOrderId());
 				}
-				//sql.append(" limit 1");
+				sql.append(" limit 1");
 			}
 			else {
 				sql.append("SELECT b.province_code, b.province, b.city, b.city_code, b.area_code, b.area_county, b.street_addr\r\n")
@@ -460,9 +460,18 @@ public class OrderQueryApplication {
 				.append(", b._status afterStatus, a.goods_id, a.goods_type_id, a.express_no, a.express_code, a.express_name, a.express_way, a.comment_status ")
 				.append(" FROM t_scm_order_detail a ")
 				.append(" LEFT OUTER JOIN t_scm_order_after_sell b ON b.order_id=a.order_id AND b.dealer_order_id = a.dealer_order_id AND b._status NOT IN(-1, 3) AND a.sku_id=b.sku_id")
-				.append(" WHERE a.order_id=? AND a.dealer_order_id=?");
+				.append(" WHERE a.order_id=? ");
+				
+				Object [] pa = null;
+				if (result.getStatus() >= 1) {
+					sql.append("AND a.dealer_order_id=?");
+					pa = new Object[] {result.getOrderId(), result.getDealerOrderId()};
+				}
+				else {
+					pa = new Object[] {result.getOrderId()};
+				}
 				result.setGoodses(this.supportJdbcTemplate.queryForBeanList(sql.toString(), 
-						OrderDetailBean.class, new Object[] {result.getOrderId(), result.getDealerOrderId()}));
+						OrderDetailBean.class, pa));
 			}
 			
 		} catch (Exception e) {
