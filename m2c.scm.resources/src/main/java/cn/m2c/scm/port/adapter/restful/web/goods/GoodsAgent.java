@@ -228,7 +228,7 @@ public class GoodsAgent {
      * @param goodsId
      * @return
      */
-    @RequestMapping(value = "/mng/recognized/{goodsId}", method = RequestMethod.PUT)
+    @RequestMapping(value = {"/recognized/{goodsId}","/mng/recognized/{goodsId}"}, method = RequestMethod.PUT)
     @RequirePermissions(value ={"scm:goodsStorage:modifyRecognized"})
     public ResponseEntity<MResult> modifyRecognized(
             @PathVariable("goodsId") String goodsId,
