@@ -219,7 +219,7 @@ public class SaleAfterOrderApp {
 	}
 	
 	/***
-	 * 确认退款
+	 * 退款成功
 	 * @param cmd
 	 */
 	@Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})

@@ -242,7 +242,7 @@ public class DealerOrder extends ConcurrencySafeEntity {
 	 */
 	public void updateOrderFreight(long orderFreight, String userId) {
 		this.orderFreight = orderFreight;
-		DomainEventPublisher.instance().publish(new OrderOptLogEvent(orderId, dealerOrderId, "更新订单运费", userId));
+		DomainEventPublisher.instance().publish(new OrderOptLogEvent(orderId, dealerOrderId, "修改订单运费", userId));
 	}
 	
 	/**

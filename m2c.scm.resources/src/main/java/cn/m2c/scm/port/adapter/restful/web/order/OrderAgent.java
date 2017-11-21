@@ -219,7 +219,7 @@ public class OrderAgent {
         try {
         	SaleAfterShipCmd cmd = new SaleAfterShipCmd(userId, saleAfterNo, skuId,
         			expressNo, expressCode, expressName, expressPerson, expressPhone, expressWay);
-        	saleAfterApp.userShipGoods(cmd);
+        	saleAfterApp.dealerShipGoods(cmd);
             result.setStatus(MCode.V_200);
         } 
         catch (NegativeException e) {

@@ -66,6 +66,7 @@ public class DealerOrderApplication {
 	 * @throws NegativeException
 	 */
 	@Transactional(rollbackFor = { Exception.class, RuntimeException.class, NegativeException.class })
+	@EventListener
 	public void updateAddress(UpdateAddrCommand command) throws NegativeException {
 		DealerOrder dealerOrder = dealerOrderRepository.getDealerOrderById(command.getDealerOrderId());
 		if (dealerOrder == null)
@@ -101,6 +102,7 @@ public class DealerOrderApplication {
 	 * @throws NegativeException
 	 */
 	@Transactional(rollbackFor = { Exception.class, RuntimeException.class, NegativeException.class })
+	@EventListener
 	public void updateAddrFreight(UpdateAddrFreightCmd cmd) throws NegativeException {
 
 		DealerOrder dealerOrder = dealerOrderRepository.getDealerOrderById(cmd.getDealerOrderId());
