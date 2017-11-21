@@ -57,7 +57,7 @@ public class SendOrderCommand extends AssertionConcern{
 		this.expressCode = expressCode;
 		this.userId = userId;
 		
-		if (expressWay != 0 || expressWay != 1) {// 增加判断若为空则需要抛出异常。
+		if (expressWay != 0 && expressWay != 1) {// 增加判断若为空则需要抛出异常。
 			throw new NegativeException(MCode.V_1, "expressWay 参数不正确.");
 		}
 		
