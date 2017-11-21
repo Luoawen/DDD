@@ -305,7 +305,8 @@ public class AppOrderAgent {
     	MResult result = new MResult(MCode.V_1);
         try {
         	SaleAfterShipCmd cmd = new SaleAfterShipCmd(userId, saleAfterNo, skuId,
-        			expressNo, expressCode, expressName);
+        			expressNo, expressName);
+        	cmd.setExpressCode(expressCode);
         	saleAfterApp.userShipGoods(cmd);
             result.setStatus(MCode.V_200);
         } 

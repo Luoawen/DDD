@@ -299,4 +299,14 @@ public class MainOrder extends ConcurrencySafeEntity {
 		DomainEventPublisher.instance().publish(new OrderOptLogEvent(orderId, null, "订单取消成功", "m2c_job_scm"));
 		return true;
 	}
+	/***
+	 * 更新收货地址
+	 */
+	public boolean updateAddr(ReceiveAddr adr) {
+		if (status == 0) {
+			addr = adr;
+			return true;
+		}
+		return false;
+	}
 }

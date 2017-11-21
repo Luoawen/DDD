@@ -79,6 +79,36 @@ public class SaleAfterShipCmd extends AssertionConcern {
 		this.expressPhone = expressPhone;
 		this.expressWay = expressWay;
 	}
+	
+	public SaleAfterShipCmd(String userId, String saleAfterNo, String skuId, String expressNo
+			, String expressName) throws NegativeException {
+		
+		if (StringUtils.isEmpty(userId)) {
+			throw new NegativeException(MCode.V_1, "用户ID参数为空(userId)！");
+		}
+		
+		if (StringUtils.isEmpty(saleAfterNo)) {
+			throw new NegativeException(MCode.V_1, "售后单号参数为空(saleAfterNo)！");
+		}
+		
+		if (StringUtils.isEmpty(expressNo)) {
+			throw new NegativeException(MCode.V_1, "快递单号参数为空(dealerId)！");
+		}
+		
+		if (StringUtils.isEmpty(skuId)) {
+			throw new NegativeException(MCode.V_1, "售后商品sku参数为空(skuId)！");
+		}
+		
+		if (StringUtils.isEmpty(expressName)) {
+			throw new NegativeException(MCode.V_1, "快递公司名称主空(expressName)！");
+		}
+		
+		this.userId = userId;
+		this.skuId = skuId;
+		this.saleAfterNo = saleAfterNo;
+		this.expressNo = expressNo;
+		this.expressName = expressName;
+	}
 
 	public String getUserId() {
 		return userId;
@@ -90,6 +120,10 @@ public class SaleAfterShipCmd extends AssertionConcern {
 
 	public String getSkuId() {
 		return skuId;
+	}
+	
+	public void setExpressCode(String code) {
+		this.expressCode = code;
 	}
 	
 	public ExpressInfo getExpressInfo() {

@@ -22,6 +22,8 @@ import cn.m2c.scm.domain.model.order.DealerOrder;
 import cn.m2c.scm.domain.model.order.DealerOrderDtl;
 import cn.m2c.scm.domain.model.order.DealerOrderDtlRepository;
 import cn.m2c.scm.domain.model.order.DealerOrderRepository;
+import cn.m2c.scm.domain.model.order.MainOrder;
+import cn.m2c.scm.domain.model.order.OrderRepository;
 import cn.m2c.scm.domain.model.order.ReceiveAddr;
 import cn.m2c.scm.domain.util.GetDisconfDataGetter;
 
@@ -37,7 +39,8 @@ public class DealerOrderApplication {
 	@Autowired
 	DealerOrderDtlRepository orderDtlRepository;
 
-	
+	@Autowired
+    OrderRepository orderRepository;
 	/**
 	 * 更新物流信息
 	 * 
@@ -117,8 +120,13 @@ public class DealerOrderApplication {
 		boolean updatedAddr = addr.updateAddr(cmd.getProvince(), cmd.getProvCode(), cmd.getCity(), cmd.getCityCode(),
 				cmd.getArea(), cmd.getAreaCode(), cmd.getStreet(), cmd.getRevPerson(), cmd.getPhone());
 
-		if (updatedAddr)
+		if (updatedAddr) {
 			dealerOrder.updateAddr(addr, cmd.getUserId());
+			MainOrder mOrder = orderRepository.getOrderById(dealerOrder.getOrderNo());
+			if (mOrder.updateAddr(addr))
+				orderRepository.updateMainOrder(mOrder);
+			mOrder = null;
+		}
 
 		boolean updatedFreight = dealerOrder.updateOrderFreight(cmd.getFreights(), cmd.getUserId());
 
