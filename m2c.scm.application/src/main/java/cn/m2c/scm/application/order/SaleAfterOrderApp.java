@@ -1,6 +1,5 @@
 package cn.m2c.scm.application.order;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -343,12 +342,12 @@ public class SaleAfterOrderApp {
 			return ;
 		
 		for (SaleAfterOrder afterOrder : saleAfterOrders) {
-			jobCancleAfterOrder(afterOrder);
+			jobCancelAfterOrder(afterOrder);
 		}
 	}
 	
 	@Transactional(rollbackFor = { Exception.class, RuntimeException.class,NegativeException.class }, propagation = Propagation.REQUIRES_NEW)
-	private void jobCancleAfterOrder(SaleAfterOrder afterOrder) {
+	private void jobCancelAfterOrder(SaleAfterOrder afterOrder) {
 		if (afterOrder.cancel())
 			saleAfterRepository.save(afterOrder);
 	}

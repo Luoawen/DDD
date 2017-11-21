@@ -226,10 +226,10 @@ public class SaleAfterOrder extends ConcurrencySafeEntity {
 	}
 	
 	/**
-	 * 售后订单状态改为 '交易关闭'
+	 * 售后订单状态改为 '交易完成/关闭'
 	 */
 	public void updateStatusAgreeAfterSale() {
-		this.status = -1;
+		this.status = 11;
 	}
 	
 	public String orderId() {
