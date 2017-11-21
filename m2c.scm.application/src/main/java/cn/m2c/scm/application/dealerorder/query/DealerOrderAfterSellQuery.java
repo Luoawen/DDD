@@ -90,7 +90,7 @@ public class DealerOrderAfterSellQuery {
 		List<AfterSellOrderBean> beanList = this.supportJdbcTemplate.queryForBeanList(sql.toString(),
 				AfterSellOrderBean.class, params.toArray());
 		for (AfterSellOrderBean bean : beanList) {
-			bean.setGoodsInfo(afterSellGoodsInfoQuery(bean.getSkuId()));
+			bean.setGoodsInfo(afterSellGoodsInfoQuery(bean.getSkuId(),bean.getAfterSellOrderId()));
 		}
 		return beanList;
 	}
@@ -124,17 +124,18 @@ public class DealerOrderAfterSellQuery {
 	 * 获取售后订单列表商品信息
 	 * 
 	 * @param skuId
-	 * @param dealerOrderId
+	 * @param afterSellOrderId
 	 * @return
 	 */
-	public GoodsInfoBean afterSellGoodsInfoQuery(String skuId) {
+	public GoodsInfoBean afterSellGoodsInfoQuery(String skuId,String afterSellOrderId) {
 		List<Object> params = new ArrayList<Object>();
 		StringBuilder sql = new StringBuilder();
 		sql.append(" SELECT b.goods_icon, b.goods_name, b.goods_title as goods_sub_title, b.sku_name, ")
 				.append(" b.discount_price, a.sell_num ").append(" FROM t_scm_order_after_sell a")
 				.append(" LEFT OUTER JOIN t_scm_order_detail b ON a.dealer_order_id = b.dealer_order_id AND a.order_id = b.order_id AND a.sku_id= b.sku_id")
-				.append(" where a.sku_id=?");
+				.append(" where a.sku_id=? and a.after_sell_order_id =?");
 		params.add(skuId);
+		params.add(afterSellOrderId);
 		GoodsInfoBean goodsInfoList = this.supportJdbcTemplate.queryForBean(sql.toString(), GoodsInfoBean.class,
 				params.toArray());
 		return goodsInfoList;
