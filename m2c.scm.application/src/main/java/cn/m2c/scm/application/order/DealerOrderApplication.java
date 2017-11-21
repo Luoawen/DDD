@@ -45,6 +45,7 @@ public class DealerOrderApplication {
 	 * @throws NegativeException
 	 */
 	@Transactional(rollbackFor = { Exception.class, RuntimeException.class, NegativeException.class })
+	@EventListener
 	public void updateExpress(SendOrderCommand command) throws NegativeException {
 
 		LOGGER.info("更新物流信息");
@@ -53,7 +54,7 @@ public class DealerOrderApplication {
 			throw new NegativeException(NegativeCode.DEALER_ORDER_IS_NOT_EXIST, "此商家订单不存在.");
 		if (!dealerOrder.updateExpress(command.getExpressName(), command.getExpressNo(), command.getExpressNote(),
 				command.getExpressPerson(), command.getExpressPhone(), command.getExpressWay(),
-				command.getExpressCode())) {
+				command.getExpressCode(), command.getUserId())) {
 			throw new NegativeException(MCode.V_300, "订单处于不可发货状态");
 		}
 		dealerOrderRepository.save(dealerOrder);

@@ -138,7 +138,7 @@ public class DealerOrder extends ConcurrencySafeEntity {
 	 */
 	public boolean updateExpress(String expressName, String expressNo,
 			String expressNote, String expressPerson, String expressPhone,
-			Integer expressWay, String expressCode) {
+			Integer expressWay, String expressCode, String userId) {
 		if (status >= 2 || status < 1) {
 			return false;
 		}
@@ -147,6 +147,7 @@ public class DealerOrder extends ConcurrencySafeEntity {
 			dealerOrderDtl.updateOrderDetailExpress(expressName,expressNo,expressNote,expressPerson
 					,expressPhone,expressWay, expressCode);
 		}
+		DomainEventPublisher.instance().publish(new OrderOptLogEvent(orderId, dealerOrderId, "商家发货", userId));
 		return true;
 	}
 	/***

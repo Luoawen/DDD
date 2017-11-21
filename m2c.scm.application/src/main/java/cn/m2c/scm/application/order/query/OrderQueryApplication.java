@@ -317,10 +317,10 @@ public class OrderQueryApplication {
 					}
 					else if (o.getStatus() == 0 && o.getOrderId().equals(tmpOrderId)) {
 						result.remove(i);
-						tmp.setDealerDiscount(tmp.getDealerDiscount() + o.getDealerDiscount());
+						/*tmp.setDealerDiscount(tmp.getDealerDiscount() + o.getDealerDiscount());
 						tmp.setPlateFormDiscount(tmp.getPlateFormDiscount() + o.getPlateFormDiscount());
 						tmp.setGoodAmount(tmp.getGoodAmount() + o.getGoodAmount());
-						tmp.setOderFreight(tmp.getOderFreight() + o.getOderFreight());
+						tmp.setOderFreight(tmp.getOderFreight() + o.getOderFreight());*/
 					}
 					else {
 						tmpOrderId = o.getOrderId();

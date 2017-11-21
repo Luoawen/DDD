@@ -348,13 +348,14 @@ public class OrderAgent {
     		@RequestParam(value = "expressNote", required = false) String expressNote,
     		@RequestParam(value = "expressPerson", required = false) String expressPerson,
     		@RequestParam(value = "expressPhone", required = false) String expressPhone,
-    		@RequestParam(value = "expressWay", required = true) Integer expressWay
-    		,@RequestParam(value = "expressCode", required = true) String expressCode
+    		@RequestParam(value = "expressWay", required = false) Integer expressWay
+    		,@RequestParam(value = "expressCode", required = false) String expressCode
+    		,@RequestParam(value = "userId", required = false) String userId
     		){
     	MResult result = new MResult(MCode.V_1);
     	try {
     		SendOrderCommand command = new SendOrderCommand(dealerOrderId, expressNo, expressName, expressPerson, expressPhone, 
-    				expressWay, expressNote, expressCode);
+    				expressWay, expressNote, expressCode, userId);
     		dealerOrderApplication.updateExpress(command);
     		result.setStatus(MCode.V_200);
 		} catch (NegativeException e) {
