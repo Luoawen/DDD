@@ -800,17 +800,17 @@ public class GoodsQueryApplication {
             if (scoreList.get(0) > 0.75) {
                 recognizedIds.add((String) recognizedList.get(0).get("recognizedId"));
                 return queryGoodsByRecognizedIds(recognizedIds);
-            } else if (scoreList.get(0) > 0.01) {
+            } /*else if (scoreList.get(0) > 0.01) {
                 //取前10条
                 for (int j = 0; j < scoreList.size() && j < 10; j++) {
                     if (scoreList.get(j) > 0.01)
                         recognizedIds.add((String) recognizedList.get(j).get("recognizedId"));
                 }
                 return queryGoodsByRecognizedIds(recognizedIds);
-            }
+            }*/
         }
 
-        Map<String, Object> locationInfo = new Gson().fromJson(location, new TypeToken<Map<String, Object>>() {
+       /* Map<String, Object> locationInfo = new Gson().fromJson(location, new TypeToken<Map<String, Object>>() {
         }.getType());
         if (null != locationInfo) {
             Double longitude = Double.parseDouble((String) locationInfo.get("longitude"));
@@ -820,7 +820,7 @@ public class GoodsQueryApplication {
             if (null != goodsIdList && goodsIdList.size() > 0) {
                 return queryGoodsByGoodsIds(goodsIdList);
             }
-        }
+        }*/
         return null;
     }
 
