@@ -71,7 +71,7 @@ public class AppGoodsCommentAgent {
             result = new MResult(MCode.V_300, "商品信息不存在");
             return new ResponseEntity<MResult>(result, HttpStatus.OK);
         }
-        String id = IDGenerator.get(IDGenerator.SCM_GOODS_PREFIX_TITLE);
+        String id = IDGenerator.get(IDGenerator.SCM_GOODS_COMMENT_PREFIX_TITLE);
         AddGoodsCommentCommand command = new AddGoodsCommentCommand(id, orderId, skuId, info.getSkuName(), goodsNum, buyerId, buyerName,
                 buyerPhoneNumber, buyerIcon, commentContent, commentImages,
                 info.getGoodsId(), info.getGoodsName(), info.getDealerId(), info.getDealerName(), starLevel);
