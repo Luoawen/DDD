@@ -31,7 +31,7 @@ public class UnitAddListener extends ExchangeListener {
 
 	@Override
 	protected String[] listensTo() {
-		 return new String[]{"cn.m2c.scm.domain.model.goods.event.GoodsDeleteEvent"};
+		 return new String[]{"cn.m2c.scm.domain.model.goods.event.GoodsAddEvent"};
 	}
 
 	@Override
