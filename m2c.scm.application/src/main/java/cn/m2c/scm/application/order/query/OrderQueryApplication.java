@@ -427,7 +427,7 @@ public class OrderQueryApplication {
 					sql.append(" AND b.dealer_order_id =?");
 					params.add(cmd.getDealerOrderId());
 				}
-				sql.append(" limit 1");
+				//sql.append(" limit 1");
 			}
 			else {
 				sql.append("SELECT a.province_code, a.province, a.city, a.city_code, a.area_code, a.area_county, a.street_addr\r\n")
