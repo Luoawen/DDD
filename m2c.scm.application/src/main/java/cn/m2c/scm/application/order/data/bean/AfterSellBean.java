@@ -82,6 +82,50 @@ public class AfterSellBean {
 	@ColumnAlias(value= "reason")
 	private String reason;
 	
+	@ColumnAlias(value= "back_express_no")
+	private String bkExpressNo;
+	
+	@ColumnAlias(value= "back_express_name")
+	private String bkExpressName;
+	
+	@ColumnAlias(value= "express_no")
+	private String expressNo;
+	
+	@ColumnAlias(value= "express_name")
+	private String expressName;
+	
+	public String getBkExpressNo() {
+		return bkExpressNo;
+	}
+
+	public void setBkExpressNo(String bkExpressNo) {
+		this.bkExpressNo = bkExpressNo;
+	}
+
+	public String getBkExpressName() {
+		return bkExpressName;
+	}
+
+	public void setBkExpressName(String bkExpressName) {
+		this.bkExpressName = bkExpressName;
+	}
+
+	public String getExpressNo() {
+		return expressNo;
+	}
+
+	public void setExpressNo(String expressNo) {
+		this.expressNo = expressNo;
+	}
+
+	public String getExpressName() {
+		return expressName;
+	}
+
+	public void setExpressName(String expressName) {
+		this.expressName = expressName;
+	}
+
 	public Date getUpdateTime() {
 		return updateTime;
 	}
