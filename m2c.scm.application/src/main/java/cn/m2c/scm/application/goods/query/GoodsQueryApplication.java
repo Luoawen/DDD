@@ -13,6 +13,7 @@ import cn.m2c.scm.application.shop.query.ShopQuery;
 import cn.m2c.scm.application.utils.Utils;
 import cn.m2c.scm.domain.NegativeException;
 import cn.m2c.scm.domain.service.goods.GoodsService;
+import cn.m2c.scm.domain.util.GetDisconfDataGetter;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import org.apache.commons.lang3.StringUtils;
@@ -561,9 +562,9 @@ public class GoodsQueryApplication {
         GoodsBean goodsBean = this.getSupportJdbcTemplate().queryForBean(sql.toString(), GoodsBean.class, goodsId);
         if (null != goodsBean) {
             List<GoodsSkuBean> skuBeans = queryShowGoodsSKUsByGoodsId(goodsBean.getId());
-            if (null != skuBeans && skuBeans.size()>0){
+            if (null != skuBeans && skuBeans.size() > 0) {
                 goodsBean.setGoodsSkuBeans(skuBeans);
-            }else{
+            } else {
                 return null;
             }
 
@@ -797,7 +798,10 @@ public class GoodsQueryApplication {
             //判断识别率高低
             Collections.sort(scoreList);//升序排序
             Collections.reverse(scoreList);//倒序
-            if (scoreList.get(0) > 0.32) {
+            // 商品图片拍获识别阈值
+            Float recognizedScore = Float.parseFloat(GetDisconfDataGetter.getDisconfProperty("goods.recognized.score"));
+            LOGGER.info("商品图片拍获识别阈值为" + recognizedScore);
+            if (scoreList.get(0) > recognizedScore) {
                 recognizedIds.add((String) recognizedList.get(0).get("recognizedId"));
                 return queryGoodsByRecognizedIds(recognizedIds);
             } /*else if (scoreList.get(0) > 0.01) {
