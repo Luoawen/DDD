@@ -53,10 +53,15 @@ public class BrandQueryApplication {
             params.add("%" + brandName + "%");
         }
         if (StringUtils.isNotEmpty(condition)) {
-            sql.append(" AND dealer_id = ? OR dealer_name LIKE ? OR brand_name LIKE ?");
-            params.add(condition);
-            params.add("%" + condition + "%");
-            params.add("%" + condition + "%");
+            if (StringUtils.isNotEmpty(dealerId)) {
+                sql.append(" AND brand_name LIKE ?");
+                params.add("%" + condition + "%");
+            } else{
+                sql.append(" AND (dealer_id = ? OR dealer_name LIKE ? OR brand_name LIKE ?)");
+                params.add(condition);
+                params.add("%" + condition + "%");
+                params.add("%" + condition + "%");
+            }
         }
         if (StringUtils.isNotEmpty(startTime) && StringUtils.isNotEmpty(endTime)) {
             sql.append(" AND created_date BETWEEN ? AND ?");
@@ -86,10 +91,15 @@ public class BrandQueryApplication {
             params.add("%" + brandName + "%");
         }
         if (StringUtils.isNotEmpty(condition)) {
-            sql.append(" AND dealer_id = ? OR dealer_name LIKE ? OR brand_name LIKE ?");
-            params.add(condition);
-            params.add("%" + condition + "%");
-            params.add("%" + condition + "%");
+            if (StringUtils.isNotEmpty(dealerId)) {
+                sql.append(" AND brand_name LIKE ?");
+                params.add("%" + condition + "%");
+            } else{
+                sql.append(" AND (dealer_id = ? OR dealer_name LIKE ? OR brand_name LIKE ?)");
+                params.add(condition);
+                params.add("%" + condition + "%");
+                params.add("%" + condition + "%");
+            }
         }
         if (StringUtils.isNotEmpty(startTime) && StringUtils.isNotEmpty(endTime)) {
             sql.append(" AND created_date BETWEEN ? AND ?");

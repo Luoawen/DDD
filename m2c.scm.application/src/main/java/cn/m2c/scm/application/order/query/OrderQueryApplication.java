@@ -23,6 +23,7 @@ import cn.m2c.scm.application.order.data.bean.AppOrderDtl;
 import cn.m2c.scm.application.order.data.bean.DealerOrderBean;
 import cn.m2c.scm.application.order.data.bean.OrderDetailBean;
 import cn.m2c.scm.application.order.data.bean.OrderExpressBean;
+import cn.m2c.scm.application.order.data.bean.OrderExpressDetailBean;
 import cn.m2c.scm.application.order.data.bean.SkuNumBean;
 import cn.m2c.scm.application.order.data.bean.UserOrderStatic;
 import cn.m2c.scm.application.order.data.representation.OptLogBean;
@@ -638,6 +639,46 @@ public class OrderQueryApplication {
 			throw new NegativeException(500, "查询用户对应的订单统计出错");
 		}
 		return result;
+	}
+	
+	/**
+	 * 查询订单配送详情信息总数
+	 * @param dealerOrderId
+	 * @return
+	 * @throws NegativeException
+	 */
+	public Integer getOrderExpressDetailTotal(String dealerOrderId) throws NegativeException {
+		Integer total = 0;
+		try {
+			StringBuilder sql = new StringBuilder(200);
+			List<Object> params = new ArrayList<>();
+			sql.append("SELECT COUNT(1) FROM t_scm_order_detail WHERE dealer_order_id = ?");
+			params.add(dealerOrderId);
+			total = this.getSupportJdbcTemplate().jdbcTemplate().queryForObject(sql.toString(), params.toArray(), Integer.class);
+		} catch (Exception e) {
+			LOGGER.error("---查询订单配送详情总数出错"+e.getMessage(),e);
+			throw new NegativeException(500, "查询订单配送详情总数出错");
+		}
+		return total;
+	}
+	/**
+	 * 查询订单配送详情信息
+	 * @param dealerOrderId
+	 * @return
+	 * @throws NegativeException 
+	 */
+	public List<OrderExpressDetailBean> getOrderExpressDetail(String dealerOrderId) throws NegativeException {
+		List<OrderExpressDetailBean> resultList = null;
+		try {
+			String sql = "SELECT * FROM t_scm_order_detail WHERE dealer_order_id = ? ";
+			List<Object> params = new ArrayList<>();
+			params.add(dealerOrderId);
+			resultList = this.getSupportJdbcTemplate().queryForBeanList(sql, OrderExpressDetailBean.class,params.toArray());
+		}catch (Exception e) {
+			LOGGER.error("---查询订单配送详情出错"+e.getMessage(),e);
+			throw new NegativeException(500, "查询订单配送详情出错");
+		}
+		return resultList;
 	}
 }
 
