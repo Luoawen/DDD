@@ -169,9 +169,8 @@ public class SellerAgent {
 	public ResponseEntity<MPager> list(@RequestParam(value = "filter", required = false) String filter,
 			@RequestParam(value = "startTime", required = false) String startTime,
 			@RequestParam(value = "endTime", required = false) String endTime,
-			@RequestParam(value = "pageNum", required = false) Integer pageNum,
-			@RequestParam(value = "rows", required = false) Integer rows) {
-		System.out.println("----------请求到List方法");
+			@RequestParam(value = "pageNum",defaultValue = "1",required = false) Integer pageNum,
+			@RequestParam(value = "rows",defaultValue = "10", required = false) Integer rows) {
 		MPager result = new MPager(MCode.V_1);
 		try {
 			// List<DealerBean> dealerList =
@@ -180,9 +179,7 @@ public class SellerAgent {
 			// dealerQuery.getDealerCount(dealerClassify,cooperationMode,countMode,isPayDeposit,dealerName,dealerId,userPhone,sellerPhone,startTime,endTime,pageNum,rows);
 			List<SellerBean> sellerList = sellerQuery.getSellerList(filter, startTime, endTime, pageNum, rows);
 			Integer count = sellerQuery.getCount(filter, startTime, endTime);
-			if (pageNum != null && rows != null) {
 				result.setPager(count, pageNum, rows);
-			}
 			result.setContent(sellerList);
 			result.setStatus(MCode.V_200);
 		} catch (Exception e) {
