@@ -1,5 +1,6 @@
 package cn.m2c.scm.port.adapter.restful.web.order;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -27,7 +28,9 @@ import cn.m2c.scm.application.order.data.bean.DealerOrderBean;
 import cn.m2c.scm.application.order.data.bean.DealerOrderDetailBean;
 import cn.m2c.scm.application.order.data.bean.MainOrderBean;
 import cn.m2c.scm.application.order.data.bean.OrderExpressBean;
+import cn.m2c.scm.application.order.data.bean.OrderExpressDetailBean;
 import cn.m2c.scm.application.order.data.representation.OptLogBean;
+import cn.m2c.scm.application.order.data.representation.OrderExpressDetailRepresentation;
 import cn.m2c.scm.application.order.query.OrderQuery;
 import cn.m2c.scm.application.order.query.OrderQueryApplication;
 import cn.m2c.scm.domain.NegativeException;
@@ -441,5 +444,34 @@ public class OrderAgent {
 			LOGGER.info("查询操作日志失败");
 		}
 		return new ResponseEntity<MPager>(result, HttpStatus.OK);
+	}
+	
+	/**
+	 * 根据订货号查询订单配送详情
+	 * @param dealerOrderId
+	 * @return
+	 */
+	@RequestMapping(value = "/dealer/expressDetail", method = RequestMethod.GET)
+	public ResponseEntity<MResult> getOrderDetailExpress(
+			@RequestParam(value = "dealerOrderId", required = true) String dealerOrderId){
+		MResult result = new MResult(MCode.V_1);
+		try {
+			//根绝订货号，查询配送信息
+			Integer total = orderAppQuery.getOrderExpressDetailTotal(dealerOrderId);
+			if(total > 0) {
+				List<OrderExpressDetailBean> expressList = orderAppQuery.getOrderExpressDetail(dealerOrderId);
+				if(null != expressList && expressList.size()>0) {
+					List<OrderExpressDetailRepresentation> expressRepresentations = new ArrayList<OrderExpressDetailRepresentation>();
+					for(OrderExpressDetailBean expressBean : expressList) {
+						expressRepresentations.add(new OrderExpressDetailRepresentation(expressBean));
+					}
+					result.setContent(expressRepresentations);
+				}
+			}
+			result.setStatus(MCode.V_200);
+		}catch(Exception e) {
+			LOGGER.info("查询配送详情失败");
+		}
+		return new ResponseEntity<MResult>(result,HttpStatus.OK);
 	}
 }
