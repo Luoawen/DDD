@@ -58,7 +58,7 @@ public class BrandQueryApplication {
                 params.add("%" + condition + "%");
             } else{
                 sql.append(" AND dealer_id = ? OR dealer_name LIKE ? OR brand_name LIKE ?");
-                params.add("%" + condition + "%");
+                params.add(condition);
                 params.add("%" + condition + "%");
                 params.add("%" + condition + "%");
             }
@@ -96,7 +96,7 @@ public class BrandQueryApplication {
                 params.add("%" + condition + "%");
             } else{
                 sql.append(" AND dealer_id = ? OR dealer_name LIKE ? OR brand_name LIKE ?");
-                params.add("%" + condition + "%");
+                params.add(condition);
                 params.add("%" + condition + "%");
                 params.add("%" + condition + "%");
             }
