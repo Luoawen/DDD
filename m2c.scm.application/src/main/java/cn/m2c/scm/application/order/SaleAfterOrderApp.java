@@ -309,7 +309,7 @@ public class SaleAfterOrderApp {
 		List<SaleAfterOrder> saleAfterOrders = saleAfterRepository.getSaleAfterOrderStatusAgree(hour);
 		
 		if (saleAfterOrders.size() == 0)
-			throw new NegativeException(NegativeCode.DEALER_ORDER_IS_NOT_EXIST, "没有满足条件的商家订单.");
+			throw new NegativeException(MCode.V_1, "没有满足条件的商家订单.");
 		
 		for (SaleAfterOrder afterOrder : saleAfterOrders) {
 			jobUpdateSaleAfter(afterOrder);

@@ -135,8 +135,9 @@ public class OrderMarketCalc {
 	                changeNum += d.getPurNum();
             	}
             }
+            d.setMarketType(bean.getFullCutType());
         }
-
+        
         if ((type == 1 && totalMoney >= threshold) || (type == 2 && totalNum >= threshold)) {
             if (t == 3) {
 
@@ -151,12 +152,14 @@ public class OrderMarketCalc {
                     if (d.isChange() != 0) {
                         d.setChangePrice(as);
                         d.setPlateformDiscount((d.getDiscountPrice() - d.getChangePrice()) * d.getPurNum());
+                        d.setMarketType(bean.getFullCutType());
                     }
                 }
 
-            } else // 满足其他条件需要做的计算
+            } else {// 满足其他条件需要做的计算
                 calcItem(t, as, totalMoney, totalNum, changeMoney, goodsLs,
                         type, threshold, bean.getFullCutName(), bean.getCostList());
+            }
         } else { // 不满足则需要抛出异常
             throw new NegativeException(MCode.V_301, bean.getFullCutId());
         }
