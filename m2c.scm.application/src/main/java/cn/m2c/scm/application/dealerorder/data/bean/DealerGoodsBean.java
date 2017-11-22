@@ -40,11 +40,22 @@ public class DealerGoodsBean {
 	
 	private String rejectReason;
 
+	private Integer afOrderType;
 	/**
 	 * 运费
 	 */
 	private long freight;
 	
+	public Integer getAfOrderType() {
+		if (afOrderType == null)
+			afOrderType = -1;
+		return afOrderType;
+	}
+
+	public void setAfOrderType(Integer afOrderType) {
+		this.afOrderType = afOrderType;
+	}
+
 	public String getSaleAfterNo() {
 		return saleAfterNo;
 	}
