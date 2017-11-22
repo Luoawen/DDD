@@ -41,11 +41,23 @@ public class DealerGoodsBean {
 	private String rejectReason;
 
 	private Integer afOrderType;
+	
+	private Long backMoney;
 	/**
 	 * 运费
 	 */
 	private long freight;
 	
+	public Long getBackMoney() {
+		if (backMoney == null)
+			backMoney = 0l;
+		return backMoney;
+	}
+
+	public void setBackMoney(Long backMoney) {
+		this.backMoney = backMoney;
+	}
+
 	public Integer getAfOrderType() {
 		if (afOrderType == null)
 			afOrderType = -1;
