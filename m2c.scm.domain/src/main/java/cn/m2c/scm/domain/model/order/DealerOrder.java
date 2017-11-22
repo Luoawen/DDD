@@ -53,6 +53,8 @@ public class DealerOrder extends ConcurrencySafeEntity {
 	private Integer delFlag = 0;
 	/**订单明细*/
 	private List<DealerOrderDtl> orderDtls;
+	/**更新时间*/
+	private Date updateTime;
 	
 	/***
 	 * 删除订单(用户主动操作)
@@ -67,6 +69,7 @@ public class DealerOrder extends ConcurrencySafeEntity {
 				d.del();
 		}
 		delFlag = 1;
+		//updateTime = new Date();
 		return true;
 	}
 	
@@ -115,6 +118,7 @@ public class DealerOrder extends ConcurrencySafeEntity {
 	
 	void cancel() {
 		status = -1;
+		updateTime = new Date();
 		for (DealerOrderDtl d : orderDtls) {
 			d.cancel();
 		}
@@ -122,6 +126,7 @@ public class DealerOrder extends ConcurrencySafeEntity {
 	
 	void payed() {
 		status = 1;
+		updateTime = new Date();
 		for (DealerOrderDtl d : orderDtls) {
 			d.payed();
 		}
@@ -147,6 +152,7 @@ public class DealerOrder extends ConcurrencySafeEntity {
 			dealerOrderDtl.updateOrderDetailExpress(expressName,expressNo,expressNote,expressPerson
 					,expressPhone,expressWay, expressCode);
 		}
+		updateTime = new Date();
 		DomainEventPublisher.instance().publish(new OrderOptLogEvent(orderId, dealerOrderId, "商家发货", userId));
 		return true;
 	}
@@ -172,6 +178,7 @@ public class DealerOrder extends ConcurrencySafeEntity {
 		if (status != 2)
 			return;
 		status = 3;
+		updateTime = new Date();
 	}
 	/**
 	 * 获取销量
@@ -251,7 +258,7 @@ public class DealerOrder extends ConcurrencySafeEntity {
 	 */
 	public void updateOrderStatus() {
 		this.status = 3;
-		
+		updateTime = new Date();
 	}
 	
 	/**
@@ -259,7 +266,7 @@ public class DealerOrder extends ConcurrencySafeEntity {
 	 */
 	public void updateOrderStatusFinished() {
 		this.status = 4;
-		
+		updateTime = new Date();
 	}
 	
 	/**
@@ -291,6 +298,7 @@ public class DealerOrder extends ConcurrencySafeEntity {
 				frg += d.getFreight();
 		}
 		orderFreight = frg;
+		updateTime = new Date();
 		DomainEventPublisher.instance().publish(new OrderOptLogEvent(orderId, dealerOrderId, "更新订单运费", userId));
 		return true;
 	}
@@ -308,6 +316,5 @@ public class DealerOrder extends ConcurrencySafeEntity {
 	public String getOrderNo() {
 		return orderId;
 	}
-	
 	
 }

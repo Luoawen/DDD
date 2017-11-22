@@ -22,6 +22,7 @@
         
         <property name="saleAfterNo" column="after_sell_order_id" type="string"/>
         <property name="goodsId" column="goods_id" type="string"/>
+        <property name="updateTime" column="last_updated_date" type="timestamp"/>
         
         <component name="backExpress">
 	        <property name="expressNo" column="back_express_no" type="string"/>

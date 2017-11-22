@@ -17,6 +17,7 @@
         <property name="status" column="_status" type="int"/>
         <property name="createdDate" column="created_date" type="date" />
         <property name="delFlag" column="del_flag" type="int"/>
+        <property name="updateTime" column="last_updated_date" type="timestamp"/>
         
         <component name="addr">
 	        <property name="province" column="province" type="string"/>

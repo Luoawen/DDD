@@ -1,5 +1,7 @@
 package cn.m2c.scm.domain.model.order;
 
+import java.util.Date;
+
 import cn.m2c.ddd.common.domain.model.ConcurrencySafeEntity;
 import cn.m2c.ddd.common.domain.model.DomainEventPublisher;
 import cn.m2c.scm.domain.model.order.log.event.OrderOptLogEvent;
@@ -44,6 +46,9 @@ public class DealerOrderDtl extends ConcurrencySafeEntity {
 	
 	/**删除状态*/
 	private Integer delFlag = 0;
+	
+	/**更新时间*/
+	private Date updateTime;
 	/***
 	 * 删除订单(用户主动操作)
 	 */
@@ -53,6 +58,7 @@ public class DealerOrderDtl extends ConcurrencySafeEntity {
 			return false;
 		}
 		delFlag = 1;
+		updateTime = new Date();
 		return true;
 	}
 	
@@ -108,15 +114,18 @@ public class DealerOrderDtl extends ConcurrencySafeEntity {
 			Integer expressWay, String expressCode) {
 		this.expressInfo.updateExpress(expressName,expressNo,expressNote,expressPerson,expressPhone,expressWay
 				, expressCode);
+		updateTime = new Date();
 		this.status=2;
 	}
 	
 	void cancel() {
 		status = -1;
+		updateTime = new Date();
 	}
 	
 	void payed() {
 		status = 1;
+		updateTime = new Date();
 	}
 	/***
 	 * 确认收货
@@ -127,6 +136,7 @@ public class DealerOrderDtl extends ConcurrencySafeEntity {
 			return false;
 		}
 		status = 3;
+		updateTime = new Date();
 		return true;
 	}
 	
@@ -136,6 +146,7 @@ public class DealerOrderDtl extends ConcurrencySafeEntity {
 			return false;
 		}
 		status = 3;
+		updateTime = new Date();
 		DomainEventPublisher.instance().publish(new OrderOptLogEvent(orderId, dealerOrderId, "用户确认收货成功", userId));
 		return true;
 	}
@@ -201,6 +212,7 @@ public class DealerOrderDtl extends ConcurrencySafeEntity {
 	
 	public void finished() {
 		status = 3;
+		updateTime = new Date();
 	}
 	
 	public void dealFinished() {

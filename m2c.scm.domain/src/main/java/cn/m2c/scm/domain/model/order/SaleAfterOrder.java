@@ -59,6 +59,8 @@ public class SaleAfterOrder extends ConcurrencySafeEntity {
 	private Integer reasonCode;
 	/**拒绝原因*/
 	private Integer rejectReasonCode;
+	/**更新时间*/
+	private Date updateTime;
 	
 	public SaleAfterOrder() {
 		super();
@@ -98,6 +100,7 @@ public class SaleAfterOrder extends ConcurrencySafeEntity {
 			status = 4;
 		else 
 			return;
+		updateTime = new Date();
 		DomainEventPublisher.instance().publish(new OrderOptLogEvent(saleAfterNo, dealerOrderId, "同意售后申请！", userId));
 	}
 	/**
@@ -118,6 +121,7 @@ public class SaleAfterOrder extends ConcurrencySafeEntity {
 			return false;
 		rejectReason = r;
 		rejectReasonCode = rCode;
+		updateTime = new Date();
 		DomainEventPublisher.instance().publish(new OrderOptLogEvent(saleAfterNo, dealerOrderId, "拒绝售后申请！", userId));
 		return true;
 	}
@@ -130,6 +134,7 @@ public class SaleAfterOrder extends ConcurrencySafeEntity {
 		if (status != 4)
 			return false;
 		backExpress = e;
+		updateTime = new Date();
 		DomainEventPublisher.instance().publish(new OrderOptLogEvent(saleAfterNo, null, "客户退货！", userId));
 		return true;
 	}
@@ -147,6 +152,7 @@ public class SaleAfterOrder extends ConcurrencySafeEntity {
 		if (status < 5)
 			return false;
 		sendExpress = e;
+		updateTime = new Date();
 		DomainEventPublisher.instance().publish(new OrderOptLogEvent(saleAfterNo, dealerOrderId, "商家换货发货！", userId));
 		return true;
 	}
@@ -157,6 +163,7 @@ public class SaleAfterOrder extends ConcurrencySafeEntity {
 		if (status < 5)
 			return false;
 		status = 6;
+		updateTime = new Date();
 		DomainEventPublisher.instance().publish(new OrderOptLogEvent(saleAfterNo, dealerOrderId, "商家确认收货", userId));
 		return true;
 	}
@@ -168,6 +175,7 @@ public class SaleAfterOrder extends ConcurrencySafeEntity {
 		if (status < 7)
 			return false;
 		status = 11;
+		updateTime = new Date();
 		DomainEventPublisher.instance().publish(new OrderOptLogEvent(saleAfterNo, null, "用户确认收货", userId));
 		return true;
 	}
@@ -181,6 +189,7 @@ public class SaleAfterOrder extends ConcurrencySafeEntity {
 		status = 9;
 		if (returnFreight == null)
 			returnFreight = 0l;
+		updateTime = new Date();
 		DomainEventPublisher.instance().publish(new OrderOptLogEvent(saleAfterNo, dealerOrderId, "同意退款", userId));
 		DomainEventPublisher.instance().publish(new SaleAfterRefundEvt(saleAfterNo, dealerId, backMoney + returnFreight, payNo));
 		return true;
@@ -218,6 +227,7 @@ public class SaleAfterOrder extends ConcurrencySafeEntity {
 	 * 创建售后申请
 	 */
 	public void createApply() {
+		updateTime = new Date();
 		DomainEventPublisher.instance().publish(new OrderOptLogEvent(saleAfterNo, dealerOrderId, "创建售后申请成功", userId));
 	}
 	

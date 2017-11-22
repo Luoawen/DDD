@@ -16,6 +16,7 @@
         <property name="payTime" column="pay_time" type="timestamp"/>
         <property name="status" column="_status" type="int"/>
         <property name="delFlag" column="del_flag" type="int"/>
+        <property name="updateTime" column="last_updated_date" type="timestamp"/>
         
         <component name="addr">
 	        <property name="province" column="province" type="string"/>

@@ -59,6 +59,8 @@ public class MainOrder extends ConcurrencySafeEntity {
 	private Double longitude;
 	
 	private Integer delFlag = 0;
+	/**更新时间*/
+	private Date updateTime;
 	
 	public MainOrder() {
 		super();
@@ -85,6 +87,7 @@ public class MainOrder extends ConcurrencySafeEntity {
 	 * 增加订单
 	 */
 	public void add(Map<String, Integer> skus, Integer from) {
+		updateTime = new Date();
 		DomainEventPublisher.instance().publish(new OrderAddedEvent(userId, skus, orderId, from));
 		DomainEventPublisher.instance().publish(new OrderOptLogEvent(orderId, null, "订单提交成功", userId));
 	}
@@ -97,6 +100,7 @@ public class MainOrder extends ConcurrencySafeEntity {
 			return false;
 		}
 		status = -1;
+		updateTime = new Date();
 		Map<String, Integer> allSales = new HashMap<String, Integer>();
 		for (DealerOrder d : dealerOrders) {
 			d.cancel();
@@ -137,6 +141,7 @@ public class MainOrder extends ConcurrencySafeEntity {
 			for(DealerOrder d : dealerOrders)
 				d.del();
 		}
+		updateTime = new Date();
 		delFlag = 1;
 		return true;
 	}
@@ -177,7 +182,7 @@ public class MainOrder extends ConcurrencySafeEntity {
 			markets.put("userId", userId);
 			markets.put("status", 1);
 		}
-		
+		updateTime = new Date();
 		DomainEventPublisher.instance().publish(new OrderOptLogEvent(orderId, null, "订单支付成功", uId));
 		
 		DomainEventPublisher.instance().publish(new OrderPayedEvent(orderId, allSales, allRes, markets, payTime));
@@ -305,6 +310,7 @@ public class MainOrder extends ConcurrencySafeEntity {
 	public boolean updateAddr(ReceiveAddr adr) {
 		if (status == 0) {
 			addr = adr;
+			updateTime = new Date();
 			return true;
 		}
 		return false;
