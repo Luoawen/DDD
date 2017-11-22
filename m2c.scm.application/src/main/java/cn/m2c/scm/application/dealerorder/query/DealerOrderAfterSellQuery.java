@@ -66,10 +66,18 @@ public class DealerOrderAfterSellQuery {
 			params.add(condition);
 			params.add(condition);
 		}
-		if (!StringUtils.isEmpty(startTime) && !StringUtils.isEmpty(endTime)) {
-			sql.append(" AND dealer.created_date BETWEEN ? AND ? ");
-			params.add(startTime);
-			params.add(endTime);
+//		if (!StringUtils.isEmpty(startTime) && !StringUtils.isEmpty(endTime)) {
+//			sql.append(" AND dealer.created_date BETWEEN ? AND ? ");
+//			params.add(startTime);
+//			params.add(endTime);
+//		}
+		if(!StringUtils.isEmpty(startTime)){
+			sql.append("  AND  after.created_date > ?");
+			params.add(startTime+" 00:00:00");
+		}
+		if(!StringUtils.isEmpty(endTime)){
+			sql.append("  AND  after.created_date < ?");
+			params.add(endTime+" 23:59:59");
 		}
 		if (!StringUtils.isEmpty(mediaInfo)) {
 			if ("1".equals(mediaInfo)) {
@@ -86,7 +94,7 @@ public class DealerOrderAfterSellQuery {
 			params.add(rows * (pageNum - 1));
 			params.add(rows);
 		}
-
+		System.out.println("---"+sql.toString());
 		List<AfterSellOrderBean> beanList = this.supportJdbcTemplate.queryForBeanList(sql.toString(),
 				AfterSellOrderBean.class, params.toArray());
 		for (AfterSellOrderBean bean : beanList) {
@@ -179,10 +187,18 @@ public class DealerOrderAfterSellQuery {
 			params.add(condition);
 			params.add(condition);
 		}
-		if (!StringUtils.isEmpty(startTime) && !StringUtils.isEmpty(endTime)) {
-			sql.append(" AND dealer.created_date BETWEEN ? AND ? ");
-			params.add(startTime);
-			params.add(endTime);
+//		if (!StringUtils.isEmpty(startTime) && !StringUtils.isEmpty(endTime)) {
+//			sql.append(" AND dealer.created_date BETWEEN ? AND ? ");
+//			params.add(startTime);
+//			params.add(endTime);
+//		}
+		if(!StringUtils.isEmpty(startTime)){
+			sql.append("  AND  after.created_date > ?");
+			params.add(startTime+" 00:00:00");
+		}
+		if(!StringUtils.isEmpty(endTime)){
+			sql.append("  AND  after.created_date < ?");
+			params.add(endTime+" 23:59:59");
 		}
 		if ("1".equals(mediaInfo)) {
 			sql.append(" AND detail.media_id IS NOT NULL ");
