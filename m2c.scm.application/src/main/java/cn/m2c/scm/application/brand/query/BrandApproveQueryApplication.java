@@ -61,7 +61,7 @@ public class BrandApproveQueryApplication {
                 sql.append(" AND brand_name LIKE ?");
                 params.add("%" + condition + "%");
             } else{
-                sql.append(" AND dealer_id = ? OR dealer_name LIKE ? OR brand_name LIKE ?");
+                sql.append(" AND (dealer_id = ? OR dealer_name LIKE ? OR brand_name LIKE ?)");
                 params.add(condition);
                 params.add("%" + condition + "%");
                 params.add("%" + condition + "%");
@@ -103,7 +103,7 @@ public class BrandApproveQueryApplication {
                 sql.append(" AND brand_name LIKE ?");
                 params.add("%" + condition + "%");
             } else{
-                sql.append(" AND dealer_id = ? OR dealer_name LIKE ? OR brand_name LIKE ?");
+                sql.append(" AND (dealer_id = ? OR dealer_name LIKE ? OR brand_name LIKE ?)");
                 params.add(condition);
                 params.add("%" + condition + "%");
                 params.add("%" + condition + "%");
