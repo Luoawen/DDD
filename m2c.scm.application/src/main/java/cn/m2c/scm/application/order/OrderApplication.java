@@ -211,7 +211,7 @@ public class OrderApplication {
             throw new NegativeException(MCode.V_300, "活动已被用完！");
         }
         // for local test
-        order.paySuccess("12121", 1, new Date(), cmd.getUserId());
+        //order.paySuccess("12121", 1, new Date(), cmd.getUserId());
         return new OrderResult(cmd.getOrderId(), goodsAmounts, freight, plateDiscount, dealerDiscount);
     }
 

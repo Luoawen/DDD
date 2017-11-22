@@ -66,11 +66,13 @@ public class OrderOutAgent {
     
     
     @RequestMapping(value="/test", method = RequestMethod.GET)
-    public ResponseEntity<MResult> testForMedia(@RequestParam(value="userId", required=false) String userId){
+    public ResponseEntity<MResult> testForMedia(@RequestParam(value="userId", required=false) String userId
+    		,@RequestParam(value="orderId", required=false) String orderId
+    		){
     	MResult result = new MResult(MCode.V_1);
     	try {
-//    		OrderPayedCmd cmd = new OrderPayedCmd("20171113140258BU", userId, "89555555555555551", 1, new Date());
-//    		orderApp.orderPayed(cmd);
+    		OrderPayedCmd cmd = new OrderPayedCmd(orderId, userId, "89555555555555551", 1, new Date());
+    		orderApp.orderPayed(cmd);
     		//orderApp.cancelAllNotPayed();
     		result.setContent("ok");
     		result.setStatus(MCode.V_200);
