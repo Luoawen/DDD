@@ -242,7 +242,7 @@ public class DealerOrder extends ConcurrencySafeEntity {
 	 * @param orderFreight
 	 */
 	public void updateOrderFreight(long orderFreight, String userId) {
-		this.orderFreight = orderFreight;
+		this.orderFreight = orderFreight * 100;
 		DomainEventPublisher.instance().publish(new OrderOptLogEvent(orderId, dealerOrderId, "修改订单运费", userId));
 	}
 	
