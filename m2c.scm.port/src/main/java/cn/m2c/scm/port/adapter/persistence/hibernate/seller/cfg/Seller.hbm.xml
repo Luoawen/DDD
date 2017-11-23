@@ -12,9 +12,6 @@
 		<property name="createdDate" generated="insert" not-null="true">
 			<column name="created_date" sql-type="timestamp" default="CURRENT_TIMESTAMP"></column>
 		</property>
-		<property name="lastUpdatedDate" generated="always" not-null="true">
-			<column name="last_updated_date" sql-type="timestamp" default="CURRENT_TIMESTAMP"></column>
-		</property>
 
 		<property name="sellerId" column="seller_id" type="string" />
 		<property name="sellerName" column="seller_name" type="string" />
@@ -32,5 +29,6 @@
 		<property name="sellerWechat" column="seller_wechat" type="string" />
 		<property name="sellerRemark" column="seller_remark" type="string" />
 		<property name="sellerStatus" column="seller_status" type="int" />
+		<property name="lastUpdatedDate" column="last_updated_date" type="timestamp" />
 	</class>
 </hibernate-mapping>

@@ -12,10 +12,6 @@
 		<property name="createdDate" generated="insert" not-null="true">
 			<column name="created_date" sql-type="timestamp" default="CURRENT_TIMESTAMP"></column>
 		</property>
-		<property name="lastUpdatedDate" generated="always" not-null="true">
-			<column name="last_updated_date" sql-type="timestamp" default="CURRENT_TIMESTAMP"></column>
-		</property>
-
 		<property name="shopId" column="shop_id" type="string" />
 		<property name="dealerId" column="dealer_id" type="string" />
 	<property name="shopName" column="shop_name" type="string"/>
@@ -23,5 +19,6 @@
 	<property name="shopIntroduce" column="shop_introduce" type="string"/>
 	<property name="shopReceipt" column="shop_receipt" type="string"/>
 	<property name="customerServiceTel" column="customer_service_tel" type="string"/>
+	<property name="lastUpdatedDate" column="last_updated_date" type="timestamp" />
 	</class>
 </hibernate-mapping>
