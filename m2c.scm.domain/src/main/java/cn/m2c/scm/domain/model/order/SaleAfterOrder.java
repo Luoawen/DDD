@@ -133,6 +133,7 @@ public class SaleAfterOrder extends ConcurrencySafeEntity {
 	public boolean clientShip(ExpressInfo e, String userId) {
 		if (status != 4)
 			return false;
+		status = 5;
 		backExpress = e;
 		updateTime = new Date();
 		DomainEventPublisher.instance().publish(new OrderOptLogEvent(saleAfterNo, null, "客户退货！", userId));
@@ -239,6 +240,7 @@ public class SaleAfterOrder extends ConcurrencySafeEntity {
 	 * 售后订单状态改为 '交易完成/关闭'
 	 */
 	public void updateStatusAgreeAfterSale() {
+		updateTime = new Date();
 		this.status = 11;
 	}
 	

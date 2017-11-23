@@ -161,9 +161,9 @@ public class OrderMarketCalc {
                     }
                     else {
                     	
-                    	long a = (long) (0.5 + d.getDiscountPrice() * d.getPurNum() / totalMoney);
+                    	long a = (long) (0.5 + changeMoney * d.getDiscountPrice() * d.getPurNum() / totalMoney);
                     	if (last > 0 && d == goodsLs.get(last)) {
-                    		d.setPlateformDiscount(as - subSum);
+                    		d.setPlateformDiscount(changeMoney - subSum);
                     	}
                     	else {
                     		d.setPlateformDiscount(a);

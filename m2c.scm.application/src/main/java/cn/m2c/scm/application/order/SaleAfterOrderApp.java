@@ -298,7 +298,7 @@ public class SaleAfterOrderApp {
 	public void updataStatusAgreeAfterSale() throws NegativeException {
 		int hour = 168;
 		try {
-			Integer.parseInt(GetDisconfDataGetter.getDisconfProperty("sale.after.dealer.agree"));
+			hour = Integer.parseInt(GetDisconfDataGetter.getDisconfProperty("sale.after.dealer.agree"));
 			if (hour < 1)
 				hour = 1;
 		}
@@ -316,7 +316,6 @@ public class SaleAfterOrderApp {
 		}
 	}
 	@Transactional(rollbackFor = { Exception.class, RuntimeException.class,NegativeException.class }, propagation = Propagation.REQUIRES_NEW)
-	@EventListener(isListening = true)
 	private void jobUpdateSaleAfter(SaleAfterOrder afterOrder) {
 		afterOrder.updateStatusAgreeAfterSale();
 		saleAfterRepository.save(afterOrder);

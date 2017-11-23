@@ -191,7 +191,7 @@ public class MarketBean {
 					return l.getMoney();
 				case 2:
 					threshold = l.getThreshold();
-					return (int)(l.getDiscount() * 100);
+					return (int)(l.getDiscount() * 100 + 0.5);
 				case 3:
 					threshold = l.getThreshold();
 					return l.getBuyingPrice();
