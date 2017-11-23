@@ -47,6 +47,7 @@ public class Stantard extends ConcurrencySafeEntity{
 		this.stantardId = stantardId;
 		this.stantardName = stantardName;
 		this.stantardStatus = stantardStatus;
+		this.lastUpdatedDate = new Date();
 	}
 
 	/**
@@ -54,6 +55,7 @@ public class Stantard extends ConcurrencySafeEntity{
 	 */
 	public void delStanstard() {
 		this.stantardStatus = 2;
+		this.lastUpdatedDate = new Date();
 	}
 	
 	public void used() {
@@ -72,6 +74,7 @@ public class Stantard extends ConcurrencySafeEntity{
 		this.stantardId = stantardId;
 		this.stantardName = stantardName;
 		this.stantardStatus = stantardStatus;
+		this.lastUpdatedDate = new Date();
 	}
 
 }

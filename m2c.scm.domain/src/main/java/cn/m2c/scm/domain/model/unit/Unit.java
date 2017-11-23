@@ -71,11 +71,13 @@ public class Unit extends ConcurrencySafeEntity {
 	 */
 	public void updateUnit(String unitName) {
 		this.unitName = unitName;
+		this.lastUpdatedDate = new Date();
 	}
 	
 	public void modify(String unitId,String unitName,Integer unitStatus) {
 		this.unitId = unitId;
 		this.unitName = unitName;
 		this.unitStatus = unitStatus;
+		this.lastUpdatedDate = new Date();
 	} 
 }

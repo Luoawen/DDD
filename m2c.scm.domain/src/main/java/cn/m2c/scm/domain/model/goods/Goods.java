@@ -256,7 +256,8 @@ public class Goods extends ConcurrencySafeEntity {
      *
      * @param goodsSKUs
      */
-    public void modifyApproveGoodsSku(String goodsSKUs) {
+    public void modifyApproveGoodsSku(String goodsSpecifications, String goodsSKUs) {
+        this.goodsSpecifications = goodsSpecifications;
         List<Map> skuList = ObjectSerializer.instance().deserialize(goodsSKUs, List.class);
         if (null != skuList && skuList.size() > 0) {
             if (null == this.goodsSKUs) {
@@ -319,9 +320,6 @@ public class Goods extends ConcurrencySafeEntity {
         this.goodsMainImages = goodsMainImages;
         this.goodsDesc = goodsDesc;
 
-        if (null != this.skuFlag && this.skuFlag == 1) {//是否是多规格：0：单规格，1：多规格
-            this.goodsSpecifications = goodsSpecifications;
-        }
         List<Map> skuList = ObjectSerializer.instance().deserialize(goodsSKUs, List.class);
         if (null != skuList && skuList.size() > 0) {
             //修改供货价、拍获价、规格需要审批
@@ -372,12 +370,16 @@ public class Goods extends ConcurrencySafeEntity {
                 }
             }
             if (isNeedApprove) {//发布事件，增加一条待审核商品记录
+                String spec = this.goodsSpecifications;
+                if (null != this.skuFlag && this.skuFlag == 1) {//是否是多规格：0：单规格，1：多规格
+                    spec = goodsSpecifications;
+                }
                 DomainEventPublisher
                         .instance()
                         .publish(new GoodsApproveAddEvent(this.goodsId, this.dealerId, this.dealerName, this.goodsName,
                                 this.goodsSubTitle, this.goodsClassifyId, this.goodsBrandId, this.goodsBrandName, this.goodsUnitId,
                                 this.goodsMinQuantity, this.goodsPostageId, this.goodsBarCode,
-                                this.goodsKeyWord, this.goodsGuarantee, this.goodsMainImages, this.goodsDesc, this.goodsSpecifications,
+                                this.goodsKeyWord, this.goodsGuarantee, this.goodsMainImages, this.goodsDesc, spec,
                                 goodsSKUs, this.skuFlag));
             }
         }

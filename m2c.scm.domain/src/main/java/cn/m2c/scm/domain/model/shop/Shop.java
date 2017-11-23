@@ -32,6 +32,7 @@ public class Shop extends ConcurrencySafeEntity{
 		this.shopIcon = shopIcon;
 		this.shopReceipt = shopReceipt;
 		this.customerServiceTel = customerServiceTel;
+		this.lastUpdatedDate = new Date();
 	}
 
 

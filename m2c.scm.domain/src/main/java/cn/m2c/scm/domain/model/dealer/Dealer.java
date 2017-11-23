@@ -131,6 +131,7 @@ public class Dealer extends ConcurrencySafeEntity{
 		this.sellerId = sellerId;
 		this.sellerName = sellerName;
 		this.sellerPhone = sellerPhone;
+		this.lastUpdatedDate = new Date();
 	}
 
 
@@ -144,6 +145,7 @@ public class Dealer extends ConcurrencySafeEntity{
 	public void updateSellerInfo(String sellerName,String sellerPhone) {
 		this.sellerName = sellerName;
 		this.sellerPhone = sellerPhone;
+		this.lastUpdatedDate = new Date();
 	}
 
 	/**
@@ -153,6 +155,7 @@ public class Dealer extends ConcurrencySafeEntity{
 		this.userId = "";
 		this.userName = "";
 		this.userPhone = "";
+		this.lastUpdatedDate = new Date();
 	}
 	
 	/**
@@ -162,6 +165,7 @@ public class Dealer extends ConcurrencySafeEntity{
 		this.userId = userId;
 		this.userName = userName;
 		this.userPhone = userPhone;
+		this.lastUpdatedDate = new Date();
 	}
 	
 }
