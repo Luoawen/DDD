@@ -256,7 +256,8 @@ public class Goods extends ConcurrencySafeEntity {
      *
      * @param goodsSKUs
      */
-    public void modifyApproveGoodsSku(String goodsSKUs) {
+    public void modifyApproveGoodsSku(String goodsSpecifications, String goodsSKUs) {
+        this.goodsSpecifications = goodsSpecifications;
         List<Map> skuList = ObjectSerializer.instance().deserialize(goodsSKUs, List.class);
         if (null != skuList && skuList.size() > 0) {
             if (null == this.goodsSKUs) {
