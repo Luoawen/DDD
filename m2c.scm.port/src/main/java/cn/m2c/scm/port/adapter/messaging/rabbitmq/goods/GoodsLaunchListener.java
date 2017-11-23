@@ -40,7 +40,7 @@ public class GoodsLaunchListener extends ExchangeListener {
 
 	@Override
 	protected String[] listensTo() {
-		return new String[]{"cn.m2c.media.domain.mresources.AdsenseScheduleAddEvent"};
+		return new String[]{"cn.m2c.media.domain.mresources.event.AdsenseScheduleAddEvent"};
 	}
 
 }
