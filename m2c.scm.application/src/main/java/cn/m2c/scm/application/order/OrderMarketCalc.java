@@ -201,7 +201,7 @@ public class OrderMarketCalc {
             		subSum += a;
             	}
             } else if (fullType == 2) { // 除以1000是因为前面已经乘以100了，因存的是8表示8折优惠
-                d.setPlateformDiscount((long) (d.getDiscountPrice() * d.getPurNum() * (1 - fullNum/ 1000.0)));
+                d.setPlateformDiscount((long) (d.getDiscountPrice() * d.getPurNum() * (1000 - fullNum)/ 1000.0));
             }
         }
     }
