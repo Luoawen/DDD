@@ -69,6 +69,10 @@ public class SendOrderCommand extends AssertionConcern{
 			throw new NegativeException(MCode.V_1, "expressCode 参数为空.");
 		}
 		
+		if (StringUtils.isEmpty(expressNo)) {// 增加判断若为空则需要抛出异常。
+			throw new NegativeException(MCode.V_1, "expressNo 参数发货单号为空.");
+		}
+		
 		if (StringUtils.isEmpty(dealerOrderId)) {// 增加判断若为空则需要抛出异常。
 			throw new NegativeException(MCode.V_1, "dealerOrderId 参数为空.");
 		}

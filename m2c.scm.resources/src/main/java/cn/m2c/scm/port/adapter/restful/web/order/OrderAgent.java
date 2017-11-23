@@ -148,7 +148,7 @@ public class OrderAgent {
 	public ResponseEntity<MResult> agreeApplySaleAfter(@RequestParam(value = "userId", required = false) String userId
             ,@RequestParam(value = "saleAfterNo", required = false) String saleAfterNo
             ,@RequestParam(value = "dealerId", required = false) String dealerId
-            ,@RequestParam(value = "rtFreight", required = false, defaultValue="0") int rtFreight
+            ,@RequestParam(value = "rtFreight", required = false, defaultValue="0") float rtFreight
 			) {
 		MResult result = new MResult(MCode.V_1);
 		try {

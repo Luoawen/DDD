@@ -23,9 +23,9 @@ public class AproveSaleAfterCmd extends AssertionConcern {
 
 	private int rejectReasonCode;
 	
-	private int rtFreight;
+	private float rtFreight;
 
-	public int getRtFreight() {
+	public float getRtFreight() {
 		return rtFreight;
 	}
 
@@ -51,7 +51,7 @@ public class AproveSaleAfterCmd extends AssertionConcern {
 		this.rejectReasonCode = rejectReasonCode;
 	}
 
-	public AproveSaleAfterCmd(String userId, String saleAfterNo, String dealerId, int rtFreight) throws NegativeException {
+	public AproveSaleAfterCmd(String userId, String saleAfterNo, String dealerId, float rtFreight) throws NegativeException {
 		if (StringUtils.isEmpty(userId)) {
 			throw new NegativeException(MCode.V_1, "用户ID参数为空(userId)！");
 		}

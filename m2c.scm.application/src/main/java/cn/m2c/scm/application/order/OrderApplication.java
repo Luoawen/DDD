@@ -181,7 +181,7 @@ public class OrderApplication {
         // 计算营销活动优惠
         OrderMarketCalc.calMarkets(mks, list);
         
-        // 计算是否满足营销策略, 若满足选择最优
+        // 获取结算方式
         Map<String, Integer> dealerCount = getDealerWay(idsSet);
         List<DealerOrder> dealerOrders = trueSplit(dealerOrderMap, cmd, dealerCount,
                 resMap, skuMedia);

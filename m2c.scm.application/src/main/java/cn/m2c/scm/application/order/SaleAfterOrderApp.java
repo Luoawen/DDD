@@ -135,7 +135,7 @@ public class SaleAfterOrderApp {
 			saleAfterRepository.disabledOrderMarket(order.orderId(), marketInfo.getMarketingId());
 		}
 		
-		int frt = cmd.getRtFreight();
+		float frt = cmd.getRtFreight();
 		if (order.isOnlyRtMoney()) {
 			OrderDealerBean odb = saleOrderQuery.getDealerOrderById(order.dealerOrderId());
 			if (odb != null && odb.getStatus() == 1) {
@@ -146,7 +146,7 @@ public class SaleAfterOrderApp {
 				frt = 0;
 		}
 		
-		order.agreeApply(cmd.getUserId(), frt);
+		order.agreeApply(cmd.getUserId(), (int)frt);
 		saleAfterRepository.updateSaleAfterOrder(order);
 	}
 	/**

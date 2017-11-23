@@ -165,4 +165,8 @@ public class OrderOutAgent {
 		}
     	return new ResponseEntity<MResult>(result,HttpStatus.OK);
     }
+    
+    public static void main(String args[]) {
+    	System.out.println(200 * (1-900/1000.0));
+    }
 }

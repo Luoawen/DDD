@@ -127,7 +127,7 @@ public class OrderMarketCalc {
                     totalMoney += d.getDiscountPrice() * d.getPurNum();
                 }
             } else {
-                // 判断下换购商品是否满足要求
+                // 判断换购下商品是否满足要求
                 //changeMoney += d.getChangePrice() * d.getPurNum();
             	if (judgeChange(bean, d)) {
             		d.setChangePrice(as);
@@ -148,11 +148,28 @@ public class OrderMarketCalc {
                     throw new NegativeException(MCode.V_301, bean.getFullCutId());
                 }
 
+                int last = goodsLs.size() - 1;
+                if (goodsLs.get(last).isChange() == 1)
+                	last = last - 1;
+            	long subSum = 0;//前多少个的处理
                 for (GoodsDto d : goodsLs) {
                     if (d.isChange() != 0) {
                         d.setChangePrice(as);
-                        d.setPlateformDiscount((d.getDiscountPrice() - d.getChangePrice()) * d.getPurNum());
+                        //d.setPlateformDiscount((d.getDiscountPrice() - d.getChangePrice()) * d.getPurNum());
+                        d.setPlateformDiscount(0);
                         d.setMarketType(bean.getFullCutType());
+                    }
+                    else {
+                    	
+                    	long a = (long) (0.5 + d.getDiscountPrice() * d.getPurNum() / totalMoney);
+                    	if (last > 0 && d == goodsLs.get(last)) {
+                    		d.setPlateformDiscount(as - subSum);
+                    	}
+                    	else {
+                    		d.setPlateformDiscount(a);
+                    		subSum += a;
+                    	} 
+                    	d.setMarketType(bean.getFullCutType());
                     }
                 }
 
@@ -192,7 +209,7 @@ public class OrderMarketCalc {
             d.setSharePercent(sharePercent);
             d.setDiscount(fullNum);// 若是折扣就已经乘了100了，所以需要除1000
             if (fullType == 1) {
-            	long a = (long) (fullNum * d.getDiscountPrice() * d.getPurNum() / totalMoney);
+            	long a = (long) (0.5 + fullNum * d.getDiscountPrice() * d.getPurNum() / totalMoney);
             	if (d == goodsLs.get(last)) {
             		d.setPlateformDiscount(fullNum - subSum);
             	}
@@ -201,7 +218,7 @@ public class OrderMarketCalc {
             		subSum += a;
             	}
             } else if (fullType == 2) { // 除以1000是因为前面已经乘以100了，因存的是8表示8折优惠
-                d.setPlateformDiscount((long) (d.getDiscountPrice() * d.getPurNum() * (1000 - fullNum)/ 1000.0));
+                d.setPlateformDiscount((long) (0.5 + d.getDiscountPrice() * d.getPurNum() * (1000 - fullNum)/ 1000.0));
             }
         }
     }
@@ -334,7 +351,7 @@ public class OrderMarketCalc {
             }
 
             if (a == 2)
-                rtMoney = (long) (tmp.getGoodsAmount() * (1 - discount / 1000.0));
+                rtMoney = (long) (0.5 + tmp.getGoodsAmount() * (1 - discount / 1000.0));
             else if (a == 3 && tmp != null && tmp.getIsChange() == 1) {
             	rtMoney = tmp.getGoodsAmount() - (tmp.getChangePrice() * tmp.getNum());
             	marketInfo.setIsFull(false);
