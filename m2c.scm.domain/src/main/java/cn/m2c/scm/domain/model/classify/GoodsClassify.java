@@ -40,11 +40,11 @@ public class GoodsClassify extends ConcurrencySafeEntity {
         super();
     }
 
-    public GoodsClassify(String classifyId, String classifyName, String parentClassifyId,Integer level) {
+    public GoodsClassify(String classifyId, String classifyName, String parentClassifyId, Integer level) {
         this.classifyId = classifyId;
         this.classifyName = classifyName;
         this.parentClassifyId = parentClassifyId;
-        this.level=level;
+        this.level = level;
     }
 
     public void modifyClassifyName(String classifyName) {
@@ -61,5 +61,21 @@ public class GoodsClassify extends ConcurrencySafeEntity {
 
     public String classifyId() {
         return classifyId;
+    }
+
+    public Boolean isTopClassify() {
+        return 1 == this.level && this.parentClassifyId.equals("-1");
+    }
+
+    public Boolean isSecondClassify() {
+        return 2 == this.level;
+    }
+
+    public Boolean isThreeClassify() {
+        return 3 == this.level;
+    }
+
+    public Float serviceRate() {
+        return serviceRate;
     }
 }

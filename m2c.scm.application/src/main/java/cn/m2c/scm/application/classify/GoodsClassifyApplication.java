@@ -52,6 +52,17 @@ public class GoodsClassifyApplication {
         goodsClassify = new GoodsClassify(classifyId, command.getClassifyName(), command.getParentClassifyId(), command.getLevel());
         goodsClassifyRepository.save(goodsClassify);
 
+        // 增加三级目录同步二级目录的费率
+        if (goodsClassify.isThreeClassify()) {
+            GoodsClassify upClassify = goodsClassifyRepository.getGoodsClassifyById(command.getParentClassifyId());
+            if (null == upClassify) {
+                throw new NegativeException(MCode.V_303, "商品分类不存在");
+            }
+            if (null != upClassify.serviceRate()) {
+                goodsClassify.modifyClassifyServiceRate(upClassify.serviceRate());
+            }
+        }
+
         // 增加子分类
         List<String> subNames = JsonUtils.toList(command.getSubClassifyNames(), String.class);
         if (null != subNames && subNames.size() > 0) {
@@ -67,6 +78,17 @@ public class GoodsClassifyApplication {
                 }
                 goodsClassify = new GoodsClassify(subClassifyId, subName, classifyId, command.getLevel() + 1);
                 goodsClassifyRepository.save(goodsClassify);
+
+                // 增加三级目录同步二级目录的费率
+                if (goodsClassify.isThreeClassify()) {
+                    GoodsClassify upClassify = goodsClassifyRepository.getGoodsClassifyById(classifyId);
+                    if (null == upClassify) {
+                        throw new NegativeException(MCode.V_303, "商品分类不存在");
+                    }
+                    if (null != upClassify.serviceRate()) {
+                        goodsClassify.modifyClassifyServiceRate(upClassify.serviceRate());
+                    }
+                }
             }
         }
     }
@@ -101,6 +123,19 @@ public class GoodsClassifyApplication {
         GoodsClassify goodsClassify = goodsClassifyRepository.getGoodsClassifyById(command.getClassifyId());
         if (null == goodsClassify) {
             throw new NegativeException(MCode.V_300, "商品分类不存在");
+        }
+        // 二级目录修改了费率，下面的三级目录同步修改
+        if (!goodsClassify.isTopClassify() && goodsClassify.isSecondClassify()) {
+            List<String> ids = goodsClassifyRepository.recursionQueryGoodsSubClassifyId(goodsClassify.classifyId(), new ArrayList<>());
+            if (null != ids && ids.size() > 0) {
+                for (String id : ids) {
+                    GoodsClassify subClassify = goodsClassifyRepository.getGoodsClassifyById(id);
+                    if (null == subClassify) {
+                        throw new NegativeException(MCode.V_300, "商品分类不存在");
+                    }
+                    subClassify.modifyClassifyServiceRate(command.getServiceRate());
+                }
+            }
         }
         goodsClassify.modifyClassifyServiceRate(command.getServiceRate());
     }
