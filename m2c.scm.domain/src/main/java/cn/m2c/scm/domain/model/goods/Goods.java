@@ -319,9 +319,6 @@ public class Goods extends ConcurrencySafeEntity {
         this.goodsMainImages = goodsMainImages;
         this.goodsDesc = goodsDesc;
 
-        if (null != this.skuFlag && this.skuFlag == 1) {//是否是多规格：0：单规格，1：多规格
-            this.goodsSpecifications = goodsSpecifications;
-        }
         List<Map> skuList = ObjectSerializer.instance().deserialize(goodsSKUs, List.class);
         if (null != skuList && skuList.size() > 0) {
             //修改供货价、拍获价、规格需要审批
@@ -372,6 +369,9 @@ public class Goods extends ConcurrencySafeEntity {
                 }
             }
             if (isNeedApprove) {//发布事件，增加一条待审核商品记录
+                if (null != this.skuFlag && this.skuFlag == 1) {//是否是多规格：0：单规格，1：多规格
+                    this.goodsSpecifications = goodsSpecifications;
+                }
                 DomainEventPublisher
                         .instance()
                         .publish(new GoodsApproveAddEvent(this.goodsId, this.dealerId, this.dealerName, this.goodsName,
