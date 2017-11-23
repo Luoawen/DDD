@@ -173,4 +173,8 @@ public class BrandApprove extends ConcurrencySafeEntity {
     public void delete() {
         this.status = 2;
     }
+
+    public String brandId() {
+        return brandId;
+    }
 }

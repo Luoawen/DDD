@@ -84,14 +84,14 @@ public class BrandApproveApplication {
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
     public void modifyBrandApprove(BrandApproveCommand command) throws NegativeException {
         LOGGER.info("addBrandApprove command >>{}", command);
-        // 与当前品牌库中的不能重名
-        if (brandRepository.brandNameIsRepeat(command.getBrandId(), command.getBrandName()) ||
-                brandApproveRepository.brandNameIsRepeat(command.getBrandApproveId(), command.getBrandId(), command.getBrandName())) {
-            throw new NegativeException(MCode.V_301, "品牌名称已存在");
-        }
         BrandApprove brandApprove = brandApproveRepository.getBrandApproveByApproveId(command.getBrandApproveId());
         if (null == brandApprove) {
             throw new NegativeException(MCode.V_300, "审核品牌信息不存在");
+        }
+        // 与当前品牌库中的不能重名
+        if (brandRepository.brandNameIsRepeat(brandApprove.brandId(), command.getBrandName()) ||
+                brandApproveRepository.brandNameIsRepeat(command.getBrandApproveId(), brandApprove.brandId(), command.getBrandName())) {
+            throw new NegativeException(MCode.V_301, "品牌名称已存在");
         }
         brandApprove.modifyBrandApprove(command.getBrandName(), command.getBrandNameEn(), command.getBrandLogo(), command.getFirstAreaCode(),
                 command.getTwoAreaCode(), command.getThreeAreaCode(), command.getFirstAreaName(), command.getTwoAreaName(),
