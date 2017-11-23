@@ -73,6 +73,7 @@ public class UnitAgent {
 		MResult result = new MResult(MCode.V_1);
 		try {
 			unitApplication.delUnit(unitId);
+			result.setStatus(MCode.V_200);
 		} catch (NegativeException ne) {
 			LOGGER.error("deleteUnit NegativeException e:", ne);
 			result = new MResult(ne.getStatus(), ne.getMessage());
