@@ -70,6 +70,7 @@ public class StantardAgent {
 		MResult result = new MResult(MCode.V_1);
 		try {
 			stantardApplication.delStantard(stantardId);
+			result.setStatus(MCode.V_200);
 		} catch (NegativeException ne) {
 			LOGGER.error("delStantard NegativeException e:", ne);
 			result = new MResult(ne.getStatus(), ne.getMessage());
