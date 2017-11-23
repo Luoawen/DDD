@@ -125,12 +125,14 @@ public class Seller extends ConcurrencySafeEntity {
 		this.sellerqq = sellerqq;
 		this.sellerWechat = sellerWechat;
 		this.sellerRemark = sellerRemark;
+		this.lastUpdatedDate = new Date();
 	}
 	
 	public void addOrUpdate(String sellerId,String sellerName,String sellerPhone) {
 		this.sellerId = sellerId;
 		this.sellerName = sellerName;
 		this.sellerPhone = sellerPhone;
+		this.lastUpdatedDate = new Date();
 	}
 
 	/**

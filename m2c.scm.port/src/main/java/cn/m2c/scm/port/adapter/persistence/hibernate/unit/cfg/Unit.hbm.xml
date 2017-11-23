@@ -13,13 +13,11 @@
 		<property name="createdDate" generated="insert" not-null="true">
 			<column name="created_date" sql-type="timestamp" default="CURRENT_TIMESTAMP"></column>
 		</property>
-		<property name="lastUpdatedDate" generated="always" not-null="true">
-			<column name="last_update_date" sql-type="timestamp" default="CURRENT_TIMESTAMP"></column>
-		</property>
 		
 		<property name="unitId" column="unit_id" type="string"></property>
 		<property name="unitName" column="unit_name" type="string"></property>
 		<property name="unitStatus" column="unit_status" type="int"></property>
 		<property name="useNum" column="use_num" type="int"></property>
+		<property name="lastUpdatedDate" column="last_updated_date" type="timestamp" />
 	</class>
 </hibernate-mapping>
