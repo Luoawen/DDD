@@ -329,7 +329,7 @@ public class SaleAfterOrderApp {
 	public void cancelApply(String userId) throws NegativeException {
 		int hour = 72;
 		try {
-			Integer.parseInt(GetDisconfDataGetter.getDisconfProperty("sale.after.cancel.apply"));
+			hour = Integer.parseInt(GetDisconfDataGetter.getDisconfProperty("sale.after.cancel.apply"));
 			if (hour < 1)
 				hour = 1;
 		}
@@ -359,7 +359,7 @@ public class SaleAfterOrderApp {
 	public void afterAgreed(String userId) throws NegativeException {
 		int hour = 168;
 		try {
-			Integer.parseInt(GetDisconfDataGetter.getDisconfProperty("sale.after.apply.agreed"));
+			hour = Integer.parseInt(GetDisconfDataGetter.getDisconfProperty("sale.after.apply.agreed"));
 			if (hour < 1)
 				hour = 1;
 		}
@@ -399,7 +399,7 @@ public class SaleAfterOrderApp {
 	public void dealerAutoRec(String userId) throws NegativeException {
 		int hour = 168;
 		try {
-			Integer.parseInt(GetDisconfDataGetter.getDisconfProperty("sale.after.dealer.autoRec"));
+			hour = Integer.parseInt(GetDisconfDataGetter.getDisconfProperty("sale.after.dealer.autoRec"));
 			if (hour < 1)
 				hour = 1;
 		}
@@ -436,7 +436,7 @@ public class SaleAfterOrderApp {
 	public void userAutoRec(String userId) throws NegativeException {
 		int hour = 168;
 		try {
-			Integer.parseInt(GetDisconfDataGetter.getDisconfProperty("sale.after.user.autoRec"));
+			hour = Integer.parseInt(GetDisconfDataGetter.getDisconfProperty("sale.after.user.autoRec"));
 			if (hour < 1)
 				hour = 1;
 		}
@@ -474,7 +474,7 @@ public class SaleAfterOrderApp {
 	public void afterSaleCompleteUpdated(String userId) throws NegativeException {
 		int hour = 168;
 		try {
-			Integer.parseInt(GetDisconfDataGetter.getDisconfProperty("sale.after.complete.upstream"));
+			hour = Integer.parseInt(GetDisconfDataGetter.getDisconfProperty("sale.after.complete.upstream"));
 			if (hour < 1)
 				hour = 1;
 		}

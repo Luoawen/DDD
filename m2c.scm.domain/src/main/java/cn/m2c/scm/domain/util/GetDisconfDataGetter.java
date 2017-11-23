@@ -1,7 +1,5 @@
 package cn.m2c.scm.domain.util;
 
-import org.slf4j.Logger;
-
 import com.baidu.disconf.client.usertools.DisconfDataGetter;
 
 /**
