@@ -88,7 +88,7 @@ public class StantardAgent {
 	 * @return
 	 */
 	@RequestMapping(value = "/mng", method = RequestMethod.PUT)
-	@RequirePermissions(value ={"scm:size:add"})
+	@RequirePermissions(value ={"scm:size:update"})
 	public ResponseEntity<MResult> updateUnit(
 			@RequestParam(value = "stantardId", required = false) String stantardId,
 			@RequestParam(value = "stantardName", required = false) String stantardName) {

@@ -152,7 +152,7 @@ public class DealerAgent {
 	 * @return
 	 */
 	@RequestMapping(value="/mng",method = RequestMethod.PUT)
-	@RequirePermissions(value ={"scm:dealer:add"})
+	@RequirePermissions(value ={"scm:dealer:update"})
 	public ResponseEntity<MResult> update(
 			@RequestParam(value="dealerId",required=true)String dealerId,
 			@RequestParam(value="userId",required=true)String userId,

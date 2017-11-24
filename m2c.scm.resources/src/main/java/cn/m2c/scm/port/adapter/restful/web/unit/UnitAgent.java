@@ -91,7 +91,7 @@ public class UnitAgent {
 	 * @return
 	 */
 	@RequestMapping(value = "/mng", method = RequestMethod.PUT)
-	@RequirePermissions(value ={"scm:unit:add"})
+	@RequirePermissions(value ={"scm:unit:update"})
 	public ResponseEntity<MResult> updateUnit(
 			@RequestParam(value = "unitId", required = false) String unitId,
 			@RequestParam(value = "unitName", required = false) String unitName) {
