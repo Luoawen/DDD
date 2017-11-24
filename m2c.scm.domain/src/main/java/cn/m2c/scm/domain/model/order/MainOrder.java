@@ -269,7 +269,7 @@ public class MainOrder extends ConcurrencySafeEntity {
 	/***
 	 * 取消订单(用户主动操作，系统自动操作)
 	 */
-	public boolean jobCancel() {
+	public boolean jobCancel(String userId) {
 		// 检查是否可以取消，只有在未支付的状态下用户可以取消
 		if (status != 0) {
 			return false;
@@ -301,7 +301,7 @@ public class MainOrder extends ConcurrencySafeEntity {
 		
 		DomainEventPublisher.instance().publish(new OrderCancelEvent(orderId, allSales, markets));
 		allSales = null;
-		DomainEventPublisher.instance().publish(new OrderOptLogEvent(orderId, null, "订单取消成功", "m2c_job_scm"));
+		DomainEventPublisher.instance().publish(new OrderOptLogEvent(orderId, null, "订单取消成功", userId));
 		return true;
 	}
 	/***

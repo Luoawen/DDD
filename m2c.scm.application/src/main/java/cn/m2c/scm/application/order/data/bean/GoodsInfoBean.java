@@ -52,11 +52,24 @@ public class GoodsInfoBean {
 	 * 商品金额(单价 * 数量)
 	 */
 	private long totalPrice;
+	
+	@ColumnAlias(value = "afNum")
+	private Integer afNum;
 	/**
 	 * 运费
 	 */
 	@ColumnAlias(value = "freight")
 	private long freight;
+	
+	public Integer getAfNum() {
+		if (afNum == null)
+			afNum = 0;
+		return afNum;
+	}
+
+	public void setAfNum(Integer afNum) {
+		this.afNum = afNum;
+	}
 
 	public String getGoodsImage() {
 		return goodsImage;

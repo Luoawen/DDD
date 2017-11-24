@@ -22,7 +22,6 @@ import cn.m2c.scm.application.order.data.bean.RefundEvtBean;
 import cn.m2c.scm.application.order.data.bean.SimpleMarket;
 import cn.m2c.scm.application.order.data.bean.SkuNumBean;
 import cn.m2c.scm.application.order.query.AfterSellOrderQuery;
-import cn.m2c.scm.domain.NegativeCode;
 import cn.m2c.scm.domain.NegativeException;
 import cn.m2c.scm.domain.model.order.DealerOrderDtl;
 import cn.m2c.scm.domain.model.order.SaleAfterOrder;

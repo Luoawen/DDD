@@ -85,7 +85,8 @@ public class ScheduledAgent {
 		LOGGER.error("--定时请求检查是否有要取消的订单------------------------------------------");
 		try {
 			//dealerOrderApplication.updateWaitPay();
-			orderApp.cancelAllNotPayed();
+			String val = GetDisconfDataGetter.getDisconfProperty("scm.job.user");
+			orderApp.cancelAllNotPayed(val);
 			result.setStatus(MCode.V_200);
 		} catch (Exception e) {
 			LOGGER.error("修改订单状态发生错误", e);

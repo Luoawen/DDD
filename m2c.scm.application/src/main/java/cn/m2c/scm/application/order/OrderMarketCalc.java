@@ -338,6 +338,8 @@ public class OrderMarketCalc {
                     tmp = bean;
                     continue;
                 }
+                if (total == 0)
+            		total = 1;
                 switch (a) {
                     case 1:
                     	BigDecimal g = new BigDecimal(bean.getGoodsAmount()* discount);

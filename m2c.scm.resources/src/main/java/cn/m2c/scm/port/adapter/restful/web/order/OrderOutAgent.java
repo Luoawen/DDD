@@ -23,8 +23,10 @@ import cn.m2c.common.JsonUtils;
 import cn.m2c.common.MCode;
 import cn.m2c.common.MResult;
 import cn.m2c.scm.application.order.OrderApplication;
+import cn.m2c.scm.application.order.SaleAfterOrderApp;
 import cn.m2c.scm.application.order.command.OrderPayedCmd;
 import cn.m2c.scm.application.order.data.bean.MainOrderBean;
+import cn.m2c.scm.application.order.data.bean.RefundEvtBean;
 import cn.m2c.scm.application.order.data.representation.OrderMoney;
 import cn.m2c.scm.application.order.data.representation.OrderNums;
 import cn.m2c.scm.application.order.query.OrderQuery;
@@ -67,7 +69,8 @@ public class OrderOutAgent {
     	return new ResponseEntity<MResult>(result,HttpStatus.OK);
     }
     
-    
+    @Autowired
+	private SaleAfterOrderApp saleAfterApp;
     @RequestMapping(value="/test", method = RequestMethod.GET)
     public ResponseEntity<MResult> testForMedia(@RequestParam(value="userId", required=false) String userId
     		,@RequestParam(value="orderId", required=false) String orderId
@@ -77,6 +80,9 @@ public class OrderOutAgent {
     		//OrderPayedCmd cmd = new OrderPayedCmd(orderId, userId, "89555555555555551", 1, new Date());
     		//orderApp.orderPayed(cmd);
     		//orderApp.cancelAllNotPayed();
+    		String a = "{\"orderRefundId\":\"16DR20171124140404228000359543\",\"orderPayId\":\"20171124105931528000543160\",\"afterSellOrderId\":\"20171124140316KD\",\"dealerId\":\"JXS1382A365F7D94350991D84AF23233FD7\",\"userId\":\"HY8155311C70F849DAA126997124D8CB98\",\"payWay\":1,\"refundAmount\":1,\"tradeNo\":\"2017112421001104200248018865\",\"refundTime\":1511503444228}";
+    		RefundEvtBean bean = JsonUtils.toBean(a, RefundEvtBean.class);
+    		saleAfterApp.refundSuccess(bean);
     		result.setContent("ok");
     		result.setStatus(MCode.V_200);
 		} 

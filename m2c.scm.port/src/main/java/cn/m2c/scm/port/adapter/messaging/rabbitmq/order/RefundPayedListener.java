@@ -1,5 +1,7 @@
 package cn.m2c.scm.port.adapter.messaging.rabbitmq.order;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate4.HibernateTransactionManager;
 
@@ -16,7 +18,7 @@ import cn.m2c.scm.application.order.data.bean.RefundEvtBean;
  * copyrighted@m2c
  */
 public class RefundPayedListener extends ExchangeListener {
-
+	Logger LOGGER = LoggerFactory.getLogger(RefundPayedListener.class);
 	//@Autowired
 	//private SupportJdbcTemplate jdbcTemplate;
 	
@@ -50,6 +52,7 @@ public class RefundPayedListener extends ExchangeListener {
 		else {
 			payTime = new Date();
 		}*/
+		LOGGER.info("====fanjc==receive msg for OrderRefundedEvent");
 		try {
 			RefundEvtBean bean = JsonUtils.toBean(msgBody, RefundEvtBean.class);
 			
@@ -58,6 +61,7 @@ public class RefundPayedListener extends ExchangeListener {
 		}
 		catch (Exception e) {
 			e.printStackTrace();
+			LOGGER.info("====fanjc==" +  e.getMessage());
 			throw e;
 		}
 		//cmd = null;

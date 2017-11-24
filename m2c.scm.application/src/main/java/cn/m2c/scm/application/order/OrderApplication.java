@@ -757,7 +757,7 @@ public class OrderApplication {
      * 取消所有24小时还未支付的订单
      */
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
-    public void cancelAllNotPayed() {
+    public void cancelAllNotPayed(String userId) {
     	try {
     		int hour = 24;
     		try {
@@ -775,7 +775,7 @@ public class OrderApplication {
 	    		throw new NegativeException(NegativeCode.DEALER_ORDER_IS_NOT_EXIST, "没有满足条件的商家订单.");
 	    	
 	    	for (MainOrder m : mainOrders) {
-	    		jobCancelOrder(m);
+	    		jobCancelOrder(m, userId);
 	    	}
     	}
     	catch (Exception e) {
@@ -788,8 +788,8 @@ public class OrderApplication {
     
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class},propagation= Propagation.REQUIRES_NEW)
     @EventListener(isListening = true)
-    private void jobCancelOrder(MainOrder m) {
-    	m.jobCancel();
+    private void jobCancelOrder(MainOrder m, String userId) {
+    	m.jobCancel(userId);
 		orderRepository.save(m);
     }
     
