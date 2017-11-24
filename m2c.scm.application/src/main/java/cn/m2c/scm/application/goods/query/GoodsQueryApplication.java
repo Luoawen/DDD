@@ -1003,5 +1003,15 @@ public class GoodsQueryApplication {
         sql.append(" t_scm_goods WHERE del_status = 1 and recognized_id is not null");
         return supportJdbcTemplate.jdbcTemplate().queryForList(sql.toString(), String.class);
     }
+
+    public GoodsSkuBean queryGoodsSkuByCode(String dealerId, String goodsCode) {
+        StringBuilder sql = new StringBuilder();
+        sql.append(" SELECT ");
+        sql.append(" s.* ");
+        sql.append(" FROM ");
+        sql.append(" t_scm_goods g,t_scm_goods_sku s WHERE 1 = 1 AND g.id = s.goods_id AND g.dealer_id = ? AND s.goods_code = ? AND g.del_status = 1");
+        GoodsSkuBean bean = this.getSupportJdbcTemplate().queryForBean(sql.toString(), GoodsSkuBean.class, dealerId, goodsCode);
+        return bean;
+    }
 }
 

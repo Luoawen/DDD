@@ -16,6 +16,7 @@ import cn.m2c.scm.application.goods.query.GoodsGuaranteeQueryApplication;
 import cn.m2c.scm.application.goods.query.GoodsQueryApplication;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsBean;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsGuaranteeBean;
+import cn.m2c.scm.application.goods.query.data.bean.GoodsSkuBean;
 import cn.m2c.scm.application.goods.query.data.representation.GoodsDetailRepresentation;
 import cn.m2c.scm.application.goods.query.data.representation.GoodsSearchRepresentation;
 import cn.m2c.scm.application.postage.data.bean.PostageModelBean;
@@ -178,8 +179,8 @@ public class GoodsAgent {
      * @param goodsId
      * @return
      */
-    @RequestMapping(value = {"/up/shelf/{goodsId}","/mng/up/shelf/{goodsId}"}, method = RequestMethod.PUT)
-    @RequirePermissions(value ={"scm:goodsStorage:upShelf"})
+    @RequestMapping(value = {"/up/shelf/{goodsId}", "/mng/up/shelf/{goodsId}"}, method = RequestMethod.PUT)
+    @RequirePermissions(value = {"scm:goodsStorage:upShelf"})
     public ResponseEntity<MResult> upShelfGoods(
             @PathVariable("goodsId") String goodsId
     ) {
@@ -203,8 +204,8 @@ public class GoodsAgent {
      * @param goodsId
      * @return
      */
-    @RequestMapping(value = {"/off/shelf/{goodsId}","/mng/off/shelf/{goodsId}"}, method = RequestMethod.PUT)
-    @RequirePermissions(value ={"scm:goodsStorage:offShelf"})
+    @RequestMapping(value = {"/off/shelf/{goodsId}", "/mng/off/shelf/{goodsId}"}, method = RequestMethod.PUT)
+    @RequirePermissions(value = {"scm:goodsStorage:offShelf"})
     public ResponseEntity<MResult> offShelfGoods(
             @PathVariable("goodsId") String goodsId
     ) {
@@ -228,8 +229,8 @@ public class GoodsAgent {
      * @param goodsId
      * @return
      */
-    @RequestMapping(value = {"/recognized/{goodsId}","/mng/recognized/{goodsId}"}, method = RequestMethod.PUT)
-    @RequirePermissions(value ={"scm:goodsStorage:modifyRecognized"})
+    @RequestMapping(value = {"/recognized/{goodsId}", "/mng/recognized/{goodsId}"}, method = RequestMethod.PUT)
+    @RequirePermissions(value = {"scm:goodsStorage:modifyRecognized"})
     public ResponseEntity<MResult> modifyRecognized(
             @PathVariable("goodsId") String goodsId,
             @RequestParam(value = "recognizedId", required = false) String recognizedId,
@@ -338,6 +339,39 @@ public class GoodsAgent {
         } catch (Exception e) {
             LOGGER.error("queryGoodsDetail Exception e:", e);
             result = new MResult(MCode.V_400, "查询商品详情失败");
+        }
+        return new ResponseEntity<MResult>(result, HttpStatus.OK);
+    }
+
+    /**
+     * 查询根据商品编码商品
+     *
+     * @param goodsCode
+     * @return
+     */
+    @RequestMapping(value = "/code", method = RequestMethod.GET)
+    public ResponseEntity<MResult> queryGoodsSkuByCode(
+            @RequestParam(value = "dealerId", required = false) String dealerId,
+            @RequestParam(value = "goodsCode", required = false) String goodsCode
+    ) {
+        MResult result = new MResult(MCode.V_1);
+        if (StringUtils.isEmpty(dealerId)){
+            result = new MResult(MCode.V_400, "商家ID不能为空");
+            return new ResponseEntity<MResult>(result, HttpStatus.OK);
+        }
+        if (StringUtils.isEmpty(goodsCode)){
+            result = new MResult(MCode.V_400, "商家编码不能为空");
+            return new ResponseEntity<MResult>(result, HttpStatus.OK);
+        }
+        try {
+            GoodsSkuBean sku = goodsQueryApplication.queryGoodsSkuByCode(dealerId, goodsCode);
+            if (null != sku) {
+                result.setContent(sku);
+            }
+            result.setStatus(MCode.V_200);
+        } catch (Exception e) {
+            LOGGER.error("queryGoodsSkuByCode Exception e:", e);
+            result = new MResult(MCode.V_400, "查询商品信息失败");
         }
         return new ResponseEntity<MResult>(result, HttpStatus.OK);
     }
