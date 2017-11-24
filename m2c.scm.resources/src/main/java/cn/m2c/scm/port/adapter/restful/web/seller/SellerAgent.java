@@ -127,7 +127,7 @@ public class SellerAgent {
 	 * @return
 	 */
 	@RequestMapping(value = "/mng", method = RequestMethod.PUT)
-	@RequirePermissions(value ={"scm:seller:add"})
+	@RequirePermissions(value ={"scm:seller:update"})
 	public ResponseEntity<MResult> update(@RequestParam(value = "sellerId", required = true) String sellerId,
 			@RequestParam(value = "sellerName", required = true) String sellerName,
 			@RequestParam(value = "sellerPhone", required = true) String sellerPhone,
