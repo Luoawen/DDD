@@ -291,7 +291,7 @@ public class OrderQueryApplication {
 				params.add(keyword);
 				params.add(keyword);
 			}
-			sql.append(" ORDER BY a.created_date DESC, a.order_id DESC ");
+			sql.append(" ORDER BY a.order_id DESC, b.dealer_order_id DESC, a.created_date DESC");
 			
 			sql.append(" LIMIT ?,? ");
 			params.add((pageIndex - 1) * pageSize);

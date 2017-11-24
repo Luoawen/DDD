@@ -132,7 +132,7 @@ public class HibernateOrderRepository extends HibernateSupperRepository implemen
 				"where a.order_id = b.order_id\r\n" + 
 				"and a._status NOT IN (4, 5, -1)\r\n" + 
 				"and b._status NOT IN (-1, 4, 5)\r\n" + 
-				") and _status != -1")
+				") and _status NOT IN(-1, 4, 5)")
 		.list();
 		
 		if (rs != null && rs.size() > 0) {

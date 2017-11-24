@@ -43,6 +43,10 @@ public class AproveSaleAfterCmd extends AssertionConcern {
 		if (StringUtils.isEmpty(dealerId)) {
 			throw new NegativeException(MCode.V_1, "商家id参数为空(dealerId)！");
 		}
+		
+		if (rejectReason != null && rejectReason.length() > 200) {
+			throw new NegativeException(MCode.V_1, "原因不能大于200字！");
+		}
 
 		this.userId = userId;
 		this.saleAfterNo = saleAfterNo;

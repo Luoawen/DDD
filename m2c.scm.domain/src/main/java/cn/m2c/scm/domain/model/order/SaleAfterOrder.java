@@ -85,6 +85,10 @@ public class SaleAfterOrder extends ConcurrencySafeEntity {
 		
 		this.dealerId = dealerId;
 	}
+	
+	public void addApply() {
+		DomainEventPublisher.instance().publish(new OrderOptLogEvent(saleAfterNo, dealerOrderId, "售后申请成功", userId));
+	}
 	/***
 	 * 同意售后申请
 	 */
@@ -136,7 +140,7 @@ public class SaleAfterOrder extends ConcurrencySafeEntity {
 		status = 5;
 		backExpress = e;
 		updateTime = new Date();
-		DomainEventPublisher.instance().publish(new OrderOptLogEvent(saleAfterNo, null, "客户退货！", userId));
+		DomainEventPublisher.instance().publish(new OrderOptLogEvent(saleAfterNo, null, "客户退货发货！", userId));
 		return true;
 	}
 	

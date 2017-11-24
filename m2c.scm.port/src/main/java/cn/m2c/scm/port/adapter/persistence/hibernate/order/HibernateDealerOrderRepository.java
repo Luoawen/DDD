@@ -81,7 +81,7 @@ public class HibernateDealerOrderRepository extends HibernateSupperRepository im
 				"and a.dealer_order_id=b.dealer_order_id\r\n" + 
 				"and a._status NOT IN (4, 5, -1)\r\n" + 
 				"and b._status NOT IN (-1, 4, 5)\r\n" + 
-				") and _status != -1").list();
+				") and _status NOT IN (-1, 4, 5)").list();
 		
 		if (rs != null && rs.size() > 0) {
 			this.session().createSQLQuery("UPDATE t_scm_order_dealer SET _status=4 WHERE id IN(:idList)").setParameterList("idList", rs).executeUpdate();
