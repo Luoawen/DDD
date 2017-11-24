@@ -55,8 +55,11 @@ public class RefundPayedListener extends ExchangeListener {
 		LOGGER.info("====fanjc==receive msg for OrderRefundedEvent");
 		try {
 			RefundEvtBean bean = JsonUtils.toBean(msgBody, RefundEvtBean.class);
-			
+			LOGGER.info("====fanjc==receive msg ==" + msgBody);
 			//OrderPayedCmd cmd = new OrderPayedCmd(orderNo, userId, payNo, payWay, payTime);
+			if (bean == null) {
+				return;
+			}
 			saleAfterApp.refundSuccess(bean);
 		}
 		catch (Exception e) {

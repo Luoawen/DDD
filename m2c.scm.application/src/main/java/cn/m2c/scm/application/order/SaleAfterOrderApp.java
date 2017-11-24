@@ -223,6 +223,7 @@ public class SaleAfterOrderApp {
 	@Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
 	@EventListener(isListening=true)
 	public void refundSuccess(RefundEvtBean bean) throws NegativeException {
+		LOGGER.info("===fanjc==afterSellOrderId==" + bean.getAfterSellOrderId());
 		SaleAfterOrder order = saleAfterRepository.getSaleAfterOrderByNo(bean.getAfterSellOrderId());
 		if (order == null) {
 			throw new NegativeException(MCode.V_101, "无此售后单！");
