@@ -77,7 +77,7 @@ public class HibernateSaleAfterOrderRepository extends HibernateSupperRepository
 	@Override
 	public List<SaleAfterOrder> getSaleAfterOrderStatusAgree(int hour) {
 		// 商家同意退款或是换货商家已发出态下7天变更为交易完成 //60/
-		return this.session().createSQLQuery("SELECT a.* FROM t_scm_order_after_sell a WHERE ((a._status = 9) or (a._status = 7 AND a.order_type=0)) AND round((UNIX_TIMESTAMP(now())-UNIX_TIMESTAMP(a.last_updated_date))/60)/"+hour+" > 1").addEntity(SaleAfterOrder.class).list();
+		return this.session().createSQLQuery("SELECT a.* FROM t_scm_order_after_sell a WHERE ((a._status = 10) or (a._status = 7 AND a.order_type=0)) AND round((UNIX_TIMESTAMP(now())-UNIX_TIMESTAMP(a.last_updated_date))/60)/"+hour+" > 1").addEntity(SaleAfterOrder.class).list();
 	}
 
 	@Override

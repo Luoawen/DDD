@@ -15,7 +15,7 @@ import cn.m2c.scm.application.order.data.bean.RefundEvtBean;
  * created date 2017年10月24日
  * copyrighted@m2c
  */
-public class RefoundPayedListener extends ExchangeListener {
+public class RefundPayedListener extends ExchangeListener {
 
 	//@Autowired
 	//private SupportJdbcTemplate jdbcTemplate;
@@ -23,7 +23,7 @@ public class RefoundPayedListener extends ExchangeListener {
 	@Autowired
 	private SaleAfterOrderApp saleAfterApp;
 	
-	public RefoundPayedListener(RabbitmqConfiguration rabbitmqConfig,
+	public RefundPayedListener(RabbitmqConfiguration rabbitmqConfig,
 			HibernateTransactionManager hibernateTransactionManager, ConsumedEventStore consumedEventStore) {
 		super(rabbitmqConfig, hibernateTransactionManager, consumedEventStore);
 		// TODO Auto-generated constructor stub
@@ -74,5 +74,10 @@ public class RefoundPayedListener extends ExchangeListener {
 		// TODO Auto-generated method stub
 		return this.getClass().getPackage().getName();
 	}
-
+	
+	public static void main(String[] args) {
+		String a = "{\"orderRefundId\":\"16DR20171124102602271000909418\",\"orderPayId\":\"20171124102141766000845612\",\"afterSellOrderId\":\"20171124102531AL\",\"dealerId\":\"JXSF44C306010EE434DABC8847CA47B8D69\",\"userId\":\"HY8155311C70F849DAA126997124D8CB98\",\"payWay\":2,\"refundAmount\":1,\"tradeNo\":\"4200000032201711246671310729\",\"refundTime\":1511490362271}";
+		RefundEvtBean bean = JsonUtils.toBean(a, RefundEvtBean.class);
+		System.out.println(bean);
+	}
 }
