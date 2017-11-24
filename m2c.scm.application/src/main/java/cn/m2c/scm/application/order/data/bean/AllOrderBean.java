@@ -7,6 +7,8 @@ import cn.m2c.ddd.common.AssertionConcern;
 import cn.m2c.ddd.common.persistence.orm.ColumnAlias;
 
 public class AllOrderBean extends AssertionConcern implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
 	/** 商家订单号 **/
 	@ColumnAlias(value = "dealer_order_id")
 	private String dealerOrderId;
@@ -46,6 +48,27 @@ public class AllOrderBean extends AssertionConcern implements Serializable {
 	/** 商家名 **/
 	@ColumnAlias(value = "dealer_name")
 	private String dealerName;
+	
+	@ColumnAlias(value = "pDiscount")
+	private long ppDiscount;    
+    @ColumnAlias(value = "pDealerDiscount")
+	private long ppDealerDiscount;
+
+	public long getPpDiscount() {
+		return ppDiscount;
+	}
+
+	public void setPpDiscount(long ppDiscount) {
+		this.ppDiscount = ppDiscount;
+	}
+
+	public long getPpDealerDiscount() {
+		return ppDealerDiscount;
+	}
+
+	public void setPpDealerDiscount(long ppDealerDiscount) {
+		this.ppDealerDiscount = ppDealerDiscount;
+	}
 
 	public String getDealerOrderId() {
 		return dealerOrderId;
