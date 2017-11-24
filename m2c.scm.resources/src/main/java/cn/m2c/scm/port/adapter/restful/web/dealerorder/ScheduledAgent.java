@@ -248,7 +248,7 @@ public class ScheduledAgent {
 		MResult result = new MResult(MCode.V_1);
 		try {
 			String val = GetDisconfDataGetter.getDisconfProperty("scm.job.user");
-			orderApp.updateAllOrderStatus(val);
+			orderApp.judgeOrderSellAfter(val);
 			result.setStatus(MCode.V_200);
 		} catch (Exception e) {
 			LOGGER.error("自动检查订单下的子单状态 出错", e);
@@ -257,4 +257,22 @@ public class ScheduledAgent {
 		return new ResponseEntity<MResult>(result, HttpStatus.OK);
 	}
 	
+	/***
+	 * 检查已完成的订单， 判断其是否为有售后， 若有则需要处理成订单关闭。
+	 * @return
+	 */
+	/*@RequestMapping(value = "/order/main/check/close",method = RequestMethod.PUT)
+	public ResponseEntity<MResult> checkOrderClose() {
+		
+		MResult result = new MResult(MCode.V_1);
+		try {
+			String val = GetDisconfDataGetter.getDisconfProperty("scm.job.user");
+			orderApp.judgeOrderSellAfter(val);
+			result.setStatus(MCode.V_200);
+		} catch (Exception e) {
+			LOGGER.error("自动检查订单下的子单状态 出错", e);
+			result = new MResult(MCode.V_400, e.getMessage());
+		}
+		return new ResponseEntity<MResult>(result, HttpStatus.OK);
+	}*/
 }

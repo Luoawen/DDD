@@ -809,4 +809,25 @@ public class OrderApplication {
     	// 查询所有的可以结束的订单，并更新其状态到可结算状态
     	orderRepository.getSpecifiedOrderStatus();
     }
+    
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+    public void judgeOrderSellAfter(String userId) {
+    	List<String> orderIds = orderRepository.getMayCompleteOrderIds();
+    	if (orderIds == null || orderIds.size() < 1) {
+    		return;
+    	}
+    	
+    	for (String a : orderIds) {
+    		jobCompleteOrder(a, userId);
+    	}    	
+    }
+    
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class},propagation= Propagation.REQUIRES_NEW)
+    @EventListener(isListening = true)
+    private void jobCompleteOrder(String orderId, String userId) {
+    	boolean f = orderRepository.judgeOrderHasAfterSale(orderId);    
+    	MainOrder m = orderRepository.getOrderById(orderId);
+    	m.dealComplete(f);
+    	orderRepository.save(m);
+    }
 }

@@ -19,7 +19,6 @@ import cn.m2c.scm.application.order.data.bean.OrderDealerBean;
 import cn.m2c.scm.application.order.data.bean.OrderGoodsBean;
 import cn.m2c.scm.application.order.data.bean.SimpleMarket;
 import cn.m2c.scm.domain.NegativeException;
-import cn.m2c.scm.domain.model.order.MainOrder;
 import cn.m2c.scm.application.order.data.bean.AllOrderBean;
 import cn.m2c.scm.application.order.data.bean.DealerOrderDetailBean;
 import cn.m2c.scm.application.order.data.bean.GoodsInfoBean;

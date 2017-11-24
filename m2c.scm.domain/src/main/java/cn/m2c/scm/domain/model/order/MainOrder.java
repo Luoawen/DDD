@@ -10,6 +10,7 @@ import cn.m2c.ddd.common.domain.model.ConcurrencySafeEntity;
 import cn.m2c.ddd.common.domain.model.DomainEventPublisher;
 import cn.m2c.scm.domain.model.order.event.OrderAddedEvent;
 import cn.m2c.scm.domain.model.order.event.OrderCancelEvent;
+import cn.m2c.scm.domain.model.order.event.OrderDealCompleteEvt;
 import cn.m2c.scm.domain.model.order.event.OrderPayedEvent;
 import cn.m2c.scm.domain.model.order.event.SimpleMediaRes;
 import cn.m2c.scm.domain.model.order.log.event.OrderOptLogEvent;
@@ -314,5 +315,13 @@ public class MainOrder extends ConcurrencySafeEntity {
 			return true;
 		}
 		return false;
+	}
+	
+	public void dealComplete(boolean hasSaleAfter) {
+		if (hasSaleAfter)
+			status = 5;
+		else
+			status = 4;
+		DomainEventPublisher.instance().publish(new OrderDealCompleteEvt(orderId));
 	}
 }

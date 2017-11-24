@@ -1,5 +1,6 @@
 package cn.m2c.scm.port.adapter.persistence.hibernate.order;
 
+import java.math.BigInteger;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -138,5 +139,24 @@ public class HibernateOrderRepository extends HibernateSupperRepository implemen
 		if (rs != null && rs.size() > 0) {
 			this.session().createSQLQuery("UPDATE t_scm_order_main SET _status=4 WHERE id IN(:idList)").setParameterList("idList", rs).executeUpdate();
 		}
+	}
+	
+	@Override
+	public List<String> getMayCompleteOrderIds() {
+		List<String> rs = this.session().createSQLQuery("select order_id from t_scm_order_main where order_id NOT IN\r\n" + 
+				"(select DISTINCT b.order_id from t_scm_order_main b, t_scm_order_dealer a\r\n" + 
+				"where a.order_id = b.order_id\r\n" + 
+				"and a._status NOT IN (4, 5, -1)\r\n" + 
+				"and b._status NOT IN (-1, 4, 5)\r\n" + 
+				") and _status NOT IN(-1, 4, 5)")
+		.list();		
+		return rs;
+	}
+	@Override
+	public boolean judgeOrderHasAfterSale(String orderId) {		
+		Object o = this.session().createSQLQuery("select count(1) from t_scm_order_after_sell where order_id=:orderId and _status IN (9, 11, 12)")
+		.setParameter("orderId", orderId).uniqueResult();
+		BigInteger b = (BigInteger)o;
+		return b != null ? b.intValue() > 0 : false;
 	}
 }

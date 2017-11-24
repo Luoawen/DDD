@@ -67,4 +67,11 @@ public interface OrderRepository {
 	 * @return
 	 */
 	public void getSpecifiedOrderStatus();
+	/***
+	 * 获取可以结束的订单ID
+	 * @return
+	 */
+	public List<String> getMayCompleteOrderIds();	
+	
+	public boolean judgeOrderHasAfterSale(String orderId);
 }
