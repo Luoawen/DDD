@@ -215,7 +215,7 @@ public class SaleAfterOrder extends ConcurrencySafeEntity {
 		refundTime = time;
 		
 		DomainEventPublisher.instance().publish(new AfterRefundSuccEvt(saleAfterNo, orderId, dealerOrderId, dealerId, backMoney
-				, returnFreight, backNum));
+				, returnFreight, backNum, skuId));
 		return true;
 	}
 	

@@ -302,7 +302,7 @@ public class OrderQueryApplication {
 				AppOrderBean tmp = null;
 				for (int i=sz - 1; i> -1; i--) {
 					AppOrderBean o = result.get(i);
-					if (o.getStatus() == 0 && !o.getOrderId().equals(tmpOrderId)) {
+					if (o.getStatus() <= 0 && !o.getOrderId().equals(tmpOrderId)) {
 						tmp = o;
 						tmpOrderId = o.getOrderId();
 						sql.delete(0, sql.length());
@@ -313,7 +313,7 @@ public class OrderQueryApplication {
 						o.setGoodses(this.supportJdbcTemplate.queryForBeanList(sql.toString(), 
 								OrderDetailBean.class, new Object[] {tmpOrderId}));
 					}
-					else if (o.getStatus() == 0 && o.getOrderId().equals(tmpOrderId)) {
+					else if (o.getStatus() <= 0 && o.getOrderId().equals(tmpOrderId)) {
 						result.remove(i);
 						/*tmp.setDealerDiscount(tmp.getDealerDiscount() + o.getDealerDiscount());
 						tmp.setPlateFormDiscount(tmp.getPlateFormDiscount() + o.getPlateFormDiscount());

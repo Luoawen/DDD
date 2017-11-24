@@ -40,7 +40,7 @@ public class AfterRefundSuccEvt implements DomainEvent {
 	}
 	
 	public AfterRefundSuccEvt(String saleAfterNo, String orderId, String dealerOrderId, 
-			String dealerId, long money, long rtFreight, int num) {
+			String dealerId, long money, long rtFreight, int num, String skuId) {
 		this();
 		this.afterSellOrderId = saleAfterNo;
 		this.dealerId = dealerId;
@@ -52,6 +52,7 @@ public class AfterRefundSuccEvt implements DomainEvent {
 		
 		this.rtFreight = rtFreight;
 		this.num = num;
+		this.skuId = skuId;
 	}
 	@Override
 	public int eventVersion() {
@@ -119,7 +120,7 @@ public class AfterRefundSuccEvt implements DomainEvent {
 
 	public static void main(String[] args) {
 		Gson gson = new Gson();
-		AfterRefundSuccEvt a = new AfterRefundSuccEvt("123456", "AFAA3333", "a85adfsf", "dealerId", 3000, 0, 0);
+		AfterRefundSuccEvt a = new AfterRefundSuccEvt("123456", "AFAA3333", "a85adfsf", "dealerId", 3000, 0, 0, "");
 		System.out.print(gson.toJson(a));
 	}
 	
