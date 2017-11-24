@@ -1,6 +1,5 @@
 package cn.m2c.scm.application.order.data.bean;
 
-import java.util.HashMap;
 import java.util.List;
 
 import cn.m2c.common.JsonUtils;
@@ -191,7 +190,7 @@ public class MarketBean {
 					return l.getMoney();
 				case 2:
 					threshold = l.getThreshold();
-					return (int)(l.getDiscount() * 100 + 0.5);
+					return (int)(l.getDiscount().floatValue() * 100);
 				case 3:
 					threshold = l.getThreshold();
 					return l.getBuyingPrice();

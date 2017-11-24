@@ -1,4 +1,7 @@
 package cn.m2c.scm.application.order.data.bean;
+
+import java.math.BigDecimal;
+
 /**
  * 营销层级
  * @author fanjc
@@ -9,7 +12,8 @@ public class MarketLevelBean {
 	
 	private int threshold;
 	
-	private float discount;
+	//private float discount;
+	private BigDecimal discount;
 	
 	private int money;
 	
@@ -27,11 +31,22 @@ public class MarketLevelBean {
 		this.threshold = threshold;
 	}
 
-	public float getDiscount() {
+	/*public float getDiscount() {
 		return discount;
 	}
 
 	public void setDiscount(float discount) {
+		this.discount = discount;
+	}*/
+	
+	public BigDecimal getDiscount() {
+		if (discount == null) {
+			discount = new BigDecimal(0);
+		}
+		return discount;
+	}
+
+	public void setDiscount(BigDecimal discount) {
 		this.discount = discount;
 	}
 

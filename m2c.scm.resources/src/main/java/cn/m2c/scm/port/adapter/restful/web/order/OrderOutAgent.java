@@ -1,5 +1,6 @@
 package cn.m2c.scm.port.adapter.restful.web.order;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.alibaba.fastjson.JSONObject;
 
 import cn.m2c.common.JsonUtils;
 import cn.m2c.common.MCode;
@@ -71,8 +74,8 @@ public class OrderOutAgent {
     		){
     	MResult result = new MResult(MCode.V_1);
     	try {
-    		OrderPayedCmd cmd = new OrderPayedCmd(orderId, userId, "89555555555555551", 1, new Date());
-    		orderApp.orderPayed(cmd);
+    		//OrderPayedCmd cmd = new OrderPayedCmd(orderId, userId, "89555555555555551", 1, new Date());
+    		//orderApp.orderPayed(cmd);
     		//orderApp.cancelAllNotPayed();
     		result.setContent("ok");
     		result.setStatus(MCode.V_200);
@@ -167,6 +170,9 @@ public class OrderOutAgent {
     }
     
     public static void main(String args[]) {
-    	System.out.println(200 * (1-900/1000.0));
+    	BigDecimal g = new BigDecimal(10);
+    	
+    	BigDecimal g1 = new BigDecimal(6);
+    	System.out.println(g.divide(g1, BigDecimal.ROUND_CEILING, BigDecimal.ROUND_HALF_UP));
     }
 }
