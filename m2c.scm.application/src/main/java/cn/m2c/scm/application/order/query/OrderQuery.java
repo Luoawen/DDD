@@ -333,7 +333,7 @@ public class OrderQuery {
 	 */
 	public List<GoodsInfoBean> getGoodsInfoList(String dealerOrderId) {
 		StringBuilder sql = new StringBuilder();
-		sql.append(" SELECT  dtl.goods_icon, dtl.goods_name,dtl.sku_name, dtl.sku_id, a.sell_num afNum \r\n")
+		sql.append(" SELECT  dtl.goods_icon, dtl.goods_name,dtl.sku_name, dtl.sku_id, a.sell_num afNum, \r\n")
 		.append(" dtl.media_res_id,dtl.sell_num,dtl.goods_unit, dtl.discount_price,dtl.freight \r\n") 
 		.append(" FROM  t_scm_order_dealer dealer \r\n")
 		.append(" ,t_scm_order_detail dtl \r\n")
