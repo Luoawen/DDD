@@ -5,6 +5,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate4.HibernateTransactionManager;
 
+import com.alibaba.fastjson.JSONObject;
+
 import cn.m2c.common.JsonUtils;
 import cn.m2c.ddd.common.application.configuration.RabbitmqConfiguration;
 import cn.m2c.ddd.common.event.ConsumedEventStore;
@@ -54,7 +56,8 @@ public class RefundPayedListener extends ExchangeListener {
 		}*/
 		LOGGER.info("====fanjc==receive msg for OrderRefundedEvent");
 		try {
-			RefundEvtBean bean = JsonUtils.toBean(msgBody, RefundEvtBean.class);
+			JSONObject j = JSONObject.parseObject(msgBody);
+			RefundEvtBean bean = JsonUtils.toBean(j.getJSONObject("event").toJSONString(), RefundEvtBean.class);
 			LOGGER.info("====fanjc==receive msg ==" + msgBody);
 			//OrderPayedCmd cmd = new OrderPayedCmd(orderNo, userId, payNo, payWay, payTime);
 			if (bean == null) {
