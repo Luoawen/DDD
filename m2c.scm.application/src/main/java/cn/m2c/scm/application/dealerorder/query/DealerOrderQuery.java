@@ -246,7 +246,7 @@ public class DealerOrderQuery {
             params.add(condition);
         }
 
-        if (orderStatus != null && orderStatus >= 0) {
+        if (orderStatus != null) {
             sql.append(" AND a._status=?\r\n");
             params.add(orderStatus);
         }
@@ -384,7 +384,7 @@ public class DealerOrderQuery {
             params.add(condition);
         }
 
-        if (orderStatus != null && orderStatus >= 0) {
+        if (orderStatus != null) {
             sql.append(" AND a._status=?\r\n");
             params.add(orderStatus);
         }
