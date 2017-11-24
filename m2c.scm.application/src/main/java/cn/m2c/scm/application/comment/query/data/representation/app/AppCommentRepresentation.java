@@ -21,6 +21,7 @@ public class AppCommentRepresentation {
     private List commentImages;
     private String replyCommentContent;
     private String commentTime;
+    private String dealerName;
 
     public AppCommentRepresentation(GoodsCommentBean bean) {
         this.buyerIcon = bean.getBuyerIcon();
@@ -44,6 +45,7 @@ public class AppCommentRepresentation {
 
         SimpleDateFormat yyyMMddFormat = new SimpleDateFormat("yyyy-MM-dd");
         this.commentTime = yyyMMddFormat.format(bean.getCreatedDate());
+        this.dealerName = bean.getDealerName();
     }
 
     public String getBuyerIcon() {
@@ -124,5 +126,13 @@ public class AppCommentRepresentation {
 
     public void setCommentTime(String commentTime) {
         this.commentTime = commentTime;
+    }
+
+    public String getDealerName() {
+        return dealerName;
+    }
+
+    public void setDealerName(String dealerName) {
+        this.dealerName = dealerName;
     }
 }

@@ -19,6 +19,7 @@ public class AppGoodsDetailRepresentation {
     private static final String M2C_HOST_URL = DisconfDataGetter.getByFileItem("constants.properties", "m2c.host.url")
             .toString().trim();
     private String dealerId;
+    private String dealerName;
     private String goodsId;
     private String classifyId;
     private String goodsName;
@@ -44,6 +45,7 @@ public class AppGoodsDetailRepresentation {
                                         List<Map> fullCuts, List<Map> goodsTags, String favoriteId) {
         this.skuFlag = bean.getSkuFlag();
         this.dealerId = bean.getDealerId();
+        this.dealerName=bean.getDealerName();
         this.goodsId = bean.getGoodsId();
         this.classifyId = bean.getGoodsClassifyId();
         this.goodsName = bean.getGoodsName();
@@ -267,5 +269,13 @@ public class AppGoodsDetailRepresentation {
 
     public void setDesc(String desc) {
         this.desc = desc;
+    }
+
+    public String getDealerName() {
+        return dealerName;
+    }
+
+    public void setDealerName(String dealerName) {
+        this.dealerName = dealerName;
     }
 }
