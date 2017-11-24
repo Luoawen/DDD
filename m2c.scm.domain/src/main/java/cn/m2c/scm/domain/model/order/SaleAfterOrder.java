@@ -157,6 +157,7 @@ public class SaleAfterOrder extends ConcurrencySafeEntity {
 		if (status < 5)
 			return false;
 		sendExpress = e;
+		status = 7;
 		updateTime = new Date();
 		DomainEventPublisher.instance().publish(new OrderOptLogEvent(saleAfterNo, dealerOrderId, "商家换货发货！", userId));
 		return true;
