@@ -21,6 +21,16 @@ public class OptLogBean {
 	private String optUser;
 	@ColumnAlias(value= "created_date")
 	private Date optTime;
+	
+	private String optUserStr;
+	
+	public String getOptUserStr() {
+		return optUserStr;
+	}
+
+	public void setOptUserStr(String optUserStr) {
+		this.optUserStr = optUserStr;
+	}
 
 	public String getOrderId() {
 		return orderId;
