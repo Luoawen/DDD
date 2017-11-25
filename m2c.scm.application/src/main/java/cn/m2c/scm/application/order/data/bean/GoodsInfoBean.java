@@ -61,6 +61,28 @@ public class GoodsInfoBean {
 	@ColumnAlias(value = "freight")
 	private long freight;
 	
+	@ColumnAlias(value = "is_change")
+	private Integer isChange;
+	
+	@ColumnAlias(value = "change_price")
+	private Long changePrice;
+	
+	public Long getChangePrice() {
+		return changePrice;
+	}
+
+	public void setChangePrice(Long changePrice) {
+		this.changePrice = changePrice;
+	}
+
+	public Integer getIsChange() {
+		return isChange;
+	}
+
+	public void setIsChange(Integer isChange) {
+		this.isChange = isChange;
+	}
+
 	public Integer getAfNum() {
 		if (afNum == null)
 			afNum = 0;
