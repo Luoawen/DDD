@@ -132,7 +132,7 @@ public class OrderMarketCalc {
                 //changeMoney += d.getChangePrice() * d.getPurNum();
             	if (judgeChange(bean, d)) {
             		d.setChangePrice(as);
-	            	changeMoney += as * d.getPurNum();
+	            	changeMoney += (d.getDiscountPrice() - as) * d.getPurNum();
 	                changeNum += d.getPurNum();
             	}
             }
