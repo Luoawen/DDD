@@ -45,22 +45,24 @@ public class ExcelUtil {
             headCell.setCellValue(String.valueOf(headList.get(i)));
         }
 
-        for (int i = 0; i < list.size(); i++) {
-            Row rowData = sheet.createRow(i + 1);//创建数据行
-            Q q = list.get(i);
-            Field[] ff = getAllFields(q.getClass());
-            int j = 0;
-            for (Field f : ff) {
-                ExcelField field = f.getAnnotation(ExcelField.class);
-                if (field == null) {
-                    continue;
+        if (null != list && list.size() > 0) {
+            for (int i = 0; i < list.size(); i++) {
+                Row rowData = sheet.createRow(i + 1);//创建数据行
+                Q q = list.get(i);
+                Field[] ff = getAllFields(q.getClass());
+                int j = 0;
+                for (Field f : ff) {
+                    ExcelField field = f.getAnnotation(ExcelField.class);
+                    if (field == null) {
+                        continue;
+                    }
+                    f.setAccessible(true);
+                    Object obj = f.get(q);
+                    Cell cell = rowData.createCell(j);
+                    cell.setCellType(Cell.CELL_TYPE_STRING);
+                    cell.setCellValue(String.valueOf(obj));
+                    j++;
                 }
-                f.setAccessible(true);
-                Object obj = f.get(q);
-                Cell cell = rowData.createCell(j);
-                cell.setCellType(Cell.CELL_TYPE_STRING);
-                cell.setCellValue(String.valueOf(obj));
-                j++;
             }
         }
         response.setHeader("Content-Disposition", "attachment;filename=" + urlEncode(fileName));
