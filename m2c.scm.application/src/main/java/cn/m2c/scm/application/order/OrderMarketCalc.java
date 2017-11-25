@@ -401,7 +401,7 @@ public class OrderMarketCalc {
                     case 2://打折就不用计算
                     	BigDecimal g = new BigDecimal(bean.getGoodsAmount());
                     	BigDecimal t = new BigDecimal(discount);
-                    	t = t.divide(new BigDecimal(1000), 3, BigDecimal.ROUND_HALF_UP);
+                    	t = t.divide(new BigDecimal(1000), 3, BigDecimal.ROUND_HALF_DOWN);
                     	rtMoney += g.multiply(t.subtract(new BigDecimal(1)).abs()).longValue();
                         //rtMoney += (bean.getGoodsAmount() * (1 - discount / 1000.0));
                         break;
@@ -413,7 +413,7 @@ public class OrderMarketCalc {
             if (a == 2) {
             	BigDecimal g = new BigDecimal(tmp.getGoodsAmount());
             	BigDecimal t = new BigDecimal(discount);
-            	t = t.divide(new BigDecimal(1000), 3, BigDecimal.ROUND_HALF_UP);
+            	t = t.divide(new BigDecimal(1000), 3, BigDecimal.ROUND_HALF_DOWN);
             	rtMoney += g.multiply(t.subtract(new BigDecimal(1)).abs()).longValue();
                 // rtMoney += (tmp.getGoodsAmount() * (1 - discount / 1000.0));
             } else
