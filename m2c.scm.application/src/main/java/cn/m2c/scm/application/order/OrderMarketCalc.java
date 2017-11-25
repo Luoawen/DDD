@@ -161,8 +161,12 @@ public class OrderMarketCalc {
                         d.setMarketType(bean.getFullCutType());
                     }
                     else {
+                    	BigDecimal g = new BigDecimal(changeMoney * d.getDiscountPrice() * d.getPurNum());
+                    	BigDecimal t1 = new BigDecimal(totalMoney);
+                    	t1 = g.divide(t1, 3, BigDecimal.ROUND_HALF_DOWN);
                     	
-                    	long a = (long) (0.5 + changeMoney * d.getDiscountPrice() * d.getPurNum() / totalMoney);
+                    	//long a = (long) (0.5 + changeMoney * d.getDiscountPrice() * d.getPurNum() / totalMoney);
+                    	long a = t1.longValue();
                     	if (last > 0 && d == goodsLs.get(last)) {
                     		d.setPlateformDiscount(changeMoney - subSum);
                     	}
@@ -210,7 +214,12 @@ public class OrderMarketCalc {
             d.setSharePercent(sharePercent);
             d.setDiscount(fullNum);// 若是折扣就已经乘了100了，所以需要除1000
             if (fullType == 1) {
-            	long a = (long) (0.5 + fullNum * d.getDiscountPrice() * d.getPurNum() / totalMoney);
+            	BigDecimal g = new BigDecimal(fullNum * d.getDiscountPrice() * d.getPurNum());
+            	BigDecimal t = new BigDecimal(totalMoney);
+            	t = g.divide(t, 3, BigDecimal.ROUND_HALF_DOWN);
+            	
+            	//long a = (long) (0.5 + fullNum * d.getDiscountPrice() * d.getPurNum() / totalMoney);
+            	long a = t.longValue();
             	if (d == goodsLs.get(last)) {
             		d.setPlateformDiscount(fullNum - subSum);
             	}
@@ -219,7 +228,12 @@ public class OrderMarketCalc {
             		subSum += a;
             	}
             } else if (fullType == 2) { // 除以1000是因为前面已经乘以100了，因存的是8表示8折优惠
-                d.setPlateformDiscount((long) (0.5 + d.getDiscountPrice() * d.getPurNum() * (1000 - fullNum)/ 1000.0));
+            	BigDecimal g = new BigDecimal(d.getDiscountPrice() * d.getPurNum());
+            	BigDecimal t = new BigDecimal(1000 - fullNum);
+            	t = t.divide(new BigDecimal(1000), 3, BigDecimal.ROUND_HALF_DOWN);
+            	long rtMoney = g.multiply(t).longValue();
+                //d.setPlateformDiscount((long) (0.5 + d.getDiscountPrice() * d.getPurNum() * (1000 - fullNum)/ 1000.0));
+            	d.setPlateformDiscount(rtMoney);
             }
         }
     }
@@ -344,7 +358,7 @@ public class OrderMarketCalc {
                     case 1:
                     	BigDecimal g = new BigDecimal(bean.getGoodsAmount()* discount);
                     	BigDecimal t = new BigDecimal(total);
-                        bean.setDiscountMoney(g.divide(t, 1, BigDecimal.ROUND_HALF_UP).longValue());
+                        bean.setDiscountMoney(g.divide(t, 3, BigDecimal.ROUND_HALF_DOWN).longValue());
                         break;
                     case 2://打折就不用计算
                         // bean.setDiscountMoney((long)(bean.getGoodsAmount() * discount / 1000.0));
@@ -353,7 +367,7 @@ public class OrderMarketCalc {
                     	g = new BigDecimal(bean.getGoodsAmount()* discount);
                     	t = new BigDecimal(total);
                         //bean.setDiscountMoney((long) (bean.getGoodsAmount() * discount / (total + 0.0)));
-                    	bean.setDiscountMoney(g.divide(t, 1, BigDecimal.ROUND_HALF_UP).longValue());
+                    	bean.setDiscountMoney(g.divide(t, 3, BigDecimal.ROUND_HALF_DOWN).longValue());
                         break;
                 }
             }
@@ -362,7 +376,7 @@ public class OrderMarketCalc {
             	BigDecimal g = new BigDecimal(tmp.getGoodsAmount());
             	BigDecimal t = new BigDecimal(discount);
             	
-            	BigDecimal s = t.divide(new BigDecimal(1000), 2, BigDecimal.ROUND_HALF_DOWN);
+            	BigDecimal s = t.divide(new BigDecimal(1000), 3, BigDecimal.ROUND_HALF_DOWN);
             	BigDecimal m = new BigDecimal(1 - s.floatValue());
                 //rtMoney = (long) (0.5 + tmp.getGoodsAmount() * (1 - discount / 1000.0));
             	rtMoney = g.multiply(m).longValue();
@@ -387,7 +401,7 @@ public class OrderMarketCalc {
                     case 2://打折就不用计算
                     	BigDecimal g = new BigDecimal(bean.getGoodsAmount());
                     	BigDecimal t = new BigDecimal(discount);
-                    	t = t.divide(new BigDecimal(1000), 2, BigDecimal.ROUND_HALF_DOWN);
+                    	t = t.divide(new BigDecimal(1000), 3, BigDecimal.ROUND_HALF_UP);
                     	rtMoney += g.multiply(t.subtract(new BigDecimal(1)).abs()).longValue();
                         //rtMoney += (bean.getGoodsAmount() * (1 - discount / 1000.0));
                         break;
@@ -399,12 +413,27 @@ public class OrderMarketCalc {
             if (a == 2) {
             	BigDecimal g = new BigDecimal(tmp.getGoodsAmount());
             	BigDecimal t = new BigDecimal(discount);
-            	t = t.divide(new BigDecimal(1000), 2, BigDecimal.ROUND_HALF_DOWN);
+            	t = t.divide(new BigDecimal(1000), 3, BigDecimal.ROUND_HALF_UP);
             	rtMoney += g.multiply(t.subtract(new BigDecimal(1)).abs()).longValue();
                 // rtMoney += (tmp.getGoodsAmount() * (1 - discount / 1000.0));
             } else
                 rtMoney = discount;
         }
         return rtMoney;
+    }
+    
+    public static void main(String[] args) {
+    	BigDecimal g = new BigDecimal(22500);
+    	BigDecimal t = new BigDecimal(1000 - 925);
+    	t = t.divide(new BigDecimal(1000), 3, BigDecimal.ROUND_HALF_UP);
+    	long rtMoney = g.multiply(t).longValue();
+    	System.out.println(rtMoney);
+    	
+    	g = new BigDecimal(22500);
+    	t = new BigDecimal(925);
+    	t = t.divide(new BigDecimal(1000), 3, BigDecimal.ROUND_HALF_DOWN);
+    	rtMoney = g.multiply(t).longValue();
+    	System.out.println(rtMoney);
+    	//System.out.println(22500 * (1000 - 925)/ 1000.0);
     }
 }
