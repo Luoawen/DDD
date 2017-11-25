@@ -114,8 +114,8 @@ public class OrderQuery {
 				mainOrder.setCreateDate(allOrder.getCreatedDate());
 				mainOrder.setGoodAmount(allOrder.getMainGoodsAmount());
 				mainOrder.setOderFreight(allOrder.getMainOrderFreight());
-				mainOrder.setDealerDiscount(allOrder.getDealerDiscount());
-				mainOrder.setPlateFormDiscount(allOrder.getPlateformDiscount());
+				mainOrder.setDealerDiscount(allOrder.getPpDealerDiscount());
+				mainOrder.setPlateFormDiscount(allOrder.getPpDiscount());
 				List<OrderDealerBean> dealerOrderList = new ArrayList<OrderDealerBean>();
 				mainOrder.setDealerOrderBeans(dealerOrderList);
 			}
