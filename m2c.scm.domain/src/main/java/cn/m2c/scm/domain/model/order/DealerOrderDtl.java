@@ -287,7 +287,10 @@ public class DealerOrderDtl extends ConcurrencySafeEntity {
 		
 		return false;
 	}
-	
+	/***
+	 * 获取实际金额
+	 * @return
+	 */
 	public long changePrice() {
 		if (goodsInfo != null && goodsInfo.isChange()) {
 			return goodsInfo.changePrice();
