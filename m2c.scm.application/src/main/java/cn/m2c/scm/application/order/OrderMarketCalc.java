@@ -152,18 +152,15 @@ public class OrderMarketCalc {
                 int last = goodsLs.size() - 1;
                 if (goodsLs.get(last).isChange() == 1)
                 	last = last - 1;
-            	long subSum = 0;//前多少个的处理
+            	//long subSum = 0;//前多少个的处理
                 for (GoodsDto d : goodsLs) {
                     if (d.isChange() != 0) {
                         d.setChangePrice(as);
                         //d.setPlateformDiscount((d.getDiscountPrice() - d.getChangePrice()) * d.getPurNum());
-                        d.setPlateformDiscount(0);
-                        d.setMarketType(bean.getFullCutType());
-                        d.setThreshold(threshold);
-                        d.setThresholdType(type);
+                        d.setPlateformDiscount((d.getDiscountPrice() - as) * d.getPurNum());                        
                     }
                     else {
-                    	BigDecimal g = new BigDecimal(changeMoney * d.getDiscountPrice() * d.getPurNum());
+                    	/*BigDecimal g = new BigDecimal(changeMoney * d.getDiscountPrice() * d.getPurNum());
                     	BigDecimal t1 = new BigDecimal(totalMoney);
                     	t1 = g.divide(t1, 3, BigDecimal.ROUND_HALF_DOWN);
                     	
@@ -175,11 +172,11 @@ public class OrderMarketCalc {
                     	else {
                     		d.setPlateformDiscount(a);
                     		subSum += a;
-                    	} 
-                    	d.setMarketType(bean.getFullCutType());
-                    	d.setThreshold(threshold);
-                    	d.setThresholdType(type);
+                    	} */                    	
                     }
+                    d.setMarketType(bean.getFullCutType());
+                	d.setThreshold(threshold);
+                	d.setThresholdType(type);
                     d.setSharePercent(bean.getCostList());
                 }
 
