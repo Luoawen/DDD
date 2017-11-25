@@ -181,13 +181,9 @@ public class AfterSellOrderQuery {
 	public AftreSellLogisticsBean afterSellOrderLogisticsQuery(String afterSellOrderId) {
 		StringBuilder sql = new StringBuilder();
 		sql.append(" SELECT ");
-		sql.append(" aftersell._status,aftersell.after_sell_order_id ");
-		if (afterSellOrderTypeQuery(afterSellOrderId) == 0) {
-			sql.append(" ,aftersell.back_express_no,aftersell.back_express_name ");
-		}
-		if (afterSellOrderTypeQuery(afterSellOrderId) == 1) {
-			sql.append(" ,aftersell.express_no,aftersell.express_name ");
-		}
+		sql.append(" aftersell._status, aftersell.after_sell_order_id, aftersell.order_type ");
+		sql.append(" ,aftersell.back_express_no, aftersell.back_express_name ");
+		sql.append(" ,aftersell.express_no, aftersell.express_name ");
 		sql.append(" FROM t_scm_order_after_sell aftersell ");
 		sql.append(" WHERE 1 = 1 AND aftersell.after_sell_order_id = ? ");
 		AftreSellLogisticsBean bean = this.supportJdbcTemplate.queryForBean(sql.toString(),

@@ -24,17 +24,52 @@ public class AftreSellLogisticsBean {
 	 * 物流公司
 	 */
 	@ColumnAlias(value = "back_express_name")
-	private String expressName;
+	private String backExpressName;
 	/**
 	 * 物流单号
 	 */
 	@ColumnAlias(value = "back_express_no")
+	private String backExpressNo;
+	
+	@ColumnAlias(value = "express_name")
+	private String expressName;
+	/**
+	 * 物流单号
+	 */
+	@ColumnAlias(value = "express_no")
 	private String expressNo;
+	
+	@ColumnAlias(value = "order_type")
+	private Integer orderType;
 
 	/**
 	 * 商品信息
 	 */
 	private GoodsInfoBean goodsInfo;
+
+	public String getBackExpressName() {
+		return backExpressName;
+	}
+
+	public void setBackExpressName(String backExpressName) {
+		this.backExpressName = backExpressName;
+	}
+
+	public String getBackExpressNo() {
+		return backExpressNo;
+	}
+
+	public void setBackExpressNo(String backExpressNo) {
+		this.backExpressNo = backExpressNo;
+	}
+
+	public Integer getOrderType() {
+		return orderType;
+	}
+
+	public void setOrderType(Integer orderType) {
+		this.orderType = orderType;
+	}
 
 	public Integer getStatus() {
 		return status;
