@@ -159,6 +159,7 @@ public class OrderMarketCalc {
                         //d.setPlateformDiscount((d.getDiscountPrice() - d.getChangePrice()) * d.getPurNum());
                         d.setPlateformDiscount(0);
                         d.setMarketType(bean.getFullCutType());
+                        d.setThreshold(threshold);
                     }
                     else {
                     	BigDecimal g = new BigDecimal(changeMoney * d.getDiscountPrice() * d.getPurNum());
@@ -175,6 +176,7 @@ public class OrderMarketCalc {
                     		subSum += a;
                     	} 
                     	d.setMarketType(bean.getFullCutType());
+                    	d.setThreshold(threshold);
                     }
                 }
 
