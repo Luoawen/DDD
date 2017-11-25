@@ -15,97 +15,99 @@ import cn.m2c.scm.domain.model.unit.UnitRepository;
 
 @Service
 public class UnitApplication {
-    private static final Logger LOGGER = LoggerFactory.getLogger(UnitApplication.class);
-    
-    
-    @Autowired
-    UnitRepository unitRepository;
-    
-    /**
-     * 添加计量单位
-     * @param command
-     * @throws NegativeException
-     */
-    @Transactional(rollbackFor = {Exception.class,RuntimeException.class,NegativeException.class})
-    public void addUnit(UnitCommand command) throws NegativeException{
-    	LOGGER.info("addUnit command >> {}",command);
-    	System.out.println(command);
-    	Unit unitByName = unitRepository.unitNameIsRepeat(command.getUnitName());
-    	if (unitByName!=null) {
-			throw new NegativeException(MCode.V_301,"计量单位已存在");
+	private static final Logger LOGGER = LoggerFactory.getLogger(UnitApplication.class);
+
+	@Autowired
+	UnitRepository unitRepository;
+
+	/**
+	 * 添加计量单位
+	 * 
+	 * @param command
+	 * @throws NegativeException
+	 */
+	@Transactional(rollbackFor = { Exception.class, RuntimeException.class, NegativeException.class })
+	public void addUnit(UnitCommand command) throws NegativeException {
+		LOGGER.info("addUnit command >> {}", command);
+		System.out.println(command);
+		Unit unitByName = unitRepository.unitNameIsRepeat(command.getUnitName());
+		if (unitByName != null) {
+			throw new NegativeException(MCode.V_301, "计量单位已存在");
 		}
-    	Unit unit = unitRepository.getUnitByUnitId(command.getUnitId());
-    	if (null == unit) {
-			unit = new Unit(command.getUnitId(),command.getUnitName());
+		Unit unit = unitRepository.getUnitByUnitId(command.getUnitId());
+		if (null == unit) {
+			unit = new Unit(command.getUnitId(), command.getUnitName());
 			unitRepository.saveUnit(unit);
 		}
-    }
-    
-    
-    
-    /**
-     * 删除计量单位
-     * @param unitName
-     * @throws NegativeException
-     */
-    @Transactional(rollbackFor = {Exception.class,RuntimeException.class,NegativeException.class})
-    public void delUnit(String unitId) throws NegativeException{
-    	LOGGER.info("delUnit unitName >>{}",unitId);
-    	Unit unit = unitRepository.getUnitByUnitId(unitId);
+	}
+
+	/**
+	 * 删除计量单位
+	 * 
+	 * @param unitName
+	 * @throws NegativeException
+	 */
+	@Transactional(rollbackFor = { Exception.class, RuntimeException.class, NegativeException.class })
+	public void delUnit(String unitId) throws NegativeException {
+		LOGGER.info("delUnit unitName >>{}", unitId);
+		Unit unit = unitRepository.getUnitByUnitId(unitId);
 		if (unit.getUseNum() > 0) {
-			throw new NegativeException(MCode.V_300,"计量单位被商品使用不能删除");
+			throw new NegativeException(MCode.V_300, "计量单位被商品使用不能删除");
 		}
-    	if (null == unit) {
-			throw new NegativeException(MCode.V_300,"计量单位不存在");
+		if (null == unit) {
+			throw new NegativeException(MCode.V_300, "计量单位不存在");
 		}
-    	unit.deleteUnit();
-    	unitRepository.saveUnit(unit);
-    }
-    
-    /**
-     * 修改计量单位信息
-     * @param command
-     * @throws NegativeException
-     */
-    @Transactional(rollbackFor = {Exception.class,RuntimeException.class,NegativeException.class})
-    public void modifyUnit(UnitCommand command) throws NegativeException {
-    	LOGGER.info("modify unitName >>{}",command.getUnitName());
-    	Unit unitByName = unitRepository.unitNameIsRepeat(command.getUnitName());
-    	if (unitByName!=null) {
-			throw new NegativeException(MCode.V_301,"计量单位已存在");
+		unit.deleteUnit();
+		unitRepository.saveUnit(unit);
+	}
+
+	/**
+	 * 修改计量单位信息
+	 * 
+	 * @param command
+	 * @throws NegativeException
+	 */
+	@Transactional(rollbackFor = { Exception.class, RuntimeException.class, NegativeException.class })
+	public void modifyUnit(UnitCommand command) throws NegativeException {
+		LOGGER.info("modify unitName >>{}", command.getUnitName());
+		Unit unitByName = unitRepository.unitNameIsRepeat(command.getUnitName());
+		if (unitByName != null) {
+			if (!unitByName.getUnitId().equals(command.getUnitId())) {
+				throw new NegativeException(MCode.V_301, "计量单位已存在");
+			}
 		}
-    	Unit unit = unitRepository.getUnitByUnitId(command.getUnitId());
-    	if (null == unit) {
-			throw new NegativeException(MCode.V_300,"计量单位不存在");
+		Unit unit = unitRepository.getUnitByUnitId(command.getUnitId());
+		if (null == unit) {
+			throw new NegativeException(MCode.V_300, "计量单位不存在");
 		}
-    	unit.modify(command.getUnitId(),command.getUnitName(), command.getUnitStatus());
-    	unitRepository.saveUnit(unit);
-    }
-    
-    @Transactional(rollbackFor = {Exception.class,RuntimeException.class,NegativeException.class})
-    public void beUsed(String unitId) {
-    	Unit unit = unitRepository.getUnitByUnitId(unitId);
+		unit.modify(command.getUnitId(), command.getUnitName(), command.getUnitStatus());
+		unitRepository.saveUnit(unit);
+	}
+
+	@Transactional(rollbackFor = { Exception.class, RuntimeException.class, NegativeException.class })
+	public void beUsed(String unitId) {
+		Unit unit = unitRepository.getUnitByUnitId(unitId);
 		unit.used();
 		unitRepository.saveUnit(unit);
-    }
-    
-    @Transactional(rollbackFor = {Exception.class,RuntimeException.class,NegativeException.class})
-    @EventListener(isListening = true)
-    public void noBeUsed(String unitId) throws NegativeException {
-    	Unit unit = unitRepository.getUnitByUnitId(unitId);
-    	if (unit == null) {
-			throw new NegativeException(MCode.V_300,"计量单位不存在");
+	}
+
+	@Transactional(rollbackFor = { Exception.class, RuntimeException.class, NegativeException.class })
+	@EventListener(isListening = true)
+	public void noBeUsed(String unitId) throws NegativeException {
+		Unit unit = unitRepository.getUnitByUnitId(unitId);
+		if (unit == null) {
+			throw new NegativeException(MCode.V_300, "计量单位不存在");
 		}
 		if (unit.getUseNum() > 0) {
 			unit.noUsed();
 			unitRepository.saveUnit(unit);
 		}
 	}
-    
-    @Transactional(rollbackFor = {Exception.class,RuntimeException.class,NegativeException.class})
-    @EventListener(isListening = true)
-    public void updateUsed(String oldUnitId,String newUnitId) {
-    	Unit oldUnit = unitRepository.getUnitByUnitId(oldUnitId);
+
+	@Transactional(rollbackFor = { Exception.class, RuntimeException.class, NegativeException.class })
+	@EventListener(isListening = true)
+	public void updateUsed(String oldUnitId, String newUnitId) {
+		Unit oldUnit = unitRepository.getUnitByUnitId(oldUnitId);
 		Unit newUnit = unitRepository.getUnitByUnitId(newUnitId);
 		if (oldUnit.getUseNum() > 0) {
 			oldUnit.noUsed();
@@ -113,6 +115,6 @@ public class UnitApplication {
 		}
 		newUnit.used();
 		unitRepository.saveUnit(newUnit);
-    }
+	}
 
 }

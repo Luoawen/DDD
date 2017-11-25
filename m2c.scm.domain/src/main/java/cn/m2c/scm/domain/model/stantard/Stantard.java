@@ -62,6 +62,10 @@ public class Stantard extends ConcurrencySafeEntity{
 		this.useNum ++;
 	}
 	
+	public String getStantardId() {
+		return stantardId;
+	}
+	
 	public void noUsed() {
 		this.useNum --;
 	}

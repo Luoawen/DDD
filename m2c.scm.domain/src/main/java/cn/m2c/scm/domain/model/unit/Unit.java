@@ -57,6 +57,10 @@ public class Unit extends ConcurrencySafeEntity {
 		this.unitStatus = 2;
 	}
 	
+	public String getUnitId() {
+		return unitId;
+	}
+	
 	/**
 	 * 增加计量单位
 	 * @param unitName
