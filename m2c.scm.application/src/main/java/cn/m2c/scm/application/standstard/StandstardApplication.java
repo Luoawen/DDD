@@ -72,8 +72,6 @@ public class StandstardApplication {
 	    public void modifyStantard(StantardCommand command) throws NegativeException {
 	    	LOGGER.info("modify stantardName >>{}",command.getStantardName());
 	    	Stantard nameIsRepeat = stantardRepository.stantardNameIsRepeat(command.getStantardName());
-	    	System.out.println("传进来的Id："+command.getStantardId());
-	    	System.out.println("取出来的Id："+nameIsRepeat.getStantardId());
 	    	if (nameIsRepeat != null ) {
 	    		if(!nameIsRepeat.getStantardId().equals(command.getStantardId())) {
 				throw new NegativeException(MCode.V_301,"规格已存在");

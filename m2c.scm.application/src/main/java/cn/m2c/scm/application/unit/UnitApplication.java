@@ -70,16 +70,17 @@ public class UnitApplication {
 	@Transactional(rollbackFor = { Exception.class, RuntimeException.class, NegativeException.class })
 	public void modifyUnit(UnitCommand command) throws NegativeException {
 		LOGGER.info("modify unitName >>{}", command.getUnitName());
+		Unit unit = unitRepository.getUnitByUnitId(command.getUnitId());
+		if (null == unit) 
+			throw new NegativeException(MCode.V_300, "计量单位不存在");
 		Unit unitByName = unitRepository.unitNameIsRepeat(command.getUnitName());
 		if (unitByName != null) {
-			if (!unitByName.getUnitId().equals(command.getUnitId())) {
+			if(!command.getUnitId().equals(unitByName.getUnitId())) {
 				throw new NegativeException(MCode.V_301, "计量单位已存在");
 			}
 		}
-		Unit unit = unitRepository.getUnitByUnitId(command.getUnitId());
-		if (null == unit) {
-			throw new NegativeException(MCode.V_300, "计量单位不存在");
-		}
+		System.out.println("-------计量单位："+command.getUnitId());
+		System.out.println("---"+command.toString());
 		unit.modify(command.getUnitId(), command.getUnitName(), command.getUnitStatus());
 		unitRepository.saveUnit(unit);
 	}
