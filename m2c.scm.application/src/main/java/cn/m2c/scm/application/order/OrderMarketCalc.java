@@ -160,6 +160,7 @@ public class OrderMarketCalc {
                         d.setPlateformDiscount(0);
                         d.setMarketType(bean.getFullCutType());
                         d.setThreshold(threshold);
+                        d.setThresholdType(type);
                     }
                     else {
                     	BigDecimal g = new BigDecimal(changeMoney * d.getDiscountPrice() * d.getPurNum());
@@ -177,6 +178,7 @@ public class OrderMarketCalc {
                     	} 
                     	d.setMarketType(bean.getFullCutType());
                     	d.setThreshold(threshold);
+                    	d.setThresholdType(type);
                     }
                 }
 
@@ -332,6 +334,8 @@ public class OrderMarketCalc {
         long threshold = marketInfo.getThreshold();
 
         long total = 0;
+        // 优惠金额或折扣
+        Integer discount = marketInfo.getDiscount();
         for (SkuNumBean bean : skuBeanLs) {
             boolean bFlag = skuId.equals(bean.getSkuId());
             if (b == 1 && !bFlag && bean.getIsChange() == 0) {
@@ -339,9 +343,11 @@ public class OrderMarketCalc {
             } else if (b == 2 && !bFlag && bean.getIsChange() == 0) {
                 total += bean.getNum();
             }
+            else if (b == 1 && !bFlag && bean.getIsChange() == 1 && a == 3) {
+            	discount = (int)(bean.getGoodsAmount() - bean.getChangePrice() * bean.getNum());
+            }
         }
-        // 优惠金额或折扣
-        Integer discount = marketInfo.getDiscount();
+        
         if (discount == null)
             return rtMoney;
 
