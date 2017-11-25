@@ -324,4 +324,16 @@ public class MainOrder extends ConcurrencySafeEntity {
 			status = 4;
 		DomainEventPublisher.instance().publish(new OrderDealCompleteEvt(orderId));
 	}
+	/***
+	 * 更新运费
+	 */
+	public void updateFreight(DealerOrder dor) {
+		orderFreight = 0l;
+		for (DealerOrder d : dealerOrders) {
+			if (d.isSameObj(dor))
+				orderFreight += dor.getOrderFreight();
+			else
+				orderFreight += d.getOrderFreight();
+		}
+	}
 }

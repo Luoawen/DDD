@@ -119,17 +119,17 @@ public class DealerOrderApplication {
 		ReceiveAddr addr = dealerOrder.getAddr();
 		boolean updatedAddr = addr.updateAddr(cmd.getProvince(), cmd.getProvCode(), cmd.getCity(), cmd.getCityCode(),
 				cmd.getArea(), cmd.getAreaCode(), cmd.getStreet(), cmd.getRevPerson(), cmd.getPhone());
-
+		
+		MainOrder mOrder = orderRepository.getOrderById(dealerOrder.getOrderNo());
 		if (updatedAddr) {
 			dealerOrder.updateAddr(addr, cmd.getUserId());
-			MainOrder mOrder = orderRepository.getOrderById(dealerOrder.getOrderNo());
-			if (mOrder.updateAddr(addr))
-				orderRepository.updateMainOrder(mOrder);
-			mOrder = null;
 		}
-
 		boolean updatedFreight = dealerOrder.updateOrderFreight(cmd.getFreights(), cmd.getUserId());
-
+		if (mOrder.updateAddr(addr) || updatedFreight) {
+			mOrder.updateFreight(dealerOrder);
+			orderRepository.updateMainOrder(mOrder);
+		}
+		mOrder = null;
 		if (updatedFreight || updatedAddr)
 			dealerOrderRepository.updateFreight(dealerOrder);
 	}

@@ -317,4 +317,13 @@ public class DealerOrder extends ConcurrencySafeEntity {
 		return orderId;
 	}
 	
+	String getId() {
+		return dealerOrderId;
+	}
+	
+	boolean isSameObj(DealerOrder d) {
+		if (d == null)
+			return false;
+		return dealerOrderId.equals(d.getId());
+	}
 }
