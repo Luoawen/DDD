@@ -118,7 +118,10 @@ public class GoodsInfoBean {
 	}
 
 	public long getTotalPrice() {
-		totalPrice = price * sellNum;
+		if (isChange == 1)
+			totalPrice = changePrice * sellNum;
+		else
+			totalPrice = price * sellNum;
 		return totalPrice;
 	}
 

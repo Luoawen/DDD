@@ -180,6 +180,7 @@ public class OrderMarketCalc {
                     	d.setThreshold(threshold);
                     	d.setThresholdType(type);
                     }
+                    d.setSharePercent(bean.getCostList());
                 }
 
             } else {// 满足其他条件需要做的计算
