@@ -757,6 +757,7 @@ public class OrderApplication {
      * 取消所有24小时还未支付的订单
      */
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+    @EventListener(isListening = true)
     public void cancelAllNotPayed(String userId) {
     	try {
     		int hour = 24;
@@ -787,7 +788,6 @@ public class OrderApplication {
     
     
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class},propagation= Propagation.REQUIRES_NEW)
-    @EventListener(isListening = true)
     private void jobCancelOrder(MainOrder m, String userId) {
     	m.jobCancel(userId);
 		orderRepository.save(m);
@@ -811,11 +811,13 @@ public class OrderApplication {
     }
     
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+    @EventListener(isListening = true)
     public void judgeOrderSellAfter(String userId) {
     	List<String> orderIds = orderRepository.getMayCompleteOrderIds();
     	if (orderIds == null || orderIds.size() < 1) {
     		return;
     	}
+    	//orderIds.add("20171123141428US");
     	
     	for (String a : orderIds) {
     		jobCompleteOrder(a, userId);
@@ -823,7 +825,6 @@ public class OrderApplication {
     }
     
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class},propagation= Propagation.REQUIRES_NEW)
-    @EventListener(isListening = true)
     private void jobCompleteOrder(String orderId, String userId) {
     	boolean f = orderRepository.judgeOrderHasAfterSale(orderId);    
     	MainOrder m = orderRepository.getOrderById(orderId);
