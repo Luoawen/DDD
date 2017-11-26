@@ -118,7 +118,7 @@ public class GoodsInfoBean {
 	}
 
 	public long getTotalPrice() {
-		if (isChange == 1)
+		if (isChange != null && isChange == 1)
 			totalPrice = changePrice * sellNum;
 		else
 			totalPrice = price * sellNum;
