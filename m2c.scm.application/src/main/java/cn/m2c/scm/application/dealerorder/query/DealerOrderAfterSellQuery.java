@@ -8,11 +8,14 @@ import javax.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Repository;
 
+import cn.m2c.common.MCode;
 import cn.m2c.ddd.common.port.adapter.persistence.springJdbc.SupportJdbcTemplate;
 import cn.m2c.scm.application.dealerorder.data.bean.DealerOrderAfterSellDetailBean;
+import cn.m2c.scm.application.dealerorder.data.bean.SaleFreightBean;
 import cn.m2c.scm.application.order.data.bean.AfterSellOrderBean;
 import cn.m2c.scm.application.order.data.bean.GoodsInfoBean;
 import cn.m2c.scm.application.order.data.export.SaleAfterExpModel;
+import cn.m2c.scm.domain.NegativeException;
 
 @Repository
 public class DealerOrderAfterSellQuery {
@@ -337,5 +340,36 @@ public class DealerOrderAfterSellQuery {
 		List<SaleAfterExpModel> beanList = this.supportJdbcTemplate.queryForBeanList(sql.toString(),
 				SaleAfterExpModel.class, params.toArray());
 		return beanList;
+	}
+	
+	/**
+	 * 获取已经退了的运费
+	 * 
+	 * @param dealerOrderId
+	 * @return
+	 * @throws NegativeException 
+	 */
+	public SaleFreightBean getHasRtFreight(String dealerOrderId, String skuId) throws NegativeException {
+		
+		if (StringUtils.isEmpty(dealerOrderId)) {
+			throw new NegativeException(MCode.V_1, "dealerOrderId 参数为空！");
+		}
+		
+		if (StringUtils.isEmpty(skuId)) {
+			throw new NegativeException(MCode.V_1, "skuId 参数为空！");
+		}
+		
+		StringBuilder sql = new StringBuilder();
+		List<Object> param = new ArrayList<Object>();
+		SaleFreightBean bean = null;
+		sql.append(" select sum(b.return_freight) costFt from t_scm_order_detail a \r\n")
+		.append("LEFT OUTER JOIN t_scm_order_after_sell b ON a.dealer_order_id = b.dealer_order_id AND a.sku_id = b.sku_id AND b._status NOT IN(-1, 3)\r\n") 
+		.append("where a.dealer_order_id=? and a.sku_id != ? ");
+		param.add(dealerOrderId);
+		param.add(skuId);
+		
+		bean = this.supportJdbcTemplate.queryForBean(sql.toString(),
+				SaleFreightBean.class, param.toArray());
+		return bean;
 	}
 }

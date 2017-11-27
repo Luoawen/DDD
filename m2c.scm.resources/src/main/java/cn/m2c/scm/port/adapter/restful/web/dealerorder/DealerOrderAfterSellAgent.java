@@ -16,8 +16,10 @@ import cn.m2c.common.MCode;
 import cn.m2c.common.MPager;
 import cn.m2c.common.MResult;
 import cn.m2c.scm.application.dealerorder.data.bean.DealerOrderAfterSellDetailBean;
+import cn.m2c.scm.application.dealerorder.data.bean.SaleFreightBean;
 import cn.m2c.scm.application.dealerorder.query.DealerOrderAfterSellQuery;
 import cn.m2c.scm.application.order.data.bean.AfterSellOrderBean;
+import cn.m2c.scm.domain.NegativeException;
 
 @RestController
 @RequestMapping("/dealerorderafter")
@@ -86,7 +88,39 @@ public class DealerOrderAfterSellAgent {
 			result.setStatus(MCode.V_200);
 		} catch (Exception e) {
 			LOGGER.error("获取商家订单售后详情出错" + e.getMessage(), e);
-            result = new MPager(MCode.V_400, "服务器开小差了"); 
+            result = new MResult(MCode.V_400, "服务器开小差了"); 
+		}
+		
+		return new ResponseEntity<MResult>(result,HttpStatus.OK);
+		
+	}
+	
+	/**
+	 * 获取售后已经同意退的运费
+	 * @param dealerId
+	 * @param afterSellOrderId
+	 * @return
+	 */
+	@RequestMapping(value = "/cost/freight",method = RequestMethod.GET)
+	public ResponseEntity<MResult> getCostFreight(
+			@RequestParam(value="userId", required = false)String userId
+			,@RequestParam(value="dealerOrderId", required = false) String dealerOrderId
+			,@RequestParam(value="skuId", required= false) String skuId) {
+			
+		MResult result = new MResult(MCode.V_1);
+		
+		try {
+			SaleFreightBean obj = dealerOrderAfterSellQuery.getHasRtFreight(dealerOrderId, skuId);
+			result.setContent(obj);
+			result.setStatus(MCode.V_200);
+		}
+		catch (NegativeException e) {
+			result.setStatus(e.getStatus());
+			result.setErrorMessage(e.getMessage());
+		}
+		catch (Exception e) {
+			LOGGER.error("获取商家订单售后详情出错" + e.getMessage(), e);
+            result = new MResult(MCode.V_400, "服务器开小差了"); 
 		}
 		
 		return new ResponseEntity<MResult>(result,HttpStatus.OK);

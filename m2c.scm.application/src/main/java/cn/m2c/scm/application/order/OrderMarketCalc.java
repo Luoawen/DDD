@@ -341,9 +341,9 @@ public class OrderMarketCalc {
             } else if (b == 2 && !bFlag && bean.getIsChange() == 0) {
                 total += bean.getNum();
             }
-            else if (b == 1 && !bFlag && bean.getIsChange() == 1 && a == 3) {
+            else if ((b == 1 || b == 2) && !bFlag && bean.getIsChange() == 1 && a == 3) {
             	discount = (int)(bean.getGoodsAmount() - bean.getChangePrice() * bean.getNum());
-            }
+            }            
         }
         
         if (discount == null)
@@ -370,10 +370,11 @@ public class OrderMarketCalc {
                         // bean.setDiscountMoney((long)(bean.getGoodsAmount() * discount / 1000.0));
                         break;
                     case 3:
-                    	g = new BigDecimal(bean.getGoodsAmount()* discount);
+                    	/*g = new BigDecimal(bean.getGoodsAmount()* discount);
                     	t = new BigDecimal(total);
                         //bean.setDiscountMoney((long) (bean.getGoodsAmount() * discount / (total + 0.0)));
-                    	bean.setDiscountMoney(g.divide(t, 3, BigDecimal.ROUND_HALF_DOWN).longValue());
+                    	bean.setDiscountMoney(g.divide(t, 3, BigDecimal.ROUND_HALF_DOWN).longValue());*/
+                    	bean.setDiscountMoney(0);
                         break;
                 }
             }
