@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate4.HibernateTransactionManager;
 
 /**
- * 监听商品下架，运费模板减少商品使用数
+ * 监听商品下架和商品删除，运费模板减少商品使用数
  */
 public class PostageModelOutGoodsNumListener extends ExchangeListener {
     public PostageModelOutGoodsNumListener(RabbitmqConfiguration rabbitmqConfiguration, HibernateTransactionManager hibernateTransactionManager, ConsumedEventStore consumedEventStore) {
@@ -33,6 +33,7 @@ public class PostageModelOutGoodsNumListener extends ExchangeListener {
 
     @Override
     protected String[] listensTo() {
-        return new String[]{"cn.m2c.scm.domain.model.goods.event.GoodsOffShelfEvent"};
+        return new String[]{"cn.m2c.scm.domain.model.goods.event.GoodsOffShelfEvent",
+                "cn.m2c.scm.domain.model.goods.event.GoodsDeleteEvent"};
     }
 }

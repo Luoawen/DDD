@@ -14,13 +14,15 @@ public class GoodsDeleteEvent implements DomainEvent {
      * 商品id
      */
     private String goodsId;
+    private String goodsPostageId;
     private String goodsUnitId; //计量单位id
     private List<String> standardIds; //规格id
     private Date occurredOn;
     private int eventVersion;
 
-    public GoodsDeleteEvent(String goodsId,String goodsUnitId,List<String> standardIds) {
+    public GoodsDeleteEvent(String goodsId, String goodsPostageId, String goodsUnitId, List<String> standardIds) {
         this.goodsId = goodsId;
+        this.goodsPostageId = goodsPostageId;
         this.goodsUnitId = goodsUnitId;
         this.standardIds = standardIds;
         this.occurredOn = new Date();

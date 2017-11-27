@@ -395,7 +395,7 @@ public class Goods extends ConcurrencySafeEntity {
         this.delStatus = 2;
         DomainEventPublisher
                 .instance()
-                .publish(new GoodsDeleteEvent(this.goodsId, this.goodsUnitId, getStandardId(goodsSpecifications)));
+                .publish(new GoodsDeleteEvent(this.goodsId, this.goodsPostageId, this.goodsUnitId, getStandardId(goodsSpecifications)));
     }
 
     /**
