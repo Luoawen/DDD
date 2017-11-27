@@ -71,7 +71,7 @@ public class GoodsQueryApplication {
      * @return
      */
     public List<GoodsBean> searchGoodsByCondition(String dealerId, String goodsClassifyId, Integer goodsStatus, Integer delStatus,
-                                                  String condition, String startTime, String endTime,
+                                                  String condition, Integer recognizedStatus, String startTime, String endTime,
                                                   Integer pageNum, Integer rows) {
         List<Object> params = new ArrayList<Object>();
         StringBuilder sql = new StringBuilder();
@@ -110,6 +110,16 @@ public class GoodsQueryApplication {
                 params.add("%" + condition + "%");
             }
         }
+
+        // 0:未设置广告图，1已设置广告图
+        if (null != recognizedStatus){
+            if (recognizedStatus == 0){
+                sql.append(" AND g.recognized_id is null");
+            }else{
+                sql.append(" AND g.recognized_id is not null");
+            }
+        }
+
         if (StringUtils.isNotEmpty(startTime) && StringUtils.isNotEmpty(endTime)) {
             sql.append(" AND g.created_date BETWEEN ? AND ?");
             params.add(startTime);
@@ -135,7 +145,7 @@ public class GoodsQueryApplication {
     }
 
     public Integer searchGoodsByConditionTotal(String dealerId, String goodsClassifyId, Integer goodsStatus, Integer delStatus,
-                                               String condition, String startTime, String endTime) {
+                                               String condition, Integer recognizedStatus, String startTime, String endTime) {
         List<Object> params = new ArrayList<Object>();
         StringBuilder sql = new StringBuilder();
         sql.append(" SELECT ");
@@ -173,6 +183,16 @@ public class GoodsQueryApplication {
                 params.add("%" + condition + "%");
             }
         }
+
+        // 0:未设置广告图，1已设置广告图
+        if (null != recognizedStatus){
+           if (recognizedStatus == 0){
+               sql.append(" AND g.recognized_id is null");
+           }else{
+               sql.append(" AND g.recognized_id is not null");
+           }
+        }
+
         if (StringUtils.isNotEmpty(startTime) && StringUtils.isNotEmpty(endTime)) {
             sql.append(" AND g.created_date BETWEEN ? AND ?");
             params.add(startTime);

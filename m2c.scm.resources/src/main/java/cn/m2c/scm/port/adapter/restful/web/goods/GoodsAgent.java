@@ -275,15 +275,16 @@ public class GoodsAgent {
             @RequestParam(value = "condition", required = false) String condition,
             @RequestParam(value = "startTime", required = false) String startTime,
             @RequestParam(value = "endTime", required = false) String endTime,
+            @RequestParam(value = "recognizedStatus", required = false) Integer recognizedStatus, //0:未设置广告图，1已设置广告图
             @RequestParam(value = "pageNum", required = false, defaultValue = "1") Integer pageNum,
             @RequestParam(value = "rows", required = false, defaultValue = "10") Integer rows) {
         MPager result = new MPager(MCode.V_1);
         try {
             Integer total = goodsQueryApplication.searchGoodsByConditionTotal(dealerId, goodsClassifyId, goodsStatus, delStatus,
-                    condition, startTime, endTime);
+                    condition, recognizedStatus, startTime, endTime);
             if (total > 0) {
                 List<GoodsBean> goodsBeans = goodsQueryApplication.searchGoodsByCondition(dealerId, goodsClassifyId, goodsStatus, delStatus,
-                        condition, startTime, endTime, pageNum, rows);
+                        condition, recognizedStatus, startTime, endTime, pageNum, rows);
                 if (null != goodsBeans && goodsBeans.size() > 0) {
                     List<GoodsSearchRepresentation> representations = new ArrayList<GoodsSearchRepresentation>();
                     for (GoodsBean bean : goodsBeans) {
@@ -355,11 +356,11 @@ public class GoodsAgent {
             @RequestParam(value = "goodsCode", required = false) String goodsCode
     ) {
         MResult result = new MResult(MCode.V_1);
-        if (StringUtils.isEmpty(dealerId)){
+        if (StringUtils.isEmpty(dealerId)) {
             result = new MResult(MCode.V_400, "商家ID不能为空");
             return new ResponseEntity<MResult>(result, HttpStatus.OK);
         }
-        if (StringUtils.isEmpty(goodsCode)){
+        if (StringUtils.isEmpty(goodsCode)) {
             result = new MResult(MCode.V_400, "商家编码不能为空");
             return new ResponseEntity<MResult>(result, HttpStatus.OK);
         }
