@@ -65,12 +65,14 @@ public class ShopQuery {
 			String sql = "SELECT * FROM t_scm_dealer_shop WHERE dealer_id=?";
 			Integer isFucos = shopService.shopIsOrNotFucos(dealerId, userId);
 			bean = this.supportJdbcTemplate.queryForBean(sql, ShopBean.class, dealerId);
-			if (StringUtils.isEmpty(userId)) {
-				bean.setIsFocus(0);
-				bean.setUserId("");
-			}else {
-				bean.setUserId(userId);
-				bean.setIsFocus(isFucos);
+			if(bean!=null ){
+				if (StringUtils.isEmpty(userId)) {
+					bean.setIsFocus(0);
+					bean.setUserId("");
+				}else {
+					bean.setUserId(userId);
+					bean.setIsFocus(isFucos);
+				}
 			}
 		} catch (Exception e) {
 			log.error("查询店铺信息出错", e);
