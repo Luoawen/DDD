@@ -297,4 +297,10 @@ public class DealerOrderDtl extends ConcurrencySafeEntity {
 		}
 		return goodsAmount;
 	}
+	
+	public Integer sellNum() {
+		if (null == sellNum)
+			sellNum = 0;
+		return sellNum;
+	}
 }

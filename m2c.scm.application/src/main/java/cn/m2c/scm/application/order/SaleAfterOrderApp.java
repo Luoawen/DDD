@@ -97,9 +97,13 @@ public class SaleAfterOrderApp {
 				status = 2;
 				break;
 		}
+		int num = cmd.getBackNum();
+		if (num > itemDtl.sellNum())
+			num = itemDtl.sellNum();
+		
 		SaleAfterOrder afterOrder = new SaleAfterOrder(cmd.getSaleAfterNo(), cmd.getUserId(), cmd.getOrderId(),
 				cmd.getDealerOrderId(), cmd.getDealerId(), cmd.getGoodsId(), cmd.getSkuId(), cmd.getReason()
-				, cmd.getBackNum(), status, orderType, money, cmd.getReasonCode(), ft);
+				, num, status, orderType, money, cmd.getReasonCode(), ft);
 		afterOrder.addApply();
 		saleAfterRepository.save(afterOrder);
 		LOGGER.info("新增加售后申请成功！");
@@ -131,8 +135,7 @@ public class SaleAfterOrderApp {
 		long money = itemDtl.sumGoodsMoney();
 		if (marketInfo != null) {//计算售后需要退的钱
 			List<SkuNumBean> skuBeanLs = saleOrderQuery.getOrderDtlByMarketId(marketInfo.getMarketingId(), order.orderId());
-			OrderMarketCalc.calcReturnMoney(marketInfo, skuBeanLs, order.skuId());
-			
+			discountMoney = OrderMarketCalc.calcReturnMoney(marketInfo, skuBeanLs, order.skuId());
 			if (marketInfo != null && marketInfo.isFull())
 				money = itemDtl.changePrice();
 		}

@@ -67,6 +67,10 @@ public class AddSaleAfterCmd extends AssertionConcern {
 			throw new NegativeException(MCode.V_1, "售后单类型参数不正确(type)！");
 		}
 		
+		if (backNum < 1) {
+			throw new NegativeException(MCode.V_1, "退货数不正确(backNum)！");
+		}
+		
 		this.userId = userId;
 		this.orderId = orderId;
 		this.dealerOrderId = dealerOrderId;
