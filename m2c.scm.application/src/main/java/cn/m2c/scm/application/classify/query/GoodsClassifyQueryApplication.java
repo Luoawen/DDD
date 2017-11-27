@@ -1,5 +1,7 @@
 package cn.m2c.scm.application.classify.query;
 
+import cn.m2c.common.JsonUtils;
+import cn.m2c.common.RedisUtil;
 import cn.m2c.ddd.common.port.adapter.persistence.springJdbc.SupportJdbcTemplate;
 import cn.m2c.scm.application.classify.data.bean.GoodsClassifyBean;
 import cn.m2c.scm.application.utils.Utils;
@@ -98,22 +100,29 @@ public class GoodsClassifyQueryApplication {
     }
 
     public Map getClassifyMap(String classifyId) {
-        List<GoodsClassifyBean> goodsClassifies = recursionQueryGoodsUpClassify(classifyId, new ArrayList<GoodsClassifyBean>());
-        if (null != goodsClassifies && goodsClassifies.size() > 0) {
-            List<String> ids = new ArrayList<>();
-            List<String> names = new ArrayList<>();
-            for (GoodsClassifyBean bean : goodsClassifies) {
-                ids.add(bean.getClassifyId());
-                names.add(bean.getClassifyName());
+        String key = "scm.goods.classify.parent.name." + classifyId;
+        Map mapCache = JsonUtils.toMap(RedisUtil.get(key));
+        if (null == mapCache) {
+            List<GoodsClassifyBean> goodsClassifies = recursionQueryGoodsUpClassify(classifyId, new ArrayList<GoodsClassifyBean>());
+            if (null != goodsClassifies && goodsClassifies.size() > 0) {
+                List<String> ids = new ArrayList<>();
+                List<String> names = new ArrayList<>();
+                for (GoodsClassifyBean bean : goodsClassifies) {
+                    ids.add(bean.getClassifyId());
+                    names.add(bean.getClassifyName());
+                }
+                String goodsClassify = listJoinString(names);
+                Collections.reverse(ids);
+                Map map = new HashMap<>();
+                map.put("name", goodsClassify);
+                map.put("ids", ids);
+                RedisUtil.setString(key, 4 * 3600, JsonUtils.toStr(map));
+                return map;
             }
-            String goodsClassify = listJoinString(names);
-            Collections.reverse(ids);
-            Map map = new HashMap<>();
-            map.put("name", goodsClassify);
-            map.put("ids", ids);
-            return map;
+            return null;
+        } else {
+            return mapCache;
         }
-        return null;
     }
 
     private String listJoinString(List<String> obj) {

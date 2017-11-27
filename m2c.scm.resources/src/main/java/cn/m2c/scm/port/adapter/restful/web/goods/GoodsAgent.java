@@ -280,13 +280,20 @@ public class GoodsAgent {
             @RequestParam(value = "rows", required = false, defaultValue = "10") Integer rows) {
         MPager result = new MPager(MCode.V_1);
         try {
+            Long start = System.currentTimeMillis();
             Integer total = goodsQueryApplication.searchGoodsByConditionTotal(dealerId, goodsClassifyId, goodsStatus, delStatus,
                     condition, recognizedStatus, startTime, endTime);
+            Long end = System.currentTimeMillis();
+            LOGGER.info("查询商品总数耗时：" + (end - start));
             if (total > 0) {
+                start = System.currentTimeMillis();
                 List<GoodsBean> goodsBeans = goodsQueryApplication.searchGoodsByCondition(dealerId, goodsClassifyId, goodsStatus, delStatus,
                         condition, recognizedStatus, startTime, endTime, pageNum, rows);
+                end = System.currentTimeMillis();
+                LOGGER.info("查询商品列表耗时：" + (end - start));
                 if (null != goodsBeans && goodsBeans.size() > 0) {
                     List<GoodsSearchRepresentation> representations = new ArrayList<GoodsSearchRepresentation>();
+                    start = System.currentTimeMillis();
                     for (GoodsBean bean : goodsBeans) {
                         DealerBean dealerBean = dealerQuery.getDealer(bean.getDealerId());
                         String dealerType = "";
@@ -296,6 +303,8 @@ public class GoodsAgent {
                         Map goodsClassifyMap = goodsClassifyQueryApplication.getClassifyMap(bean.getGoodsClassifyId());
                         representations.add(new GoodsSearchRepresentation(bean, goodsClassifyMap, dealerType));
                     }
+                    end = System.currentTimeMillis();
+                    LOGGER.info("查询商品列表处理分类耗时：" + (end - start));
                     result.setContent(representations);
                 }
             }
