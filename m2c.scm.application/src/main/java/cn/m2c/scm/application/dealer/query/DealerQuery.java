@@ -1,8 +1,11 @@
 package cn.m2c.scm.application.dealer.query;
 
+import cn.m2c.common.JsonUtils;
+import cn.m2c.common.RedisUtil;
 import cn.m2c.ddd.common.port.adapter.persistence.springJdbc.SupportJdbcTemplate;
 import cn.m2c.scm.application.dealer.data.bean.DealerBean;
 import cn.m2c.scm.application.dealer.data.bean.DealerClassifyNameBean;
+import cn.m2c.scm.application.goods.query.data.bean.GoodsBean;
 import cn.m2c.scm.domain.NegativeException;
 
 import org.slf4j.Logger;
@@ -172,12 +175,20 @@ public class DealerQuery {
 	public DealerBean getDealer(String dealerId) throws NegativeException {
 		DealerBean bean = null;
 		try {
+			 String key = ("m2c.scm.dealer." + dealerId).trim();
+			 String redisDealer = RedisUtil.getString(key); //从缓存中取数据
+			 if(redisDealer!=null && !"".equals(redisDealer)){
+				 DealerBean redisBean = JsonUtils.toBean(redisDealer, DealerBean.class);
+				 return redisBean;
+			 }else{//redis没数据
+				 String sql =  " SELECT  *  FROM  t_scm_dealer sd  WHERE  dealer_status = 1 and dealer_id=?";
+					bean = this.supportJdbcTemplate.queryForBean(sql, DealerBean.class,dealerId);
+					if(null != bean && bean.getDealerClassify()!=null && !"".equals(bean.getDealerClassify())){
+						bean.setDealerClassifyBean(getDealerClassify(bean.getDealerClassify()));
+					}
+				RedisUtil.setString(key, 24 * 3600, JsonUtils.toStr(bean));//放入redis
+			 }
 			
-			String sql =  " SELECT  *  FROM  t_scm_dealer sd  WHERE  dealer_status = 1 and dealer_id=?";
-			bean = this.supportJdbcTemplate.queryForBean(sql, DealerBean.class,dealerId);
-			if(null != bean && bean.getDealerClassify()!=null && !"".equals(bean.getDealerClassify())){
-				bean.setDealerClassifyBean(getDealerClassify(bean.getDealerClassify()));
-			}
 		} catch (Exception e) {
 			log.error("查询经销商详情出错",e);
 			throw new NegativeException(500, "经销商查询不存在");

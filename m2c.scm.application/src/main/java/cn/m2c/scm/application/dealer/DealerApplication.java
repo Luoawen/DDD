@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import cn.m2c.common.RedisUtil;
 import cn.m2c.ddd.common.event.annotation.EventListener;
 import cn.m2c.scm.application.dealer.command.DealerAddOrUpdateCommand;
 import cn.m2c.scm.application.seller.command.SellerCommand;
@@ -46,17 +47,17 @@ public class DealerApplication {
 	@EventListener
 	public void updateDealer(DealerAddOrUpdateCommand command) throws NegativeException {
 		log.info("---修改经销商参数",command.toString());
+		//---修改操作清除缓存
 		Dealer dealer = dealerRepository.getDealer(command.getDealerId());
 		if(dealer==null)
 			throw new NegativeException(NegativeCode.DEALER_IS_NOT_EXIST, "此经销商不存在.");
 		//-----发送经销商更新事件
-		
 		dealer.update(command.getUserId(),command.getUserName(),command.getUserPhone(),command.getDealerName(),command.getDealerClassify(),command.getCooperationMode(),command.getStartSignDate(),command.getEndSignDate(),command.getDealerProvince(),command.getDealerCity(),command.getDealerArea(),command.getDealerPcode(),command.getDealerCcode(),command.getDealerAcode(),command.getDealerDetailAddress(),command.getCountMode(),command.getDeposit(),command.getIsPayDeposit(),command.getManagerName(),command.getManagerPhone(),command.getManagerqq(),command.getManagerWechat(),command.getManagerEmail(),command.getManagerDepartment(),command.getSellerId(),command.getSellerName(),command.getSellerPhone());
 		dealerRepository.save(dealer);
 	}
 	
 	
-	
+
 	/**
 	 * 更新经销商中的业务员信息
 	 * @param command
@@ -135,5 +136,4 @@ public class DealerApplication {
 		dealer.bindUser(userId, userName, mobile);
 		dealerRepository.save(dealer);
 	}
-	
 }
