@@ -72,7 +72,7 @@ public class SaleAfterOrderApp {
 		long money = itemDtl.sumGoodsMoney();
 		if (mkId != null) {//计算售后需要退的钱
 			SimpleMarket marketInfo = saleOrderQuery.getMarketById(mkId, cmd.getOrderId());
-			List<SkuNumBean> skuBeanLs =saleOrderQuery.getOrderDtlByMarketId(mkId, cmd.getOrderId());
+			List<SkuNumBean> skuBeanLs = saleOrderQuery.getOrderDtlByMarketId(mkId, cmd.getOrderId());
 			
 			discountMoney = OrderMarketCalc.calcReturnMoney(marketInfo, skuBeanLs, cmd.getSkuId());
 			if (marketInfo != null && marketInfo.isFull())
