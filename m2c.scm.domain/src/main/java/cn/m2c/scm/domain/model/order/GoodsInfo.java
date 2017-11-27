@@ -49,6 +49,8 @@ public class GoodsInfo extends ValueObject {
 	private long changePrice;
 	
 	public Integer getSellNum() {
+		if (sellNum == null)
+			sellNum = 0;
 		return sellNum;
 	}
 

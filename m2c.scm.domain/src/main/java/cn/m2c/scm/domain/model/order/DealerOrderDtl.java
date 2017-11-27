@@ -27,8 +27,6 @@ public class DealerOrderDtl extends ConcurrencySafeEntity {
 	private InvoiceInfo invoice;
 	/**快递信息*/
 	private ExpressInfo expressInfo;
-	/**购买数量*/
-	private Integer sellNum;
 	
 	private GoodsInfo goodsInfo;
 	/**以分为单位，商品金额*/
@@ -88,7 +86,7 @@ public class DealerOrderDtl extends ConcurrencySafeEntity {
 	 * @return
 	 */
 	public Long calGoodsMoney() {
-		goodsAmount = (long)(goodsInfo.getDiscountPrice() * sellNum);
+		goodsAmount = (long)(goodsInfo.getDiscountPrice() * goodsInfo.getSellNum());
 		return goodsAmount;
 	}
 	/***
@@ -299,8 +297,8 @@ public class DealerOrderDtl extends ConcurrencySafeEntity {
 	}
 	
 	public Integer sellNum() {
-		if (null == sellNum)
-			sellNum = 0;
-		return sellNum;
+		if (null == goodsInfo || null == goodsInfo.getSellNum())
+			return 0;
+		return goodsInfo.getSellNum();
 	}
 }
