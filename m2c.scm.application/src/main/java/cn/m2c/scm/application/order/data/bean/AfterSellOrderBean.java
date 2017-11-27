@@ -25,7 +25,7 @@ public class AfterSellOrderBean {
 	 * 售后总额
 	 */
 	@ColumnAlias(value = "back_money")
-	private Integer backMoney;
+	private Long backMoney;
 	/**
 	 * 订单状态
 	 */
@@ -44,8 +44,21 @@ public class AfterSellOrderBean {
 	 */
 	@ColumnAlias(value = "created_date")
 	private Date createDate;
-
+	
+	@ColumnAlias(value = "return_freight")
+	private Long rtFreight;
+	
 	private GoodsInfoBean goodsInfo;
+
+	public Long getRtFreight() {
+		if (rtFreight == null)
+			rtFreight = 0l;
+		return rtFreight;
+	}
+
+	public void setRtFreight(Long rtFreight) {
+		this.rtFreight = rtFreight;
+	}
 
 	public String getAfterSellOrderId() {
 		return afterSellOrderId;
@@ -55,7 +68,9 @@ public class AfterSellOrderBean {
 		return orderType;
 	}
 
-	public Integer getBackMoney() {
+	public Long getBackMoney() {
+		if (backMoney == null)
+			backMoney = 0l;
 		return backMoney;
 	}
 
@@ -91,7 +106,7 @@ public class AfterSellOrderBean {
 		this.orderType = orderType;
 	}
 
-	public void setBackMoney(Integer backMoney) {
+	public void setBackMoney(Long backMoney) {
 		this.backMoney = backMoney;
 	}
 

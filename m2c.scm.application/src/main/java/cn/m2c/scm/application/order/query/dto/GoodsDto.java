@@ -236,6 +236,8 @@ public class GoodsDto {
 		this.skuId = skuId;
 	}
 	public String getSkuName() {
+		if (StringUtils.isEmpty(skuName)) 
+			skuName = "默认";
 		return skuName;
 	}
 	public void setSkuName(String skuName) {
