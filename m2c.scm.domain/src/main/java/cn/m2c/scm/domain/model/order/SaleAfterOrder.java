@@ -269,4 +269,8 @@ public class SaleAfterOrder extends ConcurrencySafeEntity {
 		
 		return false;
 	}
+	
+	public void updateBackMoney(long money) {
+		backMoney = money;
+	}
 }

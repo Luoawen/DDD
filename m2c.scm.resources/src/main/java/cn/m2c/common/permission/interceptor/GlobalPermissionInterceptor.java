@@ -187,7 +187,7 @@ public class GlobalPermissionInterceptor extends HandlerInterceptorAdapter
 
         Set<String> persSet = new HashSet<String>(Arrays.asList(permission));
         if ("1".equals(jwtSubject.getRoleId())
-                && "admin".equals(jwtSubject.getUserName()))
+                && "mtx1215".equals(jwtSubject.getUserName()))
         {
             return true;
         }
@@ -203,7 +203,7 @@ public class GlobalPermissionInterceptor extends HandlerInterceptorAdapter
                 return true;
             }
         }
-        writeResult(response, SYS_PERMISSION_VISIT_ERROR, "没有访问该接口权限,系统拒绝访问!");
+        writeResult(response, SYS_PERMISSION_VISIT_ERROR, "无权限访问接口!");
         return false;
     }
 

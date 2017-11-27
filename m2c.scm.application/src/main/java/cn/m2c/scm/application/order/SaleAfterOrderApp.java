@@ -82,7 +82,8 @@ public class SaleAfterOrderApp {
 		long ft = 0;
 		
 		money = money - discountMoney;
-		
+		if (money<0)
+			money = 0;
 		int orderType = cmd.getType() == 3 ? 0 : cmd.getType(); //0换货， 1退货，2仅退款                  app传 1退货，2退款，3换货
 		int status = 2; //0申请退货,1申请换货,2申请退款          订单类型，0换货， 1退货，2仅退款
 		switch (orderType) {
@@ -123,17 +124,27 @@ public class SaleAfterOrderApp {
 			throw new NegativeException(MCode.V_101, "无此售后单！");
 		}
 		
+		DealerOrderDtl itemDtl = saleAfterRepository.getDealerOrderDtlBySku(order.dealerOrderId(), 
+				order.skuId());
 		SimpleMarket marketInfo = saleOrderQuery.getMarketBySkuIdAndOrderId(order.skuId(), order.orderId());
+		long discountMoney = 0;
+		long money = itemDtl.sumGoodsMoney();
 		if (marketInfo != null) {//计算售后需要退的钱
 			List<SkuNumBean> skuBeanLs = saleOrderQuery.getOrderDtlByMarketId(marketInfo.getMarketingId(), order.orderId());
 			OrderMarketCalc.calcReturnMoney(marketInfo, skuBeanLs, order.skuId());
+			
+			if (marketInfo != null && marketInfo.isFull())
+				money = itemDtl.changePrice();
 		}
 		
 		if (marketInfo != null && !marketInfo.isFull()) {
 			// 更新已使用营销 为不可用状态
 			saleAfterRepository.disabledOrderMarket(order.orderId(), marketInfo.getMarketingId());
 		}
-		
+		money = money - discountMoney;
+		if (money<0)
+			money = 0;
+		order.updateBackMoney(money);
 		float frt = cmd.getRtFreight();
 		if (order.isOnlyRtMoney()) {
 			OrderDealerBean odb = saleOrderQuery.getDealerOrderById(order.dealerOrderId());
