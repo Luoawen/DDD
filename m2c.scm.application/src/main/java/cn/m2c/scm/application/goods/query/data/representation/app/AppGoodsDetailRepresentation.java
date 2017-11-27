@@ -45,7 +45,7 @@ public class AppGoodsDetailRepresentation {
                                         List<Map> fullCuts, List<Map> goodsTags, String favoriteId) {
         this.skuFlag = bean.getSkuFlag();
         this.dealerId = bean.getDealerId();
-        this.dealerName=bean.getDealerName();
+        this.dealerName = bean.getDealerName();
         this.goodsId = bean.getGoodsId();
         this.classifyId = bean.getGoodsClassifyId();
         this.goodsName = bean.getGoodsName();
@@ -88,7 +88,7 @@ public class AppGoodsDetailRepresentation {
             this.goodsComment.put("buyerIcon", goodsCommentBean.getBuyerIcon());
             this.goodsComment.put("buyerPhoneNumber", goodsCommentBean.getBuyerPhoneNumber());
             this.goodsComment.put("buyerName", goodsCommentBean.getBuyerName());
-            this.goodsComment.put("skuName", goodsCommentBean.getSkuName());
+            this.goodsComment.put("skuName", this.skuFlag == 0 ? "默认" : goodsCommentBean.getSkuName());
             this.goodsComment.put("goodsNum", goodsCommentBean.getGoodsNum());
             this.goodsComment.put("starLevel", goodsCommentBean.getStarLevel());
             this.goodsComment.put("commentContent", goodsCommentBean.getCommentContent());
