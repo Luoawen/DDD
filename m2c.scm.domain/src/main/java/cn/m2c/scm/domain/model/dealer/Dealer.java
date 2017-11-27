@@ -2,6 +2,10 @@ package cn.m2c.scm.domain.model.dealer;
 
 import java.util.Date;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import cn.m2c.common.RedisUtil;
 import cn.m2c.ddd.common.domain.model.ConcurrencySafeEntity;
 import cn.m2c.ddd.common.domain.model.DomainEvent;
 import cn.m2c.ddd.common.domain.model.DomainEventPublisher;
@@ -9,6 +13,7 @@ import cn.m2c.scm.domain.model.dealer.event.DealerAddEvent;
 import cn.m2c.scm.domain.model.dealer.event.DealerUpdateEvent;
 
 public class Dealer extends ConcurrencySafeEntity{
+	private static final Logger log = LoggerFactory.getLogger(Dealer.class);
 	private static final long serialVersionUID = -8935103789948109354L;
 	private String dealerId;//经销商id
 	private String userId;//管理员用户id
@@ -132,6 +137,7 @@ public class Dealer extends ConcurrencySafeEntity{
 		this.sellerName = sellerName;
 		this.sellerPhone = sellerPhone;
 		this.lastUpdatedDate = new Date();
+		removeDealerCash(this.dealerId);
 	}
 
 
@@ -146,6 +152,7 @@ public class Dealer extends ConcurrencySafeEntity{
 		this.sellerName = sellerName;
 		this.sellerPhone = sellerPhone;
 		this.lastUpdatedDate = new Date();
+		removeDealerCash(this.dealerId);
 	}
 
 	/**
@@ -156,6 +163,7 @@ public class Dealer extends ConcurrencySafeEntity{
 		this.userName = "";
 		this.userPhone = "";
 		this.lastUpdatedDate = new Date();
+		removeDealerCash(this.dealerId);
 	}
 	
 	/**
@@ -166,6 +174,23 @@ public class Dealer extends ConcurrencySafeEntity{
 		this.userName = userName;
 		this.userPhone = userPhone;
 		this.lastUpdatedDate = new Date();
+		removeDealerCash(this.dealerId);
 	}
 	
+	
+
+	/**
+	 * 清除缓存操作
+	 * @param dealerId
+	 */
+	public static void removeDealerCash(String dealerId) {
+		 String key = ("m2c.scm.dealer." + dealerId).trim();
+		 try {
+			 if(RedisUtil.getString(key)!=null && !"".equals(RedisUtil.getString(key))){
+				 RedisUtil.del(key);
+			 }
+		} catch (Exception e) {
+			log.error("清除缓存失败");
+		}
+	}
 }
