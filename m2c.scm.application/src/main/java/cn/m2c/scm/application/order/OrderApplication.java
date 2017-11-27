@@ -500,7 +500,7 @@ public class OrderApplication {
             int ss = b.getNums() - fpt; // 续件
             if (ss > 0) {
             	if (cpt == 0) {
-            		b.getBean().setFreight(0);
+            		b.getBean().setFreight(ft);
             	}
             	else 
             		b.getBean().setFreight(ft + (ss / cpt + (ss % cpt > 0 ? 1 : 0)) * ct);
@@ -514,7 +514,7 @@ public class OrderApplication {
             float ss = b.getWeight() - fpt; // 续件
             if (ss > 0) {
             	if (cpt == 0) {
-            		b.getBean().setFreight(0);
+            		b.getBean().setFreight(ft);
             	}
             	else {
 	                int t = (int) (ss / cpt); //倍数
