@@ -297,10 +297,11 @@ public class AfterSellOrderQuery {
 	 */
 	public List<SkuNumBean> getOrderDtlByMarketId(String marketId, String orderId) {
 		StringBuilder sql = new StringBuilder();
-		sql.append(" SELECT sku_id,	sell_num,	is_change, goods_amount, marketing_id, change_price\r\n")
-		.append("FROM	t_scm_order_detail\r\n")
-		.append("WHERE	order_id = ?\r\n")
-		.append("AND marketing_id = ? ");
+		sql.append(" SELECT a.sku_id, a.sell_num, a.is_change, a.goods_amount, a.marketing_id, a.change_price\r\n")
+		.append("FROM	t_scm_order_detail a\r\n")
+		.append("WHERE	a.order_id = ?\r\n")
+		.append("AND a.marketing_id = ? ")
+		.append("AND a.sku_id NOT IN(SELECT b.sku_id FROM t_scm_order_after_sell b WHERE b.order_id=a.order_id AND b.dealer_order_id= a.dealer_order_id AND b._status > 3) ");
 		return this.supportJdbcTemplate.queryForBeanList(sql.toString(), SkuNumBean.class, orderId, marketId);
 	}
 	
