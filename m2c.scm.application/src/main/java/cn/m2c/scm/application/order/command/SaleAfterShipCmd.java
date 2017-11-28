@@ -50,10 +50,6 @@ public class SaleAfterShipCmd extends AssertionConcern {
 			throw new NegativeException(MCode.V_1, "快递单号参数为空(dealerId)！");
 		}
 		
-		if (expressWay != 1 && StringUtils.isEmpty(expressCode)) {
-			throw new NegativeException(MCode.V_1, "快递公司编码为空(expressCode)！");
-		}
-		
 		if (StringUtils.isEmpty(skuId)) {
 			throw new NegativeException(MCode.V_1, "售后商品sku参数为空(skuId)！");
 		}
@@ -73,11 +69,16 @@ public class SaleAfterShipCmd extends AssertionConcern {
 	public SaleAfterShipCmd(String userId, String saleAfterNo, String skuId, String expressNo
 			, String expressCode, String expressName, String expressPerson, String expressPhone
 			, int expressWay) throws NegativeException {
+		
 		this(userId, saleAfterNo, skuId, expressNo, expressCode, expressName);
 		
+		if (expressWay != 1 && StringUtils.isEmpty(expressCode)) {
+			throw new NegativeException(MCode.V_1, "快递公司编码为空(expressCode)！");
+		}
+		
+		this.expressWay = expressWay;
 		this.expressPerson = expressPerson;
 		this.expressPhone = expressPhone;
-		this.expressWay = expressWay;
 	}
 	
 	public SaleAfterShipCmd(String userId, String saleAfterNo, String skuId, String expressNo
