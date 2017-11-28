@@ -299,7 +299,7 @@ public class MainOrder extends ConcurrencySafeEntity {
 				markets.put("status", 0);
 			}
 		}
-		
+		updateTime = new Date();
 		DomainEventPublisher.instance().publish(new OrderCancelEvent(orderId, allSales, markets));
 		allSales = null;
 		DomainEventPublisher.instance().publish(new OrderOptLogEvent(orderId, null, "订单取消成功", userId));
@@ -335,5 +335,6 @@ public class MainOrder extends ConcurrencySafeEntity {
 			else
 				orderFreight += d.getOrderFreight();
 		}
+		updateTime = new Date();
 	}
 }

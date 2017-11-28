@@ -215,6 +215,7 @@ public class DealerOrderDtl extends ConcurrencySafeEntity {
 	
 	public void dealFinished() {
 		status = 4;
+		updateTime = new Date();
 	}
 	
 	/***

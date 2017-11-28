@@ -213,7 +213,7 @@ public class SaleAfterOrder extends ConcurrencySafeEntity {
 		status = 10;
 		this.refundNo = refundNo;
 		refundTime = time;
-		
+		updateTime = new Date();
 		DomainEventPublisher.instance().publish(new AfterRefundSuccEvt(saleAfterNo, orderId, dealerOrderId, dealerId, backMoney
 				, returnFreight, backNum, skuId));
 		return true;
@@ -226,6 +226,7 @@ public class SaleAfterOrder extends ConcurrencySafeEntity {
 		if (status < 9)
 			return false;
 		status = 10;
+		updateTime = new Date();
 		DomainEventPublisher.instance().publish(new OrderOptLogEvent(saleAfterNo, dealerOrderId, "确认退款", userId));
 		return true;
 	}
