@@ -100,8 +100,8 @@ public class GoodsSku extends ConcurrencySafeEntity {
     }
 
     public void modifyNotApproveGoodsSku(Integer availableNum, Float weight, Long marketPrice, String goodsCode, Integer showStatus) {
-        this.availableNum = availableNum;
         this.realNum = this.realNum + (availableNum - this.availableNum);
+        this.availableNum = availableNum;
         this.weight = weight;
         this.marketPrice = marketPrice;
         this.goodsCode = goodsCode;
