@@ -141,6 +141,7 @@ public class DealerOrderApplication {
 	 * @throws NegativeException
 	 */
 	@Transactional(rollbackFor = { Exception.class, RuntimeException.class, NegativeException.class })
+	@EventListener(isListening = true)
 	public void orderDtlToFinished() throws NegativeException {
 		int hour = 168;
 		try {
@@ -159,13 +160,13 @@ public class DealerOrderApplication {
 	
 	@Transactional(rollbackFor = { Exception.class, RuntimeException.class,
 			NegativeException.class }, propagation = Propagation.REQUIRES_NEW)
-	@EventListener(isListening = true)
 	private void jobFinishiedOrder(DealerOrderDtl orderDtl) {
 		orderDtl.finished();
 		orderDtlRepository.save(orderDtl);
 	}
 	
 	@Transactional(rollbackFor = { Exception.class, RuntimeException.class, NegativeException.class })
+	@EventListener(isListening = true)
 	public void orderDtlToDealFinished() throws NegativeException {
 		int hour = 168;
 		try {
@@ -184,7 +185,6 @@ public class DealerOrderApplication {
 	
 	@Transactional(rollbackFor = { Exception.class, RuntimeException.class,
 			NegativeException.class }, propagation = Propagation.REQUIRES_NEW)
-	@EventListener(isListening = true)
 	private void jobOrderDealFinishied(DealerOrderDtl orderDtl) {
 		orderDtl.dealFinished();
 		orderDtlRepository.save(orderDtl);
