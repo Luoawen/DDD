@@ -112,10 +112,10 @@ public class GoodsQueryApplication {
         }
 
         // 0:未设置广告图，1已设置广告图
-        if (null != recognizedStatus){
-            if (recognizedStatus == 0){
+        if (null != recognizedStatus) {
+            if (recognizedStatus == 0) {
                 sql.append(" AND g.recognized_id is null");
-            }else{
+            } else {
                 sql.append(" AND g.recognized_id is not null");
             }
         }
@@ -185,12 +185,12 @@ public class GoodsQueryApplication {
         }
 
         // 0:未设置广告图，1已设置广告图
-        if (null != recognizedStatus){
-           if (recognizedStatus == 0){
-               sql.append(" AND g.recognized_id is null");
-           }else{
-               sql.append(" AND g.recognized_id is not null");
-           }
+        if (null != recognizedStatus) {
+            if (recognizedStatus == 0) {
+                sql.append(" AND g.recognized_id is null");
+            } else {
+                sql.append(" AND g.recognized_id is not null");
+            }
         }
 
         if (StringUtils.isNotEmpty(startTime) && StringUtils.isNotEmpty(endTime)) {
@@ -942,14 +942,34 @@ public class GoodsQueryApplication {
         return supportJdbcTemplate.jdbcTemplate().queryForObject(sql.toString(), params.toArray(), Integer.class);
     }
 
+    /**
+     * 换购商品
+     * @param goodsIds
+     * @return
+     */
     public List<GoodsBean> appQueryGoodsByGoodsIds(List goodsIds) {
         List<GoodsBean> goodsBeanList = queryGoodsByGoodsIds(goodsIds);
+        List<GoodsBean> goodsList = new ArrayList<>();
         if (null != goodsBeanList && goodsBeanList.size() > 0) {
             for (GoodsBean goodsBean : goodsBeanList) {
-                goodsBean.setGoodsSkuBeans(queryGoodsSKUsByGoodsId(goodsBean.getId()));
+                if (goodsBean.getDelStatus() == 1 && goodsBean.getGoodsStatus() == 2) {
+                    List<GoodsSkuBean> skuBeans = queryGoodsSKUsByGoodsId(goodsBean.getId());
+                    List<GoodsSkuBean> skuList = new ArrayList<>();
+                    if (null != skuBeans && skuBeans.size() > 0) {
+                        for (GoodsSkuBean skuBean : skuBeans) {
+                            if (skuBean.getShowStatus() == 2 && skuBean.getAvailableNum() > 0) {
+                                skuList.add(skuBean);
+                            }
+                        }
+                    }
+                    if (skuList.size() > 0) {
+                        goodsBean.setGoodsSkuBeans(skuList);
+                    }
+                    goodsList.add(goodsBean);
+                }
             }
         }
-        return goodsBeanList;
+        return goodsList;
     }
 
 
