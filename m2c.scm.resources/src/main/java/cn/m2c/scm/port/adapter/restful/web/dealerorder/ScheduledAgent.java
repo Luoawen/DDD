@@ -33,7 +33,7 @@ public class ScheduledAgent {
 	OrderApplication orderApp;
 
 	/**
-	 * 判断是否已满足确认收货条件<待收货状态下七天后自动收货为完成状态>
+	 * 判断订单详情项是否已满足确认收货条件 待收货状态下七天后自动收货为完成状态 
 	 * 
 	 * @return
 	 */
@@ -54,7 +54,7 @@ public class ScheduledAgent {
 	}
 
 	/**
-	 * 完成状态下超过7天变更为交易完成
+	 * 订单详情项完成状态下超过7天变更为交易完成
 	 * @return
 	 */
 	@RequestMapping(value = "/statusDealFinished",method = RequestMethod.PUT)

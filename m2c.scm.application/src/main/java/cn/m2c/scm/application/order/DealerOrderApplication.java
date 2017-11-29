@@ -135,7 +135,7 @@ public class DealerOrderApplication {
 	}
 
 	/**
-	 * 更新订单状态<将待收货改为已完成>
+	 * 更新订单（订单详情项）状态<将待收货改为已完成>
 	 * 
 	 * @param beanList
 	 * @throws NegativeException
