@@ -63,7 +63,7 @@ public class GoodsApplication {
                     command.getGoodsPostageId(), command.getGoodsBarCode(), command.getGoodsKeyWord(), command.getGoodsGuarantee(),
                     command.getGoodsMainImages(), command.getGoodsDesc(), command.getGoodsShelves(), command.getGoodsSpecifications(), command.getGoodsSKUs(), command.getSkuFlag());
         } else {//修改商品审核：修改商品的拍获价，供货价，规格
-            goods.modifyApproveGoodsSku(command.getGoodsSpecifications(),command.getGoodsSKUs());
+            goods.modifyApproveGoodsSku(command.getGoodsSpecifications(), command.getGoodsSKUs());
         }
         goodsRepository.save(goods);
     }
@@ -239,9 +239,11 @@ public class GoodsApplication {
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
     @EventListener(isListening = true)
     public void goodsAppSearchMD(String sn, String userId, String searchFrom, String keyWord) throws NegativeException {
-        DomainEventPublisher
-                .instance()
-                .publish(new GoodsAppSearchMDEvent(sn, userId, searchFrom, keyWord));
+        if (StringUtils.isNotEmpty(keyWord)) {
+            DomainEventPublisher
+                    .instance()
+                    .publish(new GoodsAppSearchMDEvent(sn, userId, searchFrom, keyWord));
+        }
     }
 
 
