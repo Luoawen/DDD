@@ -964,8 +964,8 @@ public class GoodsQueryApplication {
                     }
                     if (skuList.size() > 0) {
                         goodsBean.setGoodsSkuBeans(skuList);
+                        goodsList.add(goodsBean);
                     }
-                    goodsList.add(goodsBean);
                 }
             }
         }
