@@ -370,6 +370,11 @@ public class AppGoodsAgent {
         return new ResponseEntity<MPager>(result, HttpStatus.OK);
     }
 
+    /**
+     * 换购商品列表
+     * @param goodsIds
+     * @return
+     */
     @RequestMapping(value = "query/by/goods/ids", method = RequestMethod.GET)
     public ResponseEntity<MResult> appQueryGoodsByGoodsIds(
             @RequestParam(value = "goodsIds", required = false) List goodsIds) {
