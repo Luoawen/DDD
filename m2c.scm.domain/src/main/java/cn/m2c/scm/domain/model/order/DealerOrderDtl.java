@@ -307,8 +307,8 @@ public class DealerOrderDtl extends ConcurrencySafeEntity {
 	/***
 	 * 检测是否应该返还库存， 若是则需要返还库存
 	 */
-	public void returnInventory(String afterNo, int num) {
-		if (status == 1) {
+	public void returnInventory(String afterNo, int num, int orderType) {
+		if (status == 1 && (orderType == 1 || orderType == 2)) {
 			if (null == goodsInfo || num < 1)
 				return;
 			HashMap<String, Integer> aa = new HashMap<String, Integer>();

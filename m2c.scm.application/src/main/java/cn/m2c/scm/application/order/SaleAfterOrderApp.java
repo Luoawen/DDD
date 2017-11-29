@@ -158,10 +158,13 @@ public class SaleAfterOrderApp {
 			else
 				frt = 0;
 		}
-		
-		itemDtl.returnInventory(cmd.getSaleAfterNo(), order.getBackNum());
-		order.agreeApply(cmd.getUserId(), (int)frt);
-		saleAfterRepository.updateSaleAfterOrder(order);
+		if (order.agreeApply(cmd.getUserId(), (int)frt)) {
+			itemDtl.returnInventory(cmd.getSaleAfterNo(), order.getBackNum(), order.orderType());
+			saleAfterRepository.updateSaleAfterOrder(order);
+		}
+		else {
+			throw new NegativeException(MCode.V_101, "售后单状态不正确或已经同意过了！");
+		}
 	}
 	/**
 	 * 拒绝售后申请

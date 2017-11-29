@@ -92,10 +92,10 @@ public class SaleAfterOrder extends ConcurrencySafeEntity {
 	/***
 	 * 同意售后申请
 	 */
-	public void agreeApply(String userId, int rtFreight) {
+	public boolean agreeApply(String userId, int rtFreight) {
 		
 		if (rtFreight < 0)
-			return ;
+			return false;
 		else if(status == 2) {
 			returnFreight = rtFreight * 100l;			
 		}
@@ -103,9 +103,10 @@ public class SaleAfterOrder extends ConcurrencySafeEntity {
 		if (status < 4 && status != 3)
 			status = 4;
 		else 
-			return;
+			return false;
 		updateTime = new Date();
 		DomainEventPublisher.instance().publish(new OrderOptLogEvent(saleAfterNo, dealerOrderId, "同意售后申请！", userId));
+		return true;
 	}
 	/**
 	 * 是否仅退款
@@ -266,6 +267,15 @@ public class SaleAfterOrder extends ConcurrencySafeEntity {
 		if(backNum == null)
 			return 0;
 		return backNum;
+	}
+	/***
+	 * 订单类型
+	 * @return
+	 */
+	public int orderType() {
+		if (orderType == null)
+			return -2;
+		return orderType;
 	}
 	
 	public boolean cancel() {
