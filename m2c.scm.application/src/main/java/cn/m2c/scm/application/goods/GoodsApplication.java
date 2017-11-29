@@ -16,6 +16,7 @@ import cn.m2c.scm.domain.model.goods.GoodsSkuRepository;
 import cn.m2c.scm.domain.model.goods.event.GoodsAppCapturedMDEvent;
 import cn.m2c.scm.domain.model.goods.event.GoodsAppSearchMDEvent;
 import cn.m2c.scm.domain.model.goods.event.GoodsAppViewMDEvent;
+import cn.m2c.scm.domain.model.goods.event.GoodsOutInventoryEvent;
 import cn.m2c.scm.domain.service.goods.GoodsService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -218,6 +219,7 @@ public class GoodsApplication {
             throw new NegativeException(MCode.V_301, JsonUtils.toStr(skuIds));//301:库存不足
         }
 
+        List<Integer> goodsIds = new ArrayList<>();
         for (Map.Entry<String, Integer> entry : map.entrySet()) {
             String skuId = entry.getKey();
             Integer num = entry.getValue();
@@ -228,8 +230,28 @@ public class GoodsApplication {
             if (result <= 0) {
                 throw new NegativeException(MCode.V_400, skuId);//400:扣库存失败
             }
-            Goods goods = goodsRepository.queryGoodsById(goodsSku.goods().getId());
-            goods.soldOut();//如果售完则修改状态
+            goodsIds.add(goodsSku.goods().getId());
+          /*  Goods goods = goodsRepository.queryGoodsById(goodsSku.goods().getId());
+            goods.soldOut();//如果售完则修改状态*/
+        }
+        DomainEventPublisher
+                .instance()
+                .publish(new GoodsOutInventoryEvent(goodsIds));
+    }
+
+    /**
+     * 扣库存更新用户状态
+     *
+     * @param goodsIds
+     * @throws NegativeException
+     */
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+    public void outInventoryUpdateGoodsStatus(List<Integer> goodsIds) throws NegativeException {
+        if (null != goodsIds && goodsIds.size() > 0) {
+            for (Integer goodsId : goodsIds) {
+                Goods goods = goodsRepository.queryGoodsById(goodsId);
+                goods.soldOut();
+            }
         }
     }
 
