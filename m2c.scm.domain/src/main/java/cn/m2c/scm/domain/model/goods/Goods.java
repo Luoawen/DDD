@@ -452,6 +452,12 @@ public class Goods extends ConcurrencySafeEntity {
         }
     }
 
+    public void orderCancel() {
+        if (this.goodsStatus == 3) {
+            this.goodsStatus = 2;
+        }
+    }
+
     /**
      * 修改商品品牌名称
      */
