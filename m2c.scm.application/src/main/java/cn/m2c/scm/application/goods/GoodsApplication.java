@@ -351,6 +351,8 @@ public class GoodsApplication {
                 GoodsSku goodsSku = goodsSkuRepository.queryGoodsSkuById(skuId);
                 if (null != goodsSku) {
                     goodsSku.orderCancel(num);
+                    Goods goods = goodsRepository.queryGoodsById(goodsSku.goods().getId());
+                    goods.orderCancel();
                 }
             }
         }
