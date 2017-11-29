@@ -159,6 +159,7 @@ public class SaleAfterOrderApp {
 				frt = 0;
 		}
 		
+		itemDtl.returnInventory(cmd.getSaleAfterNo(), order.getBackNum());
 		order.agreeApply(cmd.getUserId(), (int)frt);
 		saleAfterRepository.updateSaleAfterOrder(order);
 	}

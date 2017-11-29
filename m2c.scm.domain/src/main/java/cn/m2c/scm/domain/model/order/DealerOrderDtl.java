@@ -1,9 +1,11 @@
 package cn.m2c.scm.domain.model.order;
 
 import java.util.Date;
+import java.util.HashMap;
 
 import cn.m2c.ddd.common.domain.model.ConcurrencySafeEntity;
 import cn.m2c.ddd.common.domain.model.DomainEventPublisher;
+import cn.m2c.scm.domain.model.order.event.OrderSkuReturnEvent;
 import cn.m2c.scm.domain.model.order.log.event.OrderOptLogEvent;
 /**
  * 商家订单明细
@@ -301,5 +303,17 @@ public class DealerOrderDtl extends ConcurrencySafeEntity {
 		if (null == goodsInfo || null == goodsInfo.getSellNum())
 			return 0;
 		return goodsInfo.getSellNum();
+	}
+	/***
+	 * 检测是否应该返还库存， 若是则需要返还库存
+	 */
+	public void returnInventory(String afterNo, int num) {
+		if (status == 1) {
+			if (null == goodsInfo || num < 1)
+				return;
+			HashMap<String, Integer> aa = new HashMap<String, Integer>();
+			aa.put(goodsInfo.getSkuId(), num);
+			DomainEventPublisher.instance().publish(new OrderSkuReturnEvent(orderId, aa, dealerOrderId, afterNo));
+		}
 	}
 }

@@ -262,6 +262,12 @@ public class SaleAfterOrder extends ConcurrencySafeEntity {
 		return dealerOrderId;
 	}
 	
+	public int getBackNum() {
+		if(backNum == null)
+			return 0;
+		return backNum;
+	}
+	
 	public boolean cancel() {
 		if (status < 3 && status > -1) {
 			status = -1;
