@@ -1,5 +1,6 @@
 package cn.m2c.scm.port.adapter.persistence.hibernate.order;
 
+import java.math.BigInteger;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -74,8 +75,8 @@ public class HibernateDealerOrderRepository extends HibernateSupperRepository im
 		.setParameter("skuId", skuId).executeUpdate();
 	}
 	@Override
-	public void getSpecifiedDtlStatus(int hour) {
-		List<Long> rs = this.session().createSQLQuery("select id from t_scm_order_dealer where dealer_order_id NOT IN\r\n" + 
+	public List<String> getSpecifiedDtlStatus(int hour) {
+		/*List<Long> rs = this.session().createSQLQuery("select id from t_scm_order_dealer where dealer_order_id NOT IN\r\n" + 
 				"(select DISTINCT b.dealer_order_id from t_scm_order_dealer b, t_scm_order_detail a\r\n" + 
 				"where a.order_id = b.order_id\r\n" + 
 				"and a.dealer_order_id=b.dealer_order_id\r\n" + 
@@ -85,6 +86,22 @@ public class HibernateDealerOrderRepository extends HibernateSupperRepository im
 		
 		if (rs != null && rs.size() > 0) {
 			this.session().createSQLQuery("UPDATE t_scm_order_dealer SET _status=4 WHERE id IN(:idList)").setParameterList("idList", rs).executeUpdate();
-		}
+		}*/
+		List<String> rs = this.session().createSQLQuery("select dealer_order_id from t_scm_order_dealer where dealer_order_id NOT IN\r\n" + 
+				"(select DISTINCT b.dealer_order_id from t_scm_order_dealer b, t_scm_order_detail a\r\n" + 
+				"where a.order_id = b.order_id\r\n" + 
+				"and a.dealer_order_id=b.dealer_order_id\r\n" + 
+				"and a._status NOT IN (4, 5, -1)\r\n" + 
+				"and b._status NOT IN (-1, 4, 5)\r\n" + 
+				") and _status NOT IN (-1, 4, 5)").list();
+		return rs;
+	}
+	
+	@Override
+	public boolean judgeHasAfterSale(String orderId) {		
+		Object o = this.session().createSQLQuery("select count(1) from t_scm_order_after_sell where dealer_order_id=:orderId and _status IN (9, 11, 12)")
+		.setParameter("orderId", orderId).uniqueResult();
+		BigInteger b = (BigInteger)o;
+		return b != null ? b.intValue() > 0 : false;
 	}
 }
