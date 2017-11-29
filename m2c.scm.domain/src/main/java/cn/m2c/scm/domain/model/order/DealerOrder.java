@@ -313,6 +313,13 @@ public class DealerOrder extends ConcurrencySafeEntity {
 		return true;
 	}
 	
+	public void dealComplete(boolean hasSaleAfter) {
+		if (hasSaleAfter)
+			status = 5;
+		else
+			status = 4;
+	}
+	
 	public String getOrderNo() {
 		return orderId;
 	}

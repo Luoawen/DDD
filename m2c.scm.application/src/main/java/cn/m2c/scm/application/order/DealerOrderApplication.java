@@ -221,6 +221,22 @@ public class DealerOrderApplication {
 	 */
 	@Transactional(rollbackFor = { Exception.class, RuntimeException.class, NegativeException.class })
 	public void dtlCompleteUpdated(String userId) {
-		dealerOrderRepository.getSpecifiedDtlStatus(1);
+		List<String> ids = dealerOrderRepository.getSpecifiedDtlStatus(1);
+    	if (ids == null || ids.size() < 1) {
+    		return;
+    	}
+    	//orderIds.add("20171123141428US");
+    	
+    	for (String a : ids) {
+    		jobCompleteDealerOrder(a, userId);
+    	}   
 	}
+	
+	@Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class},propagation= Propagation.REQUIRES_NEW)
+    private void jobCompleteDealerOrder(String id, String userId) {
+    	boolean f = dealerOrderRepository.judgeHasAfterSale(id);    
+    	DealerOrder m = dealerOrderRepository.getDealerOrderById(id);
+    	m.dealComplete(f);
+    	dealerOrderRepository.save(m);
+    }
 }
