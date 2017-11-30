@@ -475,6 +475,30 @@ public class GoodsQueryApplication {
         return resultList;
     }
 
+    public List<GoodsBean> getEffectiveGoods(List<GoodsBean> goodsBeans){
+        List<GoodsBean> goodsList = new ArrayList<>();
+        if (null != goodsBeans && goodsBeans.size() > 0) {
+            for (GoodsBean goodsBean : goodsBeans) {
+                if (goodsBean.getDelStatus() == 1 && goodsBean.getGoodsStatus() == 2) {
+                    List<GoodsSkuBean> skuBeans = queryGoodsSKUsByGoodsId(goodsBean.getId());
+                    List<GoodsSkuBean> skuList = new ArrayList<>();
+                    if (null != skuBeans && skuBeans.size() > 0) {
+                        for (GoodsSkuBean skuBean : skuBeans) {
+                            if (skuBean.getShowStatus() == 2 && skuBean.getAvailableNum() > 0) {
+                                skuList.add(skuBean);
+                            }
+                        }
+                    }
+                    if (skuList.size() > 0) {
+                        goodsBean.setGoodsSkuBeans(skuList);
+                        goodsList.add(goodsBean);
+                    }
+                }
+            }
+        }
+        return goodsList;
+    }
+
     /**
      * 获取拍获价最高的商品
      *
@@ -483,14 +507,35 @@ public class GoodsQueryApplication {
      */
     public GoodsSkuInfoRepresentation queryMaxPriceGoodsByGoodsIds(List<String> goodsIds) {
         List<GoodsBean> goodsBeans = queryGoodsByGoodsIds(goodsIds);
-        if (null != goodsBeans && goodsBeans.size() > 0) {
-            List<GoodsSkuInfoRepresentation> resultList = new ArrayList<>();
-            for (GoodsBean goodsBean : goodsBeans) {
-                List<GoodsSkuBean> goodsSkuBeans = queryGoodsSKUsByGoodsId(goodsBean.getId());
-                if (null != goodsSkuBeans && goodsSkuBeans.size() > 0) {
+        List<GoodsBean> goodsList = getEffectiveGoods(goodsBeans);
+        if (null != goodsList && goodsList.size()>0) {
+            if (null != goodsBeans && goodsBeans.size() > 0) {
+                List<GoodsSkuInfoRepresentation> resultList = new ArrayList<>();
+                for (GoodsBean goodsBean : goodsList) {
+                    List<GoodsSkuBean> goodsSkuBeans = goodsBean.getGoodsSkuBeans();
+                    if (null != goodsSkuBeans && goodsSkuBeans.size() > 0) {
+                        //排序
+                        Collections.sort(goodsSkuBeans, new Comparator<GoodsSkuBean>() {
+                            public int compare(GoodsSkuBean bean1, GoodsSkuBean bean2) {
+                                Long price1 = bean1.getPhotographPrice();
+                                Long price2 = bean2.getPhotographPrice();
+                                if (price1 > price2) {
+                                    return 1;
+                                } else if (price1 == price2) {
+                                    return 0;
+                                } else {
+                                    return -1;
+                                }
+                            }
+                        });
+                        ShopBean shopBean = shopQuery.getShop(goodsBean.getDealerId());
+                        resultList.add(new GoodsSkuInfoRepresentation(goodsBean, goodsSkuBeans.get(goodsSkuBeans.size() - 1), shopBean));
+                    }
+                }
+                if (null != resultList && resultList.size() > 0) {
                     //排序
-                    Collections.sort(goodsSkuBeans, new Comparator<GoodsSkuBean>() {
-                        public int compare(GoodsSkuBean bean1, GoodsSkuBean bean2) {
+                    Collections.sort(resultList, new Comparator<GoodsSkuInfoRepresentation>() {
+                        public int compare(GoodsSkuInfoRepresentation bean1, GoodsSkuInfoRepresentation bean2) {
                             Long price1 = bean1.getPhotographPrice();
                             Long price2 = bean2.getPhotographPrice();
                             if (price1 > price2) {
@@ -502,26 +547,8 @@ public class GoodsQueryApplication {
                             }
                         }
                     });
-                    ShopBean shopBean = shopQuery.getShop(goodsBean.getDealerId());
-                    resultList.add(new GoodsSkuInfoRepresentation(goodsBean, goodsSkuBeans.get(goodsSkuBeans.size() - 1), shopBean));
+                    return resultList.get(resultList.size() - 1);
                 }
-            }
-            if (null != resultList && resultList.size() > 0) {
-                //排序
-                Collections.sort(resultList, new Comparator<GoodsSkuInfoRepresentation>() {
-                    public int compare(GoodsSkuInfoRepresentation bean1, GoodsSkuInfoRepresentation bean2) {
-                        Long price1 = bean1.getPhotographPrice();
-                        Long price2 = bean2.getPhotographPrice();
-                        if (price1 > price2) {
-                            return 1;
-                        } else if (price1 == price2) {
-                            return 0;
-                        } else {
-                            return -1;
-                        }
-                    }
-                });
-                return resultList.get(resultList.size() - 1);
             }
         }
         return null;
@@ -949,26 +976,7 @@ public class GoodsQueryApplication {
      */
     public List<GoodsBean> appQueryGoodsByGoodsIds(List goodsIds) {
         List<GoodsBean> goodsBeanList = queryGoodsByGoodsIds(goodsIds);
-        List<GoodsBean> goodsList = new ArrayList<>();
-        if (null != goodsBeanList && goodsBeanList.size() > 0) {
-            for (GoodsBean goodsBean : goodsBeanList) {
-                if (goodsBean.getDelStatus() == 1 && goodsBean.getGoodsStatus() == 2) {
-                    List<GoodsSkuBean> skuBeans = queryGoodsSKUsByGoodsId(goodsBean.getId());
-                    List<GoodsSkuBean> skuList = new ArrayList<>();
-                    if (null != skuBeans && skuBeans.size() > 0) {
-                        for (GoodsSkuBean skuBean : skuBeans) {
-                            if (skuBean.getShowStatus() == 2 && skuBean.getAvailableNum() > 0) {
-                                skuList.add(skuBean);
-                            }
-                        }
-                    }
-                    if (skuList.size() > 0) {
-                        goodsBean.setGoodsSkuBeans(skuList);
-                        goodsList.add(goodsBean);
-                    }
-                }
-            }
-        }
+        List<GoodsBean> goodsList = getEffectiveGoods(goodsBeanList);
         return goodsList;
     }
 
