@@ -28,7 +28,7 @@ public class GoodsDeleteListener extends ExchangeListener {
     protected void filteredDispatch(String aType, String aTextMessage) throws Exception {
         NotificationReader reader = new NotificationReader(aTextMessage);
         String goodsId = reader.eventStringValue("goodsId");
-        goodsApproveApplication.deleteGoodsApprove(goodsId);
+        goodsApproveApplication.removeGoodsApprove(goodsId);
     }
 
     @Override
