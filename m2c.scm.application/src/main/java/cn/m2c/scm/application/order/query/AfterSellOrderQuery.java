@@ -14,10 +14,8 @@ import cn.m2c.scm.application.order.data.bean.AfterSellBean;
 import cn.m2c.scm.application.order.data.bean.AfterSellOrderBean;
 import cn.m2c.scm.application.order.data.bean.AfterSellOrderDetailBean;
 import cn.m2c.scm.application.order.data.bean.AftreSellLogisticsBean;
-import cn.m2c.scm.application.order.data.bean.AppOrderBean;
 import cn.m2c.scm.application.order.data.bean.GoodsInfoBean;
 import cn.m2c.scm.application.order.data.bean.OrderDealerBean;
-import cn.m2c.scm.application.order.data.bean.OrderDetailBean;
 import cn.m2c.scm.application.order.data.bean.SimpleMarket;
 import cn.m2c.scm.application.order.data.bean.SkuNumBean;
 import cn.m2c.scm.domain.NegativeException;
@@ -431,6 +429,30 @@ public class AfterSellOrderQuery {
 			
 		} catch (Exception e) {
 			throw new NegativeException(MCode.V_500, "查询Order 支付单号出错！");
+		}
+		return result;
+	}
+	/***
+	 * 获取已经售后的商品sku
+	 * 
+	 * @param dealerOrderId
+	 * @return
+	 * @throws NegativeException
+	 */
+	public List<String> getSkuIdsByDealerOrderId(String dealerOrderId) throws NegativeException {
+		List<String> result = null;
+		try {
+			List<Object> params = new ArrayList<>(1);
+			StringBuilder sql = new StringBuilder();
+			sql.append("SELECT a.sku_id FROM t_scm_order_after_sell a \r\n")
+			.append(" WHERE a.dealer_order_id=? AND a._status NOT IN(-1, 3)");
+			
+			params.add(dealerOrderId);
+			
+			result = this.supportJdbcTemplate.jdbcTemplate().queryForList(sql.toString(), String.class, params.toArray());
+			
+		} catch (Exception e) {
+			throw new NegativeException(MCode.V_500, "查询商家订单号的售后skuId出错！");
 		}
 		return result;
 	}

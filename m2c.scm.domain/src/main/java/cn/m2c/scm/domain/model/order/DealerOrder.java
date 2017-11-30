@@ -140,18 +140,30 @@ public class DealerOrder extends ConcurrencySafeEntity {
 	 * @param expressPerson
 	 * @param expressPhone
 	 * @param expressWay
+	 * @param skuIds
 	 */
 	public boolean updateExpress(String expressName, String expressNo,
 			String expressNote, String expressPerson, String expressPhone,
-			Integer expressWay, String expressCode, String userId) {
+			Integer expressWay, String expressCode, String userId
+			, List<String> skuIds) {
 		if (status >= 2 || status < 1) {
 			return false;
 		}
-		status = 2;
+		int ct = 0;
 		for (DealerOrderDtl dealerOrderDtl : orderDtls) {
+			if (skuIds != null && skuIds.contains(dealerOrderDtl.getSkuId())) {
+				ct ++;
+				continue;
+			}
 			dealerOrderDtl.updateOrderDetailExpress(expressName,expressNo,expressNote,expressPerson
 					,expressPhone,expressWay, expressCode);
 		}
+		
+		if (ct > 0 && ct == orderDtls.size()) {
+			return true;
+		}
+		
+		status = 2;
 		updateTime = new Date();
 		DomainEventPublisher.instance().publish(new OrderOptLogEvent(orderId, dealerOrderId, "商家发货", userId));
 		return true;
