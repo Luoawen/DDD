@@ -146,7 +146,6 @@ public class GoodsApproveApplication {
     }
 
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
-    @EventListener(isListening = true)
     public void deleteGoodsApprove(String goodsId) throws NegativeException {
         LOGGER.info("deleteGoodsApprove goodsId >>{}", goodsId);
         GoodsApprove goodsApprove = goodsApproveRepository.queryGoodsApproveById(goodsId);
@@ -154,6 +153,15 @@ public class GoodsApproveApplication {
             throw new NegativeException(MCode.V_300, "商品审核信息不存在");
         }
         goodsApprove.remove();
+    }
+
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+    public void removeGoodsApprove(String goodsId) throws NegativeException {
+        LOGGER.info("deleteGoodsApprove goodsId >>{}", goodsId);
+        GoodsApprove goodsApprove = goodsApproveRepository.queryGoodsApproveById(goodsId);
+        if (null != goodsApprove) {
+            goodsApprove.remove();
+        }
     }
 
     /**

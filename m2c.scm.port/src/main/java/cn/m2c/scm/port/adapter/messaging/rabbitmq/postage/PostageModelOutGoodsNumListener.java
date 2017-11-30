@@ -28,7 +28,14 @@ public class PostageModelOutGoodsNumListener extends ExchangeListener {
     protected void filteredDispatch(String aType, String aTextMessage) throws Exception {
         NotificationReader reader = new NotificationReader(aTextMessage);
         String goodsPostageId = reader.eventStringValue("goodsPostageId");
-        postageModelApplication.outGoodsUserNum(goodsPostageId);
+        Integer goodsStatus = reader.eventIntegerValue("goodsStatus");
+        if (aType.contains("GoodsDeleteEvent")) {
+            if (goodsStatus != 1) {
+                postageModelApplication.outGoodsUserNum(goodsPostageId);
+            }
+        } else {
+            postageModelApplication.outGoodsUserNum(goodsPostageId);
+        }
     }
 
     @Override
