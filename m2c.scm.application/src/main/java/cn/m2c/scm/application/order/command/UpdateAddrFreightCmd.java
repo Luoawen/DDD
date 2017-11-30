@@ -67,7 +67,7 @@ public class UpdateAddrFreightCmd {
 		this.userId = userId;
 		
 		if (!StringUtils.isEmpty(freights)) {
-			java.lang.reflect.Type type = new TypeToken<HashMap<String, Integer>>() {  
+			java.lang.reflect.Type type = new TypeToken<HashMap<String, Float>>() {  
 		       }.getType();
 		    Gson gson = new Gson();
 		    this.freights = gson.fromJson(freights, type);
