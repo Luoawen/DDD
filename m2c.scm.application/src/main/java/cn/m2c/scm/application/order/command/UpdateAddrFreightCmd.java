@@ -49,7 +49,7 @@ public class UpdateAddrFreightCmd {
 	private String userId;
 	
 	/** SKU及对应的运费 */
-	private Map<String, Integer> freights;
+	private Map<String, Float> freights;
 
 	public UpdateAddrFreightCmd(String dealerOrderId, String province, String provCode, String city, String cityCode,
 			String area, String areaCode, String street,String revPerson,String phone, String freights, String userId) {
@@ -67,7 +67,7 @@ public class UpdateAddrFreightCmd {
 		this.userId = userId;
 		
 		if (!StringUtils.isEmpty(freights)) {
-			java.lang.reflect.Type type = new TypeToken<HashMap<String, Integer>>() {  
+			java.lang.reflect.Type type = new TypeToken<HashMap<String, Float>>() {  
 		       }.getType();
 		    Gson gson = new Gson();
 		    this.freights = gson.fromJson(freights, type);
@@ -161,7 +161,7 @@ public class UpdateAddrFreightCmd {
 		this.phone = phone;
 	}
 
-	public Map<String, Integer> getFreights() {
+	public Map<String, Float> getFreights() {
 		return freights;
 	}
 }

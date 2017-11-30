@@ -306,14 +306,14 @@ public class DealerOrder extends ConcurrencySafeEntity {
 	 * 更新运费 主要用于商家修改
 	 * @param freights
 	 */
-	public boolean updateOrderFreight(Map<String, Integer> freights, String userId) {
+	public boolean updateOrderFreight(Map<String, Float> freights, String userId) {
 		if (freights == null)
 			return true;
 		long frg = 0;
 		for (DealerOrderDtl d : orderDtls) {
-			Integer f = freights.get(d.getSkuId());
+			Float f = freights.get(d.getSkuId());
 			if (f != null) {
-				d.updateFreight(f * 100);
+				d.updateFreight((long)(f * 100));
 				frg += f * 100;
 			}
 			else
