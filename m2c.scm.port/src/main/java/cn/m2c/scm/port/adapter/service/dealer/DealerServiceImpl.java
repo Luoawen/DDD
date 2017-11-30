@@ -24,12 +24,13 @@ public class DealerServiceImpl implements DealerService{
 	private static final String DEFAULT_SHOP_ICON = DisconfDataGetter.getByFileItem("constants.properties", "default.shopIcon").toString().trim();
 	
 
-	public void addShop(String dealerId, String dealerName) throws NegativeException {
+	public void addShop(String dealerId, String dealerName,String userPhone) throws NegativeException {
 		List<Map> resultList = new ArrayList<>();
 		try {
 			String url = M2C_HOST_URL + "/m2c.scm/shop/sys/shopInfo";
 			HashMap<String, String> params = new HashMap<String, String>();
 			params.put("dealerId",dealerId);
+			params.put("customerServiceTel",userPhone);
 			params.put("shopName",dealerName);
 			params.put("shopIcon",DEFAULT_SHOP_ICON);
 			String resp = new HttpRequest().postData(url, params, "utf-8").toString();

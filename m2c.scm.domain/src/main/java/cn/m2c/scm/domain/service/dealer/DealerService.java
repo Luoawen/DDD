@@ -10,5 +10,5 @@ public interface DealerService {
 	 * @param dealerName
 	 * @throws NegativeException 
 	 */
-	public void addShop(String dealerId,String dealerName) throws NegativeException;
+	public void addShop(String dealerId,String dealerName,String userPhone) throws NegativeException;
 }
