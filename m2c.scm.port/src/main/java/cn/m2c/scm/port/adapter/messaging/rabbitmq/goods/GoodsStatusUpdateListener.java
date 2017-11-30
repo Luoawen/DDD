@@ -38,7 +38,7 @@ public class GoodsStatusUpdateListener extends ExchangeListener {
         JSONObject object = jsonObject.getJSONObject("event");
         JSONArray array = object.getJSONArray("goodsIds");
         List<Integer> list = array.toJavaList(Integer.class);
-        if (list != null && list.size() > 0) {
+        if (null != list && list.size() > 0) {
             goodsApplication.outInventoryUpdateGoodsStatus(list);
         }
     }
