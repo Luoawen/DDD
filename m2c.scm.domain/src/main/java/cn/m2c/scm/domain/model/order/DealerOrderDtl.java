@@ -132,22 +132,30 @@ public class DealerOrderDtl extends ConcurrencySafeEntity {
 	 * @return
 	 */
 	boolean confirmRev() {
-		if (status != 2) {
+		if (status < 2) {
 			return false;
 		}
-		status = 3;
-		updateTime = new Date();
+		else if(status == 2) {
+			status = 3;
+			updateTime = new Date();
+		}
 		return true;
 	}
-	
+	/***
+	 * 确认收货
+	 * @param userId
+	 * @return
+	 */
 	public boolean confirmRev(String userId) {
 		
-		if (status != 2) {
+		if (status < 2) {
 			return false;
 		}
-		status = 3;
-		updateTime = new Date();
-		DomainEventPublisher.instance().publish(new OrderOptLogEvent(orderId, dealerOrderId, "用户确认收货成功", userId));
+		else if(status == 2) {
+			status = 3;
+			updateTime = new Date();
+			DomainEventPublisher.instance().publish(new OrderOptLogEvent(orderId, dealerOrderId, "用户确认收货成功", userId));
+		}
 		return true;
 	}
 	/***

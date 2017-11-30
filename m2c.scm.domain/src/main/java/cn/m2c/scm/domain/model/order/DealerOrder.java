@@ -184,13 +184,23 @@ public class DealerOrder extends ConcurrencySafeEntity {
 		}
 		return true;
 	}
-	
-	public void confirmRev() {
+	/***
+	 * 确认收货
+	 */
+	public boolean confirmRev() {
 		
-		if (status != 2)
+		/*if (status != 2)
 			return;
 		status = 3;
-		updateTime = new Date();
+		updateTime = new Date();*/		
+		if (status < 2) {
+			return false;
+		}
+		else if(status == 2) {
+			status = 3;
+			updateTime = new Date();
+		}
+		return true;
 	}
 	/**
 	 * 获取销量

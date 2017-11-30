@@ -210,6 +210,8 @@ public class ScheduledAgent {
 			String val = GetDisconfDataGetter.getDisconfProperty("scm.job.user");
 			saleAfterOrderApplication.afterSaleCompleteUpdated(val);
 			result.setStatus(MCode.V_200);
+			// 扫完子单详情的时候扫一下商家订单
+			dealerOrderApplication.dtlCompleteUpdated(val);
 		} catch (NegativeException ne) {
 			result = new MResult(ne.getStatus(), ne.getMessage());
 		} catch (Exception e) {
