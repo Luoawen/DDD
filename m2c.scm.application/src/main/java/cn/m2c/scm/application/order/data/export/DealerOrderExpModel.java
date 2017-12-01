@@ -69,7 +69,7 @@ public class DealerOrderExpModel {
         this.revAddress = dealerOrderQB.getRevAddress();
         this.saleAfterNo = null == dealerOrderQB.getAfterSellDealerOrderId() ? "" : dealerOrderQB.getAfterSellDealerOrderId();
         this.saleAfterType = getAfterType(dealerOrderQB.getAfterOrderType());
-        this.saleAfterStatus = getAfterStatusStr(dealerOrderQB.getOrderStatus());
+        this.saleAfterStatus = getAfterStatusStr(dealerOrderQB.getAfterOrderType(),dealerOrderQB.getOrderStatus());
         this.saleAfterNum = null == dealerOrderQB.getAfterNum() ? "" : String.valueOf(dealerOrderQB.getAfterNum());
         this.saleAfterMoney = String.valueOf(dealerOrderQB.getAfterMoney() / 100);
     }
@@ -123,9 +123,96 @@ public class DealerOrderExpModel {
         return statusStr;
     }
 
-
+    // 状态：待商家同意，待顾客寄回商品，待商家确认退款，待商家发货，待顾客收货，售后已完成，售后已取消，商家已拒绝
+    private String getAfterStatusStr(Integer afterType,Integer status) {
+    	String statusStr = "";
+    	if(null != afterType && null != status) {
+    		switch (afterType) {
+				case 0://换货
+					switch (status) {
+						case -1:
+							statusStr = "售后已取消";
+							break;
+						case 3:
+							statusStr = "商家已拒绝";
+							break;
+						case 1:
+							statusStr = "待商家同意";
+							break;
+						case 4:
+							statusStr = "待顾客寄回商品";
+							break;
+						case 5:
+						case 6:
+							statusStr = "待商家发货";
+							break;
+						case 7:
+							statusStr = "待顾客收货";
+							break;
+						case 8:
+						case 9:
+						case 10:
+						case 11:
+						case 12:
+							statusStr = "售后已完成";
+							break;
+						}
+					break;
+				case 1://退货
+					switch (status) {
+						case -1:
+							statusStr = "售后已取消";
+							break;
+						case 3:
+							statusStr = "商家已拒绝";
+							break;
+						case 0:
+							statusStr = "待商家同意";
+							break;
+						case 4:
+							statusStr = "待顾客寄回商品";
+							break;
+						case 5:
+						case 6:
+							statusStr = "待商家确认退款";
+							break;
+						case 9:
+						case 10:
+						case 11:
+						case 12:
+							statusStr = "售后已完成";
+							break;
+					}
+	                break;
+	            case 2://仅退款
+	            	switch (status) {
+		            	case -1:
+							statusStr = "售后已取消";
+							break;
+						case 3:
+							statusStr = "商家已拒绝";
+							break;
+						case 2:
+							statusStr = "待商家同意";
+							break;
+						case 4:
+							statusStr = "待商家确认退款";
+							break;
+						case 9:
+						case 10:
+						case 11:
+						case 12:
+							statusStr = "售后已完成";
+							break;
+					}
+	                break;
+			}
+    	}
+    	return statusStr;
+    }
+    
     // 状态，0申请退货,1申请换货,2申请退款,3拒绝,4同意(退换货),5客户寄出,6商家收到,7商家寄出,8客户收到,9同意退款, 10确认退款,11交易完成，12交易关闭
-    private String getAfterStatusStr(Integer status) {
+    /*private String getAfterStatusStr(Integer status) {
         String statusStr = "";
         if (null != status) {
             switch (status) {
@@ -171,5 +258,5 @@ public class DealerOrderExpModel {
             }
         }
         return statusStr;
-    }
+    }*/
 }

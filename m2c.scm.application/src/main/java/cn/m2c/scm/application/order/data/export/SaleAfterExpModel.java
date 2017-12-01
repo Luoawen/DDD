@@ -36,7 +36,88 @@ public class SaleAfterExpModel {
     
     public String getStatusStr() {
     	if (null == statusStr) {
-    		switch(status) {
+    		switch (orderType) {
+				case 0://换货
+					switch (status) {
+						case -1:
+							statusStr="售后已取消";
+							break;
+						case 3:
+							statusStr="商家已拒绝";
+							break;
+						case 1:
+							statusStr="待商家同意";
+							break;
+						case 4:
+							statusStr="待顾客寄回商品";
+							break;
+						case 5:
+						case 6:
+							statusStr="待商家发货";
+							break;
+						case 7:
+							statusStr="待顾客收货";
+							break;
+						case 8:
+						case 9:
+						case 10:
+						case 11:
+						case 12:
+							statusStr="售后已完成";
+							break;
+					}
+					break;
+				case 1://退货
+					switch (status) {
+						case -1:
+							statusStr = "售后已取消";
+							break;
+						case 3:
+							statusStr = "商家已拒绝";
+							break;
+						case 0:
+							statusStr = "待商家同意";
+							break;
+						case 4:
+							statusStr = "待顾客寄回商品";
+							break;
+						case 5:
+						case 6:
+							statusStr = "待商家确认退款";
+							break;
+						case 9:
+						case 10:
+						case 11:
+						case 12:
+							statusStr = "售后已完成";
+							break;
+					}
+					break;
+				case 2://退款
+					switch (status) {
+		            	case -1:
+							statusStr = "售后已取消";
+							break;
+						case 3:
+							statusStr = "商家已拒绝";
+							break;
+						case 2:
+							statusStr = "待商家同意";
+							break;
+						case 4:
+							statusStr = "待商家确认退款";
+							break;
+						case 9:
+						case 10:
+						case 11:
+						case 12:
+							statusStr = "售后已完成";
+							break;
+					}
+					break;
+			}
+    		
+    		/*switch(status) {
             case 0:
             	statusStr="申请退货";
             	break;
@@ -73,7 +154,7 @@ public class SaleAfterExpModel {
             case 11:
             	statusStr="交易关闭";
             	break;
-            }
+            }*/
     	}
 		return statusStr;
 	}
@@ -120,7 +201,87 @@ public class SaleAfterExpModel {
             this.orderTypeStr = "退款";
         }
         
-        switch(status) {
+        switch (orderType) {
+			case 0://换货
+				switch (status) {
+					case -1:
+						this.statusStr="售后已取消";
+						break;
+					case 3:
+						this.statusStr="商家已拒绝";
+						break;
+					case 1:
+						this.statusStr="待商家同意";
+						break;
+					case 4:
+						this.statusStr="待顾客寄回商品";
+						break;
+					case 5:
+					case 6:
+						this.statusStr="待商家发货";
+						break;
+					case 7:
+						this.statusStr="待顾客收货";
+						break;
+					case 8:
+					case 9:
+					case 10:
+					case 11:
+					case 12:
+						this.statusStr="售后已完成";
+						break;
+				}
+				break;
+			case 1://退货
+				switch (status) {
+					case -1:
+						this.statusStr = "售后已取消";
+						break;
+					case 3:
+						this.statusStr = "商家已拒绝";
+						break;
+					case 0:
+						this.statusStr = "待商家同意";
+						break;
+					case 4:
+						this.statusStr = "待顾客寄回商品";
+						break;
+					case 5:
+					case 6:
+						this.statusStr = "待商家确认退款";
+						break;
+					case 9:
+					case 10:
+					case 11:
+					case 12:
+						this.statusStr = "售后已完成";
+						break;
+				}
+				break;
+			case 2://退款
+				switch (status) {
+	            	case -1:
+	            		this.statusStr = "售后已取消";
+						break;
+					case 3:
+						this.statusStr = "商家已拒绝";
+						break;
+					case 2:
+						this.statusStr = "待商家同意";
+						break;
+					case 4:
+						this.statusStr = "待商家确认退款";
+						break;
+					case 9:
+					case 10:
+					case 11:
+					case 12:
+						this.statusStr = "售后已完成";
+						break;
+				}
+				break;
+        }
+        /*switch(status) {
         case 0:
         	statusStr="申请退货";
         	break;
@@ -157,7 +318,7 @@ public class SaleAfterExpModel {
         case 11:
         	statusStr="交易关闭";
         	break;
-        }
+        }*/
     }
 
 	public String getSaleAfterNo() {
@@ -212,9 +373,90 @@ public class SaleAfterExpModel {
 		return status;
 	}
 
-	public void setStatus(Integer status) {
+	public void setStatus(Integer orderType,Integer status) {
+		this.orderType = orderType;
 		this.status = status;
-		switch(status) {
+		switch (orderType) {
+			case 0://换货
+				switch (status) {
+					case -1:
+						statusStr="售后已取消";
+						break;
+					case 3:
+						statusStr="商家已拒绝";
+						break;
+					case 1:
+						statusStr="待商家同意";
+						break;
+					case 4:
+						statusStr="待顾客寄回商品";
+						break;
+					case 5:
+					case 6:
+						statusStr="待商家发货";
+						break;
+					case 7:
+						statusStr="待顾客收货";
+						break;
+					case 8:
+					case 9:
+					case 10:
+					case 11:
+					case 12:
+						statusStr="售后已完成";
+						break;
+				}
+				break;
+			case 1://退货
+				switch (status) {
+					case -1:
+						statusStr = "售后已取消";
+						break;
+					case 3:
+						statusStr = "商家已拒绝";
+						break;
+					case 0:
+						statusStr = "待商家同意";
+						break;
+					case 4:
+						statusStr = "待顾客寄回商品";
+						break;
+					case 5:
+					case 6:
+						statusStr = "待商家确认退款";
+						break;
+					case 9:
+					case 10:
+					case 11:
+					case 12:
+						statusStr = "售后已完成";
+						break;
+				}
+				break;
+			case 2://退款
+				switch (status) {
+	            	case -1:
+						statusStr = "售后已取消";
+						break;
+					case 3:
+						statusStr = "商家已拒绝";
+						break;
+					case 2:
+						statusStr = "待商家同意";
+						break;
+					case 4:
+						statusStr = "待商家确认退款";
+						break;
+					case 9:
+					case 10:
+					case 11:
+					case 12:
+						statusStr = "售后已完成";
+						break;
+				}
+				break;
+		}
+		/*switch(status) {
         case 0:
         	statusStr="申请退货";
         	break;
@@ -251,7 +493,7 @@ public class SaleAfterExpModel {
         case 11:
         	statusStr="交易关闭";
         	break;
-        }
+        }*/
 	}
 
 	public Integer getOrderType() {

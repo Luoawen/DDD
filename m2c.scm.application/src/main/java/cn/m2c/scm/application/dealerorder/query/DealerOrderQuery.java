@@ -572,7 +572,7 @@ public class DealerOrderQuery {
             params.add(hasComment);
         }
 
-        if (afterSellStatus != null && afterSellStatus >= 0) {
+        if (afterSellStatus != null && afterSellStatus >= -1) {
             sql.append(" AND af._status = ?\r\n");
             params.add(afterSellStatus);
         }
