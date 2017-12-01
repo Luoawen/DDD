@@ -1,27 +1,21 @@
 package cn.m2c.scm.application.shop.query;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.annotation.Resource;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Repository;
-import org.springframework.util.StringUtils;
-import org.springframework.web.client.RestTemplate;
-
-import com.alibaba.fastjson.JSONObject;
-
 import cn.m2c.ddd.common.port.adapter.persistence.springJdbc.SupportJdbcTemplate;
 import cn.m2c.scm.application.dealer.data.bean.DealerBean;
 import cn.m2c.scm.application.goods.query.GoodsQueryApplication;
 import cn.m2c.scm.application.shop.data.bean.ShopBean;
 import cn.m2c.scm.domain.service.shop.ShopService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.stereotype.Repository;
+import org.springframework.util.StringUtils;
+import org.springframework.web.client.RestTemplate;
+
+import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.List;
 
 @Repository
 public class ShopQuery {
@@ -251,7 +245,7 @@ public class ShopQuery {
 	 * @param dealerId
 	 * @return
 	 */
-	public String getDealerShop(String dealerId) {
+	public String getDealerShopCustmerTel(String dealerId) {
 		String custmerTel = "";
 		try {
 			StringBuffer sql = new StringBuffer(" SELECT customer_service_tel from t_scm_dealer_shop where dealer_id = ? ");

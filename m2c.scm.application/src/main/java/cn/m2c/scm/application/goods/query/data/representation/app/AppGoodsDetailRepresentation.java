@@ -39,10 +39,11 @@ public class AppGoodsDetailRepresentation {
     private String favoriteId;
     private List<Map> goodsTags;
     private String desc;
+    private String customerTel;
 
     public AppGoodsDetailRepresentation(GoodsBean bean, List<GoodsGuaranteeBean> goodsGuaranteeBeans,
                                         String goodsUnitName, String mresId, Integer commentTotal, GoodsCommentBean goodsCommentBean,
-                                        List<Map> fullCuts, List<Map> goodsTags, String favoriteId) {
+                                        List<Map> fullCuts, List<Map> goodsTags, String favoriteId, String phone) {
         this.skuFlag = bean.getSkuFlag();
         this.dealerId = bean.getDealerId();
         this.dealerName = bean.getDealerName();
@@ -109,6 +110,7 @@ public class AppGoodsDetailRepresentation {
             this.goodsTags = goodsTags;
         }
         this.desc = bean.getGoodsDesc();
+        this.customerTel = phone;
     }
 
     public String getGoodsName() {
@@ -277,5 +279,13 @@ public class AppGoodsDetailRepresentation {
 
     public void setDealerName(String dealerName) {
         this.dealerName = dealerName;
+    }
+
+    public String getCustomerTel() {
+        return customerTel;
+    }
+
+    public void setCustomerTel(String customerTel) {
+        this.customerTel = customerTel;
     }
 }
