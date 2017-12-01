@@ -155,12 +155,10 @@ public class GoodsClassifyAgent {
         MResult result = new MResult(MCode.V_1);
         try {
             List<Map> list = goodsClassifyQueryApplication.recursionQueryGoodsClassifyTree(parentClassifyId);
+            boolean isNull = goodsClassifyQueryApplication.rateIsNull()
+            result.setSign(isNull ? "0" : "1");
             result.setContent(list);
-            if (goodsClassifyQueryApplication.rateIsNull()) {
-                result.setStatus(MCode.V_500);
-            } else{
-                result.setStatus(MCode.V_200);
-            }
+            result.setStatus(MCode.V_200);
         } catch (Exception e) {
             LOGGER.error("queryGoodsClassifyTree Exception e:", e);
             result = new MResult(MCode.V_400, "查询商品分类结构树失败");
