@@ -21,9 +21,6 @@ import cn.m2c.common.MPager;
 import cn.m2c.common.MResult;
 import cn.m2c.ddd.common.auth.RequirePermissions;
 import cn.m2c.scm.application.dealer.data.export.SellerExportModel;
-import cn.m2c.scm.application.goods.query.data.bean.GoodsSkuBean;
-import cn.m2c.scm.application.goods.query.data.export.GoodsServiceRateModel;
-import cn.m2c.scm.application.goods.query.data.export.GoodsSupplyPriceModel;
 import cn.m2c.scm.application.seller.SellerApplication;
 import cn.m2c.scm.application.seller.command.SellerCommand;
 import cn.m2c.scm.application.seller.data.bean.SellerBean;
@@ -43,6 +40,25 @@ public class SellerAgent {
 	@Autowired
 	SellerQuery sellerQuery;
 
+	/**
+	 * 获取主键id 
+	 * uuid
+	 * @return
+	 */
+	 @RequestMapping(value = "/id", method = RequestMethod.GET)
+	    public ResponseEntity<MResult> getBrandId() {
+	        MResult result = new MResult(MCode.V_1);
+	        try {
+	        	String sellerId = IDGenerator.get(IDGenerator.SALE_PREFIX_TITLE);
+	            result.setContent(sellerId);
+	            result.setStatus(MCode.V_200);
+	        } catch (Exception e) {
+	        	log.error("获取sellerId异常", e);
+	            result = new MResult(MCode.V_400, e.getMessage());
+	        }
+	        return new ResponseEntity<MResult>(result, HttpStatus.OK);
+	    }
+	
 	/**
 	 * 添加业务员
 	 * 
@@ -65,7 +81,9 @@ public class SellerAgent {
 	 */
 	@RequestMapping(value = "/mng", method = RequestMethod.POST)
 	@RequirePermissions(value ={"scm:seller:add"})
-	public ResponseEntity<MResult> add(@RequestParam(value = "sellerName", required = false) String sellerName,
+	public ResponseEntity<MResult> add(
+			@RequestParam(value = "sellerId", required = false) String sellerId,
+			@RequestParam(value = "sellerName", required = false) String sellerName,
 			@RequestParam(value = "sellerPhone", required = false) String sellerPhone,
 			@RequestParam(value = "sellerSex", required = false) Integer sellerSex,
 			@RequestParam(value = "sellerNo", required = false) String sellerNo,
@@ -82,7 +100,6 @@ public class SellerAgent {
 			@RequestParam(value = "sellerRemark", required = false) String sellerRemark) {
 		MResult result = new MResult(MCode.V_1);
 		try {
-			String sellerId = IDGenerator.get(IDGenerator.SALE_PREFIX_TITLE);
 			if("".equals(sellerPass) || "".equals(sellerConfirmPass)){
 				result.setErrorMessage("请输入业务员密码");
 				return new ResponseEntity<MResult>(result, HttpStatus.OK);
