@@ -26,14 +26,16 @@ public class SellerApplication {
 	public void addSeller(SellerCommand command) throws NegativeException {
 		log.info("---添加经销商业务员", command.toString());
 		Seller seller = sellerRepository.getSeller(command.getSellerId());
-		if (seller != null)
-			throw new NegativeException(NegativeCode.SELLER_IS_EXIST, "此业务员已存在.");
-		seller = new Seller();
-		seller.add(command.getSellerId(), command.getSellerName(), command.getSellerPhone(), command.getSellerSex(),
-				command.getSellerNo(), command.getSellerConfirmPass(), command.getSellerProvince(),
-				command.getSellerCity(), command.getSellerArea(), command.getSellerPcode(), command.getSellerCcode(),
-				command.getSellerAcode(), command.getSellerqq(), command.getSellerWechat(), command.getSellerRemark());
-		sellerRepository.save(seller);
+//		if (seller != null)
+//			throw new NegativeException(NegativeCode.SELLER_IS_EXIST, "此业务员已存在.");
+		if(seller==null){
+			seller = new Seller();
+			seller.add(command.getSellerId(), command.getSellerName(), command.getSellerPhone(), command.getSellerSex(),
+					command.getSellerNo(), command.getSellerConfirmPass(), command.getSellerProvince(),
+					command.getSellerCity(), command.getSellerArea(), command.getSellerPcode(), command.getSellerCcode(),
+					command.getSellerAcode(), command.getSellerqq(), command.getSellerWechat(), command.getSellerRemark());
+			sellerRepository.save(seller);
+		}
 	}
 
 	@Transactional(rollbackFor = { Exception.class, RuntimeException.class, NegativeException.class })

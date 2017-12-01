@@ -35,13 +35,15 @@ public class DealerApplication {
 	public void addDealer(DealerAddOrUpdateCommand command) throws NegativeException {
 		log.info("---添加经销商参数",command.toString());
 		Dealer dealer = dealerRepository.getDealer(command.getDealerId());
-		if(dealer!=null)
-			throw new NegativeException(NegativeCode.DEALER_IS_EXIST, "此经销商已存在.");
-		dealer = new Dealer();
-		dealer.add(command.getDealerId(),command.getUserId(),command.getUserName(),command.getUserPhone(),command.getDealerName(),command.getDealerClassify(),command.getCooperationMode(),command.getStartSignDate(),command.getEndSignDate(),command.getDealerProvince(),command.getDealerCity(),command.getDealerArea(),command.getDealerPcode(),command.getDealerCcode(),command.getDealerAcode(),command.getDealerDetailAddress(),command.getCountMode(),command.getDeposit(),command.getIsPayDeposit(),command.getManagerName(),command.getManagerPhone(),command.getManagerqq(),command.getManagerWechat(),command.getManagerEmail(),command.getManagerDepartment(),command.getSellerId(),command.getSellerName(),command.getSellerPhone());
-		dealerRepository.save(dealer);
-		dealerService.addShop(command.getDealerId(), command.getDealerName(),command.getUserPhone());
-	}
+		/*if(dealer!=null)
+			throw new NegativeException(NegativeCode.DEALER_IS_EXIST, "此经销商已存在.");*/
+		if(dealer==null){
+			dealer = new Dealer();
+			dealer.add(command.getDealerId(),command.getUserId(),command.getUserName(),command.getUserPhone(),command.getDealerName(),command.getDealerClassify(),command.getCooperationMode(),command.getStartSignDate(),command.getEndSignDate(),command.getDealerProvince(),command.getDealerCity(),command.getDealerArea(),command.getDealerPcode(),command.getDealerCcode(),command.getDealerAcode(),command.getDealerDetailAddress(),command.getCountMode(),command.getDeposit(),command.getIsPayDeposit(),command.getManagerName(),command.getManagerPhone(),command.getManagerqq(),command.getManagerWechat(),command.getManagerEmail(),command.getManagerDepartment(),command.getSellerId(),command.getSellerName(),command.getSellerPhone());
+			dealerRepository.save(dealer);
+			dealerService.addShop(command.getDealerId(), command.getDealerName(),command.getUserPhone());
+			}
+		}
 	
 	@Transactional(rollbackFor = {Exception.class,RuntimeException.class,NegativeException.class})
 	@EventListener
