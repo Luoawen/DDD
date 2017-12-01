@@ -212,7 +212,7 @@ public class ShopAgent {
 		 public ResponseEntity<MResult> getDealerShopDetail(@RequestParam(value = "dealerId",required = false)String dealerId){
 			 MResult result = new MResult(MCode.V_1);
 			 try {
-				String custmerTel = query.getDealerShop(dealerId);
+				String custmerTel = query.getDealerShopCustmerTel(dealerId);
 				 result.setContent(custmerTel);
 				 result.setStatus(MCode.V_200);
 			} catch (Exception e) {

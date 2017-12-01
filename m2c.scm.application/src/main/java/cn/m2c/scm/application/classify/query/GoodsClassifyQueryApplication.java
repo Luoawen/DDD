@@ -55,6 +55,17 @@ public class GoodsClassifyQueryApplication {
         return resultList;
     }
 
+    public boolean rateIsNull() {
+        StringBuilder sql = new StringBuilder();
+        sql.append(" SELECT ");
+        sql.append(" * ");
+        sql.append(" FROM ");
+        sql.append(" t_scm_goods_classify WHERE 1 = 1");
+        sql.append(" AND parent_classify_id <> -1 AND service_rate is null AND status = 1");
+        List<GoodsClassifyBean> goodsClassifyBeans = this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsClassifyBean.class);
+        return null != goodsClassifyBeans && goodsClassifyBeans.size() > 0;
+    }
+
     public List<GoodsClassifyBean> queryGoodsClassifiesByParentId(String parentId) {
         StringBuilder sql = new StringBuilder();
         sql.append(" SELECT ");

@@ -18,6 +18,7 @@ import cn.m2c.scm.application.goods.query.data.representation.app.AppGoodsByIdsR
 import cn.m2c.scm.application.goods.query.data.representation.app.AppGoodsDetailRepresentation;
 import cn.m2c.scm.application.goods.query.data.representation.app.AppGoodsGuessRepresentation;
 import cn.m2c.scm.application.goods.query.data.representation.app.AppGoodsSearchRepresentation;
+import cn.m2c.scm.application.shop.query.ShopQuery;
 import cn.m2c.scm.application.unit.query.UnitQuery;
 import cn.m2c.scm.domain.service.goods.GoodsService;
 import org.slf4j.Logger;
@@ -64,6 +65,8 @@ public class AppGoodsAgent {
     GoodsCommentQueryApplication goodsCommentQueryApplication;
     @Autowired
     GoodsApplication goodsApplication;
+    @Autowired
+    ShopQuery shopQuery;
 
     /**
      * 商品猜你喜欢
@@ -146,8 +149,9 @@ public class AppGoodsAgent {
                     favoriteId = goodsRestService.getUserIsFavoriteGoods(userId, goodsId, token);
                 }
 
+                String phone = shopQuery.getDealerShopCustmerTel(goodsBean.getDealerId());
                 AppGoodsDetailRepresentation representation = new AppGoodsDetailRepresentation(goodsBean,
-                        goodsGuarantee, goodsUnitName, null, commentTotal, goodsCommentBean, fullCut, goodsTags, favoriteId);
+                        goodsGuarantee, goodsUnitName, null, commentTotal, goodsCommentBean, fullCut, goodsTags, favoriteId, phone);
                 result.setContent(representation);
             }
             result.setStatus(MCode.V_200);
@@ -236,7 +240,7 @@ public class AppGoodsAgent {
                     List<Map> classifyMap = new ArrayList<>();
                     List<String> classifyIds = new ArrayList<>();
                     for (GoodsClassifyBean bean : goodsClassifyBeanList) {
-                        if (!classifyIds.contains(bean.getClassifyId())){
+                        if (!classifyIds.contains(bean.getClassifyId())) {
                             classifyIds.add(bean.getClassifyId());
                             Map map = new HashMap<>();
                             map.put("classifyId", bean.getClassifyId());
@@ -320,9 +324,9 @@ public class AppGoodsAgent {
                     //查询商品被收藏id 
                     String favoriteId = null;
                     favoriteId = goodsRestService.getUserIsFavoriteGoods(userId, goodsBean.getGoodsId(), "");
-
+                    String phone = shopQuery.getDealerShopCustmerTel(goodsBean.getDealerId());
                     AppGoodsDetailRepresentation representation = new AppGoodsDetailRepresentation(goodsBean,
-                            goodsGuarantee, goodsUnitName, mresId, commentTotal, goodsCommentBean, fullCut, goodsTags, favoriteId);
+                            goodsGuarantee, goodsUnitName, mresId, commentTotal, goodsCommentBean, fullCut, goodsTags, favoriteId, phone);
                     representations.add(representation);
                 }
                 result.setContent(representations);
@@ -372,6 +376,7 @@ public class AppGoodsAgent {
 
     /**
      * 换购商品列表
+     *
      * @param goodsIds
      * @return
      */

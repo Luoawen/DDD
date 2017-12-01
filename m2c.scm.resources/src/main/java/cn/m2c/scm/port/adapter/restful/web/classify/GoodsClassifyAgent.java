@@ -48,7 +48,7 @@ public class GoodsClassifyAgent {
      * @return
      */
     @RequestMapping(value = "/mng", method = RequestMethod.POST)
-    @RequirePermissions(value ={"scm:goodsClassify:add"})
+    @RequirePermissions(value = {"scm:goodsClassify:add"})
     public ResponseEntity<MResult> addGoodsClassify(
             @RequestParam(value = "classifyName", required = false) String classifyName,
             @RequestParam(value = "subClassifyNames", required = false) String subClassifyNames,
@@ -57,8 +57,8 @@ public class GoodsClassifyAgent {
         MResult result = new MResult(MCode.V_1);
         try {
             GoodsClassifyAddCommand command = new GoodsClassifyAddCommand(classifyName, subClassifyNames, parentClassifyId, level);
-            goodsClassifyApplication.addGoodsClassify(command);
-            result.setStatus(MCode.V_200);
+            Integer statusCode = goodsClassifyApplication.addGoodsClassify(command);
+            result.setStatus(statusCode);
         } catch (NegativeException ne) {
             LOGGER.error("addGoodsClassify NegativeException e:", ne);
             result = new MResult(ne.getStatus(), ne.getMessage());
@@ -101,7 +101,7 @@ public class GoodsClassifyAgent {
      * @return
      */
     @RequestMapping(value = "/mng/{classifyId}/service/rate", method = RequestMethod.PUT)
-    @RequirePermissions(value ={"scm:serviceRate:modify"})
+    @RequirePermissions(value = {"scm:serviceRate:modify"})
     public ResponseEntity<MResult> modifyGoodsClassifyServiceRate(
             @PathVariable("classifyId") String classifyId,
             @RequestParam(value = "serviceRate", required = false) Float serviceRate) {
@@ -127,7 +127,7 @@ public class GoodsClassifyAgent {
      * @return
      */
     @RequestMapping(value = "/mng/{classifyId}", method = RequestMethod.DELETE)
-    @RequirePermissions(value ={"scm:goodsClassify:delete"})
+    @RequirePermissions(value = {"scm:goodsClassify:delete"})
     public ResponseEntity<MResult> deleteGoodsClassify(
             @PathVariable("classifyId") String classifyId) {
         MResult result = new MResult(MCode.V_1);
@@ -156,7 +156,11 @@ public class GoodsClassifyAgent {
         try {
             List<Map> list = goodsClassifyQueryApplication.recursionQueryGoodsClassifyTree(parentClassifyId);
             result.setContent(list);
-            result.setStatus(MCode.V_200);
+            if (goodsClassifyQueryApplication.rateIsNull()) {
+                result.setStatus(MCode.V_500);
+            } else{
+                result.setStatus(MCode.V_200);
+            }
         } catch (Exception e) {
             LOGGER.error("queryGoodsClassifyTree Exception e:", e);
             result = new MResult(MCode.V_400, "查询商品分类结构树失败");
@@ -214,6 +218,7 @@ public class GoodsClassifyAgent {
 
     /**
      * 查询服务费率
+     *
      * @param classifyId
      * @return
      */
