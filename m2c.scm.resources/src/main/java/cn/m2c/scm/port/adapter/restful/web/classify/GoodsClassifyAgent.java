@@ -57,8 +57,8 @@ public class GoodsClassifyAgent {
         MResult result = new MResult(MCode.V_1);
         try {
             GoodsClassifyAddCommand command = new GoodsClassifyAddCommand(classifyName, subClassifyNames, parentClassifyId, level);
-            goodsClassifyApplication.addGoodsClassify(command);
-            result.setStatus(MCode.V_200);
+            Integer statusCode = goodsClassifyApplication.addGoodsClassify(command);
+            result.setStatus(statusCode);
         } catch (NegativeException ne) {
             LOGGER.error("addGoodsClassify NegativeException e:", ne);
             result = new MResult(ne.getStatus(), ne.getMessage());
@@ -157,7 +157,7 @@ public class GoodsClassifyAgent {
             List<Map> list = goodsClassifyQueryApplication.recursionQueryGoodsClassifyTree(parentClassifyId);
             result.setContent(list);
             if (goodsClassifyQueryApplication.rateIsNull()) {
-                result.setStatus(MCode.V_300);
+                result.setStatus(MCode.V_500);
             } else{
                 result.setStatus(MCode.V_200);
             }

@@ -37,8 +37,12 @@ public class GoodsClassifyApplication {
      * @param command
      */
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
-    public void addGoodsClassify(GoodsClassifyAddCommand command) throws NegativeException {
+    public Integer addGoodsClassify(GoodsClassifyAddCommand command) throws NegativeException {
         LOGGER.info("addGoodsClassify command >>{}", command);
+        Integer statusCode = 200;
+        if (!"-1".equals(command.getParentClassifyId())) { // 不是增加一级分类
+            statusCode = 500;
+        }
         // 与当前分类中的不能重名
         if (goodsClassifyRepository.goodsClassifyNameIsRepeat(null, command.getClassifyName())) {
             throw new NegativeException(MCode.V_301, "商品分类名称已存在");
@@ -60,6 +64,9 @@ public class GoodsClassifyApplication {
             }
             if (null != upClassify.serviceRate()) {
                 goodsClassify.modifyClassifyServiceRate(upClassify.serviceRate());
+                statusCode = 200;
+            } else {
+                statusCode = 500;
             }
         }
 
@@ -91,6 +98,7 @@ public class GoodsClassifyApplication {
                 }
             }
         }
+        return statusCode;
     }
 
     /**
