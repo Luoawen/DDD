@@ -413,6 +413,12 @@ public class DealerOrderAfterSellQuery {
 		sql.append(" LIMIT 2000");
 		List<SaleAfterExpModel> beanList = this.supportJdbcTemplate.queryForBeanList(sql.toString(),
 				SaleAfterExpModel.class, params.toArray());
+		if(null != beanList && beanList.size() > 0) {
+			for(SaleAfterExpModel saleAfterExpModel : beanList) {
+				saleAfterExpModel.setOrderTypeStr(saleAfterExpModel.getOrderType());
+				saleAfterExpModel.setStatusStr(saleAfterExpModel.getOrderType(), saleAfterExpModel.getStatus());
+			}
+		}
 		return beanList;
 	}
 	
