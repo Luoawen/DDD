@@ -158,22 +158,18 @@ public class GoodsClassifyApplication {
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
     public void deleteGoodsClassify(String classifyId) throws NegativeException {
         LOGGER.info("deleteGoodsClassify classifyId >>{}", classifyId);
-
         List<String> ids = goodsClassifyRepository.recursionQueryGoodsSubClassifyId(classifyId, new ArrayList<>());
-
-        if (null != ids && ids.size() > 0) { // 有下级分类不能删除
-            throw new NegativeException(MCode.V_300, "商品分类下有子分类，不能删除");
-        }
-
         ids.add(classifyId);
         // 判断是否有商品，有商品不能删除
         if (goodsRepository.classifyIdIsUser(ids)) {
             throw new NegativeException(MCode.V_300, "商品分类下有商品，不能删除");
         }
-        GoodsClassify goodsClassify = goodsClassifyRepository.getGoodsClassifyById(classifyId);
-        if (null == goodsClassify) {
-            throw new NegativeException(MCode.V_300, "商品分类不存在");
+        for (String id : ids) {
+            GoodsClassify goodsClassify = goodsClassifyRepository.getGoodsClassifyById(id);
+            if (null == goodsClassify) {
+                throw new NegativeException(MCode.V_300, "商品分类不存在");
+            }
+            goodsClassify.deleteClassify();
         }
-        goodsClassify.deleteClassify();
     }
 }
