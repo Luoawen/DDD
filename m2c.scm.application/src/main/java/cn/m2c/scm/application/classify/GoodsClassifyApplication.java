@@ -2,6 +2,7 @@ package cn.m2c.scm.application.classify;
 
 import cn.m2c.common.JsonUtils;
 import cn.m2c.common.MCode;
+import cn.m2c.ddd.common.event.annotation.EventListener;
 import cn.m2c.scm.application.classify.command.GoodsClassifyAddCommand;
 import cn.m2c.scm.application.classify.command.GoodsClassifyModifyCommand;
 import cn.m2c.scm.domain.IDGenerator;
@@ -107,6 +108,7 @@ public class GoodsClassifyApplication {
      * @param command
      */
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+    @EventListener(isListening = true)
     public void modifyGoodsClassifyName(GoodsClassifyModifyCommand command) throws NegativeException {
         LOGGER.info("modifyGoodsClassifyName command >>{}", command);
         // 与当前分类中的不能重名

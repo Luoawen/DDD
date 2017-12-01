@@ -1,6 +1,8 @@
 package cn.m2c.scm.domain.model.classify;
 
 import cn.m2c.ddd.common.domain.model.ConcurrencySafeEntity;
+import cn.m2c.ddd.common.domain.model.DomainEventPublisher;
+import cn.m2c.scm.domain.model.classify.event.GoodsClassifyModifyEvent;
 
 /**
  * 商品分类
@@ -49,6 +51,9 @@ public class GoodsClassify extends ConcurrencySafeEntity {
 
     public void modifyClassifyName(String classifyName) {
         this.classifyName = classifyName;
+        DomainEventPublisher
+                .instance()
+                .publish(new GoodsClassifyModifyEvent(this.classifyId, this.classifyName));
     }
 
     public void deleteClassify() {
