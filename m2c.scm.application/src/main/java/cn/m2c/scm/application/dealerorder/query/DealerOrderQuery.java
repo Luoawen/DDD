@@ -322,6 +322,7 @@ public class DealerOrderQuery {
             params.add(startTime);
             params.add(endTime);
         }
+        sql.append(" GROUP BY sku_id, dealer_order_id \r\n");
         sql.append(" ORDER BY a.dealer_order_id DESC, a.created_date DESC, afStatus DESC");
 
         sql.append(" LIMIT ?,?");
