@@ -31,9 +31,9 @@ public class UnitApplication {
 		LOGGER.info("addUnit command >> {}", command);
 		System.out.println(command);
 		Unit unitByName = unitRepository.unitNameIsRepeat(command.getUnitName());
-		/*if (unitByName != null) {
+		if(unitByName != null) {
 			throw new NegativeException(MCode.V_301, "计量单位已存在");
-		}*/
+		}
 		Unit unit = unitRepository.getUnitByUnitId(command.getUnitId());
 		if (null == unit) {
 			unit = new Unit(command.getUnitId(), command.getUnitName());

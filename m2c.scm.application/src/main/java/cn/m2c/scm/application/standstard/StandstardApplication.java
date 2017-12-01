@@ -31,9 +31,9 @@ public class StandstardApplication {
 	public void addStantard(StantardCommand command) throws NegativeException{
     	LOGGER.info("addStantard command >> {}",command);
     	
-    	/*if (stantardRepository.stantardNameIsRepeat(command.getStantardName()) != null) {
+    	if (stantardRepository.stantardNameIsRepeat(command.getStantardName()) != null) {
 			throw new NegativeException(MCode.V_301,"规格已存在");
-		}*/
+		}
     	Stantard stantard = stantardRepository.getStantardByStantardId(command.getStantardId());
     	if (null == stantard) {
     		stantard = new Stantard(command.getStantardId(), command.getStantardName(), command.getStantardStatus());
