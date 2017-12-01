@@ -2,7 +2,6 @@ package cn.m2c.scm.application.dealerorder.query;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -617,10 +616,10 @@ public class DealerOrderQuery {
                 .append("dtl.sell_num, af._status afStatus, a._status, om.pay_no, a.dealer_order_id, dtl.goods_icon, a.created_date,\r\n")
                 .append(" a.rev_person, a.rev_phone, a.goods_amount, a.order_freight, a.plateform_discount, a.dealer_discount, a.order_id,\r\n")
                 .append(" om.pay_time,dtl.freight,a.province,a.city,a.area_county,af.after_sell_order_id,af.order_type,af.sell_num as after_num,af.back_money\r\n")
-                .append(" FROM t_scm_order_dealer a \r\n")
-                .append(" LEFT OUTER JOIN t_scm_order_detail dtl ON dtl.dealer_order_id = a.dealer_order_id\r\n")
-                .append(" LEFT OUTER JOIN t_scm_order_after_sell af ON af.dealer_order_id = a.dealer_order_id\r\n")
-                .append(" LEFT OUTER JOIN t_scm_order_main om ON a.order_id = om.order_id\r\n")
+                .append(" FROM t_scm_order_detail dtl \r\n")
+                .append(" LEFT OUTER JOIN t_scm_order_dealer a ON dtl.dealer_order_id = a.dealer_order_id\r\n")
+                .append(" LEFT OUTER JOIN t_scm_order_after_sell af ON af.dealer_order_id = dtl.dealer_order_id AND af.sku_id=dtl.sku_id\r\n")
+                .append(" LEFT OUTER JOIN t_scm_order_main om ON dtl.order_id = om.order_id\r\n")
                 .append(" WHERE a.dealer_id = ?  \r\n");
 
         params.add(dealerId);
@@ -648,9 +647,45 @@ public class DealerOrderQuery {
             params.add(hasComment);
         }
 
-        if (afterSellStatus != null && afterSellStatus >= -1) {
-            sql.append(" AND af._status = ?\r\n");
-            params.add(afterSellStatus);
+        if (afterSellStatus != null && afterSellStatus >= 20 && afterSellStatus < 28) {
+        	switch(afterSellStatus) {
+	        	case 20: //待商家同意
+	        		sql.append(" AND af._status IN(?,?,?)\r\n");
+		            params.add(0);
+		            params.add(1);
+		            params.add(2);
+	        		break;
+	        	case 21://待顾客寄回商品
+	        		sql.append(" AND af.order_type IN(0,1) AND af._status =?\r\n");
+		            params.add(4);
+	        		break;
+	        	case 22://待商家确认退款
+	        		sql.append(" AND ((af.order_type=0 AND af._status =?) OR (af.order_type=1 AND af._status =?) OR (af.order_type=2 AND af._status =?))\r\n");
+		            params.add(8);
+		            params.add(6);
+		            params.add(4);
+	        		break;
+	        	case 23://待商家发货
+	        		sql.append(" AND (af.order_type=2 AND af._status =?)\r\n");
+		            params.add(6);
+	        		break;
+	        	case 24://待顾客收货
+	        		sql.append(" AND (af.order_type=2 AND af._status =?)\r\n");
+		            params.add(7);
+	        		break;
+	        	case 25://售后已完成
+	        		sql.append(" AND af._status >= ?\r\n");
+		            params.add(9);
+	        		break;
+	        	case 26://售后已取消
+	        		sql.append(" AND af._status = ?\r\n");
+		            params.add(-1);
+	        		break;
+	        	case 27://商家已拒绝
+	        		sql.append(" AND af._status = ?\r\n");
+		            params.add(3);
+	        		break;	        	
+        	}
         }
 
         if (orderType != null && orderType >= 0) {
@@ -667,7 +702,7 @@ public class DealerOrderQuery {
             params.add(startTime);
             params.add(endTime);
         }
-        sql.append(" ORDER BY a.dealer_order_id DESC, a.created_date DESC");
+        sql.append(" ORDER BY a.dealer_order_id DESC, a.created_date DESC, afStatus DESC");
 
         List<Map<String, Object>> beanList = this.supportJdbcTemplate.jdbcTemplate().queryForList(sql.toString(), params.toArray());
 
@@ -675,11 +710,13 @@ public class DealerOrderQuery {
 
         String dealerOrderId = null;
         DealerOrderQB midBean = null;
+        List<String> tmpIds = null;
         for (Map<String, Object> item : beanList) {
 
             String ordIdTemp = (String) item.get("dealer_order_id");
             if (!ordIdTemp.equals(dealerOrderId)) {
                 midBean = new DealerOrderQB();
+                tmpIds = new ArrayList<String>();
                 midBean.setDealerId((String) item.get("dealer_id"));
                 midBean.setDealerOrderId(ordIdTemp);
                 Timestamp a = (Timestamp) item.get("created_date");
@@ -705,19 +742,21 @@ public class DealerOrderQuery {
                 rs.add(midBean);
                 dealerOrderId = ordIdTemp;
             }
-
-            DealerGoodsBean dgb = new DealerGoodsBean();
-            dgb.setSkuName((String) item.get("sku_name"));
-            dgb.setGoodsName((String) item.get("goods_name"));
-            dgb.setGoodsTitle((String) item.get("goods_title"));
-            dgb.setSkuId((String) item.get("sku_id"));
-            dgb.setDiscountPrice((long) item.get("discount_price"));
-            dgb.setSellNum((Integer) item.get("sell_num"));
-            dgb.setAfStatus((Integer) item.get("afStatus"));
-            item.get("goods_icon").getClass().getTypeName();
-            dgb.setGoodsImage((String) item.get("goods_icon"));
-
-            midBean.getGoodsList().add(dgb);
+            String skuId = (String) item.get("sku_id");
+            if (!tmpIds.contains(skuId)) {
+            	tmpIds.add(skuId);
+            	DealerGoodsBean dgb = new DealerGoodsBean();
+	            dgb.setSkuName((String) item.get("sku_name"));
+	            dgb.setGoodsName((String) item.get("goods_name"));
+	            dgb.setGoodsTitle((String) item.get("goods_title"));
+	            dgb.setSkuId((String) item.get("sku_id"));
+	            dgb.setDiscountPrice((long) item.get("discount_price"));
+	            dgb.setSellNum((Integer) item.get("sell_num"));
+	            dgb.setAfStatus((Integer) item.get("afStatus"));
+	            item.get("goods_icon").getClass().getTypeName();
+	            dgb.setGoodsImage((String) item.get("goods_icon"));
+	            midBean.getGoodsList().add(dgb);
+            }
         }
         return rs;
     }
