@@ -268,7 +268,7 @@ public class DealerOrderQuery {
             params.add(hasComment);
         }
 
-        if (afterSellStatus != null && afterSellStatus >= -1) {
+        if (afterSellStatus != null && afterSellStatus >= 20 && afterSellStatus < 28) {
         	switch(afterSellStatus) {
 	        	case 20: //待商家同意
 	        		sql.append(" AND af._status IN(?,?,?)\r\n");
@@ -438,7 +438,7 @@ public class DealerOrderQuery {
             params.add(hasComment);
         }
 
-        if (afterSellStatus != null && afterSellStatus >= -1) {
+        if (afterSellStatus != null && afterSellStatus >= 20 && afterSellStatus < 28) {
         	switch(afterSellStatus) {
 	        	case 20: //待商家同意
 	        		sql.append(" AND af._status IN(?,?,?)\r\n");
