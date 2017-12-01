@@ -155,7 +155,7 @@ public class GoodsClassifyAgent {
         MResult result = new MResult(MCode.V_1);
         try {
             List<Map> list = goodsClassifyQueryApplication.recursionQueryGoodsClassifyTree(parentClassifyId);
-            boolean isNull = goodsClassifyQueryApplication.rateIsNull()
+            boolean isNull = goodsClassifyQueryApplication.rateIsNull();
             result.setSign(isNull ? "0" : "1");
             result.setContent(list);
             result.setStatus(MCode.V_200);
