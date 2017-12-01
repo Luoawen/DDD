@@ -74,6 +74,7 @@ public class GoodsClassifyApplication {
         // 增加子分类
         List<String> subNames = JsonUtils.toList(command.getSubClassifyNames(), String.class);
         if (null != subNames && subNames.size() > 0) {
+            boolean rateIsNull = false;
             for (String subName : subNames) {
                 // 与当前分类中的不能重名
                 if (goodsClassifyRepository.goodsClassifyNameIsRepeat(null, subName)) {
@@ -95,8 +96,17 @@ public class GoodsClassifyApplication {
                     }
                     if (null != upClassify.serviceRate()) {
                         goodsClassify.modifyClassifyServiceRate(upClassify.serviceRate());
+                    } else {
+                        rateIsNull = true;
                     }
+                } else {
+                    rateIsNull = true;
                 }
+            }
+            if (rateIsNull) {
+                statusCode = 500;
+            } else {
+                statusCode = 200;
             }
         }
         return statusCode;
