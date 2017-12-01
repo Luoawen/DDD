@@ -62,8 +62,15 @@ public class OrderQuery {
 			params.add(orderStatus);
 		}
 		if (afterSaleStatus != null) {
-			sql.append(" AND d.dealer_order_id IN (SELECT af.dealer_order_id FROM t_scm_order_after_sell af WHERE af._status = ?) ");
-			params.add(afterSaleStatus);
+			if (afterSaleStatus == 99) {
+				sql.append(" AND d.dealer_order_id IN (SELECT af.dealer_order_id FROM t_scm_order_after_sell af WHERE af._status IN(?,?,?)) ");
+				params.add(0);
+				params.add(1);
+				params.add(2);
+			} else {
+				sql.append(" AND d.dealer_order_id IN (SELECT af.dealer_order_id FROM t_scm_order_after_sell af WHERE af._status = ?) ");
+				params.add(afterSaleStatus);
+			}
 		}
 		if (StringUtils.isNotEmpty(endTime) && StringUtils.isNotEmpty(endTime)) {
 			sql.append(" AND (d.created_date BETWEEN ? AND ?)");
@@ -214,8 +221,15 @@ public class OrderQuery {
 			params.add(orderStatus);
 		}
 		if (afterSaleStatus != null) {
-			sql.append(" AND d.dealer_order_id IN (SELECT af.dealer_order_id FROM t_scm_order_after_sell af WHERE af._status = ?) ");
-			params.add(afterSaleStatus);
+			if (afterSaleStatus == 99) {
+				sql.append(" AND d.dealer_order_id IN (SELECT af.dealer_order_id FROM t_scm_order_after_sell af WHERE af._status IN(?,?,?)) ");
+				params.add(0);
+				params.add(1);
+				params.add(2);
+			} else {
+				sql.append(" AND d.dealer_order_id IN (SELECT af.dealer_order_id FROM t_scm_order_after_sell af WHERE af._status = ?) ");
+				params.add(afterSaleStatus);
+			}
 		}
 		if (StringUtils.isNotEmpty(endTime) && StringUtils.isNotEmpty(endTime)) {
 			sql.append(" AND (d.created_date BETWEEN ? AND ?)");
