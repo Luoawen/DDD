@@ -36,6 +36,20 @@ public class UnitAgent {
 
 	@Autowired
 	UnitQuery unitQuery;
+	
+	@RequestMapping(value = "/id",method = RequestMethod.GET)
+	public ResponseEntity<MResult> getUnitId(){
+		MResult result = new MResult(MCode.V_1);
+        try {
+        	String id = IDGenerator.get(IDGenerator.SCM_UNIT_PREFIX_TITLE);
+            result.setContent(id);
+            result.setStatus(MCode.V_200);
+        } catch (Exception e) {
+            LOGGER.error("getGoodsApproveId Exception e:", e);
+            result = new MResult(MCode.V_400, e.getMessage());
+        }
+        return new ResponseEntity<MResult>(result, HttpStatus.OK);
+	}
 
 	/**
 	 * 添加计量单位
@@ -45,10 +59,11 @@ public class UnitAgent {
 	 */
 	@RequestMapping(value = "/mng", method = RequestMethod.POST)
 	@RequirePermissions(value ={"scm:unit:add"})
-	public ResponseEntity<MResult> addUnit(@RequestParam(value = "unitName", required = false) String unitName) {
+	public ResponseEntity<MResult> addUnit(@RequestParam(value = "unitName", required = false) String unitName,
+			@RequestParam(value = "unitId", required = false) String unitId) {
 		MResult result = new MResult(MCode.V_1);
 		try {
-			String unitId = IDGenerator.get(IDGenerator.SCM_UNIT_PREFIX_TITLE);
+			
 			UnitCommand command = new UnitCommand(unitId,unitName);
 			unitApplication.addUnit(command);
 			result.setStatus(MCode.V_200);
