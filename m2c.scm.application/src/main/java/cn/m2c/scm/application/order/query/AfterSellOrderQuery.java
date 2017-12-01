@@ -70,10 +70,46 @@ public class AfterSellOrderQuery {
 			sql.append(" AND after.order_type = ? ");
 			params.add(orderType);
 		}
-		if (null != status) {
-			sql.append(" AND after._status = ? ");
-			params.add(status);
-		}
+		if (status != null && (status >= 20 && status < 28)) {
+        	switch(status) {
+	        	case 20: //待商家同意
+	        		sql.append(" AND after._status IN(?,?,?)\r\n");
+		            params.add(0);
+		            params.add(1);
+		            params.add(2);
+	        		break;
+	        	case 21://待顾客寄回商品
+	        		sql.append(" AND after.order_type IN(0,1) AND after._status =?\r\n");
+		            params.add(4);
+	        		break;
+	        	case 22://待商家确认退款
+	        		sql.append(" AND ((after.order_type=0 AND after._status =?) OR (after.order_type=1 AND after._status =?) OR (after.order_type=2 AND after._status =?))\r\n");
+		            params.add(8);
+		            params.add(6);
+		            params.add(4);
+	        		break;
+	        	case 23://待商家发货
+	        		sql.append(" AND (after.order_type=2 AND after._status =?)\r\n");
+		            params.add(6);
+	        		break;
+	        	case 24://待顾客收货
+	        		sql.append(" AND (after.order_type=2 AND after._status =?)\r\n");
+		            params.add(7);
+	        		break;
+	        	case 25://售后已完成
+	        		sql.append(" AND after._status >= ?\r\n");
+		            params.add(9);
+	        		break;
+	        	case 26://售后已取消
+	        		sql.append(" AND after._status = ?\r\n");
+		            params.add(-1);
+	        		break;
+	        	case 27://商家已拒绝
+	        		sql.append(" AND after._status = ?\r\n");
+		            params.add(3);
+	        		break;	        	
+        	}
+        }
 		if (null != createDate && "".equals(createDate)) {
 			sql.append(" AND after.created_date = ? ");
 			params.add(createDate);
@@ -135,10 +171,46 @@ public class AfterSellOrderQuery {
 			sql.append(" AND after.order_type = ? ");
 			params.add(orderType);
 		}
-		if (null != status) {
-			sql.append(" AND after._status = ? ");
-			params.add(status);
-		}
+		if (status != null && (status >= 20 && status < 28)) {
+        	switch(status) {
+	        	case 20: //待商家同意
+	        		sql.append(" AND after._status IN(?,?,?)\r\n");
+		            params.add(0);
+		            params.add(1);
+		            params.add(2);
+	        		break;
+	        	case 21://待顾客寄回商品
+	        		sql.append(" AND after.order_type IN(0,1) AND after._status =?\r\n");
+		            params.add(4);
+	        		break;
+	        	case 22://待商家确认退款
+	        		sql.append(" AND ((after.order_type=0 AND after._status =?) OR (after.order_type=1 AND after._status =?) OR (after.order_type=2 AND after._status =?))\r\n");
+		            params.add(8);
+		            params.add(6);
+		            params.add(4);
+	        		break;
+	        	case 23://待商家发货
+	        		sql.append(" AND (after.order_type=2 AND after._status =?)\r\n");
+		            params.add(6);
+	        		break;
+	        	case 24://待顾客收货
+	        		sql.append(" AND (after.order_type=2 AND after._status =?)\r\n");
+		            params.add(7);
+	        		break;
+	        	case 25://售后已完成
+	        		sql.append(" AND after._status >= ?\r\n");
+		            params.add(9);
+	        		break;
+	        	case 26://售后已取消
+	        		sql.append(" AND after._status = ?\r\n");
+		            params.add(-1);
+	        		break;
+	        	case 27://商家已拒绝
+	        		sql.append(" AND after._status = ?\r\n");
+		            params.add(3);
+	        		break;	        	
+        	}
+        }
 		if (null != createDate && "".equals(createDate)) {
 			sql.append(" AND after.created_date = ? ");
 			params.add(createDate);

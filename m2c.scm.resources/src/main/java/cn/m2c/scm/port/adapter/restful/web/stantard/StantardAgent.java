@@ -35,6 +35,20 @@ public class StantardAgent {
 	@Autowired
 	StantardQuery stantardQuery;
 	
+	@RequestMapping(value = "/id",method = RequestMethod.GET)
+	public ResponseEntity<MResult> getStantardId(){
+		MResult result = new MResult(MCode.V_1);
+        try {
+        	String id = IDGenerator.get(IDGenerator.SCM_STANTARD_PREFIX_TITLE);
+            result.setContent(id);
+            result.setStatus(MCode.V_200);
+        } catch (Exception e) {
+            LOGGER.error("getGoodsApproveId Exception e:", e);
+            result = new MResult(MCode.V_400, e.getMessage());
+        }
+        return new ResponseEntity<MResult>(result, HttpStatus.OK);
+	}
+	
 	/**
 	 * 添加规格
 	 * @param stantardName
@@ -42,10 +56,10 @@ public class StantardAgent {
 	 */
 	@RequestMapping(value = "/mng", method = RequestMethod.POST)
 	@RequirePermissions(value ={"scm:size:add"})
-	public ResponseEntity<MResult> addStandart(@RequestParam(value = "stantardName",required = false) String stantardName){
+	public ResponseEntity<MResult> addStandart(@RequestParam(value = "stantardName",required = false) String stantardName,
+			@RequestParam(value = "stantardId",required = false) String stantardId){
 		MResult result = new MResult(MCode.V_1);
 		try {
-			String stantardId = IDGenerator.get(IDGenerator.SCM_STANTARD_PREFIX_TITLE);
 			StantardCommand command = new StantardCommand(stantardId, stantardName);
 			stantardApplication.addStantard(command);
 			result.setStatus(MCode.V_200);
