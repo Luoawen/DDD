@@ -155,13 +155,30 @@ public class GoodsClassifyAgent {
         MResult result = new MResult(MCode.V_1);
         try {
             List<Map> list = goodsClassifyQueryApplication.recursionQueryGoodsClassifyTree(parentClassifyId);
-            boolean isNull = goodsClassifyQueryApplication.rateIsNull();
-            result.setSign(isNull ? "0" : "1");
             result.setContent(list);
             result.setStatus(MCode.V_200);
         } catch (Exception e) {
             LOGGER.error("queryGoodsClassifyTree Exception e:", e);
             result = new MResult(MCode.V_400, "查询商品分类结构树失败");
+        }
+        return new ResponseEntity<MResult>(result, HttpStatus.OK);
+    }
+
+    /**
+     * 查询商品分类费率是否为空
+     *
+     * @return
+     */
+    @RequestMapping(value = "/service/rate/is/null", method = RequestMethod.GET)
+    public ResponseEntity<MResult> queryRateIsNull() {
+        MResult result = new MResult(MCode.V_1);
+        try {
+            boolean isNull = goodsClassifyQueryApplication.rateIsNull();
+            result.setContent(isNull);
+            result.setStatus(MCode.V_200);
+        } catch (Exception e) {
+            LOGGER.error("queryRateIsNull Exception e:", e);
+            result = new MResult(MCode.V_400, "查询商品分类费率是否为空失败");
         }
         return new ResponseEntity<MResult>(result, HttpStatus.OK);
     }
