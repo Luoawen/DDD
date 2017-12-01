@@ -71,7 +71,19 @@ public class DealerOrderQB {
 	 * 售后数量
 	 */
 	private Integer afterNum;
+	/**
+	 * 售后状态
+	 */
+	private Integer afterStatus;
 	
+	public Integer getAfterStatus() {
+		return afterStatus;
+	}
+
+	public void setAfterStatus(Integer afterStatus) {
+		this.afterStatus = afterStatus;
+	}
+
 	public String getOrderId() {
 		return orderId;
 	}

@@ -29,7 +29,6 @@ import cn.m2c.scm.application.dealer.data.representation.DealerRepresentation;
 import cn.m2c.scm.application.dealer.data.representation.DealerShopRepresentation;
 import cn.m2c.scm.application.dealer.query.DealerQuery;
 import cn.m2c.scm.application.dealerclassify.query.DealerClassifyQuery;
-import cn.m2c.scm.application.goods.query.data.bean.GoodsBean;
 import cn.m2c.scm.domain.IDGenerator;
 import cn.m2c.scm.domain.NegativeException;
 
@@ -46,6 +45,26 @@ public class DealerAgent {
 	
 	@Autowired
 	DealerClassifyQuery dealerClassifyQuery;
+	
+	/**
+	 * 获取主键id 
+	 * uuid
+	 * @return
+	 */
+	 @RequestMapping(value = "/id", method = RequestMethod.GET)
+	    public ResponseEntity<MResult> getBrandId() {
+	        MResult result = new MResult(MCode.V_1);
+	        try {
+	        	String dealerId = IDGenerator.get(IDGenerator.DEALER_PREFIX_TITLE);
+	            result.setContent(dealerId);
+	            result.setStatus(MCode.V_200);
+	        } catch (Exception e) {
+	        	log.error("获取dealerId异常", e);
+	            result = new MResult(MCode.V_400, e.getMessage());
+	        }
+	        return new ResponseEntity<MResult>(result, HttpStatus.OK);
+	    }
+	
 	/**
 	 * 新增经销商
 	 * @param userId
@@ -76,6 +95,7 @@ public class DealerAgent {
 	@RequestMapping(value="/mng",method = RequestMethod.POST)
 	@RequirePermissions(value ={"scm:dealer:add"})
 	public ResponseEntity<MResult> add(
+			@RequestParam(value="dealerId",required=true)String dealerId,
 			@RequestParam(value="userId",required=true)String userId,
 			@RequestParam(value="userName",required=true)String userName,
 			@RequestParam(value="userPhone",required=true)String userPhone,
@@ -105,7 +125,6 @@ public class DealerAgent {
 			@RequestParam(value="sellerPhone",required=true)String sellerPhone){
 			MResult result = new MResult(MCode.V_1);
 			try {
-				String dealerId = IDGenerator.get(IDGenerator.DEALER_PREFIX_TITLE);
 				DealerAddOrUpdateCommand command = new DealerAddOrUpdateCommand(dealerId,userId,userName,userPhone, dealerName, dealerClassify, cooperationMode, startSignDate, endSignDate, dealerProvince, dealerCity, dealerArea, dealerPcode, dealerCcode, dealerAcode, dealerDetailAddress, countMode, deposit, isPayDeposit, managerName, managerPhone, managerqq, managerWechat, managerEmail, managerDepartment, sellerId,sellerName,sellerPhone);
 				application.addDealer(command);
 				result.setStatus(MCode.V_200);

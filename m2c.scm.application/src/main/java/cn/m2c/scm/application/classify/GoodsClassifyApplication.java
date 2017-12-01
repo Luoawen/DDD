@@ -38,11 +38,11 @@ public class GoodsClassifyApplication {
      * @param command
      */
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
-    public Integer addGoodsClassify(GoodsClassifyAddCommand command) throws NegativeException {
+    public boolean addGoodsClassify(GoodsClassifyAddCommand command) throws NegativeException {
         LOGGER.info("addGoodsClassify command >>{}", command);
-        Integer statusCode = 200;
+        boolean rateIsNull = false;   // true:费率为空，需弹框 false:费率不为空
         if (!"-1".equals(command.getParentClassifyId())) { // 不是增加一级分类
-            statusCode = 500;
+            rateIsNull = true;
         }
         // 与当前分类中的不能重名
         if (goodsClassifyRepository.goodsClassifyNameIsRepeat(null, command.getClassifyName())) {
@@ -65,15 +65,16 @@ public class GoodsClassifyApplication {
             }
             if (null != upClassify.serviceRate()) {
                 goodsClassify.modifyClassifyServiceRate(upClassify.serviceRate());
-                statusCode = 200;
+                rateIsNull = false;
             } else {
-                statusCode = 500;
+                rateIsNull = true;
             }
         }
 
         // 增加子分类
         List<String> subNames = JsonUtils.toList(command.getSubClassifyNames(), String.class);
         if (null != subNames && subNames.size() > 0) {
+            boolean flag = false;
             for (String subName : subNames) {
                 // 与当前分类中的不能重名
                 if (goodsClassifyRepository.goodsClassifyNameIsRepeat(null, subName)) {
@@ -95,11 +96,20 @@ public class GoodsClassifyApplication {
                     }
                     if (null != upClassify.serviceRate()) {
                         goodsClassify.modifyClassifyServiceRate(upClassify.serviceRate());
+                    } else {
+                        flag = true;
                     }
+                } else {
+                    flag = true;
                 }
             }
+            if (flag) {
+                rateIsNull = true;
+            } else {
+                rateIsNull = false;
+            }
         }
-        return statusCode;
+        return rateIsNull;
     }
 
     /**
@@ -158,17 +168,18 @@ public class GoodsClassifyApplication {
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
     public void deleteGoodsClassify(String classifyId) throws NegativeException {
         LOGGER.info("deleteGoodsClassify classifyId >>{}", classifyId);
-
         List<String> ids = goodsClassifyRepository.recursionQueryGoodsSubClassifyId(classifyId, new ArrayList<>());
         ids.add(classifyId);
         // 判断是否有商品，有商品不能删除
         if (goodsRepository.classifyIdIsUser(ids)) {
             throw new NegativeException(MCode.V_300, "商品分类下有商品，不能删除");
         }
-        GoodsClassify goodsClassify = goodsClassifyRepository.getGoodsClassifyById(classifyId);
-        if (null == goodsClassify) {
-            throw new NegativeException(MCode.V_300, "商品分类不存在");
+        for (String id : ids) {
+            GoodsClassify goodsClassify = goodsClassifyRepository.getGoodsClassifyById(id);
+            if (null == goodsClassify) {
+                throw new NegativeException(MCode.V_300, "商品分类不存在");
+            }
+            goodsClassify.deleteClassify();
         }
-        goodsClassify.deleteClassify();
     }
 }

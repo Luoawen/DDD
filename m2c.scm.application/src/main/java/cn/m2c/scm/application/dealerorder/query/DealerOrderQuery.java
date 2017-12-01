@@ -721,6 +721,7 @@ public class DealerOrderQuery {
                 midBean.setDealerId((String) item.get("dealer_id"));
                 midBean.setDealerOrderId(ordIdTemp);
                 Timestamp a = (Timestamp) item.get("created_date");
+                midBean.setAfterStatus((Integer)item.get("afStatus"));
                 midBean.setCreatedDate(a == null ? null : a.getTime());
                 midBean.setOrderStatus((Integer) item.get("_status"));
                 midBean.setPayNo((String) item.get("pay_no"));

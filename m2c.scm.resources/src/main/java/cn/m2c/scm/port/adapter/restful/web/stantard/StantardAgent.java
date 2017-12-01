@@ -43,7 +43,7 @@ public class StantardAgent {
             result.setContent(id);
             result.setStatus(MCode.V_200);
         } catch (Exception e) {
-            LOGGER.error("getGoodsApproveId Exception e:", e);
+            LOGGER.error("获取规格异常 Exception e:", e);
             result = new MResult(MCode.V_400, e.getMessage());
         }
         return new ResponseEntity<MResult>(result, HttpStatus.OK);

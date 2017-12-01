@@ -57,8 +57,9 @@ public class GoodsClassifyAgent {
         MResult result = new MResult(MCode.V_1);
         try {
             GoodsClassifyAddCommand command = new GoodsClassifyAddCommand(classifyName, subClassifyNames, parentClassifyId, level);
-            Integer statusCode = goodsClassifyApplication.addGoodsClassify(command);
-            result.setStatus(statusCode);
+            boolean isRateNull = goodsClassifyApplication.addGoodsClassify(command);
+            result.setStatus(MCode.V_200);
+            result.setContent(isRateNull);
         } catch (NegativeException ne) {
             LOGGER.error("addGoodsClassify NegativeException e:", ne);
             result = new MResult(ne.getStatus(), ne.getMessage());
