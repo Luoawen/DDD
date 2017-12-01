@@ -69,7 +69,7 @@ public class DealerOrderExpModel {
         this.revAddress = dealerOrderQB.getRevAddress();
         this.saleAfterNo = null == dealerOrderQB.getAfterSellDealerOrderId() ? "" : dealerOrderQB.getAfterSellDealerOrderId();
         this.saleAfterType = getAfterType(dealerOrderQB.getAfterOrderType());
-        this.saleAfterStatus = getAfterStatusStr(dealerOrderQB.getAfterOrderType(),dealerOrderQB.getOrderStatus());
+        this.saleAfterStatus = getAfterStatusStr(dealerOrderQB.getAfterOrderType(),dealerOrderQB.getAfterStatus());
         this.saleAfterNum = null == dealerOrderQB.getAfterNum() ? "" : String.valueOf(dealerOrderQB.getAfterNum());
         this.saleAfterMoney = String.valueOf(dealerOrderQB.getAfterMoney() / 100);
     }
