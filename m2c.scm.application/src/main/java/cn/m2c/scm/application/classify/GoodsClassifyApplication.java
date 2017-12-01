@@ -38,11 +38,11 @@ public class GoodsClassifyApplication {
      * @param command
      */
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
-    public Integer addGoodsClassify(GoodsClassifyAddCommand command) throws NegativeException {
+    public boolean addGoodsClassify(GoodsClassifyAddCommand command) throws NegativeException {
         LOGGER.info("addGoodsClassify command >>{}", command);
-        Integer statusCode = 200;
+        boolean rateIsNull = false;   // true:费率为空，需弹框 false:费率不为空
         if (!"-1".equals(command.getParentClassifyId())) { // 不是增加一级分类
-            statusCode = 500;
+            rateIsNull = true;
         }
         // 与当前分类中的不能重名
         if (goodsClassifyRepository.goodsClassifyNameIsRepeat(null, command.getClassifyName())) {
@@ -65,16 +65,16 @@ public class GoodsClassifyApplication {
             }
             if (null != upClassify.serviceRate()) {
                 goodsClassify.modifyClassifyServiceRate(upClassify.serviceRate());
-                statusCode = 200;
+                rateIsNull = false;
             } else {
-                statusCode = 500;
+                rateIsNull = true;
             }
         }
 
         // 增加子分类
         List<String> subNames = JsonUtils.toList(command.getSubClassifyNames(), String.class);
         if (null != subNames && subNames.size() > 0) {
-            boolean rateIsNull = false;
+            boolean flag = false;
             for (String subName : subNames) {
                 // 与当前分类中的不能重名
                 if (goodsClassifyRepository.goodsClassifyNameIsRepeat(null, subName)) {
@@ -97,19 +97,19 @@ public class GoodsClassifyApplication {
                     if (null != upClassify.serviceRate()) {
                         goodsClassify.modifyClassifyServiceRate(upClassify.serviceRate());
                     } else {
-                        rateIsNull = true;
+                        flag = true;
                     }
                 } else {
-                    rateIsNull = true;
+                    flag = true;
                 }
             }
-            if (rateIsNull) {
-                statusCode = 500;
+            if (flag) {
+                rateIsNull = true;
             } else {
-                statusCode = 200;
+                rateIsNull = false;
             }
         }
-        return statusCode;
+        return rateIsNull;
     }
 
     /**
