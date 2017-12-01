@@ -75,13 +75,13 @@ public class OrderQuery {
 		if (afterSaleStatus != null && (afterSaleStatus >= 20 && afterSaleStatus < 28)) {
         	switch(afterSaleStatus) {
 	        	case 20: //待商家同意
-	        		sql.append(" AND d.dealer_order_id IN (SELECT af.dealer_order_id FROM t_scm_order_after_sell af WHERE af._status IN(?,?,?)) ");
+	        		sql.append(" AND d.dealer_order_id IN (SELECT af.dealer_order_id FROM t_scm_order_after_sell af WHERE af._status IN(?,?,?))\r\n");
 					params.add(0);
 					params.add(1);
 					params.add(2);
 	        		break;
 	        	case 21://待顾客寄回商品
-	        		sql.append(" AND d.dealer_order_id IN (SELECT af.dealer_order_id FROM t_scm_order_after_sell af WHERE af.order_type IN(0,1) AND af._status =?) ");
+	        		sql.append(" AND d.dealer_order_id IN (SELECT af.dealer_order_id FROM t_scm_order_after_sell af WHERE af.order_type IN(0,1) AND af._status =?)\r\n");
 		            params.add(4);
 	        		break;
 	        	case 22://待商家确认退款
@@ -99,15 +99,15 @@ public class OrderQuery {
 		            params.add(7);
 	        		break;
 	        	case 25://售后已完成
-	        		sql.append(" AND d.dealer_order_id IN ( SELECT af.dealer_order_id FROM t_scm_order_after_sell af WHERE af._status >= ?\r\n");
+	        		sql.append(" AND d.dealer_order_id IN ( SELECT af.dealer_order_id FROM t_scm_order_after_sell af WHERE af._status >= ?)\r\n");
 		            params.add(9);
 	        		break;
 	        	case 26://售后已取消
-	        		sql.append(" AND d.dealer_order_id IN (SELECT af.dealer_order_id FROM t_scm_order_after_sell af WHERE af._status = ?\r\n");
+	        		sql.append(" AND d.dealer_order_id IN (SELECT af.dealer_order_id FROM t_scm_order_after_sell af WHERE af._status = ?)\r\n");
 		            params.add(-1);
 	        		break;
 	        	case 27://商家已拒绝
-	        		sql.append(" AND d.dealer_order_id IN (SELECT af.dealer_order_id FROM t_scm_order_after_sell af WHERE af._status = ?\r\n");
+	        		sql.append(" AND d.dealer_order_id IN (SELECT af.dealer_order_id FROM t_scm_order_after_sell af WHERE af._status = ?)\r\n");
 		            params.add(3);
 	        		break;	        	
         	}
@@ -288,15 +288,15 @@ public class OrderQuery {
 		            params.add(7);
 	        		break;
 	        	case 25://售后已完成
-	        		sql.append(" AND d.dealer_order_id IN ( SELECT af.dealer_order_id FROM t_scm_order_after_sell af WHERE af._status >= ?\r\n");
+	        		sql.append(" AND d.dealer_order_id IN (SELECT af.dealer_order_id FROM t_scm_order_after_sell af WHERE af._status >= ?)\r\n");
 		            params.add(9);
 	        		break;
 	        	case 26://售后已取消
-	        		sql.append(" AND d.dealer_order_id IN (SELECT af.dealer_order_id FROM t_scm_order_after_sell af WHERE af._status = ?\r\n");
+	        		sql.append(" AND d.dealer_order_id IN (SELECT af.dealer_order_id FROM t_scm_order_after_sell af WHERE af._status = ?)\r\n");
 		            params.add(-1);
 	        		break;
 	        	case 27://商家已拒绝
-	        		sql.append(" AND d.dealer_order_id IN (SELECT af.dealer_order_id FROM t_scm_order_after_sell af WHERE af._status = ?\r\n");
+	        		sql.append(" AND d.dealer_order_id IN (SELECT af.dealer_order_id FROM t_scm_order_after_sell af WHERE af._status = ?)\r\n");
 		            params.add(3);
 	        		break;	        	
         	}
