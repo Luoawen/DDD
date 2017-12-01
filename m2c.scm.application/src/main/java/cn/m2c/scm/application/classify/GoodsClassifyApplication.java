@@ -160,6 +160,11 @@ public class GoodsClassifyApplication {
         LOGGER.info("deleteGoodsClassify classifyId >>{}", classifyId);
 
         List<String> ids = goodsClassifyRepository.recursionQueryGoodsSubClassifyId(classifyId, new ArrayList<>());
+
+        if (null != ids && ids.size() > 0) { // 有下级分类不能删除
+            throw new NegativeException(MCode.V_300, "商品分类下有子分类，不能删除");
+        }
+
         ids.add(classifyId);
         // 判断是否有商品，有商品不能删除
         if (goodsRepository.classifyIdIsUser(ids)) {
