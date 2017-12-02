@@ -359,13 +359,17 @@ public class GoodsQueryApplication {
                     List<String> goodsIds = new ArrayList<>();
                     Iterator<GoodsBean> it = guessInfoList.iterator();
                     if (isModify) {
+                        List<GoodsBean> tempList = new ArrayList<>();
                         while (it.hasNext()) {
                             GoodsBean goodsBean = it.next();
                             if (goodsId.equals(goodsBean.getGoodsId())) {
                                 goodsBean = queryGoodsByGoodsId(goodsId);
+                                tempList.add(goodsBean);
+                            }else{
+                                tempList.add(goodsBean);
                             }
                         }
-                        RedisUtil.setString(key, 24 * 3600, JsonUtils.toStr(guessInfoList));
+                        RedisUtil.setString(key, 24 * 3600, JsonUtils.toStr(tempList));
                     } else {
                         while (it.hasNext()) {
                             GoodsBean goodsBean = it.next();
