@@ -82,8 +82,10 @@ public class SaleAfterOrderApp {
 		long ft = 0;
 		
 		money = money - discountMoney;
-		if (money<0)
-			money = 0;
+		if (money<0) {			
+			throw new NegativeException(MCode.V_103, "不能申请售后，因已不符合条件！");
+			// money = 0;
+		}
 		int orderType = cmd.getType() == 3 ? 0 : cmd.getType(); //0换货， 1退货，2仅退款                  app传 1退货，2退款，3换货
 		int status = 2; //0申请退货,1申请换货,2申请退款          订单类型，0换货， 1退货，2仅退款
 		switch (orderType) {
@@ -145,8 +147,10 @@ public class SaleAfterOrderApp {
 			saleAfterRepository.disabledOrderMarket(order.orderId(), marketInfo.getMarketingId());
 		}
 		money = money - discountMoney;
-		if (money<0)
-			money = 0;
+		if (money<0) {
+			throw new NegativeException(MCode.V_103, "不能申请售后，因已不符合条件！");
+			//money = 0;
+		}
 		order.updateBackMoney(money);
 		float frt = cmd.getRtFreight();
 		if (order.isOnlyRtMoney()) {
