@@ -53,9 +53,11 @@ public class OrderExportAgent {
             , @RequestParam(value = "endTime", required = false) String endTime) throws Exception {
         List<SaleAfterExpModel> goodsBeanList = saleAfterQuery.orderSaleAfterExportQuery(orderType, dealerId, status,
                 condition, startTime, endTime, mediaInfo);
+        String fileName = "售后单.xls";
         if (null != goodsBeanList && goodsBeanList.size() > 0) {
-            String fileName = "售后单.xls";
             ExcelUtil.writeExcel(response, fileName, goodsBeanList, SaleAfterExpModel.class);
+        }else {
+        	ExcelUtil.writeExcel(response, fileName, null, SaleAfterExpModel.class);
         }
     }
 
@@ -76,6 +78,7 @@ public class OrderExportAgent {
         List<DealerOrderQB> dealerOrderList = dealerOrderQuery.dealerOrderQueryExport(dealerId,
                 orderStatus, afterSellStatus, startTime, endTime, condition, payWay, commentStatus, orderClassify,
                 hasMedia, invoice);
+        String fileName = "订货单.xls";
         if (null != dealerOrderList && dealerOrderList.size() > 0) {
             List<DealerOrderExpModel> list = new ArrayList<>();
             for (DealerOrderQB dealerOrderQB : dealerOrderList) {
@@ -86,15 +89,23 @@ public class OrderExportAgent {
                     }
                 }
             }
+            
             if (null != list && list.size() > 0) {
-                String fileName = "订货单.xls";
-                try {
-                    ExcelUtil.writeExcel(response, fileName, list, DealerOrderExpModel.class);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                }
+            	try {
+            		ExcelUtil.writeExcel(response, fileName, list, DealerOrderExpModel.class);
+            	 } catch (IOException e) {
+                     e.printStackTrace();
+                 } catch (IllegalAccessException e) {
+                     e.printStackTrace();
+                 }
+            }
+        }else {
+        	try {
+        		ExcelUtil.writeExcel(response, fileName, null, DealerOrderExpModel.class);
+        	} catch (IOException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
             }
         }
     }

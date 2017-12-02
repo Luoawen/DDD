@@ -76,7 +76,8 @@ public class GoodsClassifyAgent {
      * @param classifyName
      * @return
      */
-    @RequestMapping(value = "/{classifyId}/name", method = RequestMethod.PUT)
+    @RequestMapping(value = "mng/{classifyId}/name", method = RequestMethod.PUT)
+    @RequirePermissions(value = {"scm:goodsClassify:update"})
     public ResponseEntity<MResult> modifyGoodsClassifyName(
             @PathVariable("classifyId") String classifyId,
             @RequestParam(value = "classifyName", required = false) String classifyName) {
