@@ -28,12 +28,17 @@ public class GoodsGuessCacheUpdateListener extends ExchangeListener {
     protected void filteredDispatch(String aType, String aTextMessage) throws Exception {
         NotificationReader reader = new NotificationReader(aTextMessage);
         String goodsId = reader.eventStringValue("goodsId");
-        goodsQueryApplication.updateGoodsGuessCache(goodsId);
+        boolean isModify = false;
+        if (aType.contains("GoodsModifyApproveSkuEvent")) {
+            isModify = true;
+        }
+        goodsQueryApplication.updateGoodsGuessCache(goodsId, isModify);
     }
 
     @Override
     protected String[] listensTo() {
         return new String[]{"cn.m2c.scm.domain.model.goods.event.GoodsOffShelfEvent",
-                "cn.m2c.scm.domain.model.goods.event.GoodsDeleteEvent"};
+                "cn.m2c.scm.domain.model.goods.event.GoodsDeleteEvent",
+                "cn.m2c.scm.domain.model.goods.event.GoodsModifyApproveSkuEvent"};
     }
 }

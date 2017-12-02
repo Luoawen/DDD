@@ -348,7 +348,7 @@ public class GoodsQueryApplication {
         return keyWords;
     }
 
-    public void updateGoodsGuessCache(String goodsId) {
+    public void updateGoodsGuessCache(String goodsId, boolean isModify) {
         for (int i = 1; i < 5; i++) {
             String key = "scm.goods.guess." + i;
             String guess = RedisUtil.getString(key); //从缓存中取数据
@@ -358,18 +358,28 @@ public class GoodsQueryApplication {
                     Integer size = guessInfoList.size();
                     List<String> goodsIds = new ArrayList<>();
                     Iterator<GoodsBean> it = guessInfoList.iterator();
-                    while (it.hasNext()) {
-                        GoodsBean goodsBean = it.next();
-                        if (goodsId.equals(goodsBean.getGoodsId())) {
-                            it.remove();
-                        } else {
-                            goodsIds.add(goodsBean.getGoodsId());
+                    if (isModify) {
+                        while (it.hasNext()) {
+                            GoodsBean goodsBean = it.next();
+                            if (goodsId.equals(goodsBean.getGoodsId())) {
+                                goodsBean = queryGoodsByGoodsId(goodsId);
+                            }
                         }
-                    }
-                    Integer removeSize = guessInfoList.size();
-                    if (size > removeSize) {
-                        guessInfoList.addAll(queryGoodsGuess((size - removeSize), i, goodsIds));
                         RedisUtil.setString(key, 24 * 3600, JsonUtils.toStr(guessInfoList));
+                    } else {
+                        while (it.hasNext()) {
+                            GoodsBean goodsBean = it.next();
+                            if (goodsId.equals(goodsBean.getGoodsId())) {
+                                it.remove();
+                            } else {
+                                goodsIds.add(goodsBean.getGoodsId());
+                            }
+                        }
+                        Integer removeSize = guessInfoList.size();
+                        if (size > removeSize) {
+                            guessInfoList.addAll(queryGoodsGuess((size - removeSize), i, goodsIds));
+                            RedisUtil.setString(key, 24 * 3600, JsonUtils.toStr(guessInfoList));
+                        }
                     }
                 }
             }
@@ -475,7 +485,7 @@ public class GoodsQueryApplication {
         return resultList;
     }
 
-    public List<GoodsBean> getEffectiveGoods(List<GoodsBean> goodsBeans){
+    public List<GoodsBean> getEffectiveGoods(List<GoodsBean> goodsBeans) {
         List<GoodsBean> goodsList = new ArrayList<>();
         if (null != goodsBeans && goodsBeans.size() > 0) {
             for (GoodsBean goodsBean : goodsBeans) {
@@ -508,7 +518,7 @@ public class GoodsQueryApplication {
     public GoodsSkuInfoRepresentation queryMaxPriceGoodsByGoodsIds(List<String> goodsIds) {
         List<GoodsBean> goodsBeans = queryGoodsByGoodsIds(goodsIds);
         List<GoodsBean> goodsList = getEffectiveGoods(goodsBeans);
-        if (null != goodsList && goodsList.size()>0) {
+        if (null != goodsList && goodsList.size() > 0) {
             if (null != goodsBeans && goodsBeans.size() > 0) {
                 List<GoodsSkuInfoRepresentation> resultList = new ArrayList<>();
                 for (GoodsBean goodsBean : goodsList) {
@@ -971,6 +981,7 @@ public class GoodsQueryApplication {
 
     /**
      * 换购商品
+     *
      * @param goodsIds
      * @return
      */
