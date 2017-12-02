@@ -176,7 +176,8 @@ public class DealerOrder extends ConcurrencySafeEntity {
 	 */
 	public boolean checkAllRev(String sku, DealerOrderDtl dll) {
 		for (DealerOrderDtl dtl : orderDtls) {
-			if (dtl.isEqualSku(sku) || dtl.isSameExpressNo(dll.getExpressNo())) {
+			if (dtl.isEqualSku(sku) || dtl.isSameExpressNo(dll.getExpressNo())
+					|| dtl.isFinished()) {
 				dtl.confirmRev();
 				continue;
 			}

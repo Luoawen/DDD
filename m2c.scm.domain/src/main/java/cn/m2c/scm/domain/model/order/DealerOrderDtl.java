@@ -228,6 +228,10 @@ public class DealerOrderDtl extends ConcurrencySafeEntity {
 		updateTime = new Date();
 	}
 	
+	public boolean isFinished() {
+		return status >= 3;
+	}
+	
 	/***
 	 * 设置计算金额
 	 * @param skuId

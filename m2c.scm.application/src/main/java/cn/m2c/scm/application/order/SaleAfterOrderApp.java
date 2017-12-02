@@ -254,7 +254,11 @@ public class SaleAfterOrderApp {
 		if (!order.updateRefound(bean.getOrderRefundId(), d)) {
 			throw new NegativeException(MCode.V_103, "状态不正确，不能进行退款操作！");
 		}
-		saleAfterRepository.updateSaleAfterOrder(order);
+		saleAfterRepository.updateSaleAfterOrder(order);		
+	}
+	
+	public void scanDtlGoods(RefundEvtBean bean) throws NegativeException {
+		LOGGER.info("===fanjc==afterSellOrderId==" + bean.getAfterSellOrderId());
 		//检查本单的完成状态
 		saleAfterRepository.scanDtlGoods(bean.getAfterSellOrderId());
 	}

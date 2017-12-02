@@ -64,6 +64,12 @@ public class RefundPayedListener extends ExchangeListener {
 				return;
 			}
 			saleAfterApp.refundSuccess(bean);
+			
+			try {
+				saleAfterApp.scanDtlGoods(bean);
+			} catch (Exception e) {
+				LOGGER.info("====fanjc==scanDtlGoods:" +  e.getMessage());
+			}
 		}
 		catch (Exception e) {
 			e.printStackTrace();
