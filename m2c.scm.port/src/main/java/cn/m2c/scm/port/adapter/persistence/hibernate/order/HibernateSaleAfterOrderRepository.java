@@ -126,7 +126,7 @@ public class HibernateSaleAfterOrderRepository extends HibernateSupperRepository
 				"AND a.dealer_order_id = b.dealer_order_id\r\n" + 
 				"AND a.sku_id = b.sku_id\r\n" + 
 				"AND a._status NOT IN (4,5, -1)\r\n" + 
-				"AND b._status IN (11, 12)")
+				"AND b._status IN (10, 11, 12)")
 		.list();
 		
 		if (rs != null && rs.size() > 0) {
@@ -154,7 +154,7 @@ public class HibernateSaleAfterOrderRepository extends HibernateSupperRepository
 				"AND a.sku_id = b.sku_id\r\n" + 
 				"AND b.after_sell_order_id = :afterNo \r\n" + 
 				"AND a._status NOT IN (4,5, -1)\r\n" + 
-				"AND b._status IN (11, 12)").setParameter("afterNo", afterNo)
+				"AND b._status IN (10, 11, 12)").setParameter("afterNo", afterNo)
 		.list();
 		
 		if (rs != null && rs.size() > 0) {
