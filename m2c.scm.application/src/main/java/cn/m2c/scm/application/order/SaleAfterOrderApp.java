@@ -251,6 +251,8 @@ public class SaleAfterOrderApp {
 			throw new NegativeException(MCode.V_103, "状态不正确，不能进行退款操作！");
 		}
 		saleAfterRepository.updateSaleAfterOrder(order);
+		//检查本单的完成状态
+		saleAfterRepository.scanDtlGoods(bean.getAfterSellOrderId());
 	}
 	
 	/***
@@ -501,6 +503,16 @@ public class SaleAfterOrderApp {
 		}
 		List<Long> list = saleAfterRepository.getSpecifiedDtlGoods(hour);
 		LOGGER.info("=fanjc=处于完成售后的条数为==" + (list == null? 0 : list.size()));
+		return ;
+	}
+	
+	/**
+	 * 当售后单完成其对应的商品也应该是完成状态。
+	 * @throws NegativeException 
+	 */
+	@Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+	public void scanOrderDtlUpdated(String userId, String saleOrderId) throws NegativeException {
+		saleAfterRepository.scanDtlGoods(saleOrderId);
 		return ;
 	}
 }

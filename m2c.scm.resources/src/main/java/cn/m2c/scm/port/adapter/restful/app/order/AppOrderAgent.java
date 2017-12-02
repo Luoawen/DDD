@@ -4,6 +4,7 @@ import cn.m2c.common.MCode;
 import cn.m2c.common.MPager;
 import cn.m2c.common.MResult;
 import cn.m2c.scm.application.CommonApplication;
+import cn.m2c.scm.application.order.DealerOrderApplication;
 import cn.m2c.scm.application.order.OrderApplication;
 import cn.m2c.scm.application.order.SaleAfterOrderApp;
 import cn.m2c.scm.application.order.command.AddSaleAfterCmd;
@@ -337,6 +338,8 @@ public class AppOrderAgent {
         	SaleAfterCmd cmd = new SaleAfterCmd(userId, saleAfterNo, skuId);
         	saleAfterApp.userConfirmRev(cmd);
             result.setStatus(MCode.V_200);
+            //检查本单的完成状态
+            saleAfterApp.scanOrderDtlUpdated(userId, saleAfterNo);			
         } 
         catch (NegativeException e) {
         	result = new MResult(e.getStatus(), e.getMessage());

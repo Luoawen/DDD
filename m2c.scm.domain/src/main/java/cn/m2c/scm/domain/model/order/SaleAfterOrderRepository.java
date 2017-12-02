@@ -93,4 +93,9 @@ public interface SaleAfterOrderRepository {
 	 * @return
 	 */
 	public List<Long> getSpecifiedDtlGoods(int hour);
+	/***
+	 * 扫描售后完成后的商家详情单也该完成
+	 * @param afterNo
+	 */
+	public void scanDtlGoods(String afterNo);
 }

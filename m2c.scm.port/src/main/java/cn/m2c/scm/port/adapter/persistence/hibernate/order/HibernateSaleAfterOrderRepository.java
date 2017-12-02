@@ -3,6 +3,7 @@ package cn.m2c.scm.port.adapter.persistence.hibernate.order;
 import java.math.BigInteger;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.slf4j.Logger;
@@ -140,5 +141,43 @@ public class HibernateSaleAfterOrderRepository extends HibernateSupperRepository
 		Object o = this.session().createSQLQuery("SELECT count(1) FROM t_scm_order_after_sell WHERE dealer_order_id = :d1 AND sku_id = :skuId AND _status NOT IN(-1, 3)").setParameter("d1", dealerOrderId).setParameter("skuId", skuId).uniqueResult();
 		
 		return o == null? 0: ((BigInteger)o).intValue();
+	}
+	
+	@Override
+	public void scanDtlGoods(String afterNo) {
+		if (StringUtils.isEmpty(afterNo))
+			return;
+		List<Long> rs = this.session().createSQLQuery("SELECT a.id from t_scm_order_detail a\r\n" + 
+				",t_scm_order_after_sell b \r\n" + 
+				"WHERE a.order_id = b.order_id\r\n" + 
+				"AND a.dealer_order_id = b.dealer_order_id\r\n" + 
+				"AND a.sku_id = b.sku_id\r\n" + 
+				"AND b.after_sell_order_id = :afterNo \r\n" + 
+				"AND a._status NOT IN (4,5, -1)\r\n" + 
+				"AND b._status IN (11, 12)").setParameter("afterNo", afterNo)
+		.list();
+		
+		if (rs != null && rs.size() > 0) {
+			this.session().createSQLQuery("UPDATE t_scm_order_detail SET _status=5 WHERE id IN(:idList)").setParameterList("idList", rs).executeUpdate();
+		}
+		
+		// 再扫描商家订单
+		List<String> rs1 = this.session().createSQLQuery("select dealer_order_id from t_scm_order_dealer WHERE dealer_order_id IN("
+				+ "SELECT b.dealer_order_id FROM t_scm_order_after_sell b WHERE b.after_sell_order_id = :afterNo)\r\n" + 
+				" AND dealer_order_id NOT IN(select DISTINCT b.dealer_order_id from t_scm_order_dealer b, t_scm_order_detail a\r\n" + 
+				"WHERE a.order_id = b.order_id\r\n" + 
+				"AND a.dealer_order_id=b.dealer_order_id\r\n" + 
+				"AND a._status NOT IN (4, 5, -1)\r\n" + 
+				"AND b._status NOT IN (-1, 4, 5)\r\n" + 
+				") AND _status NOT IN (-1, 4, 5)")
+				.setParameter("afterNo", afterNo).list();
+		if (rs1 != null && rs.size() > 0) {
+			Object o = this.session().createSQLQuery("select count(1) from t_scm_order_after_sell where dealer_order_id=:dealerOrderId and _status IN (9, 11, 12)")
+					.setParameter("dealerOrderId", rs1.get(0)).uniqueResult();
+			BigInteger b = (BigInteger)o;
+			int j = this.session().createSQLQuery("UPDATE t_scm_order_dealer SET _status=5 where dealer_order_id= :dealerOrderId").setParameter("dealerOrderId", rs1.get(0))
+			.executeUpdate();
+			LOGGER.info("===fanjc===用户触发商家订单完成===dealerOrderId:" + rs1.get(0) + "; num = " + j);
+		}
 	}
 }

@@ -178,6 +178,7 @@ public class DealerOrder extends ConcurrencySafeEntity {
 		for (DealerOrderDtl dtl : orderDtls) {
 			if (dtl.isEqualSku(sku) || dtl.isSameExpressNo(dll.getExpressNo())) {
 				dtl.confirmRev();
+				continue;
 			}
 			if (!dtl.isRecBB())
 				return false;
