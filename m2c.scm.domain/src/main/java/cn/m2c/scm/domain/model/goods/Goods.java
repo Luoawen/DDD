@@ -8,6 +8,7 @@ import cn.m2c.scm.domain.model.goods.event.GoodsAddEvent;
 import cn.m2c.scm.domain.model.goods.event.GoodsApproveAddEvent;
 import cn.m2c.scm.domain.model.goods.event.GoodsChangedEvent;
 import cn.m2c.scm.domain.model.goods.event.GoodsDeleteEvent;
+import cn.m2c.scm.domain.model.goods.event.GoodsModifyApproveSkuEvent;
 import cn.m2c.scm.domain.model.goods.event.GoodsOffShelfEvent;
 import cn.m2c.scm.domain.model.goods.event.GoodsUpShelfEvent;
 import cn.m2c.scm.domain.util.GetMapValueUtils;
@@ -275,6 +276,9 @@ public class Goods extends ConcurrencySafeEntity {
                     goodsSku.modifyApprovePrice(photographPrice, supplyPrice);
                 }
             }
+            DomainEventPublisher
+                    .instance()
+                    .publish(new GoodsModifyApproveSkuEvent(this.goodsId));
         }
     }
 

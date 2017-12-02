@@ -89,11 +89,11 @@ public class AfterSellOrderQuery {
 		            params.add(4);
 	        		break;
 	        	case 23://待商家发货
-	        		sql.append(" AND (after.order_type=2 AND after._status =?)\r\n");
+	        		sql.append(" AND (after.order_type=0 AND after._status =?)\r\n");
 		            params.add(6);
 	        		break;
 	        	case 24://待顾客收货
-	        		sql.append(" AND (after.order_type=2 AND after._status =?)\r\n");
+	        		sql.append(" AND (after.order_type=0 AND after._status =?)\r\n");
 		            params.add(7);
 	        		break;
 	        	case 25://售后已完成
@@ -190,11 +190,11 @@ public class AfterSellOrderQuery {
 		            params.add(4);
 	        		break;
 	        	case 23://待商家发货
-	        		sql.append(" AND (after.order_type=2 AND after._status =?)\r\n");
+	        		sql.append(" AND (after.order_type=0 AND after._status =?)\r\n");
 		            params.add(6);
 	        		break;
 	        	case 24://待顾客收货
-	        		sql.append(" AND (after.order_type=2 AND after._status =?)\r\n");
+	        		sql.append(" AND (after.order_type=0 AND after._status =?)\r\n");
 		            params.add(7);
 	        		break;
 	        	case 25://售后已完成
