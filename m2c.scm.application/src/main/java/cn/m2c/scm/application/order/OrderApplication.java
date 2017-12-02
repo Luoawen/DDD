@@ -626,18 +626,17 @@ public class OrderApplication {
         	throw new NegativeException(MCode.V_1, "无此商品！");
         }
         // 检查是否可确认收货
-        if (dtl.confirmRev(cmd.getUserId())) {
-            // 可能是逻辑删除或是改成取消状态(子订单也要改)
-            DealerOrder order = orderRepository.getDealerOrderByNo(cmd.getDealerOrderId());
-            if (order.checkAllRev(cmd.getSkuId(), dtl)) { // 同一个运单号一起确认收货
-                if (!order.confirmRev())
-                    throw new NegativeException(MCode.V_1, "确认收货出错！");
-                // 检查主订单下的所有商家订单是不是已经全部确认收货了
-            }
-            orderRepository.updateDealerOrder(order);
-        } else {
-            throw new NegativeException(MCode.V_1, "确认收货出错！");
+        
+        boolean flag = dtl.confirmRev(cmd.getUserId());
+        // 可能是逻辑删除或是改成取消状态(子订单也要改)
+        DealerOrder order = orderRepository.getDealerOrderByNo(cmd.getDealerOrderId());
+        if (order.checkAllRev(cmd.getSkuId(), dtl)) { // 同一个运单号一起确认收货
+            if (!order.confirmRev())
+                throw new NegativeException(MCode.V_1, "确认收货出错！");
+            // 检查主订单下的所有商家订单是不是已经全部确认收货了
         }
+        orderRepository.updateDealerOrder(order);
+              
     }
 
     /***
