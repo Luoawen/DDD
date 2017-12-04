@@ -517,7 +517,7 @@ public class AfterSellOrderQuery {
 			List<Object> params = new ArrayList<>(1);
 			StringBuilder sql = new StringBuilder();
 			sql.append("SELECT a.sku_id FROM t_scm_order_after_sell a \r\n")
-			.append(" WHERE a.dealer_order_id=? AND a._status NOT IN(-1, 0, 3)");
+			.append(" WHERE a.dealer_order_id=? AND a._status NOT IN(-1, 0,1,2, 3)");
 			
 			params.add(dealerOrderId);
 			
