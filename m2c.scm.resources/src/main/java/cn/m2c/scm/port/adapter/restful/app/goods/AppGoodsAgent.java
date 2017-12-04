@@ -334,7 +334,7 @@ public class AppGoodsAgent {
                 // 埋点
                 goodsApplication.goodsAppCapturedMD(sn, os, appVersion,
                         osVersion, triggerTime, userId, userName,
-                        goodsBeans.get(0).getGoodsId(), goodsBeans.get(0).getGoodsName(), mresId, mediaName,
+                        goodsBeans.get(0).getGoodsId(), goodsBeans.get(0).getGoodsName(), mediaId, mediaName,
                         mresId, mresName);
             }
             result.setStatus(MCode.V_200);
