@@ -619,7 +619,7 @@ public class GoodsQueryApplication {
         sql.append(" SELECT ");
         sql.append(" * ");
         sql.append(" FROM ");
-        sql.append(" t_scm_goods WHERE 1 = 1 AND goods_id = ?");
+        sql.append(" t_scm_goods WHERE 1 = 1 AND goods_id = ? AND goods_status <> 1 AND del_status = 1");
         GoodsBean goodsBean = this.getSupportJdbcTemplate().queryForBean(sql.toString(), GoodsBean.class, goodsId);
         if (null != goodsBean) {
             List<GoodsSkuBean> skuBeans = queryShowGoodsSKUsByGoodsId(goodsBean.getId());
