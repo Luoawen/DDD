@@ -158,7 +158,7 @@ public class HibernateSaleAfterOrderRepository extends HibernateSupperRepository
 		.list();
 		
 		if (rs != null && rs.size() > 0) {
-			this.session().createSQLQuery("UPDATE t_scm_order_detail SET _status=5 WHERE id IN(:idList)").setParameterList("idList", rs).executeUpdate();
+			this.session().createSQLQuery("UPDATE t_scm_order_detail SET _status=5, last_updated_date=NOW() WHERE id IN(:idList)").setParameterList("idList", rs).executeUpdate();
 		
 			// 再扫描商家订单
 			List<String> rs1 = this.session().createSQLQuery("select dealer_order_id from t_scm_order_dealer WHERE dealer_order_id IN("
@@ -175,7 +175,7 @@ public class HibernateSaleAfterOrderRepository extends HibernateSupperRepository
 				Object o = this.session().createSQLQuery("select count(1) from t_scm_order_after_sell where dealer_order_id=:dealerOrderId and _status IN (10, 11, 12)")
 						.setParameter("dealerOrderId", rs1.get(0)).uniqueResult();
 				BigInteger b = (BigInteger)o;
-				int j = this.session().createSQLQuery("UPDATE t_scm_order_dealer SET _status=5 where dealer_order_id= :dealerOrderId").setParameter("dealerOrderId", rs1.get(0))
+				int j = this.session().createSQLQuery("UPDATE t_scm_order_dealer SET _status=5, last_updated_date=NOW() where dealer_order_id= :dealerOrderId").setParameter("dealerOrderId", rs1.get(0))
 				.executeUpdate();
 				LOGGER.info("===fanjc===用户触发商家订单完成===dealerOrderId:" + rs1.get(0) + "; num = " + j);
 			}		

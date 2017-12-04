@@ -342,6 +342,7 @@ public class DealerOrder extends ConcurrencySafeEntity {
 			status = 5;
 		else
 			status = 4;
+		//updateTime = new Date();
 	}
 	
 	public String getOrderNo() {
