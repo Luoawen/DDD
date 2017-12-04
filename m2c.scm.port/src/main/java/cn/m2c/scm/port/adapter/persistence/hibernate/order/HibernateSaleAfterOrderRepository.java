@@ -125,7 +125,7 @@ public class HibernateSaleAfterOrderRepository extends HibernateSupperRepository
 				"WHERE a.order_id = b.order_id\r\n" + 
 				"AND a.dealer_order_id = b.dealer_order_id\r\n" + 
 				"AND a.sku_id = b.sku_id\r\n" + 
-				"AND a._status NOT IN (4,5, -1)\r\n" + 
+				"AND a._status NOT IN (4, 5, -1)\r\n" + 
 				"AND b._status IN (10, 11, 12)")
 		.list();
 		
@@ -159,25 +159,26 @@ public class HibernateSaleAfterOrderRepository extends HibernateSupperRepository
 		
 		if (rs != null && rs.size() > 0) {
 			this.session().createSQLQuery("UPDATE t_scm_order_detail SET _status=5 WHERE id IN(:idList)").setParameterList("idList", rs).executeUpdate();
-		}
 		
-		// 再扫描商家订单
-		List<String> rs1 = this.session().createSQLQuery("select dealer_order_id from t_scm_order_dealer WHERE dealer_order_id IN("
-				+ "SELECT b.dealer_order_id FROM t_scm_order_after_sell b WHERE b.after_sell_order_id = :afterNo)\r\n" + 
-				" AND dealer_order_id NOT IN(select DISTINCT b.dealer_order_id from t_scm_order_dealer b, t_scm_order_detail a\r\n" + 
-				"WHERE a.order_id = b.order_id\r\n" + 
-				"AND a.dealer_order_id=b.dealer_order_id\r\n" + 
-				"AND a._status NOT IN (4, 5, -1)\r\n" + 
-				"AND b._status NOT IN (-1, 4, 5)\r\n" + 
-				") AND _status NOT IN (-1, 4, 5)")
-				.setParameter("afterNo", afterNo).list();
-		if (rs1 != null && rs.size() > 0) {
-			Object o = this.session().createSQLQuery("select count(1) from t_scm_order_after_sell where dealer_order_id=:dealerOrderId and _status IN (10, 11, 12)")
-					.setParameter("dealerOrderId", rs1.get(0)).uniqueResult();
-			BigInteger b = (BigInteger)o;
-			int j = this.session().createSQLQuery("UPDATE t_scm_order_dealer SET _status=5 where dealer_order_id= :dealerOrderId").setParameter("dealerOrderId", rs1.get(0))
-			.executeUpdate();
-			LOGGER.info("===fanjc===用户触发商家订单完成===dealerOrderId:" + rs1.get(0) + "; num = " + j);
+			// 再扫描商家订单
+			List<String> rs1 = this.session().createSQLQuery("select dealer_order_id from t_scm_order_dealer WHERE dealer_order_id IN("
+					+ "SELECT b.dealer_order_id FROM t_scm_order_after_sell b WHERE b.after_sell_order_id = :afterNo)\r\n" + 
+					" AND dealer_order_id NOT IN(select DISTINCT b.dealer_order_id from t_scm_order_dealer b, t_scm_order_detail a\r\n" + 
+					"WHERE a.order_id = b.order_id\r\n" + 
+					"AND a.dealer_order_id=b.dealer_order_id\r\n" + 
+					"AND b.id != :id\r\n" + 
+					"AND a._status NOT IN (4, 5, -1)\r\n" + 
+					"AND b._status NOT IN (-1, 4, 5)\r\n" + 
+					") AND _status NOT IN (-1, 4, 5)").setParameter("id", rs.get(0))
+					.setParameter("afterNo", afterNo).list();
+			if (rs1 != null && rs.size() > 0) {
+				Object o = this.session().createSQLQuery("select count(1) from t_scm_order_after_sell where dealer_order_id=:dealerOrderId and _status IN (10, 11, 12)")
+						.setParameter("dealerOrderId", rs1.get(0)).uniqueResult();
+				BigInteger b = (BigInteger)o;
+				int j = this.session().createSQLQuery("UPDATE t_scm_order_dealer SET _status=5 where dealer_order_id= :dealerOrderId").setParameter("dealerOrderId", rs1.get(0))
+				.executeUpdate();
+				LOGGER.info("===fanjc===用户触发商家订单完成===dealerOrderId:" + rs1.get(0) + "; num = " + j);
+			}		
 		}
 	}
 }

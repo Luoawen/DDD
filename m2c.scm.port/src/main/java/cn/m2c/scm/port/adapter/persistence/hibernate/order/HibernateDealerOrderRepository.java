@@ -99,7 +99,7 @@ public class HibernateDealerOrderRepository extends HibernateSupperRepository im
 	
 	@Override
 	public boolean judgeHasAfterSale(String orderId) {		
-		Object o = this.session().createSQLQuery("select count(1) from t_scm_order_after_sell where dealer_order_id=:orderId and _status IN (9, 11, 12)")
+		Object o = this.session().createSQLQuery("select count(1) from t_scm_order_after_sell where dealer_order_id=:orderId and _status IN (10, 11, 12)")
 		.setParameter("orderId", orderId).uniqueResult();
 		BigInteger b = (BigInteger)o;
 		return b != null ? b.intValue() > 0 : false;
