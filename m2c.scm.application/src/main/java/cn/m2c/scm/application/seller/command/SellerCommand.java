@@ -166,6 +166,9 @@ public class SellerCommand extends AssertionConcern implements Serializable{
 			String sellerCcode, String sellerAcode, String sellerqq,
 			String sellerWechat, String sellerRemark) throws NegativeException {
 		super();
+		assertArgumentNotNull(sellerId, "业务员id不能为空");
+		assertArgumentLength(sellerId, 36, "业务员id过长");
+
 		if (StringUtils.isEmpty(sellerName.replaceAll(" ", ""))) {
 			throw new NegativeException(400,"请输入业务员姓名");
 		}
