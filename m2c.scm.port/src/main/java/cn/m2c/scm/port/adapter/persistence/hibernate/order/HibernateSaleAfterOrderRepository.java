@@ -172,7 +172,7 @@ public class HibernateSaleAfterOrderRepository extends HibernateSupperRepository
 				") AND _status NOT IN (-1, 4, 5)")
 				.setParameter("afterNo", afterNo).list();
 		if (rs1 != null && rs.size() > 0) {
-			Object o = this.session().createSQLQuery("select count(1) from t_scm_order_after_sell where dealer_order_id=:dealerOrderId and _status IN (9, 11, 12)")
+			Object o = this.session().createSQLQuery("select count(1) from t_scm_order_after_sell where dealer_order_id=:dealerOrderId and _status IN (10, 11, 12)")
 					.setParameter("dealerOrderId", rs1.get(0)).uniqueResult();
 			BigInteger b = (BigInteger)o;
 			int j = this.session().createSQLQuery("UPDATE t_scm_order_dealer SET _status=5 where dealer_order_id= :dealerOrderId").setParameter("dealerOrderId", rs1.get(0))
