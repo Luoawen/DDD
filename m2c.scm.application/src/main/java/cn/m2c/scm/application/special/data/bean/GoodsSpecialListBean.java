@@ -6,7 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * 商品特惠价
+ * 商品特惠价List(首页展示)
  */
 public class GoodsSpecialListBean {
     @ColumnAlias(value = "id")
@@ -32,7 +32,9 @@ public class GoodsSpecialListBean {
     private Date endTime;
     @ColumnAlias(value = "status")
     private Integer status;
-    
+    /**
+     * 最小特惠价
+     */
     private Long specialPriceMin;
 
 	public Integer getId() {

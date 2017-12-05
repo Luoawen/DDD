@@ -7,7 +7,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * 商品特惠价
+ * 商品特惠价详情(一个规格对应一个特惠价)
  */
 public class GoodsSpecialDetailBean {
     @ColumnAlias(value = "id")

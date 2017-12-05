@@ -173,13 +173,11 @@ public class GoodsSpecialAgent {
     		//查总数
         	Integer total = goodsSpecialQueryApplication.queryGoodsSpecialCount(status, startTime, endTime, searchMessage);
         	if(total > 0) {
-        		//查特惠价bean集合
-        		List<GoodsSpecialListBean> goodsSpecialBeanList =  goodsSpecialQueryApplication.queryGoodsSpecialBeanList(status, startTime, endTime, searchMessage, pageNum, rows);
-        		if(null != goodsSpecialBeanList && goodsSpecialBeanList.size()>0 ) {
-        			//封装表述对象
+        		List<GoodsSpecialListBean> goodsSpecialBeanLists =  goodsSpecialQueryApplication.queryGoodsSpecialBeanList(status, startTime, endTime, searchMessage, pageNum, rows);
+        		if(null != goodsSpecialBeanLists && goodsSpecialBeanLists.size()>0 ) {
         			List<GoodsSpecialListRepresentation> representations = new ArrayList<GoodsSpecialListRepresentation>();
-        			for(GoodsSpecialListBean goodsSpecialBean : goodsSpecialBeanList) {
-        				representations.add(new GoodsSpecialListRepresentation(goodsSpecialBean));
+        			for(GoodsSpecialListBean bean : goodsSpecialBeanLists) {
+        				representations.add(new GoodsSpecialListRepresentation(bean));
         			}
         			result.setContent(representations);
         		}
@@ -205,9 +203,9 @@ public class GoodsSpecialAgent {
     		){
     	MResult result = new MResult(MCode.V_1);
     	try {
-    		GoodsSpecialDetailBean goodsSpecialBean = goodsSpecialQueryApplication.queryGoodsSkuSpecialBeanBySpecialId(specialId);
-			if(goodsSpecialBean != null) {
-				result.setContent(goodsSpecialBean);
+    		GoodsSpecialDetailBean goodsSpecialDetailBean = goodsSpecialQueryApplication.queryGoodsSkuSpecialBeanBySpecialId(specialId);
+			if(goodsSpecialDetailBean != null) {
+				result.setContent(goodsSpecialDetailBean);
 			}
 			result.setStatus(MCode.V_200);
 		} catch (Exception e) {

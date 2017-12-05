@@ -114,7 +114,7 @@ public class GoodsSpecialQueryApplication {
 	}
 
 	/**
-	 * 查询商品特惠价List
+	 * 查询商品特惠价List(首页展示)
 	 * @param status
 	 * @param startTime
 	 * @param endTime
@@ -148,13 +148,13 @@ public class GoodsSpecialQueryApplication {
 		sql.append(" LIMIT ?,?");
         params.add(rows * (pageNum - 1));
         params.add(rows);
-        List<GoodsSpecialListBean> goodsSpecialBeanList = this.getSupportJdbcTemplate().queryForBeanList(sql.toString(),GoodsSpecialListBean.class,params.toArray());
-        if(goodsSpecialBeanList != null && goodsSpecialBeanList.size() >= 0) {
-        	for(GoodsSpecialListBean goodsSpecialBean : goodsSpecialBeanList ) {
-        		goodsSpecialBean.setSpecialPriceMin(querySpecialPriceMin(goodsSpecialBean.getId()));
+        List<GoodsSpecialListBean> goodsSpecialListBeanLists = this.getSupportJdbcTemplate().queryForBeanList(sql.toString(),GoodsSpecialListBean.class,params.toArray());
+        if(goodsSpecialListBeanLists != null && goodsSpecialListBeanLists.size() >= 0) {
+        	for(GoodsSpecialListBean goodsSpecialListBean : goodsSpecialListBeanLists ) {
+        		goodsSpecialListBean.setSpecialPriceMin(querySpecialPriceMin(goodsSpecialListBean.getId()));
         	}
         }
-		return goodsSpecialBeanList;
+		return goodsSpecialListBeanLists;
 	}
 	
 	/**
@@ -173,7 +173,7 @@ public class GoodsSpecialQueryApplication {
 	}
 	
 	/**
-	 * 根据specialId查询GoodsSkuSpecialBean
+	 * 根据specialId(对应t_scm_goods_special表中的id)查询GoodsSkuSpecialBean
 	 * @param sPecialId
 	 * @return
 	 */
@@ -187,7 +187,7 @@ public class GoodsSpecialQueryApplication {
 	}
 
 	/**
-	 * 根据specialId查询GoodsSpecialBean
+	 * 根据specialId查询商品特惠价详情
 	 * @param specialId
 	 * @return
 	 */
@@ -196,11 +196,11 @@ public class GoodsSpecialQueryApplication {
 		sql.append(" SELECT ");
 		sql.append(" * ");
 		sql.append(" From ");
-		sql.append(" t_scm_goods_special WHERE 1 = 1 AND special_id = ?");
-		GoodsSpecialDetailBean goodsSpecialBean =  this.getSupportJdbcTemplate().queryForBean(sql.toString(),GoodsSpecialDetailBean.class,specialId);
-		if(goodsSpecialBean != null) {
-			goodsSpecialBean.setGoodsSkuSpecials(queryGoodsSkuSpecialBeanBySpecialId(goodsSpecialBean.getId()));
+		sql.append(" t_scm_goods_special WHERE 1 = 1 AND special_id = ? ");
+		GoodsSpecialDetailBean goodsSpecialDetailBean =  this.getSupportJdbcTemplate().queryForBean(sql.toString(),GoodsSpecialDetailBean.class,specialId);
+		if(goodsSpecialDetailBean != null) {
+			goodsSpecialDetailBean.setGoodsSkuSpecials(queryGoodsSkuSpecialBeanBySpecialId(goodsSpecialDetailBean.getId()));
 		}
-		return goodsSpecialBean;
+		return goodsSpecialDetailBean;
 	}
 }
