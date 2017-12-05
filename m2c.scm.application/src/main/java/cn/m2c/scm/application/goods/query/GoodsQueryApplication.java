@@ -1080,5 +1080,46 @@ public class GoodsQueryApplication {
         GoodsSkuBean bean = this.getSupportJdbcTemplate().queryForBean(sql.toString(), GoodsSkuBean.class, dealerId, goodsCode);
         return bean;
     }
+
+    public List<GoodsBean> goodsChoiceRecognized(String condition, Integer pageNum, Integer rows) {
+        List<Object> params = new ArrayList<Object>();
+        StringBuilder sql = new StringBuilder();
+        sql.append(" SELECT ");
+        sql.append(" g.* ");
+        sql.append(" FROM ");
+        sql.append(" t_scm_goods g,t_scm_goods_sku s WHERE g.id=s.goods_id");
+        if (StringUtils.isNotEmpty(condition)) {
+            sql.append(" AND (g.goods_name like ? OR g.dealer_name like ?)");
+            params.add("%" + condition + "%");
+            params.add("%" + condition + "%");
+        }
+        sql.append(" AND g.del_status= 1 AND g.goods_status <> 3 AND g.recognized_id is not null group by g.goods_id ORDER BY g.created_date desc,s.photograph_price desc ");
+        sql.append(" LIMIT ?,?");
+        params.add(rows * (pageNum - 1));
+        params.add(rows);
+        List<GoodsBean> goodsBeanList = this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsBean.class, params.toArray());
+        if (null != goodsBeanList && goodsBeanList.size() > 0) {
+            for (GoodsBean goodsBean : goodsBeanList) {
+                goodsBean.setGoodsSkuBeans(queryGoodsSKUsByGoodsId(goodsBean.getId()));
+            }
+        }
+        return goodsBeanList;
+    }
+
+    public Integer goodsChoiceRecognizedTotal(String condition) {
+        List<Object> params = new ArrayList<Object>();
+        StringBuilder sql = new StringBuilder();
+        sql.append(" SELECT ");
+        sql.append(" count(distinct g.goods_id) ");
+        sql.append(" FROM ");
+        sql.append(" t_scm_goods g,t_scm_goods_sku s WHERE g.id=s.goods_id");
+        if (StringUtils.isNotEmpty(condition)) {
+            sql.append(" AND (g.goods_name like ? OR g.dealer_name like ?)");
+            params.add("%" + condition + "%");
+            params.add("%" + condition + "%");
+        }
+        sql.append(" AND g.del_status= 1 AND g.goods_status <> 3 AND g.recognized_id is not null");
+        return supportJdbcTemplate.jdbcTemplate().queryForObject(sql.toString(), params.toArray(), Integer.class);
+    }
 }
 

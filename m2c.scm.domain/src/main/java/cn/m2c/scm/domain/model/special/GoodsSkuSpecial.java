@@ -38,4 +38,12 @@ public class GoodsSkuSpecial extends IdentifiedValueObject {
     public String skuId() {
         return skuId;
     }
+
+    public Long supplyPrice() {
+        return supplyPrice;
+    }
+
+    public Long specialPrice() {
+        return specialPrice;
+    }
 }

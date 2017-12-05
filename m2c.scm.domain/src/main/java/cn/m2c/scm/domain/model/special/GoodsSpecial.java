@@ -9,6 +9,8 @@ import cn.m2c.scm.domain.util.GetMapValueUtils;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -109,5 +111,29 @@ public class GoodsSpecial extends ConcurrencySafeEntity {
             }
         }
         return null;
+    }
+
+    public GoodsSkuSpecial getOptimalGoodsSkuSpecial() {
+        //排序
+        Collections.sort(this.goodsSkuSpecials, new Comparator<GoodsSkuSpecial>() {
+            public int compare(GoodsSkuSpecial skuSpecial1, GoodsSkuSpecial skuSpecial2) {
+                if (skuSpecial1.specialPrice().compareTo(skuSpecial2.specialPrice()) == 0) {
+                    return skuSpecial2.supplyPrice().compareTo(skuSpecial1.supplyPrice());
+                } else {
+                    return skuSpecial1.specialPrice().compareTo(skuSpecial2.specialPrice());
+                }
+            }
+        });
+        return this.goodsSkuSpecials.get(0);
+    }
+
+    public void modifyGoodsSkuSpecial(List<Map> addSkuList) {
+        GoodsSkuSpecial skuSpecial = getOptimalGoodsSkuSpecial();
+        for (Map map : addSkuList) {
+            String skuId = (String) map.get("skuId");
+            String skuName = null != map.get("skuName") ? (String) map.get("skuName") : null;
+            GoodsSkuSpecial goodsSkuSpecial = new GoodsSkuSpecial(this, skuId, skuName, skuSpecial.supplyPrice(), skuSpecial.specialPrice());
+            this.goodsSkuSpecials.add(goodsSkuSpecial);
+        }
     }
 }

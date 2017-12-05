@@ -104,7 +104,7 @@ public class GoodsQueryAgent {
             if (null != goodsBean) {
                 GoodsClassifyBean goodsClassifyBean = goodsClassifyQueryApplication.queryGoodsClassifiesById(goodsBean.getGoodsClassifyId());
                 String classifyName = null != goodsClassifyBean ? goodsClassifyBean.getClassifyName() : "";
-                GoodsSimpleDetailRepresentation representation = new GoodsSimpleDetailRepresentation(goodsBean,classifyName);
+                GoodsSimpleDetailRepresentation representation = new GoodsSimpleDetailRepresentation(goodsBean, classifyName);
                 result.setContent(representation);
             }
             result.setStatus(MCode.V_200);
@@ -333,5 +333,45 @@ public class GoodsQueryAgent {
             result = new MResult(MCode.V_400, "查询商品识别图id失败");
         }
         return new ResponseEntity<MResult>(result, HttpStatus.OK);
+    }
+
+    /**
+     * 根据商品名称/商家名称筛选有识别图的且商品状态为出售中、仓库中商品
+     *
+     * @param condition 商品名称/商家名称
+     * @param pageNum   第几页
+     * @param rows      每页多少行
+     * @return
+     */
+    @RequestMapping(value = "/choice/recognized", method = RequestMethod.GET)
+    public ResponseEntity<MPager> goodsChoiceRecognized(
+            @RequestParam(value = "condition", required = false) String condition,
+            @RequestParam(value = "pageNum", required = false, defaultValue = "1") Integer pageNum,
+            @RequestParam(value = "rows", required = false, defaultValue = "10") Integer rows) {
+        MPager result = new MPager(MCode.V_1);
+        try {
+            Integer total = goodsQueryApplication.goodsChoiceRecognizedTotal(condition);
+            if (total > 0) {
+                List<GoodsBean> goodsBeans = goodsQueryApplication.goodsChoiceRecognized(condition, pageNum, rows);
+                if (null != goodsBeans && goodsBeans.size() > 0) {
+                    List<GoodsChoiceRepresentation> representations = new ArrayList<GoodsChoiceRepresentation>();
+                    for (GoodsBean bean : goodsBeans) {
+                        String shopName = "";
+                        List<DealerBean> list = dealerQuery.getDealers(bean.getDealerId());
+                        if (null != list && list.size() > 0) {
+                            shopName = list.get(0).getShopName();
+                        }
+                        representations.add(new GoodsChoiceRepresentation(bean, shopName));
+                    }
+                    result.setContent(representations);
+                }
+            }
+            result.setPager(total, pageNum, rows);
+            result.setStatus(MCode.V_200);
+        } catch (Exception e) {
+            LOGGER.error("goodsChoiceRecognized Exception e:", e);
+            result = new MPager(MCode.V_400, "筛选商品失败");
+        }
+        return new ResponseEntity<MPager>(result, HttpStatus.OK);
     }
 }
