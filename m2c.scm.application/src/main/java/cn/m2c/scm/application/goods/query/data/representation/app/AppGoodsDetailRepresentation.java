@@ -9,6 +9,7 @@ import cn.m2c.scm.application.special.data.bean.GoodsSkuSpecialBean;
 import cn.m2c.scm.application.special.data.bean.GoodsSpecialBean;
 import com.baidu.disconf.client.usertools.DisconfDataGetter;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -118,8 +119,9 @@ public class AppGoodsDetailRepresentation {
         // 特惠价
         if (null != goodsSpecialBean) {
             this.goodsSpecial = new HashMap<>();
-            this.goodsSpecial.put("startTime", goodsSpecialBean.getStartTime());
-            this.goodsSpecial.put("endTime", goodsSpecialBean.getEndTime());
+            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+            this.goodsSpecial.put("startTime", df.format(goodsSpecialBean.getStartTime()));
+            this.goodsSpecial.put("endTime", df.format(goodsSpecialBean.getEndTime()));
             this.goodsSpecial.put("congratulations", goodsSpecialBean.getCongratulations());
             this.goodsSpecial.put("activityDescription", goodsSpecialBean.getActivityDescription());
             if (null != this.goodsSKUs && this.goodsSKUs.size() > 0) {
