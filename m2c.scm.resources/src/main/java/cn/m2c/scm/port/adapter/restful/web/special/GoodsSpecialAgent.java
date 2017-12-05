@@ -9,6 +9,7 @@ import cn.m2c.scm.application.special.command.GoodsSpecialAddCommand;
 import cn.m2c.scm.application.special.command.GoodsSpecialModifyCommand;
 import cn.m2c.scm.application.special.data.bean.GoodsSkuSpecialBean;
 import cn.m2c.scm.application.special.data.bean.GoodsSpecialBean;
+import cn.m2c.scm.application.special.data.bean.GoodsSpecialDetailBean;
 import cn.m2c.scm.application.special.data.representation.GoodsSpecialListRepresentation;
 import cn.m2c.scm.application.special.query.GoodsSpecialQueryApplication;
 import cn.m2c.scm.domain.IDGenerator;
@@ -203,7 +204,7 @@ public class GoodsSpecialAgent {
     		){
     	MResult result = new MResult(MCode.V_1);
     	try {
-			GoodsSpecialBean goodsSpecialBean = goodsSpecialQueryApplication.queryGoodsSkuSpecialBeanBySpecialId(specialId);
+    		GoodsSpecialDetailBean goodsSpecialBean = goodsSpecialQueryApplication.queryGoodsSkuSpecialBeanBySpecialId(specialId);
 			if(goodsSpecialBean != null) {
 				result.setContent(goodsSpecialBean);
 			}

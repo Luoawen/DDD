@@ -3,6 +3,7 @@ package cn.m2c.scm.application.special.query;
 import cn.m2c.ddd.common.port.adapter.persistence.springJdbc.SupportJdbcTemplate;
 import cn.m2c.scm.application.special.data.bean.GoodsSkuSpecialBean;
 import cn.m2c.scm.application.special.data.bean.GoodsSpecialBean;
+import cn.m2c.scm.application.special.data.bean.GoodsSpecialDetailBean;
 import cn.m2c.scm.application.utils.Utils;
 
 import org.apache.commons.lang3.StringUtils;
@@ -174,15 +175,15 @@ public class GoodsSpecialQueryApplication {
 	 * @param specialId
 	 * @return
 	 */
-	public GoodsSpecialBean queryGoodsSkuSpecialBeanBySpecialId(String specialId) {
+	public GoodsSpecialDetailBean queryGoodsSkuSpecialBeanBySpecialId(String specialId) {
 		StringBuilder sql = new StringBuilder();
 		sql.append(" SELECT ");
 		sql.append(" * ");
 		sql.append(" From ");
 		sql.append(" t_scm_goods_special WHERE 1 = 1 AND special_id = ?");
-		GoodsSpecialBean goodsSpecialBean =  this.getSupportJdbcTemplate().queryForBean(sql.toString(),GoodsSpecialBean.class,specialId);
+		GoodsSpecialDetailBean goodsSpecialBean =  this.getSupportJdbcTemplate().queryForBean(sql.toString(),GoodsSpecialDetailBean.class,specialId);
 		if(goodsSpecialBean != null) {
-			goodsSpecialBean.setGoodsSpecialSkuBeans(queryGoodsSkuSpecialBeanBySpecialId(goodsSpecialBean.getId()));
+			goodsSpecialBean.setGoodsSkuSpecials(queryGoodsSkuSpecialBeanBySpecialId(goodsSpecialBean.getId()));
 		}
 		return goodsSpecialBean;
 	}
