@@ -40,6 +40,7 @@ public class GoodsChoiceRepresentation {
                 map.put("goodsSkuName", skuBean.getSkuName());
                 map.put("goodsSkuInventory", skuBean.getAvailableNum());
                 map.put("goodsSkuPrice", skuBean.getPhotographPrice());
+                map.put("goodsSupplyPrice", skuBean.getSupplyPrice());
                 this.goodsSkuList.add(map);
             }
         }

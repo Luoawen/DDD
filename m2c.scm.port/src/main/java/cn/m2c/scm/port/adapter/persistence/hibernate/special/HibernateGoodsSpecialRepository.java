@@ -6,6 +6,9 @@ import cn.m2c.scm.domain.model.special.GoodsSpecialRepository;
 import org.hibernate.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
+import java.util.List;
+
 /**
  * 特惠价
  */
@@ -30,5 +33,23 @@ public class HibernateGoodsSpecialRepository extends HibernateSupperRepository i
         Query query = this.session().createSQLQuery(sql.toString()).addEntity(GoodsSpecial.class);
         query.setParameter("goods_id", goodsId);
         return (GoodsSpecial) query.uniqueResult();
+    }
+
+    @Override
+    public List<GoodsSpecial> getStartGoodsSpecial() {
+        StringBuilder sql = new StringBuilder("select * from t_scm_goods_special where start_time <= :start_time status = 0");
+        Date currentTime = new Date(System.currentTimeMillis());
+        Query query = this.session().createSQLQuery(sql.toString()).addEntity(GoodsSpecial.class);
+        query.setParameter("start_time", currentTime);
+        return query.list();
+    }
+
+    @Override
+    public List<GoodsSpecial> getEndGoodsSpecial() {
+        StringBuilder sql = new StringBuilder("select * from t_scm_goods_special where end_time <= :end_time status = 1");
+        Date currentTime = new Date(System.currentTimeMillis());
+        Query query = this.session().createSQLQuery(sql.toString()).addEntity(GoodsSpecial.class);
+        query.setParameter("end_time", currentTime);
+        return query.list();
     }
 }
