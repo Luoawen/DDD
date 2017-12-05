@@ -4,6 +4,7 @@ import cn.m2c.ddd.common.port.adapter.persistence.springJdbc.SupportJdbcTemplate
 import cn.m2c.scm.application.special.data.bean.GoodsSkuSpecialBean;
 import cn.m2c.scm.application.special.data.bean.GoodsSpecialBean;
 import cn.m2c.scm.application.special.data.bean.GoodsSpecialDetailBean;
+import cn.m2c.scm.application.special.data.bean.GoodsSpecialListBean;
 import cn.m2c.scm.application.utils.Utils;
 
 import org.apache.commons.lang3.StringUtils;
@@ -122,7 +123,7 @@ public class GoodsSpecialQueryApplication {
 	 * @param rows
 	 * @return
 	 */
-	public List<GoodsSpecialBean> queryGoodsSpecialBeanList(Integer status, String startTime, String endTime,
+	public List<GoodsSpecialListBean> queryGoodsSpecialBeanList(Integer status, String startTime, String endTime,
 			String searchMessage, Integer pageNum, Integer rows) {
 		StringBuilder sql = new StringBuilder();
 		List<Object> params = new ArrayList<Object>();
@@ -147,13 +148,28 @@ public class GoodsSpecialQueryApplication {
 		sql.append(" LIMIT ?,?");
         params.add(rows * (pageNum - 1));
         params.add(rows);
-        List<GoodsSpecialBean> goodsSpecialBeanList = this.getSupportJdbcTemplate().queryForBeanList(sql.toString(),GoodsSpecialBean.class,params.toArray());
+        List<GoodsSpecialListBean> goodsSpecialBeanList = this.getSupportJdbcTemplate().queryForBeanList(sql.toString(),GoodsSpecialListBean.class,params.toArray());
         if(goodsSpecialBeanList != null && goodsSpecialBeanList.size() >= 0) {
-        	for(GoodsSpecialBean goodsSpecialBean : goodsSpecialBeanList ) {
-        		goodsSpecialBean.setGoodsSpecialSkuBeans(queryGoodsSkuSpecialBeanBySpecialId(goodsSpecialBean.getId()));
+        	for(GoodsSpecialListBean goodsSpecialBean : goodsSpecialBeanList ) {
+        		goodsSpecialBean.setSpecialPriceMin(querySpecialPriceMin(goodsSpecialBean.getId()));
         	}
         }
 		return goodsSpecialBeanList;
+	}
+	
+	/**
+	 * 根据specialId查询商品最小特惠价
+	 * @param specialId
+	 * @return
+	 */
+	public Long querySpecialPriceMin(Integer specialId) {
+		StringBuilder sql = new StringBuilder();
+		sql.append(" SELECT ");
+		sql.append(" MIN( special_price ) ");
+		sql.append(" FROM ");
+		sql.append(" t_scm_goods_sku_special ");
+		sql.append(" WHERE special_id = ? ");
+		return supportJdbcTemplate.jdbcTemplate().queryForObject(sql.toString(), Long.class , specialId);
 	}
 	
 	/**

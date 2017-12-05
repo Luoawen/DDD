@@ -10,6 +10,7 @@ import cn.m2c.scm.application.special.command.GoodsSpecialModifyCommand;
 import cn.m2c.scm.application.special.data.bean.GoodsSkuSpecialBean;
 import cn.m2c.scm.application.special.data.bean.GoodsSpecialBean;
 import cn.m2c.scm.application.special.data.bean.GoodsSpecialDetailBean;
+import cn.m2c.scm.application.special.data.bean.GoodsSpecialListBean;
 import cn.m2c.scm.application.special.data.representation.GoodsSpecialListRepresentation;
 import cn.m2c.scm.application.special.query.GoodsSpecialQueryApplication;
 import cn.m2c.scm.domain.IDGenerator;
@@ -173,11 +174,11 @@ public class GoodsSpecialAgent {
         	Integer total = goodsSpecialQueryApplication.queryGoodsSpecialCount(status, startTime, endTime, searchMessage);
         	if(total > 0) {
         		//查特惠价bean集合
-        		List<GoodsSpecialBean> goodsSpecialBeanList =  goodsSpecialQueryApplication.queryGoodsSpecialBeanList(status, startTime, endTime, searchMessage, pageNum, rows);
+        		List<GoodsSpecialListBean> goodsSpecialBeanList =  goodsSpecialQueryApplication.queryGoodsSpecialBeanList(status, startTime, endTime, searchMessage, pageNum, rows);
         		if(null != goodsSpecialBeanList && goodsSpecialBeanList.size()>0 ) {
         			//封装表述对象
         			List<GoodsSpecialListRepresentation> representations = new ArrayList<GoodsSpecialListRepresentation>();
-        			for(GoodsSpecialBean goodsSpecialBean : goodsSpecialBeanList) {
+        			for(GoodsSpecialListBean goodsSpecialBean : goodsSpecialBeanList) {
         				representations.add(new GoodsSpecialListRepresentation(goodsSpecialBean));
         			}
         			result.setContent(representations);
