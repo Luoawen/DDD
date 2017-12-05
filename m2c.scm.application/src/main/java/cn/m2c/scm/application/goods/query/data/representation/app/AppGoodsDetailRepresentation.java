@@ -5,6 +5,8 @@ import cn.m2c.scm.application.comment.query.data.bean.GoodsCommentBean;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsBean;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsGuaranteeBean;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsSkuBean;
+import cn.m2c.scm.application.special.data.bean.GoodsSkuSpecialBean;
+import cn.m2c.scm.application.special.data.bean.GoodsSpecialBean;
 import com.baidu.disconf.client.usertools.DisconfDataGetter;
 
 import java.util.ArrayList;
@@ -40,10 +42,11 @@ public class AppGoodsDetailRepresentation {
     private List<Map> goodsTags;
     private String desc;
     private String customerTel;
+    private Map goodsSpecial;
 
     public AppGoodsDetailRepresentation(GoodsBean bean, List<GoodsGuaranteeBean> goodsGuaranteeBeans,
                                         String goodsUnitName, String mresId, Integer commentTotal, GoodsCommentBean goodsCommentBean,
-                                        List<Map> fullCuts, List<Map> goodsTags, String favoriteId, String phone) {
+                                        List<Map> fullCuts, List<Map> goodsTags, String favoriteId, String phone, GoodsSpecialBean goodsSpecialBean) {
         this.skuFlag = bean.getSkuFlag();
         this.dealerId = bean.getDealerId();
         this.dealerName = bean.getDealerName();
@@ -111,6 +114,27 @@ public class AppGoodsDetailRepresentation {
         }
         this.desc = bean.getGoodsDesc();
         this.customerTel = phone;
+
+        // 特惠价
+        if (null != goodsSpecialBean) {
+            this.goodsSpecial = new HashMap<>();
+            this.goodsSpecial.put("startTime", goodsSpecialBean.getStartTime());
+            this.goodsSpecial.put("endTime", goodsSpecialBean.getEndTime());
+            this.goodsSpecial.put("congratulations", goodsSpecialBean.getCongratulations());
+            this.goodsSpecial.put("activityDescription", goodsSpecialBean.getActivityDescription());
+            if (null != this.goodsSKUs && this.goodsSKUs.size() > 0) {
+                List<GoodsSkuSpecialBean> skuSpecials = goodsSpecialBean.getGoodsSpecialSkuBeans();
+                for (AppGoodsSkuRepresentation sku : this.goodsSKUs) {
+                    if (null != skuSpecials && skuSpecials.size() > 0) {
+                        for (GoodsSkuSpecialBean skuSpecialBean : skuSpecials) {
+                            if (skuSpecialBean.getSkuId().equals(sku.getSkuId())) {
+                                sku.setSpecialPrice(skuSpecialBean.getSpecialPrice());
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     public String getGoodsName() {
@@ -287,5 +311,13 @@ public class AppGoodsDetailRepresentation {
 
     public void setCustomerTel(String customerTel) {
         this.customerTel = customerTel;
+    }
+
+    public Map getGoodsSpecial() {
+        return goodsSpecial;
+    }
+
+    public void setGoodsSpecial(Map goodsSpecial) {
+        this.goodsSpecial = goodsSpecial;
     }
 }

@@ -28,6 +28,11 @@ public class AppGoodsSkuRepresentation {
 
     private Float weight;
 
+    /**
+     * 特惠价
+     */
+    private Long specialPrice;
+
     public AppGoodsSkuRepresentation(GoodsSkuBean bean) {
         this.skuId = bean.getSkuId();
         this.skuName = "".equals(bean.getSkuName()) ? "默认" : bean.getSkuName();
@@ -74,5 +79,13 @@ public class AppGoodsSkuRepresentation {
 
     public void setWeight(Float weight) {
         this.weight = weight;
+    }
+
+    public Long getSpecialPrice() {
+        return specialPrice;
+    }
+
+    public void setSpecialPrice(Long specialPrice) {
+        this.specialPrice = specialPrice;
     }
 }
