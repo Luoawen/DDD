@@ -12,7 +12,7 @@ public class GoodsSpecialBean {
     @ColumnAlias(value = "id")
     private Integer id;
     @ColumnAlias(value = "special_id")
-    private Integer specialId;
+    private String specialId;
     @ColumnAlias(value = "goods_id")
     private String goodsId;
     @ColumnAlias(value = "goods_name")
@@ -48,11 +48,11 @@ public class GoodsSpecialBean {
         this.id = id;
     }
 
-    public Integer getSpecialId() {
+    public String getSpecialId() {
         return specialId;
     }
 
-    public void setSpecialId(Integer specialId) {
+    public void setSpecialId(String specialId) {
         this.specialId = specialId;
     }
 
