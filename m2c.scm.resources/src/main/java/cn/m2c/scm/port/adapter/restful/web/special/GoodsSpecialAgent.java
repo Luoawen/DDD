@@ -173,7 +173,7 @@ public class GoodsSpecialAgent {
     		//查总数
         	Integer total = goodsSpecialQueryApplication.queryGoodsSpecialCount(status, startTime, endTime, searchMessage);
         	if(total > 0) {
-        		List<GoodsSpecialListBean> goodsSpecialBeanLists =  goodsSpecialQueryApplication.queryGoodsSpecialBeanList(status, startTime, endTime, searchMessage, pageNum, rows);
+        		List<GoodsSpecialListBean> goodsSpecialBeanLists =  goodsSpecialQueryApplication.queryGoodsSpecialListBeanList(status, startTime, endTime, searchMessage, pageNum, rows);
         		if(null != goodsSpecialBeanLists && goodsSpecialBeanLists.size()>0 ) {
         			List<GoodsSpecialListRepresentation> representations = new ArrayList<GoodsSpecialListRepresentation>();
         			for(GoodsSpecialListBean bean : goodsSpecialBeanLists) {
@@ -203,7 +203,7 @@ public class GoodsSpecialAgent {
     		){
     	MResult result = new MResult(MCode.V_1);
     	try {
-    		GoodsSpecialDetailBean goodsSpecialDetailBean = goodsSpecialQueryApplication.queryGoodsSkuSpecialBeanBySpecialId(specialId);
+    		GoodsSpecialDetailBean goodsSpecialDetailBean = goodsSpecialQueryApplication.queryGoodsSpecialDetailBeanBySpecialId(specialId);
 			if(goodsSpecialDetailBean != null) {
 				result.setContent(goodsSpecialDetailBean);
 			}

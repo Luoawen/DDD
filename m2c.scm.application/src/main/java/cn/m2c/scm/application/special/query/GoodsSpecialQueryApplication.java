@@ -123,7 +123,7 @@ public class GoodsSpecialQueryApplication {
 	 * @param rows
 	 * @return
 	 */
-	public List<GoodsSpecialListBean> queryGoodsSpecialBeanList(Integer status, String startTime, String endTime,
+	public List<GoodsSpecialListBean> queryGoodsSpecialListBeanList(Integer status, String startTime, String endTime,
 			String searchMessage, Integer pageNum, Integer rows) {
 		StringBuilder sql = new StringBuilder();
 		List<Object> params = new ArrayList<Object>();
@@ -177,7 +177,7 @@ public class GoodsSpecialQueryApplication {
 	 * @param sPecialId
 	 * @return
 	 */
-	public List<GoodsSkuSpecialBean> queryGoodsSkuSpecialBeanBySpecialId(Integer specialId){
+	public List<GoodsSkuSpecialBean> queryGoodsSkuSpecialBeanListBySpecialId(Integer specialId){
 		StringBuilder sql = new StringBuilder();
 		sql.append(" SELECT ");
 		sql.append(" * ");
@@ -191,7 +191,7 @@ public class GoodsSpecialQueryApplication {
 	 * @param specialId
 	 * @return
 	 */
-	public GoodsSpecialDetailBean queryGoodsSkuSpecialBeanBySpecialId(String specialId) {
+	public GoodsSpecialDetailBean queryGoodsSpecialDetailBeanBySpecialId(String specialId) {
 		StringBuilder sql = new StringBuilder();
 		sql.append(" SELECT ");
 		sql.append(" * ");
@@ -199,7 +199,7 @@ public class GoodsSpecialQueryApplication {
 		sql.append(" t_scm_goods_special WHERE 1 = 1 AND special_id = ? ");
 		GoodsSpecialDetailBean goodsSpecialDetailBean =  this.getSupportJdbcTemplate().queryForBean(sql.toString(),GoodsSpecialDetailBean.class,specialId);
 		if(goodsSpecialDetailBean != null) {
-			goodsSpecialDetailBean.setGoodsSkuSpecials(queryGoodsSkuSpecialBeanBySpecialId(goodsSpecialDetailBean.getId()));
+			goodsSpecialDetailBean.setGoodsSkuSpecials(queryGoodsSkuSpecialBeanListBySpecialId(goodsSpecialDetailBean.getId()));
 		}
 		return goodsSpecialDetailBean;
 	}
