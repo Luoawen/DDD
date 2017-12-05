@@ -3,6 +3,8 @@ package cn.m2c.scm.port.adapter.restful.web.goods;
 import cn.m2c.common.MCode;
 import cn.m2c.common.MPager;
 import cn.m2c.common.MResult;
+import cn.m2c.scm.application.classify.data.bean.GoodsClassifyBean;
+import cn.m2c.scm.application.classify.query.GoodsClassifyQueryApplication;
 import cn.m2c.scm.application.dealer.data.bean.DealerBean;
 import cn.m2c.scm.application.dealer.query.DealerQuery;
 import cn.m2c.scm.application.goods.query.GoodsQueryApplication;
@@ -40,6 +42,9 @@ public class GoodsQueryAgent {
     GoodsQueryApplication goodsQueryApplication;
     @Autowired
     DealerQuery dealerQuery;
+    @Autowired
+    GoodsClassifyQueryApplication goodsClassifyQueryApplication;
+
     /**
      * 商品筛选根据商品类别，名称、标题、编号筛选
      *
@@ -97,7 +102,9 @@ public class GoodsQueryAgent {
         try {
             GoodsBean goodsBean = goodsQueryApplication.queryGoodsByGoodsId(goodsId);
             if (null != goodsBean) {
-                GoodsSimpleDetailRepresentation representation = new GoodsSimpleDetailRepresentation(goodsBean);
+                GoodsClassifyBean goodsClassifyBean = goodsClassifyQueryApplication.queryGoodsClassifiesById(goodsBean.getGoodsClassifyId());
+                String classifyName = null != goodsClassifyBean ? goodsClassifyBean.getClassifyName() : "";
+                GoodsSimpleDetailRepresentation representation = new GoodsSimpleDetailRepresentation(goodsBean,classifyName);
                 result.setContent(representation);
             }
             result.setStatus(MCode.V_200);
