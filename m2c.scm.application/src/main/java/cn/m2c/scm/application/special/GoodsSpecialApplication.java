@@ -76,4 +76,24 @@ public class GoodsSpecialApplication {
             goodsSpecial.modifyGoodsSkuSpecial(addSkuList);
         }
     }
+
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class, ParseException.class})
+    public void startGoodsSpecial() throws NegativeException{
+        List<GoodsSpecial> goodsSpecials = goodsSpecialRepository.getStartGoodsSpecial();
+        if (null != goodsSpecials && goodsSpecials.size() > 0) {
+            for (GoodsSpecial goodsSpecial : goodsSpecials) {
+                goodsSpecial.startSpecial();
+            }
+        }
+    }
+
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class, ParseException.class})
+    public void endGoodsSpecial() throws NegativeException{
+        List<GoodsSpecial> goodsSpecials = goodsSpecialRepository.getEndGoodsSpecial();
+        if (null != goodsSpecials && goodsSpecials.size() > 0) {
+            for (GoodsSpecial goodsSpecial : goodsSpecials) {
+                goodsSpecial.endSpecial();
+            }
+        }
+    }
 }

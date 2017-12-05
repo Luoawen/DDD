@@ -136,4 +136,12 @@ public class GoodsSpecial extends ConcurrencySafeEntity {
             this.goodsSkuSpecials.add(goodsSkuSpecial);
         }
     }
+
+    public void startSpecial() {
+        this.status = 1;
+    }
+
+    public void endSpecial() {
+        this.status = 2;
+    }
 }

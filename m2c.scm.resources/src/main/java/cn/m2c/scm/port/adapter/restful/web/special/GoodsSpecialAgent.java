@@ -8,7 +8,6 @@ import cn.m2c.scm.application.special.GoodsSpecialApplication;
 import cn.m2c.scm.application.special.command.GoodsSpecialAddCommand;
 import cn.m2c.scm.application.special.command.GoodsSpecialModifyCommand;
 import cn.m2c.scm.application.special.data.bean.GoodsSkuSpecialBean;
-import cn.m2c.scm.application.special.data.bean.GoodsSpecialBean;
 import cn.m2c.scm.application.special.data.bean.GoodsSpecialDetailBean;
 import cn.m2c.scm.application.special.data.bean.GoodsSpecialListBean;
 import cn.m2c.scm.application.special.data.representation.GoodsSpecialListRepresentation;
@@ -209,7 +208,7 @@ public class GoodsSpecialAgent {
 			}
 			result.setStatus(MCode.V_200);
 		} catch (Exception e) {
-			LOGGER.error("getGoodsSpecailDetailBySpecialId Exception e:",e);
+			LOGGER.error("getGoodsSpecialDetailBySpecialId Exception e:",e);
 			result = new MResult(MCode.V_400, "查询商品特惠价详情失败");
 		}
     	return new ResponseEntity<MResult>(result, HttpStatus.OK);
