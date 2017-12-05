@@ -100,8 +100,8 @@ public class GoodsSpecialQueryApplication {
 		}
 		if(StringUtils.isNotEmpty(startTime) && StringUtils.isNotEmpty(endTime)) {
 			sql.append(" AND start_time >= ? AND end_time <= ? ");
-            params.add(startTime);
-            params.add(endTime);
+            params.add(startTime+ " 00:00:00 ");
+            params.add(endTime+ " 23:59:59 ");
 		}
 		if(StringUtils.isNotEmpty(searchMessage)) {
 			sql.append(" AND ( goods_name LIKE ? OR dealer_name Like ? ) ");
@@ -136,8 +136,8 @@ public class GoodsSpecialQueryApplication {
 		}
 		if(StringUtils.isNotEmpty(startTime) && StringUtils.isNotEmpty(endTime)) {
 			sql.append(" AND start_time >= ? AND end_time <= ? ");
-            params.add(startTime);
-            params.add(endTime);
+            params.add(startTime+ " 00:00:00 ");
+            params.add(endTime+ " 23:59:59 ");
 		}
 		if(StringUtils.isNotEmpty(searchMessage)) {
 			sql.append(" AND ( goods_name LIKE ? OR dealer_name Like ? ) ");
