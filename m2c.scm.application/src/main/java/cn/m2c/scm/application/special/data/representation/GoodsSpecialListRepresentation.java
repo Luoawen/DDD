@@ -1,12 +1,7 @@
 package cn.m2c.scm.application.special.data.representation;
 
 import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
-import cn.m2c.common.JsonUtils;
-import cn.m2c.scm.application.special.data.bean.GoodsSkuSpecialBean;
-import cn.m2c.scm.application.special.data.bean.GoodsSpecialBean;
+import cn.m2c.scm.application.special.data.bean.GoodsSpecialListBean;
 
 /**
  * 特惠价详情表述对象
@@ -27,13 +22,13 @@ public class GoodsSpecialListRepresentation {
     //private String activityDescription;
     private Integer status; //状态（0未生效，1已生效，2已失效）
     //private Date createTime;
-    private List<Map> goodsSkuSpecials;
+    //private List<Map> goodsSkuSpecials;
     /**
      * 页面展示最小特惠价
      */
     private Long specialPriceMin;
     
-    public GoodsSpecialListRepresentation(GoodsSpecialBean goodsSpecialBean){
+    public GoodsSpecialListRepresentation(GoodsSpecialListBean goodsSpecialBean){
     	this.specialId = goodsSpecialBean.getSpecialId().toString();
     	this.goodsId = goodsSpecialBean.getGoodsId();
     	this.goodsName = goodsSpecialBean.getGoodsName();
@@ -46,14 +41,14 @@ public class GoodsSpecialListRepresentation {
     	//this.activityDescription = goodsSpecialBean.getActivityDescription();
     	this.status = goodsSpecialBean.getStatus();
     	//this.createTime = goodsSpecialBean.getCreateTime();
-    	this.goodsSkuSpecials = JsonUtils.toList(JsonUtils.toStr(goodsSpecialBean.getGoodsSpecialSkuBeans()),Map.class);
-    	Long specialPriceMinCompare = Long.MAX_VALUE;
+    	//this.goodsSkuSpecials = JsonUtils.toList(JsonUtils.toStr(goodsSpecialBean.getGoodsSpecialSkuBeans()),Map.class);
+    	/*Long specialPriceMinCompare = Long.MAX_VALUE;
     	for(GoodsSkuSpecialBean goodsSkuSpecialBean : goodsSpecialBean.getGoodsSpecialSkuBeans()) {
     		if(goodsSkuSpecialBean.getSpecialPrice()< specialPriceMinCompare ) {
     			specialPriceMinCompare = goodsSkuSpecialBean.getSpecialPrice();
     		}
-    	}
-    	this.specialPriceMin = specialPriceMinCompare;
+    	}*/
+    	this.specialPriceMin = goodsSpecialBean.getSpecialPriceMin();
     }
     
 	public String getSpecialId() {
@@ -127,13 +122,13 @@ public class GoodsSpecialListRepresentation {
 	}
 	public void setCreateTime(Date createTime) {
 		this.createTime = createTime;
-	}*/
+	}
 	public List<Map> getGoodsSkuSpecials() {
 		return goodsSkuSpecials;
 	}
 	public void setGoodsSkuSpecials(List<Map> goodsSkuSpecials) {
 		this.goodsSkuSpecials = goodsSkuSpecials;
-	}
+	}*/
 	public Long getSpecialPriceMin() {
 		return specialPriceMin;
 	}
