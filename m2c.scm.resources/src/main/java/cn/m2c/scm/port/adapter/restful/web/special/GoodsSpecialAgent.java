@@ -208,6 +208,7 @@ public class GoodsSpecialAgent {
 			if(goodsSpecialBean != null) {
 				result.setContent(goodsSpecialBean);
 			}
+			result.setStatus(MCode.V_200);
 		} catch (Exception e) {
 			LOGGER.error("getGoodsSpecailDetailBySpecialId Exception e:",e);
 			result = new MResult(MCode.V_400, "查询商品特惠价详情失败");
