@@ -34,7 +34,7 @@ public class GoodsSpecialAgent {
 
     @Autowired
     GoodsSpecialApplication goodsSpecialApplication;
-
+    
     /**
      * 获取ID
      *
@@ -139,7 +139,6 @@ public class GoodsSpecialAgent {
         }
         return new ResponseEntity<MResult>(result, HttpStatus.OK);
     }
-
     public static void main(String[] args) {
         GoodsSkuSpecialBean bean = new GoodsSkuSpecialBean();
         bean.setSkuId("20171123193901738268");
