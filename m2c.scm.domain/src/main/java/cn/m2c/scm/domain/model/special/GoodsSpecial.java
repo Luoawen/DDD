@@ -117,10 +117,10 @@ public class GoodsSpecial extends ConcurrencySafeEntity {
         //排序
         Collections.sort(this.goodsSkuSpecials, new Comparator<GoodsSkuSpecial>() {
             public int compare(GoodsSkuSpecial skuSpecial1, GoodsSkuSpecial skuSpecial2) {
-                if (skuSpecial1.specialPrice().compareTo(skuSpecial2.specialPrice()) == 0) {
-                    return skuSpecial2.supplyPrice().compareTo(skuSpecial1.supplyPrice());
+                if (skuSpecial2.specialPrice().compareTo(skuSpecial1.specialPrice()) == 0) {
+                    return skuSpecial1.supplyPrice().compareTo(skuSpecial2.supplyPrice());
                 } else {
-                    return skuSpecial1.specialPrice().compareTo(skuSpecial2.specialPrice());
+                    return skuSpecial2.specialPrice().compareTo(skuSpecial1.specialPrice());
                 }
             }
         });
