@@ -16,6 +16,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -264,12 +265,18 @@ public class Goods extends ConcurrencySafeEntity {
             if (null == this.goodsSKUs) {
                 this.goodsSKUs = new ArrayList<>();
             }
+            List<Map> addSkuList = new ArrayList<>();
             for (Map map : skuList) {
                 String skuId = GetMapValueUtils.getStringFromMapKey(map, "skuId");
                 // 判断商品规格sku是否存在,存在就修改供货价和拍获价，不存在就增加商品sku
                 GoodsSku goodsSku = getGoodsSKU(skuId);
                 if (null == goodsSku) {// 增加规格
                     this.goodsSKUs.add(createGoodsSku(map));
+                    Map skuMap = new HashMap<>();
+                    skuMap.put("skuId",skuId);
+                    String skuName = GetMapValueUtils.getStringFromMapKey(map, "skuName");
+                    skuMap.put("skuName",skuName);
+                    addSkuList.add(skuMap);
                 } else { // 修改供货价和拍获价
                     Long photographPrice = GetMapValueUtils.getLongFromMapKey(map, "photographPrice");
                     Long supplyPrice = GetMapValueUtils.getLongFromMapKey(map, "supplyPrice");
@@ -278,7 +285,7 @@ public class Goods extends ConcurrencySafeEntity {
             }
             DomainEventPublisher
                     .instance()
-                    .publish(new GoodsModifyApproveSkuEvent(this.goodsId));
+                    .publish(new GoodsModifyApproveSkuEvent(this.goodsId, addSkuList));
         }
     }
 

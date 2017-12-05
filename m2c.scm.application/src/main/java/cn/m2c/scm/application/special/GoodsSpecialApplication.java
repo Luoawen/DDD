@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.text.ParseException;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 商品特惠活动
@@ -60,5 +62,18 @@ public class GoodsSpecialApplication {
         }
         goodsSpecial.modifyGoodsSpecial(command.getStartTime(), command.getEndTime(),
                 command.getCongratulations(), command.getActivityDescription(), command.getGoodsSkuSpecials());
+    }
+
+    /**
+     * 商品增加了规格，同步修改商品特惠活动，规则取特惠价最大，供货价最小的
+     *
+     * @param goodsId
+     */
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class, ParseException.class})
+    public void modifyGoodsSkuSpecial(String goodsId, List<Map> addSkuList) throws NegativeException, ParseException {
+        GoodsSpecial goodsSpecial = goodsSpecialRepository.queryGoodsSpecialByGoodsId(goodsId);
+        if (null != goodsSpecial) {
+            goodsSpecial.modifyGoodsSkuSpecial(addSkuList);
+        }
     }
 }
