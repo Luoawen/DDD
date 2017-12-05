@@ -155,10 +155,8 @@ public class AppGoodsAgent {
 
                 String phone = shopQuery.getDealerShopCustmerTel(goodsBean.getDealerId());
 
-                // 特惠价
-                GoodsSpecialBean goodsSpecialBean = goodsSpecialQueryApplication.queryGoodsSpecialByGoodsId(goodsBean.getGoodsId());
                 AppGoodsDetailRepresentation representation = new AppGoodsDetailRepresentation(goodsBean,
-                        goodsGuarantee, goodsUnitName, null, commentTotal, goodsCommentBean, fullCut, goodsTags, favoriteId, phone, goodsSpecialBean);
+                        goodsGuarantee, goodsUnitName, null, commentTotal, goodsCommentBean, fullCut, goodsTags, favoriteId, phone, null);
                 result.setContent(representation);
             }
             result.setStatus(MCode.V_200);
