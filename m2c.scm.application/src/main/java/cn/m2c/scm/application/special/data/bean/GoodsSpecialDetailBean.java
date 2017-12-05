@@ -1,13 +1,12 @@
 package cn.m2c.scm.application.special.data.bean;
 
 import cn.m2c.ddd.common.persistence.orm.ColumnAlias;
-import cn.m2c.scm.domain.model.special.GoodsSkuSpecial;
 
 import java.util.Date;
 import java.util.List;
 
 /**
- * 商品特惠价详情(一个规格对应一个特惠价)
+ * 商品特惠价详情(一个规格对应一个特惠价)(详情按钮)
  */
 public class GoodsSpecialDetailBean {
     @ColumnAlias(value = "id")

@@ -3,7 +3,6 @@ package cn.m2c.scm.application.special.data.bean;
 import cn.m2c.ddd.common.persistence.orm.ColumnAlias;
 
 import java.util.Date;
-import java.util.List;
 
 /**
  * 商品特惠价List(首页展示)
