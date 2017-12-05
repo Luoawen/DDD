@@ -3,9 +3,13 @@ package cn.m2c.scm.application.special.query;
 import cn.m2c.ddd.common.port.adapter.persistence.springJdbc.SupportJdbcTemplate;
 import cn.m2c.scm.application.special.data.bean.GoodsSkuSpecialBean;
 import cn.m2c.scm.application.special.data.bean.GoodsSpecialBean;
+
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -33,12 +37,17 @@ public class GoodsSpecialQueryApplication {
         sql.append(" t_scm_goods_special WHERE 1 = 1 AND status = 1");
         GoodsSpecialBean goodsSpecialBean = this.getSupportJdbcTemplate().queryForBean(sql.toString(), GoodsSpecialBean.class);
         if (null != goodsSpecialBean) {
-            goodsSpecialBean.setGoodsSpecialSkuBeans(queryGoodsSkuSpecialBySpecialId(goodsSpecialBean.getId()));
+            goodsSpecialBean.setGoodsSpecialSkuBeans(queryGoodsSkuSpecialById(goodsSpecialBean.getId()));
         }
         return goodsSpecialBean;
     }
 
-    public List<GoodsSkuSpecialBean> queryGoodsSkuSpecialBySpecialId(Integer specialId) {
+    /**
+	 * 根据specialId查询GoodsSkuSpecialBean
+	 * @param sPecialId
+	 * @return
+	 */
+    public List<GoodsSkuSpecialBean> queryGoodsSkuSpecialById(Integer specialId) {
         StringBuilder sql = new StringBuilder();
         sql.append(" SELECT ");
         sql.append(" * ");
@@ -46,4 +55,113 @@ public class GoodsSpecialQueryApplication {
         sql.append(" t_scm_goods_sku_special WHERE 1 = 1 AND special_id = ?");
         return this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsSkuSpecialBean.class, specialId);
     }
+
+    /**
+     * 查询特惠价商品的总数
+     * @param status
+     * @param startTime
+     * @param endTime
+     * @param searchMessage
+     * @return
+     */
+	public Integer queryGoodsSpecialCount(Integer status, String startTime, String endTime, String searchMessage) {
+		StringBuilder sql = new StringBuilder();
+		List<Object> params = new ArrayList<Object>();
+		sql.append(" SELECT ");
+		sql.append(" count(*) ");
+		sql.append(" From ");
+		sql.append(" t_scm_goods_special WHERE 1 = 1 ");
+		if(null != status) {
+			sql.append(" AND status = ? ");
+			params.add(status);
+		}
+		if(StringUtils.isNotEmpty(startTime) && StringUtils.isNotEmpty(endTime)) {
+			sql.append(" AND start_time >= ? AND end_time <= ? ");
+            params.add(startTime);
+            params.add(endTime);
+		}
+		if(StringUtils.isNotEmpty(searchMessage)) {
+			sql.append(" AND ( goods_name LIKE ? OR dealer_name Like ? ) ");
+			params.add("%"+searchMessage+"%");
+			params.add("%"+searchMessage+"%");
+		}
+		
+		return supportJdbcTemplate.jdbcTemplate().queryForObject(sql.toString(), params.toArray(), Integer.class);
+	}
+
+	/**
+	 * 查询商品特惠价List
+	 * @param status
+	 * @param startTime
+	 * @param endTime
+	 * @param searchMessage
+	 * @param pageNum
+	 * @param rows
+	 * @return
+	 */
+	public List<GoodsSpecialBean> queryGoodsSpecialBeanList(Integer status, String startTime, String endTime,
+			String searchMessage, Integer pageNum, Integer rows) {
+		StringBuilder sql = new StringBuilder();
+		List<Object> params = new ArrayList<Object>();
+		sql.append(" SELECT ");
+		sql.append(" * ");
+		sql.append(" From ");
+		sql.append(" t_scm_goods_special WHERE 1 = 1 ");
+		if(null != status) {
+			sql.append(" AND status = ? ");
+			params.add(status);
+		}
+		if(StringUtils.isNotEmpty(startTime) && StringUtils.isNotEmpty(endTime)) {
+			sql.append(" AND start_time >= ? AND end_time <= ? ");
+            params.add(startTime);
+            params.add(endTime);
+		}
+		if(StringUtils.isNotEmpty(searchMessage)) {
+			sql.append(" AND ( goods_name LIKE ? OR dealer_name Like ? ) ");
+			params.add("%"+searchMessage+"%");
+			params.add("%"+searchMessage+"%");
+		}
+		sql.append(" LIMIT ?,?");
+        params.add(rows * (pageNum - 1));
+        params.add(rows);
+        List<GoodsSpecialBean> goodsSpecialBeanList = this.getSupportJdbcTemplate().queryForBeanList(sql.toString(),GoodsSpecialBean.class,params.toArray());
+        if(goodsSpecialBeanList != null && goodsSpecialBeanList.size() >= 0) {
+        	for(GoodsSpecialBean goodsSpecialBean : goodsSpecialBeanList ) {
+        		goodsSpecialBean.setGoodsSpecialSkuBeans(queryGoodsSkuSpecialById(goodsSpecialBean.getId()));
+        	}
+        }
+		return goodsSpecialBeanList;
+	}
+	
+	/**
+	 * 根据specialId查询GoodsSkuSpecialBean
+	 * @param sPecialId
+	 * @return
+	 */
+	public List<GoodsSkuSpecialBean> queryGoodsSkuSpecialBeanBySpecialId(Integer specialId){
+		StringBuilder sql = new StringBuilder();
+		sql.append(" SELECT ");
+		sql.append(" * ");
+		sql.append(" From ");
+		sql.append(" t_scm_goods_sku_special WHERE 1 = 1 AND special_id = ?");
+		return this.getSupportJdbcTemplate().queryForBeanList(sql.toString(),GoodsSkuSpecialBean.class,specialId);
+	}
+
+	/**
+	 * 根据specialId查询GoodsSpecialBean
+	 * @param specialId
+	 * @return
+	 */
+	public GoodsSpecialBean queryGoodsSkuSpecialBeanBySpecialId(String specialId) {
+		StringBuilder sql = new StringBuilder();
+		sql.append(" SELECT ");
+		sql.append(" * ");
+		sql.append(" From ");
+		sql.append(" t_scm_goods_special WHERE 1 = 1 AND special_id = ?");
+		GoodsSpecialBean goodsSpecialBean =  this.getSupportJdbcTemplate().queryForBean(sql.toString(),GoodsSpecialBean.class,specialId);
+		if(goodsSpecialBean != null) {
+			goodsSpecialBean.setGoodsSpecialSkuBeans(queryGoodsSkuSpecialBeanBySpecialId(goodsSpecialBean.getId()));
+		}
+		return goodsSpecialBean;
+	}
 }
