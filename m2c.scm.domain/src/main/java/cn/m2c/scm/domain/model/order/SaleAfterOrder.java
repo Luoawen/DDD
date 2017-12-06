@@ -44,7 +44,7 @@ public class SaleAfterOrder extends ConcurrencySafeEntity {
 	private String rejectReason;
 	/**状态，0申请退货,1申请换货,2申请退款,3拒绝,4同意(退换货),5客户寄出,6商家收到,7商家寄出,8客户收到,9同意退款, 10确认退款 11交易完成，12交易关闭*/
 	private Integer status;
-	/**售后单类型*/
+	/**售后单类型 0换货， 1退货，2仅退款*/
 	private Integer orderType;
 	/**退款金额*/
 	private Long backMoney;
@@ -221,6 +221,25 @@ public class SaleAfterOrder extends ConcurrencySafeEntity {
 		updateTime = new Date();
 		DomainEventPublisher.instance().publish(new AfterRefundSuccEvt(saleAfterNo, orderId, dealerOrderId, dealerId, backMoney
 				, returnFreight, backNum, skuId));
+		return true;
+	}
+	
+	/***
+	 * 退款成功
+	 * @param refundNo
+	 * @param time
+	 * @return
+	 */
+	public boolean refundFailed(String refundNo, String userId) {
+		if (status != 9) {
+			return false;
+		}
+		if (orderType == 2)
+			status = 4;
+		else if (orderType == 1)
+			status = 6;
+		updateTime = new Date();
+		DomainEventPublisher.instance().publish(new OrderOptLogEvent(saleAfterNo, dealerOrderId, "退款失败", userId));
 		return true;
 	}
 	

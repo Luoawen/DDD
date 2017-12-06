@@ -257,6 +257,25 @@ public class SaleAfterOrderApp {
 		}
 		saleAfterRepository.updateSaleAfterOrder(order);		
 	}
+	/***
+	 * 退款失败
+	 * @param cmd
+	 */
+	@Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+	@EventListener(isListening=true)
+	public void refundFailed(String afterSaleNo, String userId) throws NegativeException {
+		LOGGER.info("===fanjc==afterSellOrderId==" + afterSaleNo);
+		SaleAfterOrder order = saleAfterRepository.getSaleAfterOrderByNo(afterSaleNo);
+		
+		if (order == null) {
+			throw new NegativeException(MCode.V_101, "无此售后单！");
+		}
+		
+		if (!order.refundFailed(afterSaleNo, userId)) {
+			throw new NegativeException(MCode.V_103, "状态不正确，不能进行此操作！");
+		}
+		saleAfterRepository.updateSaleAfterOrder(order);		
+	}
 	
 	public void scanDtlGoods(RefundEvtBean bean) throws NegativeException {
 		LOGGER.info("===fanjc==afterSellOrderId==" + bean.getAfterSellOrderId());
