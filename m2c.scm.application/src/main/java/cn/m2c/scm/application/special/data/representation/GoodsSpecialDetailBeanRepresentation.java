@@ -3,8 +3,6 @@ package cn.m2c.scm.application.special.data.representation;
 import java.util.Date;
 import java.util.List;
 
-import cn.m2c.ddd.common.persistence.orm.ColumnAlias;
-import cn.m2c.scm.application.special.data.bean.GoodsSkuSpecialDetailAllBean;
 import cn.m2c.scm.application.special.data.bean.GoodsSpecialDetailBean;
 
 /**
@@ -26,7 +24,7 @@ public class GoodsSpecialDetailBeanRepresentation {
     private String congratulations;
     private String activityDescription;
     private Integer status;
-    private List<GoodsSkuSpecialDetailAllBean> goodsSkuSpecials;
+    private List<GoodsSkuSpecialDetailAllBeanRepresentation> goodsSkuSpecials;
 
 	public GoodsSpecialDetailBeanRepresentation(GoodsSpecialDetailBean bean) {
 		this.id = bean.getId();
@@ -140,11 +138,11 @@ public class GoodsSpecialDetailBeanRepresentation {
 		this.status = status;
 	}
 
-	public List<GoodsSkuSpecialDetailAllBean> getGoodsSkuSpecials() {
+	public List<GoodsSkuSpecialDetailAllBeanRepresentation> getGoodsSkuSpecials() {
 		return goodsSkuSpecials;
 	}
 
-	public void setGoodsSkuSpecials(List<GoodsSkuSpecialDetailAllBean> goodsSkuSpecials) {
+	public void setGoodsSkuSpecials(List<GoodsSkuSpecialDetailAllBeanRepresentation> goodsSkuSpecials) {
 		this.goodsSkuSpecials = goodsSkuSpecials;
 	}
 	
