@@ -34,6 +34,7 @@ public class DealerOrderBean {
 	private String revPerson;
 	@ColumnAlias(value= "rev_phone")
 	private String revPhone;
+
 	
 	/**订单明细*/
 	private List<OrderDetailBean> orderDtls;

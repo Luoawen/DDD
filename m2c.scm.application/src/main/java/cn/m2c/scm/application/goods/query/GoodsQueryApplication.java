@@ -10,6 +10,7 @@ import cn.m2c.scm.application.goods.query.data.representation.GoodsSkuInfoRepres
 import cn.m2c.scm.application.order.query.dto.GoodsDto;
 import cn.m2c.scm.application.shop.data.bean.ShopBean;
 import cn.m2c.scm.application.shop.query.ShopQuery;
+import cn.m2c.scm.application.special.query.GoodsSpecialQueryApplication;
 import cn.m2c.scm.application.utils.Utils;
 import cn.m2c.scm.domain.NegativeException;
 import cn.m2c.scm.domain.service.goods.GoodsService;
@@ -54,6 +55,8 @@ public class GoodsQueryApplication {
     GoodsClassifyQueryApplication goodsClassifyQueryApplication;
     @Resource(name = "goodsDubboService")
     GoodsService goodsDubboService;
+    @Autowired
+    GoodsSpecialQueryApplication goodsSpecialQueryApplication;
 
     /**
      * 搜索
@@ -365,7 +368,7 @@ public class GoodsQueryApplication {
                             if (goodsId.equals(goodsBean.getGoodsId())) {
                                 goodsBean = queryGoodsByGoodsId(goodsId);
                                 tempList.add(goodsBean);
-                            }else{
+                            } else {
                                 tempList.add(goodsBean);
                             }
                         }
@@ -478,11 +481,12 @@ public class GoodsQueryApplication {
         sql.append(" t_scm_goods_sku where sku_id in (" + Utils.listParseString(skuIds) + ")");
         List<GoodsSkuBean> goodsSkuBeans = this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsSkuBean.class);
         if (null != goodsSkuBeans && goodsSkuBeans.size() > 0) {
+            Map specialMap = goodsSpecialQueryApplication.getEffectiveGoodsSkuSpecial(skuIds);
             for (GoodsSkuBean goodsSkuBean : goodsSkuBeans) {
                 GoodsBean goodsBean = queryGoodsById(goodsSkuBean.getGoodsId());
                 if (null != goodsBean) {
                     ShopBean shopBean = shopQuery.getShop(goodsBean.getDealerId());
-                    resultList.add(new GoodsSkuInfoRepresentation(goodsBean, goodsSkuBean, shopBean));
+                    resultList.add(new GoodsSkuInfoRepresentation(goodsBean, goodsSkuBean, shopBean, specialMap));
                 }
             }
         }
@@ -543,7 +547,7 @@ public class GoodsQueryApplication {
                             }
                         });
                         ShopBean shopBean = shopQuery.getShop(goodsBean.getDealerId());
-                        resultList.add(new GoodsSkuInfoRepresentation(goodsBean, goodsSkuBeans.get(goodsSkuBeans.size() - 1), shopBean));
+                        resultList.add(new GoodsSkuInfoRepresentation(goodsBean, goodsSkuBeans.get(goodsSkuBeans.size() - 1), shopBean, null));
                     }
                 }
                 if (null != resultList && resultList.size() > 0) {
@@ -922,7 +926,7 @@ public class GoodsQueryApplication {
             GoodsBean goodsBean = queryGoodsById(goodsSkuBean.getGoodsId());
             if (null != goodsBean) {
                 ShopBean shopBean = shopQuery.getShop(goodsBean.getDealerId());
-                return new GoodsSkuInfoRepresentation(goodsBean, goodsSkuBean, shopBean);
+                return new GoodsSkuInfoRepresentation(goodsBean, goodsSkuBean, shopBean, null);
             }
         }
         return null;
@@ -1075,6 +1079,47 @@ public class GoodsQueryApplication {
         sql.append(" t_scm_goods g,t_scm_goods_sku s WHERE 1 = 1 AND g.id = s.goods_id AND g.dealer_id = ? AND s.goods_code = ? AND g.del_status = 1");
         GoodsSkuBean bean = this.getSupportJdbcTemplate().queryForBean(sql.toString(), GoodsSkuBean.class, dealerId, goodsCode);
         return bean;
+    }
+
+    public List<GoodsBean> goodsChoiceRecognized(String condition, Integer pageNum, Integer rows) {
+        List<Object> params = new ArrayList<Object>();
+        StringBuilder sql = new StringBuilder();
+        sql.append(" SELECT ");
+        sql.append(" g.* ");
+        sql.append(" FROM ");
+        sql.append(" t_scm_goods g,t_scm_goods_sku s WHERE g.id=s.goods_id");
+        if (StringUtils.isNotEmpty(condition)) {
+            sql.append(" AND (g.goods_name like ? OR g.dealer_name like ?)");
+            params.add("%" + condition + "%");
+            params.add("%" + condition + "%");
+        }
+        sql.append(" AND g.del_status= 1 AND g.goods_status <> 3 AND g.recognized_id is not null group by g.goods_id ORDER BY g.created_date desc,s.photograph_price desc ");
+        sql.append(" LIMIT ?,?");
+        params.add(rows * (pageNum - 1));
+        params.add(rows);
+        List<GoodsBean> goodsBeanList = this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsBean.class, params.toArray());
+        if (null != goodsBeanList && goodsBeanList.size() > 0) {
+            for (GoodsBean goodsBean : goodsBeanList) {
+                goodsBean.setGoodsSkuBeans(queryGoodsSKUsByGoodsId(goodsBean.getId()));
+            }
+        }
+        return goodsBeanList;
+    }
+
+    public Integer goodsChoiceRecognizedTotal(String condition) {
+        List<Object> params = new ArrayList<Object>();
+        StringBuilder sql = new StringBuilder();
+        sql.append(" SELECT ");
+        sql.append(" count(distinct g.goods_id) ");
+        sql.append(" FROM ");
+        sql.append(" t_scm_goods g,t_scm_goods_sku s WHERE g.id=s.goods_id");
+        if (StringUtils.isNotEmpty(condition)) {
+            sql.append(" AND (g.goods_name like ? OR g.dealer_name like ?)");
+            params.add("%" + condition + "%");
+            params.add("%" + condition + "%");
+        }
+        sql.append(" AND g.del_status= 1 AND g.goods_status <> 3 AND g.recognized_id is not null");
+        return supportJdbcTemplate.jdbcTemplate().queryForObject(sql.toString(), params.toArray(), Integer.class);
     }
 }
 

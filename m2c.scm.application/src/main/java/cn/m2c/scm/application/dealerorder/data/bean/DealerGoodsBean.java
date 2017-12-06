@@ -43,6 +43,11 @@ public class DealerGoodsBean {
 	private Integer afOrderType;
 	
 	private Long backMoney;
+	
+	private Integer isSpecial;
+	
+	private long specialPrice;
+	
 	/**
 	 * 运费
 	 */
@@ -62,6 +67,22 @@ public class DealerGoodsBean {
 		if (afOrderType == null)
 			afOrderType = -1;
 		return afOrderType;
+	}
+	
+	public Integer getIsSpecial() {
+		return isSpecial;
+	}
+
+	public long getSpecialPrice() {
+		return specialPrice;
+	}
+
+	public void setIsSpecial(Integer isSpecial) {
+		this.isSpecial = isSpecial;
+	}
+
+	public void setSpecialPrice(long specialPrice) {
+		this.specialPrice = specialPrice;
 	}
 
 	public void setAfOrderType(Integer afOrderType) {

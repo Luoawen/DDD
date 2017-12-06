@@ -225,7 +225,7 @@ public class DealerOrderQuery {
 
         List<Object> params = new ArrayList<Object>();
         StringBuilder sql = new StringBuilder();
-        sql.append(" SELECT dtl.sku_id, dtl.sku_name, dtl.goods_name, dtl.goods_title, a.dealer_id, a.created_date, dtl.discount_price, \r\n")
+        sql.append(" SELECT dtl.sku_id, dtl.sku_name,dtl.is_special,dtl.special_price, dtl.goods_name, dtl.goods_title, a.dealer_id, a.created_date, dtl.discount_price, \r\n")
                 .append("dtl.sell_num, af._status afStatus, a._status, om.pay_no, a.dealer_order_id, dtl.goods_icon, a.created_date,\r\n")
                 .append(" a.rev_person, a.rev_phone, a.goods_amount, a.order_freight, a.plateform_discount, a.dealer_discount, a.order_id, af.after_sell_order_id\r\n")
                 .append(" , af.reject_reason, af.order_type, af.back_money FROM t_scm_order_detail dtl \r\n")
@@ -368,6 +368,8 @@ public class DealerOrderQuery {
 	            DealerGoodsBean dgb = new DealerGoodsBean();	            
 	            dgb.setSkuName((String) item.get("sku_name"));
 	            dgb.setGoodsName((String) item.get("goods_name"));
+	            dgb.setIsSpecial((Integer) item.get("is_special"));
+	            dgb.setSpecialPrice((long) item.get("special_price"));
 	            dgb.setGoodsTitle((String) item.get("goods_title"));
 	            dgb.setSkuId(skuId);
 	            dgb.setDiscountPrice((long) item.get("discount_price"));
@@ -548,7 +550,6 @@ public class DealerOrderQuery {
         sql.append(" AND t2.saler_user_id  = t6.seller_id ");
         System.out.println("商家订单  SHOW SQL-------------------------" + sql);
         DealerOrderDetailBean dealerOrderDetailBean = this.supportJdbcTemplate.queryForBean(sql.toString(), DealerOrderDetailBean.class, params.toArray());
-        System.out.println("取出来的数据" + dealerOrderDetailBean);
         long totalPrice = 0; // 商品总价格
         long totalFrieght = 0; // 运费总价格
         List<GoodsInfoBean> goodsInfoList = getGoodsInfoList(dealerOrderId);
@@ -574,7 +575,7 @@ public class DealerOrderQuery {
         StringBuilder sql = new StringBuilder();
         sql.append(" SELECT  ");
         sql.append(" goods.goods_main_images,odetail.goods_name,odetail.stantard_name, ");
-        sql.append(" odetail.media_res_id,odetail.sell_num,odetail.goods_unit,odetail._price,odetail.freight ");
+        sql.append(" odetail.media_res_id,odetail.sell_num,odetail.goods_unit,odetail._price,odetail.freight,odetail.is_special,odetail.special_price ");
         sql.append(" FROM ");
         sql.append(" t_scm_order_dealer odealer INNER JOIN t_scm_goods goods INNER JOIN t_scm_order_detail odetail ");
         sql.append(" WHERE 1 = 1 AND odealer.dealer_order_id = ? ");

@@ -17,15 +17,17 @@ public class GoodsSimpleDetailRepresentation {
     private Long goodsPrice;
     private String goodsImageUrl;
     private String goodsClassifyId;
+    private String goodsClassifyName;
 
 
-    public GoodsSimpleDetailRepresentation(GoodsBean bean) {
+    public GoodsSimpleDetailRepresentation(GoodsBean bean, String classifyName) {
         this.dealerId = bean.getDealerId();
         this.dealerName = bean.getDealerName();
         this.goodsName = bean.getGoodsName();
         this.goodsSubTitle = bean.getGoodsSubTitle();
         this.goodsId = bean.getGoodsId();
         this.goodsClassifyId = bean.getGoodsClassifyId();
+        this.goodsClassifyName = classifyName;
         List<String> mainImages = JsonUtils.toList(bean.getGoodsMainImages(), String.class);
         if (null != mainImages && mainImages.size() > 0) {
             this.goodsImageUrl = mainImages.get(0);
@@ -97,5 +99,13 @@ public class GoodsSimpleDetailRepresentation {
 
     public void setGoodsSubTitle(String goodsSubTitle) {
         this.goodsSubTitle = goodsSubTitle;
+    }
+
+    public String getGoodsClassifyName() {
+        return goodsClassifyName;
+    }
+
+    public void setGoodsClassifyName(String goodsClassifyName) {
+        this.goodsClassifyName = goodsClassifyName;
     }
 }

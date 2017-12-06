@@ -42,6 +42,18 @@ public class OrderExportAgent {
     @Autowired
     DealerOrderQuery dealerOrderQuery;
 
+    /**
+     * 售后单导出
+     * @param response
+     * @param dealerId
+     * @param status
+     * @param orderType
+     * @param condition
+     * @param startTime
+     * @param mediaInfo
+     * @param endTime
+     * @throws Exception
+     */
     @RequestMapping(value = "/saleafter", method = RequestMethod.GET)
     public void exportExcel(HttpServletResponse response,
                             @RequestParam(value = "dealerId", required = false) String dealerId,
@@ -61,6 +73,22 @@ public class OrderExportAgent {
         }
     }
 
+    /**
+     * 订货单导出
+     * @param response
+     * @param dealerId
+     * @param dealerOrderId
+     * @param orderStatus
+     * @param afterSellStatus
+     * @param startTime
+     * @param endTime
+     * @param condition
+     * @param payWay
+     * @param commentStatus
+     * @param hasMedia
+     * @param orderClassify
+     * @param invoice
+     */
     @RequestMapping(value = "/dealerorderlist", method = RequestMethod.GET)
     public void getDealerOrderList(HttpServletResponse response,
                                    @RequestParam(value = "dealerId", required = false) String dealerId,
