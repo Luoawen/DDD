@@ -1,6 +1,7 @@
 package cn.m2c.scm.domain.model.special;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 特惠价
@@ -15,4 +16,6 @@ public interface GoodsSpecialRepository {
     List<GoodsSpecial> getStartGoodsSpecial();
 
     List<GoodsSpecial> getEndGoodsSpecial();
+
+    Map getEffectiveGoodsSkuSpecial(List<String> skuIds);
 }
