@@ -16,6 +16,7 @@ import cn.m2c.scm.application.order.command.SendOrderCommand;
 import cn.m2c.scm.application.order.command.UpdateAddrCommand;
 import cn.m2c.scm.application.order.command.UpdateAddrFreightCmd;
 import cn.m2c.scm.application.order.command.UpdateOrderFreightCmd;
+import cn.m2c.scm.application.order.data.bean.SkuNumBean;
 import cn.m2c.scm.application.order.query.AfterSellOrderQuery;
 import cn.m2c.scm.domain.NegativeCode;
 import cn.m2c.scm.domain.NegativeException;
@@ -60,11 +61,21 @@ public class DealerOrderApplication {
 		if (dealerOrder == null)
 			throw new NegativeException(NegativeCode.DEALER_ORDER_IS_NOT_EXIST, "此商家订单不存在.");
 		// 获取订单中已经申请的售后商品
-		List<String> skuIds = afterQuery.getSkuIdsByDealerOrderId(command.getDealerOrderId());
+		List<SkuNumBean> skuBeans = afterQuery.getSkuIdsByDealerOrderId(command.getDealerOrderId());
+		List<String> skuIds = null;
+		List<Integer> sortNos = null;
+		if (skuBeans != null) {
+			skuIds = new ArrayList<String>();
+			sortNos = new ArrayList<Integer>();
+			for(SkuNumBean s : skuBeans) {
+				skuIds.add(s.getSkuId());
+				sortNos.add(s.getSortNo());
+			}
+		}
 		
 		if (!dealerOrder.updateExpress(command.getExpressName(), command.getExpressNo(), command.getExpressNote(),
 				command.getExpressPerson(), command.getExpressPhone(), command.getExpressWay(),
-				command.getExpressCode(), command.getUserId(), skuIds)) {
+				command.getExpressCode(), command.getUserId(), skuIds, sortNos)) {
 			throw new NegativeException(MCode.V_300, "订单处于不可发货状态");
 		}
 		dealerOrderRepository.save(dealerOrder);

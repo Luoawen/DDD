@@ -145,13 +145,14 @@ public class DealerOrder extends ConcurrencySafeEntity {
 	public boolean updateExpress(String expressName, String expressNo,
 			String expressNote, String expressPerson, String expressPhone,
 			Integer expressWay, String expressCode, String userId
-			, List<String> skuIds) {
+			, List<String> skuIds, List<Integer> sortNos) {
 		if (status >= 2 || status < 1) {
 			return false;
 		}
 		int ct = 0;
 		for (DealerOrderDtl dealerOrderDtl : orderDtls) {
-			if (skuIds != null && skuIds.contains(dealerOrderDtl.getSkuId())) {
+			if (skuIds != null && skuIds.contains(dealerOrderDtl.getSkuId())
+					&& sortNos.contains(dealerOrderDtl.getSortNo())) {
 				ct ++;
 				continue;
 			}

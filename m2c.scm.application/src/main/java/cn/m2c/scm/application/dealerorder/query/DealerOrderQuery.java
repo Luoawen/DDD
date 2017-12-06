@@ -230,7 +230,7 @@ public class DealerOrderQuery {
                 .append(" a.rev_person, a.rev_phone, a.goods_amount, a.order_freight, a.plateform_discount, a.dealer_discount, a.order_id, af.after_sell_order_id\r\n")
                 .append(" , af.reject_reason, af.order_type, af.back_money FROM t_scm_order_detail dtl \r\n")
                 .append(" LEFT OUTER JOIN t_scm_order_dealer a ON dtl.dealer_order_id = a.dealer_order_id\r\n")
-                .append(" LEFT OUTER JOIN t_scm_order_after_sell af ON af.dealer_order_id = dtl.dealer_order_id AND af.sku_id=dtl.sku_id\r\n")
+                .append(" LEFT OUTER JOIN t_scm_order_after_sell af ON af.dealer_order_id = dtl.dealer_order_id AND af.sku_id=dtl.sku_id AND af.sort_no=dtl.sort_no \r\n")
                 .append(" LEFT OUTER JOIN t_scm_order_main om ON dtl.order_id = om.order_id\r\n")
                 .append(" WHERE a.dealer_id = ?  \r\n");
 
@@ -620,7 +620,7 @@ public class DealerOrderQuery {
                 .append(" om.pay_time,dtl.freight,a.province,a.city,a.area_county,af.after_sell_order_id,af.order_type,af.sell_num as after_num,af.back_money\r\n")
                 .append(" FROM t_scm_order_detail dtl \r\n")
                 .append(" LEFT OUTER JOIN t_scm_order_dealer a ON dtl.dealer_order_id = a.dealer_order_id\r\n")
-                .append(" LEFT OUTER JOIN t_scm_order_after_sell af ON af.dealer_order_id = dtl.dealer_order_id AND af.sku_id=dtl.sku_id\r\n")
+                .append(" LEFT OUTER JOIN t_scm_order_after_sell af ON af.dealer_order_id = dtl.dealer_order_id AND af.sku_id=dtl.sku_id AND af.sort_no=dtl.sort_no \r\n")
                 .append(" LEFT OUTER JOIN t_scm_order_main om ON dtl.order_id = om.order_id\r\n")
                 .append(" WHERE a.dealer_id = ?  \r\n");
 

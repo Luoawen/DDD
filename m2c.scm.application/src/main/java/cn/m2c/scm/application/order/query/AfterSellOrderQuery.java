@@ -65,7 +65,7 @@ public class AfterSellOrderQuery {
 		sql.append(" FROM t_scm_order_after_sell after ");
 		sql.append(" LEFT JOIN t_scm_dealer dealer ON after.dealer_id = dealer.dealer_id");
 		sql.append(" LEFT JOIN t_scm_order_main main ON after.order_id = main.order_id ");
-		sql.append(" LEFT JOIN t_scm_order_detail detail ON after.dealer_order_id = detail.dealer_order_id ");
+		sql.append(" LEFT JOIN t_scm_order_detail detail ON after.dealer_order_id = detail.dealer_order_id AND after.sku_id=detail.sku_id AND after.sort_no = detail.sort_no \r\n");
 		sql.append(" WHERE 1 = 1 ");
 		if (null != orderType) {
 			sql.append(" AND after.order_type = ? ");
@@ -166,7 +166,7 @@ public class AfterSellOrderQuery {
 		sql.append(" FROM t_scm_order_after_sell after");
 		sql.append(" LEFT JOIN t_scm_dealer dealer ON after.dealer_id = dealer.dealer_id ");
 		sql.append(" LEFT JOIN t_scm_goods goods ON after.goods_id = goods.goods_id ");
-		sql.append(" LEFT JOIN t_scm_order_detail detail ON after.dealer_order_id = detail.dealer_order_id ");
+		sql.append(" LEFT JOIN t_scm_order_detail detail ON after.dealer_order_id = detail.dealer_order_id AND after.sku_id=detail.sku_id AND after.sort_no = detail.sort_no \r\n");
 		sql.append(" WHERE 1 = 1 ");
 		if (null != orderType) {
 			sql.append(" AND after.order_type = ? ");
@@ -252,11 +252,11 @@ public class AfterSellOrderQuery {
 	public AftreSellLogisticsBean afterSellOrderLogisticsQuery(String afterSellOrderId) {
 		StringBuilder sql = new StringBuilder();
 		sql.append(" SELECT ");
-		sql.append(" aftersell._status, aftersell.after_sell_order_id, aftersell.order_type ");
-		sql.append(" ,aftersell.back_express_no, aftersell.back_express_name ");
-		sql.append(" ,aftersell.express_no, aftersell.express_name ");
-		sql.append(" FROM t_scm_order_after_sell aftersell ");
-		sql.append(" WHERE 1 = 1 AND aftersell.after_sell_order_id = ? ");
+		sql.append(" af._status, af.after_sell_order_id, af.order_type ");
+		sql.append(" ,af.back_express_no, af.back_express_name ");
+		sql.append(" ,af.express_no, af.express_name ");
+		sql.append(" FROM t_scm_order_after_sell af ");
+		sql.append(" WHERE af.after_sell_order_id = ? ");
 		AftreSellLogisticsBean bean = this.supportJdbcTemplate.queryForBean(sql.toString(),
 				AftreSellLogisticsBean.class, afterSellOrderId);
 		GoodsInfoBean goodsInfo = afterSellGoodsInfoQuery(afterSellOrderId);
@@ -291,12 +291,10 @@ public class AfterSellOrderQuery {
 	public GoodsInfoBean afterSellGoodsInfoQuery(String afterSellOrderId) {
 		StringBuilder sql = new StringBuilder();
 		sql.append(" SELECT  ");
-		sql.append(" detail.goods_icon,detail.goods_name,after.sell_num,detail.sku_name ");
-		sql.append(" FROM ");
-		sql.append(" t_scm_order_after_sell after ");
-		sql.append(" INNER JOIN t_scm_order_detail detail ");
-		sql.append(" WHERE 1 = 1 AND after.after_sell_order_id = ? ");
-		sql.append(" AND after.dealer_order_id = detail.dealer_order_id AND after.sku_id = detail.sku_id ");
+		sql.append(" dtl.goods_icon,dtl.goods_name, after.sell_num, dtl.sku_name ");
+		sql.append(" FROM t_scm_order_after_sell after ");
+		sql.append(" LEFT OUTER JOIN t_scm_order_detail dtl ON after.dealer_order_id = dtl.dealer_order_id AND after.sku_id = detail.sku_id AND after.sort_no=dtl.sort_no \r\n");
+		sql.append(" WHERE after.after_sell_order_id = ? ");
 		GoodsInfoBean goodsInfo = this.supportJdbcTemplate.queryForBean(sql.toString(),
 				GoodsInfoBean.class, afterSellOrderId);
 		return goodsInfo;
@@ -310,9 +308,9 @@ public class AfterSellOrderQuery {
 	 */
 	public AfterSellOrderDetailBean afterSellOrderDetailQeury(String afterSellOrderId) {
 		StringBuilder sql = new StringBuilder();
-		sql.append(" SELECT after._status,after.after_sell_order_id,after.back_money,after.reason,after.created_date,detail.freight ")
+		sql.append(" SELECT after._status,after.after_sell_order_id,after.back_money,after.reason,after.created_date,dtl.freight ")
 		.append(" ,after.order_id,main.goods_amount,main.order_freight,main.plateform_discount,main.dealer_discount ");
-		sql.append(" ,dealer.dealer_name,dealer.dealer_classify  ,seller.seller_name,seller.seller_phone ");
+		sql.append(" , dealer.dealer_name, dealer.dealer_classify, seller.seller_name, seller.seller_phone ");
 		if (afterSellOrderTypeQuery(afterSellOrderId) == 0) {
 			sql.append(" ,after.order_type ");
 		}
@@ -322,12 +320,13 @@ public class AfterSellOrderQuery {
 		sql.append("  FROM t_scm_order_after_sell after ")
 		.append(" LEFT JOIN t_scm_order_main main ON after.order_id = main.order_id ");
 		sql.append("  INNER JOIN t_scm_dealer dealer   ");
-		sql.append("  INNER JOIN t_scm_order_detail detail ");
+		sql.append("  INNER JOIN t_scm_order_detail dtl ");
 		sql.append("  INNER JOIN t_scm_dealer_seller seller   ");
-		sql.append(" WHERE 1 = 1 AND after.after_sell_order_id = ? ");
+		sql.append(" WHERE after.after_sell_order_id = ? ");
 		sql.append(" AND after.dealer_id = dealer.dealer_id ");
-		sql.append(" AND after.dealer_order_id = detail.dealer_order_id AND after.sku_id = detail.sku_id  ");
-		sql.append("  AND detail.saler_user_id = seller.seller_id ");
+		sql.append(" AND after.dealer_order_id = dtl.dealer_order_id AND after.sku_id = dtl.sku_id AND after.sort_no=dtl.sort_no ");
+		sql.append(" AND after.sort_no = detail.sort_no ");
+		sql.append("  AND dtl.saler_user_id = seller.seller_id ");
 		AfterSellOrderDetailBean bean = this.supportJdbcTemplate.queryForBean(sql.toString(),
 				AfterSellOrderDetailBean.class, afterSellOrderId);
 		GoodsInfoBean goodsInfoBeans = aftetSellOrderDetailGoodsInfoQuery(afterSellOrderId);
@@ -350,27 +349,27 @@ public class AfterSellOrderQuery {
 	public GoodsInfoBean aftetSellOrderDetailGoodsInfoQuery(String afterSellOrderId) {
 		StringBuilder sql = new StringBuilder();
 		sql.append(
-				" SELECT detail.discount_price,after.sell_num,detail.freight,detail.plateform_discount,detail.dealer_discount ");
-		sql.append(" ,detail.media_res_id,after.back_money,after.order_id,detail._price ");
-		sql.append(" ,detail.goods_icon,detail.goods_name,detail.sku_name,detail.is_special,detail.special_price ");
-		sql.append(" FROM t_scm_order_detail detail ");
+				" SELECT dtl.discount_price, after.sell_num, dtl.freight, dtl.plateform_discount, dtl.dealer_discount ");
+		sql.append(" ,dtl.media_res_id, after.back_money, after.order_id, dtl._price ");
+		sql.append(" ,dtl.goods_icon, dtl.goods_name, dtl.sku_name, dtl.is_special, dtl.special_price ");
+		sql.append(" FROM t_scm_order_detail dtl ");
 		sql.append(" INNER JOIN t_scm_order_after_sell after ");
 		sql.append(" INNER JOIN t_scm_goods goods ");
-		sql.append(" WHERE 1 = 1 AND after.after_sell_order_id = ? ");
-		sql.append(" AND detail.dealer_order_id = after.dealer_order_id AND after.sku_id = detail.sku_id ");
+		sql.append(" WHERE after.after_sell_order_id = ? ");
+		sql.append(" AND dtl.dealer_order_id = after.dealer_order_id AND after.sku_id = dtl.sku_id AND dtl.sort_no=after.sort_no ");
 		return this.supportJdbcTemplate.queryForBean(sql.toString(), GoodsInfoBean.class, afterSellOrderId);
 
 	}
 	/***
-	 * 获取同一个活动的订单中的商品列表
+	 * 获取同一个活动的订单中的商品sku及数量
 	 * @param marketId
 	 * @param orderId
 	 */
 	public List<SkuNumBean> getOrderDtlByMarketId(String marketId, String orderId) {
 		StringBuilder sql = new StringBuilder();
 		sql.append(" SELECT a.sku_id, a.sell_num, a.is_change, a.goods_amount, a.marketing_id, a.change_price\r\n")
-		.append("FROM	t_scm_order_detail a\r\n")
-		.append("WHERE	a.order_id = ?\r\n")
+		.append("FROM t_scm_order_detail a\r\n")
+		.append("WHERE a.order_id = ?\r\n")
 		.append("AND a.marketing_id = ? ")
 		.append("AND a.sku_id NOT IN(SELECT b.sku_id FROM t_scm_order_after_sell b WHERE b.order_id=a.order_id AND b.dealer_order_id= a.dealer_order_id AND b._status > 3) ");
 		return this.supportJdbcTemplate.queryForBeanList(sql.toString(), SkuNumBean.class, orderId, marketId);
@@ -433,7 +432,7 @@ public class AfterSellOrderQuery {
 			.append(",c.dealer_name, b.goods_name, b.sku_name, b.goods_type, b.goods_type_id, b.discount_price, b.goods_icon\r\n") 
 			.append(", a.last_updated_date, a.reject_reason, a.reason, a.back_express_no, a.back_express_name, a.express_no, a.express_name ")
 			.append("FROM t_scm_order_after_sell a \r\n")
-			.append("LEFT OUTER JOIN t_scm_order_detail b ON a.order_id=b.order_id AND a.dealer_order_id=b.dealer_order_id AND a.sku_id = b.sku_id\r\n")
+			.append("LEFT OUTER JOIN t_scm_order_detail b ON a.order_id=b.order_id AND a.dealer_order_id=b.dealer_order_id AND a.sku_id = b.sku_id AND a.sort_no=b.sort_no\r\n")
 			.append("LEFT OUTER JOIN t_scm_dealer c ON a.dealer_id = c.dealer_id \r\n")
 			.append(" WHERE a.user_id=?");
 			params.add(userId);
@@ -470,7 +469,7 @@ public class AfterSellOrderQuery {
 			List<Object> params = new ArrayList<>(4);
 			StringBuilder sql = new StringBuilder();
 			sql.append("SELECT count(1) FROM t_scm_order_after_sell a \r\n")
-			.append("LEFT OUTER JOIN t_scm_order_detail b ON a.order_id=b.order_id AND a.dealer_order_id=b.dealer_order_id AND a.sku_id = b.sku_id\r\n")
+			.append("LEFT OUTER JOIN t_scm_order_detail b ON a.order_id=b.order_id AND a.dealer_order_id=b.dealer_order_id AND a.sku_id = b.sku_id AND a.sort_no=b.sort_no\r\n")
 			.append("LEFT OUTER JOIN t_scm_dealer c ON a.dealer_id = c.dealer_id \r\n")
 			.append(" WHERE a.user_id=?");
 			params.add(userId);
@@ -512,17 +511,17 @@ public class AfterSellOrderQuery {
 	 * @return
 	 * @throws NegativeException
 	 */
-	public List<String> getSkuIdsByDealerOrderId(String dealerOrderId) throws NegativeException {
-		List<String> result = null;
+	public List<SkuNumBean> getSkuIdsByDealerOrderId(String dealerOrderId) throws NegativeException {
+		List<SkuNumBean> result = null;
 		try {
 			List<Object> params = new ArrayList<>(1);
 			StringBuilder sql = new StringBuilder();
-			sql.append("SELECT a.sku_id FROM t_scm_order_after_sell a \r\n")
-			.append(" WHERE a.dealer_order_id=? AND a._status NOT IN(-1, 0,1,2, 3)");
+			sql.append("SELECT a.sku_id, a.sort_no FROM t_scm_order_after_sell a \r\n")
+			.append(" WHERE a.dealer_order_id=? AND a._status NOT IN(-1, 0, 1, 2, 3)");
 			
 			params.add(dealerOrderId);
 			
-			result = this.supportJdbcTemplate.jdbcTemplate().queryForList(sql.toString(), String.class, params.toArray());
+			result = this.supportJdbcTemplate.jdbcTemplate().queryForList(sql.toString(), SkuNumBean.class, params.toArray());
 			
 		} catch (Exception e) {
 			throw new NegativeException(MCode.V_500, "查询商家订单号的售后skuId出错！");

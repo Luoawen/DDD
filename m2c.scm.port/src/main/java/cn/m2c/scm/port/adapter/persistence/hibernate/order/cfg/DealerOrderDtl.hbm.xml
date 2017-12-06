@@ -91,6 +91,7 @@
         </component>
         
         <property name="commentStatus" column="comment_status" type="int"/>
+        <property name="sortNo" column="sort_no" type="int"/>
         
         <!-- <many-to-one name="dealerOrder" column="dealer_order_id" class="cn.m2c.scm.domain.model.order.DealerOrder"
                      cascade="save-update" fetch="join"/> -->

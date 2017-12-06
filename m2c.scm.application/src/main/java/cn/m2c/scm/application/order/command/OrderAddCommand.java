@@ -212,6 +212,7 @@ public class OrderAddCommand extends AssertionConcern implements Serializable {
 				goodses = new ArrayList<GoodsDto>();
 			}
 			GoodsDto dto = new GoodsDto();
+			dto.setIndex(i+1); // 这个必须要设置为后面用, 不能为0， 因默认是0兼容之前的
 			dto.setSkuId(skuId);
 			dto.setGoodsId(tmp);
 			dto.setPurNum(sl);

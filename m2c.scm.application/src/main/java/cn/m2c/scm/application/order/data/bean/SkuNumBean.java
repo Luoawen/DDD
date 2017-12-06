@@ -28,7 +28,17 @@ public class SkuNumBean {
 	private Long changePrice; // 换购价
 	/**优惠金额*/
 	private long discountMoney = 0;
+	@ColumnAlias(value = "sort_no")
+	private Integer sortNo;
 	
+	public Integer getSortNo() {
+		return sortNo;
+	}
+
+	public void setSortNo(Integer sortNo) {
+		this.sortNo = sortNo;
+	}
+
 	public Long getChangePrice() {
 		if (changePrice == null)
 			changePrice = 0l;

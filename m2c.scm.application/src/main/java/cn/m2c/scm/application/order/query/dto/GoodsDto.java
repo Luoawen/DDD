@@ -64,8 +64,7 @@ public class GoodsDto {
 	/**优惠平摊*/
 	private String sharePercent;
 	/**营销名称*/
-	private String marketName;
-	
+	private String marketName;	
 	/**优惠额度*/
 	private int discount;
 	/**是否执行特惠价 1是*/
@@ -75,6 +74,16 @@ public class GoodsDto {
 	/**广告位id*/
 	private String mresId;
 	
+	private int index;
+	
+	public int getIndex() {
+		return index;
+	}
+
+	public void setIndex(int index) {
+		this.index = index;
+	}
+
 	public int getIsChange() {
 		return isChange;
 	}
@@ -311,6 +320,15 @@ public class GoodsDto {
 	public void setGoodsIcon(String goodsIcon) {
 		this.goodsIcon = goodsIcon;
 	}
+	/***
+	 * 获取需要执行的价格
+	 * @return
+	 */
+	public long getThePrice() {
+		if (isSpecial == 1)
+			return specialPrice;
+		return discountPrice;
+	}
 	/**
 	 * 转换成业务层需要的对象
 	 * @return
@@ -329,5 +347,25 @@ public class GoodsDto {
 					marketType, thresholdType, sharePercent, marketName, discount);
 		}
 		return null; 
+	}
+	/***
+	 * 从src copy相对应的属性到本对象
+	 * @param src
+	 */
+	public void copyField(GoodsDto src) {
+		rate = src.getRate();
+		goodsId = src.getGoodsId();
+		goodsName = src.getGoodsName();
+		goodsTitle = src.getGoodsTitle();
+		goodsType = src.getGoodsType();
+		goodsTypeId = src.getGoodsTypeId();
+		goodsUnit = src.getGoodsUnit();		
+		skuName = src.getSkuName();
+		price = src.getPrice();
+		weight = src.getWeight();
+		supplyPrice = src.getSupplyPrice();
+		discountPrice = src.getDiscountPrice();
+		goodsIcon = src.getGoodsIcon();
+		dealerId = src.getDealerId();		
 	}
 }

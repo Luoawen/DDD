@@ -49,6 +49,8 @@ public class DealerOrderDtl extends ConcurrencySafeEntity {
 	
 	/**更新时间*/
 	private Date updateTime;
+	
+	private int sortNo;
 	/***
 	 * 删除订单(用户主动操作)
 	 */
@@ -69,7 +71,7 @@ public class DealerOrderDtl extends ConcurrencySafeEntity {
 	public DealerOrderDtl(String orderId, String dealerOrderId, ReceiveAddr addr
 			,InvoiceInfo invoice, ExpressInfo expressInfo, SimpleMediaInfo mediaInfo
 			, GoodsInfo goodsInfo, long dealerDiscount, String noted
-			, SimpleMarketInfo marketInfo
+			, SimpleMarketInfo marketInfo, int sortNo
 			) {
 		this.orderId = orderId;
 		this.dealerOrderId = dealerOrderId;
@@ -82,6 +84,7 @@ public class DealerOrderDtl extends ConcurrencySafeEntity {
 		this.dealerDiscount = dealerDiscount;
 		this.noted = noted;
 		this.marketInfo = marketInfo;
+		this.sortNo = sortNo;
 	}
 	/***
 	 * 计算商品金额
@@ -299,6 +302,10 @@ public class DealerOrderDtl extends ConcurrencySafeEntity {
 			return true;
 		
 		return false;
+	}
+	
+	public int getSortNo() {
+		return sortNo;
 	}
 	/***
 	 * 获取实际金额
