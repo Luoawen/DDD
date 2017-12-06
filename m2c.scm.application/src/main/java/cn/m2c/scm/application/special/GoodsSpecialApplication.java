@@ -78,7 +78,7 @@ public class GoodsSpecialApplication {
     }
 
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class, ParseException.class})
-    public void startGoodsSpecial() throws NegativeException{
+    public void startGoodsSpecial() throws NegativeException {
         List<GoodsSpecial> goodsSpecials = goodsSpecialRepository.getStartGoodsSpecial();
         if (null != goodsSpecials && goodsSpecials.size() > 0) {
             for (GoodsSpecial goodsSpecial : goodsSpecials) {
@@ -88,12 +88,27 @@ public class GoodsSpecialApplication {
     }
 
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class, ParseException.class})
-    public void endGoodsSpecial() throws NegativeException{
+    public void endGoodsSpecial() throws NegativeException {
         List<GoodsSpecial> goodsSpecials = goodsSpecialRepository.getEndGoodsSpecial();
         if (null != goodsSpecials && goodsSpecials.size() > 0) {
             for (GoodsSpecial goodsSpecial : goodsSpecials) {
                 goodsSpecial.endSpecial();
             }
         }
+    }
+
+    /**
+     * 终止特惠活动
+     *
+     * @param specialId
+     */
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class, ParseException.class})
+    public void endGoodsSpecial(String specialId) throws NegativeException, ParseException {
+        LOGGER.info("endGoodsSpecial specialId >>{}", specialId);
+        GoodsSpecial goodsSpecial = goodsSpecialRepository.queryGoodsSpecialBySpecialId(specialId);
+        if (null == goodsSpecial) {
+            throw new NegativeException(MCode.V_300, "商品优惠活动不存在");
+        }
+        goodsSpecial.endSpecial();
     }
 }
