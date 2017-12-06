@@ -1,12 +1,9 @@
 package cn.m2c.scm.application.dealerorder.data.bean;
 
-
-
 /***
  * 订单中 商家 商品Bean
- * @author fanjc
- * created date 2017年10月27日
- * copyrighted@m2c
+ * 
+ * @author fanjc created date 2017年10月27日 copyrighted@m2c
  */
 public class DealerGoodsBean {
 	/**
@@ -29,30 +26,32 @@ public class DealerGoodsBean {
 	 * 单价
 	 */
 	private long discountPrice;
-	/**sku ID*/
+	/** sku ID */
 	private String skuId;
-	
+
 	private String goodsTitle;
-	
+
 	private String goodsIcon;
-	
+
 	private String saleAfterNo;
-	
+
 	private String rejectReason;
 
 	private Integer afOrderType;
-	
+
 	private Long backMoney;
-	
+
 	private Integer isSpecial;
-	
+
 	private long specialPrice;
-	
+
+	private Integer isChange;
+
 	/**
 	 * 运费
 	 */
 	private long freight;
-	
+
 	public Long getBackMoney() {
 		if (backMoney == null)
 			backMoney = 0l;
@@ -68,7 +67,15 @@ public class DealerGoodsBean {
 			afOrderType = -1;
 		return afOrderType;
 	}
-	
+
+	public Integer getIsChange() {
+		return isChange;
+	}
+
+	public void setIsChange(Integer isChange) {
+		this.isChange = isChange;
+	}
+
 	public Integer getIsSpecial() {
 		return isSpecial;
 	}
@@ -118,20 +125,17 @@ public class DealerGoodsBean {
 	 */
 	private Integer afStatus = -2;
 
-
 	public String getGoodsName() {
 		return goodsName;
 	}
-
 
 	public String getSkuName() {
 		return skuName;
 	}
 
-	
 	public String getGoodsIcon() {
 		String arr = this.goodsImage;
-		
+
 		return arr;
 	}
 
