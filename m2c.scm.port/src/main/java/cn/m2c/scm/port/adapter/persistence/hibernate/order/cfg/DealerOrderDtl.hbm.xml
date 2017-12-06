@@ -71,6 +71,8 @@
 	        <property name="plateformDiscount" column="plateform_discount" type="long"/>
 	        <property name="isChange" column="is_change" type="int"/>
         	<property name="changePrice" column="change_price" type="long"/>
+        	<property name="isSpecial" column="is_special" type="int"/>
+        	<property name="specialPrice" column="special_price" type="long"/>
         </component>
         
         <component name="marketInfo">

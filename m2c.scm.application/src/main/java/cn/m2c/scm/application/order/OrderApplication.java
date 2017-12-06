@@ -94,26 +94,28 @@ public class OrderApplication {
     @EventListener(isListening = true)
     public OrderResult submitOrder(OrderAddCommand cmd) throws NegativeException {
 
-        JSONArray gdes = cmd.getGoodses();
+    	List<GoodsDto> gdes = cmd.getGoodses();
         List<Map<String, Object>> goodses = null;
-        // skuId, num
+        /**skuId与数量的键值对, 用于锁定库存*/
         Map<String, Integer> skus = new HashMap<String, Integer>();
-        Map<String, GoodsReqBean> skuBeans = new HashMap<String, GoodsReqBean>();
+        /**提交上来的商品位置 与广告位之间的关系*/
+        //Map<Integer, SkuMediaBean> mediaResIds = new HashMap<Integer, SkuMediaBean>();
+        /**提交上来的商品sku 与广告位之间的关系*/
         Map<String, SkuMediaBean> mediaResIds = new HashMap<String, SkuMediaBean>();
+        //
         Map<String, String> skuMedia = new HashMap<String, String>();
+        //营销ID
         List<String> marketIds = new ArrayList<String>();
         if (gdes == null || gdes.size() < 1) {
             // 获取购物车数据
             goodses = orderDomainService.getShopCarGoods(cmd.getUserId());
             if (goodses == null)
                 throw new NegativeException(MCode.V_1, "购物车中的商品为空！");
-
+            int c = 0;
             for (Map<String, Object> it : goodses) {
                 String sku = it.get("skuId").toString();
                 Integer nm = (Integer) it.get("num");
                 skus.put(sku, nm);
-                skuBeans.put(sku, new GoodsReqBean(nm, (Integer) it.get("marketLevel"), (String) it.get("marketId"),
-                        (Integer) it.get("isChange")));
                 String mResId = (String) it.get("mediaResId");
                 if (!StringUtils.isEmpty(mResId)) {
                     mediaResIds.put(sku, new SkuMediaBean(sku, mResId));
@@ -122,21 +124,24 @@ public class OrderApplication {
                 String marketId = (String) it.get("marketId");
                 if (!StringUtils.isEmpty(marketId) && !marketIds.contains(marketId))
                     marketIds.add(marketId);
+                c ++;
             }
         } else {
             int sz = gdes.size();
             for (int i = 0; i < sz; i++) {
-                JSONObject o = gdes.getJSONObject(i);
-                String sku = o.getString("skuId");
-                skus.put(sku, o.getIntValue("purNum"));
-                String marketId = o.getString("marketId");
-                int level = 0;
-                if (o.containsKey("marketLevel"))
-                    level = o.getIntValue("marketLevel");
-                skuBeans.put(sku, new GoodsReqBean(o.getIntValue("purNum"), level, marketId,
-                        o.getIntValue("isChange")));
+            	GoodsDto o = gdes.get(i);
+                String sku = o.getSkuId();
+                int pnum = o.getPurNum();
+                Integer oNum = skus.get(sku);
+                if (oNum == null) {
+                	skus.put(sku, pnum);
+                }
+                else
+                	skus.put(sku, oNum + pnum);
+                String marketId = o.getMarketingId();
+                //int level = o.getMarketLevel();
 
-                String mResId = o.getString("mediaResId");
+                String mResId = o.getMresId();
                 if (!StringUtils.isEmpty(mResId)) {
                     mediaResIds.put(sku, new SkuMediaBean(sku, mResId));
                 }
@@ -145,6 +150,7 @@ public class OrderApplication {
                     marketIds.add(marketId);
             }
         }
+        
         try {// 锁定库存
             goodsApp.outInventory(skus);
         } catch (NegativeException e) {//不存在或库存不够
@@ -157,6 +163,7 @@ public class OrderApplication {
         //orderDomainService.lockCoupons(null);
         // 获取商品详情
         List<GoodsDto> list = gQueryApp.getGoodsDtl(skus.keySet());
+        //GoodsSpecialRepository.getEffectiveGoodsSkuSpecial();
         // 获取分类及费率
         getClassifyRate(list, mediaResIds);
         //若有媒体信息则需要查询媒体信息
@@ -175,7 +182,7 @@ public class OrderApplication {
         Map<String, List<GoodsDto>> dealerOrderMap = splitOrder(list, idsSet);
         // 获取运费模板，计算运费
         //calFreight(skuBeans, list, cmd.getAddr().getCityCode());
-        calFreight(dealerOrderMap, cmd.getAddr().getCityCode(), skuBeans);
+        calFreight(dealerOrderMap, cmd.getAddr().getCityCode(), skus);
         
         List<MarketBean> mks = orderDomainService.getMarketingsByIds(marketIds, cmd.getUserId(), MarketBean[].class);
         // 计算营销活动优惠
@@ -433,7 +440,7 @@ public class OrderApplication {
      * @param cityCode 城市code
      * @param skus 带营销相关的东东
      */
-    private void calFreight(Map<String, List<GoodsDto>> map, String cityCode, Map<String, GoodsReqBean> skus) throws NegativeException {
+    private void calFreight(Map<String, List<GoodsDto>> map, String cityCode, Map<String, Integer> skus) throws NegativeException {
         LOGGER.info("==fanjc==计算运费.");
         
         Iterator<String> it = map.keySet().iterator();
@@ -457,11 +464,11 @@ public class OrderApplication {
 	        		sumWeight = 0;
 	        	}
 	        	String skuId = bean.getSkuId();
-	            GoodsReqBean gdb = skus.get(skuId);
-	            bean.setPurNum(gdb.getPurNum());
-	            bean.setMarketingId(gdb.getMarketId());
+	            Integer nm = skus.get(skuId);
+	            bean.setPurNum(nm);
+	            /*bean.setMarketingId(gdb.getMarketId());
 	            bean.setMarketLevel(gdb.getLevel());
-	            bean.setIsChange(gdb.getIsChange());
+	            bean.setIsChange(gdb.getIsChange());*/
 	            
 	            sumNum += bean.getPurNum();
 	            sumWeight += bean.getPurNum() * bean.getWeight();
@@ -702,7 +709,7 @@ public class OrderApplication {
     }
 
     /***
-     * 获取商品分类费率并设置
+     * 获取商品分类费率并设置,同时需要设置查询媒体时的父分类
      *
      * @param goodses
      */

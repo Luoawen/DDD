@@ -68,7 +68,45 @@ public class GoodsDto {
 	
 	/**优惠额度*/
 	private int discount;
+	/**是否执行特惠价 1是*/
+	private int isSpecial;
+	/**特惠价*/
+	private long specialPrice;
+	/**广告位id*/
+	private String mresId;
 	
+	public int getIsChange() {
+		return isChange;
+	}
+
+	public void setMarketLevel(int marketLevel) {
+		this.marketLevel = marketLevel;
+	}
+
+	public String getMresId() {
+		return mresId;
+	}
+
+	public void setMresId(String mresId) {
+		this.mresId = mresId;
+	}
+
+	public int getIsSpecial() {
+		return isSpecial;
+	}
+
+	public void setIsSpecial(int isSpecial) {
+		this.isSpecial = isSpecial;
+	}
+
+	public long getSpecialPrice() {
+		return specialPrice;
+	}
+
+	public void setSpecialPrice(long specialPrice) {
+		this.specialPrice = specialPrice;
+	}
+
 	public int getDiscount() {
 		return discount;
 	}
@@ -281,7 +319,8 @@ public class GoodsDto {
 		return new GoodsInfo(rate, goodsId, goodsName, goodsTitle
 				,goodsType, goodsTypeId, goodsUnit, skuId
 				,skuName, price, supplyPrice, discountPrice, goodsIcon
-				,weight, purNum, freight, plateformDiscount, isChange, changePrice);		
+				,weight, purNum, freight, plateformDiscount, isChange, changePrice
+				,isSpecial, specialPrice);		
 	}
 	
 	public SimpleMarketInfo toMarketInfo() {

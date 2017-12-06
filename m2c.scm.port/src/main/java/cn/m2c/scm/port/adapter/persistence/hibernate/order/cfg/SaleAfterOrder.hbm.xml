@@ -50,5 +50,7 @@
         <property name="returnFreight" column="return_freight" type="long"/>
         <property name="refundNo" column="refund_no" type="string"/>
         <property name="refundTime" column="refund_time" type="date"/>
+        
+        <property name="sortNo" column="sort_no" type="int"/>
     </class>
 </hibernate-mapping>

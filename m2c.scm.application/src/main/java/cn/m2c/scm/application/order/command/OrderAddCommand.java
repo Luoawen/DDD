@@ -1,6 +1,8 @@
 package cn.m2c.scm.application.order.command;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -10,6 +12,7 @@ import com.google.gson.Gson;
 
 import cn.m2c.common.MCode;
 import cn.m2c.ddd.common.AssertionConcern;
+import cn.m2c.scm.application.order.query.dto.GoodsDto;
 import cn.m2c.scm.domain.NegativeException;
 import cn.m2c.scm.domain.model.order.InvoiceInfo;
 import cn.m2c.scm.domain.model.order.ReceiveAddr;
@@ -28,7 +31,7 @@ public class OrderAddCommand extends AssertionConcern implements Serializable {
 	
 	private String noted;
 	
-	private JSONArray goodses;
+	private List<GoodsDto> goodses;
 	
 	private JSONArray coupons;
 	
@@ -175,25 +178,28 @@ public class OrderAddCommand extends AssertionConcern implements Serializable {
 		if (StringUtils.isEmpty(ges)) {
 			return;
 		}
+		
+		JSONArray jsonArr = null;
 		try {
-			goodses = JSONObject.parseArray(ges);
+			jsonArr = JSONObject.parseArray(ges);
 		}
 		catch (Exception e) {
 			throw new NegativeException(MCode.V_1, "商品参数格式不正确！");
 		}
-		if (this.goodses.size() < 1) {
+		if (jsonArr.size() < 1) {
 			throw new NegativeException(MCode.V_1, "请至少选择一个商品提交！");
 		}
 		
-		int sz = goodses.size();
+		int sz = jsonArr.size();
 		for (int i=0; i<sz; i++) {
-			JSONObject goods = goodses.getJSONObject(i);
+			
+			JSONObject goods = jsonArr.getJSONObject(i);
 			String tmp = goods.getString("goodsId");
 			if (StringUtils.isEmpty(tmp)) {
 				throw new NegativeException(MCode.V_1, "商品Id为空！");
 			}
-			tmp = goods.getString("skuId");
-			if (StringUtils.isEmpty(tmp)) {
+			String skuId = goods.getString("skuId");
+			if (StringUtils.isEmpty(skuId)) {
 				throw new NegativeException(MCode.V_1, "SKU Id为空！");
 			}
 			
@@ -202,7 +208,30 @@ public class OrderAddCommand extends AssertionConcern implements Serializable {
 				throw new NegativeException(MCode.V_1, "购买数量必须大于0！");
 			}
 			
-			/*tmp = goods.getString("unit");
+			if (goodses == null) {
+				goodses = new ArrayList<GoodsDto>();
+			}
+			GoodsDto dto = new GoodsDto();
+			dto.setSkuId(skuId);
+			dto.setGoodsId(tmp);
+			dto.setPurNum(sl);
+			String marketId = goods.getString("marketId");
+			
+			dto.setMarketingId(marketId);
+            if (goods.containsKey("marketLevel"))
+            	dto.setMarketLevel(goods.getIntValue("marketLevel"));
+            
+            if (goods.containsKey("isChange"))
+            	dto.setIsChange(goods.getIntValue("isChange"));
+            
+            if (goods.containsKey("isSpecial"))
+            	dto.setIsSpecial(goods.getIntValue("isSpecial"));
+
+            String mResId = goods.getString("mediaResId");
+            dto.setMresId(mResId);
+            goodses.add(dto);
+			
+            /*tmp = goods.getString("unit");
 			if (StringUtils.isEmpty(tmp)) {
 				throw new NegativeException(MCode.V_1, "商品计量单位为空！");
 			}*/
@@ -240,7 +269,7 @@ public class OrderAddCommand extends AssertionConcern implements Serializable {
 		return noted;
 	}
 
-	public JSONArray getGoodses() {
+	public List<GoodsDto> getGoodses() {
 		return goodses;
 	}
 

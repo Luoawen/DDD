@@ -4,7 +4,6 @@ import cn.m2c.common.MCode;
 import cn.m2c.common.MPager;
 import cn.m2c.common.MResult;
 import cn.m2c.scm.application.CommonApplication;
-import cn.m2c.scm.application.order.DealerOrderApplication;
 import cn.m2c.scm.application.order.OrderApplication;
 import cn.m2c.scm.application.order.SaleAfterOrderApp;
 import cn.m2c.scm.application.order.command.AddSaleAfterCmd;
@@ -267,11 +266,13 @@ public class AppOrderAgent {
             ,@RequestParam(value = "backNum", required = false) int backNum
             ,@RequestParam(value = "reason", required = false) String reason
             ,@RequestParam(value = "reasonCode", required = false) int rCode
+            ,@RequestParam(value = "sortNo", required = false, defaultValue = "-1") int sortNo
             ) {
     	MResult result = new MResult(MCode.V_1);
         try {
         	AddSaleAfterCmd cmd = new AddSaleAfterCmd(userId, orderId, dealerOrderId,
-        			skuId, saleAfterNo, type, dealerId, goodsId, backNum, reason, rCode);
+        			skuId, saleAfterNo, type, dealerId, goodsId, backNum, reason, rCode
+        			,sortNo);
         	saleAfterApp.createSaleAfterOrder(cmd);
             result.setStatus(MCode.V_200);
         } 

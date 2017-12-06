@@ -34,10 +34,13 @@ public class AddSaleAfterCmd extends AssertionConcern {
 	private int backNum;
 	
 	private int reasonCode;
+	/**与订单详情对应的一个编号*/
+	private int sortNo;
 	
 	public AddSaleAfterCmd(String userId, String orderId, String dealerOrderId,
 			String skuId, String saleAfterNo, int type, String dealerId,
-			String goodsId, int backNum, String reason, int reasonCode) throws NegativeException {
+			String goodsId, int backNum, String reason, int reasonCode
+			,int sortNo) throws NegativeException {
 		
 		if (StringUtils.isEmpty(orderId)) {
 			throw new NegativeException(MCode.V_1, "订单号参数为空(orderId)！");
@@ -71,6 +74,10 @@ public class AddSaleAfterCmd extends AssertionConcern {
 			throw new NegativeException(MCode.V_1, "退货数不正确(backNum)！");
 		}
 		
+		if (sortNo < 0) {
+			throw new NegativeException(MCode.V_1, "编号不正确(sortNo)！");
+		}
+		
 		this.userId = userId;
 		this.orderId = orderId;
 		this.dealerOrderId = dealerOrderId;
@@ -83,6 +90,11 @@ public class AddSaleAfterCmd extends AssertionConcern {
 		this.backNum = backNum;
 		this.reason = reason;
 		this.reasonCode = reasonCode;
+		this.sortNo = sortNo;
+	}
+
+	public int getSortNo() {
+		return sortNo;
 	}
 
 	public String getSaleAfterNo() {

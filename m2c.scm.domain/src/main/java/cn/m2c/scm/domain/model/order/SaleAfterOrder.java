@@ -61,6 +61,8 @@ public class SaleAfterOrder extends ConcurrencySafeEntity {
 	private Integer rejectReasonCode;
 	/**更新时间*/
 	private Date updateTime;
+	/**在详情中的序号*/
+	private int sortNo = 0;
 	
 	public SaleAfterOrder() {
 		super();
@@ -69,7 +71,7 @@ public class SaleAfterOrder extends ConcurrencySafeEntity {
 	public SaleAfterOrder(String saleAfterNo, String userId, String orderId
 			,String dealerOrderId, String dealerId, String goodsId, String skuId
 			,String reason, int backNum, int status, int orderType, long backMoney
-			, int reasonCode, long returnFreight) {
+			, int reasonCode, long returnFreight, int sortNo) {
 		this.reason = reason;
 		this.saleAfterNo = saleAfterNo;
 		this.userId = userId;
@@ -84,6 +86,8 @@ public class SaleAfterOrder extends ConcurrencySafeEntity {
 		this.reasonCode = reasonCode;
 		
 		this.dealerId = dealerId;
+		
+		this.sortNo = sortNo;
 	}
 	
 	public void addApply() {

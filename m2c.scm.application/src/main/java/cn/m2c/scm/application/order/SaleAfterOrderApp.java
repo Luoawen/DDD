@@ -105,7 +105,8 @@ public class SaleAfterOrderApp {
 		
 		SaleAfterOrder afterOrder = new SaleAfterOrder(cmd.getSaleAfterNo(), cmd.getUserId(), cmd.getOrderId(),
 				cmd.getDealerOrderId(), cmd.getDealerId(), cmd.getGoodsId(), cmd.getSkuId(), cmd.getReason()
-				, num, status, orderType, money, cmd.getReasonCode(), ft);
+				, num, status, orderType, money, cmd.getReasonCode(), ft
+				, cmd.getSortNo());
 		afterOrder.addApply();
 		saleAfterRepository.save(afterOrder);
 		LOGGER.info("新增加售后申请成功！");
