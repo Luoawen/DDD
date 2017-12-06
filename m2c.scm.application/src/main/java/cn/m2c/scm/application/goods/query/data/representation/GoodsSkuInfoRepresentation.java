@@ -93,7 +93,7 @@ public class GoodsSkuInfoRepresentation {
     /**
      * 特惠价
      */
-    private Long specialPrice;
+    private Object specialPrice;
 
     public GoodsSkuInfoRepresentation(GoodsBean goodsBean, GoodsSkuBean bean, ShopBean shopBean, Map specialMap) {
         this.goodsId = goodsBean.getGoodsId();
@@ -125,7 +125,7 @@ public class GoodsSkuInfoRepresentation {
         this.goodsMinQuantity = goodsBean.getGoodsMinQuantity();
         this.shopId = null != shopBean ? shopBean.getShopId() : "";
         this.shopName = null != shopBean ? shopBean.getShopName() : "";
-        this.specialPrice = null != specialMap && specialMap.containsKey(this.getSkuId()) ? Long.parseLong(String.valueOf(specialMap.get(this.getSkuId()))) : null;
+        this.specialPrice = null != specialMap && specialMap.containsKey(this.getSkuId()) ? specialMap.get(this.getSkuId()) : null;
     }
 
     public String getGoodsId() {
@@ -264,11 +264,11 @@ public class GoodsSkuInfoRepresentation {
         this.shopId = shopId;
     }
 
-    public Long getSpecialPrice() {
+    public Object getSpecialPrice() {
         return specialPrice;
     }
 
-    public void setSpecialPrice(Long specialPrice) {
+    public void setSpecialPrice(Object specialPrice) {
         this.specialPrice = specialPrice;
     }
 }
