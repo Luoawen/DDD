@@ -9,11 +9,11 @@ import java.text.DecimalFormat;
 import java.util.Map;
 
 /**
- * 导出
+ * 管理平台导出
  */
-public class GoodsSupplyPriceModel {
-    //@ExcelField(title = "商家名称")
-    //private String dealerName;
+public class GoodsSupplyPriceModelAll {
+    @ExcelField(title = "商家名称")
+    private String dealerName;
     @ExcelField(title = "商品名称")
     private String goodsName;
     @ExcelField(title = "商品条形码")
@@ -24,8 +24,8 @@ public class GoodsSupplyPriceModel {
     private String goodsBrandName;
     @ExcelField(title = "商家SKU")
     private String goodsCode;
-    //@ExcelField(title = "平台SKU")
-    //private String goodsSkuId;
+    @ExcelField(title = "平台SKU")
+    private String goodsSkuId;
     @ExcelField(title = "规格")
     private String goodsSkuName;
     @ExcelField(title = "拍获价/元")
@@ -42,8 +42,8 @@ public class GoodsSupplyPriceModel {
     private String goodsPostageName;
 
 
-    public GoodsSupplyPriceModel(GoodsBean goodsBean, GoodsSkuBean goodsSkuBean, Map goodsClassifyMap, String goodsPostageName) {
-        //this.dealerName = goodsBean.getDealerName();
+    public GoodsSupplyPriceModelAll(GoodsBean goodsBean, GoodsSkuBean goodsSkuBean, Map goodsClassifyMap, String goodsPostageName) {
+        this.dealerName = goodsBean.getDealerName();
         this.goodsName = goodsBean.getGoodsName();
         this.goodsBarCode = StringUtils.isEmpty(goodsBean.getGoodsBarCode()) ? "" : goodsSkuBean.getGoodsCode();
         if (null != goodsClassifyMap) {
@@ -51,7 +51,7 @@ public class GoodsSupplyPriceModel {
         }
         this.goodsBrandName = goodsBean.getGoodsBrandName();
         this.goodsCode = StringUtils.isEmpty(goodsSkuBean.getGoodsCode()) ? "" : goodsSkuBean.getGoodsCode();
-        //this.goodsSkuId = goodsSkuBean.getSkuId();
+        this.goodsSkuId = goodsSkuBean.getSkuId();
         this.goodsSkuName = goodsSkuBean.getSkuName();
         DecimalFormat df = new DecimalFormat("0.00");
         this.photographPrice = df.format(goodsSkuBean.getPhotographPrice().floatValue() / 100);

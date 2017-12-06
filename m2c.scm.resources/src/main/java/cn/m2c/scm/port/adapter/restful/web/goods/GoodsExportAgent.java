@@ -6,8 +6,11 @@ import cn.m2c.scm.application.goods.query.GoodsQueryApplication;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsBean;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsSkuBean;
 import cn.m2c.scm.application.goods.query.data.export.GoodsModel;
+import cn.m2c.scm.application.goods.query.data.export.GoodsModelAll;
 import cn.m2c.scm.application.goods.query.data.export.GoodsServiceRateModel;
+import cn.m2c.scm.application.goods.query.data.export.GoodsServiceRateModelAll;
 import cn.m2c.scm.application.goods.query.data.export.GoodsSupplyPriceModel;
+import cn.m2c.scm.application.goods.query.data.export.GoodsSupplyPriceModelAll;
 import cn.m2c.scm.application.postage.query.PostageModelQueryApplication;
 import cn.m2c.scm.application.utils.ExcelUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -46,7 +49,7 @@ public class GoodsExportAgent {
     @RequestMapping(value = {"/export"}, method = RequestMethod.GET)
     public void exportExcel(HttpServletResponse response,
                             String dealerId, String goodsClassifyId, Integer goodsStatus,
-                            String condition, String startTime, String endTime) throws Exception {
+                            String condition, String startTime, String endTime, Integer exportStatus) throws Exception {
         String fileName = "商品库.xls";
         List<GoodsBean> goodsBeanList = goodsQueryApplication.searchGoodsExport(dealerId, goodsClassifyId, goodsStatus,
                 condition, startTime, endTime);
@@ -55,51 +58,101 @@ public class GoodsExportAgent {
             //结算模式 1：按供货价 2：按服务费率
             settlementMode = dealerQuery.getDealerCountMode(dealerId);
         }
-        if (null != goodsBeanList && goodsBeanList.size() > 0) {
-            List<GoodsServiceRateModel> goodsServiceRateModels = new ArrayList<>();
-            List<GoodsSupplyPriceModel> goodsSupplyPriceModels = new ArrayList<>();
-            List<GoodsModel> goodsModels = new ArrayList<>();
-            for (GoodsBean goodsBean : goodsBeanList) {
-                if (StringUtils.isEmpty(dealerId)) {
-                    //结算模式 1：按供货价 2：按服务费率
-                    settlementMode = dealerQuery.getDealerCountMode(goodsBean.getDealerId());
-                }
-                List<GoodsSkuBean> goodsSkuBeanList = goodsBean.getGoodsSkuBeans();
-                Map goodsClassifyMap = goodsClassifyQueryApplication.getClassifyMap(goodsBean.getGoodsClassifyId());
-                Float serviceRate = null;
-                if (settlementMode == 2) {
-                    serviceRate = goodsClassifyQueryApplication.queryServiceRateByClassifyId(goodsBean.getGoodsClassifyId());
-                }
-                String goodsPostageName = postageModelQueryApplication.getPostageModelNameByModelId(goodsBean.getGoodsPostageId());
-                for (GoodsSkuBean goodsSkuBean : goodsSkuBeanList) {
-                    if (StringUtils.isNotEmpty(dealerId)) {
-                        if (settlementMode == 2) {
-                            GoodsServiceRateModel goodsServiceRateModel = new GoodsServiceRateModel(goodsBean, goodsSkuBean, goodsClassifyMap,
-                                    serviceRate, goodsPostageName);
-                            goodsServiceRateModels.add(goodsServiceRateModel);
+        if(exportStatus == 0) {//商家平台导出，没有商家名和平台sku
+        	if (null != goodsBeanList && goodsBeanList.size() > 0) {
+                List<GoodsServiceRateModel> goodsServiceRateModels = new ArrayList<>();
+                List<GoodsSupplyPriceModel> goodsSupplyPriceModels = new ArrayList<>();
+                List<GoodsModel> goodsModels = new ArrayList<>();
+                for (GoodsBean goodsBean : goodsBeanList) {
+                    if (StringUtils.isEmpty(dealerId)) {
+                        //结算模式 1：按供货价 2：按服务费率
+                        settlementMode = dealerQuery.getDealerCountMode(goodsBean.getDealerId());
+                    }
+                    List<GoodsSkuBean> goodsSkuBeanList = goodsBean.getGoodsSkuBeans();
+                    Map goodsClassifyMap = goodsClassifyQueryApplication.getClassifyMap(goodsBean.getGoodsClassifyId());
+                    Float serviceRate = null;
+                    if (settlementMode == 2) {
+                        serviceRate = goodsClassifyQueryApplication.queryServiceRateByClassifyId(goodsBean.getGoodsClassifyId());
+                    }
+                    String goodsPostageName = postageModelQueryApplication.getPostageModelNameByModelId(goodsBean.getGoodsPostageId());
+                    for (GoodsSkuBean goodsSkuBean : goodsSkuBeanList) {
+                        if (StringUtils.isNotEmpty(dealerId)) {
+                            if (settlementMode == 2) {
+                                GoodsServiceRateModel goodsServiceRateModel = new GoodsServiceRateModel(goodsBean, goodsSkuBean, goodsClassifyMap,
+                                        serviceRate, goodsPostageName);
+                                goodsServiceRateModels.add(goodsServiceRateModel);
+                            } else {
+                                GoodsSupplyPriceModel goodsSupplyPriceModel = new GoodsSupplyPriceModel(goodsBean, goodsSkuBean, goodsClassifyMap,
+                                        goodsPostageName);
+                                goodsSupplyPriceModels.add(goodsSupplyPriceModel);
+                            }
                         } else {
-                            GoodsSupplyPriceModel goodsSupplyPriceModel = new GoodsSupplyPriceModel(goodsBean, goodsSkuBean, goodsClassifyMap,
-                                    goodsPostageName);
-                            goodsSupplyPriceModels.add(goodsSupplyPriceModel);
+                            GoodsModel goodsModel = new GoodsModel(goodsBean, goodsSkuBean, goodsClassifyMap, serviceRate,
+                                    goodsPostageName, settlementMode);
+                            goodsModels.add(goodsModel);
                         }
-                    } else {
-                        GoodsModel goodsModel = new GoodsModel(goodsBean, goodsSkuBean, goodsClassifyMap, serviceRate,
-                                goodsPostageName, settlementMode);
-                        goodsModels.add(goodsModel);
                     }
                 }
-            }
-            if (StringUtils.isNotEmpty(dealerId)) {
-                if (settlementMode == 2) {
-                    ExcelUtil.writeExcel(response, fileName, goodsServiceRateModels, GoodsServiceRateModel.class);
+                if (StringUtils.isNotEmpty(dealerId)) {
+                    if (settlementMode == 2) {
+                        ExcelUtil.writeExcel(response, fileName, goodsServiceRateModels, GoodsServiceRateModel.class);
+                    } else {
+                        ExcelUtil.writeExcel(response, fileName, goodsSupplyPriceModels, GoodsSupplyPriceModel.class);
+                    }
                 } else {
-                    ExcelUtil.writeExcel(response, fileName, goodsSupplyPriceModels, GoodsSupplyPriceModel.class);
+                    ExcelUtil.writeExcel(response, fileName, goodsModels, GoodsModel.class);
                 }
             } else {
-                ExcelUtil.writeExcel(response, fileName, goodsModels, GoodsModel.class);
+                ExcelUtil.writeExcel(response, fileName, null, GoodsModel.class);
             }
-        } else {
-            ExcelUtil.writeExcel(response, fileName, null, GoodsModel.class);
+        }else if(exportStatus == 1) {//管理平台导出
+        	if (null != goodsBeanList && goodsBeanList.size() > 0) {
+                List<GoodsServiceRateModelAll> goodsServiceRateModels = new ArrayList<>();
+                List<GoodsSupplyPriceModelAll> goodsSupplyPriceModels = new ArrayList<>();
+                List<GoodsModelAll> goodsModels = new ArrayList<>();
+                for (GoodsBean goodsBean : goodsBeanList) {
+                    if (StringUtils.isEmpty(dealerId)) {
+                        //结算模式 1：按供货价 2：按服务费率
+                        settlementMode = dealerQuery.getDealerCountMode(goodsBean.getDealerId());
+                    }
+                    List<GoodsSkuBean> goodsSkuBeanList = goodsBean.getGoodsSkuBeans();
+                    Map goodsClassifyMap = goodsClassifyQueryApplication.getClassifyMap(goodsBean.getGoodsClassifyId());
+                    Float serviceRate = null;
+                    if (settlementMode == 2) {
+                        serviceRate = goodsClassifyQueryApplication.queryServiceRateByClassifyId(goodsBean.getGoodsClassifyId());
+                    }
+                    String goodsPostageName = postageModelQueryApplication.getPostageModelNameByModelId(goodsBean.getGoodsPostageId());
+                    for (GoodsSkuBean goodsSkuBean : goodsSkuBeanList) {
+                        if (StringUtils.isNotEmpty(dealerId)) {
+                            if (settlementMode == 2) {
+                            	GoodsServiceRateModelAll goodsServiceRateModel = new GoodsServiceRateModelAll(goodsBean, goodsSkuBean, goodsClassifyMap,
+                                        serviceRate, goodsPostageName);
+                                goodsServiceRateModels.add(goodsServiceRateModel);
+                            } else {
+                            	GoodsSupplyPriceModelAll goodsSupplyPriceModel = new GoodsSupplyPriceModelAll(goodsBean, goodsSkuBean, goodsClassifyMap,
+                                        goodsPostageName);
+                                goodsSupplyPriceModels.add(goodsSupplyPriceModel);
+                            }
+                        } else {
+                        	GoodsModelAll goodsModel = new GoodsModelAll(goodsBean, goodsSkuBean, goodsClassifyMap, serviceRate,
+                                    goodsPostageName, settlementMode);
+                            goodsModels.add(goodsModel);
+                        }
+                    }
+                }
+                if (StringUtils.isNotEmpty(dealerId)) {
+                    if (settlementMode == 2) {
+                        ExcelUtil.writeExcel(response, fileName, goodsServiceRateModels, GoodsServiceRateModelAll.class);
+                    } else {
+                        ExcelUtil.writeExcel(response, fileName, goodsSupplyPriceModels, GoodsSupplyPriceModelAll.class);
+                    }
+                } else {
+                    ExcelUtil.writeExcel(response, fileName, goodsModels, GoodsModelAll.class);
+                }
+            } else {
+                ExcelUtil.writeExcel(response, fileName, null, GoodsModel.class);
+            }
         }
+        
     }
 }
