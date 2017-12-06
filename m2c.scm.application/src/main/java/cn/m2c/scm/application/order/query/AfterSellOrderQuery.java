@@ -60,7 +60,8 @@ public class AfterSellOrderQuery {
 		StringBuilder sql = new StringBuilder();
 		sql.append(" SELECT ");
 		sql.append(
-				" after.after_sell_order_id,after.order_id,after.order_type,after.back_money, after.return_freight,after._status,dealer.dealer_name,after.created_date ");
+				" after.after_sell_order_id,after.order_id,after.order_type,after.back_money, after.return_freight,after._status,dealer.dealer_name,after.created_date, ");
+		sql.append(" detail.is_special,detail.special_price ");
 		sql.append(" FROM t_scm_order_after_sell after ");
 		sql.append(" LEFT JOIN t_scm_dealer dealer ON after.dealer_id = dealer.dealer_id");
 		sql.append(" LEFT JOIN t_scm_order_main main ON after.order_id = main.order_id ");
@@ -351,7 +352,7 @@ public class AfterSellOrderQuery {
 		sql.append(
 				" SELECT detail.discount_price,after.sell_num,detail.freight,detail.plateform_discount,detail.dealer_discount ");
 		sql.append(" ,detail.media_res_id,after.back_money,after.order_id,detail._price ");
-		sql.append(" ,detail.goods_icon,detail.goods_name,detail.sku_name ");
+		sql.append(" ,detail.goods_icon,detail.goods_name,detail.sku_name,detail.is_special,detail.special_price ");
 		sql.append(" FROM t_scm_order_detail detail ");
 		sql.append(" INNER JOIN t_scm_order_after_sell after ");
 		sql.append(" INNER JOIN t_scm_goods goods ");

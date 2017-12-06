@@ -44,6 +44,24 @@ public class OrderDetailBean {
 	@ColumnAlias(value= "change_price")
 	private Long changePrice;
 	
+	@ColumnAlias(value = "is_special")
+	private Integer isPecial;
+	@ColumnAlias(value = "special_price")
+	private long specialPrice;
+	
+	
+	public Integer getIsPecial() {
+		return isPecial;
+	}
+	public long getSpecialPrice() {
+		return specialPrice;
+	}
+	public void setIsPecial(Integer isPecial) {
+		this.isPecial = isPecial;
+	}
+	public void setSpecialPrice(long specialPrice) {
+		this.specialPrice = specialPrice;
+	}
 	public Integer getIsChange() {
 		return isChange;
 	}

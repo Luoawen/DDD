@@ -44,16 +44,38 @@ public class AfterSellOrderBean {
 	 */
 	@ColumnAlias(value = "created_date")
 	private Date createDate;
-	
+
 	@ColumnAlias(value = "return_freight")
 	private Long rtFreight;
+
+	@ColumnAlias(value = "is_special")
+	private Integer isSpecial;
 	
+	@ColumnAlias(value = "special_price")
+	private long specialPrice;
+
 	private GoodsInfoBean goodsInfo;
 
 	public Long getRtFreight() {
 		if (rtFreight == null)
 			rtFreight = 0l;
 		return rtFreight;
+	}
+
+	public Integer getIsSpecial() {
+		return isSpecial;
+	}
+
+	public long getSpecialPrice() {
+		return specialPrice;
+	}
+
+	public void setIsSpecial(Integer isSpecial) {
+		this.isSpecial = isSpecial;
+	}
+
+	public void setSpecialPrice(long specialPrice) {
+		this.specialPrice = specialPrice;
 	}
 
 	public void setRtFreight(Long rtFreight) {

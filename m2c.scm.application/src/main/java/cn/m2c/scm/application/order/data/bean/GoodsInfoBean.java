@@ -1,5 +1,7 @@
 package cn.m2c.scm.application.order.data.bean;
 
+import javax.persistence.Column;
+
 import cn.m2c.ddd.common.persistence.orm.ColumnAlias;
 
 /**
@@ -67,6 +69,28 @@ public class GoodsInfoBean {
 	@ColumnAlias(value = "change_price")
 	private Long changePrice;
 	
+	@ColumnAlias(value = "special_price")
+	private long specialPrice;
+	
+	@ColumnAlias(value = "is_special")
+	private Integer isSpecial;
+	
+	public long getSpecialPrice() {
+		return specialPrice;
+	}
+
+	public Integer getIsSpecial() {
+		return isSpecial;
+	}
+
+	public void setSpecialPrice(long specialPrice) {
+		this.specialPrice = specialPrice;
+	}
+
+	public void setIsSpecial(Integer isSpecial) {
+		this.isSpecial = isSpecial;
+	}
+
 	public Long getChangePrice() {
 		return changePrice;
 	}

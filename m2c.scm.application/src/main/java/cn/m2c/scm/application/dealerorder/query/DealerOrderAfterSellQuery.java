@@ -48,7 +48,7 @@ public class DealerOrderAfterSellQuery {
 		List<Object> params = new ArrayList<Object>();
 		StringBuilder sql = new StringBuilder();
 		sql.append(" SELECT after.sku_id,after.order_id,");
-		sql.append(" after.after_sell_order_id,after.order_type,after.back_money,after._status,dealer.dealer_name,after.created_date, after.return_freight ");
+		sql.append(" after.after_sell_order_id,after.order_type,after.back_money,after._status,dealer.dealer_name,after.created_date, after.return_freight,detail.is_special,detail.special_price ");
 		sql.append(" FROM t_scm_order_after_sell after");
 		sql.append(" LEFT JOIN t_scm_dealer dealer ON after.dealer_id = dealer.dealer_id \r\n");
 		sql.append(" LEFT JOIN t_scm_order_detail detail ON after.dealer_order_id = detail.dealer_order_id AND after.sku_id = detail.sku_id");
@@ -340,7 +340,7 @@ public class DealerOrderAfterSellQuery {
 		StringBuilder sql = new StringBuilder();
 		List<Object> param = new ArrayList<Object>();
 		sql.append(" SELECT detail.discount_price,after.sell_num,detail.freight,detail.plateform_discount,detail.dealer_discount ");
-		sql.append(" ,detail.media_res_id,after.back_money,after.sku_id ");
+		sql.append(" ,detail.media_res_id,after.back_money,after.sku_id,detail.is_special,detail.special_price ");
 		sql.append(" ,detail.goods_icon,detail.goods_name,detail.sku_name ");
 		sql.append(" FROM t_scm_order_detail detail ");
 		sql.append(" INNER JOIN t_scm_order_after_sell after ");
