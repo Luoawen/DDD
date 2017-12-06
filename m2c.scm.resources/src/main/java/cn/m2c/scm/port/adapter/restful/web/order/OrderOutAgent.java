@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSONObject;
+import com.rabbitmq.client.AMQP.Basic.Get;
 
 import cn.m2c.common.JsonUtils;
 import cn.m2c.common.MCode;
@@ -180,6 +181,32 @@ public class OrderOutAgent {
 		}
     	return new ResponseEntity<MResult>(result,HttpStatus.OK);
     }
+    
+    /**
+     * 计算某个时间段订单运费总合
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    @RequestMapping(value = "/getOrderFreight",method =RequestMethod.GET)
+    public ResponseEntity<MResult> getOrderFreight(@RequestParam(value = "startTime",required = false)long startTime,
+    		@RequestParam(value = "endTime",required = false)long endTime) {
+    	MResult result = new MResult();
+    	
+    	try {
+			long sumOrderFreight = orderQuery.getOrderFreigh(startTime, endTime);
+			result.setContent(sumOrderFreight);
+			result.setStatus(MCode.V_200);
+		} catch (NegativeException e) {
+			LOGGER.info("获取订单运费总合失败,e:" + e.getMessage());
+			result = new MResult(MCode.V_400, e.getMessage());
+		}
+    	
+		return new ResponseEntity<MResult>(result,HttpStatus.OK);
+		
+	}
+    
+    
     
     public static void main(String args[]) {
     	BigDecimal g = new BigDecimal(10);
