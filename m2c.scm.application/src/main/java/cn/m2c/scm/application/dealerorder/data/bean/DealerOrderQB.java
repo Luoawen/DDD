@@ -76,37 +76,12 @@ public class DealerOrderQB {
 	 */
 	private Integer afterStatus;
 	
-	/**
-	 * 是否特惠价， 0否， 1是 
-	 */
-	private Integer isSpecial;
 	
-	/**
-	 * 特惠价
-	 */
-	private long specialPrice;
 	
 	public Integer getAfterStatus() {
 		return afterStatus;
 	}
 	
-	public Integer getIsSpecial() {
-		return isSpecial;
-	}
-
-	public long getSpecialPrice() {
-		return specialPrice;
-	}
-
-	public void setIsSpecial(Integer isSpecial) {
-		this.isSpecial = isSpecial;
-	}
-
-
-	public void setSpecialPrice(long specialPrice) {
-		this.specialPrice = specialPrice;
-	}
-
 
 	public void setAfterStatus(Integer afterStatus) {
 		this.afterStatus = afterStatus;

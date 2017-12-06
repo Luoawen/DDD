@@ -41,8 +41,14 @@ public class DealerGoodsBean {
 
 	private Long backMoney;
 
+	/**
+	 * 是否特惠价， 0否， 1是 
+	 */
 	private Integer isSpecial;
-
+	
+	/**
+	 * 特惠价
+	 */
 	private long specialPrice;
 
 	private Integer isChange;
