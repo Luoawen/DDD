@@ -37,7 +37,7 @@ public class HibernateGoodsSpecialRepository extends HibernateSupperRepository i
 
     @Override
     public List<GoodsSpecial> getStartGoodsSpecial() {
-        StringBuilder sql = new StringBuilder("select * from t_scm_goods_special where start_time <= :start_time status = 0");
+        StringBuilder sql = new StringBuilder("select * from t_scm_goods_special where start_time <= :start_time and status = 0");
         Date currentTime = new Date(System.currentTimeMillis());
         Query query = this.session().createSQLQuery(sql.toString()).addEntity(GoodsSpecial.class);
         query.setParameter("start_time", currentTime);
@@ -46,7 +46,7 @@ public class HibernateGoodsSpecialRepository extends HibernateSupperRepository i
 
     @Override
     public List<GoodsSpecial> getEndGoodsSpecial() {
-        StringBuilder sql = new StringBuilder("select * from t_scm_goods_special where end_time <= :end_time status = 1");
+        StringBuilder sql = new StringBuilder("select * from t_scm_goods_special where end_time <= :end_time and status = 1");
         Date currentTime = new Date(System.currentTimeMillis());
         Query query = this.session().createSQLQuery(sql.toString()).addEntity(GoodsSpecial.class);
         query.setParameter("end_time", currentTime);
