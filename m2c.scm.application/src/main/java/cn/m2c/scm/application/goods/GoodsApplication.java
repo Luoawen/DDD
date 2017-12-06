@@ -205,7 +205,7 @@ public class GoodsApplication {
         for (Map.Entry<String, Integer> entry : map.entrySet()) {
             String skuId = entry.getKey();
             Integer num = entry.getValue();
-            GoodsSku goodsSku = goodsSkuRepository.queryGoodsSkuById(skuId);
+            GoodsSku goodsSku = goodsSkuRepository.getEffectiveGoodsSku(skuId);
             if (null == goodsSku) {//信息不存在
                 skuIds.add(skuId);
                 continue;
@@ -231,8 +231,6 @@ public class GoodsApplication {
                 throw new NegativeException(MCode.V_400, skuId);//400:扣库存失败
             }
             goodsIds.add(goodsSku.goods().getId());
-          /*  Goods goods = goodsRepository.queryGoodsById(goodsSku.goods().getId());
-            goods.soldOut();//如果售完则修改状态*/
         }
         DomainEventPublisher
                 .instance()
