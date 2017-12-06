@@ -13,4 +13,6 @@ public interface GoodsSkuRepository {
     boolean goodsCodeIsRepeat(String dealerId, List<String> codes);
 
     boolean goodsCodeIsRepeat(String dealerId, String skuId, String code);
+
+    GoodsSku getEffectiveGoodsSku(String skuId);
 }

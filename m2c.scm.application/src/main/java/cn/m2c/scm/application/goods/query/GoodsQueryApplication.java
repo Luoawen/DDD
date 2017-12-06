@@ -1087,7 +1087,7 @@ public class GoodsQueryApplication {
         sql.append(" SELECT ");
         sql.append(" g.* ");
         sql.append(" FROM ");
-        sql.append(" t_scm_goods g,t_scm_goods_sku s WHERE g.id=s.goods_id");
+        sql.append(" t_scm_goods g,t_scm_goods_sku s WHERE g.id=s.goods_id and g.goods_id not in (select sp.goods_id from t_scm_goods_special sp where sp.status <> 2)");
         if (StringUtils.isNotEmpty(condition)) {
             sql.append(" AND (g.goods_name like ? OR g.dealer_name like ?)");
             params.add("%" + condition + "%");
@@ -1112,7 +1112,7 @@ public class GoodsQueryApplication {
         sql.append(" SELECT ");
         sql.append(" count(distinct g.goods_id) ");
         sql.append(" FROM ");
-        sql.append(" t_scm_goods g,t_scm_goods_sku s WHERE g.id=s.goods_id");
+        sql.append(" t_scm_goods g,t_scm_goods_sku s WHERE g.id=s.goods_id and g.goods_id not in (select sp.goods_id from t_scm_goods_special sp where sp.status <> 2)");
         if (StringUtils.isNotEmpty(condition)) {
             sql.append(" AND (g.goods_name like ? OR g.dealer_name like ?)");
             params.add("%" + condition + "%");

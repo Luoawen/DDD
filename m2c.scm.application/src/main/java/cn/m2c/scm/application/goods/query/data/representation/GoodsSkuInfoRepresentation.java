@@ -263,4 +263,12 @@ public class GoodsSkuInfoRepresentation {
     public void setShopId(String shopId) {
         this.shopId = shopId;
     }
+
+    public Long getSpecialPrice() {
+        return specialPrice;
+    }
+
+    public void setSpecialPrice(Long specialPrice) {
+        this.specialPrice = specialPrice;
+    }
 }

@@ -1,15 +1,14 @@
 package cn.m2c.scm.port.adapter.restful.web.special;
 
-import cn.m2c.common.JsonUtils;
 import cn.m2c.common.MCode;
 import cn.m2c.common.MPager;
 import cn.m2c.common.MResult;
 import cn.m2c.scm.application.special.GoodsSpecialApplication;
 import cn.m2c.scm.application.special.command.GoodsSpecialAddCommand;
 import cn.m2c.scm.application.special.command.GoodsSpecialModifyCommand;
-import cn.m2c.scm.application.special.data.bean.GoodsSkuSpecialBean;
 import cn.m2c.scm.application.special.data.bean.GoodsSpecialDetailBean;
 import cn.m2c.scm.application.special.data.bean.GoodsSpecialListBean;
+import cn.m2c.scm.application.special.data.representation.GoodsSpecialDetailBeanRepresentation;
 import cn.m2c.scm.application.special.data.representation.GoodsSpecialListRepresentation;
 import cn.m2c.scm.application.special.query.GoodsSpecialQueryApplication;
 import cn.m2c.scm.domain.IDGenerator;
@@ -40,8 +39,8 @@ public class GoodsSpecialAgent {
     @Autowired
     GoodsSpecialApplication goodsSpecialApplication;
     @Autowired
-    GoodsSpecialQueryApplication goodsSpecialQueryApplication; 
-    
+    GoodsSpecialQueryApplication goodsSpecialQueryApplication;
+
     /**
      * 获取ID
      *
@@ -146,90 +145,97 @@ public class GoodsSpecialAgent {
         }
         return new ResponseEntity<MResult>(result, HttpStatus.OK);
     }
-    
+
     /**
      * 特惠价首页搜素
-     * 
-     * @param status 状态 0未生效，1已生效，2已失效
-     * @param startTime 开始时间
-     * @param endTime 结束时间
+     *
+     * @param status        状态 0未生效，1已生效，2已失效
+     * @param startTime     开始时间
+     * @param endTime       结束时间
      * @param searchMessage 搜索条件(商家名/商品名)
-     * @param pageNum 第几页
-     * @param rows 每页多少行
+     * @param pageNum       第几页
+     * @param rows          每页多少行
      * @return
      */
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     public ResponseEntity<MPager> getGoodsSpecialAll(
-    		@RequestParam(value = "status", required = false) Integer status,
-    		@RequestParam(value = "startTime", required = false) String startTime,
+            @RequestParam(value = "status", required = false) Integer status,
+            @RequestParam(value = "startTime", required = false) String startTime,
             @RequestParam(value = "endTime", required = false) String endTime,
-            @RequestParam(value = "searchMessage",required = false) String searchMessage, 
+            @RequestParam(value = "searchMessage", required = false) String searchMessage,
             @RequestParam(value = "pageNum", required = false, defaultValue = "1") Integer pageNum,
             @RequestParam(value = "rows", required = false, defaultValue = "10") Integer rows
-    		){
-    	MPager result = new MPager(MCode.V_1);
-    	try {
-    		//查总数
-        	Integer total = goodsSpecialQueryApplication.queryGoodsSpecialCount(status, startTime, endTime, searchMessage);
-        	if(total > 0) {
-        		List<GoodsSpecialListBean> goodsSpecialBeanLists =  goodsSpecialQueryApplication.queryGoodsSpecialListBeanList(status, startTime, endTime, searchMessage, pageNum, rows);
-        		if(null != goodsSpecialBeanLists && goodsSpecialBeanLists.size()>0 ) {
-        			List<GoodsSpecialListRepresentation> representations = new ArrayList<GoodsSpecialListRepresentation>();
-        			for(GoodsSpecialListBean bean : goodsSpecialBeanLists) {
-        				representations.add(new GoodsSpecialListRepresentation(bean));
-        			}
-        			result.setContent(representations);
-        		}
-        	}
-        	result.setPager(total, pageNum, rows);
+    ) {
+        MPager result = new MPager(MCode.V_1);
+        try {
+            //查总数
+            Integer total = goodsSpecialQueryApplication.queryGoodsSpecialCount(status, startTime, endTime, searchMessage);
+            if (total > 0) {
+                List<GoodsSpecialListBean> goodsSpecialBeanLists = goodsSpecialQueryApplication.queryGoodsSpecialListBeanList(status, startTime, endTime, searchMessage, pageNum, rows);
+                if (null != goodsSpecialBeanLists && goodsSpecialBeanLists.size() > 0) {
+                    List<GoodsSpecialListRepresentation> representations = new ArrayList<GoodsSpecialListRepresentation>();
+                    for (GoodsSpecialListBean bean : goodsSpecialBeanLists) {
+                        representations.add(new GoodsSpecialListRepresentation(bean));
+                    }
+                    result.setContent(representations);
+                }
+            }
+            result.setPager(total, pageNum, rows);
             result.setStatus(MCode.V_200);
-        	return new ResponseEntity<MPager>(result, HttpStatus.OK);
-    	}catch (Exception e) {
-    		LOGGER.error("getGoodsSpecialAll Exception e:", e);
+            return new ResponseEntity<MPager>(result, HttpStatus.OK);
+        } catch (Exception e) {
+            LOGGER.error("getGoodsSpecialAll Exception e:", e);
             result = new MPager(MCode.V_400, "搜索特惠价信息失败");
-    	}
-    	return new ResponseEntity<MPager>(result, HttpStatus.OK);
+        }
+        return new ResponseEntity<MPager>(result, HttpStatus.OK);
     }
-    
+
     /**
      * 根据specialId查询商品特惠价详情
+     *
      * @param specialId
      * @return
      */
-    @RequestMapping(value="/{specialId}",method=RequestMethod.GET)
+    @RequestMapping(value = "/{specialId}", method = RequestMethod.GET)
     public ResponseEntity<MResult> getGoodsSpecialDetailBySpecialId(
-    		@PathVariable String specialId
-    		){
-    	MResult result = new MResult(MCode.V_1);
-    	try {
-    		GoodsSpecialDetailBean goodsSpecialDetailBean = goodsSpecialQueryApplication.queryGoodsSpecialDetailBeanBySpecialId(specialId);
-			if(goodsSpecialDetailBean != null) {
-				result.setContent(goodsSpecialDetailBean);
-			}
-			result.setStatus(MCode.V_200);
-		} catch (Exception e) {
-			LOGGER.error("getGoodsSpecialDetailBySpecialId Exception e:",e);
-			result = new MResult(MCode.V_400, "查询商品特惠价详情失败");
-		}
-    	return new ResponseEntity<MResult>(result, HttpStatus.OK);
+            @PathVariable String specialId
+    ) {
+        MResult result = new MResult(MCode.V_1);
+        try {
+        	GoodsSpecialDetailBeanRepresentation goodsSpecialDetailBeanRepresentation = goodsSpecialQueryApplication.queryGoodsSpecialDetailBeanRepresentationBySpecialId(specialId);
+            if (goodsSpecialDetailBeanRepresentation != null) {
+                result.setContent(goodsSpecialDetailBeanRepresentation);
+            }
+            result.setStatus(MCode.V_200);
+        } catch (Exception e) {
+            LOGGER.error("getGoodsSpecialDetailBySpecialId Exception e:", e);
+            result = new MResult(MCode.V_400, "查询商品特惠价详情失败");
+        }
+        return new ResponseEntity<MResult>(result, HttpStatus.OK);
     }
-    
-    public static void main(String[] args) {
-        GoodsSkuSpecialBean bean = new GoodsSkuSpecialBean();
-        bean.setSkuId("20171123193901738268");
-        bean.setSkuName("辣的,蓝色");
-        bean.setSupplyPrice(100l);
-        bean.setSpecialPrice(200l);
 
-        GoodsSkuSpecialBean bean1 = new GoodsSkuSpecialBean();
-        bean1.setSkuId("20171123193901663962");
-        bean1.setSkuName("酸的,蓝色");
-        bean1.setSupplyPrice(100l);
-        bean1.setSpecialPrice(200l);
-
-        List<GoodsSkuSpecialBean> list = new ArrayList<>();
-        list.add(bean);
-        list.add(bean1);
-        System.out.print(JsonUtils.toStr(list));
+    /**
+     * 商品特惠价终止
+     *
+     * @param specialId
+     * @return
+     */
+    @RequestMapping(value = "/end/{specialId}", method = RequestMethod.POST)
+    public ResponseEntity<MResult> endGoodsSpecial(
+            @PathVariable String specialId
+    ) {
+        MResult result = new MResult(MCode.V_1);
+        try {
+            goodsSpecialApplication.endGoodsSpecial(specialId);
+            result.setStatus(MCode.V_200);
+        } catch (NegativeException ne) {
+            LOGGER.error("endGoodsSpecial NegativeException e:", ne);
+            result = new MResult(ne.getStatus(), ne.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("endGoodsSpecial Exception e:", e);
+            result = new MResult(MCode.V_400, "终止商品特惠活动失败");
+        }
+        return new ResponseEntity<MResult>(result, HttpStatus.OK);
     }
+
 }

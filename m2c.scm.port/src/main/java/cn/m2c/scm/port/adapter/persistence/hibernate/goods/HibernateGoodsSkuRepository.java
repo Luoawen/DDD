@@ -94,4 +94,12 @@ public class HibernateGoodsSkuRepository extends HibernateSupperRepository imple
         }
         return false;
     }
+
+    @Override
+    public GoodsSku getEffectiveGoodsSku(String skuId) {
+        StringBuilder sql = new StringBuilder("select s.* from t_scm_goods g,t_scm_goods_sku s where g.id=s.goods_id and g.del_status =1 and g.goods_status<>1 and s.sku_id =:sku_id");
+        Query query = this.session().createSQLQuery(sql.toString()).addEntity(GoodsSku.class);
+        query.setParameter("sku_id", skuId);
+        return (GoodsSku) query.uniqueResult();
+    }
 }

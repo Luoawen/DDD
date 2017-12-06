@@ -1,7 +1,10 @@
 package cn.m2c.scm.application.order.query;
 
 
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -551,5 +554,31 @@ public class OrderQuery {
 			result.put(a, 1);
 		}
 		return result;
+	}
+	
+	public long getOrderFreigh(long startTime,long endTime) throws NegativeException {
+		StringBuilder sql = new StringBuilder();
+		List<Object> params = new ArrayList<Object>();
+		
+		if (startTime == 0) {
+			throw new NegativeException(MCode.V_1, "开始时间参数为空！");
+		}
+		
+		if (endTime == 0) {
+			throw new NegativeException(MCode.V_1, "结束时间参数为空！");
+		}
+		
+		if(startTime >= endTime) {
+			throw new NegativeException(MCode.V_1, "开始时间不能大于结束时间");
+		}
+		sql.append(" SELECT SUM(order_freight) FROM t_scm_order_main ")
+		.append(" WHERE _status >= 1 AND pay_time BETWEEN ? AND ? ");
+		params.add(new Date(startTime));
+		params.add(new Date(endTime));
+		Object object = supportJdbcTemplate.jdbcTemplate().queryForObject(sql.toString(), Object.class,params.toArray());
+		long sum = 0;
+		if (object != null && object instanceof BigDecimal)
+			sum = ((BigDecimal)object).longValue();
+		 return sum;
 	}
 }

@@ -139,9 +139,19 @@ public class GoodsSpecial extends ConcurrencySafeEntity {
 
     public void startSpecial() {
         this.status = 1;
+        this.lastUpdatedDate = new Date();
     }
 
     public void endSpecial() {
         this.status = 2;
+        this.lastUpdatedDate = new Date();
+    }
+
+    public void modifyGoodsName(String goodsName) {
+        this.goodsName = goodsName;
+    }
+
+    public void modifyDealerName(String dealerName) {
+        this.dealerName = dealerName;
     }
 }
