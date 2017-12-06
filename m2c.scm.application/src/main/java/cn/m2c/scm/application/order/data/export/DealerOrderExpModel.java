@@ -11,7 +11,7 @@ import java.util.Date;
  * 商家订单导出
  */
 public class DealerOrderExpModel {
-    @ExcelField(title = "订货号")
+    @ExcelField(title = "订货单")
     private String dealerOrderId;
     @ExcelField(title = "订单状态")
     private String orderStatus;
@@ -47,7 +47,7 @@ public class DealerOrderExpModel {
     private String saleAfterStatus;
     @ExcelField(title = "售后数量")
     private String saleAfterNum;
-    @ExcelField(title = "售后金额/元")
+    @ExcelField(title = "售后金额")
     private String saleAfterMoney;
 
     public DealerOrderExpModel(DealerGoodsBean goodsBean, DealerOrderQB dealerOrderQB) {
