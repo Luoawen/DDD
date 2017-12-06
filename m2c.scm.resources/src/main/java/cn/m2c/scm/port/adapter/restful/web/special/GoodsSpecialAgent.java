@@ -8,6 +8,7 @@ import cn.m2c.scm.application.special.command.GoodsSpecialAddCommand;
 import cn.m2c.scm.application.special.command.GoodsSpecialModifyCommand;
 import cn.m2c.scm.application.special.data.bean.GoodsSpecialDetailBean;
 import cn.m2c.scm.application.special.data.bean.GoodsSpecialListBean;
+import cn.m2c.scm.application.special.data.representation.GoodsSpecialDetailBeanRepresentation;
 import cn.m2c.scm.application.special.data.representation.GoodsSpecialListRepresentation;
 import cn.m2c.scm.application.special.query.GoodsSpecialQueryApplication;
 import cn.m2c.scm.domain.IDGenerator;
@@ -201,9 +202,9 @@ public class GoodsSpecialAgent {
     ) {
         MResult result = new MResult(MCode.V_1);
         try {
-            GoodsSpecialDetailBean goodsSpecialDetailBean = goodsSpecialQueryApplication.queryGoodsSpecialDetailBeanBySpecialId(specialId);
-            if (goodsSpecialDetailBean != null) {
-                result.setContent(goodsSpecialDetailBean);
+        	GoodsSpecialDetailBeanRepresentation goodsSpecialDetailBeanRepresentation = goodsSpecialQueryApplication.queryGoodsSpecialDetailBeanRepresentationBySpecialId(specialId);
+            if (goodsSpecialDetailBeanRepresentation != null) {
+                result.setContent(goodsSpecialDetailBeanRepresentation);
             }
             result.setStatus(MCode.V_200);
         } catch (Exception e) {

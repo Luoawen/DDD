@@ -2,9 +2,11 @@ package cn.m2c.scm.application.special.query;
 
 import cn.m2c.ddd.common.port.adapter.persistence.springJdbc.SupportJdbcTemplate;
 import cn.m2c.scm.application.special.data.bean.GoodsSkuSpecialBean;
+import cn.m2c.scm.application.special.data.bean.GoodsSkuSpecialDetailAllBean;
 import cn.m2c.scm.application.special.data.bean.GoodsSpecialBean;
 import cn.m2c.scm.application.special.data.bean.GoodsSpecialDetailBean;
 import cn.m2c.scm.application.special.data.bean.GoodsSpecialListBean;
+import cn.m2c.scm.application.special.data.representation.GoodsSpecialDetailBeanRepresentation;
 import cn.m2c.scm.application.utils.Utils;
 
 import org.apache.commons.lang3.StringUtils;
@@ -211,4 +213,43 @@ public class GoodsSpecialQueryApplication {
         }
         return goodsSpecialDetailBean;
     }
+
+    /**
+     * 根据specialId查询商品特惠价详情表述对象
+     * @param specialId
+     * @return
+     */
+	public GoodsSpecialDetailBeanRepresentation queryGoodsSpecialDetailBeanRepresentationBySpecialId(String specialId) {
+		StringBuilder sql = new StringBuilder();
+        sql.append(" SELECT ");
+        sql.append(" * ");
+        sql.append(" From ");
+        sql.append(" t_scm_goods_special WHERE 1 = 1 AND special_id = ? ");
+        GoodsSpecialDetailBean goodsSpecialDetailBean = this.getSupportJdbcTemplate().queryForBean(sql.toString(), GoodsSpecialDetailBean.class, specialId);
+        GoodsSpecialDetailBeanRepresentation goodsSpecialDetailBeanRepresentation = null;
+        if(goodsSpecialDetailBean != null) {
+        	goodsSpecialDetailBeanRepresentation = new GoodsSpecialDetailBeanRepresentation(goodsSpecialDetailBean);
+        	goodsSpecialDetailBeanRepresentation.setGoodsSkuSpecials(queryGoodsSkuSpecialDetailAllBeanList(goodsSpecialDetailBeanRepresentation.getId()));
+        }
+		return goodsSpecialDetailBeanRepresentation;
+	}
+	
+	/**
+	 * 根据specialId查询GoodsSkuSpecialDetailAllBean
+	 */
+	public List<GoodsSkuSpecialDetailAllBean> queryGoodsSkuSpecialDetailAllBeanList(Integer specialId){
+		StringBuilder sql = new StringBuilder();
+		sql.append(" SELECT ");
+		sql.append(" ts.`special_id` specialId , ts.`sku_id` skuId , ts.`sku_name` skuName , ts.`special_price` specialPrice , ts.`supply_price` supplyPrice , ta.`photograph_price` originalPhotographprice , ta.`supply_price` originalSupplyPrice ");
+		sql.append(" FROM ");
+		sql.append(" t_scm_goods_sku_special ts ");
+		sql.append(" LEFT JOIN ");
+		sql.append("t_scm_goods_sku ta ");
+		sql.append(" ON ");
+		sql.append(" ts.sku_id = ta.`sku_id` ");
+		sql.append(" WHERE ");
+		sql.append(" ts.`special_id` = ? ");
+		return this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsSkuSpecialDetailAllBean.class, specialId);
+		
+	}
 }

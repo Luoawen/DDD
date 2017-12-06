@@ -4,7 +4,7 @@ import java.util.Date;
 import cn.m2c.scm.application.special.data.bean.GoodsSpecialListBean;
 
 /**
- * 特惠价详情表述对象
+ * 特惠价列表表述对象
  */
 public class GoodsSpecialListRepresentation {
 	private String specialId;
