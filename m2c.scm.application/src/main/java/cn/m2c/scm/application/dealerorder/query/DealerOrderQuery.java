@@ -368,6 +368,8 @@ public class DealerOrderQuery {
 	            DealerGoodsBean dgb = new DealerGoodsBean();	            
 	            dgb.setSkuName((String) item.get("sku_name"));
 	            dgb.setGoodsName((String) item.get("goods_name"));
+	            dgb.setIsSpecial((Integer) item.get("is_special"));
+	            dgb.setSpecialPrice((long) item.get("special_price"));
 	            dgb.setGoodsTitle((String) item.get("goods_title"));
 	            dgb.setSkuId(skuId);
 	            dgb.setDiscountPrice((long) item.get("discount_price"));
