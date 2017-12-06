@@ -6,6 +6,7 @@ import cn.m2c.scm.application.special.data.bean.GoodsSkuSpecialDetailAllBean;
 import cn.m2c.scm.application.special.data.bean.GoodsSpecialBean;
 import cn.m2c.scm.application.special.data.bean.GoodsSpecialDetailBean;
 import cn.m2c.scm.application.special.data.bean.GoodsSpecialListBean;
+import cn.m2c.scm.application.special.data.representation.GoodsSkuSpecialDetailAllBeanRepresentation;
 import cn.m2c.scm.application.special.data.representation.GoodsSpecialDetailBeanRepresentation;
 import cn.m2c.scm.application.utils.Utils;
 
@@ -237,7 +238,7 @@ public class GoodsSpecialQueryApplication {
 	/**
 	 * 根据specialId查询GoodsSkuSpecialDetailAllBean
 	 */
-	public List<GoodsSkuSpecialDetailAllBean> queryGoodsSkuSpecialDetailAllBeanList(Integer specialId){
+	public List<GoodsSkuSpecialDetailAllBeanRepresentation> queryGoodsSkuSpecialDetailAllBeanList(Integer specialId){
 		StringBuilder sql = new StringBuilder();
 		sql.append(" SELECT ");
 		sql.append(" ts.`special_id` specialId , ts.`sku_id` skuId , ts.`sku_name` skuName , ts.`special_price` specialPrice , ts.`supply_price` supplyPrice , ta.`photograph_price` originalPhotographprice , ta.`supply_price` originalSupplyPrice ");
@@ -249,7 +250,14 @@ public class GoodsSpecialQueryApplication {
 		sql.append(" ts.sku_id = ta.`sku_id` ");
 		sql.append(" WHERE ");
 		sql.append(" ts.`special_id` = ? ");
-		return this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsSkuSpecialDetailAllBean.class, specialId);
+		List<GoodsSkuSpecialDetailAllBean> list = this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsSkuSpecialDetailAllBean.class, specialId);
+		List<GoodsSkuSpecialDetailAllBeanRepresentation> representationList = new ArrayList<GoodsSkuSpecialDetailAllBeanRepresentation>();;
+		if(null != list && list.size() > 0) {
+			for(GoodsSkuSpecialDetailAllBean bean : list) {
+				representationList.add(new GoodsSkuSpecialDetailAllBeanRepresentation(bean));
+			}
+		}
+		return representationList;
 		
 	}
 }
