@@ -8,7 +8,7 @@ import cn.m2c.scm.application.utils.ExcelField;
  * 售后订单导出样式
  */
 public class SaleAfterExpModel {
-    @ExcelField(title = "商家名称")
+    /*@ExcelField(title = "商家名称")
     private String dealerName;
     @ExcelField(title = "商品名称")
     private String goodsName;
@@ -34,121 +34,107 @@ public class SaleAfterExpModel {
     @ExcelField(title = "售后期望")
     private String orderTypeStr;
     
+	private String saleAfterNo;*/
+	
+	@ExcelField(title = "售后期望")
+    private String orderTypeStr;
+	@ExcelField(title = "售后号")
+	private String saleAfterNo;
+	@ExcelField(title = "订货号")
+	private String dealerOrderId;
+	@ExcelField(title = "售后状态")
+    private String statusStr;
+	@ExcelField(title = "申请时间")
+    private Date createTime;
+	@ExcelField(title = "商品名称")
+    private String goodsName;
+	@ExcelField(title = "规格")
+    private String skuName;
+	//售后单价/元
+	@ExcelField(title = "售后单价/元")//* 
+    private Long saleAfterGoodsPrice;
+	//售后数量
+	@ExcelField(title = "售后数量")//*
+    private Integer sellNum;
+	//运费退款/元
+	@ExcelField(title = "运费退款/元")//*
+    private Long returnFreight;
+	@ExcelField(title = "售后总额/元")
+    private Long backMoney;
+	
+    private Integer status;
+    
+    private Integer orderType;
+	
     public String getStatusStr() {
-    		/*switch(status) {
-            case 0:
-            	statusStr="申请退货";
-            	break;
-            case 1:
-            	statusStr="申请换货";
-            	break;
-            case 2:
-            	statusStr="申请退款";
-            	break;
-            case 3:
-            	statusStr="商家拒绝申请";
-            	break;
-            case 4:
-            	statusStr="商家同意申请";
-            	break;
-            case 5:
-            	statusStr="客户寄出";
-            	break;
-            case 6:
-            	statusStr="商家收到";
-            	break;
-            case 7:
-            	statusStr="商家寄出";
-            	break;
-            case 8:
-            	statusStr="客户收到";
-            	break;
-            case 9:
-            	statusStr="同意退款";
-            	break;
-            case 10:
-            	statusStr="确认退款";
-            	break;
-            case 11:
-            	statusStr="交易关闭";
-            	break;
-            }*/
 		return statusStr;
 	}
 
 	public String getOrderTypeStr() {
 		return orderTypeStr;
 	}
+    
+	public void setSaleAfterGoodsPrice(Long saleAfterGoodsPrice) {//售后单价,拍获价
+		this.saleAfterGoodsPrice = saleAfterGoodsPrice;
+	}
+	
+	public Long getSaleAfterGoodsPrice() {
+		return saleAfterGoodsPrice;
+	}
+	
+    public void setReturnFreight(Long returnFreight) {
+    	this.returnFreight = returnFreight;
+    }
+    
+    public Long getReturnFreight() {
+    	return returnFreight;
+    }
 
-	private String saleAfterNo;
+    public void setSellNum(Integer sellNum) {
+    	this.sellNum = sellNum;
+    }
+    
+    public Integer getSellNum() {
+    	return sellNum;
+    }
+    
+    public void setDealerOrderId(String dealerOrderId) {
+    	this.dealerOrderId = dealerOrderId;
+    }
+    
+    public String getDealerOrderId() {
+    	return dealerOrderId;
+    }
     
     public SaleAfterExpModel() {
     	super();
     }
-
-    public SaleAfterExpModel(String dealerName, String goodsName, String skuId, String skuName,
-    		long backMoney, Integer status, Integer orderType, String goodsTitle, Date createTime) {
-        this.dealerName = dealerName;
-        this.goodsName = goodsName;
+    
+    public SaleAfterExpModel(String saleAfterNo,String dealerOrderId,Integer sellNum, long returnFreight,
+    		String goodsName, String skuName, long backMoney, Integer status, Integer orderType, Date createTime, Long saleAfterGoodsPrice) {
+        //this.dealerName = dealerName;
+    	//this.skuId = skuId;
+    	//this.goodsTitle = goodsTitle;
+        this.saleAfterNo = saleAfterNo;
+        this.dealerOrderId = dealerOrderId;
+        this.saleAfterGoodsPrice = saleAfterGoodsPrice;
+        this.sellNum = sellNum;
+        this.returnFreight = returnFreight;
         
-        this.skuId = skuId;
+    	this.goodsName = goodsName;
+        
+        
         this.skuName = skuName;
         
         this.backMoney = backMoney;
         this.status = status;
         
         this.orderType = orderType;
-        this.goodsTitle = goodsTitle;
+        
         this.createTime = createTime;
         
         this.orderTypeStr = getOrderTypeStr();
         this.statusStr = getStatusStr();
-        /*if (orderType == 0) {
-            this.orderTypeStr = "换货";
-        } else if (orderType == 1) {
-            this.orderTypeStr = "退货";
-        } else {
-            this.orderTypeStr = "退款";
-        }
-        
-        switch(status) {
-        case 0:
-        	statusStr="申请退货";
-        	break;
-        case 1:
-        	statusStr="申请换货";
-        	break;
-        case 2:
-        	statusStr="申请退款";
-        	break;
-        case 3:
-        	statusStr="商家拒绝申请";
-        	break;
-        case 4:
-        	statusStr="商家同意申请";
-        	break;
-        case 5:
-        	statusStr="客户寄出";
-        	break;
-        case 6:
-        	statusStr="商家收到";
-        	break;
-        case 7:
-        	statusStr="商家寄出";
-        	break;
-        case 8:
-        	statusStr="客户收到";
-        	break;
-        case 9:
-        	statusStr="同意退款";
-        	break;
-        case 10:
-        	statusStr="确认退款";
-        	break;
-        case 11:
-        	statusStr="交易关闭";
-        	break;
-        }*/
     }
 
 	public String getSaleAfterNo() {
@@ -251,13 +237,13 @@ public class SaleAfterExpModel {
 		}
 	}
 	
-	public String getDealerName() {
-		return dealerName;
-	}
+	//public String getDealerName() {
+	//	return dealerName;
+	//}
 
-	public void setDealerName(String dealerName) {
-		this.dealerName = dealerName;
-	}
+	//public void setDealerName(String dealerName) {
+	//	this.dealerName = dealerName;
+	//}
 
 	public String getGoodsName() {
 		return goodsName;
@@ -267,13 +253,13 @@ public class SaleAfterExpModel {
 		this.goodsName = goodsName;
 	}
 
-	public String getSkuId() {
-		return skuId;
-	}
+	//public String getSkuId() {
+	//	return skuId;
+	//}
 
-	public void setSkuId(String skuId) {
-		this.skuId = skuId;
-	}
+	//public void setSkuId(String skuId) {
+	//	this.skuId = skuId;
+	//}
 
 	public String getSkuName() {
 		return skuName;
@@ -297,44 +283,6 @@ public class SaleAfterExpModel {
 
 	public void setStatus(Integer status) {
 		this.status = status;
-		/*switch(status) {
-        case 0:
-        	statusStr="申请退货";
-        	break;
-        case 1:
-        	statusStr="申请换货";
-        	break;
-        case 2:
-        	statusStr="申请退款";
-        	break;
-        case 3:
-        	statusStr="商家拒绝申请";
-        	break;
-        case 4:
-        	statusStr="商家同意申请";
-        	break;
-        case 5:
-        	statusStr="客户寄出";
-        	break;
-        case 6:
-        	statusStr="商家收到";
-        	break;
-        case 7:
-        	statusStr="商家寄出";
-        	break;
-        case 8:
-        	statusStr="客户收到";
-        	break;
-        case 9:
-        	statusStr="同意退款";
-        	break;
-        case 10:
-        	statusStr="确认退款";
-        	break;
-        case 11:
-        	statusStr="交易关闭";
-        	break;
-        }*/
 	}
 
 	public Integer getOrderType() {
@@ -345,13 +293,13 @@ public class SaleAfterExpModel {
 		this.orderType = orderType;
 	}
 
-	public String getGoodsTitle() {
-		return goodsTitle;
-	}
+	//public String getGoodsTitle() {
+	//	return goodsTitle;
+	//}
 
-	public void setGoodsTitle(String goodsTitle) {
-		this.goodsTitle = goodsTitle;
-	}
+	//public void setGoodsTitle(String goodsTitle) {
+	//	this.goodsTitle = goodsTitle;
+	//}
 
 	public Date getCreateTime() {
 		return createTime;

@@ -12,8 +12,8 @@ import java.util.Map;
  * 导出
  */
 public class GoodsServiceRateModel {
-    @ExcelField(title = "商家名称")
-    private String dealerName;
+    //@ExcelField(title = "商家名称")
+    //private String dealerName;
     @ExcelField(title = "商品名称")
     private String goodsName;
     @ExcelField(title = "商品条形码")
@@ -42,7 +42,7 @@ public class GoodsServiceRateModel {
     private String goodsPostageName;
 
     public GoodsServiceRateModel(GoodsBean goodsBean, GoodsSkuBean goodsSkuBean, Map goodsClassifyMap, Float serviceRate, String goodsPostageName) {
-        this.dealerName = goodsBean.getDealerName();
+        //this.dealerName = goodsBean.getDealerName();
         this.goodsName = goodsBean.getGoodsName();
         this.goodsBarCode = StringUtils.isEmpty(goodsBean.getGoodsBarCode()) ? "" : goodsSkuBean.getGoodsCode();
         if (null != goodsClassifyMap) {
