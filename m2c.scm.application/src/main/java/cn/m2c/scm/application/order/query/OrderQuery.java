@@ -122,7 +122,8 @@ public class OrderQuery {
 			params.add(endTime+ " 23:59:59");
 		}
 		if (StringUtils.isNotEmpty(condition) && condition != null && !"".equals(condition)) {
-			sql.append(" AND (d.dealer_order_id LIKE ?	OR m.pay_no LIKE ? OR dealer.dealer_name LIKE ?) ");
+			sql.append(" AND (d.dealer_order_id LIKE ?	OR m.pay_no LIKE ? OR dealer.dealer_name LIKE ? OR (d.dealer_order_id IN (SELECT od.dealer_order_id FROM t_scm_order_detail od WHERE od.goods_name LIKE ? ))) ");
+			params.add("%" + condition + "%");
 			params.add("%" + condition + "%");
 			params.add("%" + condition + "%");
 			params.add("%" + condition + "%");
@@ -310,7 +311,8 @@ public class OrderQuery {
 			params.add(endTime+ " 23:59:59");
 		}
 		if (StringUtils.isNotEmpty(condition) && condition != null && !"".equals(condition)) {
-			sql.append(" AND (d.dealer_order_id LIKE ?	OR m.pay_no LIKE ? OR dealer.dealer_name LIKE ?) ");
+			sql.append(" AND (d.dealer_order_id LIKE ?	OR m.pay_no LIKE ? OR dealer.dealer_name LIKE ? OR (d.dealer_order_id IN (SELECT od.dealer_order_id FROM t_scm_order_detail od WHERE od.goods_name LIKE ? ))) ");
+			params.add("%" + condition + "%");
 			params.add("%" + condition + "%");
 			params.add("%" + condition + "%");
 			params.add("%" + condition + "%");
