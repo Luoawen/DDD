@@ -616,8 +616,8 @@ public class DealerOrderQuery {
         List<Object> params = new ArrayList<Object>();
         StringBuilder sql = new StringBuilder();
         sql.append(" SELECT dtl.sku_id, dtl.sku_name, dtl.goods_name, dtl.goods_title, a.dealer_id, a.created_date, dtl.discount_price, \r\n")
-                .append("dtl.sell_num, af._status afStatus, a._status, om.pay_no, a.dealer_order_id, dtl.goods_icon, a.created_date,\r\n")
-                .append(" a.rev_person, a.rev_phone, a.goods_amount, a.order_freight, a.plateform_discount, a.dealer_discount, a.order_id,\r\n")
+                .append("dtl.sell_num, af._status afStatus, a._status, om.pay_no, a.dealer_order_id, dtl.goods_icon, a.rev_person, \r\n")
+                .append(" a.rev_phone, a.goods_amount, a.order_freight, a.plateform_discount, a.dealer_discount, a.order_id,\r\n")
                 .append(" om.pay_time,dtl.freight,a.province,a.city,a.area_county,a.street_addr,af.after_sell_order_id,af.order_type,af.sell_num as after_num,af.back_money\r\n")
                 .append(" FROM t_scm_order_detail dtl \r\n")
                 .append(" LEFT OUTER JOIN t_scm_order_dealer a ON dtl.dealer_order_id = a.dealer_order_id\r\n")
@@ -764,5 +764,71 @@ public class DealerOrderQuery {
         }
         return rs;
     }
+    
+   /* public List<DealerOrderQB> dealerOrderQueryExport() {
 
+		List<Object> params = new ArrayList<Object>();
+		StringBuilder sql = new StringBuilder();
+		sql.append(" SELECT * FROM tmp_export");
+		
+		
+		sql.append(" ORDER BY dealer_order_id DESC, created_date DESC, afStatus DESC");
+		
+		List<Map<String, Object>> beanList = this.supportJdbcTemplate.jdbcTemplate().queryForList(sql.toString(), params.toArray());
+		
+		List<DealerOrderQB> rs = new ArrayList<DealerOrderQB>();
+		
+		String dealerOrderId = null;
+		DealerOrderQB midBean = null;
+		List<String> tmpIds = null;
+		for (Map<String, Object> item : beanList) {
+		
+		String ordIdTemp = (String) item.get("dealer_order_id");
+		if (!ordIdTemp.equals(dealerOrderId)) {
+		midBean = new DealerOrderQB();
+		tmpIds = new ArrayList<String>();
+		midBean.setDealerId((String) item.get("dealer_id"));
+		midBean.setDealerOrderId(ordIdTemp);
+		Timestamp a = (Timestamp) item.get("created_date");
+		midBean.setAfterStatus((Integer)item.get("afStatus"));
+		midBean.setCreatedDate(a == null ? null : a.getTime());
+		midBean.setOrderStatus((Integer) item.get("_status"));
+		midBean.setPayNo((String) item.get("pay_no"));
+		midBean.setRevPerson((String) item.get("rev_person"));
+		midBean.setRevPhone((String) item.get("rev_phone"));
+		midBean.setGoodsMoney((long) item.get("goods_amount"));
+		midBean.setOrderFreight((long) item.get("order_freight"));
+		midBean.setPlateDiscount((long) item.get("plateform_discount"));
+		midBean.setDealerDiscount((long) item.get("dealer_discount"));
+		midBean.setOrderId((String) item.get("order_id"));
+		Timestamp payTime = (Timestamp) item.get("pay_time");
+		midBean.setPayTime(payTime == null ? null : payTime.getTime());
+		midBean.setRevAddress(new StringBuffer().append(item.get("province")).append(item.get("city")).append(item.get("area_county")).append(item.get("street_addr")).toString());
+		midBean.setAfterMoney(null == item.get("back_money") ? 0l : (Long) item.get("back_money"));
+		midBean.setAfterNum(null == item.get("after_num") ? null : (Integer) item.get("after_num"));
+		midBean.setAfterOrderType(null == item.get("order_type") ? null : (Integer) item.get("order_type"));
+		midBean.setAfterSellDealerOrderId(null == item.get("after_sell_order_id") ? null : (String) item.get("after_sell_order_id"));
+		List<DealerGoodsBean> goodses = new ArrayList<>();
+		midBean.setGoodsList(goodses);
+		rs.add(midBean);
+		dealerOrderId = ordIdTemp;
+		}
+		String skuId = (String) item.get("sku_id");
+		if (!tmpIds.contains(skuId)) {
+		tmpIds.add(skuId);
+		DealerGoodsBean dgb = new DealerGoodsBean();
+		dgb.setSkuName((String) item.get("sku_name"));
+		dgb.setGoodsName((String) item.get("goods_name"));
+		dgb.setGoodsTitle((String) item.get("goods_title"));
+		dgb.setSkuId((String) item.get("sku_id"));
+		dgb.setDiscountPrice((long) item.get("discount_price"));
+		dgb.setSellNum((Integer) item.get("sell_num"));
+		dgb.setAfStatus((Integer) item.get("afStatus"));
+		item.get("goods_icon").getClass().getTypeName();
+		dgb.setGoodsImage((String) item.get("goods_icon"));
+		midBean.getGoodsList().add(dgb);
+		}
+		}
+		return rs;
+	}*/
 }
