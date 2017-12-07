@@ -293,7 +293,7 @@ public class AfterSellOrderQuery {
 		sql.append(" SELECT  ");
 		sql.append(" dtl.goods_icon,dtl.goods_name, after.sell_num, dtl.sku_name ");
 		sql.append(" FROM t_scm_order_after_sell after ");
-		sql.append(" LEFT OUTER JOIN t_scm_order_detail dtl ON after.dealer_order_id = dtl.dealer_order_id AND after.sku_id = detail.sku_id AND after.sort_no=dtl.sort_no \r\n");
+		sql.append(" LEFT OUTER JOIN t_scm_order_detail dtl ON after.dealer_order_id = dtl.dealer_order_id AND after.sku_id = dtl.sku_id AND after.sort_no=dtl.sort_no \r\n");
 		sql.append(" WHERE after.after_sell_order_id = ? ");
 		GoodsInfoBean goodsInfo = this.supportJdbcTemplate.queryForBean(sql.toString(),
 				GoodsInfoBean.class, afterSellOrderId);
