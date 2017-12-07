@@ -241,7 +241,7 @@ public class GoodsSpecialQueryApplication {
 	public List<GoodsSkuSpecialDetailAllBeanRepresentation> queryGoodsSkuSpecialDetailAllBeanList(Integer specialId){
 		StringBuilder sql = new StringBuilder();
 		sql.append(" SELECT ");
-		sql.append(" ts.`special_id` specialId , ts.`sku_id` skuId , ts.`sku_name` skuName , ts.`special_price` specialPrice , ts.`supply_price` supplyPrice , ta.`photograph_price` originalPhotographprice , ta.`supply_price` originalSupplyPrice ");
+		sql.append(" ts.`special_id` specialId , ts.`sku_id` skuId , ts.`sku_name` skuName , ts.`special_price` specialPrice , ts.`supply_price` supplyPrice , ta.`photograph_price` goodsSkuPrice , ta.`supply_price` goodsSupplyPrice ");
 		sql.append(" FROM ");
 		sql.append(" t_scm_goods_sku_special ts ");
 		sql.append(" LEFT JOIN ");
