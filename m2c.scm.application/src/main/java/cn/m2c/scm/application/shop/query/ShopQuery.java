@@ -1,5 +1,7 @@
 package cn.m2c.scm.application.shop.query;
 
+import cn.m2c.common.JsonUtils;
+import cn.m2c.common.RedisUtil;
 import cn.m2c.ddd.common.port.adapter.persistence.springJdbc.SupportJdbcTemplate;
 import cn.m2c.scm.application.dealer.data.bean.DealerBean;
 import cn.m2c.scm.application.goods.query.GoodsQueryApplication;
@@ -145,14 +147,27 @@ public class ShopQuery {
 		
 	}
 	
+	/**
+	 * 根据商家Id查询店铺信息<放入缓存>
+	 * @param dealerId
+	 * @return
+	 */
 	public ShopBean getShop(String dealerId) {
 		ShopBean shop = null;
 		try {
-			StringBuffer sql = new StringBuffer("SELECT * FROM t_scm_dealer sd WHERE dealer_status=1 AND dealer_id=?");
-			DealerBean dealer = this.supportJdbcTemplate.queryForBean(sql.toString(), DealerBean.class, dealerId);
-			if (dealer != null) {
-				shop = getShopInfo(dealerId, dealer.getDealerName());
-			}
+			String key = ("m2c.scm.shop." + dealerId).trim();
+			String redisShop = RedisUtil.getString(key); //从缓存中取数据
+			if(redisShop!=null && !"".equals(redisShop)){
+				ShopBean redisBean = JsonUtils.toBean(redisShop, ShopBean.class);
+				 return redisBean;
+			 }else {
+				 	StringBuffer sql = new StringBuffer("SELECT * FROM t_scm_dealer sd WHERE dealer_status=1 AND dealer_id=?");
+				 	DealerBean dealer = this.supportJdbcTemplate.queryForBean(sql.toString(), DealerBean.class, dealerId);
+				 	if (dealer != null) {
+				 		shop = getShopInfo(dealerId, dealer.getDealerName());
+				 	}
+				 	RedisUtil.setString(key, 24 * 3600, JsonUtils.toStr(shop));//放入redis
+			 }
 		} catch (Exception e) {
 			log.error("查询店铺详情出错", e);
 		}

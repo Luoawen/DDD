@@ -1,8 +1,13 @@
 package cn.m2c.scm.domain.model.shop;
 
+import cn.m2c.common.RedisUtil;
 import cn.m2c.ddd.common.domain.model.ConcurrencySafeEntity;
+import cn.m2c.scm.application.shop.ShopApplication;
 
 import java.util.Date;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Shop extends ConcurrencySafeEntity{
 
@@ -10,6 +15,8 @@ public class Shop extends ConcurrencySafeEntity{
 	 * 
 	 */
 	private static final long serialVersionUID = 3161891294554265529L;
+	
+	private static final Logger log = LoggerFactory.getLogger(Shop.class);
 
 	private String shopId;
 	private String dealerId;
@@ -33,9 +40,24 @@ public class Shop extends ConcurrencySafeEntity{
 		this.shopReceipt = shopReceipt;
 		this.customerServiceTel = customerServiceTel;
 		this.lastUpdatedDate = new Date();
+		removeShopCash(this.dealerId);
 	}
 
 
+	/**
+	 * 清除缓存操作
+	 * @param dealerId
+	 */
+	public static void removeShopCash(String dealerId) {
+		 String key = ("m2c.scm.shop." + dealerId).trim();
+		 try {
+			 if(RedisUtil.getString(key)!=null && !"".equals(RedisUtil.getString(key))){
+				 RedisUtil.del(key);
+			 }
+		} catch (Exception e) {
+			log.error("清除缓存失败");
+		}
+	}
 
 
 	public Shop(String shopId, String dealerId, String shopName,
