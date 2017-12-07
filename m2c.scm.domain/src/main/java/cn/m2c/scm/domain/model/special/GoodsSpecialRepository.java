@@ -11,11 +11,15 @@ public interface GoodsSpecialRepository {
 
     GoodsSpecial queryGoodsSpecialBySpecialId(String specialId);
 
-    GoodsSpecial queryGoodsSpecialByGoodsId(String goodsId);
+    GoodsSpecial queryEffectiveGoodsSpecialByGoodsId(String goodsId);
 
     List<GoodsSpecial> getStartGoodsSpecial();
 
     List<GoodsSpecial> getEndGoodsSpecial();
 
     Map getEffectiveGoodsSkuSpecial(List<String> skuIds);
+
+    List<GoodsSpecial> queryGoodsSpecialByDealerId(String dealerId);
+
+    List<GoodsSpecial> queryGoodsSpecialByGoodsId(String goodsId);
 }
