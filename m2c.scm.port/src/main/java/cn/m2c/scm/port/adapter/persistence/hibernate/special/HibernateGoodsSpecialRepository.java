@@ -32,7 +32,7 @@ public class HibernateGoodsSpecialRepository extends HibernateSupperRepository i
     }
 
     @Override
-    public GoodsSpecial queryGoodsSpecialByGoodsId(String goodsId) {
+    public GoodsSpecial queryEffectiveGoodsSpecialByGoodsId(String goodsId) {
         StringBuilder sql = new StringBuilder("select * from t_scm_goods_special where goods_id =:goods_id and status <> 2");
         Query query = this.session().createSQLQuery(sql.toString()).addEntity(GoodsSpecial.class);
         query.setParameter("goods_id", goodsId);
@@ -64,8 +64,8 @@ public class HibernateGoodsSpecialRepository extends HibernateSupperRepository i
      * @return
      */
     public Map getEffectiveGoodsSkuSpecial(List<String> skuIds) {
-    	if (skuIds == null || skuIds.size() < 1)
-    		return null;
+        if (skuIds == null || skuIds.size() < 1)
+            return null;
         StringBuilder sql = new StringBuilder();
         sql.append(" SELECT ");
         sql.append(" s.* ");
@@ -83,5 +83,21 @@ public class HibernateGoodsSpecialRepository extends HibernateSupperRepository i
             return map;
         }
         return null;
+    }
+
+    @Override
+    public List<GoodsSpecial> queryGoodsSpecialByDealerId(String dealerId) {
+        StringBuilder sql = new StringBuilder("select * from t_scm_goods_special where dealer_id =:dealer_id");
+        Query query = this.session().createSQLQuery(sql.toString()).addEntity(GoodsSpecial.class);
+        query.setParameter("dealer_id", dealerId);
+        return query.list();
+    }
+
+    @Override
+    public List<GoodsSpecial> queryGoodsSpecialByGoodsId(String goodsId) {
+        StringBuilder sql = new StringBuilder("select * from t_scm_goods_special where goods_id =:goods_id");
+        Query query = this.session().createSQLQuery(sql.toString()).addEntity(GoodsSpecial.class);
+        query.setParameter("goods_id", goodsId);
+        return query.list();
     }
 }

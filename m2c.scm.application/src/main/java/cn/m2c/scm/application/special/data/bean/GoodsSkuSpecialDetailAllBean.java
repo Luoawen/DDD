@@ -22,22 +22,22 @@ public class GoodsSkuSpecialDetailAllBean {
     /**
      * 原供货价
      */
-    private Long originalSupplyPrice;
+    private Long goodsSupplyPrice;
     /**
      * 原拍获价
      */
-    private Long originalPhotographprice;
+    private Long goodsSkuPrice;
     
 	public GoodsSkuSpecialDetailAllBean(Integer specialId, String skuId, String skuName, Long supplyPrice,
-			Long specialPrice, Long originalSupplyPrice, Long originalPhotographprice) {
+			Long specialPrice, Long goodsSupplyPrice, Long goodsSkuPrice) {
 		super();
 		this.specialId = specialId;
 		this.skuId = skuId;
 		this.skuName = skuName;
 		this.supplyPrice = supplyPrice;
 		this.specialPrice = specialPrice;
-		this.originalSupplyPrice = originalSupplyPrice;
-		this.originalPhotographprice = originalPhotographprice;
+		this.goodsSupplyPrice = goodsSupplyPrice;
+		this.goodsSkuPrice = goodsSkuPrice;
 	}
 	public GoodsSkuSpecialDetailAllBean() {
 		super();
@@ -73,17 +73,17 @@ public class GoodsSkuSpecialDetailAllBean {
 	public void setSpecialPrice(Long specialPrice) {
 		this.specialPrice = specialPrice;
 	}
-	public Long getOriginalSupplyPrice() {
-		return originalSupplyPrice;
+	public Long getGoodsSupplyPrice() {
+		return goodsSupplyPrice;
 	}
-	public void setOriginalSupplyPrice(Long originalSupplyPrice) {
-		this.originalSupplyPrice = originalSupplyPrice;
+	public void setGoodsSupplyPrice(Long goodsSupplyPrice) {
+		this.goodsSupplyPrice = goodsSupplyPrice;
 	}
-	public Long getOriginalPhotographprice() {
-		return originalPhotographprice;
+	public Long getGoodsSkuPrice() {
+		return goodsSkuPrice;
 	}
-	public void setOriginalPhotographprice(Long originalPhotographprice) {
-		this.originalPhotographprice = originalPhotographprice;
+	public void setGoodsSkuPrice(Long goodsSkuPrice) {
+		this.goodsSkuPrice = goodsSkuPrice;
 	}
     
     

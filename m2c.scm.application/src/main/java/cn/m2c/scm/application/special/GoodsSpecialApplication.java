@@ -37,7 +37,7 @@ public class GoodsSpecialApplication {
         LOGGER.info("addGoodsSpecial command >>{}", command);
         GoodsSpecial goodsSpecial = goodsSpecialRepository.queryGoodsSpecialBySpecialId(command.getSpecialId());
         if (null == goodsSpecial) {
-            goodsSpecial = goodsSpecialRepository.queryGoodsSpecialByGoodsId(command.getGoodsId());
+            goodsSpecial = goodsSpecialRepository.queryEffectiveGoodsSpecialByGoodsId(command.getGoodsId());
             if (null != goodsSpecial) {
                 throw new NegativeException(MCode.V_300, "商品优惠活动已存在");
             }
@@ -71,7 +71,7 @@ public class GoodsSpecialApplication {
      */
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class, ParseException.class})
     public void modifyGoodsSkuSpecial(String goodsId, List<Map> addSkuList) throws NegativeException, ParseException {
-        GoodsSpecial goodsSpecial = goodsSpecialRepository.queryGoodsSpecialByGoodsId(goodsId);
+        GoodsSpecial goodsSpecial = goodsSpecialRepository.queryEffectiveGoodsSpecialByGoodsId(goodsId);
         if (null != goodsSpecial) {
             goodsSpecial.modifyGoodsSkuSpecial(addSkuList);
         }
@@ -110,5 +110,38 @@ public class GoodsSpecialApplication {
             throw new NegativeException(MCode.V_300, "商品优惠活动不存在");
         }
         goodsSpecial.endSpecial();
+    }
+
+    /**
+     * 修改商家名称
+     *
+     * @param dealerId
+     */
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class, ParseException.class})
+    public void modifyGoodsSpecialDealerName(String dealerId, String dealerName) throws NegativeException, ParseException {
+        LOGGER.info("modifyGoodsSpecialDealerName dealerId >>{}", dealerId);
+        List<GoodsSpecial> goodsSpecials = goodsSpecialRepository.queryGoodsSpecialByDealerId(dealerId);
+        if (null != goodsSpecials && goodsSpecials.size() > 0) {
+            for (GoodsSpecial goodsSpecial : goodsSpecials) {
+                goodsSpecial.modifyDealerName(dealerName);
+            }
+        }
+    }
+
+
+    /**
+     * 修改商品名称
+     *
+     * @param goodsId
+     */
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class, ParseException.class})
+    public void modifyGoodsSpecialGoodsName(String goodsId, String goodsName) throws NegativeException, ParseException {
+        LOGGER.info("modifyGoodsSpecialGoodsName goodsId >>{}", goodsId);
+        List<GoodsSpecial> goodsSpecials = goodsSpecialRepository.queryGoodsSpecialByGoodsId(goodsId);
+        if (null != goodsSpecials && goodsSpecials.size() > 0) {
+            for (GoodsSpecial goodsSpecial : goodsSpecials) {
+                goodsSpecial.modifyGoodsName(goodsName);
+            }
+        }
     }
 }
