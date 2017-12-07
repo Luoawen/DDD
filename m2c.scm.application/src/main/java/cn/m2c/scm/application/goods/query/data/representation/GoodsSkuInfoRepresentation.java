@@ -93,7 +93,12 @@ public class GoodsSkuInfoRepresentation {
     /**
      * 特惠价
      */
-    private Object specialPrice;
+    private Long specialPrice;
+
+    /**
+     * 是否有特惠价0：没有，1有
+     */
+    private Integer isSpecial;
 
     public GoodsSkuInfoRepresentation(GoodsBean goodsBean, GoodsSkuBean bean, ShopBean shopBean, Map specialMap) {
         this.goodsId = goodsBean.getGoodsId();
@@ -125,7 +130,10 @@ public class GoodsSkuInfoRepresentation {
         this.goodsMinQuantity = goodsBean.getGoodsMinQuantity();
         this.shopId = null != shopBean ? shopBean.getShopId() : "";
         this.shopName = null != shopBean ? shopBean.getShopName() : "";
-        this.specialPrice = null != specialMap && specialMap.containsKey(this.getSkuId()) ? specialMap.get(this.getSkuId()) : null;
+        if (null != specialMap && specialMap.containsKey(this.getSkuId())) {
+            this.specialPrice = Long.parseLong(String.valueOf(specialMap.get(this.getSkuId())));
+            this.isSpecial = 1;
+        }
     }
 
     public String getGoodsId() {
@@ -264,11 +272,19 @@ public class GoodsSkuInfoRepresentation {
         this.shopId = shopId;
     }
 
-    public Object getSpecialPrice() {
+    public Long getSpecialPrice() {
         return specialPrice;
     }
 
-    public void setSpecialPrice(Object specialPrice) {
+    public void setSpecialPrice(Long specialPrice) {
         this.specialPrice = specialPrice;
+    }
+
+    public Integer getIsSpecial() {
+        return isSpecial;
+    }
+
+    public void setIsSpecial(Integer isSpecial) {
+        this.isSpecial = isSpecial;
     }
 }
