@@ -12,7 +12,7 @@ import cn.m2c.ddd.common.port.adapter.messaging.rabbitmq.ExchangeListener;
 import cn.m2c.scm.application.order.SaleAfterOrderApp;
 import cn.m2c.scm.domain.util.GetDisconfDataGetter;
 /***
- * 监听退款付款完成消息
+ * 监听退款付款失败消息
  * @author fanjc
  * created date 2017年10月24日
  * copyrighted@m2c
