@@ -116,6 +116,8 @@ public class GoodsInfo extends ValueObject {
 	}
 	
 	long calGoodsAmount() {
+		if (isSpecial == 1)
+			return specialPrice * sellNum;
 		return discountPrice * sellNum;
 	}
 	

@@ -85,13 +85,15 @@ public class DealerOrderDtl extends ConcurrencySafeEntity {
 		this.noted = noted;
 		this.marketInfo = marketInfo;
 		this.sortNo = sortNo;
+		if (goodsInfo != null)
+			goodsAmount = goodsInfo.calGoodsAmount();
 	}
 	/***
 	 * 计算商品金额
 	 * @return
 	 */
 	public Long calGoodsMoney() {
-		goodsAmount = (long)(goodsInfo.getDiscountPrice() * goodsInfo.getSellNum());
+		goodsAmount = goodsInfo.calGoodsAmount();//(long)(goodsInfo.getDiscountPrice() * goodsInfo.getSellNum());
 		return goodsAmount;
 	}
 	/***
