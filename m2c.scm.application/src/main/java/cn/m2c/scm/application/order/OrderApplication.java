@@ -94,7 +94,7 @@ public class OrderApplication {
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
     @EventListener(isListening = true)
     public OrderResult submitOrder(OrderAddCommand cmd) throws NegativeException {
-
+    	// 提交的商品数据
     	List<GoodsDto> gdes = cmd.getGoodses();
         List<Map<String, Object>> goodses = null;
         /**skuId与数量的键值对, 用于锁定库存*/
@@ -105,7 +105,7 @@ public class OrderApplication {
         Map<String, SkuMediaBean> mediaResIds = new HashMap<String, SkuMediaBean>();
         /**营销ID*/
         List<String> marketIds = new ArrayList<String>();
-        /**特惠价sku*/
+        /**需要查询特惠价的sku集合*/
         List<String> specialSkus = new ArrayList<String>();
         
         if (gdes == null || gdes.size() < 1) { // 此条件表示从购物车拿东东
@@ -170,9 +170,10 @@ public class OrderApplication {
         // 满足优惠券后，修改优惠券(锁定)
         //JSONArray coups = cmd.getCoupons();
         //orderDomainService.lockCoupons(null);
+        
         // 获取商品详情
         List<GoodsDto> goodDtls = gQueryApp.getGoodsDtl(skus.keySet());
-        // key:skuid, specialprice
+        // 特惠价map key:skuid, specialprice
         Map<String, Long> specialPriceMap = (Map<String, Long>)goodsSpecialRsp.getEffectiveGoodsSkuSpecial(specialSkus);
         // 获取分类及费率
         getClassifyRate(goodDtls, mediaResIds);
@@ -217,7 +218,7 @@ public class OrderApplication {
             plateDiscount += (d.getPlateformDiscount() == null ? 0 : d.getPlateformDiscount());
             dealerDiscount += d.getDealerDiscount();
         }
-
+        
         List<MarketUseBean> useList = new ArrayList<>();
         MainOrder order = new MainOrder(cmd.getOrderId(), cmd.getAddr(), goodsAmounts, freight
                 , plateDiscount, dealerDiscount, cmd.getUserId(), cmd.getNoted(), dealerOrders, null
@@ -225,7 +226,7 @@ public class OrderApplication {
         // 组织保存(重新设置计算好的价格)
         order.add(skus, cmd.getFrom());
         orderRepository.save(order);
-        // 锁定营销 orderNo, 营销ID, userId
+        // 锁定营销 , orderNo, 营销ID, userId
         if (!orderDomainService.lockMarketIds(useList, cmd.getOrderId(), cmd.getUserId())) {
             throw new NegativeException(MCode.V_300, "活动已被用完！");
         }

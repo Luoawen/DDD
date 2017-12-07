@@ -3,6 +3,7 @@ package cn.m2c.scm.port.adapter.restful.web.special;
 import cn.m2c.common.MCode;
 import cn.m2c.common.MPager;
 import cn.m2c.common.MResult;
+import cn.m2c.ddd.common.auth.RequirePermissions;
 import cn.m2c.scm.application.special.GoodsSpecialApplication;
 import cn.m2c.scm.application.special.command.GoodsSpecialAddCommand;
 import cn.m2c.scm.application.special.command.GoodsSpecialModifyCommand;
@@ -77,7 +78,8 @@ public class GoodsSpecialAgent {
      * @param goodsSkuSpecials    格式：[{"skuId":"20171123193901738268","skuName":"辣的,蓝色","specialPrice":200,"supplyPrice":100},{"skuId":"20171123193901663962","skuName":"酸的,蓝色","specialPrice":200,"supplyPrice":100}]
      * @return
      */
-    @RequestMapping(value = "", method = RequestMethod.POST)
+    @RequestMapping(value = "/mng", method = RequestMethod.POST)
+    @RequirePermissions(value = {"scm:special:add"})
     public ResponseEntity<MResult> addGoodsSpecial(
             @RequestParam(value = "specialId", required = false) String specialId,
             @RequestParam(value = "goodsId", required = false) String goodsId,
@@ -120,7 +122,8 @@ public class GoodsSpecialAgent {
      * @param goodsSkuSpecials    格式：[{"skuId":"20171123193901738268","specialPrice":200,"supplyPrice":100},{"skuId":"20171123193901663962","specialPrice":200,"supplyPrice":100}]
      * @return
      */
-    @RequestMapping(value = "/{specialId}", method = RequestMethod.PUT)
+    @RequestMapping(value = "/mng/{specialId}", method = RequestMethod.PUT)
+    @RequirePermissions(value = {"scm:special:update"})
     public ResponseEntity<MResult> modifyGoodsSpecial(
             @PathVariable("specialId") String specialId,
             @RequestParam(value = "startTime", required = false) String startTime,
@@ -220,7 +223,8 @@ public class GoodsSpecialAgent {
      * @param specialId
      * @return
      */
-    @RequestMapping(value = "/end/{specialId}", method = RequestMethod.POST)
+    @RequestMapping(value = "/mng/end/{specialId}", method = RequestMethod.POST)
+    @RequirePermissions(value = {"scm:special:stop"})
     public ResponseEntity<MResult> endGoodsSpecial(
             @PathVariable String specialId
     ) {
