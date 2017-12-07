@@ -2,7 +2,6 @@ package cn.m2c.scm.domain.model.shop;
 
 import cn.m2c.common.RedisUtil;
 import cn.m2c.ddd.common.domain.model.ConcurrencySafeEntity;
-import cn.m2c.scm.application.shop.ShopApplication;
 
 import java.util.Date;
 
