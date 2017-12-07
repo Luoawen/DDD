@@ -85,7 +85,7 @@ public class GoodsRestServiceImpl implements GoodsService {
                         map.put("itemName", itemName);
                         contentList.add(map);
                     }
-                    resultMap.put("itemNames", contentList);
+                    resultMap.put("itemNames", contentList); 
                     Integer rangeType = contentObject.getInteger("rangeType");
                     resultMap.put("rangeType", rangeType);
 
