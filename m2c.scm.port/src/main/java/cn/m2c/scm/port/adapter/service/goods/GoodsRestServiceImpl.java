@@ -85,7 +85,7 @@ public class GoodsRestServiceImpl implements GoodsService {
                         map.put("itemName", itemName);
                         contentList.add(map);
                     }
-                    resultMap.put("itemNames", contentList); 
+                    resultMap.put("itemNames", contentList);
                     Integer rangeType = contentObject.getInteger("rangeType");
                     resultMap.put("rangeType", rangeType);
 
@@ -181,4 +181,14 @@ public class GoodsRestServiceImpl implements GoodsService {
         return null;
     }
 
+    @Override
+    public Integer getCartGoodsTotal(String userId) {
+        String url = M2C_HOST_URL + "/m2c.users/cart/getTotalQuantity?userId=" + userId;
+        String result = restTemplate.getForObject(url, String.class);
+        JSONObject json = JSONObject.parseObject(result);
+        if (json.getInteger("status") == 200) {
+            return json.getInteger("content");
+        }
+        return 0;
+    }
 }

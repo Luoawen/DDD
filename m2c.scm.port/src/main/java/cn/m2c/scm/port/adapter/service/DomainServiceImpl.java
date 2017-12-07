@@ -7,9 +7,6 @@ import cn.m2c.scm.domain.util.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Map;
-
 /**
  *
  */
@@ -21,11 +18,6 @@ public class DomainServiceImpl implements DomainService {
 
     public SupportJdbcTemplate getSupportJdbcTemplate() {
         return this.supportJdbcTemplate;
-    }
-
-    @Override
-    public List<Map> getGoodsTags(String goodsId) {
-        return null;
     }
 
     public String generateGoodsSku() {
