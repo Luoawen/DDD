@@ -62,28 +62,28 @@ public class OrderApplication {
     private static final Logger LOGGER = LoggerFactory.getLogger(OrderApplication.class);
 
     @Autowired
-    OrderRepository orderRepository;
+    OrderRepository orderRepository;//订单仓储
 
     @Autowired
-    OrderService orderDomainService;
+    OrderService orderDomainService;// 领域服务
 
     @Autowired
-    OrderQueryApplication queryApp;
+    OrderQueryApplication queryApp; //订单查询
 
     @Autowired
-    private GoodsApplication goodsApp;
+    private GoodsApplication goodsApp;//商品业务
 
     @Autowired
-    private GoodsQueryApplication gQueryApp;
+    private GoodsQueryApplication gQueryApp;//商品
 
     @Autowired
-    DealerQuery dealerQuery; // getDealers
+    DealerQuery dealerQuery; //商家
     @Autowired
-    PostageModelQueryApplication postApp;
+    PostageModelQueryApplication postApp; //运费
     @Autowired
-    GoodsClassifyQueryApplication goodsClassQuery;
+    GoodsClassifyQueryApplication goodsClassQuery;//商品分类
     @Autowired
-    GoodsSpecialRepository goodsSpecialRsp;
+    GoodsSpecialRepository goodsSpecialRsp;//特惠价
 
     /**
      * 提交订单
@@ -393,7 +393,11 @@ public class OrderApplication {
             throw new NegativeException(MCode.V_1, "订单处于不可取消状态！");
         }
     }
-    
+    /***
+     * 删除订单，只是设置一个标志位
+     * @param cmd
+     * @throws NegativeException
+     */
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
     public void delOrder(CancelOrderCmd cmd) throws NegativeException {
 
@@ -450,7 +454,7 @@ public class OrderApplication {
     }
     
     /***
-     * 计算运费
+     * 计算运费 按商家单来计算
      * @param map 拆分后的商家订货单
      * @param cityCode 城市code
      * @param skus 带营销相关的东东
@@ -504,8 +508,7 @@ public class OrderApplication {
     }
 
     /***
-     * 计算单个物品运费
-     *
+     * 计算单类物品运费
      * @param b
      * @param pb
      * @return
@@ -616,7 +619,7 @@ public class OrderApplication {
 
     /**
      * 订单支付
-     *
+     * 不用
      * @param cmd
      * @return
      */
@@ -717,7 +720,7 @@ public class OrderApplication {
     }
 
     /**
-     * 设置计算后的金额
+     * 设置计算后的金额,已不用
      */
     private void setCalAmount(MainOrder order, List<GoodsDto> goods) {
         for (GoodsDto g : goods) {
@@ -727,7 +730,7 @@ public class OrderApplication {
 
     /***
      * 获取商品分类费率并设置,同时需要设置查询媒体时的父分类
-     *
+     * 用于媒体
      * @param goodses
      */
     private void getClassifyRate(List<GoodsDto> goodses, Map<String, SkuMediaBean> resMap) {
@@ -810,13 +813,20 @@ public class OrderApplication {
     	return ;
     }
     
-    
+    /***
+     * 执行取消操作
+     * @param m
+     * @param userId
+     */
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class},propagation= Propagation.REQUIRES_NEW)
     private void jobCancelOrder(MainOrder m, String userId) {
     	m.jobCancel(userId);
 		orderRepository.save(m);
     }
-    
+    /**
+     * 查询所有的可以结束的订单，并更新其状态到可结算状态
+     * @param userId
+     */
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
     public void updateAllOrderStatus(String userId) {
     	//int hour = 1;
@@ -833,7 +843,10 @@ public class OrderApplication {
     	// 查询所有的可以结束的订单，并更新其状态到可结算状态
     	orderRepository.getSpecifiedOrderStatus();
     }
-    
+    /***
+     * 查询可以结束的订单，并使之结束（需要判断是交易关闭还是交易完成）
+     * @param userId
+     */
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
     @EventListener(isListening = true)
     public void judgeOrderSellAfter(String userId) {
@@ -847,7 +860,11 @@ public class OrderApplication {
     		jobCompleteOrder(a, userId);
     	}    	
     }
-    
+    /***
+     * 子订单完成或售后单完成，需要完成的订单
+     * @param orderId
+     * @param userId
+     */
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class},propagation= Propagation.REQUIRES_NEW)
     private void jobCompleteOrder(String orderId, String userId) {
     	boolean f = orderRepository.judgeOrderHasAfterSale(orderId);    
