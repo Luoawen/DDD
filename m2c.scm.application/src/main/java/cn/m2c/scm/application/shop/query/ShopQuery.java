@@ -153,6 +153,7 @@ public class ShopQuery {
 	 * @return
 	 */
 	public ShopBean getShop(String dealerId) {
+		log.info("查询店铺信息前时间"+System.currentTimeMillis());
 		ShopBean shop = null;
 		try {
 			String key = ("m2c.scm.shop." + dealerId).trim();
@@ -171,6 +172,7 @@ public class ShopQuery {
 		} catch (Exception e) {
 			log.error("查询店铺详情出错", e);
 		}
+		log.info("查询店铺信息后时间"+System.currentTimeMillis());
 		return shop;
 	}
 
