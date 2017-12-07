@@ -12,8 +12,8 @@ import java.util.Map;
  * 导出
  */
 public class GoodsModel {
-    @ExcelField(title = "商家名称")
-    private String dealerName;
+    //@ExcelField(title = "商家名称")
+    //private String dealerName;
     @ExcelField(title = "商品名称")
     private String goodsName;
     @ExcelField(title = "商品条形码")
@@ -24,8 +24,8 @@ public class GoodsModel {
     private String goodsBrandName;
     @ExcelField(title = "商家SKU")
     private String goodsCode;
-    @ExcelField(title = "平台SKU")
-    private String goodsSkuId;
+    //@ExcelField(title = "平台SKU")
+    //private String goodsSkuId;
     @ExcelField(title = "规格")
     private String goodsSkuName;
     @ExcelField(title = "拍获价/元")
@@ -45,7 +45,7 @@ public class GoodsModel {
 
     public GoodsModel(GoodsBean goodsBean, GoodsSkuBean goodsSkuBean, Map goodsClassifyMap, Float serviceRate,
                       String goodsPostageName, Integer settlementMode) {
-        this.dealerName = goodsBean.getDealerName();
+        //this.dealerName = goodsBean.getDealerName();
         this.goodsName = goodsBean.getGoodsName();
         this.goodsBarCode = StringUtils.isEmpty(goodsBean.getGoodsBarCode()) ? "" : goodsSkuBean.getGoodsCode();
         if (null != goodsClassifyMap) {
@@ -53,7 +53,7 @@ public class GoodsModel {
         }
         this.goodsBrandName = goodsBean.getGoodsBrandName();
         this.goodsCode = StringUtils.isEmpty(goodsSkuBean.getGoodsCode()) ? "" : goodsSkuBean.getGoodsCode();
-        this.goodsSkuId = goodsSkuBean.getSkuId();
+        //this.goodsSkuId = goodsSkuBean.getSkuId();
         this.goodsSkuName = goodsSkuBean.getSkuName();
         DecimalFormat df = new DecimalFormat("0.00");
         this.photographPrice = df.format(goodsSkuBean.getPhotographPrice().floatValue() / 100);

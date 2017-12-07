@@ -618,7 +618,7 @@ public class DealerOrderQuery {
         sql.append(" SELECT dtl.sku_id, dtl.sku_name, dtl.goods_name, dtl.goods_title, a.dealer_id, a.created_date, dtl.discount_price, \r\n")
                 .append("dtl.sell_num, af._status afStatus, a._status, om.pay_no, a.dealer_order_id, dtl.goods_icon, a.created_date,\r\n")
                 .append(" a.rev_person, a.rev_phone, a.goods_amount, a.order_freight, a.plateform_discount, a.dealer_discount, a.order_id,\r\n")
-                .append(" om.pay_time,dtl.freight,a.province,a.city,a.area_county,af.after_sell_order_id,af.order_type,af.sell_num as after_num,af.back_money\r\n")
+                .append(" om.pay_time,dtl.freight,a.province,a.city,a.area_county,a.street_addr,af.after_sell_order_id,af.order_type,af.sell_num as after_num,af.back_money\r\n")
                 .append(" FROM t_scm_order_detail dtl \r\n")
                 .append(" LEFT OUTER JOIN t_scm_order_dealer a ON dtl.dealer_order_id = a.dealer_order_id\r\n")
                 .append(" LEFT OUTER JOIN t_scm_order_after_sell af ON af.dealer_order_id = dtl.dealer_order_id AND af.sku_id=dtl.sku_id AND af.sort_no=dtl.sort_no \r\n")
@@ -736,7 +736,7 @@ public class DealerOrderQuery {
                 midBean.setOrderId((String) item.get("order_id"));
                 Timestamp payTime = (Timestamp) item.get("pay_time");
                 midBean.setPayTime(payTime == null ? null : payTime.getTime());
-                midBean.setRevAddress(new StringBuffer().append(item.get("province")).append(item.get("city")).append(item.get("area_county")).toString());
+                midBean.setRevAddress(new StringBuffer().append(item.get("province")).append(item.get("city")).append(item.get("area_county")).append(item.get("street_addr")).toString());
                 midBean.setAfterMoney(null == item.get("back_money") ? 0l : (Long) item.get("back_money"));
                 midBean.setAfterNum(null == item.get("after_num") ? null : (Integer) item.get("after_num"));
                 midBean.setAfterOrderType(null == item.get("order_type") ? null : (Integer) item.get("order_type"));

@@ -11,7 +11,7 @@ import java.util.Date;
  * 商家订单导出
  */
 public class DealerOrderExpModel {
-    @ExcelField(title = "订货单")
+    @ExcelField(title = "订货号")
     private String dealerOrderId;
     @ExcelField(title = "订单状态")
     private String orderStatus;
@@ -31,6 +31,8 @@ public class DealerOrderExpModel {
     private Integer goodsNum;
     @ExcelField(title = "运费/元")
     private String postage;
+    @ExcelField(title = "优惠金额/元")
+    private String discountAmount;
     @ExcelField(title = "订单总额/元")
     private String orderMoney;
     @ExcelField(title = "收货人姓名")
@@ -47,7 +49,7 @@ public class DealerOrderExpModel {
     private String saleAfterStatus;
     @ExcelField(title = "售后数量")
     private String saleAfterNum;
-    @ExcelField(title = "售后金额")
+    @ExcelField(title = "售后金额/元")
     private String saleAfterMoney;
 
     public DealerOrderExpModel(DealerGoodsBean goodsBean, DealerOrderQB dealerOrderQB) {
@@ -63,6 +65,7 @@ public class DealerOrderExpModel {
         this.goodsPrice = String.valueOf(goodsBean.getDiscountPrice() / 100);
         this.goodsNum = goodsBean.getSellNum();
         this.postage = String.valueOf(goodsBean.getFreight() / 100);
+        this.discountAmount = String.valueOf((dealerOrderQB.getPlateDiscount()+dealerOrderQB.getDealerDiscount())/100);
         this.orderMoney = String.valueOf((dealerOrderQB.getGoodsMoney() + dealerOrderQB.getOrderFreight() - dealerOrderQB.getDealerDiscount() - dealerOrderQB.getPlateDiscount()) / 100);
         this.revPerson = dealerOrderQB.getRevPerson();
         this.revPhone = dealerOrderQB.getRevPhone();
