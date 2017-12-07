@@ -868,7 +868,7 @@ public class OrderApplication {
     		GoodsDto src = getGoodsBySkuId(sku, goodses);
     		if (src != null)
     			t.copyField(src);
-    		if (t.getIsSpecial() == 1 && specialPrice.get(sku) != null) {
+    		if (t.getIsSpecial() == 1 && specialPrice != null && specialPrice.get(sku) != null) {
     			t.setSpecialPrice(specialPrice.get(sku));
     		}
     		else // 若没有特惠价则不执行特惠价

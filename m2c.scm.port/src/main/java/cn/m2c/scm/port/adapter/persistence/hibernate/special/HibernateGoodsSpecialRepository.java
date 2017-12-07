@@ -64,6 +64,8 @@ public class HibernateGoodsSpecialRepository extends HibernateSupperRepository i
      * @return
      */
     public Map getEffectiveGoodsSkuSpecial(List<String> skuIds) {
+    	if (skuIds == null || skuIds.size() < 1)
+    		return null;
         StringBuilder sql = new StringBuilder();
         sql.append(" SELECT ");
         sql.append(" s.* ");
