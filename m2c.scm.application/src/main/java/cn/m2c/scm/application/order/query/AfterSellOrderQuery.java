@@ -383,13 +383,13 @@ public class AfterSellOrderQuery {
 	 * @param marketId
 	 * @param orderId
 	 */
-	public SimpleMarket getMarketBySkuIdAndOrderId(String skuId, String orderId) {
+	public SimpleMarket getMarketBySkuIdAndOrderId(String skuId, String orderId, int sortNo) {
 		StringBuilder sql = new StringBuilder();
 		sql.append(" SELECT marketing_id, market_level, market_type, threshold, threshold_type, discount\r\n")
 		.append("FROM	t_scm_order_marketing_used\r\n")
-		.append("WHERE	order_id = ? AND marketing_id = (SELECT a.marketing_id FROM t_scm_order_detail a WHERE a.order_id=? AND a.sku_id=?)")
+		.append("WHERE	order_id = ? AND marketing_id = (SELECT a.marketing_id FROM t_scm_order_detail a WHERE a.order_id=? AND a.sku_id=? AND a.sort_no=?)")
 		.append(" AND _status=1");
-		return this.supportJdbcTemplate.queryForBean(sql.toString(), SimpleMarket.class, orderId, orderId, skuId);
+		return this.supportJdbcTemplate.queryForBean(sql.toString(), SimpleMarket.class, orderId, orderId, skuId, sortNo);
 	}
 	
 	/***
