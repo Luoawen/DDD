@@ -58,13 +58,13 @@ public class OrderDetailBean {
 	public void setSortNo(Integer sortNo) {
 		this.sortNo = sortNo;
 	}
-	public Integer getIsPecial() {
+	public Integer getIsSpecial() {
 		return isSpecial;
 	}
 	public long getSpecialPrice() {
 		return specialPrice;
 	}
-	public void setIsPecial(Integer isSpecial) {
+	public void setIsSpecial(Integer isSpecial) {
 		this.isSpecial = isSpecial;
 	}
 	public void setSpecialPrice(long specialPrice) {
