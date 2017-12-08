@@ -119,11 +119,11 @@ public class SaleAfterExpModel {
     	//售后总价    售后单价   运费   ordertypestr   statusstr
         this.saleAfterNo = saleAfterExpQB.getSaleAfterNo();
         DecimalFormat df1 = new DecimalFormat("0.00");
-        this.backMoney = df1.format((saleAfterExpQB.getBackMoney().floatValue()+saleAfterExpQB.getReturnFreight().floatValue())/100);
+        this.backMoney = df1.format((saleAfterExpQB.getBackMoney().floatValue()+saleAfterExpQB.getReturnFreight().floatValue())/(double)100);
         this.dealerOrderId = saleAfterExpQB.getDealerOrderId();
-        this.saleAfterGoodsPrice = df1.format(saleAfterExpQB.getSaleAfterGoodsPrice().floatValue()/100);
+        this.saleAfterGoodsPrice = df1.format(saleAfterExpQB.getSaleAfterGoodsPrice().floatValue()/(double)100);
         this.sellNum = saleAfterExpQB.getSellNum();
-        this.returnFreight = df1.format(saleAfterExpQB.getReturnFreight().floatValue()/100);
+        this.returnFreight = df1.format(saleAfterExpQB.getReturnFreight().floatValue()/(double)100);
         
     	this.goodsName = saleAfterExpQB.getGoodsName();
         
