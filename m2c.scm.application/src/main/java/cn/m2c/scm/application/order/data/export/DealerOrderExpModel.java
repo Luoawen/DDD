@@ -4,6 +4,7 @@ import cn.m2c.scm.application.dealerorder.data.bean.DealerGoodsBean;
 import cn.m2c.scm.application.dealerorder.data.bean.DealerOrderQB;
 import cn.m2c.scm.application.utils.ExcelField;
 
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -62,11 +63,12 @@ public class DealerOrderExpModel {
         this.payDate = null != dealerOrderQB.getPayTime() ? df.format(new Date(dealerOrderQB.getPayTime())) : "";
         this.goodsName = goodsBean.getGoodsName();
         this.skuName = goodsBean.getSkuName();
-        this.goodsPrice = String.valueOf(goodsBean.getDiscountPrice() / 100);
+        DecimalFormat df1 = new DecimalFormat("0.00");
+        this.goodsPrice = df1.format(goodsBean.getDiscountPrice().floatValue() / 100);//*
         this.goodsNum = goodsBean.getSellNum();
-        this.postage = String.valueOf(goodsBean.getFreight() / 100);
-        this.discountAmount = String.valueOf((dealerOrderQB.getPlateDiscount()+dealerOrderQB.getDealerDiscount())/100);
-        this.orderMoney = String.valueOf((dealerOrderQB.getGoodsMoney() + dealerOrderQB.getOrderFreight() - dealerOrderQB.getDealerDiscount() - dealerOrderQB.getPlateDiscount()) / 100);
+        this.postage = df1.format(dealerOrderQB.getOrderFreight().floatValue() / 100);//*
+        this.discountAmount = df1.format((dealerOrderQB.getPlateDiscount().floatValue()+dealerOrderQB.getDealerDiscount().floatValue())/100);
+        this.orderMoney = df1.format((dealerOrderQB.getGoodsMoney().floatValue() + dealerOrderQB.getOrderFreight().floatValue() - dealerOrderQB.getDealerDiscount().floatValue() - dealerOrderQB.getPlateDiscount().floatValue()) / 100);
         this.revPerson = dealerOrderQB.getRevPerson();
         this.revPhone = dealerOrderQB.getRevPhone();
         this.revAddress = dealerOrderQB.getRevAddress();
@@ -74,7 +76,7 @@ public class DealerOrderExpModel {
         this.saleAfterType = getAfterType(dealerOrderQB.getAfterOrderType());
         this.saleAfterStatus = getAfterStatusStr(dealerOrderQB.getAfterOrderType(),dealerOrderQB.getAfterStatus());
         this.saleAfterNum = null == dealerOrderQB.getAfterNum() ? "" : String.valueOf(dealerOrderQB.getAfterNum());
-        this.saleAfterMoney = String.valueOf(dealerOrderQB.getAfterMoney() / 100);
+        this.saleAfterMoney = df1.format(dealerOrderQB.getAfterMoney().floatValue() / 100);
     }
 
     private String getStatusStr(Integer status) {
