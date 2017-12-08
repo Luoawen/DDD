@@ -1,7 +1,5 @@
 package cn.m2c.scm.application.order.data.bean;
 
-import javax.persistence.Column;
-
 import cn.m2c.ddd.common.persistence.orm.ColumnAlias;
 
 /**
@@ -156,8 +154,9 @@ public class GoodsInfoBean {
 	public long getTotalPrice() {
 		if (isChange != null && isChange == 1)
 			totalPrice = changePrice * sellNum;
-		/*else
-			totalPrice = price * sellNum;*/
+		else if (totalPrice == 0) {
+			totalPrice = price * sellNum;
+		}
 		return totalPrice;
 	}
 
