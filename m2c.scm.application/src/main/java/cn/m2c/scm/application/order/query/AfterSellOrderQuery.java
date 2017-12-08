@@ -323,15 +323,9 @@ public class AfterSellOrderQuery {
 		sql.append(" AND after.sort_no = detail.sort_no ");
 		sql.append(" AND dtl.saler_user_id = seller.seller_id ");
 		
+		System.out.println("This SQL--------------------------------->"+sql);
 		AfterSellOrderDetailBean bean = this.supportJdbcTemplate.queryForBean(sql.toString(),
 				AfterSellOrderDetailBean.class, afterSellOrderId);
-		GoodsInfoBean goodsInfoBeans = aftetSellOrderDetailGoodsInfoQuery(afterSellOrderId);
-		long totalPrice = 0;
-		long orderTotalPrice = 0;
-		totalPrice += (goodsInfoBeans.getPrice() * goodsInfoBeans.getSellNum() + goodsInfoBeans.getFreight());
-		goodsInfoBeans.setTotalPrice(totalPrice);
-		orderTotalPrice += totalPrice;
-		bean.setOrderTotalMoney(orderTotalPrice);
 		bean.setGoodsInfo(aftetSellOrderDetailGoodsInfoQuery(afterSellOrderId));
 		return bean;
 	}
@@ -345,8 +339,8 @@ public class AfterSellOrderQuery {
 	public GoodsInfoBean aftetSellOrderDetailGoodsInfoQuery(String afterSellOrderId) {
 		StringBuilder sql = new StringBuilder();
 		sql.append(
-				" SELECT dtl.discount_price, after.sell_num, dtl.freight, dtl.plateform_discount, dtl.dealer_discount ");
-		sql.append(" ,dtl.media_res_id, after.back_money, after.order_id, dtl._price ");
+				" SELECT  after.sell_num, after.back_money, after.order_id, dtl.dealer_discount ");
+		sql.append(" ,dtl.media_res_id, dtl.discount_price, dtl.freight, dtl._price, dtl.plateform_discount, dtl.goods_amount ");
 		sql.append(" ,dtl.goods_icon, dtl.goods_name, dtl.sku_name, dtl.is_special, dtl.special_price, dtl.sort_no ");
 		sql.append(" FROM t_scm_order_detail dtl ");
 		sql.append(" INNER JOIN t_scm_order_after_sell after ");

@@ -159,6 +159,10 @@ public class GoodsInfoBean {
 		}
 		return totalPrice;
 	}
+	/*
+	public long getTotalPrice() {
+		return totalPrice;
+	}*/
 
 	public String getSkuId() {
 		return skuId;
