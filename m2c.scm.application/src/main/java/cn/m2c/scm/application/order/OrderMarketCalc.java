@@ -319,23 +319,23 @@ public class OrderMarketCalc {
      * @return 返回本商品优惠的金额
      */
     public static long calcReturnMoney(SimpleMarket marketInfo
-            , List<SkuNumBean> skuBeanLs, String skuId) {
+            , List<SkuNumBean> skuBeanLs, String skuId, int sortNo) {
         long rtMoney = 0;
         // 根据marketInfo 来计算
         if (marketInfo == null || skuBeanLs == null || skuBeanLs.size() < 1)
             return rtMoney;
         //营销形式，1：减钱，2：打折，3：换购
         Integer a = marketInfo.getMarketType();
-        //1：金额，2：件数
+        //门槛类型：1：金额，2：件数
         Integer b = marketInfo.getThresholdType();
-
+        //门槛
         long threshold = marketInfo.getThreshold();
 
         long total = 0;
         // 优惠金额或折扣
         Integer discount = marketInfo.getDiscount();
         for (SkuNumBean bean : skuBeanLs) {
-            boolean bFlag = skuId.equals(bean.getSkuId());
+            boolean bFlag = (skuId.equals(bean.getSkuId()) && bean.getSortNo() == sortNo);
             if (b == 1 && !bFlag && bean.getIsChange() == 0) {
                 total += bean.getGoodsAmount();
             } else if (b == 2 && !bFlag && bean.getIsChange() == 0) {
@@ -353,7 +353,7 @@ public class OrderMarketCalc {
         if (total >= threshold) {// 若还满足, 需要计算满足的值
             for (SkuNumBean bean : skuBeanLs) {
 
-                boolean bFlag = skuId.equals(bean.getSkuId());
+                boolean bFlag = (skuId.equals(bean.getSkuId()) && bean.getSortNo() == sortNo);
                 if (bFlag) {
                     tmp = bean;
                     continue;
@@ -396,7 +396,7 @@ public class OrderMarketCalc {
             marketInfo.setIsFull(false);
             for (SkuNumBean bean : skuBeanLs) {
 
-                boolean bFlag = skuId.equals(bean.getSkuId());
+                boolean bFlag = (skuId.equals(bean.getSkuId()) && bean.getSortNo() == sortNo);
                 if (bFlag) {
                     tmp = bean;
                     continue;

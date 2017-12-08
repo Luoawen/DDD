@@ -197,11 +197,14 @@ public class SaleAfterOrder extends ConcurrencySafeEntity {
 	public boolean agreeBackMoney(String userId, String payNo) {
 		if (status < 4)
 			return false;
+		if (orderType == 1 && status < 5 ) {
+			return false;
+		}
 		status = 9;
 		if (returnFreight == null)
 			returnFreight = 0l;
 		updateTime = new Date();
-		DomainEventPublisher.instance().publish(new OrderOptLogEvent(saleAfterNo, dealerOrderId, "同意退款", userId));
+		DomainEventPublisher.instance().publish(new OrderOptLogEvent(saleAfterNo, dealerOrderId, "确认退款", userId));
 		DomainEventPublisher.instance().publish(new SaleAfterRefundEvt(saleAfterNo, dealerId, backMoney + returnFreight, payNo));
 		return true;
 	}
@@ -312,5 +315,9 @@ public class SaleAfterOrder extends ConcurrencySafeEntity {
 	
 	public void updateBackMoney(long money) {
 		backMoney = money;
+	}
+	
+	public int sortNo() {
+		return sortNo;
 	}
 }

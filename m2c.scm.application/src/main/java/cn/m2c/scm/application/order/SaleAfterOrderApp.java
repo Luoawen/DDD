@@ -74,7 +74,7 @@ public class SaleAfterOrderApp {
 			SimpleMarket marketInfo = saleOrderQuery.getMarketById(mkId, cmd.getOrderId());
 			List<SkuNumBean> skuBeanLs = saleOrderQuery.getOrderDtlByMarketId(mkId, cmd.getOrderId());
 			
-			discountMoney = OrderMarketCalc.calcReturnMoney(marketInfo, skuBeanLs, cmd.getSkuId());
+			discountMoney = OrderMarketCalc.calcReturnMoney(marketInfo, skuBeanLs, cmd.getSkuId(), cmd.getSortNo());
 			if (marketInfo != null && marketInfo.isFull())
 				money = itemDtl.changePrice();
 		}
@@ -138,7 +138,7 @@ public class SaleAfterOrderApp {
 		long money = itemDtl.sumGoodsMoney();
 		if (marketInfo != null) {//计算售后需要退的钱
 			List<SkuNumBean> skuBeanLs = saleOrderQuery.getOrderDtlByMarketId(marketInfo.getMarketingId(), order.orderId());
-			discountMoney = OrderMarketCalc.calcReturnMoney(marketInfo, skuBeanLs, order.skuId());
+			discountMoney = OrderMarketCalc.calcReturnMoney(marketInfo, skuBeanLs, order.skuId(), order.sortNo());
 			if (marketInfo != null && marketInfo.isFull())
 				money = itemDtl.changePrice();
 		}
