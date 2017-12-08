@@ -16,7 +16,7 @@ public class DealerOrderQB {
 	/**
 	 * 商品总额
 	 */
-	private long goodsMoney;
+	private Long goodsMoney;
 	/**生成日期*/
 	private Long createdDate;
 	/**
@@ -47,11 +47,11 @@ public class DealerOrderQB {
 	private Long payTime;
 	
 	/**运费 */
-	private long orderFreight;
+	private Long orderFreight;
 	/**平台优惠 */
-	private long plateDiscount;
+	private Long plateDiscount;
 	/**商家优惠 */
-	private long dealerDiscount;
+	private Long dealerDiscount;
 	
 	private String orderId;
 
@@ -66,7 +66,7 @@ public class DealerOrderQB {
 	/**
 	 * 售后总额
 	 */
-	private long afterMoney;
+	private Long afterMoney;
 	/**
 	 * 售后数量
 	 */
@@ -92,7 +92,7 @@ public class DealerOrderQB {
 		this.orderId = orderId;
 	}
 
-	public long getGoodsMoney() {
+	public Long getGoodsMoney() {
 		return goodsMoney;
 	}
 
@@ -100,7 +100,7 @@ public class DealerOrderQB {
 		this.goodsMoney = goodsMoney;
 	}
 
-	public long getOrderFreight() {
+	public Long getOrderFreight() {
 		return orderFreight;
 	}
 
@@ -108,7 +108,7 @@ public class DealerOrderQB {
 		this.orderFreight = orderFreight;
 	}
 
-	public long getPlateDiscount() {
+	public Long getPlateDiscount() {
 		return plateDiscount;
 	}
 
@@ -116,7 +116,7 @@ public class DealerOrderQB {
 		this.plateDiscount = plateDiscount;
 	}
 
-	public long getDealerDiscount() {
+	public Long getDealerDiscount() {
 		return dealerDiscount;
 	}
 
@@ -228,7 +228,7 @@ public class DealerOrderQB {
 		this.afterSellDealerOrderId = afterSellDealerOrderId;
 	}
 
-	public long getAfterMoney() {
+	public Long getAfterMoney() {
 		return afterMoney;
 	}
 

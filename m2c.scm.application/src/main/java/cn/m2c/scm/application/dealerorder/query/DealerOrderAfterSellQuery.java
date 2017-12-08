@@ -14,6 +14,7 @@ import cn.m2c.scm.application.dealerorder.data.bean.DealerOrderAfterSellDetailBe
 import cn.m2c.scm.application.dealerorder.data.bean.SaleFreightBean;
 import cn.m2c.scm.application.order.data.bean.AfterSellOrderBean;
 import cn.m2c.scm.application.order.data.bean.GoodsInfoBean;
+import cn.m2c.scm.application.order.data.bean.SaleAfterExpQB;
 import cn.m2c.scm.application.order.data.export.SaleAfterExpModel;
 import cn.m2c.scm.domain.NegativeException;
 
@@ -411,18 +412,16 @@ public class DealerOrderAfterSellQuery {
 
 		sql.append(" ORDER BY a.created_date DESC ");
 		sql.append(" LIMIT 2000");
-		List<SaleAfterExpModel> beanList = this.supportJdbcTemplate.queryForBeanList(sql.toString(),
-				SaleAfterExpModel.class, params.toArray());
+		List<SaleAfterExpQB> beanList = this.supportJdbcTemplate.queryForBeanList(sql.toString(),
+				SaleAfterExpQB.class, params.toArray());
+		List<SaleAfterExpModel> list = null;
 		if(null != beanList && beanList.size() > 0) {
-			for(SaleAfterExpModel saleAfterExpModel : beanList) {
-				saleAfterExpModel.setBackMoney((saleAfterExpModel.getBackMoney()+saleAfterExpModel.getReturnFreight())/100);
-				saleAfterExpModel.setReturnFreight(saleAfterExpModel.getReturnFreight()/100);
-				saleAfterExpModel.setSaleAfterGoodsPrice(saleAfterExpModel.getSaleAfterGoodsPrice()/100);
-				saleAfterExpModel.setOrderTypeStr(saleAfterExpModel.getOrderType());
-				saleAfterExpModel.setStatusStr(saleAfterExpModel.getOrderType(), saleAfterExpModel.getStatus());
+			list = new ArrayList<>();
+			for(SaleAfterExpQB saleAfterExpQB : beanList) {
+				list.add(new SaleAfterExpModel(saleAfterExpQB));
 			}
 		}
-		return beanList;
+		return list;
 	}
 	
 	/**
