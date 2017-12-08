@@ -51,7 +51,7 @@ public class SaleAfterOrderApp {
 	public void createSaleAfterOrder(AddSaleAfterCmd cmd) throws NegativeException {
 		// 获取订单SKU详情看是否满足售后申请
 		DealerOrderDtl itemDtl = saleAfterRepository.getDealerOrderDtlBySku(cmd.getDealerOrderId(), 
-				cmd.getSkuId());
+				cmd.getSkuId(), cmd.getSortNo());
 		
 		if (itemDtl == null) {
 			throw new NegativeException(MCode.V_1, "申请售后的商品不存在！");
@@ -132,8 +132,8 @@ public class SaleAfterOrderApp {
 		}
 		
 		DealerOrderDtl itemDtl = saleAfterRepository.getDealerOrderDtlBySku(order.dealerOrderId(), 
-				order.skuId());
-		SimpleMarket marketInfo = saleOrderQuery.getMarketBySkuIdAndOrderId(order.skuId(), order.orderId());
+				order.skuId(), order.sortNo());
+		SimpleMarket marketInfo = saleOrderQuery.getMarketBySkuIdAndOrderId(order.skuId(), order.orderId(), order.sortNo());
 		long discountMoney = 0;
 		long money = itemDtl.sumGoodsMoney();
 		if (marketInfo != null) {//计算售后需要退的钱

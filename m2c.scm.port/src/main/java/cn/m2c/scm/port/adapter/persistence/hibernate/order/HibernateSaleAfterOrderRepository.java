@@ -56,12 +56,13 @@ public class HibernateSaleAfterOrderRepository extends HibernateSupperRepository
 	}
 
 	@Override
-	public DealerOrderDtl getDealerOrderDtlBySku(String dealerOrderId, String skuId) {
+	public DealerOrderDtl getDealerOrderDtlBySku(String dealerOrderId, String skuId, int sortNo) {
 		// TODO Auto-generated method stub
-		StringBuilder sql = new StringBuilder("select * from t_scm_order_detail where dealer_order_id =:dealerOrderId and sku_id=:skuId");
+		StringBuilder sql = new StringBuilder("select * from t_scm_order_detail where dealer_order_id =:dealerOrderId and sku_id=:skuId and sort_no=:sortNo");
 		Query query = this.session().createSQLQuery(sql.toString()).addEntity(DealerOrderDtl.class);
 		query.setParameter("dealerOrderId", dealerOrderId);
 		query.setParameter("skuId", skuId);
+		query.setParameter("sortNo", sortNo);
 		return (DealerOrderDtl)query.uniqueResult();
 	}
 	@Override
