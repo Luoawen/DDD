@@ -69,8 +69,8 @@ public class OrderOutAgent {
     	return new ResponseEntity<MResult>(result,HttpStatus.OK);
     }
     
-    @Autowired
-	private SaleAfterOrderApp saleAfterApp;
+    //@Autowired
+	//private SaleAfterOrderApp saleAfterApp;
     
     @RequestMapping(value="/test", method = RequestMethod.GET)
     public ResponseEntity<MResult> testForMedia(@RequestParam(value="userId", required=false) String userId

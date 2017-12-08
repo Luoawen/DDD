@@ -180,7 +180,7 @@ public class DealerOrderAfterSellQuery {
 		List<Object> params = new ArrayList<Object>();
 		StringBuilder sql = new StringBuilder();
 		sql.append(" SELECT b.goods_icon, b.goods_name, b.goods_title as goods_sub_title, b.sku_name, ")
-				.append(" b.discount_price, a.sell_num, b.is_change, b.change_price ").append(" FROM t_scm_order_after_sell a")
+				.append(" b.discount_price, a.sell_num, b.is_change, b.change_price, a.sort_no ").append(" FROM t_scm_order_after_sell a")
 				.append(" LEFT OUTER JOIN t_scm_order_detail b ON a.dealer_order_id = b.dealer_order_id AND a.order_id = b.order_id AND a.sku_id= b.sku_id AND a.sort_no=b.sort_no")
 				.append(" where a.sku_id=? and a.after_sell_order_id =?");
 		params.add(skuId);

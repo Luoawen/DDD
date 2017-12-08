@@ -57,6 +57,16 @@ public class DealerGoodsBean {
 	 * 运费
 	 */
 	private long freight;
+	
+	private Integer sortNo;
+	
+	public Integer getSortNo() {
+		return sortNo;
+	}
+
+	public void setSortNo(Integer sortNo) {
+		this.sortNo = sortNo;
+	}
 
 	public Long getBackMoney() {
 		if (backMoney == null)
