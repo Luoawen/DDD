@@ -188,7 +188,7 @@ public class GoodsCommentQueryApplication {
 	            params.add("%" + condition + "%");
 	            params.add("%" + condition + "%");
 	            params.add("%" + condition + "%");
-        	}else if(from == 1) {
+        	}else {
         		sql.append(" AND (goods_name LIKE ? OR order_id LIKE ? OR buyer_name LIKE ? OR buyer_phone_number LIKE ? OR dealer_name LIKE ?)");
 	            params.add("%" + condition + "%");
 	            params.add("%" + condition + "%");
@@ -248,7 +248,7 @@ public class GoodsCommentQueryApplication {
 	            params.add("%" + condition + "%");
 	            params.add("%" + condition + "%");
 	            params.add("%" + condition + "%");
-        	}else if(from == 1) {
+        	}else {
         		sql.append(" AND (goods_name LIKE ? OR order_id LIKE ? OR buyer_name LIKE ? OR buyer_phone_number LIKE ? OR dealer_name LIKE ?)");
 	            params.add("%" + condition + "%");
 	            params.add("%" + condition + "%");

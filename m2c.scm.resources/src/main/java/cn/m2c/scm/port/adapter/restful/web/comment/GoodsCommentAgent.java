@@ -46,7 +46,7 @@ public class GoodsCommentAgent {
             @RequestParam(value = "endTime", required = false) String endTime,//结束时间
             @RequestParam(value = "condition", required = false) String condition,//条件
             @RequestParam(value = "imageStatus", required = false) Integer imageStatus,//评论是否有图片，1:无图 2有图
-            @RequestParam(value = "from", required = true) Integer from,//请求从哪个平台发来(0商家平台，1管理平台)
+            @RequestParam(value = "from", required = false) Integer from,//请求从哪个平台发来(0商家平台，1管理平台)
             @RequestParam(value = "pageNum", required = false, defaultValue = "1") Integer pageNum,
             @RequestParam(value = "rows", required = false, defaultValue = "10") Integer rows) {
         MPager result = new MPager(MCode.V_1);
