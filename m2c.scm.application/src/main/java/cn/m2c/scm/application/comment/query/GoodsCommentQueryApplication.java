@@ -156,7 +156,7 @@ public class GoodsCommentQueryApplication {
     }
 
     public List<GoodsCommentBean> searchGoodsComment(String dealerId, Integer replyStatus, Integer starLevel,
-                                                     String startTime, String endTime, String condition, Integer imageStatus,
+                                                     String startTime, String endTime, String condition, Integer imageStatus, Integer from,
                                                      Integer pageNum, Integer rows) {
         List<Object> params = new ArrayList<Object>();
         StringBuilder sql = new StringBuilder();
@@ -182,11 +182,20 @@ public class GoodsCommentQueryApplication {
             params.add(endTime + " 23:59:59");
         }
         if (StringUtils.isNotEmpty(condition)) {
-            sql.append(" AND (goods_name LIKE ? OR order_id LIKE ? OR buyer_name LIKE ? OR buyer_phone_number LIKE ?)");
-            params.add("%" + condition + "%");
-            params.add("%" + condition + "%");
-            params.add("%" + condition + "%");
-            params.add("%" + condition + "%");
+        	if(from == 0) {
+	            sql.append(" AND (goods_name LIKE ? OR order_id LIKE ? OR buyer_name LIKE ? OR buyer_phone_number LIKE ?)");
+	            params.add("%" + condition + "%");
+	            params.add("%" + condition + "%");
+	            params.add("%" + condition + "%");
+	            params.add("%" + condition + "%");
+        	}else if(from == 1) {
+        		sql.append(" AND (goods_name LIKE ? OR order_id LIKE ? OR buyer_name LIKE ? OR buyer_phone_number LIKE ? OR dealer_name LIKE ?)");
+	            params.add("%" + condition + "%");
+	            params.add("%" + condition + "%");
+	            params.add("%" + condition + "%");
+	            params.add("%" + condition + "%");
+	            params.add("%" + condition + "%");
+        	}
         }
         if (null != imageStatus) {
             sql.append(" AND image_status = ? ");
@@ -208,7 +217,7 @@ public class GoodsCommentQueryApplication {
     }
 
     public Integer searchGoodsCommentTotal(String dealerId, Integer replyStatus, Integer starLevel,
-                                           String startTime, String endTime, String condition, Integer imageStatus) {
+                                           String startTime, String endTime, String condition, Integer imageStatus, Integer from) {
         List<Object> params = new ArrayList<Object>();
         StringBuilder sql = new StringBuilder();
         sql.append(" SELECT ");
@@ -233,11 +242,20 @@ public class GoodsCommentQueryApplication {
             params.add(endTime + " 23:59:59");
         }
         if (StringUtils.isNotEmpty(condition)) {
-            sql.append(" AND (goods_name LIKE ? OR order_id LIKE ? OR buyer_name LIKE ? OR buyer_phone_number LIKE ?)");
-            params.add("%" + condition + "%");
-            params.add("%" + condition + "%");
-            params.add("%" + condition + "%");
-            params.add("%" + condition + "%");
+        	if(from == 0) {
+	            sql.append(" AND (goods_name LIKE ? OR order_id LIKE ? OR buyer_name LIKE ? OR buyer_phone_number LIKE ?)");
+	            params.add("%" + condition + "%");
+	            params.add("%" + condition + "%");
+	            params.add("%" + condition + "%");
+	            params.add("%" + condition + "%");
+        	}else if(from == 1) {
+        		sql.append(" AND (goods_name LIKE ? OR order_id LIKE ? OR buyer_name LIKE ? OR buyer_phone_number LIKE ? OR dealer_name LIKE ?)");
+	            params.add("%" + condition + "%");
+	            params.add("%" + condition + "%");
+	            params.add("%" + condition + "%");
+	            params.add("%" + condition + "%");
+	            params.add("%" + condition + "%");
+        	}
         }
         if (null != imageStatus) {
             sql.append(" AND image_status = ? ");
