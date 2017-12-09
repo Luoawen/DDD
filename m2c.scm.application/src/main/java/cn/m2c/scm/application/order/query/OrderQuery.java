@@ -51,7 +51,7 @@ public class OrderQuery {
 	 * @return
 	 */
 	public List<MainOrderBean> mainOrderListQuery(Integer orderStatus, Integer afterSaleStatus, String startTime,String orderId,
-			String endTime, String condition, Integer payWay,Integer mediaInfo,String dealerClassify, Integer pageNum, Integer rows) {
+			String endTime, String condition, Integer payWay, Integer commentStatus , Integer mediaInfo,String dealerClassify, Integer pageNum, Integer rows) {
 		List<Object> params = new ArrayList<Object>();
 		StringBuilder sql = new StringBuilder();
 		sql.append(" SELECT d.dealer_order_id,m.order_id,m.pay_no,m.pay_way,m.created_date,m.goods_amount,m.order_freight,m.plateform_discount pDiscount,m.dealer_discount pDealerDiscount, ");
@@ -59,6 +59,7 @@ public class OrderQuery {
 		sql.append("  FROM t_scm_order_dealer d ");
 		sql.append(" LEFT OUTER JOIN t_scm_order_main m ON d.order_id = m.order_id ");
 		sql.append(" LEFT OUTER JOIN t_scm_dealer dealer ON d.dealer_id = dealer.dealer_id ");
+		sql.append(" LEFT OUTER JOIN t_scm_order_detail dtl ON dtl.dealer_order_id = d.dealer_order_id ");
 		sql.append(" WHERE 1=1 ");
 		if (orderStatus != null) {
 			sql.append(" AND d._status =  ? ");
@@ -132,6 +133,10 @@ public class OrderQuery {
 			sql.append(" AND m.pay_way = ? ");
 			params.add(payWay);
 		}
+		if (commentStatus != null && commentStatus >= 0) {
+            sql.append(" AND dtl.comment_status = ?\r\n");
+            params.add(commentStatus);
+        }
 		if (mediaInfo != null) {
 			if (mediaInfo == 0) {
 				sql.append("AND d.dealer_order_id IN (SELECT dtl.dealer_order_id FROM t_scm_order_detail dtl WHERE dtl.comment_status = 0 AND dtl.media_res_id = '')");
@@ -253,13 +258,14 @@ public class OrderQuery {
 	 * @return
 	 */
 	public Integer mainOrderQueryTotal(Integer orderStatus, Integer afterSaleStatus, String startTime, String endTime,
-			String condition, Integer payWay,Integer mediaInfo,String dealerClassify) {
+			String condition, Integer payWay, Integer commentStatus , Integer mediaInfo,String dealerClassify) {
 		List<Object> params = new ArrayList<Object>();
 		StringBuilder sql = new StringBuilder();
 		sql.append(" SELECT COUNT(1) ");
 		sql.append("  FROM t_scm_order_dealer d");
 		sql.append(" LEFT OUTER JOIN t_scm_order_main m ON d.order_id = m.order_id ");
 		sql.append(" LEFT OUTER JOIN t_scm_dealer dealer ON d.dealer_id = dealer.dealer_id ");
+		sql.append(" LEFT OUTER JOIN t_scm_order_detail dtl ON dtl.dealer_order_id = d.dealer_order_id ");
 		sql.append(" WHERE 1=1 ");
 		if (orderStatus != null) {
 			sql.append(" AND d._status =  ? ");
@@ -317,6 +323,10 @@ public class OrderQuery {
 			params.add("%" + condition + "%");
 			params.add("%" + condition + "%");
 		}
+		if (commentStatus != null && commentStatus >= 0) {
+            sql.append(" AND dtl.comment_status = ?\r\n");
+            params.add(commentStatus);
+        }
 		if (payWay != null) {
 			sql.append(" AND m.pay_way = ? ");
 			params.add(payWay);
