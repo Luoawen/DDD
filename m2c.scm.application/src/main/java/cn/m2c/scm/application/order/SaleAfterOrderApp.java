@@ -66,26 +66,7 @@ public class SaleAfterOrderApp {
 		if (!itemDtl.canApplySaleAfter()) {
 			throw new NegativeException(MCode.V_100, "商品处于不可申请售后状态！");
 		}
-		// 生成售后单保存, 计算售后需要退的钱
-		String mkId = itemDtl.getMarketId(); 
-		long discountMoney = 0;
-		long money = itemDtl.sumGoodsMoney();
-		if (mkId != null) {//计算售后需要退的钱
-			SimpleMarket marketInfo = saleOrderQuery.getMarketById(mkId, cmd.getOrderId());
-			List<SkuNumBean> skuBeanLs = saleOrderQuery.getOrderDtlByMarketId(mkId, cmd.getOrderId());
-			
-			discountMoney = OrderMarketCalc.calcReturnMoney(marketInfo, skuBeanLs, cmd.getSkuId(), cmd.getSortNo());
-			if (marketInfo != null && marketInfo.isFull())
-				money = itemDtl.changePrice();
-		}
-		//long ft = itemDtl.isDeliver() ? 0 : itemDtl.getFreight();
-		long ft = 0;
 		
-		money = money - discountMoney;
-		if (money<0) {			
-			throw new NegativeException(MCode.V_103, "不能申请售后，因已不符合条件！");
-			// money = 0;
-		}
 		int orderType = cmd.getType() == 3 ? 0 : cmd.getType(); //0换货， 1退货，2仅退款                  app传 1退货，2退款，3换货
 		int status = 2; //0申请退货,1申请换货,2申请退款          订单类型，0换货， 1退货，2仅退款
 		switch (orderType) {
@@ -99,6 +80,32 @@ public class SaleAfterOrderApp {
 				status = 2;
 				break;
 		}
+		long money = itemDtl.sumGoodsMoney();
+		if (status != 0) {
+			// 生成售后单保存, 计算售后需要退的钱
+			String mkId = itemDtl.getMarketId(); 
+			long discountMoney = 0;
+			if (mkId != null) {//计算售后需要退的钱
+				SimpleMarket marketInfo = saleOrderQuery.getMarketById(mkId, cmd.getOrderId());
+				List<SkuNumBean> skuBeanLs = saleOrderQuery.getOrderDtlByMarketId(mkId, cmd.getOrderId());
+				
+				discountMoney = OrderMarketCalc.calcReturnMoney(marketInfo, skuBeanLs, cmd.getSkuId(), cmd.getSortNo());
+				if (marketInfo != null && marketInfo.isFull())
+					money = itemDtl.changePrice();
+			}
+			money = money - discountMoney;
+		}
+		else {
+			money = 0;
+		}
+		//long ft = itemDtl.isDeliver() ? 0 : itemDtl.getFreight();
+		long ft = 0;
+		
+		if (money<0) {			
+			throw new NegativeException(MCode.V_103, "不能申请售后，因已不符合条件！");
+			// money = 0;
+		}
+		
 		int num = cmd.getBackNum();
 		if (num > itemDtl.sellNum())
 			num = itemDtl.sellNum();
@@ -130,27 +137,30 @@ public class SaleAfterOrderApp {
 		if (order == null) {
 			throw new NegativeException(MCode.V_101, "无此售后单！");
 		}
-		
+		long money = 0;
 		DealerOrderDtl itemDtl = saleAfterRepository.getDealerOrderDtlBySku(order.dealerOrderId(), 
 				order.skuId(), order.sortNo());
-		SimpleMarket marketInfo = saleOrderQuery.getMarketBySkuIdAndOrderId(order.skuId(), order.orderId(), order.sortNo());
-		long discountMoney = 0;
-		long money = itemDtl.sumGoodsMoney();
-		if (marketInfo != null) {//计算售后需要退的钱
-			List<SkuNumBean> skuBeanLs = saleOrderQuery.getOrderDtlByMarketId(marketInfo.getMarketingId(), order.orderId());
-			discountMoney = OrderMarketCalc.calcReturnMoney(marketInfo, skuBeanLs, order.skuId(), order.sortNo());
-			if (marketInfo != null && marketInfo.isFull())
-				money = itemDtl.changePrice();
-		}
-		
-		if (marketInfo != null && !marketInfo.isFull()) {
-			// 更新已使用营销 为不可用状态
-			saleAfterRepository.disabledOrderMarket(order.orderId(), marketInfo.getMarketingId());
-		}
-		money = money - discountMoney;
-		if (money<0) {
-			throw new NegativeException(MCode.V_103, "不能申请售后，因已不符合条件！");
-			//money = 0;
+		if (order.orderType() != 0) {
+			
+			SimpleMarket marketInfo = saleOrderQuery.getMarketBySkuIdAndOrderId(order.skuId(), order.orderId(), order.sortNo());
+			long discountMoney = 0;
+			money = itemDtl.sumGoodsMoney();
+			if (marketInfo != null) {//计算售后需要退的钱
+				List<SkuNumBean> skuBeanLs = saleOrderQuery.getOrderDtlByMarketId(marketInfo.getMarketingId(), order.orderId());
+				discountMoney = OrderMarketCalc.calcReturnMoney(marketInfo, skuBeanLs, order.skuId(), order.sortNo());
+				if (marketInfo != null && marketInfo.isFull())
+					money = itemDtl.changePrice();
+			}
+			
+			if (marketInfo != null && !marketInfo.isFull()) {
+				// 更新已使用营销 为不可用状态
+				saleAfterRepository.disabledOrderMarket(order.orderId(), marketInfo.getMarketingId());
+			}
+			money = money - discountMoney;
+			if (money<0) {
+				throw new NegativeException(MCode.V_103, "不能申请售后，因已不符合条件！");
+				//money = 0;
+			}
 		}
 		order.updateBackMoney(money);
 		float frt = cmd.getRtFreight();
