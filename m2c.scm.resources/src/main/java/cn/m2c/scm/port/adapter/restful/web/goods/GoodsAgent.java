@@ -233,12 +233,13 @@ public class GoodsAgent {
     @RequirePermissions(value = {"scm:goodsStorage:modifyRecognized"})
     public ResponseEntity<MResult> modifyRecognized(
             @PathVariable("goodsId") String goodsId,
+            @RequestParam(value = "id", required = false) Integer id,
             @RequestParam(value = "recognizedId", required = false) String recognizedId,
             @RequestParam(value = "recognizedUrl", required = false) String recognizedUrl
     ) {
         MResult result = new MResult(MCode.V_1);
         try {
-            GoodsRecognizedModifyCommand command = new GoodsRecognizedModifyCommand(goodsId, recognizedId, recognizedUrl);
+            GoodsRecognizedModifyCommand command = new GoodsRecognizedModifyCommand(goodsId,id, recognizedId, recognizedUrl);
             goodsApplication.modifyRecognized(command);
             result.setStatus(MCode.V_200);
         } catch (NegativeException ne) {

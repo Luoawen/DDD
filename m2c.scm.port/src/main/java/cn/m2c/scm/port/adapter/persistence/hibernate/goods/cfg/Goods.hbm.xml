@@ -24,8 +24,8 @@
         <property name="goodsBarCode" column="goods_bar_code" type="string"/>
         <property name="goodsKeyWord" column="goods_key_word" type="string"/>
         <property name="goodsGuarantee" column="goods_guarantee" type="string"/>
-        <property name="recognizedId" column="recognized_id" type="string"/>
-        <property name="recognizedUrl" column="recognized_url" type="string"/>
+     <!--   <property name="recognizedId" column="recognized_id" type="string"/>
+        <property name="recognizedUrl" column="recognized_url" type="string"/>-->
         <property name="goodsMainImages" column="goods_main_images" type="text"/>
         <property name="goodsDesc" column="goods_desc" type="text"/>
         <property name="goodsShelves" column="goods_shelves" type="int"/>

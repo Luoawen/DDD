@@ -17,6 +17,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -94,15 +95,18 @@ public class Goods extends ConcurrencySafeEntity {
      */
     private String goodsGuarantee;
 
-    /**
+  /*  *//**
      * 识别图片id
-     */
+     *//*
     private String recognizedId;
 
+    */
     /**
      * 识别图片url
-     */
-    private String recognizedUrl;
+     *//*
+    private String recognizedUrl;*/
+
+    private List<GoodsRecognized> goodsRecognizeds;
 
     /**
      * 商品主图  存储类型是[“url1”,"url2"]
@@ -273,9 +277,9 @@ public class Goods extends ConcurrencySafeEntity {
                 if (null == goodsSku) {// 增加规格
                     this.goodsSKUs.add(createGoodsSku(map));
                     Map skuMap = new HashMap<>();
-                    skuMap.put("skuId",skuId);
+                    skuMap.put("skuId", skuId);
                     String skuName = GetMapValueUtils.getStringFromMapKey(map, "skuName");
-                    skuMap.put("skuName",skuName);
+                    skuMap.put("skuName", skuName);
                     addSkuList.add(skuMap);
                 } else { // 修改供货价和拍获价
                     Long photographPrice = GetMapValueUtils.getLongFromMapKey(map, "photographPrice");
@@ -439,10 +443,36 @@ public class Goods extends ConcurrencySafeEntity {
     /**
      * 修改商品识别图
      */
-    public void modifyRecognized(String recognizedId, String recognizedUrl) {
-        this.recognizedId = StringUtils.isEmpty(recognizedId) ? null : recognizedId;
-        this.recognizedUrl = StringUtils.isEmpty(recognizedUrl) ? null : recognizedUrl;
+    public void modifyRecognized(Integer id, String recognizedId, String recognizedUrl) {
+        for (GoodsRecognized goodsRecognized : this.goodsRecognizeds) {
+            if (goodsRecognized.isEqualsId(id)) {
+                goodsRecognized.modifyRecognized(recognizedId, recognizedUrl);
+            }
+        }
     }
+
+    /**
+     * 添加商品识别图
+     */
+    public void addRecognized(String recognizedId, String recognizedUrl) {
+        if (null == this.goodsRecognizeds) {
+            this.goodsRecognizeds = new ArrayList<>();
+        }
+        this.goodsRecognizeds.add(new GoodsRecognized(this, recognizedId, recognizedUrl));
+    }
+
+    /**
+     * 删除商品识别图
+     */
+    public void delRecognized(Integer id) {
+        Iterator<GoodsRecognized> it = this.goodsRecognizeds.iterator();
+        while (it.hasNext()) {
+            if (it.next().isEqualsId(id)) {
+                it.remove();
+            }
+        }
+    }
+
 
     public Integer getId() {
         return Integer.parseInt(String.valueOf(this.id()));
@@ -490,12 +520,8 @@ public class Goods extends ConcurrencySafeEntity {
         this.goodsLaunchStatus = 1;
     }
 
-    public String recognizedId() {
-        return recognizedId;
-    }
-
-    public String recognizedUrl() {
-        return recognizedUrl;
+    public List<GoodsRecognized> goodsRecognizeds() {
+        return goodsRecognizeds;
     }
 
     public Integer goodsStatus() {

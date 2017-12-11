@@ -5,11 +5,14 @@ import cn.m2c.common.MCode;
 import cn.m2c.ddd.common.domain.model.DomainEventPublisher;
 import cn.m2c.ddd.common.event.annotation.EventListener;
 import cn.m2c.scm.application.goods.command.GoodsCommand;
+import cn.m2c.scm.application.goods.command.GoodsRecognizedAddCommand;
+import cn.m2c.scm.application.goods.command.GoodsRecognizedDelCommand;
 import cn.m2c.scm.application.goods.command.GoodsRecognizedModifyCommand;
 import cn.m2c.scm.application.goods.command.MDViewGoodsCommand;
 import cn.m2c.scm.domain.NegativeException;
 import cn.m2c.scm.domain.model.goods.Goods;
 import cn.m2c.scm.domain.model.goods.GoodsApproveRepository;
+import cn.m2c.scm.domain.model.goods.GoodsRecognized;
 import cn.m2c.scm.domain.model.goods.GoodsRepository;
 import cn.m2c.scm.domain.model.goods.GoodsSku;
 import cn.m2c.scm.domain.model.goods.GoodsSkuRepository;
@@ -138,10 +141,12 @@ public class GoodsApplication {
             throw new NegativeException(MCode.V_300, "商品不存在");
         }
         goods.upShelf();
-        if (StringUtils.isNotEmpty(goods.recognizedId())) {
-            boolean result = goodsDubboService.updateRecognizedImgStatus(goods.recognizedId(), goods.recognizedUrl(), 1);
-            if (!result) {
-                LOGGER.error("商品上架，更新识别图片状态失败");
+        if (null != goods.goodsRecognizeds() && goods.goodsRecognizeds().size() > 0) {
+            for (GoodsRecognized goodsRecognized : goods.goodsRecognizeds()) {
+                boolean result = goodsDubboService.updateRecognizedImgStatus(goodsRecognized.recognizedId(), goodsRecognized.recognizedUrl(), 1);
+                if (!result) {
+                    LOGGER.error("商品上架，更新识别图片状态失败");
+                }
             }
         }
     }
@@ -161,10 +166,12 @@ public class GoodsApplication {
             throw new NegativeException(MCode.V_300, "商品不存在");
         }
         goods.offShelf();
-        if (StringUtils.isNotEmpty(goods.recognizedId())) {
-            boolean result = goodsDubboService.updateRecognizedImgStatus(goods.recognizedId(), goods.recognizedUrl(), 0);
-            if (!result) {
-                LOGGER.error("商品下架，更新识别图片状态失败");
+        if (null != goods.goodsRecognizeds() && goods.goodsRecognizeds().size() > 0) {
+            for (GoodsRecognized goodsRecognized : goods.goodsRecognizeds()) {
+                boolean result = goodsDubboService.updateRecognizedImgStatus(goodsRecognized.recognizedId(), goodsRecognized.recognizedUrl(), 0);
+                if (!result) {
+                    LOGGER.error("商品下架，更新识别图片状态失败");
+                }
             }
         }
     }
@@ -182,14 +189,55 @@ public class GoodsApplication {
         if (null == goods) {
             throw new NegativeException(MCode.V_300, "商品不存在");
         }
-        goods.modifyRecognized(command.getRecognizedId(), command.getRecognizedUrl());
+        goods.modifyRecognized(command.getId(), command.getRecognizedId(), command.getRecognizedUrl());
         Integer status = goods.goodsStatus() == 1 ? 0 : 1;
         if (StringUtils.isEmpty(command.getRecognizedId())) {
             status = 0;
         }
-        boolean result = goodsDubboService.updateRecognizedImgStatus(goods.recognizedId(), goods.recognizedUrl(), status);
+        boolean result = goodsDubboService.updateRecognizedImgStatus(command.getRecognizedId(), command.getRecognizedUrl(), status);
+        if (!result) {
+            LOGGER.error("商品修改广告图，更新识别图片状态失败");
+        }
+    }
+
+    /**
+     * 增加商品识别图
+     *
+     * @param command
+     * @throws NegativeException
+     */
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+    public void addRecognized(GoodsRecognizedAddCommand command) throws NegativeException {
+        LOGGER.info("addRecognized command >>{}", command);
+        Goods goods = goodsRepository.queryGoodsById(command.getGoodsId());
+        if (null == goods) {
+            throw new NegativeException(MCode.V_300, "商品不存在");
+        }
+        goods.addRecognized(command.getRecognizedId(), command.getRecognizedUrl());
+        Integer status = goods.goodsStatus() == 1 ? 0 : 1;
+        boolean result = goodsDubboService.updateRecognizedImgStatus(command.getRecognizedId(), command.getRecognizedUrl(), status);
         if (!result) {
             LOGGER.error("商品添加广告图，更新识别图片状态失败");
+        }
+    }
+
+    /**
+     * 删除商品识别图
+     *
+     * @param command
+     * @throws NegativeException
+     */
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+    public void delRecognized(GoodsRecognizedDelCommand command) throws NegativeException {
+        LOGGER.info("delRecognized command >>{}", command);
+        Goods goods = goodsRepository.queryGoodsById(command.getGoodsId());
+        if (null == goods) {
+            throw new NegativeException(MCode.V_300, "商品不存在");
+        }
+        goods.delRecognized(command.getId());
+        boolean result = goodsDubboService.updateRecognizedImgStatus(command.getRecognizedId(), command.getRecognizedUrl(), 0);
+        if (!result) {
+            LOGGER.error("商品删除广告图，更新识别图片状态失败");
         }
     }
 
