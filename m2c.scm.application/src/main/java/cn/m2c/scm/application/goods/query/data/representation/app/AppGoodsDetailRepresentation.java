@@ -324,4 +324,12 @@ public class AppGoodsDetailRepresentation {
     public void setGoodsSpecial(Map goodsSpecial) {
         this.goodsSpecial = goodsSpecial;
     }
+
+    public Integer getCartGoodsTotal() {
+        return cartGoodsTotal;
+    }
+
+    public void setCartGoodsTotal(Integer cartGoodsTotal) {
+        this.cartGoodsTotal = cartGoodsTotal;
+    }
 }
