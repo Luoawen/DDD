@@ -2,7 +2,9 @@ package cn.m2c.scm.application.order.data.bean;
 
 import java.util.Date;
 
-
+/**
+ * 售后单导出bean
+ */
 public class SaleAfterExpQB {
 	private String saleAfterNo;
 	private String dealerOrderId;
@@ -20,7 +22,32 @@ public class SaleAfterExpQB {
     private Integer status;
     
     private Integer orderType;
+    /**
+	 * 是否特惠价， 0否， 1是 
+	 */
+	private Integer isSpecial;
 	
+	/**
+	 * 特惠价
+	 */
+	private Long specialPrice;
+	
+	public Integer getIsSpecial() {
+		return isSpecial;
+	}
+
+	public void setIsSpecial(Integer isSpecial) {
+		this.isSpecial = isSpecial;
+	}
+
+	public Long getSpecialPrice() {
+		return specialPrice;
+	}
+
+	public void setSpecialPrice(Long specialPrice) {
+		this.specialPrice = specialPrice;
+	}
+
 	public void setSaleAfterGoodsPrice(Long saleAfterGoodsPrice) {//售后单价,拍获价
 		this.saleAfterGoodsPrice = saleAfterGoodsPrice;
 	}
