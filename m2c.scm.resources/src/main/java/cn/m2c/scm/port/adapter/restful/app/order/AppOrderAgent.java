@@ -251,6 +251,16 @@ public class AppOrderAgent {
      * 申请售后
      * @param userId
      * @param orderId
+     * @param dealerOrderId
+     * @param skuId
+     * @param saleAfterNo
+     * @param type
+     * @param goodsId
+     * @param dealerId
+     * @param backNum
+     * @param reason
+     * @param rCode
+     * @param sortNo 新数据这个值必须大于0（2017-12-09之后）
      * @return
      */
     @RequestMapping(value = "/app/aftersale", method = RequestMethod.POST)
