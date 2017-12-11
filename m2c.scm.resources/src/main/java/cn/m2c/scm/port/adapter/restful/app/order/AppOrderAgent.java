@@ -520,9 +520,9 @@ public class AppOrderAgent {
         return new ResponseEntity<MResult>(result, HttpStatus.OK);
     }
     
-    
     /**
      * 售后申请理由
+     * @param applyStatus
      * @return
      */
     @RequestMapping(value = "/app/applyReason",method = RequestMethod.GET)
@@ -530,7 +530,7 @@ public class AppOrderAgent {
     	MResult result = new MResult(MCode.V_1);
     	if(null == applyStatus) {
     		LOGGER.error("售后申请状态为空");
-			result = new MPager(MCode.V_400);
+			result = new MResult(MCode.V_400);
     	}
     	try {
 			List<AfterSellApplyReason> reasonList = saleAfterQuery.getApplyReason(applyStatus);
@@ -538,7 +538,7 @@ public class AppOrderAgent {
 			result.setStatus(MCode.V_200);
 		} catch (NegativeException e) {
 			LOGGER.error("查询售后申请理由出错",e);
-			result = new MPager(MCode.V_400, e.getMessage());
+			result = new MResult(MCode.V_400, e.getMessage());
 		}
     	return new ResponseEntity<MResult>(result, HttpStatus.OK);
     }
