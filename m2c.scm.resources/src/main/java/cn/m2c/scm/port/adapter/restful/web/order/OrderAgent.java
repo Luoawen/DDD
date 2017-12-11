@@ -79,6 +79,7 @@ public class OrderAgent {
 			@RequestParam(value = "endTime",required = false)String endTime,
 			@RequestParam(value = "condition",required = false)String condition,
 			@RequestParam(value = "payWay",required = false)Integer payWay,
+			@RequestParam(value = "commentStatus", required = false) Integer commentStatus,
 			@RequestParam(value = "mediaInfo", required = false) Integer mediaInfo,
 			@RequestParam(value = "dealerClassify", required = false) String dealerClassify,
 			@RequestParam(value = "pageNum", required = false, defaultValue = "1") Integer pageNum,
@@ -86,8 +87,8 @@ public class OrderAgent {
 			) {
 		MPager result = new MPager(MCode.V_1);
 		try {
-			Integer total = orderQuery.mainOrderQueryTotal(orderStatus, afterSellStatus, startTime, endTime, condition, payWay, mediaInfo, dealerClassify);
-			List<MainOrderBean> mainOrderList = orderQuery.mainOrderListQuery(orderStatus, afterSellStatus, startTime, orderId,endTime, condition, payWay, mediaInfo, dealerClassify, pageNum, rows);
+			Integer total = orderQuery.mainOrderQueryTotal(orderStatus, afterSellStatus, startTime, endTime, condition, payWay, commentStatus, mediaInfo, dealerClassify);
+			List<MainOrderBean> mainOrderList = orderQuery.mainOrderListQuery(orderStatus, afterSellStatus, startTime, orderId,endTime, condition, payWay, commentStatus, mediaInfo, dealerClassify, pageNum, rows);
 			result.setPager(total, pageNum, rows);
 			result.setContent(mainOrderList);
 			result.setStatus(MCode.V_200);

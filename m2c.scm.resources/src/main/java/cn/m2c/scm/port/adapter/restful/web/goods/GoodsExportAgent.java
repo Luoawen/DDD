@@ -49,7 +49,7 @@ public class GoodsExportAgent {
     @RequestMapping(value = {"/export"}, method = RequestMethod.GET)
     public void exportExcel(HttpServletResponse response,
                             String dealerId, String goodsClassifyId, Integer goodsStatus,
-                            String condition, String startTime, String endTime, Integer exportStatus) throws Exception {
+                            String condition, String startTime, String endTime) throws Exception {
         String fileName = "商品库.xls";
         List<GoodsBean> goodsBeanList = goodsQueryApplication.searchGoodsExport(dealerId, goodsClassifyId, goodsStatus,
                 condition, startTime, endTime);
@@ -58,7 +58,7 @@ public class GoodsExportAgent {
             //结算模式 1：按供货价 2：按服务费率
             settlementMode = dealerQuery.getDealerCountMode(dealerId);
         }
-        if(exportStatus == 0) {//商家平台导出，没有商家名和平台sku
+        if(StringUtils.isNotEmpty(dealerId)) {//商家平台导出，没有商家名和平台sku
         	if (null != goodsBeanList && goodsBeanList.size() > 0) {
                 List<GoodsServiceRateModel> goodsServiceRateModels = new ArrayList<>();
                 List<GoodsSupplyPriceModel> goodsSupplyPriceModels = new ArrayList<>();
@@ -105,7 +105,7 @@ public class GoodsExportAgent {
             } else {
                 ExcelUtil.writeExcel(response, fileName, null, GoodsModel.class);
             }
-        }else if(exportStatus == 1) {//管理平台导出
+        }else{//管理平台导出
         	if (null != goodsBeanList && goodsBeanList.size() > 0) {
                 List<GoodsServiceRateModelAll> goodsServiceRateModels = new ArrayList<>();
                 List<GoodsSupplyPriceModelAll> goodsSupplyPriceModels = new ArrayList<>();

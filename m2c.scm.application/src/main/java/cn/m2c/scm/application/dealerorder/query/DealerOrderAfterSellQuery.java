@@ -14,6 +14,7 @@ import cn.m2c.scm.application.dealerorder.data.bean.DealerOrderAfterSellDetailBe
 import cn.m2c.scm.application.dealerorder.data.bean.SaleFreightBean;
 import cn.m2c.scm.application.order.data.bean.AfterSellOrderBean;
 import cn.m2c.scm.application.order.data.bean.GoodsInfoBean;
+import cn.m2c.scm.application.order.data.bean.SaleAfterExpQB;
 import cn.m2c.scm.application.order.data.export.SaleAfterExpModel;
 import cn.m2c.scm.domain.NegativeException;
 
@@ -180,7 +181,7 @@ public class DealerOrderAfterSellQuery {
 		List<Object> params = new ArrayList<Object>();
 		StringBuilder sql = new StringBuilder();
 		sql.append(" SELECT b.goods_icon, b.goods_name, b.goods_title as goods_sub_title, b.sku_name, ")
-				.append(" b.discount_price, a.sell_num, b.is_change, b.change_price ").append(" FROM t_scm_order_after_sell a")
+				.append(" b.discount_price, a.sell_num, b.is_change, b.change_price, a.sort_no ").append(" FROM t_scm_order_after_sell a")
 				.append(" LEFT OUTER JOIN t_scm_order_detail b ON a.dealer_order_id = b.dealer_order_id AND a.order_id = b.order_id AND a.sku_id= b.sku_id AND a.sort_no=b.sort_no")
 				.append(" where a.sku_id=? and a.after_sell_order_id =?");
 		params.add(skuId);
@@ -315,15 +316,6 @@ public class DealerOrderAfterSellQuery {
 		if (!StringUtils.isEmpty(dealerId)) {
 			bean.setDealerId(dealerId);
 		}
-		GoodsInfoBean goodsInfo = aftetSellDealerOrderDetailGoodsInfoQuery(afterSellOrderId, dealerId);
-		System.out.println(goodsInfo);
-		long totalPrice = 0; // 商品总价格
-		//long orderTotalPrice = 0; // 订单总价格
-		if (goodsInfo != null) {
-			totalPrice += (goodsInfo.getPrice() * goodsInfo.getSellNum());// + goodsInfo.getFreight()
-			goodsInfo.setTotalPrice(totalPrice);
-		}
-
 		if (bean != null) {
 			bean.setGoodsInfo(aftetSellDealerOrderDetailGoodsInfoQuery(afterSellOrderId, dealerId));
 		}
@@ -339,9 +331,9 @@ public class DealerOrderAfterSellQuery {
 	public GoodsInfoBean aftetSellDealerOrderDetailGoodsInfoQuery(String afterSellOrderId, String dealerId) {
 		StringBuilder sql = new StringBuilder();
 		List<Object> param = new ArrayList<Object>();
-		sql.append(" SELECT dtl.discount_price,af.sell_num,dtl.freight,dtl.plateform_discount,dtl.dealer_discount ");
-		sql.append(" ,dtl.media_res_id,af.back_money,af.sku_id,dtl.is_special,dtl.special_price ");
-		sql.append(" ,dtl.goods_icon,dtl.goods_name,dtl.sku_name ");
+		sql.append(" SELECT dtl.discount_price, af.sell_num, dtl.freight, dtl.plateform_discount, dtl.dealer_discount ");
+		sql.append(" ,dtl.media_res_id, af.back_money, af.sku_id, dtl.is_special, dtl.special_price, dtl.is_change, dtl.change_price ");
+		sql.append(" ,dtl.goods_icon, dtl.goods_name, dtl.sku_name, dtl.goods_amount ");
 		sql.append(" FROM t_scm_order_detail dtl ");
 		sql.append(" LEFT OUTER JOIN t_scm_order_after_sell af ON af.dealer_order_id = dtl.dealer_order_id AND af.sku_id = dtl.sku_id AND af.sort_no=dtl.sort_no ");
 		sql.append(" WHERE af.after_sell_order_id = ? ");
@@ -411,18 +403,16 @@ public class DealerOrderAfterSellQuery {
 
 		sql.append(" ORDER BY a.created_date DESC ");
 		sql.append(" LIMIT 2000");
-		List<SaleAfterExpModel> beanList = this.supportJdbcTemplate.queryForBeanList(sql.toString(),
-				SaleAfterExpModel.class, params.toArray());
+		List<SaleAfterExpQB> beanList = this.supportJdbcTemplate.queryForBeanList(sql.toString(),
+				SaleAfterExpQB.class, params.toArray());
+		List<SaleAfterExpModel> list = null;
 		if(null != beanList && beanList.size() > 0) {
-			for(SaleAfterExpModel saleAfterExpModel : beanList) {
-				saleAfterExpModel.setBackMoney((saleAfterExpModel.getBackMoney()+saleAfterExpModel.getReturnFreight())/100);
-				saleAfterExpModel.setReturnFreight(saleAfterExpModel.getReturnFreight()/100);
-				saleAfterExpModel.setSaleAfterGoodsPrice(saleAfterExpModel.getSaleAfterGoodsPrice()/100);
-				saleAfterExpModel.setOrderTypeStr(saleAfterExpModel.getOrderType());
-				saleAfterExpModel.setStatusStr(saleAfterExpModel.getOrderType(), saleAfterExpModel.getStatus());
+			list = new ArrayList<>();
+			for(SaleAfterExpQB saleAfterExpQB : beanList) {
+				list.add(new SaleAfterExpModel(saleAfterExpQB));
 			}
 		}
-		return beanList;
+		return list;
 	}
 	
 	/**

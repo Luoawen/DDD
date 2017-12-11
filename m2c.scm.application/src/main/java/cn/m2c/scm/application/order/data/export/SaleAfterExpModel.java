@@ -1,7 +1,9 @@
 package cn.m2c.scm.application.order.data.export;
 
+import java.text.DecimalFormat;
 import java.util.Date;
 
+import cn.m2c.scm.application.order.data.bean.SaleAfterExpQB;
 import cn.m2c.scm.application.utils.ExcelField;
 
 /**
@@ -52,15 +54,15 @@ public class SaleAfterExpModel {
     private String skuName;
 	//售后单价/元
 	@ExcelField(title = "售后单价/元")//* 
-    private Long saleAfterGoodsPrice;
+    private String saleAfterGoodsPrice;
 	//售后数量
 	@ExcelField(title = "售后数量")//*
     private Integer sellNum;
 	//运费退款/元
 	@ExcelField(title = "运费退款/元")//*
-    private Long returnFreight;
+    private String returnFreight;
 	@ExcelField(title = "售后总额/元")
-    private Long backMoney;
+    private String backMoney;
 	
     private Integer status;
     
@@ -74,19 +76,19 @@ public class SaleAfterExpModel {
 		return orderTypeStr;
 	}
     
-	public void setSaleAfterGoodsPrice(Long saleAfterGoodsPrice) {//售后单价,拍获价
+	public void setSaleAfterGoodsPrice(String saleAfterGoodsPrice) {//售后单价,拍获价
 		this.saleAfterGoodsPrice = saleAfterGoodsPrice;
 	}
 	
-	public Long getSaleAfterGoodsPrice() {
+	public String getSaleAfterGoodsPrice() {
 		return saleAfterGoodsPrice;
 	}
 	
-    public void setReturnFreight(Long returnFreight) {
+    public void setReturnFreight(String returnFreight) {
     	this.returnFreight = returnFreight;
     }
     
-    public Long getReturnFreight() {
+    public String getReturnFreight() {
     	return returnFreight;
     }
 
@@ -110,28 +112,32 @@ public class SaleAfterExpModel {
     	super();
     }
     
-    public SaleAfterExpModel(String saleAfterNo,String dealerOrderId,Integer sellNum, long returnFreight,
-    		String goodsName, String skuName, long backMoney, Integer status, Integer orderType, Date createTime, Long saleAfterGoodsPrice) {
+    public SaleAfterExpModel(SaleAfterExpQB saleAfterExpQB) {
         //this.dealerName = dealerName;
     	//this.skuId = skuId;
     	//this.goodsTitle = goodsTitle;
-        this.saleAfterNo = saleAfterNo;
-        this.dealerOrderId = dealerOrderId;
-        this.saleAfterGoodsPrice = saleAfterGoodsPrice;
-        this.sellNum = sellNum;
-        this.returnFreight = returnFreight;
+    	//售后总价    售后单价   运费   ordertypestr   statusstr
+        this.saleAfterNo = saleAfterExpQB.getSaleAfterNo();
+        DecimalFormat df1 = new DecimalFormat("0.00");
+        this.backMoney = df1.format((saleAfterExpQB.getBackMoney().floatValue()+saleAfterExpQB.getReturnFreight().floatValue())/(double)100);
+        this.dealerOrderId = saleAfterExpQB.getDealerOrderId();
+        this.saleAfterGoodsPrice = df1.format(saleAfterExpQB.getSaleAfterGoodsPrice().floatValue()/(double)100);
+        this.sellNum = saleAfterExpQB.getSellNum();
+        this.returnFreight = df1.format(saleAfterExpQB.getReturnFreight().floatValue()/(double)100);
         
-    	this.goodsName = goodsName;
+    	this.goodsName = saleAfterExpQB.getGoodsName();
         
         
-        this.skuName = skuName;
+        this.skuName = saleAfterExpQB.getSkuName();
         
-        this.backMoney = backMoney;
-        this.status = status;
+        this.status = saleAfterExpQB.getStatus();
         
-        this.orderType = orderType;
+        this.orderType = saleAfterExpQB.getOrderType();
         
-        this.createTime = createTime;
+        this.createTime = saleAfterExpQB.getCreateTime();
+        
+        this.setOrderTypeStr(saleAfterExpQB.getOrderType());
+        this.setStatusStr(saleAfterExpQB.getOrderType(), saleAfterExpQB.getStatus());
         
         this.orderTypeStr = getOrderTypeStr();
         this.statusStr = getStatusStr();
@@ -269,11 +275,11 @@ public class SaleAfterExpModel {
 		this.skuName = skuName;
 	}
 
-	public Long getBackMoney() {
+	public String getBackMoney() {
 		return backMoney;
 	}
 
-	public void setBackMoney(Long backMoney) {
+	public void setBackMoney(String backMoney) {
 		this.backMoney = backMoney;
 	}
 

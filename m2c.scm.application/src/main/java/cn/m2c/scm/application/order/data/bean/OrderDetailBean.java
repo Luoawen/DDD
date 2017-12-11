@@ -45,19 +45,27 @@ public class OrderDetailBean {
 	private Long changePrice;
 	
 	@ColumnAlias(value = "is_special")
-	private Integer isPecial;
+	private Integer isSpecial;
 	@ColumnAlias(value = "special_price")
 	private long specialPrice;
 	
+	@ColumnAlias(value = "sort_no")
+	private Integer sortNo;
 	
-	public Integer getIsPecial() {
-		return isPecial;
+	public Integer getSortNo() {
+		return sortNo;
+	}
+	public void setSortNo(Integer sortNo) {
+		this.sortNo = sortNo;
+	}
+	public Integer getIsSpecial() {
+		return isSpecial;
 	}
 	public long getSpecialPrice() {
 		return specialPrice;
 	}
-	public void setIsPecial(Integer isPecial) {
-		this.isPecial = isPecial;
+	public void setIsSpecial(Integer isSpecial) {
+		this.isSpecial = isSpecial;
 	}
 	public void setSpecialPrice(long specialPrice) {
 		this.specialPrice = specialPrice;

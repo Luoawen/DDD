@@ -79,6 +79,37 @@ public class OrderGoodsBean {
 	@ColumnAlias(value="market_level")
 	private Integer level;
 	
+	@ColumnAlias(value="is_special")
+	private Integer isSpecial;
+	@ColumnAlias(value="special_price")
+	private Long specialPrice;
+	@ColumnAlias(value="sort_no")
+	private Integer sortNo;
+	
+	public Integer getIsSpecial() {
+		return isSpecial;
+	}
+
+	public void setIsSpecial(Integer isSpecial) {
+		this.isSpecial = isSpecial;
+	}
+
+	public Long getSpecialPrice() {
+		return specialPrice;
+	}
+
+	public void setSpecialPrice(Long specialPrice) {
+		this.specialPrice = specialPrice;
+	}
+
+	public Integer getSortNo() {
+		return sortNo;
+	}
+
+	public void setSortNo(Integer sortNo) {
+		this.sortNo = sortNo;
+	}
+
 	public Integer getLevel() {
 		return level;
 	}

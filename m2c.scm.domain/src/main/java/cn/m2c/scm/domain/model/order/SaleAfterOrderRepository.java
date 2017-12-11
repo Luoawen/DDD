@@ -42,7 +42,7 @@ public interface SaleAfterOrderRepository {
 	 * @param skuId
 	 * @return
 	 */
-	public DealerOrderDtl getDealerOrderDtlBySku(String dealerOrderId, String skuId);
+	public DealerOrderDtl getDealerOrderDtlBySku(String dealerOrderId, String skuId, int sortNo);
 	
 	/***
 	 * 获取售后单通过订单号

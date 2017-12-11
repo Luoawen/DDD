@@ -266,7 +266,7 @@ public class AppOrderAgent {
             ,@RequestParam(value = "backNum", required = false) int backNum
             ,@RequestParam(value = "reason", required = false) String reason
             ,@RequestParam(value = "reasonCode", required = false) int rCode
-            ,@RequestParam(value = "sortNo", required = false, defaultValue = "-1") int sortNo
+            ,@RequestParam(value = "sortNo", required = false, defaultValue = "0") int sortNo
             ) {
     	MResult result = new MResult(MCode.V_1);
         try {

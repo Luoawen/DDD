@@ -25,8 +25,9 @@ public class DealerGoodsBean {
 	/**
 	 * 单价
 	 */
-	private long discountPrice;
-	/** sku ID */
+
+	private Long discountPrice;
+	/**sku ID*/
 	private String skuId;
 
 	private String goodsTitle;
@@ -56,7 +57,17 @@ public class DealerGoodsBean {
 	/**
 	 * 运费
 	 */
-	private long freight;
+	private Long freight;
+	
+	private Integer sortNo;
+	
+	public Integer getSortNo() {
+		return sortNo;
+	}
+
+	public void setSortNo(Integer sortNo) {
+		this.sortNo = sortNo;
+	}
 
 	public Long getBackMoney() {
 		if (backMoney == null)
@@ -173,11 +184,11 @@ public class DealerGoodsBean {
 		this.sellNum = sellNum;
 	}
 
-	public long getDiscountPrice() {
+	public Long getDiscountPrice() {
 		return discountPrice;
 	}
 
-	public void setDiscountPrice(long discountPrice) {
+	public void setDiscountPrice(Long discountPrice) {
 		this.discountPrice = discountPrice;
 	}
 
@@ -198,11 +209,11 @@ public class DealerGoodsBean {
 		this.skuId = skuId;
 	}
 
-	public long getFreight() {
+	public Long getFreight() {
 		return freight;
 	}
 
-	public void setFreight(long freight) {
+	public void setFreight(Long freight) {
 		this.freight = freight;
 	}
 }

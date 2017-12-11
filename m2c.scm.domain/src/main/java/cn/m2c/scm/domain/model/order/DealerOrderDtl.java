@@ -29,7 +29,7 @@ public class DealerOrderDtl extends ConcurrencySafeEntity {
 	private InvoiceInfo invoice;
 	/**快递信息*/
 	private ExpressInfo expressInfo;
-	
+	/**商品信息*/
 	private GoodsInfo goodsInfo;
 	/**以分为单位，商品金额*/
 	private Long goodsAmount;
@@ -41,7 +41,7 @@ public class DealerOrderDtl extends ConcurrencySafeEntity {
 	private SimpleMediaInfo mediaInfo;
 	/**评论状态， 0 待评，1已评*/
 	private Integer commentStatus = 0;
-	
+	/**营销信息*/
 	private SimpleMarketInfo marketInfo;
 	
 	/**删除状态*/

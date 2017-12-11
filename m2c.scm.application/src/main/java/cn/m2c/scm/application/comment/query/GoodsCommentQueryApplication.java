@@ -182,11 +182,20 @@ public class GoodsCommentQueryApplication {
             params.add(endTime + " 23:59:59");
         }
         if (StringUtils.isNotEmpty(condition)) {
-            sql.append(" AND (goods_name LIKE ? OR order_id LIKE ? OR buyer_name LIKE ? OR buyer_phone_number LIKE ?)");
-            params.add("%" + condition + "%");
-            params.add("%" + condition + "%");
-            params.add("%" + condition + "%");
-            params.add("%" + condition + "%");
+        	if(null != dealerId && StringUtils.isNotEmpty(dealerId)) {
+	            sql.append(" AND (goods_name LIKE ? OR order_id LIKE ? OR buyer_name LIKE ? OR buyer_phone_number LIKE ?)");
+	            params.add("%" + condition + "%");
+	            params.add("%" + condition + "%");
+	            params.add("%" + condition + "%");
+	            params.add("%" + condition + "%");
+        	}else {
+        		sql.append(" AND (goods_name LIKE ? OR order_id LIKE ? OR buyer_name LIKE ? OR buyer_phone_number LIKE ? OR dealer_name LIKE ?)");
+	            params.add("%" + condition + "%");
+	            params.add("%" + condition + "%");
+	            params.add("%" + condition + "%");
+	            params.add("%" + condition + "%");
+	            params.add("%" + condition + "%");
+        	}
         }
         if (null != imageStatus) {
             sql.append(" AND image_status = ? ");
@@ -233,11 +242,20 @@ public class GoodsCommentQueryApplication {
             params.add(endTime + " 23:59:59");
         }
         if (StringUtils.isNotEmpty(condition)) {
-            sql.append(" AND (goods_name LIKE ? OR order_id LIKE ? OR buyer_name LIKE ? OR buyer_phone_number LIKE ?)");
-            params.add("%" + condition + "%");
-            params.add("%" + condition + "%");
-            params.add("%" + condition + "%");
-            params.add("%" + condition + "%");
+        	if(null != dealerId && StringUtils.isNotEmpty(dealerId)) {
+	            sql.append(" AND (goods_name LIKE ? OR order_id LIKE ? OR buyer_name LIKE ? OR buyer_phone_number LIKE ?)");
+	            params.add("%" + condition + "%");
+	            params.add("%" + condition + "%");
+	            params.add("%" + condition + "%");
+	            params.add("%" + condition + "%");
+        	}else {
+        		sql.append(" AND (goods_name LIKE ? OR order_id LIKE ? OR buyer_name LIKE ? OR buyer_phone_number LIKE ? OR dealer_name LIKE ?)");
+	            params.add("%" + condition + "%");
+	            params.add("%" + condition + "%");
+	            params.add("%" + condition + "%");
+	            params.add("%" + condition + "%");
+	            params.add("%" + condition + "%");
+        	}
         }
         if (null != imageStatus) {
             sql.append(" AND image_status = ? ");

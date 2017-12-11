@@ -94,6 +94,17 @@ public class AfterSellBean {
 	@ColumnAlias(value= "express_name")
 	private String expressName;
 	
+	@ColumnAlias(value="sort_no")
+	private Integer sortNo;
+	
+	public Integer getSortNo() {
+		return sortNo;
+	}
+
+	public void setSortNo(Integer sortNo) {
+		this.sortNo = sortNo;
+	}
+
 	public String getBkExpressNo() {
 		return bkExpressNo;
 	}

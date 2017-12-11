@@ -1,7 +1,5 @@
 package cn.m2c.scm.application.order.data.bean;
 
-import javax.persistence.Column;
-
 import cn.m2c.ddd.common.persistence.orm.ColumnAlias;
 
 /**
@@ -53,6 +51,7 @@ public class GoodsInfoBean {
 	/**
 	 * 商品金额(单价 * 数量)
 	 */
+	@ColumnAlias(value = "goods_amount")
 	private long totalPrice;
 	
 	@ColumnAlias(value = "afNum")
@@ -74,6 +73,17 @@ public class GoodsInfoBean {
 	
 	@ColumnAlias(value = "is_special")
 	private Integer isSpecial;
+	
+	@ColumnAlias(value="sort_no")
+	private Integer sortNo;
+	
+	public Integer getSortNo() {
+		return sortNo;
+	}
+
+	public void setSortNo(Integer sortNo) {
+		this.sortNo = sortNo;
+	}
 	
 	public long getSpecialPrice() {
 		return specialPrice;
@@ -144,10 +154,15 @@ public class GoodsInfoBean {
 	public long getTotalPrice() {
 		if (isChange != null && isChange == 1)
 			totalPrice = changePrice * sellNum;
-		else
+		else if (totalPrice == 0) {
 			totalPrice = price * sellNum;
+		}
 		return totalPrice;
 	}
+	/*
+	public long getTotalPrice() {
+		return totalPrice;
+	}*/
 
 	public String getSkuId() {
 		return skuId;

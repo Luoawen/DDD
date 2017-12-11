@@ -51,7 +51,7 @@ public class OrderQuery {
 	 * @return
 	 */
 	public List<MainOrderBean> mainOrderListQuery(Integer orderStatus, Integer afterSaleStatus, String startTime,String orderId,
-			String endTime, String condition, Integer payWay,Integer mediaInfo,String dealerClassify, Integer pageNum, Integer rows) {
+			String endTime, String condition, Integer payWay, Integer commentStatus , Integer mediaInfo,String dealerClassify, Integer pageNum, Integer rows) {
 		List<Object> params = new ArrayList<Object>();
 		StringBuilder sql = new StringBuilder();
 		sql.append(" SELECT d.dealer_order_id,m.order_id,m.pay_no,m.pay_way,m.created_date,m.goods_amount,m.order_freight,m.plateform_discount pDiscount,m.dealer_discount pDealerDiscount, ");
@@ -59,6 +59,7 @@ public class OrderQuery {
 		sql.append("  FROM t_scm_order_dealer d ");
 		sql.append(" LEFT OUTER JOIN t_scm_order_main m ON d.order_id = m.order_id ");
 		sql.append(" LEFT OUTER JOIN t_scm_dealer dealer ON d.dealer_id = dealer.dealer_id ");
+		sql.append(" LEFT OUTER JOIN t_scm_order_detail dtl ON dtl.dealer_order_id = d.dealer_order_id ");
 		sql.append(" WHERE 1=1 ");
 		if (orderStatus != null) {
 			sql.append(" AND d._status =  ? ");
@@ -122,7 +123,8 @@ public class OrderQuery {
 			params.add(endTime+ " 23:59:59");
 		}
 		if (StringUtils.isNotEmpty(condition) && condition != null && !"".equals(condition)) {
-			sql.append(" AND (d.dealer_order_id LIKE ?	OR m.pay_no LIKE ? OR dealer.dealer_name LIKE ?) ");
+			sql.append(" AND (d.dealer_order_id LIKE ?	OR m.pay_no LIKE ? OR dealer.dealer_name LIKE ? OR (d.dealer_order_id IN (SELECT od.dealer_order_id FROM t_scm_order_detail od WHERE od.goods_name LIKE ? ))) ");
+			params.add("%" + condition + "%");
 			params.add("%" + condition + "%");
 			params.add("%" + condition + "%");
 			params.add("%" + condition + "%");
@@ -131,6 +133,10 @@ public class OrderQuery {
 			sql.append(" AND m.pay_way = ? ");
 			params.add(payWay);
 		}
+		if (commentStatus != null && commentStatus >= 0) {
+            sql.append(" AND dtl.comment_status = ?\r\n");
+            params.add(commentStatus);
+        }
 		if (mediaInfo != null) {
 			if (mediaInfo == 0) {
 				sql.append("AND d.dealer_order_id IN (SELECT dtl.dealer_order_id FROM t_scm_order_detail dtl WHERE dtl.comment_status = 0 AND dtl.media_res_id = '')");
@@ -252,13 +258,14 @@ public class OrderQuery {
 	 * @return
 	 */
 	public Integer mainOrderQueryTotal(Integer orderStatus, Integer afterSaleStatus, String startTime, String endTime,
-			String condition, Integer payWay,Integer mediaInfo,String dealerClassify) {
+			String condition, Integer payWay, Integer commentStatus , Integer mediaInfo,String dealerClassify) {
 		List<Object> params = new ArrayList<Object>();
 		StringBuilder sql = new StringBuilder();
 		sql.append(" SELECT COUNT(1) ");
 		sql.append("  FROM t_scm_order_dealer d");
 		sql.append(" LEFT OUTER JOIN t_scm_order_main m ON d.order_id = m.order_id ");
 		sql.append(" LEFT OUTER JOIN t_scm_dealer dealer ON d.dealer_id = dealer.dealer_id ");
+		sql.append(" LEFT OUTER JOIN t_scm_order_detail dtl ON dtl.dealer_order_id = d.dealer_order_id ");
 		sql.append(" WHERE 1=1 ");
 		if (orderStatus != null) {
 			sql.append(" AND d._status =  ? ");
@@ -310,11 +317,16 @@ public class OrderQuery {
 			params.add(endTime+ " 23:59:59");
 		}
 		if (StringUtils.isNotEmpty(condition) && condition != null && !"".equals(condition)) {
-			sql.append(" AND (d.dealer_order_id LIKE ?	OR m.pay_no LIKE ? OR dealer.dealer_name LIKE ?) ");
+			sql.append(" AND (d.dealer_order_id LIKE ?	OR m.pay_no LIKE ? OR dealer.dealer_name LIKE ? OR (d.dealer_order_id IN (SELECT od.dealer_order_id FROM t_scm_order_detail od WHERE od.goods_name LIKE ? ))) ");
+			params.add("%" + condition + "%");
 			params.add("%" + condition + "%");
 			params.add("%" + condition + "%");
 			params.add("%" + condition + "%");
 		}
+		if (commentStatus != null && commentStatus >= 0) {
+            sql.append(" AND dtl.comment_status = ?\r\n");
+            params.add(commentStatus);
+        }
 		if (payWay != null) {
 			sql.append(" AND m.pay_way = ? ");
 			params.add(payWay);
@@ -345,7 +357,7 @@ public class OrderQuery {
 		StringBuilder sql = new StringBuilder();
 		sql.append(" SELECT t1._status orderStatus,t1.order_id orderId,t1.created_date createdDate, t3.pay_way payWay,t3.pay_time payTime,t3.pay_no payNo, ");
 		sql.append(" t1.rev_person revPerson,t1.rev_phone revPhone,t1.province province,t1.city city,t1.area_county areaCounty,t1.street_addr streetAddr, ");
-		sql.append(" t4.dealer_name dealerName,t4.dealer_classify dealerClassify,t1.dealer_id dealerId, ");
+		sql.append(" t4.dealer_name dealerName, t4.dealer_classify dealerClassify, t1.dealer_id dealerId, ");
 		sql.append(" t1.plateform_discount plateformDiscount,t1.dealer_discount dealerDiscount ");
 		sql.append(" FROM t_scm_order_dealer t1 ");
 		sql.append(" LEFT OUTER JOIN t_scm_order_main t3 ON t1.order_id = t3.order_id");
@@ -419,7 +431,7 @@ public class OrderQuery {
 	 */
 	public List<GoodsInfoBean> getGoodsInfoList(String dealerOrderId) {
 		StringBuilder sql = new StringBuilder();
-		sql.append(" SELECT  dtl.goods_icon, dtl.goods_name,dtl.sku_name, dtl.sku_id, a.sell_num afNum, \r\n")
+		sql.append(" SELECT  dtl.goods_icon, dtl.goods_name,dtl.sku_name, dtl.sku_id, a.sell_num afNum, dtl.sort_no, dtl.goods_amount, \r\n")
 		.append(" dtl.media_res_id,dtl.sell_num,dtl.goods_unit, dtl.discount_price,dtl.freight, dtl.is_change, dtl.change_price,dtl.is_special,dtl.special_price \r\n") 
 		.append(" FROM  t_scm_order_dealer dealer \r\n")
 		.append(" ,t_scm_order_detail dtl \r\n")
@@ -430,9 +442,9 @@ public class OrderQuery {
 		
 		List<GoodsInfoBean> goodsInfoList = this.supportJdbcTemplate.queryForBeanList(sql.toString(),
 				GoodsInfoBean.class, dealerOrderId);
-		for (GoodsInfoBean goodsInfo : goodsInfoList) {
+		/*for (GoodsInfoBean goodsInfo : goodsInfoList) {
 			goodsInfo.setTotalPrice(goodsInfo.getPrice() * goodsInfo.getSellNum());
-		}
+		}*/
 		return goodsInfoList;
 	}
 
@@ -469,7 +481,8 @@ public class OrderQuery {
 		//获取商品
 		sql.delete(0, sql.length());
 		sql.append("SELECT dealer_order_id, _status, freight, plateform_discount, goods_amount, rate,goods_id, sku_id, sku_name,supply_price, discount_price, \r\n")
-		.append(" sell_num, bds_rate, media_id, media_res_id, saler_user_id, saler_user_rate, is_change, change_price, res_rate, marketing_id,market_level\r\n")
+		.append(" sell_num, bds_rate, media_id, media_res_id, saler_user_id, saler_user_rate, is_change, change_price, res_rate, marketing_id, market_level\r\n")
+		.append(" , is_special, special_price, sort_no")
 		.append(" FROM t_scm_order_detail WHERE order_id=? ORDER BY dealer_order_id");
 		List<OrderGoodsBean> ls = supportJdbcTemplate.queryForBeanList(sql.toString(), OrderGoodsBean.class, orderNo);
 		

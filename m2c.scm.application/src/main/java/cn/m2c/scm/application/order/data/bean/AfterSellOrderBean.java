@@ -53,6 +53,17 @@ public class AfterSellOrderBean {
 	
 	@ColumnAlias(value = "special_price")
 	private long specialPrice;
+	
+	@ColumnAlias(value="sort_no")
+	private Integer sortNo;
+	
+	public Integer getSortNo() {
+		return sortNo;
+	}
+
+	public void setSortNo(Integer sortNo) {
+		this.sortNo = sortNo;
+	}
 
 	private GoodsInfoBean goodsInfo;
 

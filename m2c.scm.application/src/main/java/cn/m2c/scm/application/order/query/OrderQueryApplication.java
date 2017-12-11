@@ -184,7 +184,7 @@ public class OrderQueryApplication {
 	 */
 	private List<OrderDetailBean> getOrderDetail(String dealerOrderId) throws NegativeException {
 		List<OrderDetailBean> orderList = null;
-		String sql = "SELECT * FROM t_scm_order_detail WHERE 1=1 AND dealer_order_id=?";
+		String sql = "SELECT * FROM t_scm_order_detail WHERE dealer_order_id=?";
 		try {
 			orderList = this.supportJdbcTemplate.queryForBeanList(sql, OrderDetailBean.class, dealerOrderId);
 			//去掉订单中的审核通过的退货单
@@ -307,7 +307,7 @@ public class OrderQueryApplication {
 						tmpOrderId = o.getOrderId();
 						sql.delete(0, sql.length());
 						sql.append("SELECT a.goods_icon, a.goods_name, a.goods_title, a.sku_name, a.sku_id, a.sell_num, a.discount_price, a.freight, ")
-						.append(" a.goods_amount, b._status afterStatus, a.goods_id, a.goods_type_id\r\n") 
+						.append(" a.goods_amount, b._status afterStatus, a.goods_id, a.goods_type_id, a.sort_no\r\n") 
 						.append(" FROM t_scm_order_detail a LEFT OUTER JOIN t_scm_order_after_sell b ON b.order_id=a.order_id AND b.dealer_order_id = a.dealer_order_id AND b._status NOT IN(-1,3) ")
 						.append(" AND b.sku_id=a.sku_id AND b.sort_no=a.sort_no \r\n")
 						.append(" WHERE a.order_id=? ");
@@ -325,7 +325,7 @@ public class OrderQueryApplication {
 						tmpOrderId = o.getOrderId();
 						sql.delete(0, sql.length());
 						sql.append("SELECT a.goods_icon, a.goods_name, a.goods_title, a.sku_name, a.sku_id, a.sell_num, a.discount_price, a.freight, a.goods_amount\r\n")
-						.append(", a.express_way , a.express_phone, a.express_no , a.express_code, a.express_name\r\n")
+						.append(", a.express_way , a.express_phone, a.express_no , a.express_code, a.express_name, a.sort_no\r\n")
 						.append(", a.comment_status , b._status afterStatus, a.goods_id, a.goods_type_id FROM t_scm_order_detail a\r\n")
 						.append(" LEFT OUTER JOIN t_scm_order_after_sell b ON b.order_id=a.order_id AND b.dealer_order_id = a.dealer_order_id AND b._status NOT IN (-1, 3) AND b.sku_id=a.sku_id")
 						.append(" AND b.sort_no=a.sort_no \r\n")
@@ -456,7 +456,7 @@ public class OrderQueryApplication {
 			
 			if (result != null) {
 				sql.delete(0, sql.length());
-				sql.append("SELECT a.goods_icon, a.goods_name, a.goods_title, a.sku_name, a.sku_id, a.sell_num, a.discount_price, a.freight, a.goods_amount\r\n")
+				sql.append("SELECT a.goods_icon, a.goods_name, a.goods_title, a.sku_name, a.sku_id, a.sell_num, a.discount_price, a.freight, a.goods_amount, a.sort_no, a.is_special, a.special_price \r\n")
 				.append(", b._status afterStatus, a.goods_id, a.goods_type_id, a.express_no, a.express_code, a.express_name, a.express_way, a.comment_status, a.is_change,a.change_price ")
 				.append(" FROM t_scm_order_detail a ")
 				.append(" LEFT OUTER JOIN t_scm_order_after_sell b ON b.order_id=a.order_id AND b.dealer_order_id = a.dealer_order_id AND b._status NOT IN(-1, 3) AND a.sku_id=b.sku_id")
@@ -552,7 +552,7 @@ public class OrderQueryApplication {
 					tmpOrderId = o.getOrderId();
 					sql.delete(0, sql.length());
 					sql.append("SELECT a.goods_icon, a.goods_name, a.goods_title, a.sku_name, a.sku_id, a.sell_num, a.discount_price, a.freight, a.goods_amount\r\n")
-					.append(", a.comment_status ,a.goods_id, a.goods_type_id, a.is_change, a.change_price FROM t_scm_order_detail a \r\n")
+					.append(", a.comment_status ,a.goods_id, a.goods_type_id, a.is_change, a.change_price, a.sort_no FROM t_scm_order_detail a \r\n")
 					.append(" WHERE a.order_id=? AND a.dealer_order_id=? AND a.sku_id NOT IN (SELECT b.sku_id FROM t_scm_order_after_sell b WHERE b._status NOT IN(-1, 3) AND b.dealer_order_id=a.dealer_order_id AND b.order_id=a.order_id AND b.sort_no=a.sort_no)")
 					;
 					o.setGoodses(this.supportJdbcTemplate.queryForBeanList(sql.toString(), 
@@ -581,12 +581,32 @@ public class OrderQueryApplication {
 		try {
 			List<Object> params = new ArrayList<>(4);
 			StringBuilder sql = new StringBuilder();
-			sql.append("SELECT count(1) FROM t_scm_order_dealer b \r\n")
+			/*sql.append("SELECT count(1) FROM t_scm_order_dealer b \r\n")
 			.append("LEFT OUTER JOIN t_scm_order_main a ON a.order_id=b.order_id \r\n") 
 			.append("LEFT OUTER JOIN t_scm_dealer c ON c.dealer_id = b.dealer_id \r\n")
 			.append("WHERE a.user_id=?  AND b.del_flag=0 AND (b._status IN (1, 2, 3))")
 			.append("AND b.dealer_order_id IN (SELECT DISTINCT aa.dealer_order_id FROM t_scm_order_detail aa \r\n")
-			.append("WHERE aa.sku_id NOT IN (SELECT bb.sku_id FROM t_scm_order_after_sell bb WHERE bb._status NOT IN(-1, 3) AND bb.dealer_order_id=aa.dealer_order_id AND bb.order_id=aa.order_id AND bb.sort_no=aa.sort_no))");
+			.append("WHERE aa.sku_id NOT IN (SELECT bb.sku_id FROM t_scm_order_after_sell bb WHERE bb._status NOT IN(-1, 3) AND bb.dealer_order_id=aa.dealer_order_id AND bb.order_id=aa.order_id AND bb.sort_no=aa.sort_no))");*/
+			sql.append("SELECT count(1) FROM t_scm_order_dealer b \r\n")
+			.append("LEFT OUTER JOIN t_scm_order_main a ON a.order_id=b.order_id\r\n")
+			.append("LEFT OUTER JOIN t_scm_dealer c ON c.dealer_id = b.dealer_id \r\n")
+			.append("WHERE a.user_id=?  AND b.del_flag=0 AND (b._status IN (1, 2, 3))\r\n")
+			.append("AND b.dealer_order_id IN (SELECT cc.dealer_order_id FROM t_scm_order_detail cc \r\n")
+			.append("WHERE (cc.sort_no = 0 AND cc.sort_no NOT IN(SELECT aa.sort_no FROM t_scm_order_detail aa, t_scm_order_after_sell bb \r\n")
+			.append("WHERE aa.dealer_order_id = b.dealer_order_id \r\n")
+			.append("AND aa.dealer_order_id=bb.dealer_order_id \r\n")
+			.append("AND aa.sku_id=bb.sku_id \r\n")
+			.append("AND bb._status NOT IN(-1, 3) \r\n")
+			.append("AND aa.sort_no = bb.sort_no \r\n")
+			.append("AND cc.dealer_order_id = aa.dealer_order_id)) OR (\r\n")
+			.append("cc.sort_no NOT IN(SELECT aa.sort_no FROM t_scm_order_detail aa, t_scm_order_after_sell bb \r\n")
+			.append("WHERE aa.dealer_order_id = b.dealer_order_id \r\n")
+			.append("AND aa.dealer_order_id=bb.dealer_order_id \r\n")
+			.append("AND aa.sku_id=bb.sku_id \r\n")
+			.append("AND bb._status NOT IN(-1, 3) \r\n")
+			.append("AND aa.sort_no = bb.sort_no \r\n")
+			.append("AND cc.dealer_order_id = aa.dealer_order_id)\r\n")
+			.append("))\r\n");
 			
 			params.add(userId);
 			
