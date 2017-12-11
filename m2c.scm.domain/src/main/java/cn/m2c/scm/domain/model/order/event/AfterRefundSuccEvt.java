@@ -30,6 +30,8 @@ public class AfterRefundSuccEvt implements DomainEvent {
     private String skuId;
     /**数量*/
     private int num;
+    /**在订单中的序号*/
+    private int sortNo;
     /**运费退款金额*/
     private long rtFreight = 0;
     
@@ -40,7 +42,7 @@ public class AfterRefundSuccEvt implements DomainEvent {
 	}
 	
 	public AfterRefundSuccEvt(String saleAfterNo, String orderId, String dealerOrderId, 
-			String dealerId, long money, long rtFreight, int num, String skuId) {
+			String dealerId, long money, long rtFreight, int num, String skuId, int sortNo) {
 		this();
 		this.afterSellOrderId = saleAfterNo;
 		this.dealerId = dealerId;
@@ -53,6 +55,7 @@ public class AfterRefundSuccEvt implements DomainEvent {
 		this.rtFreight = rtFreight;
 		this.num = num;
 		this.skuId = skuId;
+		this.sortNo = sortNo;
 	}
 	@Override
 	public int eventVersion() {
@@ -120,7 +123,7 @@ public class AfterRefundSuccEvt implements DomainEvent {
 
 	public static void main(String[] args) {
 		Gson gson = new Gson();
-		AfterRefundSuccEvt a = new AfterRefundSuccEvt("123456", "AFAA3333", "a85adfsf", "dealerId", 3000, 0, 0, "");
+		AfterRefundSuccEvt a = new AfterRefundSuccEvt("123456", "AFAA3333", "a85adfsf", "dealerId", 3000, 0, 0, "", 0);
 		System.out.print(gson.toJson(a));
 	}
 	
