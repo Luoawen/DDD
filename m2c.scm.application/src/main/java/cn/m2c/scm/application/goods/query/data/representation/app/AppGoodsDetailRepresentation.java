@@ -44,10 +44,12 @@ public class AppGoodsDetailRepresentation {
     private String desc;
     private String customerTel;
     private Map goodsSpecial;
+    private Integer cartGoodsTotal;
 
     public AppGoodsDetailRepresentation(GoodsBean bean, List<GoodsGuaranteeBean> goodsGuaranteeBeans,
                                         String goodsUnitName, String mresId, Integer commentTotal, GoodsCommentBean goodsCommentBean,
-                                        List<Map> fullCuts, List<Map> goodsTags, String favoriteId, String phone, GoodsSpecialBean goodsSpecialBean) {
+                                        List<Map> fullCuts, List<Map> goodsTags, String favoriteId, String phone, GoodsSpecialBean goodsSpecialBean,Integer cartGoodsTotal) {
+        this.cartGoodsTotal = cartGoodsTotal;
         this.skuFlag = bean.getSkuFlag();
         this.dealerId = bean.getDealerId();
         this.dealerName = bean.getDealerName();
@@ -321,5 +323,13 @@ public class AppGoodsDetailRepresentation {
 
     public void setGoodsSpecial(Map goodsSpecial) {
         this.goodsSpecial = goodsSpecial;
+    }
+
+    public Integer getCartGoodsTotal() {
+        return cartGoodsTotal;
+    }
+
+    public void setCartGoodsTotal(Integer cartGoodsTotal) {
+        this.cartGoodsTotal = cartGoodsTotal;
     }
 }

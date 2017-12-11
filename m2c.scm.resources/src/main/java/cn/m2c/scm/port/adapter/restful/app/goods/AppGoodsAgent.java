@@ -23,6 +23,7 @@ import cn.m2c.scm.application.special.data.bean.GoodsSpecialBean;
 import cn.m2c.scm.application.special.query.GoodsSpecialQueryApplication;
 import cn.m2c.scm.application.unit.query.UnitQuery;
 import cn.m2c.scm.domain.service.goods.GoodsService;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -148,15 +149,15 @@ public class AppGoodsAgent {
 
                 //查询商品被收藏id 
                 String favoriteId = null;
+                Integer cartGoodsTotal = 0;
                 if (null != userId) {
                     String token = "";
                     favoriteId = goodsRestService.getUserIsFavoriteGoods(userId, goodsId, token);
+                    cartGoodsTotal = goodsRestService.getCartGoodsTotal(userId);
                 }
-
                 String phone = shopQuery.getDealerShopCustmerTel(goodsBean.getDealerId());
-
                 AppGoodsDetailRepresentation representation = new AppGoodsDetailRepresentation(goodsBean,
-                        goodsGuarantee, goodsUnitName, null, commentTotal, goodsCommentBean, fullCut, goodsTags, favoriteId, phone, null);
+                        goodsGuarantee, goodsUnitName, null, commentTotal, goodsCommentBean, fullCut, goodsTags, favoriteId, phone, null, cartGoodsTotal);
                 result.setContent(representation);
             }
             result.setStatus(MCode.V_200);
@@ -328,7 +329,11 @@ public class AppGoodsAgent {
 
                     //查询商品被收藏id 
                     String favoriteId = null;
-                    favoriteId = goodsRestService.getUserIsFavoriteGoods(userId, goodsBean.getGoodsId(), "");
+                    Integer cartGoodsTotal = 0;
+                    if (StringUtils.isNotEmpty(userId)) {
+                        favoriteId = goodsRestService.getUserIsFavoriteGoods(userId, goodsBean.getGoodsId(), "");
+                        cartGoodsTotal = goodsRestService.getCartGoodsTotal(userId);
+                    }
                     // 商家客服电话
                     String phone = shopQuery.getDealerShopCustmerTel(goodsBean.getDealerId());
 
@@ -336,7 +341,7 @@ public class AppGoodsAgent {
                     GoodsSpecialBean goodsSpecialBean = goodsSpecialQueryApplication.queryGoodsSpecialByGoodsId(goodsBean.getGoodsId());
 
                     AppGoodsDetailRepresentation representation = new AppGoodsDetailRepresentation(goodsBean,
-                            goodsGuarantee, goodsUnitName, mresId, commentTotal, goodsCommentBean, fullCut, goodsTags, favoriteId, phone, goodsSpecialBean);
+                            goodsGuarantee, goodsUnitName, mresId, commentTotal, goodsCommentBean, fullCut, goodsTags, favoriteId, phone, goodsSpecialBean, cartGoodsTotal);
                     representations.add(representation);
                 }
                 result.setContent(representations);

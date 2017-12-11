@@ -95,4 +95,9 @@ public class GoodsServiceDubboImpl implements GoodsService {
     public Map getUserInfoByUserId(String userId) {
         return null;
     }
+
+    @Override
+    public Integer getCartGoodsTotal(String userId) {
+        return null;
+    }
 }
