@@ -617,7 +617,7 @@ public class DealerOrderQuery {
 
         List<Object> params = new ArrayList<Object>();
         StringBuilder sql = new StringBuilder();
-        sql.append(" SELECT dtl.sku_id, dtl.sku_name, dtl.goods_name, dtl.goods_title, a.dealer_id, a.created_date, dtl.discount_price, \r\n")
+        sql.append(" SELECT dtl.is_special, dtl.special_price, dtl.sku_id, dtl.sku_name, dtl.goods_name, dtl.goods_title, a.dealer_id, a.created_date, dtl.discount_price, \r\n")
                 .append("dtl.sell_num, af._status afStatus, a._status, om.pay_no, a.dealer_order_id, dtl.goods_icon, a.rev_person, \r\n")
                 .append(" a.rev_phone, a.goods_amount, a.order_freight, a.plateform_discount, a.dealer_discount, a.order_id,\r\n")
                 .append(" om.pay_time,dtl.freight,a.province,a.city,a.area_county,a.street_addr,af.after_sell_order_id,af.order_type,af.sell_num as after_num,af.back_money\r\n")
@@ -761,6 +761,8 @@ public class DealerOrderQuery {
 	            dgb.setAfStatus((Integer) item.get("afStatus"));
 	            item.get("goods_icon").getClass().getTypeName();
 	            dgb.setGoodsImage((String) item.get("goods_icon"));
+	            dgb.setIsSpecial((int)item.get("is_special"));
+	            dgb.setSpecialPrice((long)item.get("special_price"));
 	            midBean.getGoodsList().add(dgb);
             }
         }
