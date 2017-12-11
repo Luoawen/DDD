@@ -83,6 +83,7 @@ public class OrderGoodsBean {
 	private Integer isSpecial;
 	@ColumnAlias(value="special_price")
 	private Long specialPrice;
+	
 	@ColumnAlias(value="sort_no")
 	private Integer sortNo;
 	

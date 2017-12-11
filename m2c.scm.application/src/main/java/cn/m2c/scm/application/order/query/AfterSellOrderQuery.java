@@ -6,10 +6,12 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Repository;
 
 import cn.m2c.common.MCode;
 import cn.m2c.ddd.common.port.adapter.persistence.springJdbc.SupportJdbcTemplate;
+import cn.m2c.scm.application.order.data.bean.AfterSellApplyReason;
 import cn.m2c.scm.application.order.data.bean.AfterSellBean;
 import cn.m2c.scm.application.order.data.bean.AfterSellOrderBean;
 import cn.m2c.scm.application.order.data.bean.AfterSellOrderDetailBean;
@@ -357,11 +359,13 @@ public class AfterSellOrderQuery {
 	 */
 	public List<SkuNumBean> getOrderDtlByMarketId(String marketId, String orderId) {
 		StringBuilder sql = new StringBuilder();
-		sql.append(" SELECT a.sku_id, a.sell_num, a.is_change, a.goods_amount, a.marketing_id, a.change_price\r\n")
+		sql.append(" SELECT a.sku_id, a.sell_num, a.is_change, a.goods_amount, a.marketing_id, a.change_price, a.sort_no\r\n")
 		.append("FROM t_scm_order_detail a\r\n")
 		.append("WHERE a.order_id = ?\r\n")
 		.append("AND a.marketing_id = ? ")
-		.append("AND a.sku_id NOT IN(SELECT b.sku_id FROM t_scm_order_after_sell b WHERE b.order_id=a.order_id AND b.dealer_order_id= a.dealer_order_id AND b._status > 3) ");
+		.append("AND ((a.sort_no=0 AND a.sku_id NOT IN(SELECT b.sku_id FROM t_scm_order_after_sell b WHERE b.order_id=a.order_id AND b.dealer_order_id= a.dealer_order_id AND b._status > 3)) ")
+		.append(" OR (a.sort_no NOT IN(SELECT b.sort_no FROM t_scm_order_after_sell b WHERE b.order_id=a.order_id AND b.dealer_order_id= a.dealer_order_id AND b._status > 3)))")
+		;
 		return this.supportJdbcTemplate.queryForBeanList(sql.toString(), SkuNumBean.class, orderId, marketId);
 	}
 	
@@ -508,7 +512,6 @@ public class AfterSellOrderQuery {
 			StringBuilder sql = new StringBuilder();
 			sql.append("SELECT a.sku_id, a.sort_no FROM t_scm_order_after_sell a \r\n")
 			.append(" WHERE a.dealer_order_id=? AND a._status NOT IN(-1, 0, 1, 2, 3)");
-			
 			params.add(dealerOrderId);
 			
 			result = this.supportJdbcTemplate.jdbcTemplate().queryForList(sql.toString(), SkuNumBean.class, params.toArray());
@@ -517,5 +520,26 @@ public class AfterSellOrderQuery {
 			throw new NegativeException(MCode.V_500, "查询商家订单号的售后skuId出错！");
 		}
 		return result;
+	}
+	
+	
+	/**
+	 * 查询售后理由
+	 * @return
+	 * @throws NegativeException 
+	 */
+	public List<AfterSellApplyReason> getApplyReason(Integer applyStatus) throws NegativeException{
+		List<AfterSellApplyReason> reasonList = null;
+		try {
+			List<Object> params = new ArrayList<>(1);
+			StringBuilder sql = new StringBuilder();
+			sql.append(" SELECT reason_id, apply_order_status, apply_desc FROM t_scm_order_after_sell_reason WHERE apply_order_status = ? ");
+			params.add(applyStatus);
+			reasonList = this.supportJdbcTemplate.queryForBeanList(sql.toString(),AfterSellApplyReason.class,params.toArray());
+		} catch (Exception e) {
+			throw new NegativeException(MCode.V_500,"查询售后申请理由出错");
+		}
+		return reasonList;
+		
 	}
 }

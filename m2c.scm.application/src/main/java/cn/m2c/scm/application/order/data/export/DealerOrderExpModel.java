@@ -64,7 +64,12 @@ public class DealerOrderExpModel {
         this.goodsName = goodsBean.getGoodsName();
         this.skuName = goodsBean.getSkuName();
         DecimalFormat df1 = new DecimalFormat("0.00");
-        this.goodsPrice = df1.format(goodsBean.getDiscountPrice().floatValue() / (double)100);//*
+        if(goodsBean.getIsSpecial() == 0) {//不执行特惠价
+            this.goodsPrice = df1.format(goodsBean.getDiscountPrice().floatValue() / (double)100);//*
+        }else if(goodsBean.getIsSpecial() == 1){//执行特惠价
+        	Long specialPrice = Long.valueOf(goodsBean.getSpecialPrice());
+        	this.goodsPrice = df1.format(specialPrice.floatValue() / (double)100);
+        }
         this.goodsNum = goodsBean.getSellNum();
         this.postage = df1.format(dealerOrderQB.getOrderFreight().floatValue() / (double)100);//*
         this.discountAmount = df1.format((dealerOrderQB.getPlateDiscount().floatValue()+dealerOrderQB.getDealerDiscount().floatValue())/(double)100);

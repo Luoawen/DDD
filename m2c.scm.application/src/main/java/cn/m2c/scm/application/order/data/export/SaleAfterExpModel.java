@@ -121,7 +121,11 @@ public class SaleAfterExpModel {
         DecimalFormat df1 = new DecimalFormat("0.00");
         this.backMoney = df1.format((saleAfterExpQB.getBackMoney().floatValue()+saleAfterExpQB.getReturnFreight().floatValue())/(double)100);
         this.dealerOrderId = saleAfterExpQB.getDealerOrderId();
-        this.saleAfterGoodsPrice = df1.format(saleAfterExpQB.getSaleAfterGoodsPrice().floatValue()/(double)100);
+        if(saleAfterExpQB.getIsSpecial() == 0) {//不是特惠价,售后单价展示“拍获价”
+            this.saleAfterGoodsPrice = df1.format(saleAfterExpQB.getSaleAfterGoodsPrice().floatValue()/(double)100);
+        }else if(saleAfterExpQB.getIsSpecial() == 1) {//特惠价，售后单价展示“特惠价”
+        	this.saleAfterGoodsPrice = df1.format(saleAfterExpQB.getSpecialPrice().floatValue()/(double)100);
+        }
         this.sellNum = saleAfterExpQB.getSellNum();
         this.returnFreight = df1.format(saleAfterExpQB.getReturnFreight().floatValue()/(double)100);
         

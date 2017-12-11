@@ -552,8 +552,9 @@ public class OrderQueryApplication {
 					tmpOrderId = o.getOrderId();
 					sql.delete(0, sql.length());
 					sql.append("SELECT a.goods_icon, a.goods_name, a.goods_title, a.sku_name, a.sku_id, a.sell_num, a.discount_price, a.freight, a.goods_amount\r\n")
-					.append(", a.comment_status ,a.goods_id, a.goods_type_id, a.is_change, a.change_price, a.sort_no FROM t_scm_order_detail a \r\n")
-					.append(" WHERE a.order_id=? AND a.dealer_order_id=? AND a.sku_id NOT IN (SELECT b.sku_id FROM t_scm_order_after_sell b WHERE b._status NOT IN(-1, 3) AND b.dealer_order_id=a.dealer_order_id AND b.order_id=a.order_id AND b.sort_no=a.sort_no)")
+					.append(", a.comment_status ,a.goods_id, a.goods_type_id, a.is_change, a.change_price, a.sort_no, a.is_special, a.special_price FROM t_scm_order_detail a \r\n")
+					.append(" WHERE a.order_id=? AND a.dealer_order_id=? AND ((a.sort_no=0 AND a.sku_id NOT IN (SELECT b.sku_id FROM t_scm_order_after_sell b WHERE b._status NOT IN(-1, 3) AND b.dealer_order_id=a.dealer_order_id AND b.order_id=a.order_id AND b.sort_no=a.sort_no))")
+					.append(" OR (a.sort_no !=0 AND a.sort_no NOT IN (SELECT b.sort_no FROM t_scm_order_after_sell b WHERE b._status NOT IN(-1, 3) AND b.dealer_order_id=a.dealer_order_id AND b.order_id=a.order_id AND b.sort_no=a.sort_no)))")
 					;
 					o.setGoodses(this.supportJdbcTemplate.queryForBeanList(sql.toString(), 
 							OrderDetailBean.class, new Object[] {tmpOrderId, o.getDealerOrderId()}));
