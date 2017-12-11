@@ -14,6 +14,7 @@ import cn.m2c.scm.application.order.command.OrderAddCommand;
 import cn.m2c.scm.application.order.command.PayOrderCmd;
 import cn.m2c.scm.application.order.command.SaleAfterCmd;
 import cn.m2c.scm.application.order.command.SaleAfterShipCmd;
+import cn.m2c.scm.application.order.data.bean.AfterSellApplyReason;
 import cn.m2c.scm.application.order.data.bean.AfterSellBean;
 import cn.m2c.scm.application.order.data.bean.AppOrderBean;
 import cn.m2c.scm.application.order.data.bean.AppOrderDtl;
@@ -517,5 +518,28 @@ public class AppOrderAgent {
             result = new MPager(MCode.V_400, e.getMessage());
         }
         return new ResponseEntity<MResult>(result, HttpStatus.OK);
+    }
+    
+    
+    /**
+     * 售后申请理由
+     * @return
+     */
+    @RequestMapping(value = "/app/applyReason",method = RequestMethod.GET)
+    public ResponseEntity<MResult> getAfterSellApplyReason(@RequestParam(value = "applyStatus",required = true) Integer applyStatus){
+    	MResult result = new MResult(MCode.V_1);
+    	if(null == applyStatus) {
+    		LOGGER.error("售后申请状态为空");
+			result = new MPager(MCode.V_400);
+    	}
+    	try {
+			List<AfterSellApplyReason> reasonList = saleAfterQuery.getApplyReason(applyStatus);
+			result.setContent(reasonList);
+			result.setStatus(MCode.V_200);
+		} catch (NegativeException e) {
+			LOGGER.error("查询售后申请理由出错",e);
+			result = new MPager(MCode.V_400, e.getMessage());
+		}
+    	return new ResponseEntity<MResult>(result, HttpStatus.OK);
     }
 }
