@@ -75,4 +75,11 @@ public interface GoodsService {
      * @return
      */
     Map getUserInfoByUserId(String userId);
+
+    /**
+     * 获取购物车内有效商品总件数
+     * @param userId
+     * @return
+     */
+    Integer getCartGoodsTotal(String userId);
 }
