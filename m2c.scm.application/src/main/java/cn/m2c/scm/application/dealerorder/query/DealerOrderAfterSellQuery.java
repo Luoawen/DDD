@@ -333,7 +333,7 @@ public class DealerOrderAfterSellQuery {
 		List<Object> param = new ArrayList<Object>();
 		sql.append(" SELECT dtl.discount_price, af.sell_num, dtl.freight, dtl.plateform_discount, dtl.dealer_discount ");
 		sql.append(" ,dtl.media_res_id, af.back_money, af.sku_id, dtl.is_special, dtl.special_price, dtl.is_change, dtl.change_price ");
-		sql.append(" ,dtl.goods_icon, dtl.goods_name, dtl.sku_name, dtl.goods_amount ");
+		sql.append(" ,dtl.goods_icon, dtl.goods_name, dtl.goods_unit, dtl.sku_name, dtl.goods_amount ");
 		sql.append(" FROM t_scm_order_detail dtl ");
 		sql.append(" LEFT OUTER JOIN t_scm_order_after_sell af ON af.dealer_order_id = dtl.dealer_order_id AND af.sku_id = dtl.sku_id AND af.sort_no=dtl.sort_no ");
 		sql.append(" WHERE af.after_sell_order_id = ? ");

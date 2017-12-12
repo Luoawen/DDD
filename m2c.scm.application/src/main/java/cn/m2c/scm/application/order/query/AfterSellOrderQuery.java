@@ -325,7 +325,6 @@ public class AfterSellOrderQuery {
 		sql.append(" AND after.sort_no = detail.sort_no ");
 		sql.append(" AND dtl.saler_user_id = seller.seller_id ");
 		
-		System.out.println("This SQL--------------------------------->"+sql);
 		AfterSellOrderDetailBean bean = this.supportJdbcTemplate.queryForBean(sql.toString(),
 				AfterSellOrderDetailBean.class, afterSellOrderId);
 		bean.setGoodsInfo(aftetSellOrderDetailGoodsInfoQuery(afterSellOrderId));
@@ -343,7 +342,7 @@ public class AfterSellOrderQuery {
 		sql.append(
 				" SELECT  after.sell_num, after.back_money, after.order_id, dtl.dealer_discount ");
 		sql.append(" ,dtl.media_res_id, dtl.discount_price, dtl.freight, dtl._price, dtl.plateform_discount, dtl.goods_amount ");
-		sql.append(" ,dtl.goods_icon, dtl.goods_name, dtl.sku_name, dtl.is_special, dtl.special_price, dtl.is_change, dtl.change_price, dtl.sort_no ");
+		sql.append(" ,dtl.goods_icon, dtl.goods_name, dtl.goods_unit, dtl.sku_name, dtl.is_special, dtl.special_price, dtl.is_change, dtl.change_price, dtl.sort_no ");
 		sql.append(" FROM t_scm_order_detail dtl ");
 		sql.append(" INNER JOIN t_scm_order_after_sell after ");
 		sql.append(" INNER JOIN t_scm_goods goods ");
