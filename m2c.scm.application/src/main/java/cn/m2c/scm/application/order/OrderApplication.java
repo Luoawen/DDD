@@ -25,6 +25,7 @@ import cn.m2c.scm.application.postage.data.representation.PostageModelRuleRepres
 import cn.m2c.scm.application.postage.query.PostageModelQueryApplication;
 import cn.m2c.scm.domain.NegativeCode;
 import cn.m2c.scm.domain.NegativeException;
+import cn.m2c.scm.domain.model.order.AppOrdInfo;
 import cn.m2c.scm.domain.model.order.DealerOrder;
 import cn.m2c.scm.domain.model.order.DealerOrderDtl;
 import cn.m2c.scm.domain.model.order.MainOrder;
@@ -230,8 +231,16 @@ public class OrderApplication {
         if (!orderDomainService.lockMarketIds(useList, cmd.getOrderId(), cmd.getUserId())) {
             throw new NegativeException(MCode.V_300, "活动已被用完！");
         }
-        // for local test
-        //order.paySuccess("12121", 1, new Date(), cmd.getUserId());
+        
+        try {
+        	AppOrdInfo appInfo = cmd.getInfo().toAppInfo();
+        	if (appInfo != null)
+        		orderRepository.saveAppInfo(appInfo);
+        }
+        catch (Exception e) {
+        	LOGGER.info("===fanjc==save appinfo error." + e.getMessage());
+        }
+        
         return new OrderResult(cmd.getOrderId(), goodsAmounts, freight, plateDiscount, dealerDiscount);
     }
 

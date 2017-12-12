@@ -74,4 +74,10 @@ public interface OrderRepository {
 	public List<String> getMayCompleteOrderIds();	
 	
 	public boolean judgeOrderHasAfterSale(String orderId);
+	
+	/***
+	 * 保存下单的app信息
+	 * @param order 主订单
+	 */
+	public void saveAppInfo(AppOrdInfo appInfo);
 }

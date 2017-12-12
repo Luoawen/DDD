@@ -103,11 +103,16 @@ public class AppOrderAgent {
             ,@RequestParam(value = "coupons", required = false) String coupons
             ,@RequestParam(value = "latitude", required = false) Double latitude
             ,@RequestParam(value = "longitude", required = false) Double longitude
-            ,@RequestParam(value = "from", required = false, defaultValue="0") Integer from) {
+            ,@RequestParam(value = "from", required = false, defaultValue="0") Integer from
+            ,@RequestParam(value = "appVersion", required = false) String appVersion
+            ,@RequestParam(value = "os", required = false) String os
+            ,@RequestParam(value = "osVersion", required = false) String osVersion
+            ,@RequestParam(value = "sn", required = false) String sn
+    		) {
     	MResult result = new MResult(MCode.V_1);
         try {
         	OrderAddCommand cmd = new OrderAddCommand(orderId, userId, noted, goodses, invoice, addr, coupons,
-        			latitude, longitude, from);
+        			latitude, longitude, from, appVersion, os, osVersion, sn);
             result.setContent(orderApp.submitOrder(cmd));
             result.setStatus(MCode.V_200);
         } 

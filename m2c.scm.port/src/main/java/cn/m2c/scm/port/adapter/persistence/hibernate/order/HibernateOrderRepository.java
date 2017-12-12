@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import cn.m2c.ddd.common.port.adapter.persistence.hibernate.HibernateSupperRepository;
+import cn.m2c.scm.domain.model.order.AppOrdInfo;
 import cn.m2c.scm.domain.model.order.DealerOrder;
 import cn.m2c.scm.domain.model.order.DealerOrderDtl;
 import cn.m2c.scm.domain.model.order.MainOrder;
@@ -158,5 +159,11 @@ public class HibernateOrderRepository extends HibernateSupperRepository implemen
 		.setParameter("orderId", orderId).uniqueResult();
 		BigInteger b = (BigInteger)o;
 		return b != null ? b.intValue() > 0 : false;
+	}
+
+	@Override
+	public void saveAppInfo(AppOrdInfo appInfo) {
+		// TODO Auto-generated method stub
+		this.session().save(appInfo);
 	}
 }
