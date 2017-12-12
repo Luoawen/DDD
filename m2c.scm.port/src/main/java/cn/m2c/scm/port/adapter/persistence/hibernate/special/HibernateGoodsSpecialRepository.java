@@ -78,7 +78,7 @@ public class HibernateGoodsSpecialRepository extends HibernateSupperRepository i
         if (null != goodsSkuSpecials && goodsSkuSpecials.size() > 0) {
             Map map = new HashMap<>();
             for (GoodsSkuSpecial skuSpecial : goodsSkuSpecials) {
-                map.put(skuSpecial.skuId(), skuSpecial.specialPrice());
+                map.put(skuSpecial.skuId(), skuSpecial);
             }
             return map;
         }

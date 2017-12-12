@@ -32,6 +32,7 @@ import cn.m2c.scm.domain.model.order.MainOrder;
 import cn.m2c.scm.domain.model.order.OrderRepository;
 import cn.m2c.scm.domain.model.order.SimpleMarketInfo;
 import cn.m2c.scm.domain.model.order.SimpleMarketing;
+import cn.m2c.scm.domain.model.special.GoodsSkuSpecial;
 import cn.m2c.scm.domain.model.special.GoodsSpecialRepository;
 import cn.m2c.scm.domain.service.order.OrderService;
 import cn.m2c.scm.domain.util.GetDisconfDataGetter;
@@ -175,7 +176,7 @@ public class OrderApplication {
         // 获取商品详情
         List<GoodsDto> goodDtls = gQueryApp.getGoodsDtl(skus.keySet());
         // 特惠价map key:skuid, specialprice
-        Map<String, Long> specialPriceMap = (Map<String, Long>)goodsSpecialRsp.getEffectiveGoodsSkuSpecial(specialSkus);
+        Map<String, GoodsSkuSpecial> specialPriceMap = (Map<String, GoodsSkuSpecial>)goodsSpecialRsp.getEffectiveGoodsSkuSpecial(specialSkus);
         // 获取分类及费率
         getClassifyRate(goodDtls, mediaResIds);
         //若有媒体信息则需要查询媒体信息
@@ -887,7 +888,7 @@ public class OrderApplication {
      * @param goodses
      * @param specialPrice
      */
-    private void fillData(List<GoodsDto> userData, List<GoodsDto> goodses, Map<String, Long> specialPrice) {
+    private void fillData(List<GoodsDto> userData, List<GoodsDto> goodses, Map<String, GoodsSkuSpecial> specialPrice) {
     	for (GoodsDto t : userData) {
     		
     		String sku = t.getSkuId();
@@ -896,7 +897,7 @@ public class OrderApplication {
     		if (src != null)
     			t.copyField(src);
     		if (t.getIsSpecial() == 1 && specialPrice != null && specialPrice.get(sku) != null) {
-    			t.setSpecialPrice(specialPrice.get(sku));
+    			t.setSpecialPrice(specialPrice.get(sku).specialPrice());
     		}
     		else // 若没有特惠价则不执行特惠价
     			t.setIsSpecial(0);
