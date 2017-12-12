@@ -898,6 +898,7 @@ public class OrderApplication {
     			t.copyField(src);
     		if (t.getIsSpecial() == 1 && specialPrice != null && specialPrice.get(sku) != null) {
     			t.setSpecialPrice(specialPrice.get(sku).specialPrice());
+    			t.setSupplyPrice(specialPrice.get(sku).supplyPrice());
     		}
     		else // 若没有特惠价则不执行特惠价
     			t.setIsSpecial(0);
