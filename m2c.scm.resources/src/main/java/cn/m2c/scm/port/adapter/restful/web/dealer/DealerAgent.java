@@ -286,9 +286,12 @@ public class DealerAgent {
 		            @PathVariable(value = "dealerId", required = true) String dealerId
 		            ) {
 			 MResult result = new MResult(MCode.V_1);
+			 DealerDetailRepresentation representation = null;
 		        try {
 		        	DealerBean dealer =  dealerQuery.getDealer(dealerId);
-		        	DealerDetailRepresentation representation = new DealerDetailRepresentation(dealer);
+		        	if(dealer!=null){
+						representation = new DealerDetailRepresentation(dealer);
+					}
 		        	result.setContent(representation);
 		            result.setStatus(MCode.V_200);
 		        } catch (Exception e) {
