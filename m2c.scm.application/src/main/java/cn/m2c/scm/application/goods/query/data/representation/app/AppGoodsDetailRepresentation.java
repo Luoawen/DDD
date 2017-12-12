@@ -121,7 +121,7 @@ public class AppGoodsDetailRepresentation {
         // 特惠价
         if (null != goodsSpecialBean) {
             this.goodsSpecial = new HashMap<>();
-            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+            SimpleDateFormat df = new SimpleDateFormat("yyyy.MM.dd");
             this.goodsSpecial.put("startTime", df.format(goodsSpecialBean.getStartTime()));
             this.goodsSpecial.put("endTime", df.format(goodsSpecialBean.getEndTime()));
             this.goodsSpecial.put("congratulations", goodsSpecialBean.getCongratulations());
