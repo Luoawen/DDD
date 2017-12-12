@@ -105,9 +105,25 @@ public class GoodsSpecialQueryApplication {
             sql.append(" AND status = ? ");
             params.add(status);
         }
-        if (StringUtils.isNotEmpty(startTime) && StringUtils.isNotEmpty(endTime)) {
+        /*if (StringUtils.isNotEmpty(startTime) && StringUtils.isNotEmpty(endTime)) {
             sql.append(" AND start_time >= ? AND end_time <= ? ");
             params.add(startTime + " 00:00:00 ");
+            params.add(endTime + " 23:59:59 ");
+        }*/
+        if (StringUtils.isNotEmpty(startTime) && StringUtils.isNotEmpty(endTime)) {
+            sql.append(" AND ((start_time >= ? AND end_time <= ?) \r\n" + 
+            		"OR (start_time <= ? AND end_time >= ? ) \r\n" + 
+            		"OR (start_time <= ? AND end_time >= ? AND end_time <= ? ) \r\n" + 
+            		"OR (start_time >= ? AND start_time <= ? AND end_time >= ?)) ");
+            params.add(startTime + " 00:00:00 ");
+            params.add(endTime + " 23:59:59 ");
+            params.add(startTime + " 00:00:00 ");
+            params.add(endTime + " 23:59:59 ");
+            params.add(startTime + " 00:00:00 ");
+            params.add(startTime + " 00:00:00 ");
+            params.add(endTime + " 23:59:59 ");
+            params.add(startTime + " 00:00:00 ");
+            params.add(endTime + " 23:59:59 ");
             params.add(endTime + " 23:59:59 ");
         }
         if (StringUtils.isNotEmpty(searchMessage)) {
@@ -142,9 +158,25 @@ public class GoodsSpecialQueryApplication {
             sql.append(" AND status = ? ");
             params.add(status);
         }
-        if (StringUtils.isNotEmpty(startTime) && StringUtils.isNotEmpty(endTime)) {
+        /*if (StringUtils.isNotEmpty(startTime) && StringUtils.isNotEmpty(endTime)) {
             sql.append(" AND start_time >= ? AND end_time <= ? ");
             params.add(startTime + " 00:00:00 ");
+            params.add(endTime + " 23:59:59 ");
+        }*/
+        if (StringUtils.isNotEmpty(startTime) && StringUtils.isNotEmpty(endTime)) {
+            sql.append(" AND ((start_time >= ? AND end_time <= ?) \r\n" + 
+            		"OR (start_time <= ? AND end_time >= ? ) \r\n" + 
+            		"OR (start_time <= ? AND end_time >= ? AND end_time <= ? ) \r\n" + 
+            		"OR (start_time >= ? AND start_time <= ? AND end_time >= ?)) ");
+            params.add(startTime + " 00:00:00 ");
+            params.add(endTime + " 23:59:59 ");
+            params.add(startTime + " 00:00:00 ");
+            params.add(endTime + " 23:59:59 ");
+            params.add(startTime + " 00:00:00 ");
+            params.add(startTime + " 00:00:00 ");
+            params.add(endTime + " 23:59:59 ");
+            params.add(startTime + " 00:00:00 ");
+            params.add(endTime + " 23:59:59 ");
             params.add(endTime + " 23:59:59 ");
         }
         if (StringUtils.isNotEmpty(searchMessage)) {
