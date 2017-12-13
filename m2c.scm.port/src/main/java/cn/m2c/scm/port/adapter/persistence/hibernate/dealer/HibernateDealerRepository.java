@@ -93,7 +93,7 @@ public class HibernateDealerRepository extends HibernateSupperRepository impleme
             updateSql.append("UPDATE t_scm_dealer_day_report ");
             updateSql.append("SET order_num = order_num + :order_num, ");
             updateSql.append("order_refund_num = order_refund_num + :order_refund_num, ");
-            updateSql.append("order_refund_num = goods_add_num + :goods_add_num, ");
+            updateSql.append("goods_add_num = goods_add_num + :goods_add_num, ");
             updateSql.append("sell_money = sell_money + :sell_money, ");
             updateSql.append("refund_money = refund_money + :refund_money, ");
             updateSql.append("goods_comment_num = goods_comment_num + :goods_comment_num, ");
