@@ -60,7 +60,7 @@ public class OrderQuery {
 		sql.append("  FROM t_scm_order_dealer d ");
 		sql.append(" LEFT OUTER JOIN t_scm_order_main m ON d.order_id = m.order_id ");
 		sql.append(" LEFT OUTER JOIN t_scm_dealer dealer ON d.dealer_id = dealer.dealer_id ");
-		sql.append(" LEFT OUTER JOIN t_scm_order_detail dtl ON dtl.dealer_order_id = d.dealer_order_id ");
+		//sql.append(" LEFT OUTER JOIN t_scm_order_detail dtl ON dtl.dealer_order_id = d.dealer_order_id ");
 		sql.append(" WHERE 1=1 ");
 		if (orderStatus != null) {
 			sql.append(" AND d._status =  ? ");
@@ -134,16 +134,20 @@ public class OrderQuery {
 			sql.append(" AND m.pay_way = ? ");
 			params.add(payWay);
 		}
-		if (commentStatus != null && commentStatus >= 0) {
+		/*if (commentStatus != null && commentStatus >= 0) {
             sql.append(" AND dtl.comment_status = ?\r\n");
+            params.add(commentStatus);
+        }*/
+		if (commentStatus != null && commentStatus >= 0) {
+            sql.append(" AND d.dealer_order_id IN (SELECT DISTINCT dtl.dealer_order_id FROM t_scm_order_detail dtl WHERE dtl.comment_status = ?)\r\n");
             params.add(commentStatus);
         }
 		if (mediaInfo != null) {
 			if (mediaInfo == 0) {
-				sql.append("AND d.dealer_order_id IN (SELECT dtl.dealer_order_id FROM t_scm_order_detail dtl WHERE dtl.comment_status = 0 AND dtl.media_res_id = '')");
+				sql.append("AND d.dealer_order_id IN (SELECT dtl.dealer_order_id FROM t_scm_order_detail dtl WHERE dtl.media_res_id = '')");
 			}
 			if (mediaInfo ==1) {
-				sql.append("AND d.dealer_order_id IN (SELECT dtl.dealer_order_id FROM t_scm_order_detail dtl WHERE dtl.comment_status = 0 AND dtl.media_res_id != '')");
+				sql.append("AND d.dealer_order_id IN (SELECT dtl.dealer_order_id FROM t_scm_order_detail dtl WHERE dtl.media_res_id != '')");
 			}
 		}
 		if (!StringUtils.isEmpty(dealerClassify)) {
@@ -266,7 +270,7 @@ public class OrderQuery {
 		sql.append("  FROM t_scm_order_dealer d");
 		sql.append(" LEFT OUTER JOIN t_scm_order_main m ON d.order_id = m.order_id ");
 		sql.append(" LEFT OUTER JOIN t_scm_dealer dealer ON d.dealer_id = dealer.dealer_id ");
-		sql.append(" LEFT OUTER JOIN t_scm_order_detail dtl ON dtl.dealer_order_id = d.dealer_order_id ");
+		//sql.append(" LEFT OUTER JOIN t_scm_order_detail dtl ON dtl.dealer_order_id = d.dealer_order_id ");
 		sql.append(" WHERE 1=1 ");
 		if (orderStatus != null) {
 			sql.append(" AND d._status =  ? ");
@@ -324,20 +328,24 @@ public class OrderQuery {
 			params.add("%" + condition + "%");
 			params.add("%" + condition + "%");
 		}
+		/*if (commentStatus != null && commentStatus >= 0) {
+        sql.append(" AND dtl.comment_status = ?\r\n");
+        params.add(commentStatus);
+	    }*/
 		if (commentStatus != null && commentStatus >= 0) {
-            sql.append(" AND dtl.comment_status = ?\r\n");
-            params.add(commentStatus);
-        }
+	        sql.append(" AND d.dealer_order_id IN (SELECT DISTINCT dtl.dealer_order_id FROM t_scm_order_detail dtl WHERE dtl.comment_status = ?)\r\n");
+	        params.add(commentStatus);
+	    }
 		if (payWay != null) {
 			sql.append(" AND m.pay_way = ? ");
 			params.add(payWay);
 		}
 		if (mediaInfo != null) {
 			if (mediaInfo == 0) {
-				sql.append("AND d.dealer_order_id IN (SELECT dtl.dealer_order_id FROM t_scm_order_detail dtl WHERE dtl.comment_status = 0 AND dtl.media_res_id = '')");
+				sql.append("AND d.dealer_order_id IN (SELECT dtl.dealer_order_id FROM t_scm_order_detail dtl WHERE dtl.media_res_id = '')");
 			}
 			if (mediaInfo ==1) {
-				sql.append("AND d.dealer_order_id IN (SELECT dtl.dealer_order_id FROM t_scm_order_detail dtl WHERE dtl.comment_status = 0 AND dtl.media_res_id != '')");
+				sql.append("AND d.dealer_order_id IN (SELECT dtl.dealer_order_id FROM t_scm_order_detail dtl WHERE dtl.media_res_id != '')");
 			}
 		}
 		if (!StringUtils.isEmpty(dealerClassify)) {
