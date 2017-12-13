@@ -319,8 +319,8 @@ public class DealerOrderQuery {
         }
         if (!StringUtils.isEmpty(startTime) && !StringUtils.isEmpty(endTime)) {
             sql.append(" AND a.created_date BETWEEN ? AND ?\r\n");
-            params.add(startTime);
-            params.add(endTime);
+            params.add(startTime + " 00:00:00");
+            params.add(endTime + " 23:59:59");
         }
         sql.append(" GROUP BY sku_id, dealer_order_id \r\n");
         sql.append(" ORDER BY a.dealer_order_id DESC, a.created_date DESC, af.last_updated_date DESC");
@@ -497,8 +497,8 @@ public class DealerOrderQuery {
         }
         if (!StringUtils.isEmpty(startTime) && !StringUtils.isEmpty(endTime)) {
             sql.append(" AND a.created_date BETWEEN ? AND ?\r\n");
-            params.add(startTime);
-            params.add(endTime);
+            params.add(startTime + " 00:00:00");
+            params.add(endTime + " 23:59:59");
         }
         System.out.println("SHOW  sQL-------------------------->"+sql);
         return this.supportJdbcTemplate.jdbcTemplate().queryForObject(sql.toString(), Integer.class, params.toArray());
