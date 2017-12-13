@@ -513,7 +513,7 @@ public class AfterSellOrderQuery {
 			.append(" WHERE a.dealer_order_id=? AND a._status NOT IN(-1, 0, 1, 2, 3)");
 			params.add(dealerOrderId);
 			
-			result = this.supportJdbcTemplate.jdbcTemplate().queryForList(sql.toString(), SkuNumBean.class, params.toArray());
+			result = this.supportJdbcTemplate.queryForBeanList(sql.toString(), SkuNumBean.class, params.toArray());
 			
 		} catch (Exception e) {
 			throw new NegativeException(MCode.V_500, "查询商家订单号的售后skuId出错！");

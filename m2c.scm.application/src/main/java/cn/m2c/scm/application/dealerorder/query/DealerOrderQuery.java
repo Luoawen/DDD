@@ -323,7 +323,7 @@ public class DealerOrderQuery {
             params.add(endTime);
         }
         sql.append(" GROUP BY sku_id, dealer_order_id \r\n");
-        sql.append(" ORDER BY a.dealer_order_id DESC, a.created_date DESC, afStatus DESC");
+        sql.append(" ORDER BY a.dealer_order_id DESC, a.created_date DESC, af.last_updated_date DESC");
 
         sql.append(" LIMIT ?,?");
 
@@ -362,9 +362,11 @@ public class DealerOrderQuery {
                 rs.add(midBean);
                 dealerOrderId = ordIdTemp;
             }
+            Integer oSortNo = (Integer)item.get("sort_no");
             String skuId = (String) item.get("sku_id");
-            if (!tmpIds.contains(skuId)) {
-            	tmpIds.add(skuId);
+            String a = skuId + String.valueOf(oSortNo);
+            if (!tmpIds.contains(a)) {
+            	tmpIds.add(a);
 	            DealerGoodsBean dgb = new DealerGoodsBean();	            
 	            dgb.setSkuName((String) item.get("sku_name"));
 	            dgb.setGoodsName((String) item.get("goods_name"));
@@ -381,7 +383,7 @@ public class DealerOrderQuery {
 	            dgb.setAfOrderType((Integer)item.get("order_type"));
 	            dgb.setBackMoney((Long)item.get("back_money"));	
 	            dgb.setIsChange((Integer)item.get("is_change"));
-	            dgb.setSortNo((Integer)item.get("sort_no"));
+	            dgb.setSortNo(oSortNo);
 	            
 	            midBean.getGoodsList().add(dgb);
             }
@@ -411,7 +413,7 @@ public class DealerOrderQuery {
                                           Integer hasInvoice) {
         List<Object> params = new ArrayList<Object>();
         StringBuilder sql = new StringBuilder();
-        sql.append(" SELECT count(distinct dtl.sku_id, a.dealer_order_id)")
+        sql.append(" SELECT count(distinct dtl.sku_id, a.dealer_order_id, dtl.sort_no)")
                 .append(" FROM t_scm_order_dealer a \r\n")
                 .append(" LEFT OUTER JOIN t_scm_order_detail dtl ON dtl.dealer_order_id = a.dealer_order_id\r\n")
                 .append(" LEFT OUTER JOIN t_scm_order_after_sell af ON af.dealer_order_id = a.dealer_order_id\r\n")
