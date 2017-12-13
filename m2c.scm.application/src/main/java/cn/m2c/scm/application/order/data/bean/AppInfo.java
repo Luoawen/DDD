@@ -24,6 +24,10 @@ public class AppInfo {
 	@ColumnAlias(value = "order_id")
 	private String orderNo;
 	
+	public AppInfo() {
+		super();
+	}
+	
 	public AppInfo(String appVer, String os, String osVer, String sn, String orderNo) {
 		this.os = os;
 		this.appVer = appVer;
