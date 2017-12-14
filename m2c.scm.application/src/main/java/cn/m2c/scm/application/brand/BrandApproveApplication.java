@@ -10,6 +10,9 @@ import cn.m2c.scm.domain.NegativeException;
 import cn.m2c.scm.domain.model.brand.BrandApprove;
 import cn.m2c.scm.domain.model.brand.BrandApproveRepository;
 import cn.m2c.scm.domain.model.brand.BrandRepository;
+
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -114,6 +117,24 @@ public class BrandApproveApplication {
         brandApprove.agree();
         brandApproveRepository.remove(brandApprove);
     }
+    
+    /**
+     * 批量同意
+     * @param commands
+     * @throws NegativeException
+     */
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+    @EventListener(isListening = true)
+    public void batchAgreeBrandApprove(List<BrandApproveAgreeCommand> commands) throws NegativeException {
+    	for (BrandApproveAgreeCommand command : commands) {
+    		BrandApprove brandApprove = brandApproveRepository.getBrandApproveByApproveId(command.getBrandApproveId());
+    		 if (null == brandApprove) {
+    	            throw new NegativeException(MCode.V_300, "审核品牌信息不存在");
+    	        }
+    	        brandApprove.agree();
+    	        brandApproveRepository.remove(brandApprove);
+		}
+    }
 
     /**
      * 拒绝
@@ -128,6 +149,18 @@ public class BrandApproveApplication {
             throw new NegativeException(MCode.V_300, "审核品牌信息不存在");
         }
         brandApprove.reject(command.getRejectReason());
+    }
+    
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+    @EventListener(isListening = true)
+    public void batchRejectBrandApprove(List<BrandApproveRejectCommand> commands) throws NegativeException {
+    	for (BrandApproveRejectCommand command : commands) {
+    		BrandApprove brandApprove = brandApproveRepository.getBrandApproveByApproveId(command.getBrandApproveId());
+    		 if (null == brandApprove) {
+    	            throw new NegativeException(MCode.V_300, "审核品牌信息不存在");
+    	        }
+    		 brandApprove.reject(command.getRejectReason());
+		}
     }
 
     /**
