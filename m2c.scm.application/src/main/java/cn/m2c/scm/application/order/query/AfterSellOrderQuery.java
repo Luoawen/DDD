@@ -6,7 +6,6 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Repository;
 
 import cn.m2c.common.MCode;
@@ -66,6 +65,10 @@ public class AfterSellOrderQuery {
 		sql.append(" detail.is_special,detail.special_price, after.sort_no ");
 		sql.append(" FROM t_scm_order_after_sell after ");
 		sql.append(" LEFT JOIN t_scm_dealer dealer ON after.dealer_id = dealer.dealer_id");
+		if (!StringUtils.isEmpty(condition)) {
+			sql.append(" AND dealer.dealer_name LIKE concat('%', ?,'%')");
+			params.add(condition);
+		}
 		sql.append(" LEFT JOIN t_scm_order_main main ON after.order_id = main.order_id ");
 		sql.append(" LEFT JOIN t_scm_order_detail detail ON after.dealer_order_id = detail.dealer_order_id AND after.sku_id=detail.sku_id AND after.sort_no = detail.sort_no \r\n");
 		sql.append(" WHERE 1 = 1 ");
@@ -167,6 +170,10 @@ public class AfterSellOrderQuery {
 		sql.append(" SELECT COUNT(*)  ");
 		sql.append(" FROM t_scm_order_after_sell after");
 		sql.append(" LEFT JOIN t_scm_dealer dealer ON after.dealer_id = dealer.dealer_id ");
+		if (!StringUtils.isEmpty(condition)) {
+			sql.append(" AND dealer.dealer_name LIKE concat('%', ?,'%')");
+			params.add(condition);
+		}
 		sql.append(" LEFT JOIN t_scm_goods goods ON after.goods_id = goods.goods_id ");
 		sql.append(" LEFT JOIN t_scm_order_detail detail ON after.dealer_order_id = detail.dealer_order_id AND after.sku_id=detail.sku_id AND after.sort_no = detail.sort_no \r\n");
 		sql.append(" WHERE 1 = 1 ");
@@ -218,7 +225,7 @@ public class AfterSellOrderQuery {
 			sql.append(" AND after.created_date = ? ");
 			params.add(createDate);
 		}
-		if (null != condition && !"".equals(condition)) {
+		if (!StringUtils.isEmpty(condition)) {
 			sql.append(" AND (after.dealer_order_id LIKE ? OR after.after_sell_order_id LIKE ? OR goods.goods_name LIKE ?) ");
 			params.add("%" + condition + "%");
 			params.add("%" + condition + "%");
