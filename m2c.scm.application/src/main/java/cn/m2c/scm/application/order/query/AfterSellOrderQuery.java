@@ -65,10 +65,6 @@ public class AfterSellOrderQuery {
 		sql.append(" detail.is_special,detail.special_price, after.sort_no ");
 		sql.append(" FROM t_scm_order_after_sell after ");
 		sql.append(" LEFT JOIN t_scm_dealer dealer ON after.dealer_id = dealer.dealer_id");
-		if (!StringUtils.isEmpty(condition)) {
-			sql.append(" AND dealer.dealer_name LIKE concat('%', ?,'%')");
-			params.add(condition);
-		}
 		sql.append(" LEFT JOIN t_scm_order_main main ON after.order_id = main.order_id ");
 		sql.append(" LEFT JOIN t_scm_order_detail detail ON after.dealer_order_id = detail.dealer_order_id AND after.sku_id=detail.sku_id AND after.sort_no = detail.sort_no \r\n");
 		sql.append(" WHERE 1 = 1 ");
@@ -120,11 +116,13 @@ public class AfterSellOrderQuery {
 			sql.append(" AND after.created_date = ? ");
 			params.add(createDate);
 		}
-		if (null != condition && !"".equals(condition)) {
-			sql.append(" AND (after.dealer_order_id LIKE ? OR after.after_sell_order_id LIKE ? OR detail.goods_name LIKE ?) ");
-			params.add("%" + condition + "%");
-			params.add("%" + condition + "%");
-			params.add("%" + condition + "%");
+		if (!StringUtils.isEmpty(condition)) {
+			sql.append(" AND (after.dealer_order_id LIKE concat('%', ?,'%') OR after.after_sell_order_id LIKE concat('%', ?,'%') OR goods.goods_name LIKE concat('%', ?,'%') ");
+			sql.append(" OR after.dealer_id IN (SELECT dealer_id FROM t_scm_dealer WHERE dealer_name LIKE concat('%', ?,'%')))");
+			params.add(condition);
+			params.add(condition);
+			params.add(condition);
+			params.add(condition);
 		}
 		if (StringUtils.isNotEmpty(endTime) && StringUtils.isNotEmpty(endTime)) {
 			sql.append(" AND dealer.created_date BETWEEN ? AND ? ");
@@ -170,10 +168,6 @@ public class AfterSellOrderQuery {
 		sql.append(" SELECT COUNT(*)  ");
 		sql.append(" FROM t_scm_order_after_sell after");
 		sql.append(" LEFT JOIN t_scm_dealer dealer ON after.dealer_id = dealer.dealer_id ");
-		if (!StringUtils.isEmpty(condition)) {
-			sql.append(" AND dealer.dealer_name LIKE concat('%', ?,'%')");
-			params.add(condition);
-		}
 		sql.append(" LEFT JOIN t_scm_goods goods ON after.goods_id = goods.goods_id ");
 		sql.append(" LEFT JOIN t_scm_order_detail detail ON after.dealer_order_id = detail.dealer_order_id AND after.sku_id=detail.sku_id AND after.sort_no = detail.sort_no \r\n");
 		sql.append(" WHERE 1 = 1 ");
@@ -226,10 +220,12 @@ public class AfterSellOrderQuery {
 			params.add(createDate);
 		}
 		if (!StringUtils.isEmpty(condition)) {
-			sql.append(" AND (after.dealer_order_id LIKE ? OR after.after_sell_order_id LIKE ? OR goods.goods_name LIKE ?) ");
-			params.add("%" + condition + "%");
-			params.add("%" + condition + "%");
-			params.add("%" + condition + "%");
+			sql.append(" AND (after.dealer_order_id LIKE concat('%', ?,'%') OR after.after_sell_order_id LIKE concat('%', ?,'%') OR goods.goods_name LIKE concat('%', ?,'%') ");
+			sql.append(" OR after.dealer_id IN (SELECT dealer_id FROM t_scm_dealer WHERE dealer_name LIKE concat('%', ?,'%')))");
+			params.add(condition);
+			params.add(condition);
+			params.add(condition);
+			params.add(condition);
 		}
 		if (StringUtils.isNotEmpty(endTime) && StringUtils.isNotEmpty(endTime)) {
 			sql.append(" AND dealer.created_date BETWEEN ? AND ? ");
