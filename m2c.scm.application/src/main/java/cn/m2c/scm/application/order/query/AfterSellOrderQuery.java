@@ -117,8 +117,8 @@ public class AfterSellOrderQuery {
 			params.add(createDate);
 		}
 		if (!StringUtils.isEmpty(condition)) {
-			sql.append(" AND (after.dealer_order_id LIKE concat('%', ?,'%') OR after.after_sell_order_id LIKE concat('%', ?,'%') OR goods.goods_name LIKE concat('%', ?,'%') ");
-			sql.append(" OR after.dealer_id IN (SELECT dealer_id FROM t_scm_dealer WHERE dealer_name LIKE concat('%', ?,'%')))");
+			sql.append(" AND (after.dealer_order_id LIKE concat('%', ?,'%') OR after.after_sell_order_id LIKE concat('%', ?,'%') OR detail.goods_name LIKE concat('%', ?,'%') ");
+			sql.append(" OR after.dealer_id IN (SELECT dd.dealer_id FROM t_scm_dealer dd WHERE dd.dealer_name LIKE concat('%', ?,'%')))");
 			params.add(condition);
 			params.add(condition);
 			params.add(condition);
@@ -168,7 +168,6 @@ public class AfterSellOrderQuery {
 		sql.append(" SELECT COUNT(*)  ");
 		sql.append(" FROM t_scm_order_after_sell after");
 		sql.append(" LEFT JOIN t_scm_dealer dealer ON after.dealer_id = dealer.dealer_id ");
-		sql.append(" LEFT JOIN t_scm_goods goods ON after.goods_id = goods.goods_id ");
 		sql.append(" LEFT JOIN t_scm_order_detail detail ON after.dealer_order_id = detail.dealer_order_id AND after.sku_id=detail.sku_id AND after.sort_no = detail.sort_no \r\n");
 		sql.append(" WHERE 1 = 1 ");
 		if (null != orderType) {
@@ -220,8 +219,8 @@ public class AfterSellOrderQuery {
 			params.add(createDate);
 		}
 		if (!StringUtils.isEmpty(condition)) {
-			sql.append(" AND (after.dealer_order_id LIKE concat('%', ?,'%') OR after.after_sell_order_id LIKE concat('%', ?,'%') OR goods.goods_name LIKE concat('%', ?,'%') ");
-			sql.append(" OR after.dealer_id IN (SELECT dealer_id FROM t_scm_dealer WHERE dealer_name LIKE concat('%', ?,'%')))");
+			sql.append(" AND (after.dealer_order_id LIKE concat('%', ?,'%') OR after.after_sell_order_id LIKE concat('%', ?,'%') OR detail.goods_name LIKE concat('%', ?,'%') ");
+			sql.append(" OR after.dealer_id IN (SELECT dd.dealer_id FROM t_scm_dealer dd WHERE dd.dealer_name LIKE concat('%', ?,'%')))");
 			params.add(condition);
 			params.add(condition);
 			params.add(condition);
