@@ -1,5 +1,6 @@
 package cn.m2c.scm.application.order;
 
+import cn.m2c.common.JsonUtils;
 import cn.m2c.common.MCode;
 import cn.m2c.ddd.common.event.annotation.EventListener;
 import cn.m2c.scm.application.classify.query.GoodsClassifyQueryApplication;
@@ -44,6 +45,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.alibaba.fastjson.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -953,15 +956,15 @@ public class OrderApplication {
     	
     	if (null == specialPriceMap) {
     		int sz = skus.size();
-        	StringBuilder sb = new StringBuilder();
+        	/*StringBuilder sb = new StringBuilder();
         	for(int i = 0 ; i < sz; i++) {
         		if (i>0)
         			sb.append(",");
         		sb.append(skus.get(i));
-        	}
+        	}*/
         	
         	if (sz > 0) {
-        		throw new NegativeException(MCode.V_105, sb.toString());
+        		throw new NegativeException(MCode.V_105, JSONObject.toJSONString(skus));
         	}
         	return;
     	}
@@ -974,15 +977,15 @@ public class OrderApplication {
     		}
     	}
     	int sz = skus.size();
-    	StringBuilder sb = new StringBuilder();
+    	/*StringBuilder sb = new StringBuilder();
     	for(int i = 0 ; i < sz; i++) {
     		if (i>0)
     			sb.append(",");
     		sb.append(skus.get(i));
-    	}
+    	}*/
     	
     	if (sz > 0) {
-    		throw new NegativeException(MCode.V_105, sb.toString());
+    		throw new NegativeException(MCode.V_105, JSONObject.toJSONString(skus));
     	}
     }
 }
