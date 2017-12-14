@@ -4,6 +4,7 @@ import cn.m2c.common.JsonUtils;
 import cn.m2c.common.MCode;
 import cn.m2c.ddd.common.event.annotation.EventListener;
 import cn.m2c.scm.application.goods.command.GoodsApproveCommand;
+import cn.m2c.scm.application.goods.command.GoodsApproveRejectBatchCommand;
 import cn.m2c.scm.application.goods.command.GoodsApproveRejectCommand;
 import cn.m2c.scm.domain.NegativeException;
 import cn.m2c.scm.domain.model.goods.GoodsApprove;
@@ -199,4 +200,42 @@ public class GoodsApproveApplication {
             }
         }
     }
+
+    /**
+     * 批量同意商品审核
+     * @param goodsIds
+     * @throws NegativeException 
+     */
+    @EventListener(isListening = true)
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+	public void agreeGoodsApproveBatch(List goodsIds) throws NegativeException {
+    	LOGGER.info("agreeGoodsApproveBatch goodsIds >>{}", goodsIds);
+    	List<GoodsApprove> goodsApproveList = goodsApproveRepository.queryGoodsApproveByIdList(goodsIds);
+    	if(null != goodsApproveList && goodsApproveList.size()>0) {
+    		for(GoodsApprove goodsApprove : goodsApproveList) {
+    			goodsApprove.agree();
+    	        goodsApproveRepository.remove(goodsApprove);
+    		}
+    	}else {
+    		throw new NegativeException(MCode.V_300, "所选商品的审核信息不存在");
+    	}
+	}
+    
+    /**
+     * 批量拒绝商品审核
+     * @param command
+     * @throws NegativeException 
+     */
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+	public void rejectGoodsApproveBatch(GoodsApproveRejectBatchCommand command) throws NegativeException {
+    	LOGGER.info("rejectGoodsApproveBatch command >>{}",command);
+    	List<GoodsApprove> goodsApproveList = goodsApproveRepository.queryGoodsApproveByIdList(command.getGoodsIds());
+    	if(goodsApproveList != null && goodsApproveList.size() > 0) {
+    		for(GoodsApprove goodsApprove : goodsApproveList) {
+    			goodsApprove.reject(command.getRejectReason());
+    		}
+    	}else {
+    		throw new NegativeException(MCode.V_300, "所选商品的审核信息不存在");
+    	}
+	}
 }
