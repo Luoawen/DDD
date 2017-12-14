@@ -118,7 +118,7 @@ public class AppOrderAgent {
         } 
         catch (NegativeException e) {
         	int st = e.getStatus();
-        	if (st == MCode.V_100) {
+        	if (st == MCode.V_100 || st == MCode.V_105) {
         		result.setStatus(e.getStatus());
         		result.setContent(e.getMessage());
         	}

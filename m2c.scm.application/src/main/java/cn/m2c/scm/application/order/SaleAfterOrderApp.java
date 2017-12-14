@@ -102,7 +102,7 @@ public class SaleAfterOrderApp {
 		long ft = 0;
 		
 		if (money<0) {			
-			throw new NegativeException(MCode.V_103, "不能申请售后，因已不符合条件！");
+			throw new NegativeException(MCode.V_103, "不符合发起售后条件，建议联系商家");
 			// money = 0;
 		}
 		
@@ -158,7 +158,7 @@ public class SaleAfterOrderApp {
 			}
 			money = money - discountMoney;
 			if (money<0) {
-				throw new NegativeException(MCode.V_103, "不能申请售后，因已不符合条件！");
+				throw new NegativeException(MCode.V_103, "不符合发起售后条件，建议联系商家");
 				//money = 0;
 			}
 		}
