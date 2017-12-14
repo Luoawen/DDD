@@ -177,6 +177,9 @@ public class OrderApplication {
         List<GoodsDto> goodDtls = gQueryApp.getGoodsDtl(skus.keySet());
         // 特惠价map key:skuid, specialprice
         Map<String, GoodsSkuSpecial> specialPriceMap = (Map<String, GoodsSkuSpecial>)goodsSpecialRsp.getEffectiveGoodsSkuSpecial(specialSkus);
+        
+        checkNotSatisfy(specialPriceMap, specialSkus);
+        
         // 获取分类及费率
         getClassifyRate(goodDtls, mediaResIds);
         //若有媒体信息则需要查询媒体信息
@@ -939,6 +942,33 @@ public class OrderApplication {
     		if (skb != null) {
     			resMap.put(key + skb.getMresId(), obj);
     		}
+    	}
+    }
+    /***
+     * 检测看是否有不满足的特惠价商品
+     */
+    private void checkNotSatisfy(Map<String, GoodsSkuSpecial> specialPriceMap, List<String> skus) throws NegativeException {
+    	if (null == specialPriceMap
+    			|| null == skus || skus.size() < 1)
+    		return;
+    	
+    	Iterator<String> it = specialPriceMap.keySet().iterator();
+    	while (it.hasNext()) {
+    		String key = it.next();
+    		if (skus.contains(key)) {
+    			skus.remove(key);
+    		}
+    	}
+    	int sz = skus.size();
+    	StringBuilder sb = new StringBuilder();
+    	for(int i = 0 ; i < sz; i++) {
+    		if (i>0)
+    			sb.append(",");
+    		sb.append(skus.get(i));
+    	}
+    	
+    	if (sz > 0) {
+    		throw new NegativeException(MCode.V_105, sb.toString());
     	}
     }
 }

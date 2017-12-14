@@ -322,7 +322,7 @@ public class DealerOrderQuery {
             params.add(startTime + " 00:00:00");
             params.add(endTime + " 23:59:59");
         }
-        sql.append(" GROUP BY sku_id, dealer_order_id \r\n");
+        sql.append(" GROUP BY sku_id, dealer_order_id, sort_no \r\n");
         sql.append(" ORDER BY a.dealer_order_id DESC, a.created_date DESC, af.last_updated_date DESC");
 
         sql.append(" LIMIT ?,?");
