@@ -1,6 +1,5 @@
 package cn.m2c.scm.application.order;
 
-import cn.m2c.common.JsonUtils;
 import cn.m2c.common.MCode;
 import cn.m2c.ddd.common.event.annotation.EventListener;
 import cn.m2c.scm.application.classify.query.GoodsClassifyQueryApplication;
@@ -165,11 +164,11 @@ public class OrderApplication {
             }
         }
         
-        /*try {// 锁定库存
+        try {// 锁定库存
             goodsApp.outInventory(skus);
         } catch (NegativeException e) {//不存在或库存不够
             throw new NegativeException(MCode.V_100, e.getMessage());
-        }*/
+        }
 
         long orderTime = System.currentTimeMillis();
         // 满足优惠券后，修改优惠券(锁定)

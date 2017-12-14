@@ -58,7 +58,7 @@ public class SaleAfterOrderApp {
 		}
 		
 		int ij = saleAfterRepository.getSaleAfterOrderBySkuId(cmd.getDealerOrderId(), 
-				cmd.getSkuId());
+				cmd.getSkuId(), cmd.getSortNo());
 		if (ij > 0) {
 			throw new NegativeException(MCode.V_100, "此商品已有售后还在处理中！");
 		}

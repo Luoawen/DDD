@@ -141,9 +141,11 @@ public class HibernateSaleAfterOrderRepository extends HibernateSupperRepository
 	}
 	
 	@Override
-	public int getSaleAfterOrderBySkuId(String dealerOrderId, String skuId) {
+	public int getSaleAfterOrderBySkuId(String dealerOrderId, String skuId, int sortNo) {
 		
-		Object o = this.session().createSQLQuery("SELECT count(1) FROM t_scm_order_after_sell WHERE dealer_order_id = :d1 AND sku_id = :skuId AND _status NOT IN(-1, 3)").setParameter("d1", dealerOrderId).setParameter("skuId", skuId).uniqueResult();
+		Object o = this.session().createSQLQuery("SELECT count(1) FROM t_scm_order_after_sell WHERE dealer_order_id = :d1 AND sku_id = :skuId AND sort_no=:sortNo AND _status NOT IN(-1, 3)").setParameter("d1", dealerOrderId)
+				.setParameter("skuId", skuId).setParameter("sortNo", sortNo)
+				.uniqueResult();
 		
 		return o == null? 0: ((BigInteger)o).intValue();
 	}

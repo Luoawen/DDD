@@ -22,9 +22,10 @@ public interface SaleAfterOrderRepository {
 	 * 获取是否已经申请过售后
 	 * @param dealerOrderId
 	 * @param skuId
+	 * @param sortNo
 	 * @return
 	 */
-	public int getSaleAfterOrderBySkuId(String dealerOrderId, String skuId);
+	public int getSaleAfterOrderBySkuId(String dealerOrderId, String skuId, int sortNo);
 	/***
 	 * 主要用于更新售后单状态
 	 * @param order
