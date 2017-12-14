@@ -334,7 +334,11 @@ public class AppGoodsAgent {
                     String phone = shopQuery.getDealerShopCustmerTel(goodsBean.getDealerId());
 
                     // 拍获进来，特惠价
-                    GoodsSpecialBean goodsSpecialBean = goodsSpecialQueryApplication.queryGoodsSpecialByGoodsId(goodsBean.getGoodsId());
+                    GoodsSpecialBean goodsSpecialBean = null;
+                    if(null != mediaMap && mediaMap.size() > 0) {
+                    	//商品有无媒体信息,有媒体信息则返回特惠价
+                    	goodsSpecialBean = goodsSpecialQueryApplication.queryGoodsSpecialByGoodsId(goodsBean.getGoodsId());
+                    }
 
                     AppGoodsDetailRepresentation representation = new AppGoodsDetailRepresentation(goodsBean,
                             goodsGuarantee, goodsUnitName, mresId, commentTotal, goodsCommentBean, fullCut, goodsTags, favoriteId, phone, goodsSpecialBean);
