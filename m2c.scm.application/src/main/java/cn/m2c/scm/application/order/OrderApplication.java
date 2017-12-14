@@ -162,11 +162,11 @@ public class OrderApplication {
             }
         }
         
-        try {// 锁定库存
+        /*try {// 锁定库存
             goodsApp.outInventory(skus);
         } catch (NegativeException e) {//不存在或库存不够
             throw new NegativeException(MCode.V_100, e.getMessage());
-        }
+        }*/
 
         long orderTime = System.currentTimeMillis();
         // 满足优惠券后，修改优惠券(锁定)
@@ -948,9 +948,23 @@ public class OrderApplication {
      * 检测看是否有不满足的特惠价商品
      */
     private void checkNotSatisfy(Map<String, GoodsSkuSpecial> specialPriceMap, List<String> skus) throws NegativeException {
-    	if (null == specialPriceMap
-    			|| null == skus || skus.size() < 1)
+    	if (null == skus || skus.size() < 1)
     		return;
+    	
+    	if (null == specialPriceMap) {
+    		int sz = skus.size();
+        	StringBuilder sb = new StringBuilder();
+        	for(int i = 0 ; i < sz; i++) {
+        		if (i>0)
+        			sb.append(",");
+        		sb.append(skus.get(i));
+        	}
+        	
+        	if (sz > 0) {
+        		throw new NegativeException(MCode.V_105, sb.toString());
+        	}
+        	return;
+    	}
     	
     	Iterator<String> it = specialPriceMap.keySet().iterator();
     	while (it.hasNext()) {
