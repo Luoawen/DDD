@@ -81,7 +81,7 @@ public class SaleAfterOrderApp {
 				break;
 		}
 		long money = itemDtl.sumGoodsMoney();
-		if (status != 0) {
+		if (orderType != 0) {
 			// 生成售后单保存, 计算售后需要退的钱
 			String mkId = itemDtl.getMarketId(); 
 			long discountMoney = 0;
