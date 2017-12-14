@@ -445,4 +445,54 @@ public class GoodsApplication {
         }
         goods.modifyGoodsMainImages(images);
     }
+    
+    /**
+     * 商品批量上架
+     * @param goodsIds
+     * @throws NegativeException 
+     */
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+    @EventListener(isListening = true)
+	public void upShelfGoodsBatch(List goodsIds) throws NegativeException {
+		LOGGER.info("upShelfGoodsBatch goodsIds >>{}", goodsIds);
+		List<Goods> goodsList = goodsRepository.queryGoodsByIdList(goodsIds);
+		if(null != goodsList && goodsList.size()>0) {
+			for(Goods goods : goodsList) {
+				goods.upShelf();
+		        if (StringUtils.isNotEmpty(goods.recognizedId())) {
+		            boolean result = goodsDubboService.updateRecognizedImgStatus(goods.recognizedId(), goods.recognizedUrl(), 1);
+		            if (!result) {
+		                LOGGER.error("商品批量上架，更新识别图片状态失败");
+		            }
+		        }
+			}
+		}else {
+			throw new NegativeException(MCode.V_300, "所选商品不存在");
+		}
+	}
+    
+    /**
+     * 商品批量下架
+     * @param goodsIds
+     * @throws NegativeException 
+     */
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+    @EventListener(isListening = true)
+	public void offShelfGoodsBatch(List goodsIds) throws NegativeException {
+		LOGGER.info("offShelfGoodsBatch goodsIds >>{}", goodsIds);
+		List<Goods> goodsList = goodsRepository.queryGoodsByIdList(goodsIds);
+		if(null != goodsList && goodsList.size()>0) {
+			for(Goods goods : goodsList) {
+				goods.offShelf();
+		        if (StringUtils.isNotEmpty(goods.recognizedId())) {
+		            boolean result = goodsDubboService.updateRecognizedImgStatus(goods.recognizedId(), goods.recognizedUrl(), 0);
+		            if (!result) {
+		                LOGGER.error("商品批量下架，更新识别图片状态失败");
+		            }
+		        }
+			}
+		}else {
+			throw new NegativeException(MCode.V_300, "所选商品不存在");
+		}
+	}
 }
