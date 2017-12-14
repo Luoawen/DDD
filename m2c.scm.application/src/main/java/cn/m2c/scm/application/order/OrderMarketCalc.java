@@ -335,6 +335,7 @@ public class OrderMarketCalc {
         // 优惠金额或折扣
         Integer discount = marketInfo.getDiscount();
         for (SkuNumBean bean : skuBeanLs) {
+        	// sortNo == 0是为了兼容之前的数据
             boolean bFlag = (skuId.equals(bean.getSkuId()) && (sortNo == 0 || bean.getSortNo() == sortNo));
             if (b == 1 && !bFlag && bean.getIsChange() == 0) {
                 total += bean.getGoodsAmount();
