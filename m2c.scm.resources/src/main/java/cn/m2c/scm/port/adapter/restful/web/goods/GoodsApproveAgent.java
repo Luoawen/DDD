@@ -11,6 +11,7 @@ import cn.m2c.scm.application.dealer.data.bean.DealerBean;
 import cn.m2c.scm.application.dealer.query.DealerQuery;
 import cn.m2c.scm.application.goods.GoodsApproveApplication;
 import cn.m2c.scm.application.goods.command.GoodsApproveCommand;
+import cn.m2c.scm.application.goods.command.GoodsApproveRejectBatchCommand;
 import cn.m2c.scm.application.goods.command.GoodsApproveRejectCommand;
 import cn.m2c.scm.application.goods.query.GoodsApproveQueryApplication;
 import cn.m2c.scm.application.goods.query.GoodsGuaranteeQueryApplication;
@@ -194,7 +195,53 @@ public class GoodsApproveAgent {
         }
         return new ResponseEntity<MResult>(result, HttpStatus.OK);
     }
-
+    
+    /**
+     * 商品批量审核同意,未鉴权
+     * @param goodsId
+     * @return
+     */
+    @RequestMapping(value = "/mng/agreeBatch", method = RequestMethod.POST)
+    public ResponseEntity<MResult> agreeGoodsApproveBatch(
+            @RequestParam(value = "goodsIds", required = false) List goodsIds
+    ) {
+    	MResult result = new MResult(MCode.V_1);
+        try {
+            goodsApproveApplication.agreeGoodsApproveBatch(goodsIds);
+            result.setStatus(MCode.V_200);
+        } catch (NegativeException ne) {
+            LOGGER.error("agreeGoodsApproveBatch NegativeException e:", ne);
+            result = new MResult(ne.getStatus(), ne.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("agreeGoodsApproveBatch Exception e:", e);
+            result = new MResult(MCode.V_400, "批量同意商品审核失败");
+        }
+        return new ResponseEntity<MResult>(result, HttpStatus.OK);
+    }
+    
+    /**
+     * 批量拒绝商品审核,未鉴权
+     */
+    @RequestMapping(value = "/mng/rejectBatch", method = RequestMethod.POST)
+    public ResponseEntity<MResult> rejectGoodsApproveBatch(
+            @RequestParam(value = "goodsIds", required = false) List goodsIds,
+            @RequestParam(value = "rejectReason", required = false) String rejectReason
+    ) {
+    	MResult result = new MResult(MCode.V_1);
+        try {
+        	GoodsApproveRejectBatchCommand command = new GoodsApproveRejectBatchCommand(goodsIds, rejectReason);
+        	goodsApproveApplication.rejectGoodsApproveBatch(command);
+            result.setStatus(MCode.V_200);
+        } catch (NegativeException ne) {
+            LOGGER.error("rejectGoodsApprove NegativeException e:", ne);
+            result = new MResult(ne.getStatus(), ne.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("rejectGoodsApprove Exception e:", e);
+            result = new MResult(MCode.V_400, "拒绝商品审核失败");
+        }
+        return new ResponseEntity<MResult>(result, HttpStatus.OK);
+    }
+    
     /**
      * 拒绝商品审核
      *
