@@ -968,13 +968,19 @@ public class OrderApplication {
     	if (resMap == null)
     		return;
     	Iterator<String> it = resMap.keySet().iterator();
+    	List<String> keys = new ArrayList<String>();
     	while(it.hasNext()) {
     		String key = it.next();
-    		Object obj = resMap.remove(key);
+    		Object obj = resMap.get(key);
+    		keys.add(key);
     		SkuMediaBean skb = mediaResIds.get(key);
     		if (skb != null) {
     			resMap.put(key + skb.getMresId(), obj);
     		}
+    	}
+    	
+    	for (String k : keys) {
+    		resMap.remove(k);
     	}
     }
     /***
