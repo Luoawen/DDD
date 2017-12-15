@@ -969,16 +969,18 @@ public class OrderApplication {
     		return;
     	Iterator<String> it = resMap.keySet().iterator();
     	List<String> keys = new ArrayList<String>();
+    	
+    	Map<String, Object> tmpMap = new HashMap<String, Object>();
     	while(it.hasNext()) {
     		String key = it.next();
     		Object obj = resMap.get(key);
     		keys.add(key);
     		SkuMediaBean skb = mediaResIds.get(key);
     		if (skb != null) {
-    			resMap.put(key + skb.getMresId(), obj);
+    			tmpMap.put(key + skb.getMresId(), obj);
     		}
     	}
-    	
+    	resMap.putAll(tmpMap);
     	for (String k : keys) {
     		resMap.remove(k);
     	}
