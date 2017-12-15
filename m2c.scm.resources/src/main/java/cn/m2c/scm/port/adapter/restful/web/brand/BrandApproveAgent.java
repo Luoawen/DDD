@@ -224,35 +224,7 @@ public class BrandApproveAgent {
         return new ResponseEntity<MResult>(result, HttpStatus.OK);
     }
     
-    /**
-     * 批量审核同意
-     * @param approveIds
-     * @param brandIds
-     * @return
-     */
-    @RequestMapping(value = "/web/batchagree",method = RequestMethod.POST)
-    public ResponseEntity<MResult> brandApproveBatchAgree(
-    		@RequestParam(value = "approveIds",required = false) List<String> approveIds,
-    		@RequestParam(value = "brandIds",required = false) List<String> brandIds
-    		){
-    	MResult result = new MResult(MCode.V_1);
-    	try {
-    		List<BrandApproveAgreeCommand> commands = new ArrayList<BrandApproveAgreeCommand>();
-			for(int i = 0;i < approveIds.size(); ++i) {
-				BrandApproveAgreeCommand command = new BrandApproveAgreeCommand(brandIds.get(i), approveIds.get(i));
-				commands.add(command);
-			}
-			brandApproveApplication.batchAgreeBrandApprove(commands);
-			result.setStatus(MCode.V_200);
-		} catch (NegativeException ne) {
-			LOGGER.error("批量同意品牌审核:", ne);
-			result = new MResult(ne.getStatus(), ne.getMessage());
-		} catch (Exception e) {
-            LOGGER.error("批量同意品牌审核:", e);
-            result = new MResult(MCode.V_400, "服务器开小差了");
-        }
-    	return new ResponseEntity<MResult>(result, HttpStatus.OK);
-    }
+   
 
     /**
      * 商家管理平台审核拒绝
@@ -282,35 +254,7 @@ public class BrandApproveAgent {
         return new ResponseEntity<MResult>(result, HttpStatus.OK);
     }
     
-    /**
-     * 批量审核拒绝
-     * @param approveIds
-     * @param brandIds
-     * @return
-     */
-    @RequestMapping(value = "/web/batchreject",method = RequestMethod.POST)
-    public ResponseEntity<MResult> brandApproveBatchReject(
-    		@RequestParam(value = "approveIds",required = false) List<String> approveIds,
-    		@RequestParam(value = "rejectReason",required = false) String rejectReason
-    		){
-    	MResult result = new MResult(MCode.V_1);
-    	try {
-    		List<BrandApproveRejectCommand> commands = new ArrayList<BrandApproveRejectCommand>();
-			for(int i = 0;i < approveIds.size(); ++i) {
-				BrandApproveRejectCommand command = new BrandApproveRejectCommand(approveIds.get(i), rejectReason);
-				commands.add(command);
-			}
-			brandApproveApplication.batchRejectBrandApprove(commands);
-			result.setStatus(MCode.V_200);
-		} catch (NegativeException ne) {
-			LOGGER.error("批量拒绝品牌审核:", ne);
-			result = new MResult(ne.getStatus(), ne.getMessage());
-		} catch (Exception e) {
-            LOGGER.error("批量拒绝品牌审核:", e);
-            result = new MResult(MCode.V_400, "服务器开小差了");
-        }
-    	return new ResponseEntity<MResult>(result, HttpStatus.OK);
-    }
+   
 
     /**
      * 删除品牌审核信息
