@@ -199,50 +199,6 @@ public class GoodsAgent {
     }
     
     /**
-     * 商品批量上架,未鉴权
-     */
-    @RequestMapping(value = {"/up/shelfBatch", "/mng/up/shelfBatch"}, method = RequestMethod.PUT)
-    public ResponseEntity<MResult> upShelfGoodsBatch(
-    		@RequestParam("goodsIds") List goodsIds
-    		){
-    	MResult result = new MResult(MCode.V_1);
-    	try {
-            goodsApplication.upShelfGoodsBatch(goodsIds);
-            result.setStatus(MCode.V_200);
-        } catch (NegativeException ne) {
-            LOGGER.error("upShelfGoodsBatch NegativeException e:", ne);
-            result = new MResult(ne.getStatus(), ne.getMessage());
-        } catch (Exception e) {
-            LOGGER.error("upShelfGoodsBatch Exception e:", e);
-            result = new MResult(MCode.V_400, "商品批量上架失败");
-        }
-        return new ResponseEntity<MResult>(result, HttpStatus.OK);
-    }
-    
-    /**
-     * 商品批量下架,未鉴权
-     * @param goodsIds
-     * @return
-     */
-    @RequestMapping(value = {"/off/shelfBatch", "/mng/off/shelfBatch"}, method = RequestMethod.PUT)
-    public ResponseEntity<MResult> offShelfGoodsBatch(
-    		@RequestParam("goodsIds") List goodsIds
-    		){
-    	MResult result = new MResult(MCode.V_1);
-        try {
-            goodsApplication.offShelfGoodsBatch(goodsIds);
-            result.setStatus(MCode.V_200);
-        } catch (NegativeException ne) {
-            LOGGER.error("offShelfGoodsBatch NegativeException e:", ne);
-            result = new MResult(ne.getStatus(), ne.getMessage());
-        } catch (Exception e) {
-            LOGGER.error("offShelfGoodsBatch Exception e:", e);
-            result = new MResult(MCode.V_400, "商品批量下架失败");
-        }
-        return new ResponseEntity<MResult>(result, HttpStatus.OK);
-    }
-    
-    /**
      * 商品下架
      *
      * @param goodsId
