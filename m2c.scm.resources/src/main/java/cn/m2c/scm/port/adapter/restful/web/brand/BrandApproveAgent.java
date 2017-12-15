@@ -230,7 +230,7 @@ public class BrandApproveAgent {
      * @param brandIds
      * @return
      */
-    @RequestMapping(value = "/mng/batchAgree",method = RequestMethod.POST)
+    @RequestMapping(value = "/web/batchagree",method = RequestMethod.POST)
     public ResponseEntity<MResult> brandApproveBatchAgree(
     		@RequestParam(value = "approveIds",required = false) List<String> approveIds,
     		@RequestParam(value = "brandIds",required = false) List<String> brandIds
@@ -288,7 +288,7 @@ public class BrandApproveAgent {
      * @param brandIds
      * @return
      */
-    @RequestMapping(value = "/mng/batchReject",method = RequestMethod.POST)
+    @RequestMapping(value = "/web/batchreject",method = RequestMethod.POST)
     public ResponseEntity<MResult> brandApproveBatchReject(
     		@RequestParam(value = "approveIds",required = false) List<String> approveIds,
     		@RequestParam(value = "rejectReason",required = false) String rejectReason
@@ -303,10 +303,10 @@ public class BrandApproveAgent {
 			brandApproveApplication.batchRejectBrandApprove(commands);
 			result.setStatus(MCode.V_200);
 		} catch (NegativeException ne) {
-			LOGGER.error("批量同意品牌审核:", ne);
+			LOGGER.error("批量拒绝品牌审核:", ne);
 			result = new MResult(ne.getStatus(), ne.getMessage());
 		} catch (Exception e) {
-            LOGGER.error("批量同意品牌审核:", e);
+            LOGGER.error("批量拒绝品牌审核:", e);
             result = new MResult(MCode.V_400, "服务器开小差了");
         }
     	return new ResponseEntity<MResult>(result, HttpStatus.OK);
