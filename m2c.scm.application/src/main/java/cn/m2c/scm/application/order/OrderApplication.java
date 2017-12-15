@@ -268,7 +268,7 @@ public class OrderApplication {
         while (it.hasNext()) {
             String key = it.next();
             String specialPrice = (specialPriceMap.get(key) == null ? 0:specialPriceMap.get(key).specialPrice())+"";
-            if(specialPrice!=null && !"".equals(specialPrice)){
+            if(!StringUtils.isEmpty(specialPrice)){
                 for(GoodsDto d : gdes){
                     if(!StringUtils.isEmpty(d.getAppSpecialPrice()) && d.getSkuId().equals(key)){
                         if(!d.getAppSpecialPrice().equals(specialPrice)){
