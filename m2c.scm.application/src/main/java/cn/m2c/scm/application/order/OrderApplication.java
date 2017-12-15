@@ -1,7 +1,6 @@
 package cn.m2c.scm.application.order;
 
 import cn.m2c.common.MCode;
-import cn.m2c.common.StringUtil;
 import cn.m2c.ddd.common.event.annotation.EventListener;
 import cn.m2c.scm.application.classify.query.GoodsClassifyQueryApplication;
 import cn.m2c.scm.application.dealer.data.bean.DealerBean;
@@ -271,7 +270,7 @@ public class OrderApplication {
             String specialPrice = (specialPriceMap.get(key) == null ? 0:specialPriceMap.get(key).specialPrice())+"";
             if(specialPrice!=null && !"".equals(specialPrice)){
                 for(GoodsDto d : gdes){
-                    if(!StringUtil.isEmpty(d.getAppSpecialPrice()) && d.getSkuId().equals(key)){
+                    if(!StringUtils.isEmpty(d.getAppSpecialPrice()) && d.getSkuId().equals(key)){
                         if(!d.getAppSpecialPrice().equals(specialPrice)){
                             throw new NegativeException(MCode.V_101, "特惠价变更"+key);
                         }
