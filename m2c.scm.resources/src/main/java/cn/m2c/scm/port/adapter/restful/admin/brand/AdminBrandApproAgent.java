@@ -1,4 +1,4 @@
-package cn.m2c.scm.port.adapter.restful.web.brand.admin;
+package cn.m2c.scm.port.adapter.restful.admin.brand;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +22,7 @@ import cn.m2c.scm.domain.NegativeException;
 
 
 @RestController
-@RequestMapping("/brand/approve/admin")
+@RequestMapping("/admin/brand/approve")
 public class AdminBrandApproAgent {
 	
 	private final static Logger LOGGER = LoggerFactory.getLogger(AdminBrandApproAgent.class);
