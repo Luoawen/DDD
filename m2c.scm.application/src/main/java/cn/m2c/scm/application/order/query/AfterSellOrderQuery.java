@@ -6,7 +6,6 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Repository;
 
 import cn.m2c.common.MCode;
@@ -117,11 +116,13 @@ public class AfterSellOrderQuery {
 			sql.append(" AND after.created_date = ? ");
 			params.add(createDate);
 		}
-		if (null != condition && !"".equals(condition)) {
-			sql.append(" AND (after.dealer_order_id LIKE ? OR after.after_sell_order_id LIKE ? OR detail.goods_name LIKE ?) ");
-			params.add("%" + condition + "%");
-			params.add("%" + condition + "%");
-			params.add("%" + condition + "%");
+		if (!StringUtils.isEmpty(condition)) {
+			sql.append(" AND (after.dealer_order_id LIKE concat('%', ?,'%') OR after.after_sell_order_id LIKE concat('%', ?,'%') OR detail.goods_name LIKE concat('%', ?,'%') ");
+			sql.append(" OR after.dealer_id IN (SELECT dd.dealer_id FROM t_scm_dealer dd WHERE dd.dealer_name LIKE concat('%', ?,'%')))");
+			params.add(condition);
+			params.add(condition);
+			params.add(condition);
+			params.add(condition);
 		}
 		if (StringUtils.isNotEmpty(endTime) && StringUtils.isNotEmpty(endTime)) {
 			sql.append(" AND dealer.created_date BETWEEN ? AND ? ");
@@ -167,7 +168,6 @@ public class AfterSellOrderQuery {
 		sql.append(" SELECT COUNT(*)  ");
 		sql.append(" FROM t_scm_order_after_sell after");
 		sql.append(" LEFT JOIN t_scm_dealer dealer ON after.dealer_id = dealer.dealer_id ");
-		sql.append(" LEFT JOIN t_scm_goods goods ON after.goods_id = goods.goods_id ");
 		sql.append(" LEFT JOIN t_scm_order_detail detail ON after.dealer_order_id = detail.dealer_order_id AND after.sku_id=detail.sku_id AND after.sort_no = detail.sort_no \r\n");
 		sql.append(" WHERE 1 = 1 ");
 		if (null != orderType) {
@@ -218,11 +218,13 @@ public class AfterSellOrderQuery {
 			sql.append(" AND after.created_date = ? ");
 			params.add(createDate);
 		}
-		if (null != condition && !"".equals(condition)) {
-			sql.append(" AND (after.dealer_order_id LIKE ? OR after.after_sell_order_id LIKE ? OR goods.goods_name LIKE ?) ");
-			params.add("%" + condition + "%");
-			params.add("%" + condition + "%");
-			params.add("%" + condition + "%");
+		if (!StringUtils.isEmpty(condition)) {
+			sql.append(" AND (after.dealer_order_id LIKE concat('%', ?,'%') OR after.after_sell_order_id LIKE concat('%', ?,'%') OR detail.goods_name LIKE concat('%', ?,'%') ");
+			sql.append(" OR after.dealer_id IN (SELECT dd.dealer_id FROM t_scm_dealer dd WHERE dd.dealer_name LIKE concat('%', ?,'%')))");
+			params.add(condition);
+			params.add(condition);
+			params.add(condition);
+			params.add(condition);
 		}
 		if (StringUtils.isNotEmpty(endTime) && StringUtils.isNotEmpty(endTime)) {
 			sql.append(" AND dealer.created_date BETWEEN ? AND ? ");
