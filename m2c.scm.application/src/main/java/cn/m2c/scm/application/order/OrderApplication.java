@@ -181,7 +181,10 @@ public class OrderApplication {
         Map<String, GoodsSkuSpecial> specialPriceMap = (Map<String, GoodsSkuSpecial>)goodsSpecialRsp.getEffectiveGoodsSkuSpecial(specialSkus);
         
         checkNotSatisfy(specialPriceMap, specialSkus);
-        
+        LOGGER.info("特惠价比较开始");
+        //判断app传入的特惠价和商品获取的特惠价是否相同
+        checkSpecialPriceChange(specialPriceMap,gdes);
+        LOGGER.info("特惠价比较结束");
         // 获取分类及费率
         getClassifyRate(goodDtls, mediaResIds);
         //若有媒体信息则需要查询媒体信息
@@ -248,6 +251,34 @@ public class OrderApplication {
         }
         
         return new OrderResult(cmd.getOrderId(), goodsAmounts, freight, plateDiscount, dealerDiscount);
+    }
+
+
+    /**
+     * 判断从商品那边获取的特惠价和app传入的特惠价是否相等
+     * @param specialPriceMap
+     * @param gdes
+     * @throws NegativeException
+     */
+    private void checkSpecialPriceChange(Map<String, GoodsSkuSpecial> specialPriceMap, List<GoodsDto> gdes) throws NegativeException {
+        LOGGER.info("开始计算app传入特惠价和商品的sku的特惠价比较");
+        LOGGER.info("specialPriceMap:"+specialPriceMap.toString()+"-----------------gdes:"+gdes.toString());
+
+        Iterator<String> it = specialPriceMap.keySet().iterator();
+        while (it.hasNext()) {
+            String key = it.next();
+            String specialPrice = (specialPriceMap.get(key) == null ? 0:specialPriceMap.get(key).specialPrice())+"";
+            if(specialPrice!=null && !"".equals(specialPrice)){
+                for(GoodsDto d : gdes){
+                    if(d.getSkuId().equals(key)){
+                        if(!d.getAppSpecialPrice().equals(specialPrice)){
+                            throw new NegativeException(MCode.V_101, "特惠价变更"+key);
+                        }
+                    }
+                }
+            }
+        }
+        return;
     }
 
     /***
