@@ -262,6 +262,8 @@ public class OrderApplication {
      */
     private void checkSpecialPriceChange(Map<String, GoodsSkuSpecial> specialPriceMap, List<GoodsDto> gdes) throws NegativeException {
         LOGGER.info("开始计算app传入特惠价和商品的sku的特惠价比较");
+        if (null == specialPriceMap)
+        	return;
         LOGGER.info("specialPriceMap:"+specialPriceMap.toString()+"-----------------gdes:"+gdes.toString());
 
         Iterator<String> it = specialPriceMap.keySet().iterator();
@@ -277,8 +279,7 @@ public class OrderApplication {
                     }
                 }
             }
-        }
-        return;
+        }        
     }
 
     /***
