@@ -213,7 +213,12 @@ public class OrderAddCommand extends AssertionConcern implements Serializable {
 			if (StringUtils.isEmpty(skuId)) {
 				throw new NegativeException(MCode.V_1, "SKU Id为空！");
 			}
-			
+			//解析app传入的特惠价
+			String appSpecialPrice = "";
+			Integer isSpecial = goods.getInteger("isSpecial");
+			if(isSpecial!=null && isSpecial==1){
+				appSpecialPrice = goods.getString("appSpecialPrice");
+			}
 			int sl = goods.getIntValue("purNum");
 			if (sl < 1) {
 				throw new NegativeException(MCode.V_1, "购买数量必须大于0！");
@@ -227,6 +232,7 @@ public class OrderAddCommand extends AssertionConcern implements Serializable {
 			dto.setSkuId(skuId);
 			dto.setGoodsId(tmp);
 			dto.setPurNum(sl);
+			dto.setAppSpecialPrice(appSpecialPrice);
 			String marketId = goods.getString("marketId");
 			
 			dto.setMarketingId(marketId);

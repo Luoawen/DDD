@@ -144,10 +144,10 @@ public class OrderMarketCalc {
 
                 if ((type == 1 && totalMoney < threshold * changeNum) || (type == 2 && totalNum < threshold * changeNum))
                     throw new NegativeException(MCode.V_301, bean.getFullCutId());
-
-                if (changeMoney < as * changeNum) { // 不满足换购条件
-                    throw new NegativeException(MCode.V_301, bean.getFullCutId());
-                }
+                    //changeMoney  换货总共优惠的金额   as换货价  changeNum换货数量
+//                if (changeMoney < as * changeNum) { // 不满足换购条件
+//                    throw new NegativeException(MCode.V_301, bean.getFullCutId());
+//                }
 
                 int last = goodsLs.size() - 1;
                 if (goodsLs.get(last).isChange() == 1)
