@@ -35,10 +35,11 @@ public class GoodsSalesListAgent {
      */
     @RequestMapping(value = "/top5", method = RequestMethod.GET)
     public ResponseEntity<MResult> queryGoodsSalesListTop5(
+            @RequestParam(value = "month", required = false) Integer month,
             @RequestParam(value = "dealerId", required = false) String dealerId) {
         MResult result = new MResult(MCode.V_1);
         try {
-            List<GoodsSalesListBean> list = goodsSalesListApplication.queryGoodsSalesListTop5(dealerId);
+            List<GoodsSalesListBean> list = goodsSalesListApplication.queryGoodsSalesListTop5(month, dealerId);
             result.setContent(list);
             result.setStatus(MCode.V_200);
         } catch (Exception e) {

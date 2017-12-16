@@ -24,13 +24,13 @@ public class GoodsSalesListApplication {
         return supportJdbcTemplate;
     }
 
-    public List<GoodsSalesListBean> queryGoodsSalesListTop5(String dealerId) {
+    public List<GoodsSalesListBean> queryGoodsSalesListTop5(Integer month, String dealerId) {
         StringBuilder sql = new StringBuilder();
         sql.append(" SELECT ");
         sql.append(" * ");
         sql.append(" FROM ");
-        sql.append(" t_scm_goods_sales_list WHERE 1 = 1 AND dealer_id = ?");
+        sql.append(" t_scm_goods_sales_list WHERE 1 = 1 AND month = ? AND dealer_id = ?");
         sql.append(" AND goods_sale_num > 0 order by goods_sale_num desc limit 0,5");
-        return this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsSalesListBean.class, dealerId);
+        return this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsSalesListBean.class, month, dealerId);
     }
 }
