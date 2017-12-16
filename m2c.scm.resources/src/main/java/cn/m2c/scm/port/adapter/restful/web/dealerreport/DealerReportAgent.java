@@ -137,23 +137,7 @@ public class DealerReportAgent {
         BigDecimal ratioDec = ((sellMoneyDecimal.subtract(preSellMoneyDecimal)).divide(preSellMoneyDecimal, 2, BigDecimal.ROUND_HALF_UP)).multiply(new BigDecimal(100));
         return ratioDec.intValue();
     }
-
-    public static void main(String[] args) {
-        Long sellMoney = 78900l;
-        Long eightSellMoney = 45600l;
-        BigDecimal sellMoneyDecimal = new BigDecimal(sellMoney);
-        BigDecimal eightSellMoneyDecimal = new BigDecimal(eightSellMoney);
-/*
-
-        BigDecimal bigDecimal1 = sellMoneyDecimal.subtract(eightSellMoneyDecimal);
-        BigDecimal bigDecimal2 = bigDecimal1.divide(eightSellMoneyDecimal);
-        BigDecimal bigDecimal3 = bigDecimal2.multiply(new BigDecimal(100));
-*/
-
-        BigDecimal ratio = ((sellMoneyDecimal.subtract(eightSellMoneyDecimal)).divide(eightSellMoneyDecimal, 2, BigDecimal.ROUND_HALF_UP)).multiply(new BigDecimal(100));
-        System.out.print(ratio.intValue());
-    }
-
+    
     private Map getDealerDayReportData(List<DealerDayReportBean> list) {
         Map map = new HashMap<>();
         Integer orderNum = 0;

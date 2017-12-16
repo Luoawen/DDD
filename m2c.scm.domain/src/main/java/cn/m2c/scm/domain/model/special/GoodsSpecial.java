@@ -119,7 +119,7 @@ public class GoodsSpecial extends ConcurrencySafeEntity {
             public int compare(GoodsSkuSpecial skuSpecial1, GoodsSkuSpecial skuSpecial2) {
                 if (skuSpecial2.specialPrice().compareTo(skuSpecial1.specialPrice()) == 0) {
                     if (null != skuSpecial1.supplyPrice()) {
-                        return skuSpecial1.supplyPrice().compareTo(skuSpecial2.supplyPrice());
+                        return skuSpecial2.supplyPrice().compareTo(skuSpecial1.supplyPrice());
                     } else {
                         return 0;
                     }
