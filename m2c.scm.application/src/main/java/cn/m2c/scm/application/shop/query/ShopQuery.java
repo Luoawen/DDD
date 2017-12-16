@@ -1,11 +1,13 @@
 package cn.m2c.scm.application.shop.query;
 
 import cn.m2c.common.JsonUtils;
+import cn.m2c.common.MCode;
 import cn.m2c.common.RedisUtil;
 import cn.m2c.ddd.common.port.adapter.persistence.springJdbc.SupportJdbcTemplate;
 import cn.m2c.scm.application.dealer.data.bean.DealerBean;
 import cn.m2c.scm.application.goods.query.GoodsQueryApplication;
 import cn.m2c.scm.application.shop.data.bean.ShopBean;
+import cn.m2c.scm.domain.NegativeException;
 import cn.m2c.scm.domain.service.shop.ShopService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -272,5 +274,36 @@ public class ShopQuery {
 		}
 		return custmerTel;
 		
+	}
+	
+	
+	/**
+	 * 多个商家Id获取店铺List
+	 * @param dealerIds
+	 * @return
+	 */
+	public List<ShopBean> getShopInfosByIds(List<String> dealerIds){
+		ShopBean shop = null;
+		List<ShopBean> shops = new ArrayList<ShopBean>();
+		try {
+			StringBuffer sql = new StringBuffer();
+			sql.append(" SELECT s.dealer_id, d.dealer_name, s.shop_id, s.shop_name, s.shop_icon").
+			append(" FROM t_scm_dealer_shop s LEFT JOIN t_scm_dealer d ON s.dealer_id = d.dealer_id ").
+			append(" WHERE s.dealer_id = ? ");
+			System.out.println("IDS------------------------->"+dealerIds);
+			for (String dealerId : dealerIds) {
+				System.out.println("SQL--------------------->"+sql);
+				shop = this.supportJdbcTemplate.queryForBean(sql.toString(), ShopBean.class,dealerId);
+				if(shop != null) {
+					shops.add(shop);
+				}
+			}
+			if (shops == null || shops.size() <0) {
+				throw new NegativeException(MCode.V_400,"没有查到记录");
+			}
+		} catch (Exception e) {
+			log.error("查询店铺信息出错",e);
+		}
+		return shops;
 	}
 }
