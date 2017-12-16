@@ -5,7 +5,7 @@ import cn.m2c.common.MPager;
 import cn.m2c.common.MResult;
 import cn.m2c.scm.application.goods.query.GoodsQueryApplication;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsBean;
-import cn.m2c.scm.application.goods.query.data.representation.GoodsForSaleRepresentation;
+import cn.m2c.scm.application.goods.query.data.representation.GoodsForNormalRepresentation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,22 +30,27 @@ public class GoodsDomainAgent {
     @Autowired
     GoodsQueryApplication goodsQueryApplication;
 
+    /**
+     * 给营销工具提供接口查询商品信息
+     * @param goodsIds
+     * @return
+     */
     @RequestMapping(value = "/ids", method = RequestMethod.GET)
-    public ResponseEntity<MResult> queryGoodsForSaleByGoodsIds(
+    public ResponseEntity<MResult> queryNormalGoodsByGoodsIds(
             @RequestParam(value = "goodsIds", required = false) List goodsIds) {
         MResult result = new MResult(MCode.V_1);
         try {
-            List<GoodsBean> goodsBeans = goodsQueryApplication.queryGoodsForSaleByGoodsIds(goodsIds);
+            List<GoodsBean> goodsBeans = goodsQueryApplication.queryGoodsByGoodsIds(goodsIds);
             if (null != goodsBeans && goodsBeans.size() > 0) {
-                List<GoodsForSaleRepresentation> resultRepresentation = new ArrayList<>();
+                List<GoodsForNormalRepresentation> resultRepresentation = new ArrayList<>();
                 for (GoodsBean goodsBean : goodsBeans) {
-                    resultRepresentation.add(new GoodsForSaleRepresentation(goodsBean));
+                    resultRepresentation.add(new GoodsForNormalRepresentation(goodsBean));
                 }
                 result.setContent(resultRepresentation);
             }
             result.setStatus(MCode.V_200);
         } catch (Exception e) {
-            LOGGER.error("queryGoodsForSaleByGoodsIds Exception e:", e);
+            LOGGER.error("queryNormalGoodsByGoodsIds Exception e:", e);
             result = new MPager(MCode.V_400, "查询在售商品列表失败");
         }
         return new ResponseEntity<MResult>(result, HttpStatus.OK);
