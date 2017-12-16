@@ -1121,5 +1121,15 @@ public class GoodsQueryApplication {
         sql.append(" AND g.del_status= 1 AND g.goods_status <> 3 AND g.recognized_id is not null");
         return supportJdbcTemplate.jdbcTemplate().queryForObject(sql.toString(), params.toArray(), Integer.class);
     }
+
+
+    public List<GoodsBean> queryGoodsForSaleByGoodsIds(List<String> goodsIds) {
+        StringBuilder sql = new StringBuilder();
+        sql.append(" SELECT ");
+        sql.append(" * ");
+        sql.append(" FROM ");
+        sql.append(" t_scm_goods where goods_id in (" + Utils.listParseString(goodsIds) + ") AND del_status = 1 AND goods_status <> 1");
+        return this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsBean.class);
+    }
 }
 
