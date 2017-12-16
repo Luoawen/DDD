@@ -26,6 +26,7 @@ import cn.m2c.scm.application.shop.data.bean.ShopBean;
 import cn.m2c.scm.application.shop.data.representation.ShopInfoRepresentation;
 import cn.m2c.scm.application.shop.query.ShopQuery;
 import cn.m2c.scm.domain.IDGenerator;
+import cn.m2c.scm.domain.NegativeException;
 
 @RestController
 @RequestMapping("/shop/sys")
@@ -232,11 +233,13 @@ public class ShopAgent {
 				List<ShopBean> shops = query.getShopInfosByIds(dealerIds);
 				result.setContent(shops);
 				result.setStatus(MCode.V_200);
+			} catch (NegativeException ne) {
+				log.error("查询店铺信息出错", ne);
+				result = new MResult(MCode.V_400,ne.getMessage());
 			} catch (Exception e) {
 				log.error("查询店铺信息失败！",e.getMessage());
 				result = new MPager(MCode.V_400, "服务器开小差了，请稍后再试");
 			}
-			
 			return new ResponseEntity<MResult>(result,HttpStatus.OK);
 		 }
 }

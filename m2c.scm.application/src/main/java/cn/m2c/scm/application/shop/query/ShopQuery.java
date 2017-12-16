@@ -282,7 +282,7 @@ public class ShopQuery {
 	 * @param dealerIds
 	 * @return
 	 */
-	public List<ShopBean> getShopInfosByIds(List<String> dealerIds){
+	public List<ShopBean> getShopInfosByIds(List<String> dealerIds) throws NegativeException{
 		ShopBean shop = null;
 		List<ShopBean> shops = new ArrayList<ShopBean>();
 		try {
@@ -290,9 +290,7 @@ public class ShopQuery {
 			sql.append(" SELECT s.dealer_id, d.dealer_name, s.shop_id, s.shop_name, s.shop_icon").
 			append(" FROM t_scm_dealer_shop s LEFT JOIN t_scm_dealer d ON s.dealer_id = d.dealer_id ").
 			append(" WHERE s.dealer_id = ? ");
-			System.out.println("IDS------------------------->"+dealerIds);
 			for (String dealerId : dealerIds) {
-				System.out.println("SQL--------------------->"+sql);
 				shop = this.supportJdbcTemplate.queryForBean(sql.toString(), ShopBean.class,dealerId);
 				if(shop != null) {
 					shops.add(shop);
