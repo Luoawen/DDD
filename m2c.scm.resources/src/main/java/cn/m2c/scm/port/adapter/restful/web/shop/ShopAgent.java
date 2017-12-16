@@ -222,4 +222,21 @@ public class ShopAgent {
 			return new ResponseEntity<MResult>(result,HttpStatus.OK);
 			 
 		 }
+		 
+		 
+		 @RequestMapping(value = "shopinfos",method = RequestMethod.GET)
+		 public ResponseEntity<MResult> getShopsInfo(@RequestParam(value = "dealerIds",required = false)List<String> dealerIds){
+			MResult result = new MResult(MCode.V_1);
+			
+			try {
+				List<ShopBean> shops = query.getShopInfosByIds(dealerIds);
+				result.setContent(shops);
+				result.setStatus(MCode.V_200);
+			} catch (Exception e) {
+				log.error("查询店铺信息失败！",e.getMessage());
+				result = new MPager(MCode.V_400, "服务器开小差了，请稍后再试");
+			}
+			
+			return new ResponseEntity<MResult>(result,HttpStatus.OK);
+		 }
 }
