@@ -141,6 +141,12 @@ public class Seller extends ConcurrencySafeEntity {
 		this.lastUpdatedDate = new Date();
 	}
 
+	public String getSellerPhone() {
+		return sellerPhone;
+	}
+	
+	
+
 //	/**
 //	 * 添加或者更新业务员信息
 //	 */

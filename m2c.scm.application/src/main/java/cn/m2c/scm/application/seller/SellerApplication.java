@@ -51,12 +51,12 @@ public class SellerApplication {
 	public void update(SellerCommand command) throws NegativeException {
 		// TODO Auto-generated method stub
 		log.info("---修改经销商业务员", command.toString());
-		if(!sellerService.isSellerPhoneExist(command.getSellerPhone())){
+		Seller seller = sellerRepository.getSeller(command.getSellerId());
+		if (seller == null)
+			throw new NegativeException(NegativeCode.SELLER_IS_NOT_EXIST, "此业务员不存在.");
+		if(!seller.getSellerPhone().equals(command.getSellerPhone()) && !sellerService.isSellerPhoneExist(command.getSellerPhone())){
 			throw new NegativeException(NegativeCode.SELLER_PHONE_IS_EXIST, "此业务员手机号已存在.");
 		}
-			Seller seller = sellerRepository.getSeller(command.getSellerId());
-			if (seller == null)
-				throw new NegativeException(NegativeCode.SELLER_IS_NOT_EXIST, "此业务员不存在.");
 			seller.update(command.getSellerName(), command.getSellerPhone(), command.getSellerSex(), command.getSellerNo(),
 					command.getSellerConfirmPass(), command.getSellerProvince(), command.getSellerCity(),
 					command.getSellerArea(), command.getSellerPcode(), command.getSellerCcode(), command.getSellerAcode(),
