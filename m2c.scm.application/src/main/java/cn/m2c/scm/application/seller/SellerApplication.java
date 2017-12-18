@@ -30,7 +30,7 @@ public class SellerApplication {
 	@EventListener
 	public void addSeller(SellerCommand command) throws NegativeException {
 		log.info("---添加经销商业务员", command.toString());
-		if(sellerService.isSellerPhoneExist(command.getSellerPhone())){
+		if(!sellerService.isSellerPhoneExist(command.getSellerPhone())){
 			throw new NegativeException(NegativeCode.SELLER_PHONE_IS_EXIST, "此业务员手机号已存在.");
 		}
 			Seller seller = sellerRepository.getSeller(command.getSellerId());
@@ -51,7 +51,7 @@ public class SellerApplication {
 	public void update(SellerCommand command) throws NegativeException {
 		// TODO Auto-generated method stub
 		log.info("---修改经销商业务员", command.toString());
-		if(sellerService.isSellerPhoneExist(command.getSellerPhone())){
+		if(!sellerService.isSellerPhoneExist(command.getSellerPhone())){
 			throw new NegativeException(NegativeCode.SELLER_PHONE_IS_EXIST, "此业务员手机号已存在.");
 		}
 			Seller seller = sellerRepository.getSeller(command.getSellerId());
