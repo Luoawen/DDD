@@ -334,4 +334,8 @@ public final class NegativeCode {
 	 * 商家订单不存在
 	 */
 	public static final Integer DEALER_ORDER_IS_NOT_EXIST = 140032;
+	/**
+	 * 业务员手机号已存在
+	 */
+	public static final Integer SELLER_PHONE_IS_EXIST = 140033;
 }
