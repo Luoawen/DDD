@@ -189,4 +189,9 @@ public class HibernateSaleAfterOrderRepository extends HibernateSupperRepository
 			}		
 		}
 	}
+	@Override
+	public void invalideBefore(String skuId, String dealerOrderId, int sortNo) {
+		this.session().createSQLQuery("UPDATE t_scm_order_after_sell SET is_invalide=1 WHERE sku_id =:skuId AND dealer_order_id= :dealerOrderId AND sort_no=:sortNo AND _status < 4")
+		.setParameter("skuId", skuId).setParameter("dealerOrderId", dealerOrderId).setParameter("sortNo", sortNo);
+	}
 }
