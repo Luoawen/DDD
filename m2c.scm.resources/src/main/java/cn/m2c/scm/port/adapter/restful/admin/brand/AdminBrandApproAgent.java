@@ -45,7 +45,7 @@ public class AdminBrandApproAgent {
 		try {
 			List<BrandApproveAgreeCommand> commands = new ArrayList<BrandApproveAgreeCommand>();
 			for (int i = 0; i < approveIds.size(); ++i) {
-				BrandApproveAgreeCommand command = new BrandApproveAgreeCommand(brandIds.get(i), approveIds.get(i));
+				BrandApproveAgreeCommand command = new BrandApproveAgreeCommand(null, approveIds.get(i));
 				commands.add(command);
 			}
 			brandApproveApplication.batchAgreeBrandApprove(commands);

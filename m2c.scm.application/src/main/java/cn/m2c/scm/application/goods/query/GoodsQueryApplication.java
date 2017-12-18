@@ -314,7 +314,13 @@ public class GoodsQueryApplication {
         sql.append(" * ");
         sql.append(" FROM ");
         sql.append(" t_scm_goods where goods_id in (" + Utils.listParseString(goodsIds) + ") AND del_status = 1");
-        return this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsBean.class);
+        List<GoodsBean> goodsBeans = this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsBean.class);
+        if (null != goodsBeans && goodsBeans.size() > 0) {
+           for(GoodsBean goodsBean:goodsBeans){
+               goodsBean.setGoodsSkuBeans(queryGoodsSKUsByGoodsId(goodsBean.getId()));
+           }
+        }
+        return goodsBeans;
     }
 
     public List<GoodsBean> queryGoodsRandom(Integer number) {

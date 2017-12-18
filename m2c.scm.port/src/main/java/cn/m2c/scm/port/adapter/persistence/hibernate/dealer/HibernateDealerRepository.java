@@ -76,10 +76,10 @@ public class HibernateDealerRepository extends HibernateSupperRepository impleme
         Integer vId = getDealerDayReportVid(dealerId, day);
         if (null == vId) {//不存在则新增一条数据
             StringBuilder insertSql = new StringBuilder();
-            insertSql.append("INSERT INTO t_scm_dealer_day_report (day_int,dealer_id,order_num,order_refund_num,goods_add_num,sell_money,refund_money,goods_comment_num) ");
-            insertSql.append("VALUES (:day_int, :dealer_id, :order_num, :order_refund_num, :goods_add_num, :sell_money, :refund_money, :goods_comment_num) ");
+            insertSql.append("INSERT INTO t_scm_dealer_day_report (day,dealer_id,order_num,order_refund_num,goods_add_num,sell_money,refund_money,goods_comment_num) ");
+            insertSql.append("VALUES (:day, :dealer_id, :order_num, :order_refund_num, :goods_add_num, :sell_money, :refund_money, :goods_comment_num) ");
             Query insert = this.session().createSQLQuery(insertSql.toString());
-            insert.setParameter("day_int", day);
+            insert.setParameter("day", day);
             insert.setParameter("dealer_id", dealerId);
             insert.setParameter("order_num", orderNum);
             insert.setParameter("order_refund_num", orderRefundNum);
@@ -99,7 +99,7 @@ public class HibernateDealerRepository extends HibernateSupperRepository impleme
             updateSql.append("goods_comment_num = goods_comment_num + :goods_comment_num, ");
             updateSql.append("concurrency_version = concurrency_version + 1 ");
             updateSql.append("WHERE 1=1 ");
-            updateSql.append("AND day_int = :day_int ");
+            updateSql.append("AND day = :day ");
             updateSql.append("AND dealer_id = :dealer_id ");
             updateSql.append("AND concurrency_version = :vId ");
             Query update = this.session().createSQLQuery(updateSql.toString());
@@ -109,7 +109,7 @@ public class HibernateDealerRepository extends HibernateSupperRepository impleme
             update.setParameter("sell_money", sellMoney);
             update.setParameter("refund_money", refundMoney);
             update.setParameter("goods_comment_num", goodsCommentNum);
-            update.setParameter("day_int", day);
+            update.setParameter("day", day);
             update.setParameter("dealer_id", dealerId);
             update.setParameter("vId", vId);
             int rows = update.executeUpdate();
@@ -120,9 +120,9 @@ public class HibernateDealerRepository extends HibernateSupperRepository impleme
     }
 
     public Integer getDealerDayReportVid(String dealerId, Integer day) {
-        StringBuilder sql = new StringBuilder("select concurrency_version from t_scm_dealer_day_report where day_int =:day_int and dealer_id = :dealer_id");
+        StringBuilder sql = new StringBuilder("select concurrency_version from t_scm_dealer_day_report where day =:day and dealer_id = :dealer_id");
         Query query = this.session().createSQLQuery(sql.toString());
-        query.setParameter("day_int", day);
+        query.setParameter("day", day);
         query.setParameter("dealer_id", dealerId);
         Integer vId = null == query.uniqueResult() ? null : Integer.parseInt(String.valueOf(query.uniqueResult()));
         return vId;

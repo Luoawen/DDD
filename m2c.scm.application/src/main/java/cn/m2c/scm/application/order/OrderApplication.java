@@ -262,23 +262,24 @@ public class OrderApplication {
      */
     private void checkSpecialPriceChange(Map<String, GoodsSkuSpecial> specialPriceMap, List<GoodsDto> gdes) throws NegativeException {
         LOGGER.info("开始计算app传入特惠价和商品的sku的特惠价比较");
+        if (null == specialPriceMap)
+        	return;
         LOGGER.info("specialPriceMap:"+specialPriceMap.toString()+"-----------------gdes:"+gdes.toString());
 
         Iterator<String> it = specialPriceMap.keySet().iterator();
         while (it.hasNext()) {
             String key = it.next();
             String specialPrice = (specialPriceMap.get(key) == null ? 0:specialPriceMap.get(key).specialPrice())+"";
-            if(specialPrice!=null && !"".equals(specialPrice)){
+            if(!StringUtils.isEmpty(specialPrice)){
                 for(GoodsDto d : gdes){
-                    if(d.getSkuId().equals(key)){
+                    if(!StringUtils.isEmpty(d.getAppSpecialPrice()) && d.getSkuId().equals(key)){
                         if(!d.getAppSpecialPrice().equals(specialPrice)){
                             throw new NegativeException(MCode.V_101, "特惠价变更"+key);
                         }
                     }
                 }
             }
-        }
-        return;
+        }        
     }
 
     /***
@@ -968,13 +969,21 @@ public class OrderApplication {
     	if (resMap == null)
     		return;
     	Iterator<String> it = resMap.keySet().iterator();
+    	List<String> keys = new ArrayList<String>();
+    	
+    	Map<String, Object> tmpMap = new HashMap<String, Object>();
     	while(it.hasNext()) {
     		String key = it.next();
-    		Object obj = resMap.remove(key);
+    		Object obj = resMap.get(key);
+    		keys.add(key);
     		SkuMediaBean skb = mediaResIds.get(key);
     		if (skb != null) {
-    			resMap.put(key + skb.getMresId(), obj);
+    			tmpMap.put(key + skb.getMresId(), obj);
     		}
+    	}
+    	resMap.putAll(tmpMap);
+    	for (String k : keys) {
+    		resMap.remove(k);
     	}
     }
     /***
