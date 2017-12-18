@@ -72,7 +72,7 @@ public class AdminGoodsApproveAgent {
             result = new MResult(ne.getStatus(), ne.getMessage());
         } catch (Exception e) {
             LOGGER.error("rejectGoodsApprove Exception e:", e);
-            result = new MResult(MCode.V_400, "拒绝商品审核失败");
+            result = new MResult(MCode.V_400, "批量拒绝商品审核失败");
         }
         return new ResponseEntity<MResult>(result, HttpStatus.OK);
     }
