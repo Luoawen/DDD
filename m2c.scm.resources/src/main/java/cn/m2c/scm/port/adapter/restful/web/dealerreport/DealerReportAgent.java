@@ -59,12 +59,39 @@ public class DealerReportAgent {
     }
 
     /**
+     * 获取本月累计销售金额
+     *
+     * @param dealerId 商家id
+     * @return
+     */
+    @RequestMapping(value = "/this/month/sell/money", method = RequestMethod.GET)
+    public ResponseEntity<MResult> getDealerThisMonthSellMoney(
+            @RequestParam(value = "dealerId", required = false) String dealerId) {
+        MResult result = new MResult(MCode.V_1);
+        try {
+            Calendar cal = Calendar.getInstance();
+            SimpleDateFormat df = new SimpleDateFormat("yyyyMM");
+            String month = df.format(cal.getTime());
+            Integer startDay = Integer.parseInt(month + "01");
+            Integer endDay = Integer.parseInt(month + cal.getActualMaximum(Calendar.DATE));
+            List<DealerDayReportBean> list = dealerReportQueryApplication.getDealerReportByDaySection(dealerId, startDay, endDay);
+            Map map = getDealerDayReportData(list);
+            result.setContent(map.get("sellMoney"));
+            result.setStatus(MCode.V_200);
+        } catch (Exception e) {
+            LOGGER.error("getDealerThisMonthSellMoney Exception e:", e);
+            result = new MResult(MCode.V_400, "获取本月累计销售金额失败");
+        }
+        return new ResponseEntity<MResult>(result, HttpStatus.OK);
+    }
+
+    /**
      * 获取近7日销售金额统计
      *
      * @param dealerId 商家id
      * @return
      */
-    @RequestMapping(value = "/sell/money", method = RequestMethod.GET)
+    @RequestMapping(value = "/7/days/sell/money", method = RequestMethod.GET)
     public ResponseEntity<MResult> getDealerNearly7DaysReport(
             @RequestParam(value = "dealerId", required = false) String dealerId) {
         MResult result = new MResult(MCode.V_1);
@@ -137,7 +164,7 @@ public class DealerReportAgent {
         BigDecimal ratioDec = ((sellMoneyDecimal.subtract(preSellMoneyDecimal)).divide(preSellMoneyDecimal, 2, BigDecimal.ROUND_HALF_UP)).multiply(new BigDecimal(100));
         return ratioDec.intValue();
     }
-    
+
     private Map getDealerDayReportData(List<DealerDayReportBean> list) {
         Map map = new HashMap<>();
         Integer orderNum = 0;

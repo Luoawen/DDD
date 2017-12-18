@@ -695,7 +695,7 @@ public class OrderApplication {
     @EventListener(isListening = true)
     public void confirmSku(ConfirmSkuCmd cmd) throws NegativeException {
 
-        DealerOrderDtl dtl = orderRepository.getDealerOrderDtlBySku(cmd.getDealerOrderId(), cmd.getSkuId());
+        DealerOrderDtl dtl = orderRepository.getDealerOrderDtlBySku(cmd.getDealerOrderId(), cmd.getSkuId(), cmd.getSortNo());
         if (dtl == null) {
         	throw new NegativeException(MCode.V_1, "无此商品！");
         }

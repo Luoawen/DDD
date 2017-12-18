@@ -99,4 +99,12 @@ public interface SaleAfterOrderRepository {
 	 * @param afterNo
 	 */
 	public void scanDtlGoods(String afterNo);
+	
+	/***
+	 * 使之前的东东失效
+	 * @param skuId 
+	 * @param dealerOrderId 商家订货单号
+	 * @param sortNo
+	 */
+	public void invalideBefore(String skuId, String dealerOrderId, int sortNo);
 }
