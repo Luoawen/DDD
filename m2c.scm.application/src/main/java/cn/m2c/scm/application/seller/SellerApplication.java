@@ -75,9 +75,6 @@ public class SellerApplication {
 		Seller seller = sellerRepository.getSeller(command.getSellerId());
 		if (seller == null)
 			throw new NegativeException(NegativeCode.SELLER_IS_NOT_EXIST, "此业务员不存在.");
-		if(!seller.getSellerPhone().equals(command.getSellerPhone()) && !sellerService.isSellerPhoneExist(command.getSellerPhone())){
-			throw new NegativeException(NegativeCode.SELLER_PHONE_IS_EXIST, "此业务员手机号已存在.");
-		}
 		seller.updateSellerInfo(command.getSellerName(), command.getSellerPhone(), command.getSellerRemark());
 		sellerRepository.save(seller);
 	}
