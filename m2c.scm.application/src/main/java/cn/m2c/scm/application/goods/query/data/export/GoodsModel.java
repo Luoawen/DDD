@@ -70,7 +70,7 @@ public class GoodsModel {
         this.goodsPostageName = goodsPostageName;
         // 结算模式 1：按供货价 2：按服务费率
         if (settlementMode == 1) {
-            this.supplyPrice = null != goodsSkuBean.getSupplyPrice() ? df.format(goodsSkuBean.getSupplyPrice() / 100) : "";
+            this.supplyPrice = null != goodsSkuBean.getSupplyPrice() ? df.format(goodsSkuBean.getSupplyPrice().floatValue() / 100) : "";
             this.serviceRate = "";
         } else {
             this.serviceRate = null == serviceRate ? "" : String.valueOf(serviceRate);

@@ -66,6 +66,6 @@ public class GoodsSupplyPriceModelAll {
             this.goodsStatus = "已售罄";
         }
         this.goodsPostageName = goodsPostageName;
-        this.supplyPrice = null != goodsSkuBean.getSupplyPrice() ? df.format(goodsSkuBean.getSupplyPrice() / 100) : "";
+        this.supplyPrice = null != goodsSkuBean.getSupplyPrice() ? df.format(goodsSkuBean.getSupplyPrice().floatValue() / 100) : "";
     }
 }
