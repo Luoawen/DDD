@@ -5,6 +5,7 @@ import cn.m2c.common.RedisUtil;
 import cn.m2c.ddd.common.port.adapter.persistence.springJdbc.SupportJdbcTemplate;
 import cn.m2c.scm.application.classify.query.GoodsClassifyQueryApplication;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsBean;
+import cn.m2c.scm.application.goods.query.data.bean.GoodsRecognizedBean;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsSkuBean;
 import cn.m2c.scm.application.goods.query.data.representation.GoodsSkuInfoRepresentation;
 import cn.m2c.scm.application.order.query.dto.GoodsDto;
@@ -304,6 +305,7 @@ public class GoodsQueryApplication {
         GoodsBean goodsBean = this.getSupportJdbcTemplate().queryForBean(sql.toString(), GoodsBean.class, goodsId);
         if (null != goodsBean) {
             goodsBean.setGoodsSkuBeans(queryGoodsSKUsByGoodsId(goodsBean.getId()));
+            goodsBean.setGoodsRecognizedBeans(queryGoodsRecognizedByGoodsId(goodsBean.getId()));
         }
         return goodsBean;
     }
@@ -1013,7 +1015,13 @@ public class GoodsQueryApplication {
         sql.append(" * ");
         sql.append(" FROM ");
         sql.append(" t_scm_goods where goods_id in (" + Utils.listParseString(goodsIds) + ")");
-        return this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsBean.class);
+        List<GoodsBean> list = this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsBean.class);
+        if (null != list && list.size() > 0) {
+            for (GoodsBean goodsBean : list) {
+                goodsBean.setGoodsRecognizedBeans(queryGoodsRecognizedByGoodsId(goodsBean.getId()));
+            }
+        }
+        return list;
     }
 
     public Integer queryGoodsByGoodOrDealerTotal(String goodsMessage, String dealerMessage, Integer goodsLaunchStatus) {
@@ -1066,7 +1074,13 @@ public class GoodsQueryApplication {
             params.add(rows * (pageNum - 1));
             params.add(rows);
         }
-        return supportJdbcTemplate.queryForBeanList(sql.toString(), GoodsBean.class, params.toArray());
+        List<GoodsBean> list = supportJdbcTemplate.queryForBeanList(sql.toString(), GoodsBean.class, params.toArray());
+        if (null != list && list.size() > 0) {
+            for (GoodsBean goodsBean : list) {
+                goodsBean.setGoodsRecognizedBeans(queryGoodsRecognizedByGoodsId(goodsBean.getId()));
+            }
+        }
+        return list;
     }
 
     public List<String> getRecognizedGoods() {
@@ -1142,6 +1156,15 @@ public class GoodsQueryApplication {
         }
         sql.append(" AND del_status= 1 AND goods_status <> 1");
         return supportJdbcTemplate.jdbcTemplate().queryForObject(sql.toString(), params.toArray(), Integer.class);
+    }
+
+    public List<GoodsRecognizedBean> queryGoodsRecognizedByGoodsId(Integer goodsId) {
+        StringBuilder sql = new StringBuilder();
+        sql.append(" SELECT ");
+        sql.append(" * ");
+        sql.append(" FROM ");
+        sql.append(" t_scm_goods_recognized WHERE 1 = 1 AND goods_id = ?");
+        return this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsRecognizedBean.class, goodsId);
     }
 }
 

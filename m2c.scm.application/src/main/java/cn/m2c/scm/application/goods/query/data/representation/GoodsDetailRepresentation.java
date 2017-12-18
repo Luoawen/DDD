@@ -3,9 +3,11 @@ package cn.m2c.scm.application.goods.query.data.representation;
 import cn.m2c.common.JsonUtils;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsBean;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsGuaranteeBean;
+import cn.m2c.scm.application.goods.query.data.bean.GoodsRecognizedBean;
 import cn.m2c.scm.application.postage.data.bean.PostageModelBean;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -35,8 +37,10 @@ public class GoodsDetailRepresentation {
     private Integer skuFlag;
     private String goodsPostageId;
     private String goodsPostageName;
-    private String recognizedId;
-    private String recognizedUrl;
+    /**
+     * 商品识别图
+     */
+    List<Map> goodsRecognized;
 
     public GoodsDetailRepresentation(GoodsBean bean, Map goodsClassifyMap, List<GoodsGuaranteeBean> goodsGuaranteeBeans,
                                      String goodsUnitName, Integer settlementMode, Float serviceRate, PostageModelBean postageModelBean) {
@@ -74,8 +78,15 @@ public class GoodsDetailRepresentation {
         if (null != postageModelBean) {
             this.goodsPostageName = postageModelBean.getModelName();
         }
-        this.recognizedId = bean.getRecognizedId();
-        this.recognizedUrl = bean.getRecognizedUrl();
+        this.goodsRecognized = new ArrayList<>();
+        if (null != bean.getGoodsRecognizedBeans() && bean.getGoodsRecognizedBeans().size() > 0) {
+            for (GoodsRecognizedBean goodsRecognizedBean : bean.getGoodsRecognizedBeans()) {
+                Map map = new HashMap<>();
+                map.put("recognizedId", goodsRecognizedBean.getRecognizedId());
+                map.put("recognizedUrl", goodsRecognizedBean.getRecognizedUrl());
+                this.goodsRecognized.add(map);
+            }
+        }
     }
 
     public String getGoodsPostageName() {
@@ -254,19 +265,11 @@ public class GoodsDetailRepresentation {
         this.goodsClassifyIds = goodsClassifyIds;
     }
 
-    public String getRecognizedId() {
-        return recognizedId;
+    public List<Map> getGoodsRecognized() {
+        return goodsRecognized;
     }
 
-    public void setRecognizedId(String recognizedId) {
-        this.recognizedId = recognizedId;
-    }
-
-    public String getRecognizedUrl() {
-        return recognizedUrl;
-    }
-
-    public void setRecognizedUrl(String recognizedUrl) {
-        this.recognizedUrl = recognizedUrl;
+    public void setGoodsRecognized(List<Map> goodsRecognized) {
+        this.goodsRecognized = goodsRecognized;
     }
 }
