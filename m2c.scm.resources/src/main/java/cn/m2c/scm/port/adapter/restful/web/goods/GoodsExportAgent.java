@@ -150,7 +150,7 @@ public class GoodsExportAgent {
                     ExcelUtil.writeExcel(response, fileName, goodsModels, GoodsModelAll.class);
                 }
             } else {
-                ExcelUtil.writeExcel(response, fileName, null, GoodsModel.class);
+                ExcelUtil.writeExcel(response, fileName, null, GoodsModelAll.class);
             }
         }
         
