@@ -235,10 +235,11 @@ public class AppOrderAgent {
             ,@RequestParam(value = "orderId", required = false) String orderId
             ,@RequestParam(value = "dealerOrderId", required = false) String dealerOrderId
             ,@RequestParam(value = "skuId", required = false) String skuId
+            ,@RequestParam(value = "sortNo", required = false, defaultValue="0") int sortNo
             ) {
     	MResult result = new MResult(MCode.V_1);
         try {
-        	ConfirmSkuCmd cmd = new ConfirmSkuCmd(orderId, userId, skuId, dealerOrderId);
+        	ConfirmSkuCmd cmd = new ConfirmSkuCmd(orderId, userId, skuId, dealerOrderId, sortNo);
         	//result.setContent(orderApp.confirmSku(cmd));
         	orderApp.confirmSku(cmd);
             result.setStatus(MCode.V_200);

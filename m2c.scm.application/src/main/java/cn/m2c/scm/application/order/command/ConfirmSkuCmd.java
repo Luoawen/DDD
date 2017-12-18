@@ -21,8 +21,10 @@ public class ConfirmSkuCmd extends AssertionConcern {
 	
 	private String skuId;
 	
+	private int sortNo;
+	
 	public ConfirmSkuCmd(String orderNo, String userId, String skuId
-			, String dealerOrderId) throws NegativeException {
+			, String dealerOrderId, int sortNo) throws NegativeException {
 		
 		orderId = orderNo;
 		
@@ -45,6 +47,12 @@ public class ConfirmSkuCmd extends AssertionConcern {
 			throw new NegativeException(MCode.V_1, "商家订单号参数为空(dealerOrderId)！");
 		}
 		this.dealerOrderId = dealerOrderId;
+		this.sortNo = sortNo;
+	}
+	
+
+	public int getSortNo() {
+		return sortNo;
 	}
 
 	public String getOrderId() {
