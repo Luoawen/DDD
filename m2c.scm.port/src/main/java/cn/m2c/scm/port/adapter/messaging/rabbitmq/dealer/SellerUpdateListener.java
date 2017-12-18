@@ -40,8 +40,8 @@ public class SellerUpdateListener extends ExchangeListener {
 		
 		NotificationReader reader = new NotificationReader(aTextMessage);
 		String sellerId = reader.eventStringValue("userId");
-		String sellerName = reader.eventStringValue("userName");
-		String sellerPhone = reader.eventStringValue("name");
+		String sellerPhone = reader.eventStringValue("userName");
+		String sellerName = reader.eventStringValue("name");
 		String remark = reader.eventStringValue("remark");
 		
 		SellerCommand command = new SellerCommand(sellerId, sellerName, sellerPhone, remark);
