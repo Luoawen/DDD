@@ -905,7 +905,7 @@ public class GoodsQueryApplication {
         sql.append(" g.* ");
         sql.append(" FROM ");
         sql.append(" t_scm_goods g,t_scm_goods_recognized r WHERE 1 = 1 AND g.id = r.goods_id AND r.recognized_id IN (" + Utils.listParseString(recognizedIds) + ")");
-        sql.append(" AND g.del_status = 1 group by g.goods_id");
+        sql.append(" AND g.del_status = 1 AND g.goods_status <> 1 group by g.goods_id");
         List<GoodsBean> goodsBeanList = this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsBean.class);
         if (null != goodsBeanList && goodsBeanList.size() > 0) {
             for (GoodsBean goodsBean : goodsBeanList) {
