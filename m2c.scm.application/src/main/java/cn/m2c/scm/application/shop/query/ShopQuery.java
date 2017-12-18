@@ -7,6 +7,7 @@ import cn.m2c.ddd.common.port.adapter.persistence.springJdbc.SupportJdbcTemplate
 import cn.m2c.scm.application.dealer.data.bean.DealerBean;
 import cn.m2c.scm.application.goods.query.GoodsQueryApplication;
 import cn.m2c.scm.application.shop.data.bean.ShopBean;
+import cn.m2c.scm.application.shop.data.bean.ShopCreatedDateBean;
 import cn.m2c.scm.domain.NegativeException;
 import cn.m2c.scm.domain.service.shop.ShopService;
 import org.slf4j.Logger;
@@ -304,4 +305,27 @@ public class ShopQuery {
 		}
 		return shops;
 	}
+	
+	
+	/**
+	 * 商家ID查询店铺创建时间
+	 * @param dealerId
+	 * @return
+	 * @throws NegativeException
+	 */
+	public ShopCreatedDateBean getShopCreatedTime(String dealerId) throws NegativeException {
+		ShopCreatedDateBean shop = null;
+		
+		try {
+			StringBuffer sql = new StringBuffer(" SELECT dealer_id, created_date FROM t_scm_dealer_shop where dealer_id = ? ");
+			shop = this.supportJdbcTemplate.queryForBean(sql.toString(), ShopCreatedDateBean.class,dealerId);
+		} catch (Exception e) {
+			log.error("查询创建时间出错",e);
+			throw new NegativeException(MCode.V_400,"查询失败");
+		}
+		
+		return shop;
+	}
+	
+	
 }
