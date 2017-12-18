@@ -140,6 +140,18 @@ public class Seller extends ConcurrencySafeEntity {
 		this.sellerPhone = sellerPhone;
 		this.lastUpdatedDate = new Date();
 	}
+	
+	/**
+	 * 更新业务员信息<事件消费>
+	 * @param sellerName
+	 * @param sellerPhone
+	 * @param remark
+	 */
+	public void updateSellerInfo(String sellerName,String sellerPhone,String remark) {
+		this.sellerName = sellerName;
+		this.sellerPhone = sellerPhone;
+		this.sellerRemark = remark;
+	}
 
 //	/**
 //	 * 添加或者更新业务员信息
