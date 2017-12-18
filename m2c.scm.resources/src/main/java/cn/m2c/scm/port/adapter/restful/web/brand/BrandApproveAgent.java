@@ -223,6 +223,8 @@ public class BrandApproveAgent {
         }
         return new ResponseEntity<MResult>(result, HttpStatus.OK);
     }
+    
+   
 
     /**
      * 商家管理平台审核拒绝
@@ -251,6 +253,8 @@ public class BrandApproveAgent {
         }
         return new ResponseEntity<MResult>(result, HttpStatus.OK);
     }
+    
+   
 
     /**
      * 删除品牌审核信息

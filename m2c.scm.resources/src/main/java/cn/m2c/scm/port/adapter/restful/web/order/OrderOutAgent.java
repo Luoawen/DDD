@@ -1,6 +1,7 @@
 package cn.m2c.scm.port.adapter.restful.web.order;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -21,7 +22,7 @@ import cn.m2c.common.JsonUtils;
 import cn.m2c.common.MCode;
 import cn.m2c.common.MResult;
 import cn.m2c.scm.application.order.OrderApplication;
-import cn.m2c.scm.application.order.SaleAfterOrderApp;
+import cn.m2c.scm.application.order.command.OrderPayedCmd;
 import cn.m2c.scm.application.order.data.bean.MainOrderBean;
 import cn.m2c.scm.application.order.data.representation.OrderMoney;
 import cn.m2c.scm.application.order.data.representation.OrderNums;
@@ -131,6 +132,36 @@ public class OrderOutAgent {
     	try {
     		Integer i = orderQuery.getPayedOrders(startTime, endTime);
     		result.setContent(new OrderNums(i));
+    		result.setStatus(MCode.V_200);
+		} 
+    	catch (NegativeException e) {
+    		result.setStatus(e.getStatus());
+			result.setContent(e.getMessage());
+    	}
+    	catch (Exception e) {
+			LOGGER.info("获取订单数失败,e:" + e.getMessage());
+			result.setStatus(MCode.V_400);
+			result.setContent("获取订单数失败");
+		}
+    	return new ResponseEntity<MResult>(result,HttpStatus.OK);
+    }
+    
+    /**
+     * 获取订单数据根据订单号
+     */
+    @RequestMapping(value="/payed/success/{orderNo}", method = RequestMethod.PUT)
+    public ResponseEntity<MResult> orderPayedByNo(
+    		@PathVariable("orderNo") String orderNo
+    		,@RequestParam(value="payNo", required=false) String payNo
+    		,@RequestParam(value="payWay", required=false) int payWay
+    		,@RequestParam(value="payTime", required=false) long payTime
+    		,@RequestParam(value="userId", required=false) String userId
+    		){
+    	MResult result = new MResult(MCode.V_1);
+    	try {
+    		OrderPayedCmd cmd = new OrderPayedCmd(orderNo, userId, payNo, payWay, new Date(payTime));
+    		orderApp.orderPayed(cmd);
+    		result.setContent("");
     		result.setStatus(MCode.V_200);
 		} 
     	catch (NegativeException e) {

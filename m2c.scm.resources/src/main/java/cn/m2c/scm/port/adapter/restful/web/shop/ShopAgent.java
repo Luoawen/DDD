@@ -23,9 +23,11 @@ import cn.m2c.scm.application.goods.query.GoodsQueryApplication;
 import cn.m2c.scm.application.shop.ShopApplication;
 import cn.m2c.scm.application.shop.command.ShopInfoUpdateCommand;
 import cn.m2c.scm.application.shop.data.bean.ShopBean;
+import cn.m2c.scm.application.shop.data.bean.ShopCreatedDateBean;
 import cn.m2c.scm.application.shop.data.representation.ShopInfoRepresentation;
 import cn.m2c.scm.application.shop.query.ShopQuery;
 import cn.m2c.scm.domain.IDGenerator;
+import cn.m2c.scm.domain.NegativeException;
 
 @RestController
 @RequestMapping("/shop/sys")
@@ -222,4 +224,51 @@ public class ShopAgent {
 			return new ResponseEntity<MResult>(result,HttpStatus.OK);
 			 
 		 }
+		 
+		 /**
+		  * 多个商家ID获取多个店铺信息
+		  * @param dealerIds
+		  * @return
+		  */
+		 @RequestMapping(value = "shopinfos",method = RequestMethod.GET)
+		 public ResponseEntity<MResult> getShopsInfo(@RequestParam(value = "dealerIds",required = false)List<String> dealerIds){
+			MResult result = new MResult(MCode.V_1);
+			
+			try {
+				List<ShopBean> shops = query.getShopInfosByIds(dealerIds);
+				result.setContent(shops);
+				result.setStatus(MCode.V_200);
+			} catch (NegativeException ne) {
+				log.error("查询店铺信息出错", ne);
+				result = new MResult(MCode.V_400,ne.getMessage());
+			} catch (Exception e) {
+				log.error("查询店铺信息失败！",e.getMessage());
+				result = new MResult(MCode.V_400, "服务器开小差了，请稍后再试");
+			}
+			return new ResponseEntity<MResult>(result,HttpStatus.OK);
+		 }
+		 
+		 /**
+		  * 商家ID查询店铺时间
+		  * @param dealerId
+		  * @return
+		  */
+		 @RequestMapping(value = "shopcreatedtime",method = RequestMethod.GET)
+		 public ResponseEntity<MResult> getShopCreatedTime(@RequestParam(value = "dealerId",required = true) String dealerId){
+			 MResult result = new MResult(MCode.V_1);
+			 
+			 try {
+				ShopCreatedDateBean bean = query.getShopCreatedTime(dealerId);
+				result.setContent(bean);
+				result.setStatus(MCode.V_200);
+			} catch (NegativeException ne) {
+				log.error("查询店铺时间出错", ne);
+				result = new MResult(MCode.V_400,ne.getMessage());
+			} catch (Exception e) {
+				log.error("查询店铺信息失败！",e.getMessage());
+				result = new MResult(MCode.V_400, "服务器开小差了，请稍后再试");
+			}
+			 return new ResponseEntity<MResult>(result,HttpStatus.OK);
+		 }
+		 
 }

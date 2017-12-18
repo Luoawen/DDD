@@ -63,6 +63,8 @@ public class SaleAfterOrder extends ConcurrencySafeEntity {
 	private Date updateTime;
 	/**在详情中的序号*/
 	private int sortNo = 0;
+	/**是否失效*/
+	private int isInvalide = 0;
 	
 	public SaleAfterOrder() {
 		super();
@@ -319,5 +321,9 @@ public class SaleAfterOrder extends ConcurrencySafeEntity {
 	
 	public int sortNo() {
 		return sortNo;
+	}
+	
+	public void invalid() {
+		isInvalide = 1;
 	}
 }

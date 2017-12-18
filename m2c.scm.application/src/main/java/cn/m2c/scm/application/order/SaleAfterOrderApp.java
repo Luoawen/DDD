@@ -58,7 +58,7 @@ public class SaleAfterOrderApp {
 		}
 		
 		int ij = saleAfterRepository.getSaleAfterOrderBySkuId(cmd.getDealerOrderId(), 
-				cmd.getSkuId());
+				cmd.getSkuId(), cmd.getSortNo());
 		if (ij > 0) {
 			throw new NegativeException(MCode.V_100, "此商品已有售后还在处理中！");
 		}
@@ -81,7 +81,7 @@ public class SaleAfterOrderApp {
 				break;
 		}
 		long money = itemDtl.sumGoodsMoney();
-		if (status != 0) {
+		if (orderType != 0) {
 			// 生成售后单保存, 计算售后需要退的钱
 			String mkId = itemDtl.getMarketId(); 
 			long discountMoney = 0;
@@ -102,13 +102,16 @@ public class SaleAfterOrderApp {
 		long ft = 0;
 		
 		if (money<0) {			
-			throw new NegativeException(MCode.V_103, "不能申请售后，因已不符合条件！");
+			throw new NegativeException(MCode.V_103, "不符合发起售后条件，建议联系商家");
 			// money = 0;
 		}
 		
 		int num = cmd.getBackNum();
 		if (num > itemDtl.sellNum())
 			num = itemDtl.sellNum();
+		
+		// 使之前申请的失效 20171218添加		
+		saleAfterRepository.invalideBefore(cmd.getSkuId(), cmd.getDealerOrderId(), cmd.getSortNo());
 		
 		SaleAfterOrder afterOrder = new SaleAfterOrder(cmd.getSaleAfterNo(), cmd.getUserId(), cmd.getOrderId(),
 				cmd.getDealerOrderId(), cmd.getDealerId(), cmd.getGoodsId(), cmd.getSkuId(), cmd.getReason()
@@ -158,7 +161,7 @@ public class SaleAfterOrderApp {
 			}
 			money = money - discountMoney;
 			if (money<0) {
-				throw new NegativeException(MCode.V_103, "不能申请售后，因已不符合条件！");
+				throw new NegativeException(MCode.V_103, "不符合发起售后条件，建议联系商家");
 				//money = 0;
 			}
 		}

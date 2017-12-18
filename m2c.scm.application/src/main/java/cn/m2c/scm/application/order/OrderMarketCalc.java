@@ -144,10 +144,10 @@ public class OrderMarketCalc {
 
                 if ((type == 1 && totalMoney < threshold * changeNum) || (type == 2 && totalNum < threshold * changeNum))
                     throw new NegativeException(MCode.V_301, bean.getFullCutId());
-
-                if (changeMoney < as * changeNum) { // 不满足换购条件
-                    throw new NegativeException(MCode.V_301, bean.getFullCutId());
-                }
+                    //changeMoney  换货总共优惠的金额   as换货价  changeNum换货数量
+//                if (changeMoney < as * changeNum) { // 不满足换购条件
+//                    throw new NegativeException(MCode.V_301, bean.getFullCutId());
+//                }
 
                 int last = goodsLs.size() - 1;
                 if (goodsLs.get(last).isChange() == 1)
@@ -335,7 +335,8 @@ public class OrderMarketCalc {
         // 优惠金额或折扣
         Integer discount = marketInfo.getDiscount();
         for (SkuNumBean bean : skuBeanLs) {
-            boolean bFlag = (skuId.equals(bean.getSkuId()) && bean.getSortNo() == sortNo);
+        	// sortNo == 0是为了兼容之前的数据
+            boolean bFlag = (skuId.equals(bean.getSkuId()) && (sortNo == 0 || bean.getSortNo() == sortNo));
             if (b == 1 && !bFlag && bean.getIsChange() == 0) {
                 total += bean.getGoodsAmount();
             } else if (b == 2 && !bFlag && bean.getIsChange() == 0) {
@@ -353,7 +354,7 @@ public class OrderMarketCalc {
         if (total >= threshold) {// 若还满足, 需要计算满足的值
             for (SkuNumBean bean : skuBeanLs) {
 
-                boolean bFlag = (skuId.equals(bean.getSkuId()) && bean.getSortNo() == sortNo);
+                boolean bFlag = (skuId.equals(bean.getSkuId()) && (sortNo == 0 || bean.getSortNo() == sortNo));
                 if (bFlag) {
                     tmp = bean;
                     continue;
@@ -396,7 +397,7 @@ public class OrderMarketCalc {
             marketInfo.setIsFull(false);
             for (SkuNumBean bean : skuBeanLs) {
 
-                boolean bFlag = (skuId.equals(bean.getSkuId()) && bean.getSortNo() == sortNo);
+                boolean bFlag = (skuId.equals(bean.getSkuId()) && (sortNo == 0 || bean.getSortNo() == sortNo));
                 if (bFlag) {
                     tmp = bean;
                     continue;

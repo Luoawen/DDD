@@ -22,9 +22,10 @@ public interface SaleAfterOrderRepository {
 	 * 获取是否已经申请过售后
 	 * @param dealerOrderId
 	 * @param skuId
+	 * @param sortNo
 	 * @return
 	 */
-	public int getSaleAfterOrderBySkuId(String dealerOrderId, String skuId);
+	public int getSaleAfterOrderBySkuId(String dealerOrderId, String skuId, int sortNo);
 	/***
 	 * 主要用于更新售后单状态
 	 * @param order
@@ -98,4 +99,12 @@ public interface SaleAfterOrderRepository {
 	 * @param afterNo
 	 */
 	public void scanDtlGoods(String afterNo);
+	
+	/***
+	 * 使之前的东东失效
+	 * @param skuId 
+	 * @param dealerOrderId 商家订货单号
+	 * @param sortNo
+	 */
+	public void invalideBefore(String skuId, String dealerOrderId, int sortNo);
 }

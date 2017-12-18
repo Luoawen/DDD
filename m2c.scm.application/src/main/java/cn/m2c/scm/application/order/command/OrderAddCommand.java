@@ -12,6 +12,7 @@ import com.google.gson.Gson;
 
 import cn.m2c.common.MCode;
 import cn.m2c.ddd.common.AssertionConcern;
+import cn.m2c.scm.application.order.data.bean.AppInfo;
 import cn.m2c.scm.application.order.query.dto.GoodsDto;
 import cn.m2c.scm.domain.NegativeException;
 import cn.m2c.scm.domain.model.order.InvoiceInfo;
@@ -43,6 +44,8 @@ public class OrderAddCommand extends AssertionConcern implements Serializable {
 	
 	private Double longitude;
 	
+	private AppInfo info;
+	
 	public Double getLatitude() {
 		return latitude;
 	}
@@ -56,9 +59,15 @@ public class OrderAddCommand extends AssertionConcern implements Serializable {
 		return from;
 	}
 	
+	public AppInfo getInfo() {
+		return info;
+	}
+	
 	public OrderAddCommand(String orderId, String userId, String noted
 			,String goodses, String invoice, String addr, String coupons
-			, Double latitude, Double longitude, Integer from) throws NegativeException {
+			, Double latitude, Double longitude, Integer from
+			,String appVer, String os, String osVer, String sn
+			) throws NegativeException {
 		// 检验必传参数, 若不符合条件则直接抛出异常
 		if (StringUtils.isEmpty(orderId)) {
 			throw new NegativeException(MCode.V_1, "订单号为空(orderId)");
@@ -83,6 +92,8 @@ public class OrderAddCommand extends AssertionConcern implements Serializable {
 		}
 		this.latitude = latitude;
 		this.longitude = longitude;
+		
+		info = new AppInfo(appVer, os, osVer, sn, orderId);
 		
 		Gson gson = new Gson();
 		
@@ -202,7 +213,12 @@ public class OrderAddCommand extends AssertionConcern implements Serializable {
 			if (StringUtils.isEmpty(skuId)) {
 				throw new NegativeException(MCode.V_1, "SKU Id为空！");
 			}
-			
+			//解析app传入的特惠价
+			String appSpecialPrice = "";
+			Integer isSpecial = goods.getInteger("isSpecial");
+			if(isSpecial!=null && isSpecial==1){
+				appSpecialPrice = goods.getString("appSpecialPrice");
+			}
 			int sl = goods.getIntValue("purNum");
 			if (sl < 1) {
 				throw new NegativeException(MCode.V_1, "购买数量必须大于0！");
@@ -216,6 +232,7 @@ public class OrderAddCommand extends AssertionConcern implements Serializable {
 			dto.setSkuId(skuId);
 			dto.setGoodsId(tmp);
 			dto.setPurNum(sl);
+			dto.setAppSpecialPrice(appSpecialPrice);
 			String marketId = goods.getString("marketId");
 			
 			dto.setMarketingId(marketId);

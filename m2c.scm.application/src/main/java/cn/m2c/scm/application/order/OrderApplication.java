@@ -25,12 +25,14 @@ import cn.m2c.scm.application.postage.data.representation.PostageModelRuleRepres
 import cn.m2c.scm.application.postage.query.PostageModelQueryApplication;
 import cn.m2c.scm.domain.NegativeCode;
 import cn.m2c.scm.domain.NegativeException;
+import cn.m2c.scm.domain.model.order.AppOrdInfo;
 import cn.m2c.scm.domain.model.order.DealerOrder;
 import cn.m2c.scm.domain.model.order.DealerOrderDtl;
 import cn.m2c.scm.domain.model.order.MainOrder;
 import cn.m2c.scm.domain.model.order.OrderRepository;
 import cn.m2c.scm.domain.model.order.SimpleMarketInfo;
 import cn.m2c.scm.domain.model.order.SimpleMarketing;
+import cn.m2c.scm.domain.model.special.GoodsSkuSpecial;
 import cn.m2c.scm.domain.model.special.GoodsSpecialRepository;
 import cn.m2c.scm.domain.service.order.OrderService;
 import cn.m2c.scm.domain.util.GetDisconfDataGetter;
@@ -42,6 +44,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.alibaba.fastjson.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -174,7 +178,13 @@ public class OrderApplication {
         // 获取商品详情
         List<GoodsDto> goodDtls = gQueryApp.getGoodsDtl(skus.keySet());
         // 特惠价map key:skuid, specialprice
-        Map<String, Long> specialPriceMap = (Map<String, Long>)goodsSpecialRsp.getEffectiveGoodsSkuSpecial(specialSkus);
+        Map<String, GoodsSkuSpecial> specialPriceMap = (Map<String, GoodsSkuSpecial>)goodsSpecialRsp.getEffectiveGoodsSkuSpecial(specialSkus);
+        
+        checkNotSatisfy(specialPriceMap, specialSkus);
+        LOGGER.info("特惠价比较开始");
+        //判断app传入的特惠价和商品获取的特惠价是否相同
+        checkSpecialPriceChange(specialPriceMap,gdes);
+        LOGGER.info("特惠价比较结束");
         // 获取分类及费率
         getClassifyRate(goodDtls, mediaResIds);
         //若有媒体信息则需要查询媒体信息
@@ -230,9 +240,46 @@ public class OrderApplication {
         if (!orderDomainService.lockMarketIds(useList, cmd.getOrderId(), cmd.getUserId())) {
             throw new NegativeException(MCode.V_300, "活动已被用完！");
         }
-        // for local test
-        //order.paySuccess("12121", 1, new Date(), cmd.getUserId());
+        
+        try {
+        	AppOrdInfo appInfo = cmd.getInfo().toAppInfo();
+        	if (appInfo != null)
+        		orderRepository.saveAppInfo(appInfo);
+        }
+        catch (Exception e) {
+        	LOGGER.info("===fanjc==save appinfo error." + e.getMessage());
+        }
+        
         return new OrderResult(cmd.getOrderId(), goodsAmounts, freight, plateDiscount, dealerDiscount);
+    }
+
+
+    /**
+     * 判断从商品那边获取的特惠价和app传入的特惠价是否相等
+     * @param specialPriceMap
+     * @param gdes
+     * @throws NegativeException
+     */
+    private void checkSpecialPriceChange(Map<String, GoodsSkuSpecial> specialPriceMap, List<GoodsDto> gdes) throws NegativeException {
+        LOGGER.info("开始计算app传入特惠价和商品的sku的特惠价比较");
+        if (null == specialPriceMap)
+        	return;
+        LOGGER.info("specialPriceMap:"+specialPriceMap.toString()+"-----------------gdes:"+gdes.toString());
+
+        Iterator<String> it = specialPriceMap.keySet().iterator();
+        while (it.hasNext()) {
+            String key = it.next();
+            String specialPrice = (specialPriceMap.get(key) == null ? 0:specialPriceMap.get(key).specialPrice())+"";
+            if(!StringUtils.isEmpty(specialPrice)){
+                for(GoodsDto d : gdes){
+                    if(!StringUtils.isEmpty(d.getAppSpecialPrice()) && d.getSkuId().equals(key)){
+                        if(!d.getAppSpecialPrice().equals(specialPrice)){
+                            throw new NegativeException(MCode.V_101, "特惠价变更"+key);
+                        }
+                    }
+                }
+            }
+        }        
     }
 
     /***
@@ -648,7 +695,7 @@ public class OrderApplication {
     @EventListener(isListening = true)
     public void confirmSku(ConfirmSkuCmd cmd) throws NegativeException {
 
-        DealerOrderDtl dtl = orderRepository.getDealerOrderDtlBySku(cmd.getDealerOrderId(), cmd.getSkuId());
+        DealerOrderDtl dtl = orderRepository.getDealerOrderDtlBySku(cmd.getDealerOrderId(), cmd.getSkuId(), cmd.getSortNo());
         if (dtl == null) {
         	throw new NegativeException(MCode.V_1, "无此商品！");
         }
@@ -878,7 +925,7 @@ public class OrderApplication {
      * @param goodses
      * @param specialPrice
      */
-    private void fillData(List<GoodsDto> userData, List<GoodsDto> goodses, Map<String, Long> specialPrice) {
+    private void fillData(List<GoodsDto> userData, List<GoodsDto> goodses, Map<String, GoodsSkuSpecial> specialPrice) {
     	for (GoodsDto t : userData) {
     		
     		String sku = t.getSkuId();
@@ -887,7 +934,10 @@ public class OrderApplication {
     		if (src != null)
     			t.copyField(src);
     		if (t.getIsSpecial() == 1 && specialPrice != null && specialPrice.get(sku) != null) {
-    			t.setSpecialPrice(specialPrice.get(sku));
+    			t.setSpecialPrice(specialPrice.get(sku).specialPrice());
+    			Long sPrice = specialPrice.get(sku).supplyPrice();
+    			if (sPrice != null)
+    				t.setSupplyPrice(sPrice);
     		}
     		else // 若没有特惠价则不执行特惠价
     			t.setIsSpecial(0);
@@ -919,13 +969,62 @@ public class OrderApplication {
     	if (resMap == null)
     		return;
     	Iterator<String> it = resMap.keySet().iterator();
+    	List<String> keys = new ArrayList<String>();
+    	
+    	Map<String, Object> tmpMap = new HashMap<String, Object>();
     	while(it.hasNext()) {
     		String key = it.next();
-    		Object obj = resMap.remove(key);
+    		Object obj = resMap.get(key);
+    		keys.add(key);
     		SkuMediaBean skb = mediaResIds.get(key);
     		if (skb != null) {
-    			resMap.put(key + skb.getMresId(), obj);
+    			tmpMap.put(key + skb.getMresId(), obj);
     		}
+    	}
+    	resMap.putAll(tmpMap);
+    	for (String k : keys) {
+    		resMap.remove(k);
+    	}
+    }
+    /***
+     * 检测看是否有不满足的特惠价商品
+     */
+    private void checkNotSatisfy(Map<String, GoodsSkuSpecial> specialPriceMap, List<String> skus) throws NegativeException {
+    	if (null == skus || skus.size() < 1)
+    		return;
+    	
+    	if (null == specialPriceMap) {
+    		int sz = skus.size();
+        	/*StringBuilder sb = new StringBuilder();
+        	for(int i = 0 ; i < sz; i++) {
+        		if (i>0)
+        			sb.append(",");
+        		sb.append(skus.get(i));
+        	}*/
+        	
+        	if (sz > 0) {
+        		throw new NegativeException(MCode.V_105, JSONObject.toJSONString(skus));
+        	}
+        	return;
+    	}
+    	
+    	Iterator<String> it = specialPriceMap.keySet().iterator();
+    	while (it.hasNext()) {
+    		String key = it.next();
+    		if (skus.contains(key)) {
+    			skus.remove(key);
+    		}
+    	}
+    	int sz = skus.size();
+    	/*StringBuilder sb = new StringBuilder();
+    	for(int i = 0 ; i < sz; i++) {
+    		if (i>0)
+    			sb.append(",");
+    		sb.append(skus.get(i));
+    	}*/
+    	
+    	if (sz > 0) {
+    		throw new NegativeException(MCode.V_105, JSONObject.toJSONString(skus));
     	}
     }
 }

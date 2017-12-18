@@ -58,11 +58,14 @@ public class HibernateSaleAfterOrderRepository extends HibernateSupperRepository
 	@Override
 	public DealerOrderDtl getDealerOrderDtlBySku(String dealerOrderId, String skuId, int sortNo) {
 		// TODO Auto-generated method stub
-		StringBuilder sql = new StringBuilder("select * from t_scm_order_detail where dealer_order_id =:dealerOrderId and sku_id=:skuId and sort_no=:sortNo");
+		StringBuilder sql = new StringBuilder("select * from t_scm_order_detail where dealer_order_id =:dealerOrderId and sku_id=:skuId ");
+		if (sortNo > 0)
+			sql.append(" and sort_no=:sortNo");
 		Query query = this.session().createSQLQuery(sql.toString()).addEntity(DealerOrderDtl.class);
 		query.setParameter("dealerOrderId", dealerOrderId);
 		query.setParameter("skuId", skuId);
-		query.setParameter("sortNo", sortNo);
+		if (sortNo > 0)
+			query.setParameter("sortNo", sortNo);
 		return (DealerOrderDtl)query.uniqueResult();
 	}
 	@Override
@@ -138,9 +141,11 @@ public class HibernateSaleAfterOrderRepository extends HibernateSupperRepository
 	}
 	
 	@Override
-	public int getSaleAfterOrderBySkuId(String dealerOrderId, String skuId) {
+	public int getSaleAfterOrderBySkuId(String dealerOrderId, String skuId, int sortNo) {
 		
-		Object o = this.session().createSQLQuery("SELECT count(1) FROM t_scm_order_after_sell WHERE dealer_order_id = :d1 AND sku_id = :skuId AND _status NOT IN(-1, 3)").setParameter("d1", dealerOrderId).setParameter("skuId", skuId).uniqueResult();
+		Object o = this.session().createSQLQuery("SELECT count(1) FROM t_scm_order_after_sell WHERE dealer_order_id = :d1 AND sku_id = :skuId AND sort_no=:sortNo AND _status NOT IN(-1, 3)").setParameter("d1", dealerOrderId)
+				.setParameter("skuId", skuId).setParameter("sortNo", sortNo)
+				.uniqueResult();
 		
 		return o == null? 0: ((BigInteger)o).intValue();
 	}
@@ -183,5 +188,10 @@ public class HibernateSaleAfterOrderRepository extends HibernateSupperRepository
 				LOGGER.info("===fanjc===用户触发商家订单完成===dealerOrderId:" + rs1.get(0) + "; num = " + j);
 			}		
 		}
+	}
+	@Override
+	public void invalideBefore(String skuId, String dealerOrderId, int sortNo) {
+		this.session().createSQLQuery("UPDATE t_scm_order_after_sell SET is_invalide=1 WHERE sku_id =:skuId AND dealer_order_id= :dealerOrderId AND sort_no=:sortNo AND _status < 4")
+		.setParameter("skuId", skuId).setParameter("dealerOrderId", dealerOrderId).setParameter("sortNo", sortNo);
 	}
 }

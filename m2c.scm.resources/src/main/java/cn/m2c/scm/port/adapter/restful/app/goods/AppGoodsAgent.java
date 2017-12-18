@@ -23,6 +23,7 @@ import cn.m2c.scm.application.special.data.bean.GoodsSpecialBean;
 import cn.m2c.scm.application.special.query.GoodsSpecialQueryApplication;
 import cn.m2c.scm.application.unit.query.UnitQuery;
 import cn.m2c.scm.domain.service.goods.GoodsService;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -152,9 +153,7 @@ public class AppGoodsAgent {
                     String token = "";
                     favoriteId = goodsRestService.getUserIsFavoriteGoods(userId, goodsId, token);
                 }
-
                 String phone = shopQuery.getDealerShopCustmerTel(goodsBean.getDealerId());
-
                 AppGoodsDetailRepresentation representation = new AppGoodsDetailRepresentation(goodsBean,
                         goodsGuarantee, goodsUnitName, null, commentTotal, goodsCommentBean, fullCut, goodsTags, favoriteId, phone, null);
                 result.setContent(representation);
@@ -328,12 +327,18 @@ public class AppGoodsAgent {
 
                     //查询商品被收藏id 
                     String favoriteId = null;
-                    favoriteId = goodsRestService.getUserIsFavoriteGoods(userId, goodsBean.getGoodsId(), "");
+                    if (StringUtils.isNotEmpty(userId)) {
+                        favoriteId = goodsRestService.getUserIsFavoriteGoods(userId, goodsBean.getGoodsId(), "");
+                    }
                     // 商家客服电话
                     String phone = shopQuery.getDealerShopCustmerTel(goodsBean.getDealerId());
 
                     // 拍获进来，特惠价
-                    GoodsSpecialBean goodsSpecialBean = goodsSpecialQueryApplication.queryGoodsSpecialByGoodsId(goodsBean.getGoodsId());
+                    GoodsSpecialBean goodsSpecialBean = null;
+                    if(null != mediaMap && mediaMap.size() > 0) {
+                    	//商品有无媒体信息,有媒体信息则返回特惠价
+                    	goodsSpecialBean = goodsSpecialQueryApplication.queryGoodsSpecialByGoodsId(goodsBean.getGoodsId());
+                    }
 
                     AppGoodsDetailRepresentation representation = new AppGoodsDetailRepresentation(goodsBean,
                             goodsGuarantee, goodsUnitName, mresId, commentTotal, goodsCommentBean, fullCut, goodsTags, favoriteId, phone, goodsSpecialBean);

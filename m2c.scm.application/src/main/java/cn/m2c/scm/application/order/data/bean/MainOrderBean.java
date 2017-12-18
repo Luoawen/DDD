@@ -66,6 +66,8 @@ public class MainOrderBean extends AssertionConcern implements Serializable {
 	
 	private List<SimpleMarket> markets;
 	
+	private AppInfo appInfo;
+	
 	public List<SimpleMarket> getMarkets() {
 		return markets;
 	}
@@ -104,6 +106,14 @@ public class MainOrderBean extends AssertionConcern implements Serializable {
 
 	public void setUserId(String userId) {
 		this.userId = userId;
+	}
+	
+	public AppInfo getAppInfo() {
+		return appInfo;
+	}
+
+	public void setAppInfo(AppInfo appInfo) {
+		this.appInfo = appInfo;
 	}
 
 	public static long getSerialversionuid() {

@@ -51,6 +51,22 @@ public class GoodsSpecialQueryApplication {
         return goodsSpecialBean;
     }
 
+    /**
+     * 根据Id获取商品特惠信息
+     *
+     * @param specialId
+     * @return
+     */
+    public GoodsSpecialBean queryGoodsSpecialBySpecialId(Integer specialId) {
+        StringBuilder sql = new StringBuilder();
+        sql.append(" SELECT ");
+        sql.append(" * ");
+        sql.append(" FROM ");
+        sql.append(" t_scm_goods_special WHERE 1 = 1 AND id = ? AND status = 1");
+        GoodsSpecialBean goodsSpecialBean = this.getSupportJdbcTemplate().queryForBean(sql.toString(), GoodsSpecialBean.class, specialId);
+        return goodsSpecialBean;
+    }
+
     public List<GoodsSkuSpecialBean> queryGoodsSkuSpecialBySpecialId(Integer specialId) {
         StringBuilder sql = new StringBuilder();
         sql.append(" SELECT ");
@@ -78,7 +94,11 @@ public class GoodsSpecialQueryApplication {
         if (null != goodsSkuSpecialBeans && goodsSkuSpecialBeans.size() > 0) {
             Map map = new HashMap<>();
             for (GoodsSkuSpecialBean bean : goodsSkuSpecialBeans) {
-                map.put(bean.getSkuId(), bean.getSpecialPrice());
+                GoodsSpecialBean goodsSpecialBean = queryGoodsSpecialBySpecialId(bean.getSpecialId());
+                if (null != goodsSpecialBean){
+                    bean.setGoodsSpecialId(goodsSpecialBean.getSpecialId());
+                }
+                map.put(bean.getSkuId(), bean);
             }
             return map;
         }
@@ -105,9 +125,22 @@ public class GoodsSpecialQueryApplication {
             sql.append(" AND status = ? ");
             params.add(status);
         }
-        if (StringUtils.isNotEmpty(startTime) && StringUtils.isNotEmpty(endTime)) {
+        /*if (StringUtils.isNotEmpty(startTime) && StringUtils.isNotEmpty(endTime)) {
             sql.append(" AND start_time >= ? AND end_time <= ? ");
             params.add(startTime + " 00:00:00 ");
+            params.add(endTime + " 23:59:59 ");
+        }*/
+        if (StringUtils.isNotEmpty(startTime) && StringUtils.isNotEmpty(endTime)) {
+            sql.append(" AND ((start_time >= ? AND end_time <= ?) OR (start_time <= ? AND end_time >= ? ) OR (start_time <= ? AND end_time >= ? AND end_time <= ? ) OR (start_time >= ? AND start_time <= ? AND end_time >= ?)) ");
+            params.add(startTime + " 00:00:00 ");
+            params.add(endTime + " 23:59:59 ");
+            params.add(startTime + " 00:00:00 ");
+            params.add(endTime + " 23:59:59 ");
+            params.add(startTime + " 00:00:00 ");
+            params.add(startTime + " 00:00:00 ");
+            params.add(endTime + " 23:59:59 ");
+            params.add(startTime + " 00:00:00 ");
+            params.add(endTime + " 23:59:59 ");
             params.add(endTime + " 23:59:59 ");
         }
         if (StringUtils.isNotEmpty(searchMessage)) {
@@ -142,9 +175,22 @@ public class GoodsSpecialQueryApplication {
             sql.append(" AND status = ? ");
             params.add(status);
         }
-        if (StringUtils.isNotEmpty(startTime) && StringUtils.isNotEmpty(endTime)) {
+        /*if (StringUtils.isNotEmpty(startTime) && StringUtils.isNotEmpty(endTime)) {
             sql.append(" AND start_time >= ? AND end_time <= ? ");
             params.add(startTime + " 00:00:00 ");
+            params.add(endTime + " 23:59:59 ");
+        }*/
+        if (StringUtils.isNotEmpty(startTime) && StringUtils.isNotEmpty(endTime)) {
+            sql.append(" AND ((start_time >= ? AND end_time <= ?) OR (start_time <= ? AND end_time >= ? ) OR (start_time <= ? AND end_time >= ? AND end_time <= ? ) OR (start_time >= ? AND start_time <= ? AND end_time >= ?)) ");
+            params.add(startTime + " 00:00:00 ");
+            params.add(endTime + " 23:59:59 ");
+            params.add(startTime + " 00:00:00 ");
+            params.add(endTime + " 23:59:59 ");
+            params.add(startTime + " 00:00:00 ");
+            params.add(startTime + " 00:00:00 ");
+            params.add(endTime + " 23:59:59 ");
+            params.add(startTime + " 00:00:00 ");
+            params.add(endTime + " 23:59:59 ");
             params.add(endTime + " 23:59:59 ");
         }
         if (StringUtils.isNotEmpty(searchMessage)) {
@@ -152,7 +198,7 @@ public class GoodsSpecialQueryApplication {
             params.add("%" + searchMessage + "%");
             params.add("%" + searchMessage + "%");
         }
-        sql.append(" GROUP BY special_id ORDER BY create_time DESC , id DESC ");
+        sql.append(" ORDER BY create_time DESC , id DESC ");
         sql.append(" LIMIT ?,?");
         params.add(rows * (pageNum - 1));
         params.add(rows);
@@ -184,7 +230,7 @@ public class GoodsSpecialQueryApplication {
     /**
      * 根据specialId(对应t_scm_goods_special表中的id)查询GoodsSkuSpecialBean
      *
-     * @param sPecialId
+     * @param specialId
      * @return
      */
     public List<GoodsSkuSpecialBean> queryGoodsSkuSpecialBeanListBySpecialId(Integer specialId) {
@@ -217,47 +263,49 @@ public class GoodsSpecialQueryApplication {
 
     /**
      * 根据specialId查询商品特惠价详情表述对象
+     *
      * @param specialId
      * @return
      */
-	public GoodsSpecialDetailBeanRepresentation queryGoodsSpecialDetailBeanRepresentationBySpecialId(String specialId) {
-		StringBuilder sql = new StringBuilder();
+    public GoodsSpecialDetailBeanRepresentation queryGoodsSpecialDetailBeanRepresentationBySpecialId(String specialId) {
+        StringBuilder sql = new StringBuilder();
         sql.append(" SELECT ");
         sql.append(" * ");
         sql.append(" From ");
         sql.append(" t_scm_goods_special WHERE 1 = 1 AND special_id = ? ");
         GoodsSpecialDetailBean goodsSpecialDetailBean = this.getSupportJdbcTemplate().queryForBean(sql.toString(), GoodsSpecialDetailBean.class, specialId);
         GoodsSpecialDetailBeanRepresentation goodsSpecialDetailBeanRepresentation = null;
-        if(goodsSpecialDetailBean != null) {
-        	goodsSpecialDetailBeanRepresentation = new GoodsSpecialDetailBeanRepresentation(goodsSpecialDetailBean);
-        	goodsSpecialDetailBeanRepresentation.setGoodsSkuSpecials(queryGoodsSkuSpecialDetailAllBeanList(goodsSpecialDetailBeanRepresentation.getId()));
+        if (goodsSpecialDetailBean != null) {
+            goodsSpecialDetailBeanRepresentation = new GoodsSpecialDetailBeanRepresentation(goodsSpecialDetailBean);
+            goodsSpecialDetailBeanRepresentation.setGoodsSkuSpecials(queryGoodsSkuSpecialDetailAllBeanList(goodsSpecialDetailBeanRepresentation.getId()));
         }
-		return goodsSpecialDetailBeanRepresentation;
-	}
-	
-	/**
-	 * 根据specialId查询GoodsSkuSpecialDetailAllBean
-	 */
-	public List<GoodsSkuSpecialDetailAllBeanRepresentation> queryGoodsSkuSpecialDetailAllBeanList(Integer specialId){
-		StringBuilder sql = new StringBuilder();
-		sql.append(" SELECT ");
-		sql.append(" ts.`special_id` specialId , ts.`sku_id` skuId , ts.`sku_name` skuName , ts.`special_price` specialPrice , ts.`supply_price` supplyPrice , ta.`photograph_price` goodsSkuPrice , ta.`supply_price` goodsSupplyPrice ");
-		sql.append(" FROM ");
-		sql.append(" t_scm_goods_sku_special ts ");
-		sql.append(" LEFT JOIN ");
-		sql.append("t_scm_goods_sku ta ");
-		sql.append(" ON ");
-		sql.append(" ts.sku_id = ta.`sku_id` ");
-		sql.append(" WHERE ");
-		sql.append(" ts.`special_id` = ? ");
-		List<GoodsSkuSpecialDetailAllBean> list = this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsSkuSpecialDetailAllBean.class, specialId);
-		List<GoodsSkuSpecialDetailAllBeanRepresentation> representationList = new ArrayList<GoodsSkuSpecialDetailAllBeanRepresentation>();;
-		if(null != list && list.size() > 0) {
-			for(GoodsSkuSpecialDetailAllBean bean : list) {
-				representationList.add(new GoodsSkuSpecialDetailAllBeanRepresentation(bean));
-			}
-		}
-		return representationList;
-		
-	}
+        return goodsSpecialDetailBeanRepresentation;
+    }
+
+    /**
+     * 根据specialId查询GoodsSkuSpecialDetailAllBean
+     */
+    public List<GoodsSkuSpecialDetailAllBeanRepresentation> queryGoodsSkuSpecialDetailAllBeanList(Integer specialId) {
+        StringBuilder sql = new StringBuilder();
+        sql.append(" SELECT ");
+        sql.append(" ts.`special_id` specialId , ts.`sku_id` skuId , ts.`sku_name` skuName , ts.`special_price` specialPrice , ts.`supply_price` supplyPrice , ta.`photograph_price` goodsSkuPrice , ta.`supply_price` goodsSupplyPrice ");
+        sql.append(" FROM ");
+        sql.append(" t_scm_goods_sku_special ts ");
+        sql.append(" LEFT JOIN ");
+        sql.append("t_scm_goods_sku ta ");
+        sql.append(" ON ");
+        sql.append(" ts.sku_id = ta.`sku_id` ");
+        sql.append(" WHERE ");
+        sql.append(" ts.`special_id` = ? ");
+        List<GoodsSkuSpecialDetailAllBean> list = this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsSkuSpecialDetailAllBean.class, specialId);
+        List<GoodsSkuSpecialDetailAllBeanRepresentation> representationList = new ArrayList<GoodsSkuSpecialDetailAllBeanRepresentation>();
+        ;
+        if (null != list && list.size() > 0) {
+            for (GoodsSkuSpecialDetailAllBean bean : list) {
+                representationList.add(new GoodsSkuSpecialDetailAllBeanRepresentation(bean));
+            }
+        }
+        return representationList;
+
+    }
 }

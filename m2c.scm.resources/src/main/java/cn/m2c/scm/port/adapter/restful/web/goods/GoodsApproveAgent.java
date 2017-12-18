@@ -11,6 +11,7 @@ import cn.m2c.scm.application.dealer.data.bean.DealerBean;
 import cn.m2c.scm.application.dealer.query.DealerQuery;
 import cn.m2c.scm.application.goods.GoodsApproveApplication;
 import cn.m2c.scm.application.goods.command.GoodsApproveCommand;
+import cn.m2c.scm.application.goods.command.GoodsApproveRejectBatchCommand;
 import cn.m2c.scm.application.goods.command.GoodsApproveRejectCommand;
 import cn.m2c.scm.application.goods.query.GoodsApproveQueryApplication;
 import cn.m2c.scm.application.goods.query.GoodsGuaranteeQueryApplication;
@@ -194,7 +195,7 @@ public class GoodsApproveAgent {
         }
         return new ResponseEntity<MResult>(result, HttpStatus.OK);
     }
-
+    
     /**
      * 拒绝商品审核
      *

@@ -1,6 +1,7 @@
 package cn.m2c.scm.port.adapter.persistence.hibernate.goods;
 
 import cn.m2c.ddd.common.port.adapter.persistence.hibernate.HibernateSupperRepository;
+import cn.m2c.scm.application.utils.Utils;
 import cn.m2c.scm.domain.model.goods.GoodsApprove;
 import cn.m2c.scm.domain.model.goods.GoodsApproveRepository;
 import org.apache.commons.lang3.StringUtils;
@@ -78,4 +79,12 @@ public class HibernateGoodsApproveRepository extends HibernateSupperRepository i
         query.setParameter("goods_postage_id", postageId);
         return null != query.list() && query.list().size() > 0;
     }
+
+	@Override
+	public List<GoodsApprove> queryGoodsApproveByIdList(List goodsIds) {
+		StringBuilder sql = new StringBuilder("select * from t_scm_goods_approve where del_status = 1");
+		sql.append(" and goods_id in ("+Utils.listParseString(goodsIds)+")");
+		Query query = this.session().createSQLQuery(sql.toString()).addEntity(GoodsApprove.class);
+		return query.list();
+	}
 }

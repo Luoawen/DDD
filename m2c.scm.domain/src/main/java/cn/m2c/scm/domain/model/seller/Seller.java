@@ -104,6 +104,9 @@ public class Seller extends ConcurrencySafeEntity {
 		this.sellerqq = sellerqq;
 		this.sellerWechat = sellerWechat;
 		this.sellerRemark = sellerRemark;
+		DomainEventPublisher.instance()
+				.publish(new SellerAddOrUpdateEvent(this.sellerId, this.sellerName, this.sellerPhone ,this.sellerNo,this.sellerConfirmPass,this.sellerRemark,1));
+
 	}
 
 	public void update(String sellerName, String sellerPhone, Integer sellerSex, String sellerNo,
@@ -126,6 +129,9 @@ public class Seller extends ConcurrencySafeEntity {
 		this.sellerWechat = sellerWechat;
 		this.sellerRemark = sellerRemark;
 		this.lastUpdatedDate = new Date();
+		DomainEventPublisher.instance()
+				.publish(new SellerAddOrUpdateEvent(this.sellerId, this.sellerName, this.sellerPhone ,this.sellerNo,this.sellerConfirmPass,this.sellerRemark,2));
+
 	}
 	
 	public void addOrUpdate(String sellerId,String sellerName,String sellerPhone) {
@@ -135,17 +141,17 @@ public class Seller extends ConcurrencySafeEntity {
 		this.lastUpdatedDate = new Date();
 	}
 
-	/**
-	 * 添加或者更新业务员信息
-	 */
-	public void addOrUpdateEvent() {
-		Integer optFlag = 1;
-		if (StringUtils.isNotEmpty(this.sellerId)) {
-			optFlag = 2;
-		}
-		DomainEventPublisher.instance()
-				.publish(new SellerAddOrUpdateEvent(this.sellerId, this.sellerName, this.sellerPhone));
-
-	}
+//	/**
+//	 * 添加或者更新业务员信息
+//	 */
+//	public void addOrUpdateEvent() {
+//		Integer optFlag = 1;
+//		if (StringUtils.isNotEmpty(this.sellerId)) {
+//			optFlag = 2;
+//		}
+//		DomainEventPublisher.instance()
+//				.publish(new SellerAddOrUpdateEvent(this.sellerId, this.sellerName, this.sellerPhone));
+//
+//	}
 
 }

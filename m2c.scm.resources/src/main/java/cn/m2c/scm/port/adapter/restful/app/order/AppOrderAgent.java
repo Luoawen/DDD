@@ -103,17 +103,22 @@ public class AppOrderAgent {
             ,@RequestParam(value = "coupons", required = false) String coupons
             ,@RequestParam(value = "latitude", required = false) Double latitude
             ,@RequestParam(value = "longitude", required = false) Double longitude
-            ,@RequestParam(value = "from", required = false, defaultValue="0") Integer from) {
+            ,@RequestParam(value = "from", required = false, defaultValue="0") Integer from
+            ,@RequestParam(value = "appVersion", required = false) String appVersion
+            ,@RequestParam(value = "os", required = false) String os
+            ,@RequestParam(value = "osVersion", required = false) String osVersion
+            ,@RequestParam(value = "sn", required = false) String sn
+    		) {
     	MResult result = new MResult(MCode.V_1);
         try {
         	OrderAddCommand cmd = new OrderAddCommand(orderId, userId, noted, goodses, invoice, addr, coupons,
-        			latitude, longitude, from);
+        			latitude, longitude, from, appVersion, os, osVersion, sn);
             result.setContent(orderApp.submitOrder(cmd));
             result.setStatus(MCode.V_200);
         } 
         catch (NegativeException e) {
         	int st = e.getStatus();
-        	if (st == MCode.V_100) {
+        	if (st == MCode.V_100 || st == MCode.V_105) {
         		result.setStatus(e.getStatus());
         		result.setContent(e.getMessage());
         	}
@@ -230,10 +235,11 @@ public class AppOrderAgent {
             ,@RequestParam(value = "orderId", required = false) String orderId
             ,@RequestParam(value = "dealerOrderId", required = false) String dealerOrderId
             ,@RequestParam(value = "skuId", required = false) String skuId
+            ,@RequestParam(value = "sortNo", required = false, defaultValue="0") int sortNo
             ) {
     	MResult result = new MResult(MCode.V_1);
         try {
-        	ConfirmSkuCmd cmd = new ConfirmSkuCmd(orderId, userId, skuId, dealerOrderId);
+        	ConfirmSkuCmd cmd = new ConfirmSkuCmd(orderId, userId, skuId, dealerOrderId, sortNo);
         	//result.setContent(orderApp.confirmSku(cmd));
         	orderApp.confirmSku(cmd);
             result.setStatus(MCode.V_200);
@@ -252,6 +258,16 @@ public class AppOrderAgent {
      * 申请售后
      * @param userId
      * @param orderId
+     * @param dealerOrderId
+     * @param skuId
+     * @param saleAfterNo
+     * @param type
+     * @param goodsId
+     * @param dealerId
+     * @param backNum
+     * @param reason
+     * @param rCode
+     * @param sortNo 新数据这个值必须大于0（2017-12-09之后）
      * @return
      */
     @RequestMapping(value = "/app/aftersale", method = RequestMethod.POST)
@@ -520,9 +536,9 @@ public class AppOrderAgent {
         return new ResponseEntity<MResult>(result, HttpStatus.OK);
     }
     
-    
     /**
      * 售后申请理由
+     * @param applyStatus
      * @return
      */
     @RequestMapping(value = "/app/applyReason",method = RequestMethod.GET)
@@ -530,7 +546,7 @@ public class AppOrderAgent {
     	MResult result = new MResult(MCode.V_1);
     	if(null == applyStatus) {
     		LOGGER.error("售后申请状态为空");
-			result = new MPager(MCode.V_400);
+			result = new MResult(MCode.V_400);
     	}
     	try {
 			List<AfterSellApplyReason> reasonList = saleAfterQuery.getApplyReason(applyStatus);
@@ -538,7 +554,7 @@ public class AppOrderAgent {
 			result.setStatus(MCode.V_200);
 		} catch (NegativeException e) {
 			LOGGER.error("查询售后申请理由出错",e);
-			result = new MPager(MCode.V_400, e.getMessage());
+			result = new MResult(MCode.V_400, e.getMessage());
 		}
     	return new ResponseEntity<MResult>(result, HttpStatus.OK);
     }

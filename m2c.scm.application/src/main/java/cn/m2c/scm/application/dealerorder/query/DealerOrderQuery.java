@@ -230,7 +230,7 @@ public class DealerOrderQuery {
                 .append(" a.rev_person, a.rev_phone, a.goods_amount, a.order_freight, a.plateform_discount, a.dealer_discount, a.order_id, af.after_sell_order_id\r\n")
                 .append(" , af.reject_reason, af.order_type, af.back_money, dtl.sort_no FROM t_scm_order_detail dtl \r\n")
                 .append(" LEFT OUTER JOIN t_scm_order_dealer a ON dtl.dealer_order_id = a.dealer_order_id\r\n")
-                .append(" LEFT OUTER JOIN t_scm_order_after_sell af ON af.dealer_order_id = dtl.dealer_order_id AND af.sku_id=dtl.sku_id AND af.sort_no=dtl.sort_no \r\n")
+                .append(" LEFT OUTER JOIN t_scm_order_after_sell af ON af.dealer_order_id = dtl.dealer_order_id AND af.sku_id=dtl.sku_id AND af.sort_no=dtl.sort_no AND af.is_invalide=0 \r\n")
                 .append(" LEFT OUTER JOIN t_scm_order_main om ON dtl.order_id = om.order_id\r\n")
                 .append(" WHERE a.dealer_id = ?  \r\n");
 
@@ -319,11 +319,11 @@ public class DealerOrderQuery {
         }
         if (!StringUtils.isEmpty(startTime) && !StringUtils.isEmpty(endTime)) {
             sql.append(" AND a.created_date BETWEEN ? AND ?\r\n");
-            params.add(startTime);
-            params.add(endTime);
+            params.add(startTime + " 00:00:00");
+            params.add(endTime + " 23:59:59");
         }
-        sql.append(" GROUP BY sku_id, dealer_order_id \r\n");
-        sql.append(" ORDER BY a.dealer_order_id DESC, a.created_date DESC, afStatus DESC");
+        sql.append(" GROUP BY sku_id, dealer_order_id, sort_no \r\n");
+        sql.append(" ORDER BY a.dealer_order_id DESC, a.created_date DESC, af.last_updated_date DESC");
 
         sql.append(" LIMIT ?,?");
 
@@ -362,9 +362,11 @@ public class DealerOrderQuery {
                 rs.add(midBean);
                 dealerOrderId = ordIdTemp;
             }
+            Integer oSortNo = (Integer)item.get("sort_no");
             String skuId = (String) item.get("sku_id");
-            if (!tmpIds.contains(skuId)) {
-            	tmpIds.add(skuId);
+            String a = skuId + String.valueOf(oSortNo);
+            if (!tmpIds.contains(a)) {
+            	tmpIds.add(a);
 	            DealerGoodsBean dgb = new DealerGoodsBean();	            
 	            dgb.setSkuName((String) item.get("sku_name"));
 	            dgb.setGoodsName((String) item.get("goods_name"));
@@ -381,7 +383,7 @@ public class DealerOrderQuery {
 	            dgb.setAfOrderType((Integer)item.get("order_type"));
 	            dgb.setBackMoney((Long)item.get("back_money"));	
 	            dgb.setIsChange((Integer)item.get("is_change"));
-	            dgb.setSortNo((Integer)item.get("sort_no"));
+	            dgb.setSortNo(oSortNo);
 	            
 	            midBean.getGoodsList().add(dgb);
             }
@@ -411,10 +413,10 @@ public class DealerOrderQuery {
                                           Integer hasInvoice) {
         List<Object> params = new ArrayList<Object>();
         StringBuilder sql = new StringBuilder();
-        sql.append(" SELECT count(distinct dtl.sku_id, a.dealer_order_id)")
+        sql.append(" SELECT count(distinct dtl.sku_id, a.dealer_order_id, dtl.sort_no)")
                 .append(" FROM t_scm_order_dealer a \r\n")
                 .append(" LEFT OUTER JOIN t_scm_order_detail dtl ON dtl.dealer_order_id = a.dealer_order_id\r\n")
-                .append(" LEFT OUTER JOIN t_scm_order_after_sell af ON af.dealer_order_id = a.dealer_order_id\r\n")
+                .append(" LEFT OUTER JOIN t_scm_order_after_sell af ON af.dealer_order_id = a.dealer_order_id AND af.is_invalide=0 \r\n")
                 .append(" LEFT OUTER JOIN t_scm_order_main om ON a.order_id = om.order_id\r\n")
                 .append(" WHERE a.dealer_id = ?  \r\n");
 
@@ -495,8 +497,8 @@ public class DealerOrderQuery {
         }
         if (!StringUtils.isEmpty(startTime) && !StringUtils.isEmpty(endTime)) {
             sql.append(" AND a.created_date BETWEEN ? AND ?\r\n");
-            params.add(startTime);
-            params.add(endTime);
+            params.add(startTime + " 00:00:00");
+            params.add(endTime + " 23:59:59");
         }
         System.out.println("SHOW  sQL-------------------------->"+sql);
         return this.supportJdbcTemplate.jdbcTemplate().queryForObject(sql.toString(), Integer.class, params.toArray());

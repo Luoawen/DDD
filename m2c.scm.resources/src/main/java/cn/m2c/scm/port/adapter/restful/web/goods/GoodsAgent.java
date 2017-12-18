@@ -197,7 +197,7 @@ public class GoodsAgent {
         }
         return new ResponseEntity<MResult>(result, HttpStatus.OK);
     }
-
+    
     /**
      * 商品下架
      *

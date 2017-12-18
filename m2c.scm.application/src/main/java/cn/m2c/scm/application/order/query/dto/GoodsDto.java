@@ -73,7 +73,9 @@ public class GoodsDto {
 	private long specialPrice;
 	/**广告位id*/
 	private String mresId;
-	
+	/**app传入的特惠价价格，字符串为了后期小数点后四位拓展*/
+	private String appSpecialPrice;
+
 	private int index;
 	
 	public int getIndex() {
@@ -223,7 +225,16 @@ public class GoodsDto {
 	public int getPurNum() {
 		return purNum;
 	}
-	
+
+
+	public String getAppSpecialPrice() {
+		return appSpecialPrice;
+	}
+
+	public void setAppSpecialPrice(String appSpecialPrice) {
+		this.appSpecialPrice = appSpecialPrice;
+	}
+
 	public void setPurNum(int num) {
 		purNum = num;
 	}

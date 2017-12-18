@@ -6,6 +6,9 @@ import cn.m2c.ddd.common.persistence.orm.ColumnAlias;
  * 商品特惠价
  */
 public class GoodsSkuSpecialBean {
+    /**
+     * 主键id
+     */
     @ColumnAlias(value = "special_id")
     private Integer specialId;
     @ColumnAlias(value = "sku_id")
@@ -22,6 +25,11 @@ public class GoodsSkuSpecialBean {
      */
     @ColumnAlias(value = "special_price")
     private Long specialPrice;
+
+    /**
+     *  商品特惠价编号
+     */
+    private String goodsSpecialId;
 
     public String getSkuId() {
         return skuId;
@@ -61,5 +69,13 @@ public class GoodsSkuSpecialBean {
 
     public void setSpecialId(Integer specialId) {
         this.specialId = specialId;
+    }
+
+    public String getGoodsSpecialId() {
+        return goodsSpecialId;
+    }
+
+    public void setGoodsSpecialId(String goodsSpecialId) {
+        this.goodsSpecialId = goodsSpecialId;
     }
 }
