@@ -73,6 +73,7 @@ public class GoodsInformationRepresentation {
                 Map map = new HashMap<>();
                 map.put("recognizedId", goodsRecognizedBean.getRecognizedId());
                 map.put("recognizedUrl", goodsRecognizedBean.getRecognizedUrl());
+                map.put("recognizedNo", goodsRecognizedBean.getRecognizedNo());
                 this.goodsRecognized.add(map);
             }
         }
