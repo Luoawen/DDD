@@ -63,6 +63,24 @@ public class SellerApplication {
 					command.getSellerqq(), command.getSellerWechat(), command.getSellerRemark());
 			sellerRepository.save(seller);
 	}
+	
+	/**
+	 * 更新业务员信息<事件消费>
+	 * @param command
+	 * @throws NegativeException
+	 */
+	@Transactional(rollbackFor = { Exception.class, RuntimeException.class, NegativeException.class })
+	@EventListener(isListening = true)
+	public void updateSeller(SellerCommand command) throws NegativeException{
+		Seller seller = sellerRepository.getSeller(command.getSellerId());
+		if (seller == null)
+			throw new NegativeException(NegativeCode.SELLER_IS_NOT_EXIST, "此业务员不存在.");
+		if(!seller.getSellerPhone().equals(command.getSellerPhone()) && !sellerService.isSellerPhoneExist(command.getSellerPhone())){
+			throw new NegativeException(NegativeCode.SELLER_PHONE_IS_EXIST, "此业务员手机号已存在.");
+		}
+		seller.updateSellerInfo(command.getSellerName(), command.getSellerPhone(), command.getSellerRemark());
+		sellerRepository.save(seller);
+	}
 
 	
 //	/**
