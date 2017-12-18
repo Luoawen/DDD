@@ -24,6 +24,11 @@ public class GoodsGuaranteeQueryApplication {
         return supportJdbcTemplate;
     }
 
+    /**
+     * 通过List保障id查询商品保障
+     * @param ids
+     * @return
+     */
     public List<GoodsGuaranteeBean> queryGoodsGuaranteeByIds(List<String> ids) {
         if (null != ids && ids.size() > 0) {
             StringBuilder sql = new StringBuilder();
@@ -37,6 +42,10 @@ public class GoodsGuaranteeQueryApplication {
         return null;
     }
 
+    /**
+     * 原查询商品保障
+     * @return
+     */
     public List<GoodsGuaranteeBean> queryGoodsGuarantee() {
         StringBuilder sql = new StringBuilder();
         sql.append(" SELECT ");

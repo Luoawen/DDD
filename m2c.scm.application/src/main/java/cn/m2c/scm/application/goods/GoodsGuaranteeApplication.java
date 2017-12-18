@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import cn.m2c.common.MCode;
 import cn.m2c.scm.application.goods.command.GoodsGuaranteeAddCommand;
+import cn.m2c.scm.application.goods.command.GoodsGuaranteeDelCommand;
 import cn.m2c.scm.domain.NegativeException;
 import cn.m2c.scm.domain.model.goods.GoodsGuarantee;
 import cn.m2c.scm.domain.model.goods.GoodsGuaranteeRepository;
@@ -30,7 +31,7 @@ public class GoodsGuaranteeApplication {
 	@Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
 	public void addGoodsGuarantee(GoodsGuaranteeAddCommand command) throws NegativeException {
 		LOGGER.info("addGoodsGuarantee command >>{}", command);
-		GoodsGuarantee goodsGuarantee = goodsGuaranteeRepository.queryGoodsGuaranteeById(command.getGuaranteeId());
+		GoodsGuarantee goodsGuarantee = goodsGuaranteeRepository.queryGoodsGuaranteeByIdAndDealerId(command.getGuaranteeId(), command.getDealerId());
 		if(null != goodsGuarantee){
 			throw new NegativeException(MCode.V_300,"商品保障已存在");
 		}
@@ -52,7 +53,7 @@ public class GoodsGuaranteeApplication {
 	public void modifyGoodsGuarantee(GoodsGuaranteeAddCommand command) throws NegativeException {
 		LOGGER.info("modifyGoodsGuarantee command >>{}", command);
 		//goodsGuaranteeId查GoodsGuarantee是否存在，存在可修改
-		GoodsGuarantee goodsGuarantee = goodsGuaranteeRepository.queryGoodsGuaranteeById(command.getGuaranteeId());
+		GoodsGuarantee goodsGuarantee = goodsGuaranteeRepository.queryGoodsGuaranteeByIdAndDealerId(command.getGuaranteeId(), command.getDealerId());
 		if(null == goodsGuarantee) {
 			throw new NegativeException(MCode.V_300,"商品保障不存在");
 		}
@@ -63,6 +64,22 @@ public class GoodsGuaranteeApplication {
 		}
 		goodsGuarantee.modifyGoodsGuarantee(command.getGuaranteeName(), command.getGuaranteeDesc());
 		goodsGuaranteeRepository.save(goodsGuarantee);
+	}
+
+	/**
+	 * 删除商品保障
+	 * @param command
+	 * @throws NegativeException 
+	 */
+	@Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+	public void delGoodsGuarantee(GoodsGuaranteeDelCommand command) throws NegativeException {
+		LOGGER.info("delGoodsGuarantee command >>{}", command);
+		//查是否存在
+		GoodsGuarantee goodsGuarantee = goodsGuaranteeRepository.queryGoodsGuaranteeByIdAndDealerId(command.getGuaranteeId(), command.getDealerId());
+		if(null == goodsGuarantee) {
+			throw new NegativeException(MCode.V_300,"商品保障不存在");
+		}
+		goodsGuaranteeRepository.remove(goodsGuarantee);
 	}
 	
 	

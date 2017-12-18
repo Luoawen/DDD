@@ -4,6 +4,7 @@ import cn.m2c.common.MCode;
 import cn.m2c.common.MResult;
 import cn.m2c.scm.application.goods.GoodsGuaranteeApplication;
 import cn.m2c.scm.application.goods.command.GoodsGuaranteeAddCommand;
+import cn.m2c.scm.application.goods.command.GoodsGuaranteeDelCommand;
 import cn.m2c.scm.application.goods.query.GoodsGuaranteeQueryApplication;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsGuaranteeBean;
 import cn.m2c.scm.application.goods.query.data.representation.GoodsGuaranteeRepresentation;
@@ -136,6 +137,27 @@ public class GoodsGuaranteeAgent {
 		return new ResponseEntity<MResult>(result, HttpStatus.OK);
 	}
 	
-	
+	/**
+	 * 删除商品保障
+	 * */
+	@RequestMapping(value = "/del", method = RequestMethod.DELETE)
+	public ResponseEntity<MResult> deleteGoodsGuarantee(
+		@RequestParam(value = "guaranteeId", required = false) String guaranteeId, //保障id
+		@RequestParam(value = "dealerId", required = false) String dealerId        //商家id
+			){
+		MResult result = new MResult(MCode.V_1);
+		try {
+			GoodsGuaranteeDelCommand command = new GoodsGuaranteeDelCommand(guaranteeId, dealerId);
+			goodsGuaranteeApplication.delGoodsGuarantee(command);
+			result.setStatus(MCode.V_200);
+		} catch (NegativeException ne) {
+			LOGGER.error("deleteUnit NegativeException e:", ne);
+			result = new MResult(ne.getStatus(), ne.getMessage());
+		} catch (Exception e) {
+			LOGGER.error("deleteUnitException e:", e);
+			result = new MResult(MCode.V_400, "删除商品保障失败");
+		}
+		return new ResponseEntity<MResult>(result, HttpStatus.OK);
+	}
     
 }

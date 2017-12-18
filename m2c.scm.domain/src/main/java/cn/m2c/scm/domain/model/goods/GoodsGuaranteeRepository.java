@@ -5,7 +5,7 @@ public interface GoodsGuaranteeRepository {
 	/**
 	 * 根据商品保障id查询商品保障
 	 * */
-	public GoodsGuarantee queryGoodsGuaranteeById(String guaranteeId);
+	public GoodsGuarantee queryGoodsGuaranteeByIdAndDealerId(String guaranteeId, String dealerId);
 
 	/**
 	 * 查询商品保障名是否重复
@@ -16,5 +16,10 @@ public interface GoodsGuaranteeRepository {
 	 * 保存商品保障
 	 * */
 	public void save(GoodsGuarantee goodsGuarantee);
+
+	/**
+	 * 删除商品保障
+	 * */
+	public void remove(GoodsGuarantee goodsGuarantee);
 	
 }

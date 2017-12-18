@@ -18,10 +18,14 @@ public class HibernateGoodsGuaranteeRepository extends HibernateSupperRepository
 	 * 获取商品保障
 	 * */
 	@Override
-	public GoodsGuarantee queryGoodsGuaranteeById(String guaranteeId) {
-		GoodsGuarantee goodsGuarantee = (GoodsGuarantee) this.session().createQuery(" FROM GoodsGuarantee WHERE guaranteeId=:guaranteeId")
-				.setString("guaranteeId", guaranteeId).uniqueResult();
-		return goodsGuarantee;
+	public GoodsGuarantee queryGoodsGuaranteeByIdAndDealerId(String guaranteeId, String dealerId) {
+		/*GoodsGuarantee goodsGuarantee = (GoodsGuarantee) this.session().createQuery(" FROM GoodsGuarantee WHERE guaranteeId=:guaranteeId  AND is_default = 0 ")
+				.setString("guaranteeId", guaranteeId).uniqueResult();*/
+		StringBuilder sql = new StringBuilder("SELECT * FROM t_scm_goods_guarantee WHERE guarantee_id=:guaranteeId AND dealer_id=:dealerId AND is_default = 0 ");
+		Query query = this.session().createSQLQuery(sql.toString()).addEntity(GoodsGuarantee.class);
+		query.setParameter("guaranteeId", guaranteeId);
+		query.setParameter("dealerId",dealerId);
+		return (GoodsGuarantee) query.uniqueResult();
 	}
 
 	/**
@@ -41,6 +45,11 @@ public class HibernateGoodsGuaranteeRepository extends HibernateSupperRepository
 	@Override
 	public void save(GoodsGuarantee goodsGuarantee) {
 		this.session().saveOrUpdate(goodsGuarantee);
+	}
+
+	@Override
+	public void remove(GoodsGuarantee goodsGuarantee) {
+		this.session().delete(goodsGuarantee);
 	}
 
 }
