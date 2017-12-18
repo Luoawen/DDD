@@ -91,7 +91,7 @@ public class DealerReportAgent {
      * @param dealerId 商家id
      * @return
      */
-    @RequestMapping(value = "/sell/money", method = RequestMethod.GET)
+    @RequestMapping(value = "/7/days/sell/money", method = RequestMethod.GET)
     public ResponseEntity<MResult> getDealerNearly7DaysReport(
             @RequestParam(value = "dealerId", required = false) String dealerId) {
         MResult result = new MResult(MCode.V_1);

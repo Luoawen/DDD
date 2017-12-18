@@ -1132,9 +1132,9 @@ public class GoodsQueryApplication {
         List<Object> params = new ArrayList<Object>();
         StringBuilder sql = new StringBuilder();
         sql.append(" SELECT ");
-        sql.append(" count(distinct g.goods_id) ");
+        sql.append(" count(goods_id) ");
         sql.append(" FROM ");
-        sql.append(" t_scm_goods");
+        sql.append(" t_scm_goods WHERE 1=1");
         if (StringUtils.isNotEmpty(dealerId)) {
             sql.append(" AND dealer_id = ? ");
             params.add(dealerId);
