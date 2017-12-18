@@ -9,9 +9,9 @@ import cn.m2c.scm.domain.model.seller.SellerRepository;
 public class HibernateSellerRepository extends HibernateSupperRepository implements SellerRepository{
 
 	@Override
-	public Seller getSeller(String sellerId) {
-		Seller seller = (Seller) this.session().createQuery(" FROM Seller WHERE  sellerId = :sellerId")
-				.setString("sellerId", sellerId).uniqueResult();
+	public Seller getSeller(String filter) {
+		Seller seller = (Seller) this.session().createQuery(" FROM Seller WHERE  sellerId = :sellerId OR sellerPhone = :sellerPhone")
+				.setString("sellerId", filter).setString("sellerPhone", filter).uniqueResult();
 		System.out.println("-------------执行到获取业务员");
 		return seller;
 	}
