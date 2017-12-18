@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping default-access="field" default-cascade="all">
+    <class name="cn.m2c.scm.domain.model.goods.GoodsRecognized" table="t_scm_goods_recognized" lazy="true"
+           optimistic-lock="version" dynamic-insert="true" dynamic-update="true">
+
+        <id name="id" column="id" type="long" unsaved-value="-1">
+            <generator class="native"/>
+        </id>
+        <property name="recognizedId" column="recognized_id" type="int"/>
+        <property name="recognizedUrl" column="recognized_url" type="int"/>
+        <many-to-one name="goods" column="goods_id" class="cn.m2c.scm.domain.model.goods.Goods"
+                     cascade="save-update" fetch="join"/>
+    </class>
+</hibernate-mapping>

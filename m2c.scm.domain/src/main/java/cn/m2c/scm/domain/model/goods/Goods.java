@@ -95,17 +95,14 @@ public class Goods extends ConcurrencySafeEntity {
      */
     private String goodsGuarantee;
 
-  /*  *//**
-     * 识别图片id
-     *//*
-    private String recognizedId;
-
-    */
     /**
-     * 识别图片url
-     *//*
-    private String recognizedUrl;*/
+     * 是否有识别图，0:没有，1：有
+     */
+    private Integer recognizedFlag;
 
+    /**
+     * 识别图列表
+     */
     private List<GoodsRecognized> goodsRecognizeds;
 
     /**
@@ -459,6 +456,7 @@ public class Goods extends ConcurrencySafeEntity {
             this.goodsRecognizeds = new ArrayList<>();
         }
         this.goodsRecognizeds.add(new GoodsRecognized(this, recognizedId, recognizedUrl));
+        this.recognizedFlag = 1;
     }
 
     /**
@@ -470,6 +468,9 @@ public class Goods extends ConcurrencySafeEntity {
             if (it.next().isEqualsId(id)) {
                 it.remove();
             }
+        }
+        if (null == this.goodsRecognizeds || this.goodsRecognizeds.size() <= 0) {
+            this.recognizedFlag = 0;
         }
     }
 

@@ -117,9 +117,9 @@ public class GoodsQueryApplication {
         // 0:未设置广告图，1已设置广告图
         if (null != recognizedStatus) {
             if (recognizedStatus == 0) {
-                sql.append(" AND g.recognized_id is null");
+                sql.append(" AND g.recognized_flag = 0");
             } else {
-                sql.append(" AND g.recognized_id is not null");
+                sql.append(" AND g.recognized_flag = 1");
             }
         }
 
@@ -190,9 +190,9 @@ public class GoodsQueryApplication {
         // 0:未设置广告图，1已设置广告图
         if (null != recognizedStatus) {
             if (recognizedStatus == 0) {
-                sql.append(" AND g.recognized_id is null");
+                sql.append(" AND g.recognized_flag = 0");
             } else {
-                sql.append(" AND g.recognized_id is not null");
+                sql.append(" AND g.recognized_flag = 1");
             }
         }
 
@@ -902,10 +902,10 @@ public class GoodsQueryApplication {
     public List<GoodsBean> queryGoodsByRecognizedIds(List<String> recognizedIds) {
         StringBuilder sql = new StringBuilder();
         sql.append(" SELECT ");
-        sql.append(" * ");
+        sql.append(" g.* ");
         sql.append(" FROM ");
-        sql.append(" t_scm_goods WHERE 1 = 1 AND recognized_id IN (" + Utils.listParseString(recognizedIds) + ")");
-        sql.append(" AND del_status = 1 ");
+        sql.append(" t_scm_goods g,t_scm_goods_recognized r WHERE 1 = 1 AND g.id = r.goods_id AND r.recognized_id IN (" + Utils.listParseString(recognizedIds) + ")");
+        sql.append(" AND g.del_status = 1 group by g.goods_id");
         List<GoodsBean> goodsBeanList = this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsBean.class);
         if (null != goodsBeanList && goodsBeanList.size() > 0) {
             for (GoodsBean goodsBean : goodsBeanList) {
@@ -1072,9 +1072,9 @@ public class GoodsQueryApplication {
     public List<String> getRecognizedGoods() {
         StringBuilder sql = new StringBuilder();
         sql.append(" SELECT ");
-        sql.append(" recognized_id ");
+        sql.append(" r.recognized_id ");
         sql.append(" FROM ");
-        sql.append(" t_scm_goods WHERE del_status = 1 and recognized_id is not null");
+        sql.append(" t_scm_goods g,t_scm_goods_recognized r WHERE 1 = 1 AND g.id = r.goods_id AND g.del_status = 1");
         return supportJdbcTemplate.jdbcTemplate().queryForList(sql.toString(), String.class);
     }
 
@@ -1100,7 +1100,7 @@ public class GoodsQueryApplication {
             params.add("%" + condition + "%");
             params.add("%" + condition + "%");
         }
-        sql.append(" AND g.del_status= 1 AND g.goods_status <> 3 AND g.recognized_id is not null group by g.goods_id ORDER BY g.created_date desc,s.photograph_price desc ");
+        sql.append(" AND g.del_status= 1 AND g.goods_status <> 3 AND g.recognized_flag = 1 group by g.goods_id ORDER BY g.created_date desc,s.photograph_price desc ");
         sql.append(" LIMIT ?,?");
         params.add(rows * (pageNum - 1));
         params.add(rows);
@@ -1125,7 +1125,7 @@ public class GoodsQueryApplication {
             params.add("%" + condition + "%");
             params.add("%" + condition + "%");
         }
-        sql.append(" AND g.del_status= 1 AND g.goods_status <> 3 AND g.recognized_id is not null");
+        sql.append(" AND g.del_status= 1 AND g.goods_status <> 3 AND g.recognized_flag = 1");
         return supportJdbcTemplate.jdbcTemplate().queryForObject(sql.toString(), params.toArray(), Integer.class);
     }
 

@@ -24,8 +24,7 @@
         <property name="goodsBarCode" column="goods_bar_code" type="string"/>
         <property name="goodsKeyWord" column="goods_key_word" type="string"/>
         <property name="goodsGuarantee" column="goods_guarantee" type="string"/>
-     <!--   <property name="recognizedId" column="recognized_id" type="string"/>
-        <property name="recognizedUrl" column="recognized_url" type="string"/>-->
+        <property name="recognizedFlag" column="recognized_flag" type="int"/>
         <property name="goodsMainImages" column="goods_main_images" type="text"/>
         <property name="goodsDesc" column="goods_desc" type="text"/>
         <property name="goodsShelves" column="goods_shelves" type="int"/>
@@ -38,6 +37,10 @@
         <bag name="goodsSKUs" lazy="false" cascade="all-delete-orphan" inverse="true">
             <key column="goods_id"/>
             <one-to-many class="cn.m2c.scm.domain.model.goods.GoodsSku"/>
+        </bag>
+        <bag name="goodsRecognizeds" lazy="false" cascade="all-delete-orphan" inverse="true">
+            <key column="goods_id"/>
+            <one-to-many class="cn.m2c.scm.domain.model.goods.GoodsRecognized"/>
         </bag>
     </class>
 </hibernate-mapping>
