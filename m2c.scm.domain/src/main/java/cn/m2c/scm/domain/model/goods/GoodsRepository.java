@@ -1,5 +1,7 @@
 package cn.m2c.scm.domain.model.goods;
 
+import cn.m2c.scm.domain.NegativeException;
+
 import java.util.List;
 
 /**
@@ -28,10 +30,11 @@ public interface GoodsRepository {
 
     /**
      * 商品销量排行榜
+     *
      * @param dealerId
      * @param goodsId
      * @param goodsName
      * @param goodsNum
      */
-    void saveGoodsSalesList(String dealerId, String goodsId, String goodsName, String goodsNum);
+    void saveGoodsSalesList(Integer month, String dealerId, String goodsId, String goodsName, String goodsNum) throws NegativeException;
 }
