@@ -178,7 +178,7 @@ public class GoodsSpecialQueryApplication {
             params.add("%" + searchMessage + "%");
             params.add("%" + searchMessage + "%");
         }
-        sql.append(" GROUP BY special_id ORDER BY create_time DESC , id DESC ");
+        sql.append(" ORDER BY create_time DESC , id DESC ");
         sql.append(" LIMIT ?,?");
         params.add(rows * (pageNum - 1));
         params.add(rows);
