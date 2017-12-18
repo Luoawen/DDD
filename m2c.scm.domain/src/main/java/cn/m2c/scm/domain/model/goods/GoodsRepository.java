@@ -24,6 +24,14 @@ public interface GoodsRepository {
 
     boolean postageIdIsUser(String postageId);
 
-	List<Goods> queryGoodsByIdList(List goodsIds);
+    List<Goods> queryGoodsByIdList(List goodsIds);
 
+    /**
+     * 商品销量排行榜
+     * @param dealerId
+     * @param goodsId
+     * @param goodsName
+     * @param goodsNum
+     */
+    void saveGoodsSalesList(String dealerId, String goodsId, String goodsName, String goodsNum);
 }

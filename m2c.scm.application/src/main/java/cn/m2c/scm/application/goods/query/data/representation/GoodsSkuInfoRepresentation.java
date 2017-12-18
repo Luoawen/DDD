@@ -4,6 +4,7 @@ import cn.m2c.common.JsonUtils;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsBean;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsSkuBean;
 import cn.m2c.scm.application.shop.data.bean.ShopBean;
+import cn.m2c.scm.application.special.data.bean.GoodsSkuSpecialBean;
 
 import java.util.List;
 import java.util.Map;
@@ -91,6 +92,11 @@ public class GoodsSkuInfoRepresentation {
     private Integer goodsMinQuantity;
 
     /**
+     * 特惠价编号
+     */
+    private String specialId;
+
+    /**
      * 特惠价
      */
     private Long specialPrice;
@@ -131,9 +137,19 @@ public class GoodsSkuInfoRepresentation {
         this.shopId = null != shopBean ? shopBean.getShopId() : "";
         this.shopName = null != shopBean ? shopBean.getShopName() : "";
         if (null != specialMap && specialMap.containsKey(this.getSkuId())) {
-            this.specialPrice = Long.parseLong(String.valueOf(specialMap.get(this.getSkuId())));
+            GoodsSkuSpecialBean specialBean = (GoodsSkuSpecialBean) specialMap.get(this.getSkuId());
+            this.specialId = specialBean.getGoodsSpecialId();
+            this.specialPrice = specialBean.getSpecialPrice();
             this.isSpecial = 1;
         }
+    }
+
+    public String getSpecialId() {
+        return specialId;
+    }
+
+    public void setSpecialId(String specialId) {
+        this.specialId = specialId;
     }
 
     public String getGoodsId() {

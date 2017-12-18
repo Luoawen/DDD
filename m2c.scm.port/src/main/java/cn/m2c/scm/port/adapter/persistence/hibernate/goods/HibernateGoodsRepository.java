@@ -1,15 +1,14 @@
 package cn.m2c.scm.port.adapter.persistence.hibernate.goods;
 
-import java.util.List;
-
-import org.apache.commons.lang3.StringUtils;
-import org.hibernate.Query;
-import org.springframework.stereotype.Repository;
-
 import cn.m2c.ddd.common.port.adapter.persistence.hibernate.HibernateSupperRepository;
 import cn.m2c.scm.application.utils.Utils;
 import cn.m2c.scm.domain.model.goods.Goods;
 import cn.m2c.scm.domain.model.goods.GoodsRepository;
+import org.apache.commons.lang3.StringUtils;
+import org.hibernate.Query;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 /**
  * 商品
@@ -99,4 +98,9 @@ public class HibernateGoodsRepository extends HibernateSupperRepository implemen
 		Query query = this.session().createSQLQuery(sql.toString()).addEntity(Goods.class);
 		return query.list();
 	}
+
+    @Override
+    public void saveGoodsSalesList(String dealerId, String goodsId, String goodsName, String goodsNum) {
+
+    }
 }
