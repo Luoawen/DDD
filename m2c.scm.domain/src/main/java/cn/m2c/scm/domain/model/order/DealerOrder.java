@@ -1,17 +1,16 @@
 package cn.m2c.scm.domain.model.order;
 
+import cn.m2c.ddd.common.domain.model.ConcurrencySafeEntity;
+import cn.m2c.ddd.common.domain.model.DomainEventPublisher;
+import cn.m2c.scm.domain.model.order.event.SimpleMediaRes;
+import cn.m2c.scm.domain.model.order.log.event.OrderOptLogEvent;
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.commons.lang3.StringUtils;
-
-import cn.m2c.ddd.common.domain.model.ConcurrencySafeEntity;
-import cn.m2c.ddd.common.domain.model.DomainEventPublisher;
-import cn.m2c.scm.domain.model.order.event.SimpleMediaRes;
-import cn.m2c.scm.domain.model.order.log.event.OrderOptLogEvent;
 /**
  * 商家订单
  * @author fanjc
@@ -55,6 +54,10 @@ public class DealerOrder extends ConcurrencySafeEntity {
 	private List<DealerOrderDtl> orderDtls;
 	/**更新时间*/
 	private Date updateTime;
+
+	public Long getDealerOrderMoney(){
+		return this.goodsAmount + this.orderFreight - this.plateformDiscount - this.dealerDiscount;
+	}
 	
 	/***
 	 * 删除订单(用户主动操作)
@@ -361,5 +364,9 @@ public class DealerOrder extends ConcurrencySafeEntity {
 		if (d == null)
 			return false;
 		return dealerOrderId.equals(d.getId());
+	}
+
+	public String dealerId() {
+		return dealerId;
 	}
 }

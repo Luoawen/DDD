@@ -1,19 +1,21 @@
 package cn.m2c.scm.domain.model.order;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import cn.m2c.ddd.common.domain.model.ConcurrencySafeEntity;
 import cn.m2c.ddd.common.domain.model.DomainEventPublisher;
+import cn.m2c.scm.domain.model.dealer.event.DealerReportStatisticsEvent;
 import cn.m2c.scm.domain.model.order.event.OrderAddedEvent;
 import cn.m2c.scm.domain.model.order.event.OrderCancelEvent;
 import cn.m2c.scm.domain.model.order.event.OrderDealCompleteEvt;
 import cn.m2c.scm.domain.model.order.event.OrderPayedEvent;
 import cn.m2c.scm.domain.model.order.event.SimpleMediaRes;
 import cn.m2c.scm.domain.model.order.log.event.OrderOptLogEvent;
+import cn.m2c.scm.domain.util.DealerReportType;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 /***
  * 主订单实体
  * @author fanjc
@@ -171,6 +173,9 @@ public class MainOrder extends ConcurrencySafeEntity {
 			d.payed();
 			allSales.putAll(d.getSaleNums());
 			allRes.addAll(d.getAllMediaRes());
+
+			// 数据统计事件
+			DomainEventPublisher.instance().publish(new DealerReportStatisticsEvent(d.dealerId(), DealerReportType.ORDER_PAY, 1,d.getDealerOrderMoney(), payTime));
 		}
 		Map<String, Object> markets = null;
 		if (marketings != null && marketings.size() > 0) {
@@ -187,6 +192,9 @@ public class MainOrder extends ConcurrencySafeEntity {
 		DomainEventPublisher.instance().publish(new OrderOptLogEvent(orderId, null, "订单支付成功", uId));
 		
 		DomainEventPublisher.instance().publish(new OrderPayedEvent(orderId, allSales, allRes, markets, payTime));
+
+
+
 		allSales = null;
 		/*if (allRes.size() > 1)
 			DomainEventPublisher.instance().publish(new MediaResEvent(orderId, orderFreight, 
