@@ -31,6 +31,8 @@ public class SellerApplication {
 	public void addSeller(SellerCommand command) throws NegativeException {
 		log.info("---添加经销商业务员", command.toString());
 		if(sellerService.isSellerPhoneExist(command.getSellerPhone())){
+			throw new NegativeException(NegativeCode.SELLER_PHONE_IS_EXIST, "此业务员手机号已存在.");
+		}
 			Seller seller = sellerRepository.getSeller(command.getSellerId());
 //			if (seller != null)
 //				throw new NegativeException(NegativeCode.SELLER_IS_EXIST, "此业务员已存在.");
@@ -42,7 +44,6 @@ public class SellerApplication {
 						command.getSellerAcode(), command.getSellerqq(), command.getSellerWechat(), command.getSellerRemark());
 				sellerRepository.save(seller);
 			}
-		}
 	}
 
 	@Transactional(rollbackFor = { Exception.class, RuntimeException.class, NegativeException.class })
@@ -51,6 +52,8 @@ public class SellerApplication {
 		// TODO Auto-generated method stub
 		log.info("---修改经销商业务员", command.toString());
 		if(sellerService.isSellerPhoneExist(command.getSellerPhone())){
+			throw new NegativeException(NegativeCode.SELLER_PHONE_IS_EXIST, "此业务员手机号已存在.");
+		}
 			Seller seller = sellerRepository.getSeller(command.getSellerId());
 			if (seller == null)
 				throw new NegativeException(NegativeCode.SELLER_IS_NOT_EXIST, "此业务员不存在.");
@@ -59,7 +62,6 @@ public class SellerApplication {
 					command.getSellerArea(), command.getSellerPcode(), command.getSellerCcode(), command.getSellerAcode(),
 					command.getSellerqq(), command.getSellerWechat(), command.getSellerRemark());
 			sellerRepository.save(seller);
-		}
 	}
 
 	

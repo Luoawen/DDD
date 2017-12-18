@@ -337,5 +337,5 @@ public final class NegativeCode {
 	/**
 	 * 业务员手机号已存在
 	 */
-	public static final Integer SELLER_PHONE_IS_EXIST = null;
+	public static final Integer SELLER_PHONE_IS_EXIST = 140033;
 }
