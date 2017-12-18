@@ -45,7 +45,7 @@ public class SellerUpdateListener extends ExchangeListener {
 		String remark = reader.eventStringValue("remark");
 		
 		SellerCommand command = new SellerCommand(sellerId, sellerName, sellerPhone, remark);
-		sellerApplication.update(command);
+		sellerApplication.updateSeller(command);
 	}
 
 	@Override
