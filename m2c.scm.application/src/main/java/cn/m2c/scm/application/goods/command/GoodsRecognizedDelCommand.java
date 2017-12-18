@@ -5,7 +5,7 @@ import cn.m2c.ddd.common.AssertionConcern;
 import java.io.Serializable;
 
 /**
- * 修改商品识别图
+ * 删除商品识别图
  */
 public class GoodsRecognizedDelCommand extends AssertionConcern implements Serializable {
     /**
@@ -14,9 +14,9 @@ public class GoodsRecognizedDelCommand extends AssertionConcern implements Seria
     private String goodsId;
 
     /**
-     * 识别图主键id
+     * 识别图编号
      */
-    private Integer id;
+    private String recognizedNo;
 
     /**
      * 识别图片id
@@ -28,9 +28,9 @@ public class GoodsRecognizedDelCommand extends AssertionConcern implements Seria
      */
     private String recognizedUrl;
 
-    public GoodsRecognizedDelCommand(String goodsId, Integer id, String recognizedId, String recognizedUrl) {
+    public GoodsRecognizedDelCommand(String goodsId, String recognizedNo, String recognizedId, String recognizedUrl) {
         this.goodsId = goodsId;
-        this.id = id;
+        this.recognizedNo = recognizedNo;
         this.recognizedId = recognizedId;
         this.recognizedUrl = recognizedUrl;
     }
@@ -39,8 +39,8 @@ public class GoodsRecognizedDelCommand extends AssertionConcern implements Seria
         return goodsId;
     }
 
-    public Integer getId() {
-        return id;
+    public String getRecognizedNo() {
+        return recognizedNo;
     }
 
     public String getRecognizedId() {

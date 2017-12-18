@@ -175,7 +175,7 @@ public class GoodsApplication {
         if (null == goods) {
             throw new NegativeException(MCode.V_300, "商品不存在");
         }
-        goods.modifyRecognized(command.getId(), command.getRecognizedId(), command.getRecognizedUrl());
+        goods.modifyRecognized(command.getRecognizedNo(), command.getRecognizedId(), command.getRecognizedUrl());
         Integer status = goods.goodsStatus() == 1 ? 0 : 1;
         if (StringUtils.isEmpty(command.getRecognizedId())) {
             status = 0;
@@ -220,7 +220,7 @@ public class GoodsApplication {
         if (null == goods) {
             throw new NegativeException(MCode.V_300, "商品不存在");
         }
-        goods.delRecognized(command.getId());
+        goods.delRecognized(command.getRecognizedNo());
         boolean result = goodsDubboService.updateRecognizedImgStatus(command.getRecognizedId(), command.getRecognizedUrl(), 0);
         if (!result) {
             LOGGER.error("商品删除广告图，更新识别图片状态失败");

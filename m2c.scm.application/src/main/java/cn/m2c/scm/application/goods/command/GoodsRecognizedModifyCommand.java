@@ -14,9 +14,9 @@ public class GoodsRecognizedModifyCommand extends AssertionConcern implements Se
     private String goodsId;
 
     /**
-     * 识别图主键id
+     * 识别图编号
      */
-    private Integer id;
+    private String recognizedNo;
 
     /**
      * 识别图片id
@@ -28,9 +28,9 @@ public class GoodsRecognizedModifyCommand extends AssertionConcern implements Se
      */
     private String recognizedUrl;
 
-    public GoodsRecognizedModifyCommand(String goodsId, Integer id, String recognizedId, String recognizedUrl) {
+    public GoodsRecognizedModifyCommand(String goodsId, String recognizedNo, String recognizedId, String recognizedUrl) {
         this.goodsId = goodsId;
-        this.id = id;
+        this.recognizedNo = recognizedNo;
         this.recognizedId = recognizedId;
         this.recognizedUrl = recognizedUrl;
     }
@@ -47,7 +47,7 @@ public class GoodsRecognizedModifyCommand extends AssertionConcern implements Se
         return recognizedUrl;
     }
 
-    public Integer getId() {
-        return id;
+    public String getRecognizedNo() {
+        return recognizedNo;
     }
 }

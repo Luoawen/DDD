@@ -440,9 +440,9 @@ public class Goods extends ConcurrencySafeEntity {
     /**
      * 修改商品识别图
      */
-    public void modifyRecognized(Integer id, String recognizedId, String recognizedUrl) {
+    public void modifyRecognized(String recognizedNo, String recognizedId, String recognizedUrl) {
         for (GoodsRecognized goodsRecognized : this.goodsRecognizeds) {
-            if (goodsRecognized.isEqualsId(id)) {
+            if (goodsRecognized.isEqualsRecognizedNo(recognizedNo)) {
                 goodsRecognized.modifyRecognized(recognizedId, recognizedUrl);
             }
         }
@@ -462,10 +462,10 @@ public class Goods extends ConcurrencySafeEntity {
     /**
      * 删除商品识别图
      */
-    public void delRecognized(Integer id) {
+    public void delRecognized(String recognizedNo) {
         Iterator<GoodsRecognized> it = this.goodsRecognizeds.iterator();
         while (it.hasNext()) {
-            if (it.next().isEqualsId(id)) {
+            if (it.next().isEqualsRecognizedNo(recognizedNo)) {
                 it.remove();
             }
         }

@@ -9,8 +9,9 @@
         <id name="id" column="id" type="long" unsaved-value="-1">
             <generator class="native"/>
         </id>
-        <property name="recognizedId" column="recognized_id" type="int"/>
-        <property name="recognizedUrl" column="recognized_url" type="int"/>
+        <property name="recognizedNo" column="recognized_no" type="java.lang.String"/>
+        <property name="recognizedId" column="recognized_id" type="java.lang.String"/>
+        <property name="recognizedUrl" column="recognized_url" type="java.lang.String"/>
         <many-to-one name="goods" column="goods_id" class="cn.m2c.scm.domain.model.goods.Goods"
                      cascade="save-update" fetch="join"/>
     </class>

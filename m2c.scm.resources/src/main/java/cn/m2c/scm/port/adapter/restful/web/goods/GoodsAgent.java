@@ -11,7 +11,6 @@ import cn.m2c.scm.application.dealer.data.bean.DealerBean;
 import cn.m2c.scm.application.dealer.query.DealerQuery;
 import cn.m2c.scm.application.goods.GoodsApplication;
 import cn.m2c.scm.application.goods.command.GoodsCommand;
-import cn.m2c.scm.application.goods.command.GoodsRecognizedModifyCommand;
 import cn.m2c.scm.application.goods.query.GoodsGuaranteeQueryApplication;
 import cn.m2c.scm.application.goods.query.GoodsQueryApplication;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsBean;
@@ -219,35 +218,6 @@ public class GoodsAgent {
         } catch (Exception e) {
             LOGGER.error("offShelfGoods Exception e:", e);
             result = new MResult(MCode.V_400, "商品下架失败");
-        }
-        return new ResponseEntity<MResult>(result, HttpStatus.OK);
-    }
-
-    /**
-     * 修改商品识别图
-     *
-     * @param goodsId
-     * @return
-     */
-    @RequestMapping(value = {"/recognized/{goodsId}", "/mng/recognized/{goodsId}"}, method = RequestMethod.PUT)
-    @RequirePermissions(value = {"scm:goodsStorage:modifyRecognized"})
-    public ResponseEntity<MResult> modifyRecognized(
-            @PathVariable("goodsId") String goodsId,
-            @RequestParam(value = "id", required = false) Integer id,
-            @RequestParam(value = "recognizedId", required = false) String recognizedId,
-            @RequestParam(value = "recognizedUrl", required = false) String recognizedUrl
-    ) {
-        MResult result = new MResult(MCode.V_1);
-        try {
-            GoodsRecognizedModifyCommand command = new GoodsRecognizedModifyCommand(goodsId,id, recognizedId, recognizedUrl);
-            goodsApplication.modifyRecognized(command);
-            result.setStatus(MCode.V_200);
-        } catch (NegativeException ne) {
-            LOGGER.error("modifyRecognized NegativeException e:", ne);
-            result = new MResult(ne.getStatus(), ne.getMessage());
-        } catch (Exception e) {
-            LOGGER.error("modifyRecognized Exception e:", e);
-            result = new MResult(MCode.V_400, "修改商品识别图失败");
         }
         return new ResponseEntity<MResult>(result, HttpStatus.OK);
     }
