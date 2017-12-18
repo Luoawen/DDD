@@ -22,7 +22,7 @@ import cn.m2c.scm.domain.NegativeException;
 
 
 @RestController
-@RequestMapping("/admin/brand/approve")
+@RequestMapping("/web/admin/brand/approve")
 public class AdminBrandApproAgent {
 	
 	private final static Logger LOGGER = LoggerFactory.getLogger(AdminBrandApproAgent.class);
@@ -37,7 +37,7 @@ public class AdminBrandApproAgent {
 	 * @param brandIds
 	 * @return
 	 */
-	@RequestMapping(value = "/web/batchagree", method = RequestMethod.POST)
+	@RequestMapping(value = "/batchagree", method = RequestMethod.POST)
 	public ResponseEntity<MResult> brandApproveBatchAgree(
 			@RequestParam(value = "approveIds", required = false) List<String> approveIds,
 			@RequestParam(value = "brandIds", required = false) List<String> brandIds) {
@@ -67,7 +67,7 @@ public class AdminBrandApproAgent {
      * @param brandIds
      * @return
      */
-    @RequestMapping(value = "/web/batchreject",method = RequestMethod.POST)
+    @RequestMapping(value = "/batchreject",method = RequestMethod.POST)
     public ResponseEntity<MResult> brandApproveBatchReject(
     		@RequestParam(value = "approveIds",required = false) List<String> approveIds,
     		@RequestParam(value = "rejectReason",required = false) String rejectReason
