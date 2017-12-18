@@ -53,19 +53,19 @@ public class SellerApplication {
 	}
 
 	
-	/**
-	 * 业务员添加或者更新事件
-	 * @param command
-	 * @throws NegativeException
-	 */
-	@Transactional(rollbackFor = { Exception.class, RuntimeException.class, NegativeException.class })
-	@EventListener(isListening = true)
-	public void addOrUpdateSeller(SellerCommand command) throws NegativeException {
-		log.info("SellerUpdate command >>{}", command);
-		Seller seller = sellerRepository.getSeller(command.getSellerId());
-		if (null == seller) {
-			throw new NegativeException(MCode.V_300, "业务员不存在");
-		}
-		seller.addOrUpdateEvent();
-	}
+//	/**
+//	 * 业务员添加或者更新事件
+//	 * @param command
+//	 * @throws NegativeException
+//	 */
+//	@Transactional(rollbackFor = { Exception.class, RuntimeException.class, NegativeException.class })
+//	@EventListener(isListening = true)
+//	public void addOrUpdateSeller(SellerCommand command) throws NegativeException {
+//		log.info("SellerUpdate command >>{}", command);
+//		Seller seller = sellerRepository.getSeller(command.getSellerId());
+//		if (null == seller) {
+//			throw new NegativeException(MCode.V_300, "业务员不存在");
+//		}
+//		seller.addOrUpdateEvent();
+//	}
 }
