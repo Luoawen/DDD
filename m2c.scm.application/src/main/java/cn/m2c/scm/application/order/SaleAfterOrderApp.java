@@ -110,6 +110,9 @@ public class SaleAfterOrderApp {
 		if (num > itemDtl.sellNum())
 			num = itemDtl.sellNum();
 		
+		// 使之前申请的失效 20171218添加		
+		saleAfterRepository.invalideBefore(cmd.getSkuId(), cmd.getDealerOrderId(), cmd.getSortNo());
+		
 		SaleAfterOrder afterOrder = new SaleAfterOrder(cmd.getSaleAfterNo(), cmd.getUserId(), cmd.getOrderId(),
 				cmd.getDealerOrderId(), cmd.getDealerId(), cmd.getGoodsId(), cmd.getSkuId(), cmd.getReason()
 				, num, status, orderType, money, cmd.getReasonCode(), ft

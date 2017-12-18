@@ -40,9 +40,10 @@ public interface OrderRepository {
 	 * 获取商家订单中的某一详情
 	 * @param dealerOrderId
 	 * @param skuId
+	 * @param sortNo
 	 * @return
 	 */
-	public DealerOrderDtl getDealerOrderDtlBySku(String dealerOrderId, String sku);
+	public DealerOrderDtl getDealerOrderDtlBySku(String dealerOrderId, String sku, int sortNo);
 	/**
 	 * 更新商家订单
 	 * @param dealOrder

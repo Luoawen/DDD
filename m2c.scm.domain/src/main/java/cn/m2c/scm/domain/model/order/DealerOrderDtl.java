@@ -189,7 +189,7 @@ public class DealerOrderDtl extends ConcurrencySafeEntity {
 	 * @return
 	 */
 	public boolean canApplySaleAfter() {
-		return status >= 1 && status < 5;
+		return status >= 1 && status < 4;
 	}
 	
 	public void hasCommented() {

@@ -52,5 +52,6 @@
         <property name="refundTime" column="refund_time" type="date"/>
         
         <property name="sortNo" column="sort_no" type="int"/>
+        <property name="isInvalide" column="is_invalide" type="int"/>
     </class>
 </hibernate-mapping>

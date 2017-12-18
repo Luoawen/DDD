@@ -316,9 +316,9 @@ public class GoodsQueryApplication {
         sql.append(" t_scm_goods where goods_id in (" + Utils.listParseString(goodsIds) + ") AND del_status = 1");
         List<GoodsBean> goodsBeans = this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsBean.class);
         if (null != goodsBeans && goodsBeans.size() > 0) {
-           for(GoodsBean goodsBean:goodsBeans){
-               goodsBean.setGoodsSkuBeans(queryGoodsSKUsByGoodsId(goodsBean.getId()));
-           }
+            for (GoodsBean goodsBean : goodsBeans) {
+                goodsBean.setGoodsSkuBeans(queryGoodsSKUsByGoodsId(goodsBean.getId()));
+            }
         }
         return goodsBeans;
     }
@@ -905,6 +905,7 @@ public class GoodsQueryApplication {
         sql.append(" * ");
         sql.append(" FROM ");
         sql.append(" t_scm_goods WHERE 1 = 1 AND recognized_id IN (" + Utils.listParseString(recognizedIds) + ")");
+        sql.append(" AND del_status = 1 ");
         List<GoodsBean> goodsBeanList = this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsBean.class);
         if (null != goodsBeanList && goodsBeanList.size() > 0) {
             for (GoodsBean goodsBean : goodsBeanList) {
@@ -1125,6 +1126,21 @@ public class GoodsQueryApplication {
             params.add("%" + condition + "%");
         }
         sql.append(" AND g.del_status= 1 AND g.goods_status <> 3 AND g.recognized_id is not null");
+        return supportJdbcTemplate.jdbcTemplate().queryForObject(sql.toString(), params.toArray(), Integer.class);
+    }
+
+    public Integer goodsForSaleNum(String dealerId) {
+        List<Object> params = new ArrayList<Object>();
+        StringBuilder sql = new StringBuilder();
+        sql.append(" SELECT ");
+        sql.append(" count(goods_id) ");
+        sql.append(" FROM ");
+        sql.append(" t_scm_goods WHERE 1=1");
+        if (StringUtils.isNotEmpty(dealerId)) {
+            sql.append(" AND dealer_id = ? ");
+            params.add(dealerId);
+        }
+        sql.append(" AND del_status= 1 AND goods_status <> 1");
         return supportJdbcTemplate.jdbcTemplate().queryForObject(sql.toString(), params.toArray(), Integer.class);
     }
 }

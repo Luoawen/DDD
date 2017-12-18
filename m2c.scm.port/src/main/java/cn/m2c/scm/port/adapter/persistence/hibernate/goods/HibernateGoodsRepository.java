@@ -1,15 +1,16 @@
 package cn.m2c.scm.port.adapter.persistence.hibernate.goods;
 
-import java.util.List;
-
+import cn.m2c.common.MCode;
+import cn.m2c.ddd.common.port.adapter.persistence.hibernate.HibernateSupperRepository;
+import cn.m2c.scm.application.utils.Utils;
+import cn.m2c.scm.domain.NegativeException;
+import cn.m2c.scm.domain.model.goods.Goods;
+import cn.m2c.scm.domain.model.goods.GoodsRepository;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Query;
 import org.springframework.stereotype.Repository;
 
-import cn.m2c.ddd.common.port.adapter.persistence.hibernate.HibernateSupperRepository;
-import cn.m2c.scm.application.utils.Utils;
-import cn.m2c.scm.domain.model.goods.Goods;
-import cn.m2c.scm.domain.model.goods.GoodsRepository;
+import java.util.List;
 
 /**
  * 商品
@@ -92,11 +93,50 @@ public class HibernateGoodsRepository extends HibernateSupperRepository implemen
         return null != query.list() && query.list().size() > 0;
     }
 
-	@Override
-	public List<Goods> queryGoodsByIdList(List goodsIds) {
-		StringBuilder sql = new StringBuilder("select * from t_scm_goods where del_status = 1");
-		sql.append(" and goods_id in (" + Utils.listParseString(goodsIds) + ")");
-		Query query = this.session().createSQLQuery(sql.toString()).addEntity(Goods.class);
-		return query.list();
-	}
+    @Override
+    public List<Goods> queryGoodsByIdList(List goodsIds) {
+        StringBuilder sql = new StringBuilder("select * from t_scm_goods where del_status = 1");
+        sql.append(" and goods_id in (" + Utils.listParseString(goodsIds) + ")");
+        Query query = this.session().createSQLQuery(sql.toString()).addEntity(Goods.class);
+        return query.list();
+    }
+
+    @Override
+    public void saveGoodsSalesList(Integer month, String dealerId, String goodsId, String goodsName, String goodsNum) throws NegativeException {
+        StringBuilder sql = new StringBuilder("select concurrency_version from t_scm_goods_sales_list where month =:month and goods_id = :goods_id");
+        Query query = this.session().createSQLQuery(sql.toString());
+        query.setParameter("month", month);
+        query.setParameter("goods_id", goodsId);
+        Integer vId = null == query.uniqueResult() ? null : Integer.parseInt(String.valueOf(query.uniqueResult()));
+        if (null == vId) {//不存在则新增一条数据
+            StringBuilder insertSql = new StringBuilder();
+            insertSql.append("INSERT INTO t_scm_goods_sales_list (month,dealer_id,goods_id,goods_name,goods_sale_num) ");
+            insertSql.append("VALUES (:month, :dealer_id, :goods_id, :goods_name, :goods_sale_num) ");
+            Query insert = this.session().createSQLQuery(insertSql.toString());
+            insert.setParameter("month", month);
+            insert.setParameter("dealer_id", dealerId);
+            insert.setParameter("goods_id", goodsId);
+            insert.setParameter("goods_name", goodsName);
+            insert.setParameter("goods_sale_num", goodsNum);
+            insert.executeUpdate();
+        } else {// 已存在则更新
+            StringBuilder updateSql = new StringBuilder();
+            updateSql.append("UPDATE t_scm_goods_sales_list ");
+            updateSql.append("SET goods_sale_num = goods_sale_num + :goods_sale_num, ");
+            updateSql.append("concurrency_version = concurrency_version + 1 ");
+            updateSql.append("WHERE 1=1 ");
+            updateSql.append("AND month = :month ");
+            updateSql.append("AND goods_id = :goods_id ");
+            updateSql.append("AND concurrency_version = :vId ");
+            Query update = this.session().createSQLQuery(updateSql.toString());
+            update.setParameter("goods_sale_num", goodsNum);
+            update.setParameter("month", month);
+            update.setParameter("goods_id", goodsId);
+            update.setParameter("vId", vId);
+            int rows = update.executeUpdate();
+            if (rows <= 0) {
+                throw new NegativeException(MCode.V_400, "商品销售榜数据更新失败");
+            }
+        }
+    }
 }

@@ -120,6 +120,7 @@ public class AppGoodsDetailRepresentation {
         if (null != goodsSpecialBean) {
             this.goodsSpecial = new HashMap<>();
             SimpleDateFormat df = new SimpleDateFormat("yyyy.MM.dd");
+            this.goodsSpecial.put("specialId",goodsSpecialBean.getSpecialId());
             this.goodsSpecial.put("startTime", df.format(goodsSpecialBean.getStartTime()));
             this.goodsSpecial.put("endTime", df.format(goodsSpecialBean.getEndTime()));
             this.goodsSpecial.put("congratulations", goodsSpecialBean.getCongratulations());
