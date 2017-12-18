@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -90,15 +91,15 @@ public class GoodsGuaranteeAgent {
      */
     @RequestMapping(value = "", method = RequestMethod.POST)
     public ResponseEntity<MResult> addGoodsGuarantee(
-		@RequestParam(value="guaranteeId",required = false) String guaranteeId, //商品保障id
+		@RequestParam(value="guaranteeId",required = false) String guaranteeId,     //商品保障id
 		@RequestParam(value="guaranteeName",required = false) String guaranteeName, //商品保障名
 		@RequestParam(value="guaranteeDesc",required = false) String guaranteeDesc, // 商品保障内容
-		@RequestParam(value="dealerId",required = false) String dealerId //商家ID
+		@RequestParam(value="dealerId",required = false) String dealerId            //商家ID
 	) {
 		MResult result = new MResult(MCode.V_1);
 		try{
 			GoodsGuaranteeAddCommand command = new GoodsGuaranteeAddCommand(guaranteeId, guaranteeName, guaranteeDesc, dealerId);
-			goodsGuaranteeApplication.addGoodsGuarantee(command); // 新增
+			goodsGuaranteeApplication.addGoodsGuarantee(command); 
 			result.setStatus(MCode.V_200);
 		}catch (NegativeException ne) {
             LOGGER.error("addGoodsSpecial NegativeException e:", ne);
@@ -110,6 +111,31 @@ public class GoodsGuaranteeAgent {
 		return new ResponseEntity<MResult>(result, HttpStatus.OK);
 	}
     
-    
+    /**
+	* 修改商品保障
+	*/
+	@RequestMapping(value = "/{guaranteeId}", method = RequestMethod.PUT)
+	public ResponseEntity<MResult> modifyGoodsGuarantee(
+		@PathVariable("guaranteeId") String guaranteeId,                            //商品保障id
+		@RequestParam(value="guaranteeName",required = false) String guaranteeName, //商品保障名
+		@RequestParam(value="guaranteeDesc",required = false) String guaranteeDesc, //商品保障内容
+		@RequestParam(value="dealerId",required = false) String dealerId            //商家ID
+	) {
+		MResult result = new MResult(MCode.V_1);
+		try{
+			GoodsGuaranteeAddCommand command = new GoodsGuaranteeAddCommand(guaranteeId, guaranteeName, guaranteeDesc, dealerId);
+			goodsGuaranteeApplication.modifyGoodsGuarantee(command);
+			result.setStatus(MCode.V_200);
+		}catch (NegativeException ne) {
+            LOGGER.error("addGoodsSpecial NegativeException e:", ne);
+            result = new MResult(ne.getStatus(), ne.getMessage());
+        }catch(Exception e){
+			LOGGER.error("modifyGoodsGuarantee Exception e:", e);
+            result = new MResult(MCode.V_400, "修改商品保障失败");
+		}
+		return new ResponseEntity<MResult>(result, HttpStatus.OK);
+	}
+	
+	
     
 }

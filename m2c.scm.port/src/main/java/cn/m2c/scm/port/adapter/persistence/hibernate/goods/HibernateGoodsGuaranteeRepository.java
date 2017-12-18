@@ -28,11 +28,12 @@ public class HibernateGoodsGuaranteeRepository extends HibernateSupperRepository
 	 * 查询是否有重名(true有重名)
 	 * */
 	@Override
-	public boolean goodsGuaranteeNameIsRepeat(String guaranteeName, String dealerId) {
-		StringBuilder sql = new StringBuilder("SELECT * FROM t_scm_goods_guarantee WHERE ( guarantee_name=:guaranteeName AND dealer_id=:dealerId ) OR ( guarantee_name=:guaranteeName AND is_default = 1 )");
+	public boolean goodsGuaranteeNameIsRepeat(String guaranteeName, String dealerId, String guaranteeId) {
+		StringBuilder sql = new StringBuilder("SELECT * FROM t_scm_goods_guarantee WHERE ( guarantee_name=:guaranteeName AND dealer_id=:dealerId AND is_default = 0 AND guarantee_id<>:guaranteeId) OR ( guarantee_name=:guaranteeName AND is_default = 1 )");
 		Query query = this.session().createSQLQuery(sql.toString()).addEntity(GoodsGuarantee.class);
 		query.setParameter("guaranteeName",guaranteeName);
 		query.setParameter("dealerId",dealerId);
+		query.setParameter("guaranteeId",guaranteeId);
 		List<GoodsGuarantee> list = query.list();
 		return null != list && list.size() > 0;
 	}

@@ -10,7 +10,7 @@ public interface GoodsGuaranteeRepository {
 	/**
 	 * 查询商品保障名是否重复
 	 * */
-	public boolean goodsGuaranteeNameIsRepeat(String guaranteeName, String dealerId);
+	public boolean goodsGuaranteeNameIsRepeat(String guaranteeName, String dealerId, String guaranteeId);
 
 	/**
 	 * 保存商品保障

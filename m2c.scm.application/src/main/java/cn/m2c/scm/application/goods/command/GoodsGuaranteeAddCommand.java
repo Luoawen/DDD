@@ -20,13 +20,13 @@ public class GoodsGuaranteeAddCommand extends AssertionConcern implements Serial
 	
 	public GoodsGuaranteeAddCommand(String guaranteeId, String guaranteeName, 
 			String guaranteeDesc, String dealerId) throws NegativeException{
-		if(StringUtils.isEmpty(guaranteeId.replaceAll(" ", ""))){
+		if(StringUtils.isEmpty(guaranteeId)){
 			throw new NegativeException(MCode.V_1, "请刷新页面获取商品保障ID");
 		}
-		if(StringUtils.isEmpty(guaranteeName.replaceAll(" ", "")) || guaranteeName.length() > 10) {
+		if(StringUtils.isEmpty(guaranteeName) || StringUtils.isEmpty(guaranteeName.replaceAll(" ", "")) || guaranteeName.length() > 10) {
 			throw new NegativeException(MCode.V_1, "商品保障名称必须为1-10字符");
 		}
-		if(StringUtils.isEmpty(dealerId.replaceAll(" ", ""))){
+		if(StringUtils.isEmpty(dealerId)){
 			throw new NegativeException(MCode.V_1, "未获取到商家ID");
 		}
 		this.guaranteeId   = guaranteeId;
