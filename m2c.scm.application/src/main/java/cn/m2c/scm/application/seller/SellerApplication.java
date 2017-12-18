@@ -23,6 +23,7 @@ public class SellerApplication {
 	SellerRepository sellerRepository;
 
 	@Transactional(rollbackFor = { Exception.class, RuntimeException.class, NegativeException.class })
+	@EventListener
 	public void addSeller(SellerCommand command) throws NegativeException {
 		log.info("---添加经销商业务员", command.toString());
 		Seller seller = sellerRepository.getSeller(command.getSellerId());
@@ -39,6 +40,7 @@ public class SellerApplication {
 	}
 
 	@Transactional(rollbackFor = { Exception.class, RuntimeException.class, NegativeException.class })
+	@EventListener
 	public void update(SellerCommand command) throws NegativeException {
 		// TODO Auto-generated method stub
 		log.info("---修改经销商业务员", command.toString());
