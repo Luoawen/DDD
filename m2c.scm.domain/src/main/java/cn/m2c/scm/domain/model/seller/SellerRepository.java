@@ -7,7 +7,7 @@ public interface SellerRepository {
      * @param modelId
      * @return
      */
-    public Seller getSeller(String filter);
+    public Seller getSeller(String sellerId);
 
     /**
      * 保存业务员
