@@ -87,5 +87,5 @@ public interface OrderRepository {
 	 * @param skuId
 	 * @return
 	 */
-	public boolean checkSku(String skuId);
+	public boolean checkSku(String skuId,String dealerOrderId);
 }
