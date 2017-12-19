@@ -73,7 +73,7 @@ public class SaleAfterShipCmd extends AssertionConcern {
 		}
 		
 		if (expressWay != 1 && StringUtils.isEmpty(expressName)) {
-			throw new NegativeException(MCode.V_1, "快递公司名称主空(expressName)！");
+			throw new NegativeException(MCode.V_1, "快递公司名称为空(expressName)！");
 		}
 		
 		this.expressWay = expressWay;
@@ -100,8 +100,8 @@ public class SaleAfterShipCmd extends AssertionConcern {
 			throw new NegativeException(MCode.V_1, "售后商品sku参数为空(skuId)！");
 		}
 		
-		if (StringUtils.isEmpty(expressName)) {
-			throw new NegativeException(MCode.V_1, "快递公司名称主空(expressName)！");
+		if (expressWay != 1 && StringUtils.isEmpty(expressName)) {
+			throw new NegativeException(MCode.V_1, "快递公司名称为空(expressName)！");
 		}
 		
 		this.userId = userId;
