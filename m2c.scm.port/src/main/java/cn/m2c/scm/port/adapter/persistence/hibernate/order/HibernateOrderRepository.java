@@ -177,14 +177,14 @@ public class HibernateOrderRepository extends HibernateSupperRepository implemen
 	@Override
 	public boolean checkSku(String skuId) {
 		// TODO Auto-generated method stub
-		StringBuilder sql = new StringBuilder(" SELECT * FROM t_scm_order_detail WHERE WHERE sku_id=:skuId ");
+		StringBuilder sql = new StringBuilder("SELECT * FROM t_scm_order_detail WHEREsku_id=:skuId");
 		Query query = this.session().createSQLQuery(sql.toString()).addEntity(DealerOrderDtl.class);
 		query.setParameter("skuId", skuId);
-		DealerOrderDtl num = (DealerOrderDtl) query.uniqueResult();
-		if (num == null) {
-			return false;
-		}else {
+		DealerOrderDtl result = (DealerOrderDtl) query.uniqueResult();
+		if (result != null) {
 			return true;
+		}else {
+			return false;
 		}
 	}
 }
