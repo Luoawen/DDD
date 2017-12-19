@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Query;
+import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -97,11 +98,16 @@ public class HibernateOrderRepository extends HibernateSupperRepository implemen
 	@Override
 	public DealerOrderDtl getDealerOrderDtlBySku(String dealerOrderId, String sku, int sortNo) {
 		// TODO Auto-generated method stub
-		StringBuilder sql = new StringBuilder("SELECT * FROM t_scm_order_detail WHERE dealer_order_id =:dealerOrderId AND sku_id=:skuId AND sort_no=:sortNo");
+		StringBuilder sql = new StringBuilder("SELECT * FROM t_scm_order_detail WHERE dealer_order_id =:dealerOrderId AND sku_id=:skuId ");
+		if (sortNo != 0) {
+			sql.append(" AND sort_no=:sortNo ");
+		}
 		Query query = this.session().createSQLQuery(sql.toString()).addEntity(DealerOrderDtl.class);
 		query.setParameter("dealerOrderId", dealerOrderId);
 		query.setParameter("skuId", sku);
+		if(sortNo != 0) {
 		query.setParameter("sortNo", sortNo);
+		}
 		return (DealerOrderDtl)query.uniqueResult();
 	}
 
@@ -166,5 +172,18 @@ public class HibernateOrderRepository extends HibernateSupperRepository implemen
 	public void saveAppInfo(AppOrdInfo appInfo) {
 		// TODO Auto-generated method stub
 		this.session().save(appInfo);
+	}
+
+	@Override
+	public boolean checkSku(String skuId) {
+		// TODO Auto-generated method stub
+		SQLQuery query = this.session().createSQLQuery(" SELECT COUNT(1) FROM t_scm_order_detail WHERE sku_id=:skuId ").addEntity(Integer.class);
+		query.setParameter("skuId", skuId);
+		Integer num = (Integer) query.uniqueResult();
+		if (num == 0) {
+			return false;
+		}else {
+			return true ;
+		}
 	}
 }
