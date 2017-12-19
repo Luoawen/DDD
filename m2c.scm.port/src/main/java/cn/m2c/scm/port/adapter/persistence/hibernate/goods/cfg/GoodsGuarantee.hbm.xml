@@ -21,5 +21,6 @@
 		<property name="isDefault" column="is_default" type="int"></property>
 		<property name="dealerId" column="dealer_id" type="string"></property>
 		<property name="lastUpdatedDate" column="last_updated_date" type="timestamp" />
+		<property name="guaranteeStatus" column="guarantee_status" type="int"></property>
 	</class>
 </hibernate-mapping>

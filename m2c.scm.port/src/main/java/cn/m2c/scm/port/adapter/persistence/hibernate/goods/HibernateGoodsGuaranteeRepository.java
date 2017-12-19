@@ -16,12 +16,12 @@ import cn.m2c.scm.domain.model.goods.GoodsGuaranteeRepository;
 public class HibernateGoodsGuaranteeRepository extends HibernateSupperRepository implements GoodsGuaranteeRepository{
 	/**
 	 * 获取商品保障
-	 * */
+	 */
 	@Override
 	public GoodsGuarantee queryGoodsGuaranteeByIdAndDealerId(String guaranteeId, String dealerId) {
 		/*GoodsGuarantee goodsGuarantee = (GoodsGuarantee) this.session().createQuery(" FROM GoodsGuarantee WHERE guaranteeId=:guaranteeId  AND is_default = 0 ")
 				.setString("guaranteeId", guaranteeId).uniqueResult();*/
-		StringBuilder sql = new StringBuilder("SELECT * FROM t_scm_goods_guarantee WHERE guarantee_id=:guaranteeId AND dealer_id=:dealerId AND is_default = 0 ");
+		StringBuilder sql = new StringBuilder("SELECT * FROM t_scm_goods_guarantee WHERE guarantee_id=:guaranteeId AND dealer_id=:dealerId AND is_default = 0 AND guarantee_status = 1 ");
 		Query query = this.session().createSQLQuery(sql.toString()).addEntity(GoodsGuarantee.class);
 		query.setParameter("guaranteeId", guaranteeId);
 		query.setParameter("dealerId",dealerId);
@@ -30,10 +30,10 @@ public class HibernateGoodsGuaranteeRepository extends HibernateSupperRepository
 
 	/**
 	 * 查询是否有重名(true有重名)
-	 * */
+	 */
 	@Override
 	public boolean goodsGuaranteeNameIsRepeat(String guaranteeName, String dealerId, String guaranteeId) {
-		StringBuilder sql = new StringBuilder("SELECT * FROM t_scm_goods_guarantee WHERE ( guarantee_name=:guaranteeName AND dealer_id=:dealerId AND is_default = 0 AND guarantee_id<>:guaranteeId) OR ( guarantee_name=:guaranteeName AND is_default = 1 )");
+		StringBuilder sql = new StringBuilder("SELECT * FROM t_scm_goods_guarantee WHERE ( guarantee_name=:guaranteeName AND dealer_id=:dealerId AND is_default = 0 AND guarantee_status = 1 AND guarantee_id<>:guaranteeId) OR ( guarantee_name=:guaranteeName AND is_default = 1 AND guarantee_status = 1 )");
 		Query query = this.session().createSQLQuery(sql.toString()).addEntity(GoodsGuarantee.class);
 		query.setParameter("guaranteeName",guaranteeName);
 		query.setParameter("dealerId",dealerId);
@@ -50,6 +50,17 @@ public class HibernateGoodsGuaranteeRepository extends HibernateSupperRepository
 	@Override
 	public void remove(GoodsGuarantee goodsGuarantee) {
 		this.session().delete(goodsGuarantee);
+	}
+
+	/**
+	 * 查询商家商品保障
+	 */
+	@Override
+	public List<GoodsGuarantee> queryGoodsGuaranteeByDealerId(String dealerId) {
+		StringBuilder sql = new StringBuilder("SELECT * FROM t_scm_goods_guarantee WHERE ( dealer_id=:dealerId AND is_default = 0 AND guarantee_status = 1) OR (is_default = 1 AND guarantee_status = 1) ORDER BY guarantee_order ASC , created_date DESC");
+		Query query = this.session().createSQLQuery(sql.toString()).addEntity(GoodsGuarantee.class);
+		query.setParameter("dealerId",dealerId);
+		return query.list();
 	}
 
 }

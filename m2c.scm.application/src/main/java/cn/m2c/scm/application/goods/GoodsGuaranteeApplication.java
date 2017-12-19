@@ -1,5 +1,8 @@
 package cn.m2c.scm.application.goods;
 
+
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +34,11 @@ public class GoodsGuaranteeApplication {
 	@Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
 	public void addGoodsGuarantee(GoodsGuaranteeAddCommand command) throws NegativeException {
 		LOGGER.info("addGoodsGuarantee command >>{}", command);
+		//查是否超过10个
+		List<GoodsGuarantee> list = goodsGuaranteeRepository.queryGoodsGuaranteeByDealerId(command.getDealerId());
+		if(null != list && list.size() >= 10) {
+			throw new NegativeException(MCode.V_300,"商品保障已满10个");
+		}
 		GoodsGuarantee goodsGuarantee = goodsGuaranteeRepository.queryGoodsGuaranteeByIdAndDealerId(command.getGuaranteeId(), command.getDealerId());
 		if(null != goodsGuarantee){
 			throw new NegativeException(MCode.V_300,"商品保障已存在");
@@ -79,7 +87,8 @@ public class GoodsGuaranteeApplication {
 		if(null == goodsGuarantee) {
 			throw new NegativeException(MCode.V_300,"商品保障不存在");
 		}
-		goodsGuaranteeRepository.remove(goodsGuarantee);
+		goodsGuarantee.remove();
+		goodsGuaranteeRepository.save(goodsGuarantee);
 	}
 	
 	

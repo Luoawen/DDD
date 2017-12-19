@@ -17,6 +17,7 @@ public class GoodsGuarantee extends ConcurrencySafeEntity {
 	private Integer isDefault;     //是否系统默认 0非默认(商家自定义)  1默认(系统初始化数据)
 	private Date createdDate;       //创建时间
 	private Date lastUpdatedDate;   //最后更新时间
+	private Integer guaranteeStatus;//状态  1正常  2删除
 	
 	public GoodsGuarantee(){
 		super();
@@ -30,7 +31,8 @@ public class GoodsGuarantee extends ConcurrencySafeEntity {
 		this.createdDate    = new Date();
 		this.lastUpdatedDate = new Date();
 		this.guaranteeOrder= 0;
-		this.isDefault = 0;
+		this.isDefault = 0;        //商家自定义
+		this.guaranteeStatus = 1;  //状态  正常
 	}
 	
 	public void modifyGoodsGuarantee(String guaranteeName, String guaranteeDesc){
@@ -38,4 +40,11 @@ public class GoodsGuarantee extends ConcurrencySafeEntity {
 		this.guaranteeDesc = guaranteeDesc;
 		this.lastUpdatedDate = new Date();
 	}
+	
+	/**
+     * 删除商品保障
+     */
+    public void remove() {
+    	this.guaranteeStatus = 2;
+    }
 }

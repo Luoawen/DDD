@@ -1,5 +1,7 @@
 package cn.m2c.scm.domain.model.goods;
 
+import java.util.List;
+
 public interface GoodsGuaranteeRepository {
 	
 	/**
@@ -21,5 +23,10 @@ public interface GoodsGuaranteeRepository {
 	 * 删除商品保障
 	 * */
 	public void remove(GoodsGuarantee goodsGuarantee);
+
+	/**
+	 * 查询商家商品保障
+	 * */
+	public List<GoodsGuarantee> queryGoodsGuaranteeByDealerId(String dealerId);
 	
 }
