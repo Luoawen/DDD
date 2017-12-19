@@ -159,5 +159,29 @@ public class GoodsGuaranteeAgent {
 		}
 		return new ResponseEntity<MResult>(result, HttpStatus.OK);
 	}
+	
+	/**
+	 * 新版本查询商品保障接口
+	 */
+	@RequestMapping(value = "/list", method = RequestMethod.GET)
+    public ResponseEntity<MResult> queryDealerGoodsGuarantee(
+    		@RequestParam(value="dealerId",required = true) String dealerId //商家ID
+    	) {
+	 	MResult result = new MResult(MCode.V_1);
+		try{
+			List<GoodsGuaranteeBean> list = goodsGuaranteeQueryApplication.queryGoodsGuaranteeByDealerId(dealerId);
+			//最少会查出4个系统默认保障。其他查出商家自定义的保障(最多6个)。最多共(10个)
+			List<GoodsGuaranteeRepresentation> resultList = new ArrayList<>();
+			for (GoodsGuaranteeBean bean : list) {
+				resultList.add(new GoodsGuaranteeRepresentation(bean));
+			}
+			result.setContent(resultList);
+			result.setStatus(MCode.V_200);
+		}catch(Exception e){
+			LOGGER.error("queryGoodsGuarantee Exception e:", e);
+            result = new MResult(MCode.V_400, "查询商品保障失败");
+		}
+		return new ResponseEntity<MResult>(result, HttpStatus.OK);
+	 }
     
 }

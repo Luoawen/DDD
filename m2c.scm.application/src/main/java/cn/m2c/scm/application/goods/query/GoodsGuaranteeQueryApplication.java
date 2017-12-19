@@ -54,4 +54,15 @@ public class GoodsGuaranteeQueryApplication {
         sql.append(" t_scm_goods_guarantee WHERE 1 = 1 AND is_default = 1 AND guarantee_status = 1 ");
         return this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsGuaranteeBean.class);
     }
+
+    /**
+     * 根据商家id查询商家商品保障(最少查出4个系统默认初始化数据, 最多查出10个)
+     * @param dealerId
+     * @return
+     */
+	public List<GoodsGuaranteeBean> queryGoodsGuaranteeByDealerId(String dealerId) {
+		StringBuilder sql = new StringBuilder();
+		sql.append(" SELECT * FROM t_scm_goods_guarantee WHERE ( dealer_id = ? AND is_default = 0 AND guarantee_status = 1) OR (is_default = 1 AND guarantee_status = 1) ORDER BY guarantee_order ASC , created_date DESC ");
+		return this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsGuaranteeBean.class, dealerId);
+	}
 }

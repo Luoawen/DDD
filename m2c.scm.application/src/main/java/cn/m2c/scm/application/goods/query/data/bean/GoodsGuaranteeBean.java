@@ -14,6 +14,9 @@ public class GoodsGuaranteeBean {
 
     @ColumnAlias(value = "guarantee_desc")
     private String guaranteeDesc;
+    
+    @ColumnAlias(value = "is_default")
+    private Integer isDefault;     //是否系统默认 0非默认(商家自定义)  1默认(系统初始化数据)
 
     public String getGuaranteeName() {
         return guaranteeName;
@@ -38,4 +41,12 @@ public class GoodsGuaranteeBean {
     public void setGuaranteeId(String guaranteeId) {
         this.guaranteeId = guaranteeId;
     }
+
+	public Integer getIsDefault() {
+		return isDefault;
+	}
+
+	public void setIsDefault(Integer isDefault) {
+		this.isDefault = isDefault;
+	}
 }
