@@ -2,6 +2,8 @@ package cn.m2c.scm.port.adapter.restful.web.dealerorder;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,6 +46,8 @@ public class DealerOrderAgent {
 	@Autowired
 	DealerOrderApplication dealerOrderApplication;
 
+	@Autowired
+	private  HttpServletRequest request;
 	/**
 	 * 查询订单列表
 	 * 
@@ -194,7 +198,10 @@ public class DealerOrderAgent {
 				throw new NegativeException(MCode.V_1,"请传入商家订单ID");
 			UpdateAddrCommand command = new UpdateAddrCommand(dealerOrderId, province, provCode, city, cityCode, area,
 					areaCode, street, revPerson, phone, userId);
-			dealerOrderApplication.updateAddress(command);
+			
+			String _attach= request.getHeader("attach");
+			
+			dealerOrderApplication.updateAddress(command, _attach);
 			result.setStatus(MCode.V_200);
 		} catch (NegativeException ne) {
 			result = new MResult(ne.getStatus(), ne.getMessage());
@@ -224,8 +231,10 @@ public class DealerOrderAgent {
 		try {
 			if (StringUtil.isEmpty(dealerOrderId))
 				throw new NegativeException(MCode.V_1,"请传入商家订单ID");
+			String _attach= request.getHeader("attach");
+			
 			UpdateOrderFreightCmd command = new UpdateOrderFreightCmd(dealerOrderId, freight, userId);
-			dealerOrderApplication.updateOrderFreight(command);
+			dealerOrderApplication.updateOrderFreight(command, _attach);
 			result.setStatus(MCode.V_200);
 		} catch (NegativeException ne) {
 			result = new MResult(ne.getStatus(), ne.getMessage());
@@ -259,7 +268,9 @@ public class DealerOrderAgent {
 				throw new NegativeException(MCode.V_1, "商家订单号为空");
 			UpdateAddrFreightCmd cmd = new UpdateAddrFreightCmd(dealerOrderId, province, provCode, city, cityCode, area,
 					areaCode, street, revPerson, phone, freights, userId);
-			dealerOrderApplication.updateAddrFreight(cmd);
+			
+			String _attach= request.getHeader("attach");
+			dealerOrderApplication.updateAddrFreight(cmd, _attach);
 			result.setStatus(MCode.V_200);
 		} catch (NegativeException ne) {
 			result = new MResult(ne.getStatus(), ne.getMessage());
