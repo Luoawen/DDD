@@ -62,7 +62,10 @@ public class GoodsGuaranteeQueryApplication {
      */
 	public List<GoodsGuaranteeBean> queryGoodsGuaranteeByDealerId(String dealerId) {
 		StringBuilder sql = new StringBuilder();
-		sql.append(" SELECT * FROM t_scm_goods_guarantee WHERE ( dealer_id = ? AND is_default = 0 AND guarantee_status = 1) OR (is_default = 1 AND guarantee_status = 1) ORDER BY guarantee_order ASC , created_date DESC ");
+		sql.append(" SELECT ");
+		sql.append(" * ");
+		sql.append(" FROM ");
+		sql.append(" t_scm_goods_guarantee WHERE ( dealer_id = ? AND is_default = 0 AND guarantee_status = 1 ) OR ( is_default = 1 AND guarantee_status = 1 ) ORDER BY guarantee_order ASC , created_date DESC ");
 		return this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsGuaranteeBean.class, dealerId);
 	}
 }
