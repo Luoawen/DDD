@@ -108,7 +108,9 @@ public class HibernateOrderRepository extends HibernateSupperRepository implemen
 		if(sortNo != 0) {
 		query.setParameter("sortNo", sortNo);
 		}
-		return (DealerOrderDtl)query.uniqueResult();
+		DealerOrderDtl result = (DealerOrderDtl)query.uniqueResult();
+		System.out.println("------------------------>原来的"+result);
+		return result;
 	}
 
 	@Override
@@ -181,6 +183,7 @@ public class HibernateOrderRepository extends HibernateSupperRepository implemen
 		Query query = this.session().createSQLQuery(sql.toString()).addEntity(DealerOrderDtl.class);
 		query.setParameter("skuId", skuId);
 		DealerOrderDtl result = (DealerOrderDtl) query.uniqueResult();
+		System.out.println("chaxunjieguo-------------------->"+result);
 		if (result != null) {
 			return true;
 		}else {
