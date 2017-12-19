@@ -25,7 +25,7 @@ public class GoodsGuaranteeQueryApplication {
     }
 
     /**
-     * 通过List保障id查询商品保障
+     * 原通过List保障id查询商品保障
      * @param ids
      * @return
      */
@@ -35,7 +35,7 @@ public class GoodsGuaranteeQueryApplication {
             sql.append(" SELECT ");
             sql.append(" * ");
             sql.append(" FROM ");
-            sql.append(" t_scm_goods_guarantee WHERE 1 = 1");
+            sql.append(" t_scm_goods_guarantee WHERE 1 = 1 AND guarantee_status = 1");
             sql.append(" AND guarantee_id in (" + Utils.listParseString(ids) + ") ");
             return this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsGuaranteeBean.class);
         }
@@ -43,7 +43,7 @@ public class GoodsGuaranteeQueryApplication {
     }
 
     /**
-     * 原查询商品保障
+     * 原查询商品保障(查询所有系统默认)
      * @return
      */
     public List<GoodsGuaranteeBean> queryGoodsGuarantee() {
@@ -51,7 +51,7 @@ public class GoodsGuaranteeQueryApplication {
         sql.append(" SELECT ");
         sql.append(" * ");
         sql.append(" FROM ");
-        sql.append(" t_scm_goods_guarantee WHERE 1 = 1");
+        sql.append(" t_scm_goods_guarantee WHERE 1 = 1 AND is_default = 1 AND guarantee_status = 1 ");
         return this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsGuaranteeBean.class);
     }
 }
