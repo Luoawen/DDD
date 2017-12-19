@@ -186,9 +186,10 @@ public class HibernateOrderRepository extends HibernateSupperRepository implemen
 		List<DealerOrderDtl> result = (List<DealerOrderDtl>) query.list();
 		System.out.println("chaxunjieguo-------------------->"+result);
 		if (result.size() > 0 && result != null) {
-			return true;
-		}else {
 			return false;
+		}else {
+			return true;
+			
 		}
 	}
 }

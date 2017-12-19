@@ -699,8 +699,10 @@ public class OrderApplication {
         if (dtl == null) {
         	throw new NegativeException(MCode.V_1, "无此商品！");
         }
-        if(orderRepository.checkSku(cmd.getSkuId(),cmd.getDealerOrderId())) {
-        	throw new NegativeException(MCode.V_1,"请升级客户端！");
+        if(cmd.getSortNo() == 0) {
+        	if(orderRepository.checkSku(cmd.getSkuId(),cmd.getDealerOrderId())) {
+            	throw new NegativeException(MCode.V_1,"请升级客户端！");
+            }
         }
         // 检查是否可确认收货
         
