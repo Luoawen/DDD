@@ -145,7 +145,7 @@ public class OrderQuery {
         }
 		if (mediaInfo != null) {
 			if (mediaInfo == 0) {
-				sql.append("AND d.dealer_order_id IN (SELECT dtl.dealer_order_id FROM t_scm_order_detail dtl WHERE dtl.media_res_id = '')");
+				sql.append("AND d.dealer_order_id IN (SELECT dtl.dealer_order_id FROM t_scm_order_detail dtl WHERE dtl.media_res_id IS NULL)");
 			}
 			if (mediaInfo ==1) {
 				sql.append("AND d.dealer_order_id IN (SELECT dtl.dealer_order_id FROM t_scm_order_detail dtl WHERE dtl.media_res_id != '')");
