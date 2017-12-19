@@ -148,7 +148,7 @@ public class OrderQuery {
 				sql.append("AND d.dealer_order_id IN (SELECT dtl.dealer_order_id FROM t_scm_order_detail dtl WHERE dtl.media_res_id IS NULL)");
 			}
 			if (mediaInfo ==1) {
-				sql.append("AND d.dealer_order_id IN (SELECT dtl.dealer_order_id FROM t_scm_order_detail dtl WHERE dtl.media_res_id != '')");
+				sql.append("AND d.dealer_order_id IN (SELECT dtl.dealer_order_id FROM t_scm_order_detail dtl WHERE dtl.media_res_id IS NOT NULL)");
 			}
 		}
 		if (!StringUtils.isEmpty(dealerClassify)) {
@@ -323,11 +323,12 @@ public class OrderQuery {
 			params.add(endTime+ " 23:59:59");
 		}
 		if (StringUtils.isNotEmpty(condition) && condition != null && !"".equals(condition)) {
-			sql.append(" AND (d.dealer_order_id LIKE ?	OR m.pay_no LIKE ? OR dealer.dealer_name LIKE ? OR (d.dealer_order_id IN (SELECT od.dealer_order_id FROM t_scm_order_detail od WHERE od.goods_name LIKE ? ))) ");
+			sql.append(" AND (d.dealer_order_id LIKE ?	OR m.pay_no LIKE ? OR dealer.dealer_name LIKE ? OR (d.dealer_order_id IN (SELECT od.dealer_order_id FROM t_scm_order_detail od WHERE od.goods_name LIKE ? )) OR d.rev_phone = ?) ");
 			params.add("%" + condition + "%");
 			params.add("%" + condition + "%");
 			params.add("%" + condition + "%");
 			params.add("%" + condition + "%");
+			params.add(condition);
 		}
 		/*if (commentStatus != null && commentStatus >= 0) {
         sql.append(" AND dtl.comment_status = ?\r\n");
@@ -343,10 +344,10 @@ public class OrderQuery {
 		}
 		if (mediaInfo != null) {
 			if (mediaInfo == 0) {
-				sql.append("AND d.dealer_order_id IN (SELECT dtl.dealer_order_id FROM t_scm_order_detail dtl WHERE dtl.media_res_id = '')");
+				sql.append("AND d.dealer_order_id IN (SELECT dtl.dealer_order_id FROM t_scm_order_detail dtl WHERE dtl.media_res_id IS NULL)");
 			}
 			if (mediaInfo ==1) {
-				sql.append("AND d.dealer_order_id IN (SELECT dtl.dealer_order_id FROM t_scm_order_detail dtl WHERE dtl.media_res_id != '')");
+				sql.append("AND d.dealer_order_id IN (SELECT dtl.dealer_order_id FROM t_scm_order_detail dtl WHERE dtl.media_res_id IS NOT NULL)");
 			}
 		}
 		if (!StringUtils.isEmpty(dealerClassify)) {
