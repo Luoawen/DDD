@@ -182,9 +182,9 @@ public class HibernateOrderRepository extends HibernateSupperRepository implemen
 		StringBuilder sql = new StringBuilder("SELECT * FROM t_scm_order_detail WHERE sku_id=:skuId");
 		Query query = this.session().createSQLQuery(sql.toString()).addEntity(DealerOrderDtl.class);
 		query.setParameter("skuId", skuId);
-		DealerOrderDtl result = (DealerOrderDtl) query.uniqueResult();
+		List<DealerOrderDtl> result = (List<DealerOrderDtl>) query.list();
 		System.out.println("chaxunjieguo-------------------->"+result);
-		if (result != null) {
+		if (result.size() > 0 && result != null) {
 			return true;
 		}else {
 			return false;
