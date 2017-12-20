@@ -81,4 +81,11 @@ public interface OrderRepository {
 	 * @param order 主订单
 	 */
 	public void saveAppInfo(AppOrdInfo appInfo);
+	
+	/**
+	 * 判断SKU是否重复
+	 * @param skuId
+	 * @return
+	 */
+	public boolean checkSku(String skuId,String dealerOrderId);
 }
