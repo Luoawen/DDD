@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import cn.m2c.common.MCode;
+import cn.m2c.ddd.common.event.annotation.EventListener;
 import cn.m2c.scm.application.goods.command.GoodsGuaranteeAddCommand;
 import cn.m2c.scm.application.goods.command.GoodsGuaranteeDelCommand;
 import cn.m2c.scm.domain.NegativeException;
@@ -41,7 +42,7 @@ public class GoodsGuaranteeApplication {
 		}
 		GoodsGuarantee goodsGuarantee = goodsGuaranteeRepository.queryGoodsGuaranteeByIdAndDealerId(command.getGuaranteeId(), command.getDealerId());
 		if(null != goodsGuarantee){
-			throw new NegativeException(MCode.V_300,"商品保障已存在");
+			throw new NegativeException(MCode.V_300,"标题已存在");
 		}
 		//查重名
 		boolean goodsGuaranteeByName = goodsGuaranteeRepository.goodsGuaranteeNameIsRepeat(command.getGuaranteeName(), command.getDealerId(), command.getGuaranteeId());
@@ -68,7 +69,7 @@ public class GoodsGuaranteeApplication {
 		//查重名
 		boolean guaranteeNameIsRepeat = goodsGuaranteeRepository.goodsGuaranteeNameIsRepeat(command.getGuaranteeName(), command.getDealerId(), command.getGuaranteeId());
 		if(guaranteeNameIsRepeat) {
-			throw new NegativeException(MCode.V_300,"商品保障名称已存在");
+			throw new NegativeException(MCode.V_300,"标题已存在");
 		}
 		goodsGuarantee.modifyGoodsGuarantee(command.getGuaranteeName(), command.getGuaranteeDesc());
 		goodsGuaranteeRepository.save(goodsGuarantee);
@@ -79,6 +80,7 @@ public class GoodsGuaranteeApplication {
 	 * @param command
 	 * @throws NegativeException 
 	 */
+	@EventListener(isListening = true)
 	@Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
 	public void delGoodsGuarantee(GoodsGuaranteeDelCommand command) throws NegativeException {
 		LOGGER.info("delGoodsGuarantee command >>{}", command);

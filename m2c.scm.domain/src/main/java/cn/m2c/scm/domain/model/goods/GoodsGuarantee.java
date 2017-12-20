@@ -3,6 +3,8 @@ package cn.m2c.scm.domain.model.goods;
 import java.util.Date;
 
 import cn.m2c.ddd.common.domain.model.ConcurrencySafeEntity;
+import cn.m2c.ddd.common.domain.model.DomainEventPublisher;
+import cn.m2c.scm.domain.model.goods.event.GoodsGuaranteeDelEvent;
 
 /**
  * 商品保障
@@ -42,9 +44,12 @@ public class GoodsGuarantee extends ConcurrencySafeEntity {
 	}
 	
 	/**
-     * 删除商品保障
+     * 删除商品保障(需同时删除已选此保障商品的保障)
      */
     public void remove() {
     	this.guaranteeStatus = 2;
+    	DomainEventPublisher
+        	.instance()
+        	.publish(new GoodsGuaranteeDelEvent(this.guaranteeId, this.dealerId));
     }
 }

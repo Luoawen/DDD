@@ -8,6 +8,7 @@ import cn.m2c.scm.domain.model.goods.event.GoodsApproveAgreeEvent;
 import cn.m2c.scm.domain.util.GetMapValueUtils;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -330,4 +331,20 @@ public class GoodsApprove extends ConcurrencySafeEntity {
     public void modifyDealerName(String dealerName) {
         this.dealerName = dealerName;
     }
+
+    /**
+     * 删除审核中商品指定保障
+     * @param guaranteeId
+     */
+	public void delGoodsApproveGuarantee(String guaranteeId) {
+		List list = ObjectSerializer.instance().deserialize(this.goodsGuarantee, List.class);
+		Iterator<String> it = list.iterator();
+		while(it.hasNext()) {
+			String goodsApproveGuarantee = it.next();
+			if(goodsApproveGuarantee.equals(guaranteeId)) {
+				it.remove();
+			}
+		}
+		this.goodsGuarantee = list.toString();
+	}
 }

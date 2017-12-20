@@ -78,7 +78,7 @@ public class GoodsGuaranteeAgent {
             result.setContent(id);
             result.setStatus(MCode.V_200);
         } catch (Exception e) {
-            LOGGER.error("getGoodsGuaranteeId Exception e:", e);
+            LOGGER.error("获取GoodsGuaranteeId异常 Exception e:", e);
             result = new MResult(MCode.V_400, e.getMessage());
         }
         return new ResponseEntity<MResult>(result, HttpStatus.OK);
@@ -94,7 +94,7 @@ public class GoodsGuaranteeAgent {
     public ResponseEntity<MResult> addGoodsGuarantee(
 		@RequestParam(value="guaranteeId",required = false) String guaranteeId,     //商品保障id
 		@RequestParam(value="guaranteeName",required = false) String guaranteeName, //商品保障名
-		@RequestParam(value="guaranteeDesc",required = false) String guaranteeDesc, // 商品保障内容
+		@RequestParam(value="guaranteeDesc",required = false) String guaranteeDesc, //商品保障内容
 		@RequestParam(value="dealerId",required = false) String dealerId            //商家ID
 	) {
 		MResult result = new MResult(MCode.V_1);

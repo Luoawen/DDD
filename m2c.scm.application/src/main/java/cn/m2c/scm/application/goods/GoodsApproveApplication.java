@@ -238,4 +238,20 @@ public class GoodsApproveApplication {
     		throw new NegativeException(MCode.V_300, "所选商品的审核信息不存在");
     	}
 	}
+
+    /**
+     * 修改审核中商品的商品保障(保障删除后需删除审核中商品的对应保障)
+     * @param dealerId
+     * @param guaranteeId
+     */
+	public void modifyGoodsApproveGuarantee(String dealerId, String guaranteeId) {
+		LOGGER.info("modifyGoodsApproveGuarantee dealerId >>{}", dealerId);
+		LOGGER.info("modifyGoodsApproveGuarantee dealerId >>{}", guaranteeId);
+		List<GoodsApprove> goodsApproveList = goodsApproveRepository.queryGoodsByDealerIdAndGuaranteeId(dealerId, guaranteeId);
+		if(null != goodsApproveList && goodsApproveList.size() > 0) {
+			for(GoodsApprove goodsApprove : goodsApproveList) {
+				goodsApprove.delGoodsApproveGuarantee(guaranteeId);
+			}
+		}
+	}
 }

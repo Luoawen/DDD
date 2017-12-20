@@ -87,4 +87,16 @@ public class HibernateGoodsApproveRepository extends HibernateSupperRepository i
 		Query query = this.session().createSQLQuery(sql.toString()).addEntity(GoodsApprove.class);
 		return query.list();
 	}
+
+	/**
+	 * 查询指定商家审核中含有对应保障的商品
+	 */
+	@Override
+	public List<GoodsApprove> queryGoodsByDealerIdAndGuaranteeId(String dealerId, String guaranteeId) {
+		StringBuilder sql = new StringBuilder(" SELECT * FROM t_scm_goods_approve WHERE del_status = 1 AND dealer_id=:dealerId AND goods_guarantee LIKE :guaranteeId ");
+		Query query = this.session().createSQLQuery(sql.toString()).addEntity(GoodsApprove.class);
+		query.setParameter("dealerId", dealerId);
+		query.setParameter("guaranteeId", "%"+guaranteeId+"%");
+		return query.list();
+	}
 }
