@@ -179,16 +179,23 @@ public class HibernateOrderRepository extends HibernateSupperRepository implemen
 	@Override
 	public boolean checkSku(String skuId,String dealerOrderId) {
 		// TODO Auto-generated method stub
-		StringBuilder sql = new StringBuilder("SELECT * FROM t_scm_order_detail WHERE sku_id=:skuId AND dealer_order_id =:dealerOrderId ");
+		/*StringBuilder sql = new StringBuilder("SELECT * FROM t_scm_order_detail WHERE sku_id=:skuId AND dealer_order_id =:dealerOrderId ");
 		Query query = this.session().createSQLQuery(sql.toString()).addEntity(DealerOrderDtl.class);
 		query.setParameter("skuId", skuId);
 		query.setParameter("dealerOrderId", dealerOrderId);
-		List<DealerOrderDtl> result = (List<DealerOrderDtl>) query.list();
-		System.out.println("chaxunjieguo-------------------->"+result);
-		if (result.size() > 0 && result != null) {
+		List<DealerOrderDtl> result = (List<DealerOrderDtl>) query.list();*/
+		
+		Object o = this.session().createSQLQuery("SELECT count(1) FROM t_scm_order_detail WHERE sku_id=:skuId AND dealer_order_id =:dealerOrderId")
+				.setParameter("skuId", skuId).setParameter("dealerOrderId", dealerOrderId).uniqueResult();
+		BigInteger b = (BigInteger)o;
+		System.out.println("fanjc--------------------sku same num:"+b);
+		return b != null ? b.intValue() > 1 : false;
+		
+		/*System.out.println("chaxunjieguo-------------------->"+result);
+		 if (result.size() > 0 && result != null) {
 			return true;
 		}else {
 			return false;
-		}
+		}*/
 	}
 }

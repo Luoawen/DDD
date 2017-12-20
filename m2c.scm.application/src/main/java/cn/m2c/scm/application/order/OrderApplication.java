@@ -695,15 +695,18 @@ public class OrderApplication {
     @EventListener(isListening = true)
     public void confirmSku(ConfirmSkuCmd cmd) throws NegativeException {
 
+    	if (cmd.getSortNo() == 0) {
+	    	if(orderRepository.checkSku(cmd.getSkuId(),cmd.getDealerOrderId())) {
+	        	throw new NegativeException(MCode.V_1,"请升级客户端！");
+	        }
+    	}
+    	
         DealerOrderDtl dtl = orderRepository.getDealerOrderDtlBySku(cmd.getDealerOrderId(), cmd.getSkuId(), cmd.getSortNo());
         if (dtl == null) {
         	throw new NegativeException(MCode.V_1, "无此商品！");
         }
-        if(orderRepository.checkSku(cmd.getSkuId(),cmd.getDealerOrderId())) {
-        	throw new NegativeException(MCode.V_1,"请升级客户端！");
-        }
-        // 检查是否可确认收货
         
+        // 检查是否可确认收货
         boolean flag = dtl.confirmRev(cmd.getUserId());
         // 可能是逻辑删除或是改成取消状态(子订单也要改)
         DealerOrder order = orderRepository.getDealerOrderByNo(cmd.getDealerOrderId());
