@@ -206,11 +206,9 @@ public class OrderServiceImpl implements OrderService {
 		String resp = "";
 		try {
 			resp = new HttpRequest().postData(KUAIDI_100_URL, params, "utf-8").toString();
-			System.out.println("----------"+resp);
 		} catch (Exception e) {
 			throw e;
 		}		
-		System.out.println("返回数据"+resp);
 		return resp;
 	}
 
