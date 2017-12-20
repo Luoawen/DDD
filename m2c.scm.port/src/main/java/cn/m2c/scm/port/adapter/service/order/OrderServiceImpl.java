@@ -208,6 +208,7 @@ public class OrderServiceImpl implements OrderService {
 		} catch (Exception e) {
 			throw e;
 		}		
+		System.out.println("返回数据"+resp);
 		return resp;
 	}
 

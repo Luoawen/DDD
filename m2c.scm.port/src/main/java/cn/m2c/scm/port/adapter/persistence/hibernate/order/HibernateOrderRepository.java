@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Query;
+import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -97,12 +98,19 @@ public class HibernateOrderRepository extends HibernateSupperRepository implemen
 	@Override
 	public DealerOrderDtl getDealerOrderDtlBySku(String dealerOrderId, String sku, int sortNo) {
 		// TODO Auto-generated method stub
-		StringBuilder sql = new StringBuilder("SELECT * FROM t_scm_order_detail WHERE dealer_order_id =:dealerOrderId AND sku_id=:skuId AND sort_no=:sortNo");
+		StringBuilder sql = new StringBuilder("SELECT * FROM t_scm_order_detail WHERE dealer_order_id =:dealerOrderId AND sku_id=:skuId ");
+		if (sortNo != 0) {
+			sql.append(" AND sort_no=:sortNo ");
+		}
 		Query query = this.session().createSQLQuery(sql.toString()).addEntity(DealerOrderDtl.class);
 		query.setParameter("dealerOrderId", dealerOrderId);
 		query.setParameter("skuId", sku);
+		if(sortNo != 0) {
 		query.setParameter("sortNo", sortNo);
-		return (DealerOrderDtl)query.uniqueResult();
+		}
+		DealerOrderDtl result = (DealerOrderDtl)query.uniqueResult();
+		System.out.println("------------------------>原来的"+result);
+		return result;
 	}
 
 	@Override
@@ -166,5 +174,21 @@ public class HibernateOrderRepository extends HibernateSupperRepository implemen
 	public void saveAppInfo(AppOrdInfo appInfo) {
 		// TODO Auto-generated method stub
 		this.session().save(appInfo);
+	}
+
+	@Override
+	public boolean checkSku(String skuId,String dealerOrderId) {
+		// TODO Auto-generated method stub
+		StringBuilder sql = new StringBuilder("SELECT * FROM t_scm_order_detail WHERE sku_id=:skuId AND dealer_order_id =:dealerOrderId ");
+		Query query = this.session().createSQLQuery(sql.toString()).addEntity(DealerOrderDtl.class);
+		query.setParameter("skuId", skuId);
+		query.setParameter("dealerOrderId", dealerOrderId);
+		List<DealerOrderDtl> result = (List<DealerOrderDtl>) query.list();
+		System.out.println("chaxunjieguo-------------------->"+result);
+		if (result.size() > 0 && result != null) {
+			return true;
+		}else {
+			return false;
+		}
 	}
 }
