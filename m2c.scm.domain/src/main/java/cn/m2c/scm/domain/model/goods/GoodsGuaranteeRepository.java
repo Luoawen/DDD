@@ -28,5 +28,12 @@ public interface GoodsGuaranteeRepository {
 	 * 查询商家商品保障
 	 * */
 	public List<GoodsGuarantee> queryGoodsGuaranteeByDealerId(String dealerId);
+
+	/**
+	 * 根据保障id查询商品保障
+	 * @param guaranteeId
+	 * @return
+	 */
+	public GoodsGuarantee queryGoodsGuaranteeById(String guaranteeId);
 	
 }

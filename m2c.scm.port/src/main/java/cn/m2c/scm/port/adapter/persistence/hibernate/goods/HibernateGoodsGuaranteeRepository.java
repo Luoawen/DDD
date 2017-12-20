@@ -63,4 +63,12 @@ public class HibernateGoodsGuaranteeRepository extends HibernateSupperRepository
 		return query.list();
 	}
 
+	@Override
+	public GoodsGuarantee queryGoodsGuaranteeById(String guaranteeId) {
+		StringBuilder sql = new StringBuilder("SELECT * FROM t_scm_goods_guarantee WHERE is_default = 0 AND guarantee_status = 1 AND guarantee_id=:guaranteeId ");
+		Query query = this.session().createSQLQuery(sql.toString()).addEntity(GoodsGuarantee.class);
+		query.setParameter("guaranteeId",guaranteeId);
+		return (GoodsGuarantee) query.uniqueResult();
+	}
+
 }
