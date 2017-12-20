@@ -184,18 +184,16 @@ public class HibernateOrderRepository extends HibernateSupperRepository implemen
 		query.setParameter("skuId", skuId);
 		query.setParameter("dealerOrderId", dealerOrderId);
 		List<DealerOrderDtl> result = (List<DealerOrderDtl>) query.list();*/
-		
-		Object o = this.session().createSQLQuery("SELECT count(1) FROM t_scm_order_detail WHERE sku_id=:skuId AND dealer_order_id =:dealerOrderId")
-				.setParameter("skuId", skuId).setParameter("dealerOrderId", dealerOrderId).uniqueResult();
-		BigInteger b = (BigInteger)o;
-		System.out.println("fanjc--------------------sku same num:"+b);
-		return b != null ? b.intValue() > 1 : false;
-		
 		/*System.out.println("chaxunjieguo-------------------->"+result);
 		 if (result.size() > 0 && result != null) {
 			return true;
 		}else {
 			return false;
 		}*/
+		Object o = this.session().createSQLQuery("SELECT count(1) FROM t_scm_order_detail WHERE sku_id=:skuId AND dealer_order_id =:dealerOrderId")
+				.setParameter("skuId", skuId).setParameter("dealerOrderId", dealerOrderId).uniqueResult();
+		BigInteger b = (BigInteger)o;
+		System.out.println("fanjc--------------------sku same num:"+b);
+		return b != null ? b.intValue() > 1 : false;
 	}
 }
