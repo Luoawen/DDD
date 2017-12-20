@@ -3,6 +3,8 @@ package cn.m2c.scm.domain.service.order;
 import java.util.List;
 import java.util.Map;
 
+import cn.m2c.scm.domain.NegativeException;
+
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
@@ -92,4 +94,18 @@ public interface OrderService {
 	 */
 	public String getExpressInfo(String com,String nu) throws Exception;
 	
+	/**
+	 * 根据用户id获取用户手机号
+	 * @param userId
+	 * @return
+	 */
+	public String getUserMobileByUserId(String userId) throws NegativeException;
+	
+	/**
+	 * 调用第三方发送短信接口
+	 * @param userMobile
+	 * @param shopName
+	 * @throws NegativeException
+	 */
+	public void sendOrderSMS(String userMobile, String shopName) throws NegativeException;
 }

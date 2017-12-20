@@ -610,4 +610,22 @@ public class OrderQuery {
 			sum = ((BigDecimal)object).longValue();
 		 return sum;
 	}
+
+	/**
+	 * 根据主订单id获取用户id
+	 * @param orderId
+	 * @return
+	 * @throws NegativeException 
+	 */
+	public String getOrderUserId(String orderId) throws NegativeException {
+		String userId = "";
+		try {
+			String sql = "SELECT user_id FROM t_scm_order_main WHERE order_id = ?";
+			userId  = supportJdbcTemplate.jdbcTemplate().queryForObject(sql, String.class,orderId);
+		} catch (Exception e) {
+			LOGGER.info(" 根据主订单id获取用户id",e);
+			throw new  NegativeException(500,"根据订单id查询用户id失败");
+		}
+		return userId;
+	}
 }
