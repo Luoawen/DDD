@@ -12,6 +12,7 @@ import cn.m2c.scm.application.order.command.ConfirmSkuCmd;
 import cn.m2c.scm.application.order.command.OrderAddCommand;
 import cn.m2c.scm.application.order.command.OrderPayedCmd;
 import cn.m2c.scm.application.order.command.PayOrderCmd;
+import cn.m2c.scm.application.order.command.SendOrderSMSCommand;
 import cn.m2c.scm.application.order.data.bean.FreightCalBean;
 import cn.m2c.scm.application.order.data.bean.GoodsReqBean;
 import cn.m2c.scm.application.order.data.bean.MarketBean;
@@ -1033,4 +1034,19 @@ public class OrderApplication {
     		throw new NegativeException(MCode.V_105, JSONObject.toJSONString(skus));
     	}
     }
+
+
+    /**
+     * 发送发货短信的application
+     * @param cmd
+     * @throws NegativeException 
+     */
+	public void sendOrderSMS(SendOrderSMSCommand cmd) throws NegativeException {
+    	//首先根据用户id获取用户中心手机号
+    	String userMobile  = orderDomainService.getUserMobileByUserId(cmd.getUserId());//下单人手机号
+    	if(!StringUtils.isEmpty(userMobile)){
+    		//然后根据发送短信接口发送短信（调用support中心的功能）
+    		orderDomainService.sendOrderSMS(userMobile,cmd.getShopName());
+    	}
+	}
 }

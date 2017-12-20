@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -24,6 +25,7 @@ import cn.m2c.scm.application.order.command.AproveSaleAfterCmd;
 import cn.m2c.scm.application.order.command.SaleAfterCmd;
 import cn.m2c.scm.application.order.command.SaleAfterShipCmd;
 import cn.m2c.scm.application.order.command.SendOrderCommand;
+import cn.m2c.scm.application.order.command.SendOrderSMSCommand;
 import cn.m2c.scm.application.order.data.bean.DealerOrderBean;
 import cn.m2c.scm.application.order.data.bean.DealerOrderDetailBean;
 import cn.m2c.scm.application.order.data.bean.MainOrderBean;
@@ -475,4 +477,53 @@ public class OrderAgent {
 		}
 		return new ResponseEntity<MResult>(result,HttpStatus.OK);
 	}
+	
+	/**
+	 * 根据订单id获取用户id
+	 * @param orderId
+	 * @return
+	 */
+	@RequestMapping(value = "/web/getOrderUser", method = RequestMethod.GET)
+	public ResponseEntity<MResult> getOrderUser(@RequestParam(value = "orderId") String orderId){
+		MResult result = new MResult(MCode.V_1);
+		try {
+			if(StringUtils.isEmpty(orderId)){
+				result.setErrorMessage("用户ID不能为空");
+				return new ResponseEntity<MResult>(result,HttpStatus.OK);
+			}
+			String userId = orderQuery.getOrderUserId(orderId);
+			result.setContent(userId);
+			result.setStatus(MCode.V_200);
+		} catch (NegativeException ne){
+			LOGGER.error("根据订单ID查询用户ID失败", ne);
+			result = new MResult(ne.getStatus(), ne.getMessage());
+		} catch (Exception e) {
+			LOGGER.info("根据订单ID查询用户ID失败");
+		}
+		return new ResponseEntity<MResult>(result,HttpStatus.OK);
+	}
+	
+	
+	/**
+	 * 发货成功发送短信接口
+	 * @param orderId
+	 * @return
+	 */
+	@RequestMapping(value = "/web/orderSendSMS", method = RequestMethod.POST)
+	public ResponseEntity<MResult> orderSendSMS(@RequestParam(value = "shopName") String shopName,
+			@RequestParam(value = "userId") String userId){
+		MResult result = new MResult(MCode.V_1);
+		try {
+			SendOrderSMSCommand cmd = new SendOrderSMSCommand(userId,shopName);
+			orderapplication.sendOrderSMS(cmd);
+			result.setStatus(MCode.V_200);
+		}catch (NegativeException ne){
+			LOGGER.error("发送发货短信失败", ne);
+			result = new MResult(ne.getStatus(), ne.getMessage());
+		} catch (Exception e) {
+			LOGGER.info("发送发货短信失败");
+		}
+		return new ResponseEntity<MResult>(result,HttpStatus.OK);
+	}
+	
 }
