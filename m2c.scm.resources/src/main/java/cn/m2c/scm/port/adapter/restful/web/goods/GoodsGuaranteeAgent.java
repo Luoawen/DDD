@@ -4,7 +4,6 @@ import cn.m2c.common.MCode;
 import cn.m2c.common.MResult;
 import cn.m2c.scm.application.goods.GoodsGuaranteeApplication;
 import cn.m2c.scm.application.goods.command.GoodsGuaranteeAddCommand;
-import cn.m2c.scm.application.goods.command.GoodsGuaranteeDelCommand;
 import cn.m2c.scm.application.goods.query.GoodsGuaranteeQueryApplication;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsGuaranteeBean;
 import cn.m2c.scm.application.goods.query.data.representation.GoodsGuaranteeRepresentation;
@@ -140,15 +139,13 @@ public class GoodsGuaranteeAgent {
 	/**
 	 * 删除商品保障
 	 * */
-	@RequestMapping(value = "/del", method = RequestMethod.DELETE)
+	@RequestMapping(value = "/del/{guaranteeId}", method = RequestMethod.DELETE)
 	public ResponseEntity<MResult> deleteGoodsGuarantee(
-		@RequestParam(value = "guaranteeId", required = false) String guaranteeId, //保障id
-		@RequestParam(value = "dealerId", required = false) String dealerId        //商家id
+		@PathVariable(value = "guaranteeId", required = false) String guaranteeId //保障id
 			){
 		MResult result = new MResult(MCode.V_1);
 		try {
-			GoodsGuaranteeDelCommand command = new GoodsGuaranteeDelCommand(guaranteeId, dealerId);
-			goodsGuaranteeApplication.delGoodsGuarantee(command);
+			goodsGuaranteeApplication.delGoodsGuarantee(guaranteeId);
 			result.setStatus(MCode.V_200);
 		} catch (NegativeException ne) {
 			LOGGER.error("deleteUnit NegativeException e:", ne);
