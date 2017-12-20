@@ -57,8 +57,9 @@ public class SaleAfterOrderApp {
 			throw new NegativeException(MCode.V_1, "申请售后的商品不存在！");
 		}
 		
+		int _sortNo = itemDtl.getSortNo();
 		int ij = saleAfterRepository.getSaleAfterOrderBySkuId(cmd.getDealerOrderId(), 
-				cmd.getSkuId(), cmd.getSortNo());
+				cmd.getSkuId(), _sortNo);
 		if (ij > 0) {
 			throw new NegativeException(MCode.V_100, "此商品已有售后还在处理中！");
 		}
@@ -89,7 +90,7 @@ public class SaleAfterOrderApp {
 				SimpleMarket marketInfo = saleOrderQuery.getMarketById(mkId, cmd.getOrderId());
 				List<SkuNumBean> skuBeanLs = saleOrderQuery.getOrderDtlByMarketId(mkId, cmd.getOrderId());
 				
-				discountMoney = OrderMarketCalc.calcReturnMoney(marketInfo, skuBeanLs, cmd.getSkuId(), cmd.getSortNo());
+				discountMoney = OrderMarketCalc.calcReturnMoney(marketInfo, skuBeanLs, cmd.getSkuId(), _sortNo);
 				if (marketInfo != null && marketInfo.isFull())
 					money = itemDtl.changePrice();
 			}
@@ -111,12 +112,12 @@ public class SaleAfterOrderApp {
 			num = itemDtl.sellNum();
 		
 		// 使之前申请的失效 20171218添加		
-		saleAfterRepository.invalideBefore(cmd.getSkuId(), cmd.getDealerOrderId(), cmd.getSortNo());
+		saleAfterRepository.invalideBefore(cmd.getSkuId(), cmd.getDealerOrderId(), _sortNo);
 		
 		SaleAfterOrder afterOrder = new SaleAfterOrder(cmd.getSaleAfterNo(), cmd.getUserId(), cmd.getOrderId(),
 				cmd.getDealerOrderId(), cmd.getDealerId(), cmd.getGoodsId(), cmd.getSkuId(), cmd.getReason()
 				, num, status, orderType, money, cmd.getReasonCode(), ft
-				, cmd.getSortNo());
+				, _sortNo);
 		afterOrder.addApply();
 		saleAfterRepository.save(afterOrder);
 		LOGGER.info("新增加售后申请成功！");
