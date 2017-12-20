@@ -42,12 +42,12 @@ public class GoodsGuaranteeApplication {
 		}
 		GoodsGuarantee goodsGuarantee = goodsGuaranteeRepository.queryGoodsGuaranteeByIdAndDealerId(command.getGuaranteeId(), command.getDealerId());
 		if(null != goodsGuarantee){
-			throw new NegativeException(MCode.V_300,"标题已存在");
+			throw new NegativeException(MCode.V_300,"商品保障已存在");
 		}
 		//查重名
 		boolean goodsGuaranteeByName = goodsGuaranteeRepository.goodsGuaranteeNameIsRepeat(command.getGuaranteeName(), command.getDealerId(), command.getGuaranteeId());
 		if(goodsGuaranteeByName) {
-			throw new NegativeException(MCode.V_300,"商品保障名称已存在");
+			throw new NegativeException(MCode.V_300,"标题已存在");
 		}
 		goodsGuarantee = new GoodsGuarantee(command.getGuaranteeId(), command.getGuaranteeName(), command.getGuaranteeDesc(), command.getDealerId());
 		goodsGuaranteeRepository.save(goodsGuarantee);
