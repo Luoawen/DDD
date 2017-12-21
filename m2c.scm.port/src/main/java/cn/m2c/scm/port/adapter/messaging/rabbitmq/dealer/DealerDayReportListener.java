@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate4.HibernateTransactionManager;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
@@ -47,9 +48,9 @@ public class DealerDayReportListener extends ExchangeListener {
         Map<String, String> dealerInfoMap = JsonUtils.toMap(JSONObject.toJSONString(infoObject));
         for (Map.Entry<String, String> entry : dealerInfoMap.entrySet()) {
             String dealerId = entry.getKey();
-            Map info = JsonUtils.toMap(entry.getValue());
-            Integer num = null != info.get("num") ? Integer.parseInt(info.get("num").toString()) : 0;
-            Long money = null != info.get("money") ? Long.parseLong(info.get("money").toString()) : 0l;
+            Map info = JsonUtils.toMap(JSONObject.toJSONString(entry.getValue()));
+            Integer num = null != info.get("num") ? new BigDecimal(info.get("num").toString()).intValue() : 0;
+            Long money = null != info.get("money") ? new BigDecimal(info.get("money").toString()).longValue() : 0l;
             DealerDayReportCommand command = new DealerDayReportCommand(dealerId, type, num, money, day);
             dealerApplication.saveDealerDayReport(command);
         }
