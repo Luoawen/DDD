@@ -2,11 +2,13 @@ package cn.m2c.scm.port.adapter.restful.web.order;
 
 import cn.m2c.scm.application.dealerorder.data.bean.DealerGoodsBean;
 import cn.m2c.scm.application.dealerorder.data.bean.DealerOrderQB;
+import cn.m2c.scm.application.dealerorder.data.bean.OrderDtlBean;
 import cn.m2c.scm.application.dealerorder.query.DealerOrderAfterSellQuery;
 import cn.m2c.scm.application.dealerorder.query.DealerOrderQuery;
 import cn.m2c.scm.application.order.OrderApplication;
 import cn.m2c.scm.application.order.SaleAfterOrderApp;
 import cn.m2c.scm.application.order.data.export.DealerOrderExpModel;
+import cn.m2c.scm.application.order.data.export.MngOrderExpModel;
 import cn.m2c.scm.application.order.data.export.SaleAfterExpModel;
 import cn.m2c.scm.application.utils.ExcelUtil;
 import org.slf4j.Logger;
@@ -130,6 +132,60 @@ public class OrderExportAgent {
         }else {
         	try {
         		ExcelUtil.writeExcel(response, fileName, null, DealerOrderExpModel.class);
+        	} catch (IOException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    
+    /**
+     * 管理平台订货单详情导出
+     * @param response
+     * @param orderStatus
+     * @param afterSellStatus
+     * @param startTime
+     * @param orderId
+     * @param endTime
+     * @param condition
+     * @param payWay
+     * @param commentStatus
+     * @param hasMedia
+     */
+    @RequestMapping(value = "/all/orderDtl", method = RequestMethod.GET)
+    public void getAllOrderDtl(HttpServletResponse response,
+    		@RequestParam(value = "orderStatus",required = false)Integer orderStatus,
+			@RequestParam(value = "afterSellStatus",required = false)Integer afterSellStatus,
+			@RequestParam(value = "startTime",required = false)String startTime,
+			@RequestParam(value = "endTime",required = false)String endTime,
+			@RequestParam(value = "condition",required = false)String condition,
+			@RequestParam(value = "payWay",required = false)Integer payWay,
+			@RequestParam(value = "commentStatus", required = false) Integer commentStatus,
+			@RequestParam(value = "mediaInfo", required = false) Integer hasMedia
+            ) {
+        List<OrderDtlBean> dealerOrderList = dealerOrderQuery.mngOrderQueryExport(orderStatus, afterSellStatus, startTime, endTime, condition, payWay, commentStatus, 
+                hasMedia);
+        String fileName = "订货单详情.xls";
+        if (null != dealerOrderList && dealerOrderList.size() > 0) {
+            List<MngOrderExpModel> list = new ArrayList<>();
+            for (OrderDtlBean dtl : dealerOrderList) {
+                list.add(new MngOrderExpModel(dtl));
+            }
+            
+            if (null != list && list.size() > 0) {
+            	try {
+            		ExcelUtil.writeExcel(response, fileName, list, MngOrderExpModel.class);
+            	 } catch (IOException e) {
+                     e.printStackTrace();
+                 } catch (IllegalAccessException e) {
+                     e.printStackTrace();
+                 }
+            }
+        }
+        else {
+        	try {
+        		ExcelUtil.writeExcel(response, fileName, null, MngOrderExpModel.class);
         	} catch (IOException e) {
                 e.printStackTrace();
             } catch (IllegalAccessException e) {

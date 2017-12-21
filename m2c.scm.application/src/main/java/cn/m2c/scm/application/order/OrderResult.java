@@ -1,4 +1,7 @@
 package cn.m2c.scm.application.order;
+
+import cn.m2c.scm.application.utils.Utils;
+
 /***
  * 订单提交返回的结果
  * @author fanjc
@@ -39,7 +42,11 @@ public class OrderResult {
 	}
 
 	public int getGoodsMoney() {
-		return goodsMoney;
+		return goodsMoney/100;
+	}
+	
+	public String getStrGoodsMoney() {
+		return Utils.moneyFormatCN(goodsMoney);
 	}
 
 	public void setGoodsMoney(int goodsMoney) {
@@ -47,7 +54,11 @@ public class OrderResult {
 	}
 
 	public int getFreight() {
-		return freight;
+		return freight/100;
+	}
+	
+	public String getStrFreight() {
+		return Utils.moneyFormatCN(freight);
 	}
 
 	public void setFreight(int freight) {
@@ -55,7 +66,11 @@ public class OrderResult {
 	}
 
 	public int getPlateformDiscount() {
-		return plateformDiscount;
+		return plateformDiscount/100;
+	}
+	
+	public String getStrPlateformDiscount() {
+		return Utils.moneyFormatCN(plateformDiscount);
 	}
 
 	public void setPlateformDiscount(int plateformDiscount) {
@@ -63,7 +78,11 @@ public class OrderResult {
 	}
 
 	public int getDealerDiscount() {
-		return dealerDiscount;
+		return dealerDiscount/100;
+	}
+	
+	public String getStrDealerDiscount() {
+		return Utils.moneyFormatCN(dealerDiscount);
 	}
 
 	public void setDealerDiscount(int dealerDiscount) {
