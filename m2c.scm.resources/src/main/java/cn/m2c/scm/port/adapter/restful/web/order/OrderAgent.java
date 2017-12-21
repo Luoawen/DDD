@@ -478,6 +478,31 @@ public class OrderAgent {
 		return new ResponseEntity<MResult>(result,HttpStatus.OK);
 	}
 	
+	/**
+	 * 根据订单id获取用户id
+	 * @param orderId
+	 * @return
+	 */
+	@RequestMapping(value = "/web/getOrderUser", method = RequestMethod.GET)
+	public ResponseEntity<MResult> getOrderUser(@RequestParam(value = "orderId") String orderId){
+		MResult result = new MResult(MCode.V_1);
+		try {
+			if(StringUtils.isEmpty(orderId)){
+				result.setErrorMessage("用户ID不能为空");
+				return new ResponseEntity<MResult>(result,HttpStatus.OK);
+			}
+			String userId = orderQuery.getOrderUserId(orderId);
+			result.setContent(userId);
+			result.setStatus(MCode.V_200);
+		} catch (NegativeException ne){
+			LOGGER.error("根据订单ID查询用户ID失败", ne);
+			result = new MResult(ne.getStatus(), ne.getMessage());
+		} catch (Exception e) {
+			LOGGER.info("根据订单ID查询用户ID失败");
+		}
+		return new ResponseEntity<MResult>(result,HttpStatus.OK);
+	}
+	
 	
 	/**
 	 * 发货成功发送短信接口
@@ -486,15 +511,10 @@ public class OrderAgent {
 	 */
 	@RequestMapping(value = "/web/orderSendSMS", method = RequestMethod.POST)
 	public ResponseEntity<MResult> orderSendSMS(@RequestParam(value = "shopName") String shopName,
-			@RequestParam(value = "orderId") String orderId){
+			@RequestParam(value = "userId") String userId){
 		MResult result = new MResult(MCode.V_1);
-		
 		try {
-			if(StringUtils.isEmpty(orderId)){
-				result.setErrorMessage("用户ID不能为空");
-				return new ResponseEntity<MResult>(result,HttpStatus.OK);
-			}
-			String userId = orderQuery.getOrderUserId(orderId);
+			
 			SendOrderSMSCommand cmd = new SendOrderSMSCommand(userId,shopName);
 			orderapplication.sendOrderSMS(cmd);
 			result.setStatus(MCode.V_200);

@@ -1049,4 +1049,15 @@ public class OrderApplication {
     		orderDomainService.sendOrderSMS(userMobile,cmd.getShopName());
     	}
 	}
+
+
+	/**
+	 * 注册物流监听
+	 * @param com
+	 * @param nu
+	 * @throws NegativeException 
+	 */
+	public void registExpress(String com, String nu) throws NegativeException {
+		orderDomainService.registExpress(com,nu);
+	}
 }

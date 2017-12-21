@@ -108,4 +108,12 @@ public interface OrderService {
 	 * @throws NegativeException
 	 */
 	public void sendOrderSMS(String userMobile, String shopName) throws NegativeException;
+	
+	/**
+	 * 三方物流监听
+	 * @param com
+	 * @param nu
+	 * @throws NegativeException
+	 */
+	public void registExpress(String com, String nu) throws NegativeException;
 }

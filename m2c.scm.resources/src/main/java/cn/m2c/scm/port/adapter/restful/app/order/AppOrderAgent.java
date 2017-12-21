@@ -558,4 +558,71 @@ public class AppOrderAgent {
 		}
     	return new ResponseEntity<MResult>(result, HttpStatus.OK);
     }
+    
+    
+    /**
+     * 注册订阅物流单号
+     * @param 
+     * @return
+     */
+    @RequestMapping(value = "/app/registExpress", method = RequestMethod.POST)
+    public ResponseEntity<MPager> registExpress(
+            @RequestParam(value = "com",defaultValue="") String com
+            ,@RequestParam(value = "nu", defaultValue="") String nu
+            ) {
+    	MPager result = new MPager(MCode.V_1);
+        try {
+        	if(com==null||"".equals(com)){
+        		result.setContent("物流公司编码不能为空");
+        		 return new ResponseEntity<MPager>(result, HttpStatus.OK);
+        	}
+        	if(nu==null||"".equals(nu)){
+        		result.setContent("物流号不能为空");
+        		 return new ResponseEntity<MPager>(result, HttpStatus.OK);
+        	}
+        	orderApp.registExpress(com,nu);
+        	result.setContent("注册快递100物流单号成功");
+            result.setStatus(MCode.V_200);
+        }catch (NegativeException ne) {
+            LOGGER.error("注册快递100物流单号出错", ne);
+            result = new MPager(ne.getStatus(),ne.getMessage());
+        }catch (Exception e) {
+            LOGGER.error("注册快递100物流单号出错", e);
+            result = new MPager(MCode.V_400, e.getMessage());
+        }
+        return new ResponseEntity<MPager>(result, HttpStatus.OK);
+    }
+    
+    /**
+     * 查询物流，订阅模式new 接口
+     * @param 
+     * @return
+     */
+    @RequestMapping(value = "/app/queryExpress", method = RequestMethod.GET)
+    public ResponseEntity<MPager> queryExpress(
+            @RequestParam(value = "com",defaultValue="") String com
+            ,@RequestParam(value = "nu", defaultValue="") String nu
+            ) {
+    	MPager result = new MPager(MCode.V_1);
+        try {
+        	if(com==null||"".equals(com)){
+        		result.setContent("物流公司编码不能为空");
+        		 return new ResponseEntity<MPager>(result, HttpStatus.OK);
+        	}
+        	if(nu==null||"".equals(nu)){
+        		result.setContent("物流号不能为空");
+        		 return new ResponseEntity<MPager>(result, HttpStatus.OK);
+        	}
+        	String expressInfo = orderQueryApp.queryExpress(com,nu);
+        	result.setContent(expressInfo);
+            result.setStatus(MCode.V_200);
+        }catch (NegativeException ne) {
+            LOGGER.error("查询物流单号出错", ne);
+            result = new MPager(ne.getStatus(),ne.getMessage());
+        }catch (Exception e) {
+            LOGGER.error("查询物流单号出错", e);
+            result = new MPager(MCode.V_400, e.getMessage());
+        }
+        return new ResponseEntity<MPager>(result, HttpStatus.OK);
+    }
 }
