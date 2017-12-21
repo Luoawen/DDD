@@ -177,7 +177,7 @@ public class SaleAfterOrder extends ConcurrencySafeEntity {
             infoMap.put("num", 1);
             infoMap.put("money", backMoney);
             dealerInfo.put(this.dealerId, infoMap);
-            DomainEventPublisher.instance().publish(new DealerReportStatisticsEvent(dealerInfo,null, DealerReportType.ORDER_REFUND, new Date()));
+            DomainEventPublisher.instance().publish(new DealerReportStatisticsEvent(dealerInfo, DealerReportType.ORDER_REFUND, new Date()));
         }
         DomainEventPublisher.instance().publish(new OrderOptLogEvent(saleAfterNo, dealerOrderId, "同意售后申请！", userId));
         return true;

@@ -1,12 +1,12 @@
 package cn.m2c.scm.domain.model.order;
 
-import java.util.Date;
-import java.util.HashMap;
-
 import cn.m2c.ddd.common.domain.model.ConcurrencySafeEntity;
 import cn.m2c.ddd.common.domain.model.DomainEventPublisher;
 import cn.m2c.scm.domain.model.order.event.OrderSkuReturnEvent;
 import cn.m2c.scm.domain.model.order.log.event.OrderOptLogEvent;
+
+import java.util.Date;
+import java.util.HashMap;
 /**
  * 商家订单明细
  * @author fanjc
