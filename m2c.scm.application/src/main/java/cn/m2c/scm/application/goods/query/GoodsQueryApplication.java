@@ -1166,5 +1166,19 @@ public class GoodsQueryApplication {
         sql.append(" t_scm_goods_recognized WHERE 1 = 1 AND goods_id = ?");
         return this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsRecognizedBean.class, goodsId);
     }
+    
+    /**
+     * 根据skuId查GoodsSkuBean(特惠价详情时调用)
+     * @param skuId
+     * @return
+     */
+    public GoodsSkuBean queryGoodsSkuBeanBySkuId(String skuId) {
+    	StringBuilder sql = new StringBuilder();
+        sql.append(" SELECT ");
+        sql.append(" * ");
+        sql.append(" FROM ");
+        sql.append(" t_scm_goods_sku WHERE sku_id = ? ");
+        return this.getSupportJdbcTemplate().queryForBean(sql.toString(), GoodsSkuBean.class, skuId);
+    }
 }
 

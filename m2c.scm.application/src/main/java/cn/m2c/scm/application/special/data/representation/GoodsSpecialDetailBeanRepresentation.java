@@ -3,7 +3,7 @@ package cn.m2c.scm.application.special.data.representation;
 import java.util.Date;
 import java.util.List;
 
-import cn.m2c.scm.application.special.data.bean.GoodsSpecialDetailBean;
+import cn.m2c.scm.application.special.data.bean.GoodsSpecialBean;
 
 /**
  * 特惠价详表述对象
@@ -26,7 +26,7 @@ public class GoodsSpecialDetailBeanRepresentation {
     private Integer status;
     private List<GoodsSkuSpecialDetailAllBeanRepresentation> goodsSkuSpecials;
 
-	public GoodsSpecialDetailBeanRepresentation(GoodsSpecialDetailBean bean) {
+	public GoodsSpecialDetailBeanRepresentation(GoodsSpecialBean bean) {
 		this.id = bean.getId();
 		this.specialId = bean.getSpecialId();
 		this.goodsId = bean.getGoodsId();
