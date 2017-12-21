@@ -3,6 +3,7 @@ package cn.m2c.scm.application.goods.query.data.representation;
 import cn.m2c.common.JsonUtils;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsBean;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsSkuBean;
+import cn.m2c.scm.application.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,8 +40,8 @@ public class GoodsChoiceRepresentation {
                 map.put("goodsSkuId", skuBean.getSkuId());
                 map.put("goodsSkuName", skuBean.getSkuName());
                 map.put("goodsSkuInventory", skuBean.getAvailableNum());
-                map.put("goodsSkuPrice", skuBean.getPhotographPrice());
-                map.put("goodsSupplyPrice", skuBean.getSupplyPrice());
+                map.put("goodsSkuPrice", Utils.moneyFormatCN(skuBean.getPhotographPrice()));
+                map.put("goodsSupplyPrice", Utils.moneyFormatCN(skuBean.getSupplyPrice()));
                 this.goodsSkuList.add(map);
             }
         }
