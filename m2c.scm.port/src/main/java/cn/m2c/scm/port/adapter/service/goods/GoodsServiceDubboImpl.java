@@ -72,7 +72,7 @@ public class GoodsServiceDubboImpl implements GoodsService {
     }
 
     @Override
-    public List<Map> getGoodsFullCut(String dealerId, String goodsId, String classifyId) {
+    public List<Map> getGoodsFullCut(String userId, String dealerId, String goodsId, String classifyId) {
         return null;
     }
 

@@ -737,5 +737,26 @@ public class OrderQueryApplication {
 		}
 		return resultList;
 	}
+	/**
+	 * 查询物流信息（订阅模式）
+	 * @param com
+	 * @param nu
+	 * @return
+	 * @throws NegativeException 
+	 */
+	public String queryExpress(String com, String nu) throws NegativeException {
+		String sql = "SELECT res_data FROM t_scm_express_platform WHERE com=? AND nu=? ";
+		String result = "";
+		try {
+			List<Object> params = new ArrayList<>();
+			params.add(com);
+			params.add(nu);
+			result = this.getSupportJdbcTemplate().jdbcTemplate().queryForObject(sql, String.class,params.toArray());
+		} catch (Exception e) {
+			LOGGER.error("---查询物流信息"+e.getMessage(),e);
+			throw new NegativeException(400, "查询物流信息");
+		}
+		return result;
+	}
 }
 

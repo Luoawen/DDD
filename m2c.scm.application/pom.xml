@@ -32,7 +32,7 @@
 			<artifactId>m2c.scm.interfaces</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>cn.m2c.operate</groupId>
 			<artifactId>m2c.operate.interfaces</artifactId>
@@ -75,13 +75,23 @@
 			<scope>provided</scope>
 		</dependency>
 
-<!-- https://mvnrepository.com/artifact/commons-httpclient/commons-httpclient -->
-			<dependency>
-			    <groupId>commons-httpclient</groupId>
-			    <artifactId>commons-httpclient</artifactId>
-			    <version>3.1</version>
-			</dependency>
+		<!-- https://mvnrepository.com/artifact/commons-httpclient/commons-httpclient -->
+		<dependency>
+			<groupId>commons-httpclient</groupId>
+			<artifactId>commons-httpclient</artifactId>
+			<version>3.1</version>
+		</dependency>
+<!-- https://mvnrepository.com/artifact/org.codehaus.jackson/jackson-mapper-asl -->
+<dependency>
+    <groupId>org.codehaus.jackson</groupId>
+    <artifactId>jackson-mapper-asl</artifactId>
+    <version>1.9.13</version>
+</dependency>
+
 	</dependencies>
+
+
+
 
 	<!-- 构建 -->
 	<build>
@@ -295,7 +305,7 @@
 					<targetJdk>1.6</targetJdk>
 				</configuration>
 			</plugin>
-			
+
 			<!-- 定义Site生成的Index -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
