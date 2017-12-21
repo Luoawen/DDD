@@ -15,6 +15,7 @@
 		
 		<property name="com" column="com" type="string" />
 		<property name="nu" column="nu" type="string" />
+		<property name="resData" column="res_data" type="string" />
 		<property name="lastUpdatedDate" column="last_updated_date" type="timestamp" />
 	</class>
 </hibernate-mapping>

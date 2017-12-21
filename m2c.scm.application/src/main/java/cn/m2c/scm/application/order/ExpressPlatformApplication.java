@@ -8,11 +8,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import cn.m2c.scm.application.utils.expressUtil.Result;
-import cn.m2c.scm.domain.NegativeCode;
 import cn.m2c.scm.domain.NegativeException;
 import cn.m2c.scm.domain.model.expressPlatform.ExpressPlatform;
 import cn.m2c.scm.domain.model.expressPlatform.ExpressPlatformRepository;
-import cn.m2c.scm.domain.model.order.DealerOrderRepository;
 
 @Service
 @Transactional
@@ -29,7 +27,12 @@ public class ExpressPlatformApplication {
 		if(StringUtils.isEmpty(res.getNu()))
 			throw new NegativeException(400, "快递公司单号不能为空");
 		ExpressPlatform ep = expressPlatformRepository.getExpressPlatform(res.getCom(),res.getNu());
-		ep.saveOrUpdate(res.getCom(),res.getNu(),res.toString());
+		System.out.println(res.getCom());
+		System.out.println(res.getNu());
+		System.out.println(res.toString());
+		if(ep==null)
+			ep = new ExpressPlatform();
+		ep.add(res.getCom(),res.getNu(),res.toString());
 		expressPlatformRepository.saveOrUpdate(ep);
 	}
 
