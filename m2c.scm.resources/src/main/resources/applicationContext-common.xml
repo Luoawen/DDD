@@ -103,21 +103,7 @@
 	
 	<!-- 操作日志管理中心-->
 	<bean id="operationLogManager" class="cn.m2c.ddd.common.logger.process.OperationLogProcess">
-	    <constructor-arg index="0" ref="operationLogSender"></constructor-arg>
+	    <constructor-arg index="0" ref="operationLogSender"></constructor-arg> 
 	    <constructor-arg index="1" ref="commonConfiguration"></constructor-arg>
-	    <constructor-arg index="2" ref="threadPoolTaskExecutor"></constructor-arg>
 	</bean>
-
-	<!-- 配置线程池 -->
-      <bean id="threadPoolTaskExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
-        <!-- 线程池维护线程的最少数量 -->
-        <property name="corePoolSize" value="20" />
-        <!-- 线程池维护线程所允许的空闲时间 -->
-        <property name="keepAliveSeconds" value="30000" />
-        <!-- 线程池维护线程的最大数量 -->
-        <property name="maxPoolSize" value="50" />
-        <!-- 线程池所使用的缓冲队列 -->
-        <property name="queueCapacity" value="1000" />
-    </bean>
-
 </beans>
