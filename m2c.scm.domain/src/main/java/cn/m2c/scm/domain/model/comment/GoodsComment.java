@@ -2,6 +2,8 @@ package cn.m2c.scm.domain.model.comment;
 
 import cn.m2c.common.JsonUtils;
 import cn.m2c.ddd.common.domain.model.ConcurrencySafeEntity;
+import cn.m2c.ddd.common.domain.model.DomainEventPublisher;
+import cn.m2c.scm.domain.model.comment.event.GoodsCommentAddEvent;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
@@ -165,9 +167,9 @@ public class GoodsComment extends ConcurrencySafeEntity {
         this.replyStatus = 1;
         this.commentStatus = 1;
 
-        /*DomainEventPublisher
+        DomainEventPublisher
                 .instance()
-                .publish(new GoodsCommentAddEvent(this.orderId, this.skuId));*/
+                .publish(new GoodsCommentAddEvent(this.buyerId, this.commentId, this.orderId, this.goodsId, this.skuId));
     }
 
     /**
@@ -197,6 +199,7 @@ public class GoodsComment extends ConcurrencySafeEntity {
     public String orderId() {
         return orderId;
     }
+
     public String skuId() {
         return skuId;
     }
