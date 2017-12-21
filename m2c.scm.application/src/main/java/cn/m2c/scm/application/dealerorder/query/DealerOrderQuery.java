@@ -10,13 +10,16 @@ import javax.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import cn.m2c.ddd.common.port.adapter.persistence.springJdbc.SupportJdbcTemplate;
+import cn.m2c.scm.application.classify.query.GoodsClassifyQueryApplication;
 import cn.m2c.scm.application.dealerorder.data.bean.DealerGoodsBean;
 import cn.m2c.scm.application.dealerorder.data.bean.DealerOrderBean;
 import cn.m2c.scm.application.dealerorder.data.bean.DealerOrderGoodsInfoBean;
 import cn.m2c.scm.application.dealerorder.data.bean.DealerOrderQB;
+import cn.m2c.scm.application.dealerorder.data.bean.OrderDtlBean;
 import cn.m2c.scm.application.order.data.bean.DealerOrderDetailBean;
 import cn.m2c.scm.application.order.data.bean.GoodsInfoBean;
 
@@ -27,6 +30,8 @@ public class DealerOrderQuery {
 
     @Resource
     private SupportJdbcTemplate supportJdbcTemplate;
+    @Autowired
+    private GoodsClassifyQueryApplication goodsClsQuery;
 
     /**
      * 获取订单列表
@@ -837,4 +842,123 @@ public class DealerOrderQuery {
 		}
 		return rs;
 	}*/
+    
+	public List<OrderDtlBean> mngOrderQueryExport(Integer orderStatus, Integer afterSellStatus, String startTime,
+			String endTime, String condition, Integer payWay, Integer hasComment, Integer hasMedia
+			) {
+
+		List<Object> params = new ArrayList<Object>();
+		StringBuilder sql = new StringBuilder();
+		
+		sql.append("SELECT a.goods_name, e.goods_brand_name, a.goods_type_id, a.dealer_order_id, c._status, b.pay_no, b.created_date, b.pay_time, f.dealer_name\r\n")
+		.append(",a.sku_id, a.sku_name, a.discount_price, a.special_price, a.is_special, a.sell_num, c.order_freight, c.goods_amount, c.plateform_discount, c.dealer_discount\r\n")
+		.append(", c.rev_person, c.rev_phone, c.street_addr, c.province, c.city, c.area_county, d.after_sell_order_id, d.back_money, d.return_freight, d.order_type, d.sell_num afNum\r\n")
+		.append("FROM t_scm_order_detail a\r\n")
+		.append("LEFT OUTER JOIN t_scm_order_main b ON a.order_id=b.order_id\r\n")
+		.append("LEFT OUTER JOIN t_scm_order_after_sell d ON a.sku_id=d.sku_id AND a.sort_no=d.sort_no AND a.dealer_order_id=d.dealer_order_id ");
+		if (afterSellStatus != null && afterSellStatus >= 20 && afterSellStatus < 28) {
+			switch (afterSellStatus) {
+			case 20: // 待商家同意
+				sql.append(" AND d._status IN(?,?,?)\r\n");
+				params.add(0);
+				params.add(1);
+				params.add(2);
+				break;
+			case 21:// 待顾客寄回商品
+				sql.append(" AND d.order_type IN(0,1) AND af._status =?\r\n");
+				params.add(4);
+				break;
+			case 22:// 待商家确认退款
+				sql.append(
+						" AND ((d.order_type=0 AND d._status =?) OR (d.order_type=1 AND d._status =?) OR (d.order_type=2 AND d._status =?))\r\n");
+				params.add(8);
+				params.add(6);
+				params.add(4);
+				break;
+			case 23:// 待商家发货
+				sql.append(" AND (d.order_type=2 AND d._status =?)\r\n");
+				params.add(6);
+				break;
+			case 24:// 待顾客收货
+				sql.append(" AND (d.order_type=2 AND d._status =?)\r\n");
+				params.add(7);
+				break;
+			case 25:// 售后已完成
+				sql.append(" AND d._status >= ?\r\n");
+				params.add(9);
+				break;
+			case 26:// 售后已取消
+				sql.append(" AND d._status = ?\r\n");
+				params.add(-1);
+				break;
+			case 27:// 商家已拒绝
+				sql.append(" AND d._status = ?\r\n");
+				params.add(3);
+				break;
+			}
+		}
+		else {
+			sql.append(" AND d._status NOT IN(-1, 3)\r\n");
+		}
+		
+		sql.append("LEFT OUTER JOIN t_scm_goods e ON a.goods_id=e.goods_id\r\n")
+		.append("INNER JOIN t_scm_order_dealer c\r\n")
+		.append("LEFT OUTER JOIN t_scm_dealer f ON c.dealer_id=f.dealer_id\r\n")
+		.append("WHERE a.dealer_order_id=c.dealer_order_id\r\n");
+		
+		if (orderStatus != null && orderStatus >= 0) {
+			sql.append(" AND c._status=?\r\n");
+			params.add(orderStatus);
+		}
+		
+		if (!StringUtils.isEmpty(startTime) && !StringUtils.isEmpty(endTime)) {
+			sql.append(" AND a.created_date BETWEEN ? AND ?\r\n");
+			params.add(startTime);
+			params.add(endTime);
+		}
+		
+		if (payWay != null && payWay > 0) {
+			sql.append("AND b.pay_way=?\r\n");
+			params.add(payWay);
+		}
+		
+		if (!StringUtils.isEmpty(condition)) {
+			sql.append("AND (b.pay_no LIKE CONCAT('%',?,'%') OR f.dealer_name LIKE CONCAT('%',?,'%') OR a.dealer_order_id LIKE CONCAT('%',?,'%') OR a.goods_name LIKE CONCAT('%',?,'%') OR c.rev_phone LIKE CONCAT('%',?,'%'))\r\n");
+			params.add(condition);
+			params.add(condition);
+			params.add(condition);
+			params.add(condition);
+			params.add(condition);
+		}
+		if (hasComment != null && hasComment >= 0) {
+			sql.append("AND a.comment_status = ?\r\n");
+			params.add(hasComment);
+		}
+		if (hasMedia != null) {
+			if (hasMedia == 0)
+				sql.append("AND a.media_res_id IS NULL\r\n");
+			else if (hasMedia == 1)
+				sql.append("AND a.media_res_id IS NOT NULL\r\n");
+		}
+		
+		sql.append(" ORDER BY a.dealer_order_id DESC, a.created_date DESC limit 0,3000");
+
+		List<OrderDtlBean> beanList = this.supportJdbcTemplate.queryForBeanList(sql.toString(), OrderDtlBean.class, params.toArray());
+		//jdbcTemplate().queryForList(sql.toString(),params.toArray());
+
+		if (beanList != null) {
+			for (OrderDtlBean d : beanList) {
+				Map<String, String> map = (Map<String, String>)goodsClsQuery.getClassifyMap(d.getTypeId());
+				String names = map.get("name");
+				String[] arrStr = names.split(",");
+				if (arrStr != null) {
+					d.setTypeName(arrStr.length>0? arrStr[0] : "");
+					d.setSecondType(arrStr.length>1? arrStr[1] : "");
+					d.setThirdType(arrStr.length>2? arrStr[2] : "");
+				}
+			}
+		}
+		
+		return beanList;
+	}
 }

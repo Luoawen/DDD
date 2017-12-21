@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
 import com.alibaba.fastjson.JSONArray;
@@ -29,6 +30,7 @@ import com.google.gson.reflect.TypeToken;
 import cn.m2c.scm.application.order.data.bean.MediaResBean;
 import cn.m2c.scm.application.utils.EXPRESSMD5;
 import cn.m2c.scm.application.utils.HttpRequest;
+import cn.m2c.scm.domain.NegativeException;
 import cn.m2c.scm.domain.service.order.OrderService;
 /***
  * 订单领域服务实现类
@@ -204,7 +206,6 @@ public class OrderServiceImpl implements OrderService {
 		String resp = "";
 		try {
 			resp = new HttpRequest().postData(KUAIDI_100_URL, params, "utf-8").toString();
-			System.out.println("----------"+resp);
 		} catch (Exception e) {
 			throw e;
 		}		
@@ -225,6 +226,55 @@ public class OrderServiceImpl implements OrderService {
 		map.put("sign",sign);
 		map.put("customer",customer);
 		return map;
+	}
+
+	/**
+	 * 根据用户id获取用户的手机号调用用户中心
+	 */
+	@Override
+	public String getUserMobileByUserId(String userId) throws NegativeException{
+		String mobile = "";
+		try {
+			String url = M2C_HOST_URL + "/m2c.users/user/detail?token=123132&userId={0}";
+			String rtResult = restTemplate.getForObject(url, String.class, userId);
+			JSONObject json = JSONObject.parseObject(rtResult);
+	        if (json.getInteger("status") == 200) {
+	        	JSONObject contentObject = json.getJSONObject("content");
+	        	if(!StringUtils.isEmpty(contentObject)){
+	        		mobile = (String) contentObject.get("mobile");
+	        	}
+	        }
+		} catch (Exception e) {
+			throw new NegativeException(400,"根据用户id查询用户手机号失败");
+		}
+        return mobile;
+	}
+
+	/**
+	 * 调用第三方发送短信接口
+	 */
+	@Override
+	public void sendOrderSMS(String userMobile, String shopName)
+			throws NegativeException {
+		String mobile = "";
+			String url = M2C_HOST_URL + "/m2c.support/sms/sendsmsByTemplate";
+			HashMap<String, String> params = new HashMap<String, String>();
+			params.put("codeType", "6");
+			params.put("mobile", userMobile);
+			params.put("content", shopName);
+			params.put("templateType", "2");
+			String resp = "";
+			try {
+				resp = new HttpRequest().postData(url, params, "utf-8").toString();
+				System.out.println("----------"+resp);
+				JSONObject json = JSONObject.parseObject(resp);
+				if (json.getInteger("status") != 200) {
+					throw new NegativeException(401,"发送失败");
+				}
+			} catch (Exception e) {
+				throw new NegativeException(400,"发送短信出问题");
+			}		
+			System.out.println("返回数据"+resp);
 	}
 	
 	

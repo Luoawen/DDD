@@ -23,4 +23,12 @@ public interface GoodsApproveRepository {
     boolean postageIdIsUser(String postageId);
 
 	List<GoodsApprove> queryGoodsApproveByIdList(List goodsIds);
+
+	/**
+	 * 查询指定商家审核中含有对应保障的商品
+	 * @param dealerId
+	 * @param guaranteeId
+	 * @return
+	 */
+	List<GoodsApprove> queryGoodsByDealerIdAndGuaranteeId(String dealerId, String guaranteeId);
 }

@@ -158,6 +158,14 @@ public class SellerCommand extends AssertionConcern implements Serializable{
 		this.sellerName = sellerName;
 		this.sellerPhone = sellerPhone;
 	}
+	
+	public SellerCommand(String sellerId,String sellerName,String sellerPhone,String sellerRemark) {
+		super();
+		this.sellerId = sellerId;
+		this.sellerName = sellerName;
+		this.sellerPhone = sellerPhone;
+		this.sellerRemark = sellerRemark;
+	}
 
 	public SellerCommand(String sellerId, String sellerName,
 			String sellerPhone, Integer sellerSex, String sellerNo,

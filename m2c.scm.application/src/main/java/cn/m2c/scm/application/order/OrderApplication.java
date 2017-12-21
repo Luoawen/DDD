@@ -12,6 +12,7 @@ import cn.m2c.scm.application.order.command.ConfirmSkuCmd;
 import cn.m2c.scm.application.order.command.OrderAddCommand;
 import cn.m2c.scm.application.order.command.OrderPayedCmd;
 import cn.m2c.scm.application.order.command.PayOrderCmd;
+import cn.m2c.scm.application.order.command.SendOrderSMSCommand;
 import cn.m2c.scm.application.order.data.bean.FreightCalBean;
 import cn.m2c.scm.application.order.data.bean.GoodsReqBean;
 import cn.m2c.scm.application.order.data.bean.MarketBean;
@@ -695,12 +696,18 @@ public class OrderApplication {
     @EventListener(isListening = true)
     public void confirmSku(ConfirmSkuCmd cmd) throws NegativeException {
 
+    	if (cmd.getSortNo() == 0) {
+	    	if(orderRepository.checkSku(cmd.getSkuId(),cmd.getDealerOrderId())) {
+	        	throw new NegativeException(MCode.V_1,"请升级客户端！");
+	        }
+    	}
+    	
         DealerOrderDtl dtl = orderRepository.getDealerOrderDtlBySku(cmd.getDealerOrderId(), cmd.getSkuId(), cmd.getSortNo());
         if (dtl == null) {
         	throw new NegativeException(MCode.V_1, "无此商品！");
         }
-        // 检查是否可确认收货
         
+        // 检查是否可确认收货
         boolean flag = dtl.confirmRev(cmd.getUserId());
         // 可能是逻辑删除或是改成取消状态(子订单也要改)
         DealerOrder order = orderRepository.getDealerOrderByNo(cmd.getDealerOrderId());
@@ -1027,4 +1034,19 @@ public class OrderApplication {
     		throw new NegativeException(MCode.V_105, JSONObject.toJSONString(skus));
     	}
     }
+
+
+    /**
+     * 发送发货短信的application
+     * @param cmd
+     * @throws NegativeException 
+     */
+	public void sendOrderSMS(SendOrderSMSCommand cmd) throws NegativeException {
+    	//首先根据用户id获取用户中心手机号
+    	String userMobile  = orderDomainService.getUserMobileByUserId(cmd.getUserId());//下单人手机号
+    	if(!StringUtils.isEmpty(userMobile)){
+    		//然后根据发送短信接口发送短信（调用support中心的功能）
+    		orderDomainService.sendOrderSMS(userMobile,cmd.getShopName());
+    	}
+	}
 }

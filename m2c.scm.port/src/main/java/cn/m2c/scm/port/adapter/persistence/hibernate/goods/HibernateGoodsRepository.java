@@ -139,4 +139,16 @@ public class HibernateGoodsRepository extends HibernateSupperRepository implemen
             }
         }
     }
+
+    /**
+     * 查询商家含有指定保障的商品
+     */
+	@Override
+	public List<Goods> queryGoodsByDealerIdAndGuaranteeId(String dealerId, String guaranteeId) {
+		StringBuilder sql = new StringBuilder(" SELECT * FROM t_scm_goods WHERE del_status = 1 AND dealer_id = :dealerId AND goods_guarantee LIKE :guaranteeId ");
+		Query query = this.session().createSQLQuery(sql.toString()).addEntity(Goods.class);
+		query.setParameter("dealerId", dealerId);
+		query.setParameter("guaranteeId", "%"+guaranteeId+"%");
+		return query.list();
+	}
 }
