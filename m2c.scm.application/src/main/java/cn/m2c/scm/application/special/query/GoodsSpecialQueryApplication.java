@@ -5,7 +5,6 @@ import cn.m2c.scm.application.special.data.bean.GoodsSkuSpecialBean;
 import cn.m2c.scm.application.special.data.bean.GoodsSkuSpecialDetailAllBean;
 import cn.m2c.scm.application.special.data.bean.GoodsSpecialBean;
 import cn.m2c.scm.application.special.data.bean.GoodsSpecialDetailBean;
-import cn.m2c.scm.application.special.data.bean.GoodsSpecialListBean;
 import cn.m2c.scm.application.special.data.representation.GoodsSkuSpecialDetailAllBeanRepresentation;
 import cn.m2c.scm.application.special.data.representation.GoodsSpecialDetailBeanRepresentation;
 import cn.m2c.scm.application.utils.Utils;
@@ -163,7 +162,7 @@ public class GoodsSpecialQueryApplication {
      * @param rows
      * @return
      */
-    public List<GoodsSpecialListBean> queryGoodsSpecialListBeanList(Integer status, String startTime, String endTime,
+    public List<GoodsSpecialBean> queryGoodsSpecialBeanList(Integer status, String startTime, String endTime,
                                                                     String searchMessage, Integer pageNum, Integer rows) {
         StringBuilder sql = new StringBuilder();
         List<Object> params = new ArrayList<Object>();
@@ -202,13 +201,13 @@ public class GoodsSpecialQueryApplication {
         sql.append(" LIMIT ?,?");
         params.add(rows * (pageNum - 1));
         params.add(rows);
-        List<GoodsSpecialListBean> goodsSpecialListBeanLists = this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsSpecialListBean.class, params.toArray());
-        if (goodsSpecialListBeanLists != null && goodsSpecialListBeanLists.size() >= 0) {
-            for (GoodsSpecialListBean goodsSpecialListBean : goodsSpecialListBeanLists) {
-                goodsSpecialListBean.setSpecialPriceMin(querySpecialPriceMin(goodsSpecialListBean.getId()));
+        List<GoodsSpecialBean> goodsSpecialBeanLists = this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsSpecialBean.class, params.toArray());
+        if (goodsSpecialBeanLists != null && goodsSpecialBeanLists.size() >= 0) {
+            for (GoodsSpecialBean goodsSpecialBean : goodsSpecialBeanLists) {
+            	goodsSpecialBean.setGoodsSpecialSkuBeans(queryGoodsSkuSpecialBySpecialId(goodsSpecialBean.getId()));
             }
         }
-        return goodsSpecialListBeanLists;
+        return goodsSpecialBeanLists;
     }
 
     /**
@@ -217,7 +216,7 @@ public class GoodsSpecialQueryApplication {
      * @param specialId
      * @return
      */
-    public Long querySpecialPriceMin(Integer specialId) {
+    /*public Long querySpecialPriceMin(Integer specialId) {
         StringBuilder sql = new StringBuilder();
         sql.append(" SELECT ");
         sql.append(" MIN( special_price ) ");
@@ -225,7 +224,7 @@ public class GoodsSpecialQueryApplication {
         sql.append(" t_scm_goods_sku_special ");
         sql.append(" WHERE special_id = ? ");
         return supportJdbcTemplate.jdbcTemplate().queryForObject(sql.toString(), Long.class, specialId);
-    }
+    }*/
 
     /**
      * 根据specialId(对应t_scm_goods_special表中的id)查询GoodsSkuSpecialBean
