@@ -266,7 +266,6 @@ public class OrderServiceImpl implements OrderService {
 			String resp = "";
 			try {
 				resp = new HttpRequest().postData(url, params, "utf-8").toString();
-				System.out.println("----------"+resp);
 				JSONObject json = JSONObject.parseObject(resp);
 				if (json.getInteger("status") != 200) {
 					throw new NegativeException(401,"发送失败");
