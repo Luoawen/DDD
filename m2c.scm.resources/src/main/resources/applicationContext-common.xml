@@ -103,7 +103,7 @@
 	
 	<!-- 操作日志管理中心-->
 	<bean id="operationLogManager" class="cn.m2c.ddd.common.logger.process.OperationLogProcess">
-	    <constructor-arg index="0" ref="operationLogSender"></constructor-arg>
+	    <constructor-arg index="0" ref="operationLogSender"></constructor-arg> 
 	    <constructor-arg index="1" ref="commonConfiguration"></constructor-arg>
 	</bean>
 </beans>
