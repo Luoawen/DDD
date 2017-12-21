@@ -11,11 +11,14 @@ public class GoodsGuaranteeRepresentation {
     private String guaranteeName;
 
     private String guaranteeDesc;
+    
+    private Integer isDefault; //是否系统默认 0非默认(商家自定义)  1默认(系统初始化数据)
 
     public GoodsGuaranteeRepresentation(GoodsGuaranteeBean bean) {
-        this.guaranteeId = bean.getGuaranteeId();
+        this.guaranteeId   = bean.getGuaranteeId();
         this.guaranteeName = bean.getGuaranteeName();
         this.guaranteeDesc = bean.getGuaranteeDesc();
+        this.isDefault     = bean.getIsDefault();
     }
 
     public String getGuaranteeId() {
@@ -41,4 +44,12 @@ public class GoodsGuaranteeRepresentation {
     public void setGuaranteeDesc(String guaranteeDesc) {
         this.guaranteeDesc = guaranteeDesc;
     }
+
+	public Integer getIsDefault() {
+		return isDefault;
+	}
+
+	public void setIsDefault(Integer isDefault) {
+		this.isDefault = isDefault;
+	}
 }

@@ -17,6 +17,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -505,4 +506,20 @@ public class Goods extends ConcurrencySafeEntity {
     public void modifyGoodsMainImages(List<String> images) {
         this.goodsMainImages = JsonUtils.toStr(images);
     }
+
+    /**
+     * 删除商品保障
+     * @param guaranteeId
+     */
+	public void delGoodsGuarantee(String guaranteeId) {
+		List list = ObjectSerializer.instance().deserialize(this.goodsGuarantee, List.class);
+		Iterator<String> it = list.iterator();
+		while(it.hasNext()) {
+			String goodsGuaranteeId = it.next();
+			if(goodsGuaranteeId.equals(guaranteeId)){
+				it.remove();
+			}
+		}
+		this.goodsGuarantee = list.toString();
+	}
 }

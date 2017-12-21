@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import cn.m2c.common.RedisUtil;
 import cn.m2c.ddd.common.port.adapter.persistence.springJdbc.SupportJdbcTemplate;
 import cn.m2c.scm.application.order.command.GetOrderCmd;
 import cn.m2c.scm.application.order.data.bean.AppOrderBean;
@@ -628,13 +629,21 @@ public class OrderQueryApplication {
 	 */
 	public String getExpressJson(String com, String nu) throws NegativeException {
 		String expressInfo = null;
+		String press = null;
+		
 		try {
-			 expressInfo = orderService.getExpressInfo(com, nu);
+			String key = ("scm.order.press."+nu).trim();
+			press = RedisUtil.getString(key);         //取出缓存
+			if(StringUtils.isEmpty(press)) {           //缓存没数据调用查询物流信息放入缓存
+			 expressInfo = orderService.getExpressInfo(com, nu);       
+			 press = expressInfo;
+			 RedisUtil.setString(key,30*60,press);
+			}
 		} catch (Exception e) {
 			LOGGER.error("---查询APP物流列表出错"+e.getMessage(),e);
 			throw new NegativeException(500, "查询APP物流列表出错");
 		}
-		return expressInfo;
+		return press;
 	}
 	/***
 	 * 获取用户对应的订单统计
