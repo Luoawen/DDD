@@ -3,6 +3,7 @@ package cn.m2c.scm.application.order.data.bean;
 import java.util.Date;
 
 import cn.m2c.ddd.common.persistence.orm.ColumnAlias;
+import cn.m2c.scm.application.utils.Utils;
 
 public class AfterSellOrderBean {
 
@@ -68,9 +69,11 @@ public class AfterSellOrderBean {
 	private GoodsInfoBean goodsInfo;
 
 	public Long getRtFreight() {
-		if (rtFreight == null)
-			rtFreight = 0l;
-		return rtFreight;
+		return rtFreight/100;
+	}
+	
+	public String getStrRtFreight() {
+		return Utils.moneyFormatCN(rtFreight);
 	}
 
 	public Integer getIsSpecial() {
@@ -78,7 +81,11 @@ public class AfterSellOrderBean {
 	}
 
 	public long getSpecialPrice() {
-		return specialPrice;
+		return specialPrice/100;
+	}
+	
+	public String getStrSpecialPrice() {
+		return Utils.moneyFormatCN(specialPrice);
 	}
 
 	public void setIsSpecial(Integer isSpecial) {
@@ -90,6 +97,8 @@ public class AfterSellOrderBean {
 	}
 
 	public void setRtFreight(Long rtFreight) {
+		if (rtFreight == null)
+			rtFreight = 0l;
 		this.rtFreight = rtFreight;
 	}
 
@@ -102,9 +111,11 @@ public class AfterSellOrderBean {
 	}
 
 	public Long getBackMoney() {
-		if (backMoney == null)
-			backMoney = 0l;
-		return backMoney;
+		return backMoney / 100;
+	}
+	
+	public String getStrBackMoney() {
+		return Utils.moneyFormatCN(backMoney);
 	}
 
 	public Integer getStatus() {
@@ -140,6 +151,8 @@ public class AfterSellOrderBean {
 	}
 
 	public void setBackMoney(Long backMoney) {
+		if (backMoney == null)
+			backMoney = 0l;
 		this.backMoney = backMoney;
 	}
 
