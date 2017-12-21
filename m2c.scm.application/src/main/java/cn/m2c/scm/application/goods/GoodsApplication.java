@@ -8,6 +8,7 @@ import cn.m2c.scm.application.goods.command.GoodsCommand;
 import cn.m2c.scm.application.goods.command.GoodsRecognizedAddCommand;
 import cn.m2c.scm.application.goods.command.GoodsRecognizedDelCommand;
 import cn.m2c.scm.application.goods.command.GoodsRecognizedModifyCommand;
+import cn.m2c.scm.application.goods.command.GoodsSalesListCommand;
 import cn.m2c.scm.application.goods.command.MDViewGoodsCommand;
 import cn.m2c.scm.domain.NegativeException;
 import cn.m2c.scm.domain.model.goods.Goods;
@@ -536,20 +537,35 @@ public class GoodsApplication {
 
     /**
      * 修改商品库中商品的保障(商品保障删除后需同时删除商品的对应保障)
+     *
      * @param dealerId
      * @param guaranteeId
      */
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
-	public void modifyGoodsGuarantee(String dealerId, String guaranteeId) {
-    	LOGGER.info("modifyGoodsGuarantee dealerId >>{}", dealerId);
-    	LOGGER.info("modifyGoodsGuarantee guaranteeId >>{}", guaranteeId);
-    	//查询该商家含有该商品保障的商品
-    	List<Goods> goodsList = goodsRepository.queryGoodsByDealerIdAndGuaranteeId(dealerId, guaranteeId);
-    	if(null != goodsList && goodsList.size() > 0) {
-    		for(Goods goods : goodsList) {
-    			//更新商品的保障信息
-    			goods.delGoodsGuarantee(guaranteeId);
-    		}
-    	}
-	}
+    public void modifyGoodsGuarantee(String dealerId, String guaranteeId) {
+        LOGGER.info("modifyGoodsGuarantee dealerId >>{}", dealerId);
+        LOGGER.info("modifyGoodsGuarantee guaranteeId >>{}", guaranteeId);
+        //查询该商家含有该商品保障的商品
+        List<Goods> goodsList = goodsRepository.queryGoodsByDealerIdAndGuaranteeId(dealerId, guaranteeId);
+        if (null != goodsList && goodsList.size() > 0) {
+            for (Goods goods : goodsList) {
+                //更新商品的保障信息
+                goods.delGoodsGuarantee(guaranteeId);
+            }
+        }
+    }
+
+    /**
+     * 商品销量榜更新
+     *
+     * @param command
+     * @throws NegativeException
+     */
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+    @EventListener(isListening = true)
+    public void saveGoodsSalesList(GoodsSalesListCommand command) throws NegativeException {
+        LOGGER.info("saveGoodsSalesList command >>{}", command);
+        goodsRepository.saveGoodsSalesList(command.getMonth(), command.getDealerId(), command.getGoodsId(),
+                command.getGoodsName(), command.getGoodsNum());
+    }
 }

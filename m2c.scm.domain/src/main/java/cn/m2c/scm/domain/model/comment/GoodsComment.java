@@ -181,7 +181,7 @@ public class GoodsComment extends ConcurrencySafeEntity {
         infoMap.put("num", 1);
         dealerInfo.put(this.dealerId, infoMap);
         // 数据统计事件
-        DomainEventPublisher.instance().publish(new DealerReportStatisticsEvent(dealerInfo, DealerReportType.GOODS_COMMENT, new Date()));
+        DomainEventPublisher.instance().publish(new DealerReportStatisticsEvent(dealerInfo, null, DealerReportType.GOODS_COMMENT, new Date()));
     }
 
     /**

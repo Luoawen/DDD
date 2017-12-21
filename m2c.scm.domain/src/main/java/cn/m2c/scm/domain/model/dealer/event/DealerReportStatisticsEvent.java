@@ -25,10 +25,13 @@ public class DealerReportStatisticsEvent implements DomainEvent {
 
     private Map dealerInfo;
 
-    public DealerReportStatisticsEvent(Map dealerInfo, String type, Date time) {
+    private Map goodsInfo;
+
+    public DealerReportStatisticsEvent(Map dealerInfo, Map goodsInfo, String type, Date time) {
         this.type = type;
         this.time = time;
         this.dealerInfo = dealerInfo;
+        this.goodsInfo = goodsInfo;
         this.occurredOn = new Date();
         this.eventVersion = 1;
     }

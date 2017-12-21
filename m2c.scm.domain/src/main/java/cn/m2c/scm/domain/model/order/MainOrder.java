@@ -218,7 +218,7 @@ public class MainOrder extends ConcurrencySafeEntity {
         }
 
         // 数据统计事件
-        DomainEventPublisher.instance().publish(new DealerReportStatisticsEvent(dealerInfo, DealerReportType.ORDER_PAY, payTime));
+        DomainEventPublisher.instance().publish(new DealerReportStatisticsEvent(dealerInfo,null, DealerReportType.ORDER_PAY, payTime));
 
         Map<String, Object> markets = null;
         if (marketings != null && marketings.size() > 0) {
