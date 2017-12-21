@@ -7,8 +7,7 @@ import cn.m2c.ddd.common.auth.RequirePermissions;
 import cn.m2c.scm.application.special.GoodsSpecialApplication;
 import cn.m2c.scm.application.special.command.GoodsSpecialAddCommand;
 import cn.m2c.scm.application.special.command.GoodsSpecialModifyCommand;
-import cn.m2c.scm.application.special.data.bean.GoodsSpecialDetailBean;
-import cn.m2c.scm.application.special.data.bean.GoodsSpecialListBean;
+import cn.m2c.scm.application.special.data.bean.GoodsSpecialBean;
 import cn.m2c.scm.application.special.data.representation.GoodsSpecialDetailBeanRepresentation;
 import cn.m2c.scm.application.special.data.representation.GoodsSpecialListRepresentation;
 import cn.m2c.scm.application.special.query.GoodsSpecialQueryApplication;
@@ -174,10 +173,10 @@ public class GoodsSpecialAgent {
             //查总数
             Integer total = goodsSpecialQueryApplication.queryGoodsSpecialCount(status, startTime, endTime, searchMessage);
             if (total > 0) {
-                List<GoodsSpecialListBean> goodsSpecialBeanLists = goodsSpecialQueryApplication.queryGoodsSpecialListBeanList(status, startTime, endTime, searchMessage, pageNum, rows);
+                List<GoodsSpecialBean> goodsSpecialBeanLists = goodsSpecialQueryApplication.queryGoodsSpecialBeanList(status, startTime, endTime, searchMessage, pageNum, rows);
                 if (null != goodsSpecialBeanLists && goodsSpecialBeanLists.size() > 0) {
                     List<GoodsSpecialListRepresentation> representations = new ArrayList<GoodsSpecialListRepresentation>();
-                    for (GoodsSpecialListBean bean : goodsSpecialBeanLists) {
+                    for (GoodsSpecialBean bean : goodsSpecialBeanLists) {
                         representations.add(new GoodsSpecialListRepresentation(bean));
                     }
                     result.setContent(representations);

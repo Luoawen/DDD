@@ -1,7 +1,9 @@
 package cn.m2c.scm.application.special.data.representation;
 
 import java.util.Date;
-import cn.m2c.scm.application.special.data.bean.GoodsSpecialListBean;
+
+import cn.m2c.scm.application.special.data.bean.GoodsSkuSpecialBean;
+import cn.m2c.scm.application.special.data.bean.GoodsSpecialBean;
 
 /**
  * 特惠价列表表述对象
@@ -28,7 +30,7 @@ public class GoodsSpecialListRepresentation {
      */
     private Long specialPriceMin;
     
-    public GoodsSpecialListRepresentation(GoodsSpecialListBean goodsSpecialBean){
+    public GoodsSpecialListRepresentation(GoodsSpecialBean goodsSpecialBean){
     	this.specialId = goodsSpecialBean.getSpecialId().toString();
     	this.goodsId = goodsSpecialBean.getGoodsId();
     	this.goodsName = goodsSpecialBean.getGoodsName();
@@ -42,13 +44,13 @@ public class GoodsSpecialListRepresentation {
     	this.status = goodsSpecialBean.getStatus();
     	//this.createTime = goodsSpecialBean.getCreateTime();
     	//this.goodsSkuSpecials = JsonUtils.toList(JsonUtils.toStr(goodsSpecialBean.getGoodsSpecialSkuBeans()),Map.class);
-    	/*Long specialPriceMinCompare = Long.MAX_VALUE;
+    	Long specialPriceMinCompare = Long.MAX_VALUE;
     	for(GoodsSkuSpecialBean goodsSkuSpecialBean : goodsSpecialBean.getGoodsSpecialSkuBeans()) {
     		if(goodsSkuSpecialBean.getSpecialPrice()< specialPriceMinCompare ) {
     			specialPriceMinCompare = goodsSkuSpecialBean.getSpecialPrice();
     		}
-    	}*/
-    	this.specialPriceMin = goodsSpecialBean.getSpecialPriceMin();
+    	}
+    	this.specialPriceMin = specialPriceMinCompare;
     }
     
 	public String getSpecialId() {

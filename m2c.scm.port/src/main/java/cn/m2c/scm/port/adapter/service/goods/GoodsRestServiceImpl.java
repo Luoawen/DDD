@@ -79,15 +79,16 @@ public class GoodsRestServiceImpl implements GoodsService {
                     JSONObject contentObject = JSONObject.parseObject(JSONObject.toJSONString(contentJson));
                     Integer numPerOne = contentObject.getInteger("numPerOne");
                     Integer numPerDay = contentObject.getInteger("numPerDay");
+                    resultMap.put("numPerOne", numPerOne);
+                    resultMap.put("numPerDay", numPerDay);
+                    resultMap.put("numLimit", new StringBuffer().append("每人优惠").append(numPerOne).append("次，每天仅可优惠").append(numPerDay).append("次").toString());
+
                     Iterator<Object> it = contentObject.getJSONArray("itemList").iterator();
                     while (it.hasNext()) {
                         Map jo = (Map) it.next();
                         String itemName = (String) jo.get("content");
                         Map map = new HashMap<>();
                         map.put("itemName", itemName);
-                        map.put("numPerOne", numPerOne);
-                        map.put("numPerDay", numPerDay);
-                        map.put("numLimit", new StringBuffer().append("每人优惠").append(numPerOne).append("次，每天仅可优惠").append(numPerDay).append("次").toString());
                         contentList.add(map);
                     }
                     resultMap.put("itemNames", contentList);
@@ -95,6 +96,7 @@ public class GoodsRestServiceImpl implements GoodsService {
                     resultMap.put("rangeType", rangeType);
 
                     resultMap.put("fullCutName", contentObject.getString("fullCutName"));
+                    resultMap.put("fullCutType", contentObject.getInteger("fullCutType")); //满减形式，1：减钱，2：打折，3：换购
 
                     Iterator<Object> rangeIt = contentObject.getJSONArray("suitableRangeList").iterator();
                     List<String> idList = new ArrayList<>();
