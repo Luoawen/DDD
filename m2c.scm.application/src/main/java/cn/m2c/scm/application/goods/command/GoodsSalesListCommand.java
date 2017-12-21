@@ -12,9 +12,9 @@ public class GoodsSalesListCommand extends AssertionConcern implements Serializa
     private String dealerId;
     private String goodsId;
     private String goodsName;
-    private String goodsNum;
+    private Integer goodsNum;
 
-    public GoodsSalesListCommand(Integer month, String dealerId, String goodsId, String goodsName, String goodsNum) {
+    public GoodsSalesListCommand(Integer month, String dealerId, String goodsId, String goodsName, Integer goodsNum) {
         this.month = month;
         this.dealerId = dealerId;
         this.goodsId = goodsId;
@@ -38,7 +38,7 @@ public class GoodsSalesListCommand extends AssertionConcern implements Serializa
         return goodsName;
     }
 
-    public String getGoodsNum() {
+    public Integer getGoodsNum() {
         return goodsNum;
     }
 

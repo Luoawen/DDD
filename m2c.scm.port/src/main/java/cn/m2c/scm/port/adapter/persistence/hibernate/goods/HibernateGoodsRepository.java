@@ -102,7 +102,7 @@ public class HibernateGoodsRepository extends HibernateSupperRepository implemen
     }
 
     @Override
-    public void saveGoodsSalesList(Integer month, String dealerId, String goodsId, String goodsName, String goodsNum) throws NegativeException {
+    public void saveGoodsSalesList(Integer month, String dealerId, String goodsId, String goodsName, Integer goodsNum) throws NegativeException {
         StringBuilder sql = new StringBuilder("select concurrency_version from t_scm_goods_sales_list where month =:month and goods_id = :goods_id");
         Query query = this.session().createSQLQuery(sql.toString());
         query.setParameter("month", month);

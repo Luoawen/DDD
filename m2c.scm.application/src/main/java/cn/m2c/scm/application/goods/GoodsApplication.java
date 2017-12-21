@@ -31,6 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -357,10 +358,12 @@ public class GoodsApplication {
     }
 
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
-    public void GoodsSkuUpdateByOrderPayed(Map<String, Object> map) {
+    public void GoodsSkuUpdateByOrderPayed(Map<String, Object> map, Integer month) throws NegativeException {
         LOGGER.info("goodsApplication GoodsSkuUpdateByOrderPayed start...");
         LOGGER.info("GoodsSkuUpdateByOrderPayed param=>" + JsonUtils.toStr(map));
         if (null != map && map.size() > 0) {
+            Map<String, Integer> goodsMap = new HashMap<>();
+            Map<String, Goods> goodsInfoMap = new HashMap<>();
             for (Map.Entry<String, Object> entry : map.entrySet()) {
                 String skuId = entry.getKey();
                 Integer num = Integer.parseInt(String.valueOf(entry.getValue()));
@@ -368,6 +371,21 @@ public class GoodsApplication {
                 if (null != goodsSku) {
                     goodsSku.orderPayed(num);
                 }
+
+                Goods goods = goodsRepository.queryGoodsById(goodsSku.goods().getId());
+                if (goodsMap.containsKey(goods.goodsId())) {
+                    goodsMap.put(goods.goodsId(), num + goodsMap.get(goods.goodsId()));
+                } else {
+                    goodsMap.put(goods.goodsId(), num);
+                    goodsInfoMap.put(goods.goodsId(), goods);
+                }
+            }
+
+            // 销量排行榜
+            for (Map.Entry<String, Integer> entry : goodsMap.entrySet()) {
+                Goods goods = goodsInfoMap.get(entry.getKey());
+                goodsRepository.saveGoodsSalesList(month, goods.dealerId(), entry.getKey(),
+                        goods.goodsName(), entry.getValue());
             }
         }
         LOGGER.info("goodsApplication GoodsSkuUpdateByOrderPayed end...");
@@ -393,10 +411,12 @@ public class GoodsApplication {
     }
 
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
-    public void GoodsSkuUpdateByOrderReturnGoods(Map<String, Object> map) {
+    public void GoodsSkuUpdateByOrderReturnGoods(Map<String, Object> map, Integer month) throws NegativeException {
         LOGGER.info("goodsApplication GoodsSkuUpdateByOrderReturnGoods start...");
         LOGGER.info("GoodsSkuUpdateByOrderReturnGoods param=>" + JsonUtils.toStr(map));
         if (null != map && map.size() > 0) {
+            Map<String, Integer> goodsMap = new HashMap<>();
+            Map<String, Goods> goodsInfoMap = new HashMap<>();
             for (Map.Entry<String, Object> entry : map.entrySet()) {
                 String skuId = entry.getKey();
                 Integer num = Integer.parseInt(String.valueOf(entry.getValue()));
@@ -406,6 +426,21 @@ public class GoodsApplication {
                     Goods goods = goodsRepository.queryGoodsById(goodsSku.goods().getId());
                     goods.orderCancel();
                 }
+
+                Goods goods = goodsRepository.queryGoodsById(goodsSku.goods().getId());
+                if (goodsMap.containsKey(goods.goodsId())) {
+                    goodsMap.put(goods.goodsId(), num + goodsMap.get(goods.goodsId()));
+                } else {
+                    goodsMap.put(goods.goodsId(), num);
+                    goodsInfoMap.put(goods.goodsId(), goods);
+                }
+            }
+
+            // 销量排行榜
+            for (Map.Entry<String, Integer> entry : goodsMap.entrySet()) {
+                Goods goods = goodsInfoMap.get(entry.getKey());
+                goodsRepository.saveGoodsSalesList(month, goods.dealerId(), entry.getKey(),
+                        goods.goodsName(), Integer.parseInt("-" + entry.getValue()));
             }
         }
         LOGGER.info("goodsApplication GoodsSkuUpdateByOrderReturnGoods end...");

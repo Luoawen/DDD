@@ -11,6 +11,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate4.HibernateTransactionManager;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -38,7 +40,10 @@ public class GoodsSkuUpdateByOrderReturnListener extends ExchangeListener {
         Map map = JsonUtils.toMap4Obj(aTextMessage);
         Map eventMap = JsonUtils.toMap4Obj(JSONObject.toJSONString(map.get("event")));
         Map obj = JsonUtils.toMap4Obj(JSONObject.toJSONString(eventMap.get("skus")));
-        goodsApplication.GoodsSkuUpdateByOrderReturnGoods(obj);
+        Date time = (Date) eventMap.get("returnTime");
+        SimpleDateFormat df = new SimpleDateFormat("yyyyMM");
+        Integer month = Integer.parseInt(df.format(time));
+        goodsApplication.GoodsSkuUpdateByOrderReturnGoods(obj, month);
         LOGGER.info("GoodsSkuUpdateByOrderReturnListener end...");
     }
 

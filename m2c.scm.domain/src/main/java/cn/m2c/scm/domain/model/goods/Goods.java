@@ -557,4 +557,16 @@ public class Goods extends ConcurrencySafeEntity {
 		}
 		this.goodsGuarantee = list.toString();
 	}
+
+    public String goodsId() {
+        return goodsId;
+    }
+
+    public String dealerId() {
+        return dealerId;
+    }
+
+    public String goodsName() {
+        return goodsName;
+    }
 }
