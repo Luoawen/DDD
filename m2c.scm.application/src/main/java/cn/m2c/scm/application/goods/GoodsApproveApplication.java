@@ -246,7 +246,7 @@ public class GoodsApproveApplication {
      */
 	public void modifyGoodsApproveGuarantee(String dealerId, String guaranteeId) {
 		LOGGER.info("modifyGoodsApproveGuarantee dealerId >>{}", dealerId);
-		LOGGER.info("modifyGoodsApproveGuarantee dealerId >>{}", guaranteeId);
+		LOGGER.info("modifyGoodsApproveGuarantee guaranteeId >>{}", guaranteeId);
 		List<GoodsApprove> goodsApproveList = goodsApproveRepository.queryGoodsByDealerIdAndGuaranteeId(dealerId, guaranteeId);
 		if(null != goodsApproveList && goodsApproveList.size() > 0) {
 			for(GoodsApprove goodsApprove : goodsApproveList) {
