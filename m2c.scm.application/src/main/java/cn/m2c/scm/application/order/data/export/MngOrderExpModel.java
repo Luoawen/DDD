@@ -5,7 +5,6 @@ import cn.m2c.scm.application.utils.ExcelField;
 
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 
 /**
  * 平台订单详情导出
@@ -70,8 +69,8 @@ public class MngOrderExpModel {
         this.orderStatus = getStatusStr(dtl.getOrderStatus());
         this.payNo = null == dtl.getPayNo() ? "" : dtl.getPayNo();
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        this.createdDate = null != new Date(dtl.getCreatedDate()) ? df.format(new Date(dtl.getCreatedDate())) : "";
-        this.payDate = null != dtl.getPayTime() ? df.format(new Date(dtl.getPayTime())) : "";
+        this.createdDate = null != dtl.getCreatedDate() ? df.format(dtl.getCreatedDate()) : "";
+        this.payDate = null != dtl.getPayTime() ? df.format(dtl.getPayTime()) : "";
         this.goodsName = dtl.getGoodsName();
         this.skuName = dtl.getSkuName();
         DecimalFormat df1 = new DecimalFormat("0.00");
@@ -92,6 +91,7 @@ public class MngOrderExpModel {
         this.saleAfterType = getAfterType(dtl.getAfterOrderType());
         this.saleAfterStatus = getAfterStatusStr(dtl.getAfterOrderType(),dtl.getAfterStatus());
         this.saleAfterNum = null == dtl.getAfterNum() ? "" : String.valueOf(dtl.getAfterNum());
+        
         this.saleAfterMoney = df1.format(dtl.getAfterMoney().floatValue() / (double)100);
         
         skuId = dtl.getSkuId();

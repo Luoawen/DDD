@@ -1,5 +1,7 @@
 package cn.m2c.scm.application.dealerorder.data.bean;
 
+import java.util.Date;
+
 import cn.m2c.ddd.common.persistence.orm.ColumnAlias;
 
 /***
@@ -14,14 +16,14 @@ public class OrderDtlBean {
 	private Long goodsMoney;
 	/**生成日期*/
 	@ColumnAlias(value = "created_date")
-	private Long createdDate;
+	private Date createdDate;
 	/*** 收货人姓名 */
 	@ColumnAlias(value = "rev_person")
 	private String revPerson;
 	/**
 	 * 收货人电话
 	 */
-	@ColumnAlias(value = "rev_person")
+	@ColumnAlias(value = "rev_phone")
 	private String revPhone;
 	/**
 	 * 收货人地址
@@ -52,7 +54,7 @@ public class OrderDtlBean {
 	 * 支付时间
 	 */
 	@ColumnAlias(value = "pay_time")
-	private Long payTime;
+	private Date payTime;
 	
 	/**运费 */
 	@ColumnAlias(value = "order_freight")
@@ -153,6 +155,8 @@ public class OrderDtlBean {
 	}
 
 	public String getDealerName() {
+		if (null == dealerName)
+			dealerName = "";
 		return dealerName;
 	}
 
@@ -209,6 +213,8 @@ public class OrderDtlBean {
 	}
 
 	public String getBrandName() {
+		if (null == brandName)
+			brandName = "";
 		return brandName;
 	}
 
@@ -340,11 +346,13 @@ public class OrderDtlBean {
 		this.payNo = payNo;
 	}
 
-	public Long getCreatedDate() {
+	public Date getCreatedDate() {
 		return createdDate;
 	}
 
 	public String getRevPerson() {
+		if(null == revPerson)
+			revPerson = "";
 		return revPerson;
 	}
 
@@ -357,7 +365,7 @@ public class OrderDtlBean {
 	}
 
 
-	public void setCreatedDate(Long createdDate) {
+	public void setCreatedDate(Date createdDate) {
 		this.createdDate = createdDate;
 	}
 
@@ -373,11 +381,11 @@ public class OrderDtlBean {
 		this.orderStatus = orderStatus;
 	}
 
-	public Long getPayTime() {
+	public Date getPayTime() {
 		return payTime;
 	}
 
-	public void setPayTime(Long payTime) {
+	public void setPayTime(Date payTime) {
 		this.payTime = payTime;
 	}
 
@@ -406,6 +414,8 @@ public class OrderDtlBean {
 	}
 
 	public Long getAfterMoney() {
+		if (afterMoney == null)
+			afterMoney = 0l;
 		return afterMoney;
 	}
 
