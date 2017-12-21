@@ -145,7 +145,7 @@ public class AppGoodsAgent {
                 }
 
                 List<Map> goodsTags = goodsRestService.getGoodsTags(goodsBean.getDealerId(), goodsBean.getGoodsId(), goodsBean.getGoodsClassifyId());
-                List<Map> fullCut = goodsRestService.getGoodsFullCut(goodsBean.getDealerId(), goodsBean.getGoodsId(), goodsBean.getGoodsClassifyId());
+                List<Map> fullCut = goodsRestService.getGoodsFullCut(userId, goodsBean.getDealerId(), goodsBean.getGoodsId(), goodsBean.getGoodsClassifyId());
 
                 //查询商品被收藏id 
                 String favoriteId = null;
@@ -321,7 +321,7 @@ public class AppGoodsAgent {
                         goodsCommentBean = goodsCommentQueryApplication.queryGoodsDetailComment(goodsBean.getGoodsId());
                     }
 
-                    List<Map> fullCut = goodsRestService.getGoodsFullCut(goodsBean.getDealerId(), goodsBean.getGoodsId(), goodsBean.getGoodsClassifyId());
+                    List<Map> fullCut = goodsRestService.getGoodsFullCut(userId, goodsBean.getDealerId(), goodsBean.getGoodsId(), goodsBean.getGoodsClassifyId());
 
                     List<Map> goodsTags = goodsRestService.getGoodsTags(goodsBean.getDealerId(), goodsBean.getGoodsId(), goodsBean.getGoodsClassifyId());
 
@@ -335,9 +335,9 @@ public class AppGoodsAgent {
 
                     // 拍获进来，特惠价
                     GoodsSpecialBean goodsSpecialBean = null;
-                    if(null != mediaMap && mediaMap.size() > 0) {
-                    	//商品有无媒体信息,有媒体信息则返回特惠价
-                    	goodsSpecialBean = goodsSpecialQueryApplication.queryGoodsSpecialByGoodsId(goodsBean.getGoodsId());
+                    if (null != mediaMap && mediaMap.size() > 0) {
+                        //商品有无媒体信息,有媒体信息则返回特惠价
+                        goodsSpecialBean = goodsSpecialQueryApplication.queryGoodsSpecialByGoodsId(goodsBean.getGoodsId());
                     }
 
                     AppGoodsDetailRepresentation representation = new AppGoodsDetailRepresentation(goodsBean,
