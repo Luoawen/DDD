@@ -5,6 +5,7 @@ import java.util.Date;
 import cn.m2c.ddd.common.domain.model.ConcurrencySafeEntity;
 import cn.m2c.ddd.common.domain.model.DomainEventPublisher;
 import cn.m2c.scm.domain.model.order.event.AfterRefundSuccEvt;
+import cn.m2c.scm.domain.model.order.event.AfterSaleAgreeEvt;
 import cn.m2c.scm.domain.model.order.event.SaleAfterRefundEvt;
 import cn.m2c.scm.domain.model.order.log.event.OrderOptLogEvent;
 /***
@@ -111,6 +112,9 @@ public class SaleAfterOrder extends ConcurrencySafeEntity {
 		else 
 			return false;
 		updateTime = new Date();
+		if (orderType != 0)
+			DomainEventPublisher.instance().publish(new AfterSaleAgreeEvt(saleAfterNo, orderId, dealerOrderId, dealerId, backMoney
+				, returnFreight, backNum, skuId, sortNo));
 		DomainEventPublisher.instance().publish(new OrderOptLogEvent(saleAfterNo, dealerOrderId, "同意售后申请！", userId));
 		return true;
 	}

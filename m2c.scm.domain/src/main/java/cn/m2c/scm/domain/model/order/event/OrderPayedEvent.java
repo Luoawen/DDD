@@ -1,14 +1,10 @@
 package cn.m2c.scm.domain.model.order.event;
 
 import cn.m2c.ddd.common.domain.model.DomainEvent;
-import com.google.gson.Gson;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
-import java.util.UUID;
 
 /***
  * 订单支付成功时的商品销量事件
@@ -32,6 +28,8 @@ public class OrderPayedEvent implements DomainEvent {
 	
     private Date payTime;
     
+    private String userId;
+    
 	public Date getPayTime() {
 		return payTime;
 	}
@@ -43,13 +41,14 @@ public class OrderPayedEvent implements DomainEvent {
 	}
 	
 	public OrderPayedEvent(String orderNo, Map<String, Integer> s, List<SimpleMediaRes> reses, Map<String, Object> markets
-			, Date payTime) {
+			, Date payTime, String userId) {
 		this();
 		sales = s;
 		this.orderNo = orderNo;
 		this.reses = reses;
 		this.markets = markets;
 		this.payTime = payTime;
+		this.userId = userId;
 	}
 	@Override
 	public int eventVersion() {

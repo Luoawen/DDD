@@ -269,19 +269,35 @@ public class DealerOrderDetailBean {
 		return goodsInfoBeans;
 	}
 
-	public String getTotalOrderPrice() {
+	public long getTotalOrderPrice() {
+		return totalOrderPrice/100;
+	}
+
+	public long getTotalFreight() {
+		return totalFreight/100;
+	}
+
+	public long getPlateformDiscount() {
+		return plateformDiscount/100;
+	}
+
+	public long getDealerDiscount() {
+		return dealerDiscount/100;
+	}
+	
+	public String getStrTotalOrderPrice() {
 		return Utils.moneyFormatCN(totalOrderPrice);
 	}
 
-	public String getTotalFreight() {
+	public String getStrTotalFreight() {
 		return Utils.moneyFormatCN(totalFreight);
 	}
 
-	public String getPlateformDiscount() {
+	public String getStrPlateformDiscount() {
 		return Utils.moneyFormatCN(plateformDiscount);
 	}
 
-	public String getDealerDiscount() {
+	public String getStrDealerDiscount() {
 		return Utils.moneyFormatCN(dealerDiscount);
 	}
 
