@@ -77,12 +77,17 @@ public class GoodsRestServiceImpl implements GoodsService {
                     List<Map> contentList = new ArrayList<>();
                     Object contentJson = contentJsons.next();
                     JSONObject contentObject = JSONObject.parseObject(JSONObject.toJSONString(contentJson));
+                    Integer numPerOne = contentObject.getInteger("numPerOne");
+                    Integer numPerDay = contentObject.getInteger("numPerDay");
                     Iterator<Object> it = contentObject.getJSONArray("itemList").iterator();
                     while (it.hasNext()) {
                         Map jo = (Map) it.next();
                         String itemName = (String) jo.get("content");
                         Map map = new HashMap<>();
                         map.put("itemName", itemName);
+                        map.put("numPerOne", numPerOne);
+                        map.put("numPerDay", numPerDay);
+                        map.put("numLimit", new StringBuffer().append("每人优惠").append(numPerOne).append("次，每天仅可优惠").append(numPerDay).append("次").toString());
                         contentList.add(map);
                     }
                     resultMap.put("itemNames", contentList);
