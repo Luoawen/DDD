@@ -949,6 +949,8 @@ public class DealerOrderQuery {
 		if (beanList != null) {
 			for (OrderDtlBean d : beanList) {
 				Map<String, String> map = (Map<String, String>)goodsClsQuery.getClassifyMap(d.getTypeId());
+				if (map == null)
+					continue;
 				String names = map.get("name");
 				String[] arrStr = names.split(",");
 				if (arrStr != null) {
