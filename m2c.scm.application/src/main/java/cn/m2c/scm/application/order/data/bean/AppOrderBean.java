@@ -173,18 +173,26 @@ public class AppOrderBean extends AssertionConcern implements Serializable {
 	}
 
 	public void setGoodAmount(Long goodAmount) {
+		if (null == goodAmount)
+			goodAmount = 0l;
 		this.goodAmount = goodAmount;
 	}
 
 	public void setOderFreight(Long oderFreight) {
+		if (null == oderFreight)
+			oderFreight = 0l;
 		this.oderFreight = oderFreight;
 	}
 
 	public void setPlateFormDiscount(Long plateFormDiscount) {
+		if (null == plateFormDiscount)
+			plateFormDiscount = 0l;
 		this.plateFormDiscount = plateFormDiscount;
 	}
 
 	public void setDealerDiscount(Long dealerDiscount) {
+		if (null == dealerDiscount)
+			dealerDiscount = 0l;
 		this.dealerDiscount = dealerDiscount;
 	}
 	

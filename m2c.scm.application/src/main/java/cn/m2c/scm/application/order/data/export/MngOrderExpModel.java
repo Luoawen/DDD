@@ -2,8 +2,8 @@ package cn.m2c.scm.application.order.data.export;
 
 import cn.m2c.scm.application.dealerorder.data.bean.OrderDtlBean;
 import cn.m2c.scm.application.utils.ExcelField;
+import cn.m2c.scm.application.utils.Utils;
 
-import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 
 /**
@@ -73,17 +73,15 @@ public class MngOrderExpModel {
         this.payDate = null != dtl.getPayTime() ? df.format(dtl.getPayTime()) : "";
         this.goodsName = dtl.getGoodsName();
         this.skuName = dtl.getSkuName();
-        DecimalFormat df1 = new DecimalFormat("0.00");
         if(dtl.getIsSpecial() == 0) {//不执行特惠价
-            this.goodsPrice = df1.format(dtl.getDiscountPrice().floatValue() / (double)100);//*
+            this.goodsPrice = Utils.moneyFormatCN(dtl.getDiscountPrice());
         }else if(dtl.getIsSpecial() == 1){//执行特惠价
-        	Long specialPrice = Long.valueOf(dtl.getSpecialPrice());
-        	this.goodsPrice = df1.format(specialPrice.floatValue() / (double)100);
+        	this.goodsPrice = Utils.moneyFormatCN(dtl.getSpecialPrice());
         }
         this.goodsNum = dtl.getSellNum();
-        this.postage = df1.format(dtl.getOrderFreight().floatValue() / (double)100);//*
-        this.discountAmount = df1.format((dtl.getPlateDiscount().floatValue()+dtl.getDealerDiscount().floatValue())/(double)100);
-        this.orderMoney = df1.format((dtl.getGoodsMoney().floatValue() + dtl.getOrderFreight().floatValue() - dtl.getDealerDiscount().floatValue() - dtl.getPlateDiscount().floatValue()) / (double)100);
+        this.postage = Utils.moneyFormatCN(dtl.getOrderFreight());//*
+        this.discountAmount = Utils.moneyFormatCN(dtl.getPlateDiscount() + dtl.getDealerDiscount());
+        this.orderMoney = Utils.moneyFormatCN((dtl.getGoodsMoney() + dtl.getOrderFreight() - dtl.getDealerDiscount() - dtl.getPlateDiscount()));
         this.revPerson = dtl.getRevPerson();
         this.revPhone = dtl.getRevPhone();
         this.revAddress = dtl.getProvince() + dtl.getCity() + dtl.getAreaCounty() + dtl.getRevAddress();
@@ -92,7 +90,7 @@ public class MngOrderExpModel {
         this.saleAfterStatus = getAfterStatusStr(dtl.getAfterOrderType(),dtl.getAfterStatus());
         this.saleAfterNum = null == dtl.getAfterNum() ? "" : String.valueOf(dtl.getAfterNum());
         
-        this.saleAfterMoney = df1.format(dtl.getAfterMoney().floatValue() / (double)100);
+        this.saleAfterMoney = Utils.moneyFormatCN(dtl.getAfterMoney());
         
         skuId = dtl.getSkuId();
         dealerName = dtl.getDealerName();

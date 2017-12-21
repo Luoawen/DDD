@@ -197,6 +197,8 @@ public class OrderDtlBean {
 	}
 
 	public Long getSpecialPrice() {
+		if (null == specialPrice)
+			specialPrice = 0l;
 		return specialPrice;
 	}
 

@@ -3,6 +3,7 @@ package cn.m2c.scm.application.order.data.bean;
 import java.util.Date;
 
 import cn.m2c.ddd.common.persistence.orm.ColumnAlias;
+import cn.m2c.scm.application.utils.Utils;
 
 public class AfterSellBean {
 
@@ -25,7 +26,7 @@ public class AfterSellBean {
 	 * 售后总额
 	 */
 	@ColumnAlias(value = "back_money")
-	private Integer backMoney;
+	private Long backMoney;
 	/**
 	 * 订单状态
 	 */
@@ -97,6 +98,23 @@ public class AfterSellBean {
 	@ColumnAlias(value="sort_no")
 	private Integer sortNo;
 	
+	@ColumnAlias(value="return_freight")
+	private Long backFreight;
+	
+	public Long getBackFreight() {
+		return backFreight;
+	}
+	
+	public String getStrBackFreight() {
+		return Utils.moneyFormatCN(backFreight);
+	}
+
+	public void setBackFreight(Long backFreight) {
+		if (null == backFreight)
+			backFreight = 0l;
+		this.backFreight = backFreight;
+	}
+
 	public Integer getSortNo() {
 		return sortNo;
 	}
@@ -257,8 +275,12 @@ public class AfterSellBean {
 		return orderType;
 	}
 
-	public Integer getBackMoney() {
-		return backMoney;
+	public Long getBackMoney() {
+		return backMoney/100;
+	}
+	
+	public String getStrBackMoney() {
+		return Utils.moneyFormatCN(backMoney);
 	}
 
 	public Integer getStatus() {
@@ -285,7 +307,9 @@ public class AfterSellBean {
 		this.orderType = orderType;
 	}
 
-	public void setBackMoney(Integer backMoney) {
+	public void setBackMoney(Long backMoney) {
+		if (backMoney == null)
+			backMoney = 0l;
 		this.backMoney = backMoney;
 	}
 

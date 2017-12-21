@@ -95,6 +95,8 @@ public class OrderDetailBean {
 	}
 	
 	public void setChangePrice(Long changePrice) {
+		if (null == changePrice)
+			changePrice = 0l;
 		this.changePrice = changePrice;
 	}
 	public Integer getAfterStatus() {
