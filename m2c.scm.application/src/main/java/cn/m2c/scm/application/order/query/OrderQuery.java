@@ -2,7 +2,6 @@ package cn.m2c.scm.application.order.query;
 
 
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;

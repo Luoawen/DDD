@@ -1,7 +1,5 @@
 package cn.m2c.scm.application.order.data.bean;
 
-import cn.m2c.ddd.common.persistence.orm.ColumnAlias;
-
 public class OrderDealerBean {
 
 	/**
@@ -33,19 +31,19 @@ public class OrderDealerBean {
 	 * 订单商品金额
 	 */
 	//@ColumnAlias(value = "goods_amount")
-	private long goodAmount;
+	private String goodAmount;
 	/**
 	 * 订单运费
 	 */
-	private long oderFreight;
+	private String oderFreight;
 	/**
 	 * 平台优惠
 	 */
-	private long plateFormDiscount;
+	private String plateFormDiscount;
 	/**
 	 * 商家优惠
 	 */
-	private long dealerDiscount;
+	private String dealerDiscount;
 	/**结算方式*/
 	private Integer termOfPayment;
 	
@@ -77,19 +75,19 @@ public class OrderDealerBean {
 		return status;
 	}
 
-	public long getGoodAmount() {
+	public String getGoodAmount() {
 		return goodAmount;
 	}
 
-	public long getOderFreight() {
+	public String getOderFreight() {
 		return oderFreight;
 	}
-
-	public long getPlateFormDiscount() {
+	
+	public String getPlateFormDiscount() {
 		return plateFormDiscount;
 	}
 
-	public long getDealerDiscount() {
+	public String getDealerDiscount() {
 		return dealerDiscount;
 	}
 
@@ -113,19 +111,19 @@ public class OrderDealerBean {
 		this.status = status;
 	}
 
-	public void setGoodAmount(long goodAmount) {
+	public void setGoodAmount(String goodAmount) {
 		this.goodAmount = goodAmount;
 	}
 
-	public void setOderFreight(long oderFreight) {
+	public void setOderFreight(String oderFreight) {
 		this.oderFreight = oderFreight;
 	}
 
-	public void setPlateFormDiscount(long plateFormDiscount) {
+	public void setPlateFormDiscount(String plateFormDiscount) {
 		this.plateFormDiscount = plateFormDiscount;
 	}
 
-	public void setDealerDiscount(long dealerDiscount) {
+	public void setDealerDiscount(String dealerDiscount) {
 		this.dealerDiscount = dealerDiscount;
 	}
 
