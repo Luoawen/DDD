@@ -27,9 +27,13 @@ import com.baidu.disconf.client.usertools.DisconfDataGetter;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import cn.m2c.common.MCode;
 import cn.m2c.scm.application.order.data.bean.MediaResBean;
 import cn.m2c.scm.application.utils.EXPRESSMD5;
 import cn.m2c.scm.application.utils.HttpRequest;
+import cn.m2c.scm.application.utils.expressUtil.JacksonHelper;
+import cn.m2c.scm.application.utils.expressUtil.TaskRequest;
+import cn.m2c.scm.application.utils.expressUtil.TaskResponse;
 import cn.m2c.scm.domain.NegativeException;
 import cn.m2c.scm.domain.service.order.OrderService;
 /***
@@ -45,7 +49,7 @@ public class OrderServiceImpl implements OrderService {
 	private static final String KUAIDI_100_URL = DisconfDataGetter.getByFileItem("constants.properties", "express.url").toString().trim();
 	private static final String KUAIDI_100_KEY = DisconfDataGetter.getByFileItem("constants.properties", "express.key").toString().trim();
 	private static final String KUAIDI_100_CUSTOMER = DisconfDataGetter.getByFileItem("constants.properties", "express.customer").toString().trim();
-	
+	private static final String KUAIDI_100_ORDERURL = DisconfDataGetter.getByFileItem("constants.properties", "express.orderurl").toString().trim();
 	@Autowired
     RestTemplate restTemplate;
 	@Override
@@ -193,11 +197,12 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	/**
-	 * 获取第三方物流信息
+	 * 获取第三方物流信息(old)
 	 * @throws Exception 
 	 */
 	@Override
 	public String getExpressInfo(String com, String nu) throws Exception {
+		//原来的逻辑
 		String param ="{\"com\":\""+com+"\",\"num\":\""+nu+"\"}";
 		String key = KUAIDI_100_KEY;
 		String customer = KUAIDI_100_CUSTOMER;
@@ -212,6 +217,7 @@ public class OrderServiceImpl implements OrderService {
 		}		
 		System.out.println("返回数据"+resp);
 		return resp;
+		
 	}
 
 	/**
@@ -258,7 +264,6 @@ public class OrderServiceImpl implements OrderService {
 	@Override
 	public void sendOrderSMS(String userMobile, String shopName)
 			throws NegativeException {
-		String mobile = "";
 			String url = M2C_HOST_URL + "/m2c.support/sms/sendsmsByTemplate";
 			HashMap<String, String> params = new HashMap<String, String>();
 			params.put("codeType", "6");
@@ -277,6 +282,44 @@ public class OrderServiceImpl implements OrderService {
 				throw new NegativeException(400,"发送短信出问题");
 			}		
 			System.out.println("返回数据"+resp);
+	}
+
+	/**
+	 * 调用三方物流监听
+	 */
+	@Override
+	public void registExpress(String com, String nu) throws NegativeException {
+		try {
+			TaskRequest req = new TaskRequest();
+			req.setCompany(com);
+			req.setFrom("");
+			req.setTo("");
+			req.setNumber(nu);
+			req.getParameters().put("callbackurl", M2C_HOST_URL+"/m2c.scm/out-platform/express");
+			req.setKey(KUAIDI_100_KEY);
+			
+			HashMap<String, String> p = new HashMap<String, String>(); 
+			p.put("schema", "json");
+			p.put("param", JacksonHelper.toJSON(req));
+			String ret = HttpRequest.postData(KUAIDI_100_ORDERURL, p, "UTF-8");
+			TaskResponse resp = JacksonHelper.fromJSON(ret, TaskResponse.class);
+			if(!resp.getResult()){
+				if(resp.getReturnCode().equals("701"))
+					throw new NegativeException(701,"拒绝订阅的快递公司");
+				if(resp.getReturnCode().equals("700"))
+					throw new NegativeException(700,"订阅方的订阅数据存在错误（如不支持的快递公司、单号为空、单号超长等）或错误的回调地址");
+				if(resp.getReturnCode().equals("702"))
+					throw new NegativeException(702,"别不到该单号对应的快递公司");
+				if(resp.getReturnCode().equals("600"))
+					throw new NegativeException(600,"您不是合法的订阅者（即授权Key出错）");
+				if(resp.getReturnCode().equals("601"))
+					throw new NegativeException(601,"KEY已过期");
+				if(resp.getReturnCode().equals("500"))
+					throw new NegativeException(500,"服务器错误（即快递100的服务器出理间隙或临时性异常，有时如果因为不按规范提交请求，比如快递公司参数写错等，也会报此错误）");
+			}
+		} catch (Exception e) {
+			throw new NegativeException(MCode.V_400,"内部错误");
+		}
 	}
 	
 	

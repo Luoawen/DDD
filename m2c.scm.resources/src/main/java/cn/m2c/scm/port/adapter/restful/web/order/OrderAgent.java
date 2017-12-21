@@ -514,6 +514,7 @@ public class OrderAgent {
 			@RequestParam(value = "userId") String userId){
 		MResult result = new MResult(MCode.V_1);
 		try {
+			
 			SendOrderSMSCommand cmd = new SendOrderSMSCommand(userId,shopName);
 			orderapplication.sendOrderSMS(cmd);
 			result.setStatus(MCode.V_200);
