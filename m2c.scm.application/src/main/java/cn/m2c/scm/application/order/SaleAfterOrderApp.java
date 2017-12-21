@@ -17,7 +17,7 @@ import cn.m2c.scm.application.order.command.AddSaleAfterCmd;
 import cn.m2c.scm.application.order.command.AproveSaleAfterCmd;
 import cn.m2c.scm.application.order.command.SaleAfterCmd;
 import cn.m2c.scm.application.order.command.SaleAfterShipCmd;
-import cn.m2c.scm.application.order.data.bean.OrderDealerBean;
+import cn.m2c.scm.application.order.data.bean.DealerOrderMoneyBean;
 import cn.m2c.scm.application.order.data.bean.RefundEvtBean;
 import cn.m2c.scm.application.order.data.bean.SimpleMarket;
 import cn.m2c.scm.application.order.data.bean.SkuNumBean;
@@ -169,10 +169,10 @@ public class SaleAfterOrderApp {
 		order.updateBackMoney(money);
 		float frt = cmd.getRtFreight();
 		if (order.isOnlyRtMoney()) {
-			OrderDealerBean odb = saleOrderQuery.getDealerOrderById(order.dealerOrderId());
+			DealerOrderMoneyBean odb = saleOrderQuery.getDealerOrderById(order.dealerOrderId());
 			if (odb != null && odb.getStatus() == 1) {
-				if(frt * 100 > odb.getOderFreight())
-					frt = (int)odb.getOderFreight() / 100;
+				if(frt * 10000 > odb.getOrderFreight())
+					frt = odb.getOrderFreight();
 			}
 			else
 				frt = 0;

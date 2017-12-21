@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import cn.m2c.ddd.common.persistence.orm.ColumnAlias;
+import cn.m2c.scm.application.utils.Utils;
 
 /**
  * 商家订单详情
@@ -268,25 +269,25 @@ public class DealerOrderDetailBean {
 		return goodsInfoBeans;
 	}
 
-	public long getTotalOrderPrice() {
-		return totalOrderPrice;
+	public String getTotalOrderPrice() {
+		return Utils.moneyFormatCN(totalOrderPrice);
 	}
 
-	public long getTotalFreight() {
-		return totalFreight;
+	public String getTotalFreight() {
+		return Utils.moneyFormatCN(totalFreight);
 	}
 
-	public long getPlateformDiscount() {
-		return plateformDiscount;
+	public String getPlateformDiscount() {
+		return Utils.moneyFormatCN(plateformDiscount);
 	}
 
-	public long getDealerDiscount() {
-		return dealerDiscount;
+	public String getDealerDiscount() {
+		return Utils.moneyFormatCN(dealerDiscount);
 	}
 
-	public long getOrderPrice() {
+	public String getOrderPrice() {
 		orderPrice = totalOrderPrice + totalFreight - plateformDiscount - dealerDiscount;
-		return orderPrice;
+		return Utils.moneyFormatCN(orderPrice);
 	}
 
 	public void setOrderStatus(Integer orderStatus) {

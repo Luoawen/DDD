@@ -15,6 +15,7 @@ import cn.m2c.scm.application.order.data.bean.AfterSellBean;
 import cn.m2c.scm.application.order.data.bean.AfterSellOrderBean;
 import cn.m2c.scm.application.order.data.bean.AfterSellOrderDetailBean;
 import cn.m2c.scm.application.order.data.bean.AftreSellLogisticsBean;
+import cn.m2c.scm.application.order.data.bean.DealerOrderMoneyBean;
 import cn.m2c.scm.application.order.data.bean.GoodsInfoBean;
 import cn.m2c.scm.application.order.data.bean.OrderDealerBean;
 import cn.m2c.scm.application.order.data.bean.SimpleMarket;
@@ -402,10 +403,10 @@ public class AfterSellOrderQuery {
 	 * @param marketId
 	 * @param orderId
 	 */
-	public OrderDealerBean getDealerOrderById(String dealerOrderId) {
+	public DealerOrderMoneyBean getDealerOrderById(String dealerOrderId) {
 		StringBuilder sql = new StringBuilder();
-		sql.append("SELECT _status status, order_freight oderFreight FROM	t_scm_order_dealer WHERE dealer_order_id = ?");
-		return this.supportJdbcTemplate.queryForBean(sql.toString(), OrderDealerBean.class, dealerOrderId);
+		sql.append("SELECT _status status, order_freight orderFreight FROM	t_scm_order_dealer WHERE dealer_order_id = ?");
+		return this.supportJdbcTemplate.queryForBean(sql.toString(), DealerOrderMoneyBean.class, dealerOrderId);
 	}
 	
 	/***
