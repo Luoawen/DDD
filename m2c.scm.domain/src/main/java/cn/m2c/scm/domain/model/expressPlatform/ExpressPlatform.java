@@ -18,12 +18,10 @@ public class ExpressPlatform extends ConcurrencySafeEntity{
 		super();
 	}
 
-	public void saveOrUpdate(String com, String nu, String resData) {
+	public void add(String com, String nu, String resData) {
 		this.com = com;
 		this.nu = nu;
 		this.resData = resData;
 		this.lastUpdatedDate = new Date();
 	}
-	
-	
 }

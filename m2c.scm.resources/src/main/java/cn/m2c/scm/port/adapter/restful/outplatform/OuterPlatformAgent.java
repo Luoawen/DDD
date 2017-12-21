@@ -53,7 +53,8 @@ public class OuterPlatformAgent {
     			}
     			resp.setResult(true);
     			resp.setReturnCode("200");
-    			LOGGER.info("-----物流回调开始");
+    			resp.setMessage("成功");
+    			LOGGER.info("-----物流回调结束");
     			response.getWriter().print(JacksonHelper.toJSON(resp)); //这里必须返回，否则认为失败，过30分钟又会重复推送。
     		}catch (Exception e) {
     		LOGGER.error("快递100回调失败", e);

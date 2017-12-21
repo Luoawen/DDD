@@ -2,24 +2,17 @@ package cn.m2c.scm.application.utils.expressUtil;
 
 import java.util.ArrayList;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
 
 
 public class Result {
 
 	private String message = "";
-	@JsonIgnore
 	private String nu = "";
-	@JsonIgnore
 	private String ischeck = "0";
-	@JsonIgnore
 	private String com = "";
 	private String status = "0";
-	@JsonIgnore
 	private ArrayList<ResultItem> data = new ArrayList<ResultItem>();
-	@JsonIgnore
 	private String state = "0";
-	@JsonIgnore
 	private String condition = "";
 
 	@SuppressWarnings("unchecked")
