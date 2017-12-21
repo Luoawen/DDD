@@ -39,7 +39,7 @@ public class GoodsSkuUpdateByOrderPayedListener extends ExchangeListener {
         LOGGER.info("GoodsSkuUpdateByOrderPayedListener aTextMessage =>" + aTextMessage);
         Map map = JsonUtils.toMap4Obj(aTextMessage);
         Map eventMap = JsonUtils.toMap4Obj(JSONObject.toJSONString(map.get("event")));
-        Date time = (Date)eventMap.get("payTime");
+        Date time = new Date(Long.parseLong(eventMap.get("payTime").toString()));
         SimpleDateFormat df = new SimpleDateFormat("yyyyMM");
         Integer month = Integer.parseInt(df.format(time));
         Map obj = JsonUtils.toMap4Obj(JSONObject.toJSONString(eventMap.get("sales")));
