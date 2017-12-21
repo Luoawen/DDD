@@ -56,7 +56,11 @@ public class AllOrderBean extends AssertionConcern implements Serializable {
     @ColumnAlias(value = "pDealerDiscount")
 	private long ppDealerDiscount;
 
-	public String getPpDiscount() {
+	public long getPpDiscount() {
+		return ppDiscount/100;
+	}
+	
+	public String getStrPpDiscount() {
 		return Utils.moneyFormatCN(ppDiscount);
 	}
 	
@@ -64,7 +68,11 @@ public class AllOrderBean extends AssertionConcern implements Serializable {
 		this.ppDiscount = ppDiscount;
 	}
 
-	public String getPpDealerDiscount() {
+	public long getPpDealerDiscount() {
+		return ppDealerDiscount/100;
+	}
+	
+	public String getStrPpDealerDiscount() {
 		return Utils.moneyFormatCN(ppDealerDiscount);
 	}
 	
@@ -92,27 +100,51 @@ public class AllOrderBean extends AssertionConcern implements Serializable {
 		return createdDate;
 	}
 
-	public String getMainGoodsAmount() {
+	public long getMainGoodsAmount() {
+		return mainGoodsAmount/100;
+	}
+	
+	public String getGoodsAmount() {
 		return Utils.moneyFormatCN(mainGoodsAmount);
 	}
 
-	public String getMainOrderFreight() {
+	public long getMainOrderFreight() {
+		return mainOrderFreight/100;
+	}
+	
+	public String getStrMainOrderFreight() {
 		return Utils.moneyFormatCN(mainOrderFreight);
 	}
 	
-	public String getDealerOrderFreight() {
+	public long getDealerOrderFreight() {
+		return dealerOrderFreight/100;
+	}
+	
+	public String getStrDealerOrderFreight() {
 		return Utils.moneyFormatCN(dealerOrderFreight);
 	}
 	
-	public String getPlateformDiscount() {
+	public long getPlateformDiscount() {
+		return plateformDiscount/100;
+	}
+	
+	public String getStrPlateformDiscount() {
 		return Utils.moneyFormatCN(plateformDiscount);
 	}
 	
-	public String getDealerDiscount() {
+	public long getDealerDiscount() {
+		return dealerDiscount/100;
+	}
+	
+	public String getStrDealerDiscount() {
 		return Utils.moneyFormatCN(dealerDiscount);
 	}
 	
-	public String getDealerGoodsAmount() {
+	public long getDealerGoodsAmount() {
+		return dealerGoodsAmount/100;
+	}
+	
+	public String getStrDealerGoodsAmount() {
 		return Utils.moneyFormatCN(dealerGoodsAmount);
 	}
 	
