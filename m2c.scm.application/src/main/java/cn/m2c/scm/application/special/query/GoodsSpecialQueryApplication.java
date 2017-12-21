@@ -5,7 +5,6 @@ import cn.m2c.scm.application.goods.query.GoodsQueryApplication;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsSkuBean;
 import cn.m2c.scm.application.special.data.bean.GoodsSkuSpecialBean;
 import cn.m2c.scm.application.special.data.bean.GoodsSpecialBean;
-import cn.m2c.scm.application.special.data.bean.GoodsSpecialDetailBean;
 import cn.m2c.scm.application.special.data.representation.GoodsSkuSpecialDetailAllBeanRepresentation;
 import cn.m2c.scm.application.special.data.representation.GoodsSpecialDetailBeanRepresentation;
 import cn.m2c.scm.application.utils.Utils;
@@ -213,56 +212,6 @@ public class GoodsSpecialQueryApplication {
             }
         }
         return goodsSpecialBeanLists;
-    }
-
-    /**
-     * 根据specialId查询商品最小特惠价
-     *
-     * @param specialId
-     * @return
-     */
-    /*public Long querySpecialPriceMin(Integer specialId) {
-        StringBuilder sql = new StringBuilder();
-        sql.append(" SELECT ");
-        sql.append(" MIN( special_price ) ");
-        sql.append(" FROM ");
-        sql.append(" t_scm_goods_sku_special ");
-        sql.append(" WHERE special_id = ? ");
-        return supportJdbcTemplate.jdbcTemplate().queryForObject(sql.toString(), Long.class, specialId);
-    }*/
-
-    /**
-     * 根据specialId(对应t_scm_goods_special表中的id)查询GoodsSkuSpecialBean
-     *
-     * @param specialId
-     * @return
-     */
-    public List<GoodsSkuSpecialBean> queryGoodsSkuSpecialBeanListBySpecialId(Integer specialId) {
-        StringBuilder sql = new StringBuilder();
-        sql.append(" SELECT ");
-        sql.append(" * ");
-        sql.append(" From ");
-        sql.append(" t_scm_goods_sku_special WHERE 1 = 1 AND special_id = ?");
-        return this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsSkuSpecialBean.class, specialId);
-    }
-
-    /**
-     * 根据specialId查询商品特惠价详情
-     *
-     * @param specialId
-     * @return
-     */
-    public GoodsSpecialDetailBean queryGoodsSpecialDetailBeanBySpecialId(String specialId) {
-        StringBuilder sql = new StringBuilder();
-        sql.append(" SELECT ");
-        sql.append(" * ");
-        sql.append(" From ");
-        sql.append(" t_scm_goods_special WHERE 1 = 1 AND special_id = ? ");
-        GoodsSpecialDetailBean goodsSpecialDetailBean = this.getSupportJdbcTemplate().queryForBean(sql.toString(), GoodsSpecialDetailBean.class, specialId);
-        if (goodsSpecialDetailBean != null) {
-            goodsSpecialDetailBean.setGoodsSkuSpecials(queryGoodsSkuSpecialBeanListBySpecialId(goodsSpecialDetailBean.getId()));
-        }
-        return goodsSpecialDetailBean;
     }
 
     /**
