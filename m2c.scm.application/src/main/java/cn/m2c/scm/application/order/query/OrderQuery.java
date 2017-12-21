@@ -174,10 +174,10 @@ public class OrderQuery {
 				mainOrder.setOrderId(allOrder.getOrderId());
 				mainOrder.setPayNo(allOrder.getPayNo());
 				mainOrder.setCreateDate(allOrder.getCreatedDate());
-				mainOrder.setGoodAmount(allOrder.getMainGoodsAmount());
-				mainOrder.setOderFreight(allOrder.getMainOrderFreight());
-				mainOrder.setDealerDiscount(allOrder.getPpDealerDiscount());
-				mainOrder.setPlateFormDiscount(allOrder.getPpDiscount());
+				mainOrder.setGoodAmount(allOrder.getGoodsAmount());
+				mainOrder.setOderFreight(allOrder.getStrMainOrderFreight());
+				mainOrder.setDealerDiscount(allOrder.getStrPpDealerDiscount());
+				mainOrder.setPlateFormDiscount(allOrder.getStrPpDiscount());
 				List<OrderDealerBean> dealerOrderList = new ArrayList<OrderDealerBean>();
 				mainOrder.setDealerOrderBeans(dealerOrderList);
 			}
@@ -185,10 +185,10 @@ public class OrderQuery {
 			dealerBean.setOrderId(allOrder.getOrderId());
 			dealerBean.setDealerName(allOrder.getDealerName());
 			dealerBean.setDealerOrderId(allOrder.getDealerOrderId());
-			dealerBean.setGoodAmount(allOrder.getDealerGoodsAmount());
-			dealerBean.setOderFreight(allOrder.getDealerOrderFreight());
-			dealerBean.setPlateFormDiscount(allOrder.getPlateformDiscount());
-			dealerBean.setDealerDiscount(allOrder.getDealerDiscount());
+			dealerBean.setGoodAmount(allOrder.getStrDealerGoodsAmount());
+			dealerBean.setOderFreight(allOrder.getStrDealerOrderFreight());
+			dealerBean.setPlateFormDiscount(allOrder.getStrPlateformDiscount());
+			dealerBean.setDealerDiscount(allOrder.getStrDealerDiscount());
 			dealerBean.setStatus(allOrder.getStatus());
 			mainOrder.getDealerOrderBeans().add(dealerBean);
 		}
