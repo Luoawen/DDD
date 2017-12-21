@@ -4,6 +4,7 @@ import cn.m2c.common.JsonUtils;
 import cn.m2c.ddd.common.domain.model.ConcurrencySafeEntity;
 import cn.m2c.ddd.common.domain.model.DomainEventPublisher;
 import cn.m2c.ddd.common.serializer.ObjectSerializer;
+import cn.m2c.scm.domain.model.dealer.event.DealerReportStatisticsEvent;
 import cn.m2c.scm.domain.model.goods.event.GoodsAddEvent;
 import cn.m2c.scm.domain.model.goods.event.GoodsApproveAddEvent;
 import cn.m2c.scm.domain.model.goods.event.GoodsChangedEvent;
@@ -11,6 +12,7 @@ import cn.m2c.scm.domain.model.goods.event.GoodsDeleteEvent;
 import cn.m2c.scm.domain.model.goods.event.GoodsModifyApproveSkuEvent;
 import cn.m2c.scm.domain.model.goods.event.GoodsOffShelfEvent;
 import cn.m2c.scm.domain.model.goods.event.GoodsUpShelfEvent;
+import cn.m2c.scm.domain.util.DealerReportType;
 import cn.m2c.scm.domain.util.GetMapValueUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -215,6 +217,13 @@ public class Goods extends ConcurrencySafeEntity {
         DomainEventPublisher
                 .instance()
                 .publish(new GoodsAddEvent(this.goodsId, this.goodsUnitId, getStandardId(goodsSpecifications)));
+
+        Map<String, Map> dealerInfo = new HashMap<>();
+        Map infoMap = new HashMap<>();
+        infoMap.put("num", 1);
+        dealerInfo.put(this.dealerId, infoMap);
+        // 数据统计事件
+        DomainEventPublisher.instance().publish(new DealerReportStatisticsEvent(dealerInfo, DealerReportType.GOODS_ADD, new Date()));
     }
 
     /**

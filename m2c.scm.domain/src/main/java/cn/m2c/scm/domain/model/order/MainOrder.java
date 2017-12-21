@@ -205,7 +205,7 @@ public class MainOrder extends ConcurrencySafeEntity {
         status = 1;
         Map<String, Integer> allSales = new HashMap<String, Integer>();
         List<SimpleMediaRes> allRes = new ArrayList<SimpleMediaRes>();
-        Map<String, Map> dealerOrderInfo = new HashMap<>();
+        Map<String, Map> dealerInfo = new HashMap<>();
         for (DealerOrder d : dealerOrders) {
             d.payed();
             allSales.putAll(d.getSaleNums());
@@ -214,12 +214,11 @@ public class MainOrder extends ConcurrencySafeEntity {
             Map infoMap = new HashMap<>();
             infoMap.put("num", 1);
             infoMap.put("money", d.getDealerOrderMoney());
-            dealerOrderInfo.put(d.dealerId(), infoMap);
-
+            dealerInfo.put(d.dealerId(), infoMap);
         }
 
         // 数据统计事件
-        DomainEventPublisher.instance().publish(new DealerReportStatisticsEvent(dealerOrderInfo, DealerReportType.ORDER_PAY, payTime));
+        DomainEventPublisher.instance().publish(new DealerReportStatisticsEvent(dealerInfo, DealerReportType.ORDER_PAY, payTime));
 
         Map<String, Object> markets = null;
         if (marketings != null && marketings.size() > 0) {
