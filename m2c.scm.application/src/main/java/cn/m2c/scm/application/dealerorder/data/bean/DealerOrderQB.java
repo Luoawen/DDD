@@ -95,6 +95,8 @@ public class DealerOrderQB {
 	}
 
 	public Long getGoodsMoney() {
+		if (null == goodsMoney)
+			goodsMoney = 0l;
 		return goodsMoney/100;
 	}
 	
@@ -247,6 +249,8 @@ public class DealerOrderQB {
 	}
 
 	public Long getAfterMoney() {
+		if (afterMoney == null)
+			afterMoney = 0l;
 		return afterMoney/100;
 	}
 	
