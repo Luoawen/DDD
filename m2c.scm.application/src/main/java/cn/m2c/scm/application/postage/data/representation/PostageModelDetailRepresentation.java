@@ -2,6 +2,7 @@ package cn.m2c.scm.application.postage.data.representation;
 
 import cn.m2c.scm.application.postage.data.bean.PostageModelBean;
 import cn.m2c.scm.application.postage.data.bean.PostageModelRuleBean;
+import cn.m2c.scm.application.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -55,10 +56,10 @@ public class PostageModelDetailRepresentation {
             map.put("address", ruleBean.getAddress());
             map.put("firstWeight", ruleBean.getFirstWeight());
             map.put("firstPiece", ruleBean.getFirstPiece());
-            map.put("firstPostage", ruleBean.getFirstPostage());
+            map.put("firstPostage", Utils.moneyFormatCN(ruleBean.getFirstPostage()));
             map.put("continuedWeight", ruleBean.getContinuedWeight());
             map.put("continuedPiece", ruleBean.getContinuedPiece());
-            map.put("continuedPostage", ruleBean.getContinuedPostage());
+            map.put("continuedPostage", Utils.moneyFormatCN(ruleBean.getContinuedPostage()));
             map.put("defaultFlag", ruleBean.getDefaultFlag());
             map.put("cityCode", ruleBean.getCityCode());
             this.postageModelRules.add(map);
