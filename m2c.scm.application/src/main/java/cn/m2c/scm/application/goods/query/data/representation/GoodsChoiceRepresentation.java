@@ -41,7 +41,11 @@ public class GoodsChoiceRepresentation {
                 map.put("goodsSkuName", skuBean.getSkuName());
                 map.put("goodsSkuInventory", skuBean.getAvailableNum());
                 map.put("goodsSkuPrice", Utils.moneyFormatCN(skuBean.getPhotographPrice()));
-                map.put("goodsSupplyPrice", Utils.moneyFormatCN(skuBean.getSupplyPrice()));
+                if(null != skuBean.getSupplyPrice()) {//供货价是否为空
+                	map.put("goodsSupplyPrice", Utils.moneyFormatCN(skuBean.getSupplyPrice()));
+                }else {
+                	map.put("goodsSupplyPrice", skuBean.getSupplyPrice());
+                }
                 this.goodsSkuList.add(map);
             }
         }
