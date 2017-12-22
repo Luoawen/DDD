@@ -69,6 +69,8 @@ public class AfterSellOrderBean {
 	private GoodsInfoBean goodsInfo;
 
 	public Long getRtFreight() {
+		if (null == rtFreight)
+			rtFreight = 0l;
 		return rtFreight/100;
 	}
 	
@@ -111,6 +113,8 @@ public class AfterSellOrderBean {
 	}
 
 	public Long getBackMoney() {
+		if (backMoney == null)
+			backMoney = 0l;
 		return backMoney / 100;
 	}
 	
