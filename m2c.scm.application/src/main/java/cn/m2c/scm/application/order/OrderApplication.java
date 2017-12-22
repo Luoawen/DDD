@@ -447,6 +447,7 @@ public class OrderApplication {
      * @throws NegativeException
      */
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+    @EventListener
     public void delOrder(CancelOrderCmd cmd) throws NegativeException {
 
     	if (StringUtils.isEmpty(cmd.getDealerOrderId())) {

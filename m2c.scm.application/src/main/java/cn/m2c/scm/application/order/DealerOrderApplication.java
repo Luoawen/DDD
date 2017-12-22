@@ -60,7 +60,7 @@ public class DealerOrderApplication {
 	 */
 	@Transactional(rollbackFor = { Exception.class, RuntimeException.class, NegativeException.class })
 	@EventListener
-	public void updateExpress(SendOrderCommand command) throws NegativeException {
+	public void updateExpress(SendOrderCommand command, String attach) throws NegativeException {
 
 		LOGGER.info("更新物流信息");
 		DealerOrder dealerOrder = dealerOrderRepository.getDealerOrderById(command.getDealerOrderId());
@@ -78,6 +78,7 @@ public class DealerOrderApplication {
 				sortNos.add(s.getSortNo());
 			}
 		}
+		operationLogManager.operationLog("更新快递发货", attach, dealerOrder);
 		
 		if (!dealerOrder.updateExpress(command.getExpressName(), command.getExpressNo(), command.getExpressNote(),
 				command.getExpressPerson(), command.getExpressPhone(), command.getExpressWay(),

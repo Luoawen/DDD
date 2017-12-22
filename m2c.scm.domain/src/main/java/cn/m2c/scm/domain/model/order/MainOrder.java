@@ -178,6 +178,7 @@ public class MainOrder extends ConcurrencySafeEntity {
             for (DealerOrder d : dealerOrders)
                 d.del();
         }
+        DomainEventPublisher.instance().publish(new OrderOptLogEvent(orderId, null, "用户删除订单", userId));
         updateTime = new Date();
         delFlag = 1;
         return true;

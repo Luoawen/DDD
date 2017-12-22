@@ -3,6 +3,8 @@ package cn.m2c.scm.port.adapter.restful.web.order;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,6 +61,9 @@ public class OrderAgent {
     
     @Autowired
     OrderQueryApplication orderAppQuery;
+    
+    @Autowired
+	private  HttpServletRequest request;
 	/**
 	 * 查询订单列表
 	 * @param orderStatus 订单状态
@@ -156,7 +161,8 @@ public class OrderAgent {
 		MResult result = new MResult(MCode.V_1);
 		try {
 			AproveSaleAfterCmd cmd = new AproveSaleAfterCmd(userId, saleAfterNo, dealerId, rtFreight);
-			saleAfterApp.agreeApply(cmd);
+			String _attach= request.getHeader("attach");
+			saleAfterApp.agreeApply(cmd, _attach);
 			result.setStatus(MCode.V_200);
 		}
 		catch (NegativeException e) {
@@ -187,7 +193,8 @@ public class OrderAgent {
 		MResult result = new MResult(MCode.V_1);
 		try {
 			AproveSaleAfterCmd cmd = new AproveSaleAfterCmd(userId, saleAfterNo, dealerId, rejectReason, rejectReasonCode);
-			saleAfterApp.rejectApply(cmd);
+			String _attach= request.getHeader("attach");
+			saleAfterApp.rejectApply(cmd, _attach);
 			result.setStatus(MCode.V_200);
 		}
 		catch (NegativeException e) {
@@ -224,7 +231,8 @@ public class OrderAgent {
         try {
         	SaleAfterShipCmd cmd = new SaleAfterShipCmd(userId, saleAfterNo, skuId,
         			expressNo, expressCode, expressName, expressPerson, expressPhone, expressWay);
-        	saleAfterApp.dealerShipGoods(cmd);
+        	String _attach= request.getHeader("attach");
+        	saleAfterApp.dealerShipGoods(cmd, _attach);
             result.setStatus(MCode.V_200);
         } 
         catch (NegativeException e) {
@@ -252,7 +260,8 @@ public class OrderAgent {
     	MResult result = new MResult(MCode.V_1);
         try {
         	SaleAfterCmd cmd = new SaleAfterCmd(userId, saleAfterNo, skuId);
-        	saleAfterApp.dealerConfirmRev(cmd);
+        	String _attach= request.getHeader("attach");
+        	saleAfterApp.dealerConfirmRev(cmd, _attach);
             result.setStatus(MCode.V_200);
         } 
         catch (NegativeException e) {
@@ -280,7 +289,8 @@ public class OrderAgent {
     	MResult result = new MResult(MCode.V_1);
         try {
         	SaleAfterCmd cmd = new SaleAfterCmd(userId, saleAfterNo, skuId);
-        	saleAfterApp.agreeBackMoney(cmd);
+        	String _attach= request.getHeader("attach");
+        	saleAfterApp.agreeBackMoney(cmd, _attach);
             result.setStatus(MCode.V_200);
         } 
         catch (NegativeException e) {
@@ -361,7 +371,8 @@ public class OrderAgent {
     	try {
     		SendOrderCommand command = new SendOrderCommand(dealerOrderId, expressNo, expressName, expressPerson, expressPhone, 
     				expressWay, expressNote, expressCode, userId);
-    		dealerOrderApplication.updateExpress(command);
+    		String _attach= request.getHeader("attach");
+    		dealerOrderApplication.updateExpress(command, _attach);
     		result.setStatus(MCode.V_200);
 		} catch (NegativeException e) {
 			result.setStatus(MCode.V_400);
