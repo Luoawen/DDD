@@ -162,6 +162,10 @@ public class Goods extends ConcurrencySafeEntity {
      */
     private Integer goodsLaunchStatus;
 
+    /**最后更新时间*/
+    private Date lastUpdateTime;
+
+
     public Goods() {
         super();
     }
