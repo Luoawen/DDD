@@ -1,5 +1,7 @@
 package cn.m2c.scm.application.dealerorder.data.bean;
 
+import cn.m2c.scm.application.utils.Utils;
+
 /***
  * 订单中 商家 商品Bean
  * 
@@ -70,12 +72,16 @@ public class DealerGoodsBean {
 	}
 
 	public Long getBackMoney() {
-		if (backMoney == null)
-			backMoney = 0l;
-		return backMoney;
+		return backMoney/100;
+	}
+	
+	public String getStrBackMoney() {
+		return Utils.moneyFormatCN(backMoney);
 	}
 
 	public void setBackMoney(Long backMoney) {
+		if (backMoney == null)
+			backMoney = 0l;
 		this.backMoney = backMoney;
 	}
 
@@ -98,7 +104,11 @@ public class DealerGoodsBean {
 	}
 
 	public long getSpecialPrice() {
-		return specialPrice;
+		return specialPrice/100;
+	}
+	
+	public String getStrSpecialPrice() {
+		return Utils.moneyFormatCN(specialPrice);
 	}
 
 	public void setIsSpecial(Integer isSpecial) {
@@ -185,10 +195,16 @@ public class DealerGoodsBean {
 	}
 
 	public Long getDiscountPrice() {
-		return discountPrice;
+		return discountPrice/100;
+	}
+	
+	public String getStrDiscountPrice() {
+		return Utils.moneyFormatCN(discountPrice);
 	}
 
 	public void setDiscountPrice(Long discountPrice) {
+		if (null == discountPrice)
+			discountPrice = 0l;
 		this.discountPrice = discountPrice;
 	}
 
@@ -210,10 +226,12 @@ public class DealerGoodsBean {
 	}
 
 	public Long getFreight() {
-		return freight;
+		return freight/100;
 	}
 
 	public void setFreight(Long freight) {
+		if (null == freight)
+			freight = 0l;
 		this.freight = freight;
 	}
 }
