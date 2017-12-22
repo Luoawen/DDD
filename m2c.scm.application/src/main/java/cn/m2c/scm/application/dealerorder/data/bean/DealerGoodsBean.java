@@ -72,10 +72,14 @@ public class DealerGoodsBean {
 	}
 
 	public Long getBackMoney() {
+		if (null == backMoney)
+			backMoney = 0l;
 		return backMoney/100;
 	}
 	
 	public String getStrBackMoney() {
+		if (null == backMoney)
+			backMoney = 0l;
 		return Utils.moneyFormatCN(backMoney);
 	}
 
@@ -195,10 +199,14 @@ public class DealerGoodsBean {
 	}
 
 	public Long getDiscountPrice() {
+		if (null == discountPrice)
+			discountPrice = 0l;
 		return discountPrice/100;
 	}
 	
 	public String getStrDiscountPrice() {
+		if (null == discountPrice)
+			discountPrice = 0l;
 		return Utils.moneyFormatCN(discountPrice);
 	}
 
@@ -226,7 +234,15 @@ public class DealerGoodsBean {
 	}
 
 	public Long getFreight() {
+		if (null == freight)
+			freight = 0l;
 		return freight/100;
+	}
+	
+	public String getStrFreight() {
+		if (null == freight)
+			freight = 0l;
+		return Utils.moneyFormatCN(freight);
 	}
 
 	public void setFreight(Long freight) {
