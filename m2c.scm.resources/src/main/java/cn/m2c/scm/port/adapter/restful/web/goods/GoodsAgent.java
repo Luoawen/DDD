@@ -290,20 +290,22 @@ public class GoodsAgent {
 
     /**
      * 查询商品详情
-     *
+     * 
      * @param goodsId
+     * @param isDelete  商品是否已删除，可查出已删商品所有的保障(不论保障是否删除)
      * @return
      */
     @RequestMapping(value = "/{goodsId}", method = RequestMethod.GET)
     public ResponseEntity<MResult> queryGoodsDetail(
-            @PathVariable("goodsId") String goodsId
+            @PathVariable("goodsId") String goodsId,
+            @RequestParam(value="isDelete", required = false) Integer isDelete  
     ) {
         MResult result = new MResult(MCode.V_1);
         try {
             GoodsBean goodsBean = goodsQueryApplication.queryGoodsByGoodsId(goodsId);
             if (null != goodsBean) {
                 Map goodsClassifyMap = goodsClassifyQueryApplication.getClassifyMap(goodsBean.getGoodsClassifyId());
-                List<GoodsGuaranteeBean> goodsGuarantee = goodsGuaranteeQueryApplication.queryGoodsGuaranteeByIds(JsonUtils.toList(goodsBean.getGoodsGuarantee(), String.class));
+                List<GoodsGuaranteeBean> goodsGuarantee = goodsGuaranteeQueryApplication.queryGoodsGuaranteeByIdsAndIsDelete(JsonUtils.toList(goodsBean.getGoodsGuarantee(), String.class), isDelete);
                 String goodsUnitName = unitQuery.getUnitNameByUnitId(goodsBean.getGoodsUnitId());
                 //结算模式 1：按供货价 2：按服务费率
                 Integer settlementMode = dealerQuery.getDealerCountMode(goodsBean.getDealerId());
