@@ -122,7 +122,7 @@ public class OrderOutAgent {
     }
     
     /**
-     * 获取订单数据根据订单号
+     * 获取已经支付的订单数（时间段内的）
      */
     @RequestMapping(value="/payed/order", method = RequestMethod.GET)
     public ResponseEntity<MResult> getOrderByNo(@RequestParam(value="userId", required=false) String userId
@@ -147,7 +147,7 @@ public class OrderOutAgent {
     }
     
     /**
-     * 获取订单数据根据订单号
+     * 提供给支付系统用的回调接口
      */
     @RequestMapping(value="/payed/success/{orderNo}", method = RequestMethod.PUT)
     public ResponseEntity<MResult> orderPayedByNo(
