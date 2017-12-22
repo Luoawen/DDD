@@ -40,7 +40,7 @@ public class GoodsSkuUpdateByOrderReturnListener extends ExchangeListener {
         Map map = JsonUtils.toMap4Obj(aTextMessage);
         Map eventMap = JsonUtils.toMap4Obj(JSONObject.toJSONString(map.get("event")));
         Map obj = JsonUtils.toMap4Obj(JSONObject.toJSONString(eventMap.get("skus")));
-        Date time = (Date) eventMap.get("returnTime");
+        Date time = new Date(Long.parseLong(eventMap.get("returnTime").toString()));
         SimpleDateFormat df = new SimpleDateFormat("yyyyMM");
         Integer month = Integer.parseInt(df.format(time));
         goodsApplication.GoodsSkuUpdateByOrderReturnGoods(obj, month);

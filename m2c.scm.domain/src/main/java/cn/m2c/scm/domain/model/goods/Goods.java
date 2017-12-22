@@ -162,6 +162,10 @@ public class Goods extends ConcurrencySafeEntity {
      */
     private Integer goodsLaunchStatus;
 
+    /**最后更新时间*/
+    private Date lastUpdateTime;
+
+
     public Goods() {
         super();
     }
@@ -555,7 +559,7 @@ public class Goods extends ConcurrencySafeEntity {
 				it.remove();
 			}
 		}
-		this.goodsGuarantee = list.toString();
+		this.goodsGuarantee = JsonUtils.toStr(list);
 	}
 
     public String goodsId() {

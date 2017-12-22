@@ -34,6 +34,7 @@
         <property name="delStatus" column="del_status" type="int"/>
         <property name="createdDate" column="created_date" type="timestamp"/>
         <property name="goodsLaunchStatus" column="goods_launch_status" type="int"></property>
+        <property name="lastUpdateTime" column="last_updated_date" type="timestamp"/>
         <bag name="goodsSKUs" lazy="false" cascade="all-delete-orphan" inverse="true">
             <key column="goods_id"/>
             <one-to-many class="cn.m2c.scm.domain.model.goods.GoodsSku"/>
