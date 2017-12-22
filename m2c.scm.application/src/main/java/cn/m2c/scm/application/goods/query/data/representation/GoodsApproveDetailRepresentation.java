@@ -25,7 +25,7 @@ public class GoodsApproveDetailRepresentation {
     private Integer goodsMinQuantity;
     private String goodsBarCode;
     private List<String> goodsKeyWord;
-    private List<String> goodsGuarantee;
+    private List<Map> goodsGuarantee;
     private List<Map> goodsSpecifications;
     private List<Map> goodsSKUs;
     private List<String> goodsMainImages;
@@ -57,12 +57,13 @@ public class GoodsApproveDetailRepresentation {
         this.goodsBarCode = bean.getGoodsBarCode();
         this.goodsKeyWord = JsonUtils.toList(bean.getGoodsKeyWord(), String.class);
         if (null != goodsGuarantees && goodsGuarantees.size() > 0) {
-            if (null == goodsGuarantee) {
+            /*if (null == goodsGuarantee) {
                 this.goodsGuarantee = new ArrayList<>();
             }
             for (GoodsGuaranteeBean guaranteeBean : goodsGuarantees) {
                 this.goodsGuarantee.add(guaranteeBean.getGuaranteeDesc());
-            }
+            }*/
+        	this.goodsGuarantee = JsonUtils.toList(JsonUtils.toStr(goodsGuarantees), Map.class);
         }
         this.goodsSpecifications = JsonUtils.toList(bean.getGoodsSpecifications(), Map.class);
         this.goodsSKUs = JsonUtils.toList(JsonUtils.toStr(bean.getGoodsSkuApproves()), Map.class);
@@ -248,11 +249,11 @@ public class GoodsApproveDetailRepresentation {
         this.skuFlag = skuFlag;
     }
 
-    public List<String> getGoodsGuarantee() {
+    public List<Map> getGoodsGuarantee() {
         return goodsGuarantee;
     }
 
-    public void setGoodsGuarantee(List<String> goodsGuarantee) {
+    public void setGoodsGuarantee(List<Map> goodsGuarantee) {
         this.goodsGuarantee = goodsGuarantee;
     }
 
