@@ -345,6 +345,6 @@ public class GoodsApprove extends ConcurrencySafeEntity {
 				it.remove();
 			}
 		}
-		this.goodsGuarantee = list.toString();
+		this.goodsGuarantee = JsonUtils.toStr(list);
 	}
 }

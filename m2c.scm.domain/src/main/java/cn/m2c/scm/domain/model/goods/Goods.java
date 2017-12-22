@@ -559,7 +559,7 @@ public class Goods extends ConcurrencySafeEntity {
 				it.remove();
 			}
 		}
-		this.goodsGuarantee = list.toString();
+		this.goodsGuarantee = JsonUtils.toStr(list);
 	}
 
     public String goodsId() {
