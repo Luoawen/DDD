@@ -145,7 +145,7 @@ public class DealerReportAgent {
                     }
                 }
 
-                tempMap.put(days.get(i), sellMoney);
+                tempMap.put(days.get(i), sellMoney / 10000);
                 DealerNearlyReportRepresentation rep = new DealerNearlyReportRepresentation(time, ratioFlag, ratio, sellMoney);
                 resultList.add(rep);
             }
@@ -186,8 +186,8 @@ public class DealerReportAgent {
         map.put("orderNum", orderNum);
         map.put("orderRefundNum", orderRefundNum);
         map.put("goodsAddNum", goodsAddNum);
-        map.put("sellMoney", sellMoney/10000);
-        map.put("refundMoney", refundMoney/10000);
+        map.put("sellMoney", sellMoney / 10000);
+        map.put("refundMoney", refundMoney / 10000);
         map.put("goodsCommentNum", goodsCommentNum);
         return map;
     }
