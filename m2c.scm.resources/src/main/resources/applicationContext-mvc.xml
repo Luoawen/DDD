@@ -75,7 +75,7 @@
 		</mvc:interceptor>
 	</mvc:interceptors>
 	-->
-	 <mvc:interceptors>
+	<mvc:interceptors>
 		<mvc:interceptor>
 			<mvc:mapping path="/**/mng" />
 			<mvc:mapping path="/**/mng/**" />
@@ -88,6 +88,15 @@
 			<mvc:mapping path="/**/admin/**" />
 			<bean
 				class="cn.m2c.common.permission.interceptor.GlobalPermissionInterceptor" />
+		</mvc:interceptor>
+
+		<mvc:interceptor>
+			<mvc:mapping path="/*" /> <!-- 拦截C端系统所有的请求接口，除登录找回密码等接口 -->
+			<mvc:exclude-mapping path="/**/app/**" />
+			<mvc:exclude-mapping path="/**/mng" />
+			<mvc:exclude-mapping path="/**/mng/**" />
+			<mvc:exclude-mapping path="/**/admin/**" />
+			<bean class="cn.m2c.common.permission.interceptor.AuthorizationInterceptor" />
 		</mvc:interceptor>
 	</mvc:interceptors>
 </beans>  

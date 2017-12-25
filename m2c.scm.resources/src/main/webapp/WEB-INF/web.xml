@@ -24,6 +24,16 @@
 		<listener-class>org.springframework.web.util.IntrospectorCleanupListener</listener-class>
 	</listener>
 	
+	<!-- IP 获取 -->
+	<filter>
+		<filter-name>parametersFilter</filter-name>
+		<filter-class>cn.m2c.common.permission.interceptor.AcquireIpInterceptor</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>parametersFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	
 	<filter>
 		<filter-name>cross-origin</filter-name>
 		<filter-class>org.eclipse.jetty.servlets.CrossOriginFilter</filter-class>
