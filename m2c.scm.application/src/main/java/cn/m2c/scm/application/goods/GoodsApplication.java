@@ -180,12 +180,13 @@ public class GoodsApplication {
      * @throws NegativeException
      */
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
-    public void modifyRecognized(GoodsRecognizedModifyCommand command) throws NegativeException {
+    public void modifyRecognized(GoodsRecognizedModifyCommand command, String _attach) throws NegativeException {
         LOGGER.info("modifyRecognized command >>{}", command);
         Goods goods = goodsRepository.queryGoodsById(command.getGoodsId());
         if (null == goods) {
             throw new NegativeException(MCode.V_300, "商品不存在");
         }
+        operationLogManager.operationLog("修改商品识别图", _attach, goods, new String[]{"goods"}, new Class<?>[]{Goods.class});
         goods.modifyRecognized(command.getRecognizedNo(), command.getRecognizedId(), command.getRecognizedUrl());
         Integer status = goods.goodsStatus() == 1 ? 0 : 1;
         if (StringUtils.isEmpty(command.getRecognizedId())) {
@@ -225,12 +226,13 @@ public class GoodsApplication {
      * @throws NegativeException
      */
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
-    public void delRecognized(GoodsRecognizedDelCommand command) throws NegativeException {
+    public void delRecognized(GoodsRecognizedDelCommand command, String _attach) throws NegativeException {
         LOGGER.info("delRecognized command >>{}", command);
         Goods goods = goodsRepository.queryGoodsById(command.getGoodsId());
         if (null == goods) {
             throw new NegativeException(MCode.V_300, "商品不存在");
         }
+        operationLogManager.operationLog("删除商品识别图", _attach, goods, new String[]{"goods"}, new Class<?>[]{Goods.class});
         goods.delRecognized(command.getRecognizedNo());
         boolean result = goodsDubboService.updateRecognizedImgStatus(command.getRecognizedId(), command.getRecognizedUrl(), 0);
         if (!result) {
@@ -534,9 +536,10 @@ public class GoodsApplication {
      */
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
     @EventListener(isListening = true)
-    public void upShelfGoodsBatch(List goodsIds) throws NegativeException {
+    public void upShelfGoodsBatch(List goodsIds, String _attach) throws NegativeException {
         LOGGER.info("upShelfGoodsBatch goodsIds >>{}", goodsIds);
         List<Goods> goodsList = goodsRepository.queryGoodsByIdList(goodsIds);
+        operationLogManager.operationLog("商品批量上架", _attach, goodsList, new String[]{"goods"}, new Class<?>[]{Goods.class});
         if (null != goodsList && goodsList.size() > 0) {
             for (Goods goods : goodsList) {
                 goods.upShelf();
@@ -555,9 +558,10 @@ public class GoodsApplication {
      */
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
     @EventListener(isListening = true)
-    public void offShelfGoodsBatch(List goodsIds) throws NegativeException {
+    public void offShelfGoodsBatch(List goodsIds, String _attach) throws NegativeException {
         LOGGER.info("offShelfGoodsBatch goodsIds >>{}", goodsIds);
         List<Goods> goodsList = goodsRepository.queryGoodsByIdList(goodsIds);
+        operationLogManager.operationLog("商品批量上架", _attach, goodsList, new String[]{"goods"}, new Class<?>[]{Goods.class});
         if (null != goodsList && goodsList.size() > 0) {
             for (Goods goods : goodsList) {
                 goods.offShelf();

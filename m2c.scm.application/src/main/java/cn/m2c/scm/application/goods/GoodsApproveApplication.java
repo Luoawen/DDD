@@ -218,9 +218,10 @@ public class GoodsApproveApplication {
      */
     @EventListener(isListening = true)
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
-	public void agreeGoodsApproveBatch(List goodsIds) throws NegativeException {
+	public void agreeGoodsApproveBatch(List goodsIds, String _attach) throws NegativeException {
     	LOGGER.info("agreeGoodsApproveBatch goodsIds >>{}", goodsIds);
     	List<GoodsApprove> goodsApproveList = goodsApproveRepository.queryGoodsApproveByIdList(goodsIds);
+    	operationLogManager.operationLog("批量同意商品审核", _attach, goodsApproveList, new String[]{"goodsApprove"}, new Class<?>[]{GoodsApprove.class});
     	if(null != goodsApproveList && goodsApproveList.size()>0) {
     		for(GoodsApprove goodsApprove : goodsApproveList) {
     			goodsApprove.agree();
@@ -237,9 +238,10 @@ public class GoodsApproveApplication {
      * @throws NegativeException 
      */
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
-	public void rejectGoodsApproveBatch(GoodsApproveRejectBatchCommand command) throws NegativeException {
+	public void rejectGoodsApproveBatch(GoodsApproveRejectBatchCommand command, String _attach) throws NegativeException {
     	LOGGER.info("rejectGoodsApproveBatch command >>{}",command);
     	List<GoodsApprove> goodsApproveList = goodsApproveRepository.queryGoodsApproveByIdList(command.getGoodsIds());
+    	operationLogManager.operationLog("批量拒绝商品审核", _attach, goodsApproveList, new String[]{"goodsApprove"}, new Class<?>[]{GoodsApprove.class});
     	if(goodsApproveList != null && goodsApproveList.size() > 0) {
     		for(GoodsApprove goodsApprove : goodsApproveList) {
     			goodsApprove.reject(command.getRejectReason());

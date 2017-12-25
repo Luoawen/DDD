@@ -2,6 +2,8 @@ package cn.m2c.scm.port.adapter.restful.admin.goods;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +33,9 @@ public class AdminGoodsApproveAgent {
 	@Autowired
     GoodsApproveApplication goodsApproveApplication;
 	
+	@Autowired
+	private  HttpServletRequest request;
+	
 	/**
      * 商品批量审核同意,未鉴权
      * @param goodsId
@@ -42,7 +47,8 @@ public class AdminGoodsApproveAgent {
     ) {
     	MResult result = new MResult(MCode.V_1);
         try {
-            goodsApproveApplication.agreeGoodsApproveBatch(goodsIds);
+        	String _attach= request.getHeader("attach");
+            goodsApproveApplication.agreeGoodsApproveBatch(goodsIds, _attach);
             result.setStatus(MCode.V_200);
         } catch (NegativeException ne) {
             LOGGER.error("agreeGoodsApproveBatch NegativeException e:", ne);
@@ -65,7 +71,8 @@ public class AdminGoodsApproveAgent {
     	MResult result = new MResult(MCode.V_1);
         try {
         	GoodsApproveRejectBatchCommand command = new GoodsApproveRejectBatchCommand(goodsIds, rejectReason);
-        	goodsApproveApplication.rejectGoodsApproveBatch(command);
+        	String _attach= request.getHeader("attach");
+        	goodsApproveApplication.rejectGoodsApproveBatch(command, _attach);
             result.setStatus(MCode.V_200);
         } catch (NegativeException ne) {
             LOGGER.error("rejectGoodsApprove NegativeException e:", ne);
