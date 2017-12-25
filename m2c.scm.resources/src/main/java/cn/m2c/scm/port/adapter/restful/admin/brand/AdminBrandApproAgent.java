@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import cn.m2c.common.MCode;
 import cn.m2c.common.MResult;
+import cn.m2c.ddd.common.auth.RequirePermissions;
 import cn.m2c.scm.application.brand.BrandApproveApplication;
 import cn.m2c.scm.application.brand.command.BrandApproveAgreeCommand;
 import cn.m2c.scm.application.brand.command.BrandApproveRejectCommand;
@@ -24,7 +25,7 @@ import cn.m2c.scm.domain.NegativeException;
 
 
 @RestController
-@RequestMapping("/web/admin/brand/approve")
+@RequestMapping("/admin/brand/approve")
 public class AdminBrandApproAgent {
 	
 	private final static Logger LOGGER = LoggerFactory.getLogger(AdminBrandApproAgent.class);
@@ -42,6 +43,7 @@ public class AdminBrandApproAgent {
 	 * @param brandIds
 	 * @return
 	 */
+	@RequirePermissions(value ={"scm:brandApprove:batchagree"})
 	@RequestMapping(value = "/batchagree", method = RequestMethod.POST)
 	public ResponseEntity<MResult> brandApproveBatchAgree(
 			@RequestParam(value = "approveIds", required = false) List<String> approveIds,
@@ -73,6 +75,7 @@ public class AdminBrandApproAgent {
      * @param brandIds
      * @return
      */
+	@RequirePermissions(value ={"scm:brandApprove:batchreject"})
     @RequestMapping(value = "/batchreject",method = RequestMethod.POST)
     public ResponseEntity<MResult> brandApproveBatchReject(
     		@RequestParam(value = "approveIds",required = false) List<String> approveIds,

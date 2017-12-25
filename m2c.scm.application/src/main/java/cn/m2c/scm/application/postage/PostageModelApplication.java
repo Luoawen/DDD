@@ -70,7 +70,7 @@ public class PostageModelApplication {
         if (postageModelRepository.postageNameIsRepeat(command.getModelId(), command.getDealerId(), command.getModelName())) {
             throw new NegativeException(MCode.V_300, "运费模板名称已存在");
         }
-        operationLogManager.operationLog("修改运费模板", _attach, postageModel, new String[]{"postageModel"}, new Class<?>[]{PostageModel.class});
+        operationLogManager.operationLog("修改运费模板", _attach, postageModel, new String[]{"postageModel"}, null);
         postageModel.modifyPostageModel(command.getDealerId(), command.getModelId(), command.getModelName(), command.getChargeType(),
                 command.getModelDescription(), command.getPostageModelRule());
     }
@@ -92,7 +92,7 @@ public class PostageModelApplication {
             throw new NegativeException(MCode.V_301, "运费模板有商品使用，不能删除");
         }
 
-        operationLogManager.operationLog("删除运费模板", _attach, postageModel, new String[]{"postageModel"}, new Class<?>[]{PostageModel.class});
+        operationLogManager.operationLog("删除运费模板", _attach, postageModel, new String[]{"postageModel"}, null);
         postageModel.deletePostageModel();
     }
 
