@@ -145,7 +145,7 @@ public class DealerReportAgent {
                     }
                 }
 
-                tempMap.put(days.get(i), sellMoney / 10000);
+                tempMap.put(days.get(i), sellMoney);
                 DealerNearlyReportRepresentation rep = new DealerNearlyReportRepresentation(time, ratioFlag, ratio, sellMoney);
                 resultList.add(rep);
             }
