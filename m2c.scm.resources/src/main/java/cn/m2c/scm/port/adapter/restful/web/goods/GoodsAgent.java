@@ -22,6 +22,7 @@ import cn.m2c.scm.application.postage.data.bean.PostageModelBean;
 import cn.m2c.scm.application.postage.query.PostageModelQueryApplication;
 import cn.m2c.scm.application.unit.query.UnitQuery;
 import cn.m2c.scm.domain.NegativeException;
+import cn.m2c.scm.domain.util.GetMapValueUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,11 +35,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * 商品
@@ -69,7 +70,7 @@ public class GoodsAgent {
     PostageModelQueryApplication postageModelQueryApplication;
 
     @Autowired
-	private  HttpServletRequest request;
+    private HttpServletRequest request;
 
     /**
      * 修改商品
@@ -129,6 +130,12 @@ public class GoodsAgent {
                         }
                         map.put("skuId", skuId);
                     }
+                    Long marketPrice = new BigDecimal((GetMapValueUtils.getFloatFromMapKey(map, "marketPrice") * 1000)).longValue();
+                    Long photographPrice = new BigDecimal((GetMapValueUtils.getFloatFromMapKey(map, "photographPrice") * 1000)).longValue();
+                    Long supplyPrice = new BigDecimal((GetMapValueUtils.getFloatFromMapKey(map, "supplyPrice") * 1000)).longValue();
+                    map.put("marketPrice", marketPrice);
+                    map.put("photographPrice", photographPrice);
+                    map.put("supplyPrice", supplyPrice);
                 }
                 goodsSKUs = JsonUtils.toStr(skuList);
             } else {
@@ -139,7 +146,7 @@ public class GoodsAgent {
                     goodsClassifyId, goodsBrandId, goodsBrandName, goodsUnitId, goodsMinQuantity,
                     goodsPostageId, goodsBarCode, JsonUtils.toStr(goodsKeyWord), JsonUtils.toStr(goodsGuarantee),
                     JsonUtils.toStr(goodsMainImages), goodsDesc, goodsSpecifications, goodsSKUs);
-            String _attach= request.getHeader("attach");
+            String _attach = request.getHeader("attach");
             goodsApplication.modifyGoods(command, _attach);
             result.setStatus(MCode.V_200);
         } catch (NegativeException ne) {
@@ -165,7 +172,7 @@ public class GoodsAgent {
     ) {
         MResult result = new MResult(MCode.V_1);
         try {
-        	String _attach= request.getHeader("attach");
+            String _attach = request.getHeader("attach");
             goodsApplication.deleteGoods(goodsId, _attach);
             result.setStatus(MCode.V_200);
         } catch (NegativeException ne) {
@@ -191,7 +198,7 @@ public class GoodsAgent {
     ) {
         MResult result = new MResult(MCode.V_1);
         try {
-        	String _attach= request.getHeader("attach");
+            String _attach = request.getHeader("attach");
             goodsApplication.upShelfGoods(goodsId, _attach);
             result.setStatus(MCode.V_200);
         } catch (NegativeException ne) {
@@ -203,7 +210,7 @@ public class GoodsAgent {
         }
         return new ResponseEntity<MResult>(result, HttpStatus.OK);
     }
-    
+
     /**
      * 商品下架
      *
@@ -217,7 +224,7 @@ public class GoodsAgent {
     ) {
         MResult result = new MResult(MCode.V_1);
         try {
-        	String _attach= request.getHeader("attach");
+            String _attach = request.getHeader("attach");
             goodsApplication.offShelfGoods(goodsId, _attach);
             result.setStatus(MCode.V_200);
         } catch (NegativeException ne) {
@@ -298,15 +305,15 @@ public class GoodsAgent {
 
     /**
      * 查询商品详情
-     * 
+     *
      * @param goodsId
-     * @param isDelete  商品是否已删除，可查出已删商品所有的保障(不论保障是否删除)
+     * @param isDelete 商品是否已删除，可查出已删商品所有的保障(不论保障是否删除)
      * @return
      */
     @RequestMapping(value = "/{goodsId}", method = RequestMethod.GET)
     public ResponseEntity<MResult> queryGoodsDetail(
             @PathVariable("goodsId") String goodsId,
-            @RequestParam(value="isDelete", required = false) Integer isDelete  
+            @RequestParam(value = "isDelete", required = false) Integer isDelete
     ) {
         MResult result = new MResult(MCode.V_1);
         try {
@@ -384,7 +391,7 @@ public class GoodsAgent {
             return new ResponseEntity<MResult>(result, HttpStatus.OK);
         }
         try {
-        	String _attach= request.getHeader("attach");
+            String _attach = request.getHeader("attach");
             goodsApplication.modifyGoodsMainImages(goodsId, images, _attach);
             result.setStatus(MCode.V_200);
         } catch (NegativeException ne) {

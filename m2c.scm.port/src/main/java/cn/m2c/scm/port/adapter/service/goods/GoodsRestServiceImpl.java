@@ -64,7 +64,7 @@ public class GoodsRestServiceImpl implements GoodsService {
 
     @Override
     public List<Map> getGoodsFullCut(String userId, String dealerId, String goodsId, String classifyId) {
-        String url = M2C_HOST_URL + "/m2c.market/fullcut/list?dealer_id={0}&goods_id={1}&classify_id={2}&user_id={3}";
+        String url = M2C_HOST_URL + "/m2c.market/fullcut/domain/list?dealer_id={0}&goods_id={1}&classify_id={2}&user_id={3}";
         String result = restTemplate.getForObject(url, String.class, dealerId, goodsId, classifyId,userId);
         JSONObject json = JSONObject.parseObject(result);
         if (json.getInteger("status") == 200) {
