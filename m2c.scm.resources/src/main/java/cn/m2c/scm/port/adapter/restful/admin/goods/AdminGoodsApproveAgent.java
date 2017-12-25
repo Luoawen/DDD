@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import cn.m2c.common.MCode;
 import cn.m2c.common.MResult;
+import cn.m2c.ddd.common.auth.RequirePermissions;
 import cn.m2c.scm.application.goods.GoodsApproveApplication;
 import cn.m2c.scm.application.goods.command.GoodsApproveRejectBatchCommand;
 import cn.m2c.scm.domain.NegativeException;
@@ -41,6 +42,7 @@ public class AdminGoodsApproveAgent {
      * @param goodsId
      * @return
      */
+	@RequirePermissions(value ={"scm:goodsCheck:agreebatch"})
     @RequestMapping(value = "/agreebatch", method = RequestMethod.POST)
     public ResponseEntity<MResult> agreeGoodsApproveBatch(
             @RequestParam(value = "goodsIds", required = false) List goodsIds
@@ -63,6 +65,7 @@ public class AdminGoodsApproveAgent {
     /**
      * 批量拒绝商品审核,未鉴权
      */
+	@RequirePermissions(value ={"scm:goodsCheck:rejectbatch"})
     @RequestMapping(value = "/rejectbatch", method = RequestMethod.POST)
     public ResponseEntity<MResult> rejectGoodsApproveBatch(
             @RequestParam(value = "goodsIds", required = false) List goodsIds,

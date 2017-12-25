@@ -40,6 +40,7 @@ public class AdminGoodsAgent {
     /**
      * 商品批量上架,未鉴权
      */
+    @RequirePermissions(value = {"scm:goodsStorage:upShelfBatch"})
     @RequestMapping(value = {"web/goods/up/shelfbatch", "admin/goods/up/shelfbatch"}, method = RequestMethod.PUT)
     public ResponseEntity<MResult> upShelfGoodsBatch(
             @RequestParam("goodsIds") List goodsIds
@@ -65,6 +66,7 @@ public class AdminGoodsAgent {
      * @param goodsIds
      * @return
      */
+    @RequirePermissions(value = {"scm:goodsStorage:offShelfBatch"})
     @RequestMapping(value = {"web/goods/off/shelfbatch", "admin/goods/off/shelfbatch"}, method = RequestMethod.PUT)
     public ResponseEntity<MResult> offShelfGoodsBatch(
             @RequestParam("goodsIds") List goodsIds
