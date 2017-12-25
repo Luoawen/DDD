@@ -63,8 +63,7 @@ public class GoodsSearchRepresentation {
                 stockNum = stockNum + skuBean.getAvailableNum();
                 sellNum = sellNum + skuBean.getSellerNum();
             }
-            this.goodsPrice = goodsSkuBeans.get(0).getPhotographPrice()/100;
-            this.strGoodsPrice = Utils.moneyFormatCN(goodsSkuBeans.get(0).getPhotographPrice());
+            this.goodsPrice = Long.parseLong(Utils.moneyFormatCN(goodsSkuBeans.get(0).getPhotographPrice()));
             this.stockNum = stockNum;
             this.sellNum = sellNum;
         }

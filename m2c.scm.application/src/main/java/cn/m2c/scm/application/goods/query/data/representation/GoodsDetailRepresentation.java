@@ -80,16 +80,12 @@ public class GoodsDetailRepresentation {
         	map.put("availableNum", goodsSkuBean.getAvailableNum());
         	map.put("realNum", goodsSkuBean.getRealNum());
         	map.put("weight", goodsSkuBean.getWeight());
-        	map.put("photographPrice", goodsSkuBean.getPhotographPrice()/100);//拍获价
-        	map.put("strPhotographPrice", Utils.moneyFormatCN(goodsSkuBean.getPhotographPrice()));
-        	map.put("marketPrice", goodsSkuBean.getMarketPrice()/100);//市场价
-        	map.put("strMarketPrice", Utils.moneyFormatCN(goodsSkuBean.getMarketPrice()));
+        	map.put("photographPrice", Utils.moneyFormatCN(goodsSkuBean.getPhotographPrice()));//拍获价
+        	map.put("marketPrice", Utils.moneyFormatCN(goodsSkuBean.getMarketPrice()));//市场价
         	if(null != goodsSkuBean.getSupplyPrice()) {
-        		map.put("supplyPrice", goodsSkuBean.getSupplyPrice()/100);//供货价
-        		map.put("strSupplyPrice", Utils.moneyFormatCN(goodsSkuBean.getSupplyPrice()));
+        		map.put("supplyPrice", Utils.moneyFormatCN(goodsSkuBean.getSupplyPrice()));//供货价
         	}else {
         		map.put("supplyPrice", goodsSkuBean.getSupplyPrice());
-        		map.put("strSupplyPrice", goodsSkuBean.getSupplyPrice());
         	}
         	map.put("goodsCode", goodsSkuBean.getGoodsCode());
         	map.put("sellerNum", goodsSkuBean.getSellerNum());
