@@ -40,6 +40,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * 商品审核
  *
@@ -68,6 +70,9 @@ public class GoodsApproveAgent {
     @Autowired
     PostageModelQueryApplication postageModelQueryApplication;
 
+    @Autowired
+	private  HttpServletRequest request;
+    
     /**
      * 获取ID
      *
@@ -287,7 +292,8 @@ public class GoodsApproveAgent {
                     goodsClassifyId, goodsBrandId, goodsBrandName, goodsUnitId, goodsMinQuantity,
                     goodsPostageId, goodsBarCode, goodsKeyWord, goodsGuarantee,
                     goodsMainImages, goodsDesc, goodsSpecifications, goodsSKUs);
-            goodsApproveApplication.modifyGoodsApprove(command);
+            String _attach= request.getHeader("attach");
+            goodsApproveApplication.modifyGoodsApprove(command, _attach);
             result.setStatus(MCode.V_200);
         } catch (NegativeException ne) {
             LOGGER.error("modifyGoodsApprove NegativeException e:", ne);

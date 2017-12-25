@@ -3,6 +3,8 @@ package cn.m2c.scm.application.goods;
 
 import java.util.List;
 
+import javax.annotation.Resource;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import cn.m2c.common.MCode;
 import cn.m2c.ddd.common.event.annotation.EventListener;
+import cn.m2c.ddd.common.logger.OperationLogManager;
 import cn.m2c.scm.application.goods.command.GoodsGuaranteeAddCommand;
 import cn.m2c.scm.domain.NegativeException;
 import cn.m2c.scm.domain.model.goods.GoodsGuarantee;
@@ -26,6 +29,9 @@ public class GoodsGuaranteeApplication {
 	
 	@Autowired
 	GoodsGuaranteeRepository goodsGuaranteeRepository;
+	
+	@Resource
+    private OperationLogManager operationLogManager;
 	
 	/**
 	 * 新增商品保障，商品保障名不可重复，根据商品保障名和商家id查是否存在（1~10字符）
@@ -58,7 +64,7 @@ public class GoodsGuaranteeApplication {
 	 * @throws NegativeException 
 	 */
 	@Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
-	public void modifyGoodsGuarantee(GoodsGuaranteeAddCommand command) throws NegativeException {
+	public void modifyGoodsGuarantee(GoodsGuaranteeAddCommand command, String _attach) throws NegativeException {
 		LOGGER.info("modifyGoodsGuarantee command >>{}", command);
 		//goodsGuaranteeId查GoodsGuarantee是否存在，存在可修改
 		GoodsGuarantee goodsGuarantee = goodsGuaranteeRepository.queryGoodsGuaranteeByIdAndDealerId(command.getGuaranteeId(), command.getDealerId());
@@ -70,6 +76,7 @@ public class GoodsGuaranteeApplication {
 		if(guaranteeNameIsRepeat) {
 			throw new NegativeException(MCode.V_300,"标题已存在");
 		}
+		operationLogManager.operationLog("修改商品保障", _attach, goodsGuarantee);
 		goodsGuarantee.modifyGoodsGuarantee(command.getGuaranteeName(), command.getGuaranteeDesc());
 		goodsGuaranteeRepository.save(goodsGuarantee);
 	}

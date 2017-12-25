@@ -3,6 +3,7 @@ package cn.m2c.scm.application.goods;
 import cn.m2c.common.JsonUtils;
 import cn.m2c.common.MCode;
 import cn.m2c.ddd.common.event.annotation.EventListener;
+import cn.m2c.ddd.common.logger.OperationLogManager;
 import cn.m2c.scm.application.goods.command.GoodsApproveCommand;
 import cn.m2c.scm.application.goods.command.GoodsApproveRejectBatchCommand;
 import cn.m2c.scm.application.goods.command.GoodsApproveRejectCommand;
@@ -21,6 +22,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import javax.annotation.Resource;
+
 /**
  * 商品审核
  */
@@ -38,6 +41,9 @@ public class GoodsApproveApplication {
     @Autowired
     GoodsSkuRepository goodsSkuRepository;
 
+    @Resource
+    private OperationLogManager operationLogManager;
+    
     /**
      * 商家添加商品需审核
      *
@@ -134,12 +140,13 @@ public class GoodsApproveApplication {
     }
 
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
-    public void modifyGoodsApprove(GoodsApproveCommand command) throws NegativeException {
+    public void modifyGoodsApprove(GoodsApproveCommand command, String _attach) throws NegativeException {
         LOGGER.info("modifyGoodsApprove command >>{}", command);
         GoodsApprove goodsApprove = goodsApproveRepository.queryGoodsApproveById(command.getGoodsId());
         if (null == goodsApprove) {
             throw new NegativeException(MCode.V_300, "商品审核信息不存在");
         }
+        operationLogManager.operationLog("修改商品审核信息", _attach, goodsApprove);
         goodsApprove.modifyGoodsApprove(command.getGoodsName(), command.getGoodsSubTitle(),
                 command.getGoodsClassifyId(), command.getGoodsBrandId(), command.getGoodsBrandName(), command.getGoodsUnitId(), command.getGoodsMinQuantity(),
                 command.getGoodsPostageId(), command.getGoodsBarCode(), JsonUtils.toStr(command.getGoodsKeyWord()), JsonUtils.toStr(command.getGoodsGuarantee()),
