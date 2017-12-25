@@ -25,6 +25,7 @@ import cn.m2c.scm.application.order.data.bean.RefundEvtBean;
 import cn.m2c.scm.application.order.data.bean.SimpleMarket;
 import cn.m2c.scm.application.order.data.bean.SkuNumBean;
 import cn.m2c.scm.application.order.query.AfterSellOrderQuery;
+import cn.m2c.scm.application.utils.Utils;
 import cn.m2c.scm.domain.NegativeException;
 import cn.m2c.scm.domain.model.order.DealerOrderDtl;
 import cn.m2c.scm.domain.model.order.SaleAfterOrder;
@@ -178,7 +179,7 @@ public class SaleAfterOrderApp {
 		if (order.isOnlyRtMoney()) {
 			DealerOrderMoneyBean odb = saleOrderQuery.getDealerOrderById(order.dealerOrderId());
 			if (odb != null && odb.getStatus() == 1) {
-				if(frt * 10000 > odb.getOrderFreight())
+				if(frt * Utils.DIVIDE > odb.getOrderFreight())
 					frt = odb.getOrderFreight();
 			}
 			else

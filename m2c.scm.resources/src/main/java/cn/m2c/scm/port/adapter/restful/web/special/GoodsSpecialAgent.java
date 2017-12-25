@@ -101,9 +101,13 @@ public class GoodsSpecialAgent {
         if (null != list && list.size() > 0) {
             List<GoodsSkuSpecial> goodsSpecials = new ArrayList<>();
             for (Map map : list) {
-                Long supplyPrice = new BigDecimal((GetMapValueUtils.getFloatFromMapKey(map, "supplyPrice") * 10000)).longValue();
+                if (null != map.get("supplyPrice") && !"".equals(map.get("supplyPrice"))) {
+                    Long supplyPrice = new BigDecimal((GetMapValueUtils.getFloatFromMapKey(map, "supplyPrice") * 10000)).longValue();
+                    map.put("supplyPrice", supplyPrice);
+                }
+
                 Long specialPrice = new BigDecimal((GetMapValueUtils.getFloatFromMapKey(map, "specialPrice") * 10000)).longValue();
-                map.put("supplyPrice", supplyPrice);
+
                 map.put("specialPrice", specialPrice);
             }
             goodsSkuSpecials = JsonUtils.toStr(list);
@@ -220,7 +224,7 @@ public class GoodsSpecialAgent {
     ) {
         MResult result = new MResult(MCode.V_1);
         try {
-        	GoodsSpecialDetailBeanRepresentation goodsSpecialDetailBeanRepresentation = goodsSpecialQueryApplication.queryGoodsSpecialDetailBeanRepresentationBySpecialId(specialId);
+            GoodsSpecialDetailBeanRepresentation goodsSpecialDetailBeanRepresentation = goodsSpecialQueryApplication.queryGoodsSpecialDetailBeanRepresentationBySpecialId(specialId);
             if (goodsSpecialDetailBeanRepresentation != null) {
                 result.setContent(goodsSpecialDetailBeanRepresentation);
             }
