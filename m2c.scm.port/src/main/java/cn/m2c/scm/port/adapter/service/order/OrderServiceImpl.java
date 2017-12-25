@@ -64,7 +64,7 @@ public class OrderServiceImpl implements OrderService {
 		if (null == marketIds || marketIds.size() < 1) {
 			return true;
 		}
-		String url = M2C_HOST_URL + "/m2c.market/fullcut/use?goods_list={0}&order_id={1}&user_id={2}";
+		String url = M2C_HOST_URL + "/m2c.market/fullcut/domain/use?goods_list={0}&order_id={1}&user_id={2}";
 		String rtResult = restTemplate.postForObject(url, null, String.class, JSONObject.toJSONString(marketIds), orderNo, userId);
 		JSONObject json = JSONObject.parseObject(rtResult);
         if (json.getInteger("status") != 200) {
@@ -175,7 +175,7 @@ public class OrderServiceImpl implements OrderService {
 			return null;
 		}
 		
-		String url = M2C_HOST_URL + "/m2c.market/fullcut/user/{0}/multi?full_cut_ids={1}";
+		String url = M2C_HOST_URL + "/m2c.market/fullcut/domain/user/{0}/multi?full_cut_ids={1}";
 		StringBuilder mks = new StringBuilder(200);
 		for(int i=0; i<marketingIds.size(); i++) {
 			if (i>0)
