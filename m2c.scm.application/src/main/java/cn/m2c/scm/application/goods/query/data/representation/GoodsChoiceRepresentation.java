@@ -18,7 +18,7 @@ public class GoodsChoiceRepresentation {
     private String dealerName;
     private String goodsName;
     private String goodsId;
-    private Long goodsPrice;
+    private String goodsPrice;
     private String goodsImageUrl;
     private List<Map> goodsSkuList;
     private Integer skuSingleFlag;
@@ -31,7 +31,7 @@ public class GoodsChoiceRepresentation {
         this.goodsName = bean.getGoodsName();
         this.goodsId = bean.getGoodsId();
         if (null != bean.getGoodsSkuBeans() && bean.getGoodsSkuBeans().size() > 0) {
-            this.goodsPrice = bean.getGoodsSkuBeans().get(0).getPhotographPrice();
+            this.goodsPrice = Utils.moneyFormatCN(bean.getGoodsSkuBeans().get(0).getPhotographPrice());
             if (null == this.goodsSkuList) {
                 this.goodsSkuList = new ArrayList<>();
             }
@@ -88,11 +88,11 @@ public class GoodsChoiceRepresentation {
         this.goodsId = goodsId;
     }
 
-    public Long getGoodsPrice() {
+    public String getGoodsPrice() {
         return goodsPrice;
     }
 
-    public void setGoodsPrice(Long goodsPrice) {
+    public void setGoodsPrice(String goodsPrice) {
         this.goodsPrice = goodsPrice;
     }
 
