@@ -54,7 +54,7 @@ public class GoodsSupplyPriceModelAll {
         this.goodsSkuId = goodsSkuBean.getSkuId();
         this.goodsSkuName = goodsSkuBean.getSkuName();
         DecimalFormat df = new DecimalFormat("0.00");
-        this.photographPrice = df.format(goodsSkuBean.getPhotographPrice().floatValue() / 100);
+        this.photographPrice = df.format(goodsSkuBean.getPhotographPrice().floatValue() / 10000);
         this.availableNum = goodsSkuBean.getAvailableNum();
         this.sellerNum = goodsSkuBean.getSellerNum();
         //商品状态，1：仓库中，2：出售中，3：已售罄
@@ -66,6 +66,6 @@ public class GoodsSupplyPriceModelAll {
             this.goodsStatus = "已售罄";
         }
         this.goodsPostageName = goodsPostageName;
-        this.supplyPrice = null != goodsSkuBean.getSupplyPrice() ? df.format(goodsSkuBean.getSupplyPrice().floatValue() / 100) : "";
+        this.supplyPrice = null != goodsSkuBean.getSupplyPrice() ? df.format(goodsSkuBean.getSupplyPrice().floatValue() / 10000) : "";
     }
 }
