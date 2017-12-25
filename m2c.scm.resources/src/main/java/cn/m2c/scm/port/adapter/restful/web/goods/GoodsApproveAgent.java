@@ -154,6 +154,12 @@ public class GoodsApproveAgent {
                         return new ResponseEntity<MResult>(result, HttpStatus.OK);
                     }
                     map.put("skuId", skuId);
+                    Long marketPrice = new BigDecimal((GetMapValueUtils.getFloatFromMapKey(map, "marketPrice") * 10000)).longValue();
+                    Long photographPrice = new BigDecimal((GetMapValueUtils.getFloatFromMapKey(map, "photographPrice") * 10000)).longValue();
+                    Long supplyPrice = new BigDecimal((GetMapValueUtils.getFloatFromMapKey(map, "supplyPrice") * 10000)).longValue();
+                    map.put("marketPrice", marketPrice);
+                    map.put("photographPrice", photographPrice);
+                    map.put("supplyPrice", supplyPrice);
                 }
             } else {
                 result = new MResult(MCode.V_1, "商品规格为空");
@@ -284,9 +290,9 @@ public class GoodsApproveAgent {
                         }
                         map.put("skuId", skuId);
                     }
-                    Long marketPrice = new BigDecimal((GetMapValueUtils.getFloatFromMapKey(map, "marketPrice") * 1000)).longValue();
-                    Long photographPrice = new BigDecimal((GetMapValueUtils.getFloatFromMapKey(map, "photographPrice") * 1000)).longValue();
-                    Long supplyPrice = new BigDecimal((GetMapValueUtils.getFloatFromMapKey(map, "supplyPrice") * 1000)).longValue();
+                    Long marketPrice = new BigDecimal((GetMapValueUtils.getFloatFromMapKey(map, "marketPrice") * 10000)).longValue();
+                    Long photographPrice = new BigDecimal((GetMapValueUtils.getFloatFromMapKey(map, "photographPrice") * 10000)).longValue();
+                    Long supplyPrice = new BigDecimal((GetMapValueUtils.getFloatFromMapKey(map, "supplyPrice") * 10000)).longValue();
                     map.put("marketPrice", marketPrice);
                     map.put("photographPrice", photographPrice);
                     map.put("supplyPrice", supplyPrice);
