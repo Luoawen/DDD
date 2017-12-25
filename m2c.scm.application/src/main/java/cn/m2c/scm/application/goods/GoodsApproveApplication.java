@@ -114,12 +114,13 @@ public class GoodsApproveApplication {
      */
     @EventListener(isListening = true)
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
-    public void agreeGoodsApprove(String goodsId) throws NegativeException {
+    public void agreeGoodsApprove(String goodsId, String _attach) throws NegativeException {
         LOGGER.info("agreeGoodsApprove goodsId >>{}", goodsId);
         GoodsApprove goodsApprove = goodsApproveRepository.queryGoodsApproveById(goodsId);
         if (null == goodsApprove) {
             throw new NegativeException(MCode.V_300, "商品审核信息不存在");
         }
+        operationLogManager.operationLog("同意商品审核", _attach, goodsApprove, new String[]{"goodsApprove"}, new Class<?>[]{GoodsApprove.class});
         goodsApprove.agree();
         goodsApproveRepository.remove(goodsApprove);
     }
@@ -130,12 +131,13 @@ public class GoodsApproveApplication {
      * @param command
      */
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
-    public void rejectGoodsApprove(GoodsApproveRejectCommand command) throws NegativeException {
+    public void rejectGoodsApprove(GoodsApproveRejectCommand command, String _attach) throws NegativeException {
         LOGGER.info("rejectGoodsApprove command >>{}", command);
         GoodsApprove goodsApprove = goodsApproveRepository.queryGoodsApproveById(command.getGoodsId());
         if (null == goodsApprove) {
             throw new NegativeException(MCode.V_300, "商品审核信息不存在");
         }
+        operationLogManager.operationLog("拒绝商品审核", _attach, goodsApprove, new String[]{"goodsApprove"}, new Class<?>[]{GoodsApprove.class});
         goodsApprove.reject(command.getRejectReason());
     }
 
@@ -154,12 +156,13 @@ public class GoodsApproveApplication {
     }
 
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
-    public void deleteGoodsApprove(String goodsId) throws NegativeException {
+    public void deleteGoodsApprove(String goodsId, String _attach) throws NegativeException {
         LOGGER.info("deleteGoodsApprove goodsId >>{}", goodsId);
         GoodsApprove goodsApprove = goodsApproveRepository.queryGoodsApproveById(goodsId);
         if (null == goodsApprove) {
             throw new NegativeException(MCode.V_300, "商品审核信息不存在");
         }
+        operationLogManager.operationLog("删除商品审核信息", _attach, goodsApprove, new String[]{"goodsApprove"}, new Class<?>[]{GoodsApprove.class});
         goodsApprove.remove();
     }
 

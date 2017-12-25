@@ -165,7 +165,8 @@ public class GoodsAgent {
     ) {
         MResult result = new MResult(MCode.V_1);
         try {
-            goodsApplication.deleteGoods(goodsId);
+        	String _attach= request.getHeader("attach");
+            goodsApplication.deleteGoods(goodsId, _attach);
             result.setStatus(MCode.V_200);
         } catch (NegativeException ne) {
             LOGGER.error("delGoods NegativeException e:", ne);
@@ -190,7 +191,8 @@ public class GoodsAgent {
     ) {
         MResult result = new MResult(MCode.V_1);
         try {
-            goodsApplication.upShelfGoods(goodsId);
+        	String _attach= request.getHeader("attach");
+            goodsApplication.upShelfGoods(goodsId, _attach);
             result.setStatus(MCode.V_200);
         } catch (NegativeException ne) {
             LOGGER.error("upShelfGoods NegativeException e:", ne);
@@ -215,7 +217,8 @@ public class GoodsAgent {
     ) {
         MResult result = new MResult(MCode.V_1);
         try {
-            goodsApplication.offShelfGoods(goodsId);
+        	String _attach= request.getHeader("attach");
+            goodsApplication.offShelfGoods(goodsId, _attach);
             result.setStatus(MCode.V_200);
         } catch (NegativeException ne) {
             LOGGER.error("offShelfGoods NegativeException e:", ne);

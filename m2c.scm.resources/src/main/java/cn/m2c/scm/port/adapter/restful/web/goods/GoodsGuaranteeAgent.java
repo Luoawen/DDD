@@ -151,7 +151,8 @@ public class GoodsGuaranteeAgent {
 			){
 		MResult result = new MResult(MCode.V_1);
 		try {
-			goodsGuaranteeApplication.delGoodsGuarantee(guaranteeId);
+			String _attach= request.getHeader("attach");
+			goodsGuaranteeApplication.delGoodsGuarantee(guaranteeId, _attach);
 			result.setStatus(MCode.V_200);
 		} catch (NegativeException ne) {
 			LOGGER.error("deleteUnit NegativeException e:", ne);

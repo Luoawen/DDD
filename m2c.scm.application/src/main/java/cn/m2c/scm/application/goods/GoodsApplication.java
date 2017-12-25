@@ -125,12 +125,13 @@ public class GoodsApplication {
      */
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
     @EventListener(isListening = true)
-    public void deleteGoods(String goodsId) throws NegativeException {
+    public void deleteGoods(String goodsId, String _attach) throws NegativeException {
         LOGGER.info("deleteGoods goodsId >>{}", goodsId);
         Goods goods = goodsRepository.queryGoodsById(goodsId);
         if (null == goods) {
             throw new NegativeException(MCode.V_300, "商品不存在");
         }
+        operationLogManager.operationLog("删除商品", _attach, goods, new String[]{"goods"}, new Class<?>[]{Goods.class});
         goods.remove();
     }
 
@@ -142,12 +143,13 @@ public class GoodsApplication {
      */
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
     @EventListener(isListening = true)
-    public void upShelfGoods(String goodsId) throws NegativeException {
+    public void upShelfGoods(String goodsId, String _attach) throws NegativeException {
         LOGGER.info("upShelfGoods goodsId >>{}", goodsId);
         Goods goods = goodsRepository.queryGoodsById(goodsId);
         if (null == goods) {
             throw new NegativeException(MCode.V_300, "商品不存在");
         }
+        operationLogManager.operationLog("商品上架", _attach, goods, new String[]{"goods"}, new Class<?>[]{Goods.class});
         goods.upShelf();
         updateRecognizedImgStatus(goods.goodsRecognizeds(), 1);
     }
@@ -160,12 +162,13 @@ public class GoodsApplication {
      */
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
     @EventListener(isListening = true)
-    public void offShelfGoods(String goodsId) throws NegativeException {
+    public void offShelfGoods(String goodsId, String _attach) throws NegativeException {
         LOGGER.info("offShelfGoods goodsId >>{}", goodsId);
         Goods goods = goodsRepository.queryGoodsById(goodsId);
         if (null == goods) {
             throw new NegativeException(MCode.V_300, "商品不存在");
         }
+        operationLogManager.operationLog("商品下架", _attach, goods, new String[]{"goods"}, new Class<?>[]{Goods.class});
         goods.offShelf();
         updateRecognizedImgStatus(goods.goodsRecognizeds(), 0);
     }

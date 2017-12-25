@@ -81,7 +81,7 @@ public class PostageModelApplication {
      * @param command
      */
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
-    public void delPostageModel(PostageModelCommand command) throws NegativeException {
+    public void delPostageModel(PostageModelCommand command, String _attach) throws NegativeException {
         LOGGER.info("delPostageModel command >>{}", command);
         PostageModel postageModel = postageModelRepository.getPostageModelById(command.getModelId());
         if (null == postageModel) {
@@ -92,6 +92,7 @@ public class PostageModelApplication {
             throw new NegativeException(MCode.V_301, "运费模板有商品使用，不能删除");
         }
 
+        operationLogManager.operationLog("删除运费模板", _attach, postageModel, new String[]{"postageModel"}, new Class<?>[]{PostageModel.class});
         postageModel.deletePostageModel();
     }
 

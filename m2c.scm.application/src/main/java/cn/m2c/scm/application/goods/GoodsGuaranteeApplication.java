@@ -88,12 +88,13 @@ public class GoodsGuaranteeApplication {
 	 */
 	@EventListener(isListening = true)
 	@Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
-	public void delGoodsGuarantee(String guaranteeId) throws NegativeException {
+	public void delGoodsGuarantee(String guaranteeId, String _attach) throws NegativeException {
 		//查是否存在
 		GoodsGuarantee goodsGuarantee = goodsGuaranteeRepository.queryGoodsGuaranteeById(guaranteeId);
 		if(null == goodsGuarantee) {
 			throw new NegativeException(MCode.V_300,"商品保障不存在");
 		}
+		operationLogManager.operationLog("删除商品保障", _attach, goodsGuarantee);
 		goodsGuarantee.remove();
 		goodsGuaranteeRepository.save(goodsGuarantee);
 	}

@@ -78,7 +78,7 @@ public class BrandApplication {
         if (null == brand) {
             throw new NegativeException(MCode.V_300, "品牌不存在");
         }
-        operationLogManager.operationLog("修改品牌信息", _attach, brand);
+        operationLogManager.operationLog("修改品牌信息(商家管理平台,无需审批)", _attach, brand);
         brand.modify(command.getBrandName(), command.getBrandNameEn(), command.getBrandLogo(), command.getFirstAreaCode(),
                 command.getTwoAreaCode(), command.getThreeAreaCode(), command.getFirstAreaName(), command.getTwoAreaName(),
                 command.getThreeAreaName());
@@ -91,7 +91,7 @@ public class BrandApplication {
      */
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
     @EventListener(isListening = true)
-    public void delBrand(String brandId) throws NegativeException {
+    public void delBrand(String brandId, String _attach) throws NegativeException {
         LOGGER.info("delBrand brandId >>{}", brandId);
         Brand brand = brandRepository.getBrandByBrandId(brandId);
         if (null == brand) {
@@ -100,6 +100,7 @@ public class BrandApplication {
         if (goodsRepository.brandIsUser(brandId) || goodsApproveRepository.brandIsUser(brandId)) {
             throw new NegativeException(MCode.V_300, "品牌被商品使用不能删除");
         }
+        operationLogManager.operationLog("删除品牌信息", _attach, brand);
         brand.delete();
     }
 }

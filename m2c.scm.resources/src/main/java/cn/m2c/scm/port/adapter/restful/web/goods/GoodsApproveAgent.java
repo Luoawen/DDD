@@ -189,7 +189,8 @@ public class GoodsApproveAgent {
     ) {
         MResult result = new MResult(MCode.V_1);
         try {
-            goodsApproveApplication.agreeGoodsApprove(goodsId);
+        	String _attach= request.getHeader("attach");
+            goodsApproveApplication.agreeGoodsApprove(goodsId, _attach);
             result.setStatus(MCode.V_200);
         } catch (NegativeException ne) {
             LOGGER.error("agreeGoodsApprove NegativeException e:", ne);
@@ -216,7 +217,8 @@ public class GoodsApproveAgent {
         MResult result = new MResult(MCode.V_1);
         try {
             GoodsApproveRejectCommand command = new GoodsApproveRejectCommand(goodsId, rejectReason);
-            goodsApproveApplication.rejectGoodsApprove(command);
+            String _attach= request.getHeader("attach");
+            goodsApproveApplication.rejectGoodsApprove(command, _attach);
             result.setStatus(MCode.V_200);
         } catch (NegativeException ne) {
             LOGGER.error("rejectGoodsApprove NegativeException e:", ne);
@@ -311,7 +313,8 @@ public class GoodsApproveAgent {
     ) {
         MResult result = new MResult(MCode.V_1);
         try {
-            goodsApproveApplication.deleteGoodsApprove(goodsId);
+        	String _attach= request.getHeader("attach");
+            goodsApproveApplication.deleteGoodsApprove(goodsId, _attach);
             result.setStatus(MCode.V_200);
         } catch (NegativeException ne) {
             LOGGER.error("delGoodsApprove NegativeException e:", ne);

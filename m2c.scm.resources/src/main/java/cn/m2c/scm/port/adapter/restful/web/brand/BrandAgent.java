@@ -169,7 +169,8 @@ public class BrandAgent {
             @PathVariable("brandId") String brandId) {
         MResult result = new MResult(MCode.V_1);
         try {
-            brandApplication.delBrand(brandId);
+        	String _attach= request.getHeader("attach");
+            brandApplication.delBrand(brandId, _attach);
             result.setStatus(MCode.V_200);
         } catch (NegativeException ne) {
             LOGGER.error("deleteBrand NegativeException e:", ne);
