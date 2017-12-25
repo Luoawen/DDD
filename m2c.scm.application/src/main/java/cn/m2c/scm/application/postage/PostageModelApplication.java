@@ -70,7 +70,7 @@ public class PostageModelApplication {
         if (postageModelRepository.postageNameIsRepeat(command.getModelId(), command.getDealerId(), command.getModelName())) {
             throw new NegativeException(MCode.V_300, "运费模板名称已存在");
         }
-        operationLogManager.operationLog("修改运费模板", _attach, postageModel);
+        operationLogManager.operationLog("修改运费模板", _attach, postageModel, new String[]{"postageModel"}, new Class<?>[]{PostageModel.class});
         postageModel.modifyPostageModel(command.getDealerId(), command.getModelId(), command.getModelName(), command.getChargeType(),
                 command.getModelDescription(), command.getPostageModelRule());
     }

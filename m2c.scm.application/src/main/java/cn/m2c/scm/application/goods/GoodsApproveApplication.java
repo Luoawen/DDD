@@ -146,7 +146,7 @@ public class GoodsApproveApplication {
         if (null == goodsApprove) {
             throw new NegativeException(MCode.V_300, "商品审核信息不存在");
         }
-        operationLogManager.operationLog("修改商品审核信息", _attach, goodsApprove);
+        operationLogManager.operationLog("修改商品审核信息", _attach, goodsApprove, new String[]{"goodsApprove"}, new Class<?>[]{GoodsApprove.class});
         goodsApprove.modifyGoodsApprove(command.getGoodsName(), command.getGoodsSubTitle(),
                 command.getGoodsClassifyId(), command.getGoodsBrandId(), command.getGoodsBrandName(), command.getGoodsUnitId(), command.getGoodsMinQuantity(),
                 command.getGoodsPostageId(), command.getGoodsBarCode(), JsonUtils.toStr(command.getGoodsKeyWord()), JsonUtils.toStr(command.getGoodsGuarantee()),

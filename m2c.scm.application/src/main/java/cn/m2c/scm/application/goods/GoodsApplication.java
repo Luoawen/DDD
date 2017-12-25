@@ -519,7 +519,7 @@ public class GoodsApplication {
         if (null == goods) {
             throw new NegativeException(MCode.V_300, "商品不存在");
         }
-        operationLogManager.operationLog("修改商品主图", _attach, goods);
+        operationLogManager.operationLog("修改商品主图", _attach, goods, new String[]{"goods"}, new Class<?>[]{Goods.class});
         goods.modifyGoodsMainImages(images);
     }
 
