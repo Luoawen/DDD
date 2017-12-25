@@ -85,7 +85,7 @@ public class DealerOrderApplication {
 				command.getExpressCode(), command.getUserId(), skuIds, sortNos,command.getOrderId(),command.getShopName())) {
 			throw new NegativeException(MCode.V_300, "订单处于不可发货状态");
 		}
-		dealerOrderRepository.save(dealerOrder);
+	//	dealerOrderRepository.save(dealerOrder);
 	}
 
 	/**

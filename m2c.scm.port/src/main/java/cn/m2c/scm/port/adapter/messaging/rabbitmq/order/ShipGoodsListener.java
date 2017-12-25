@@ -38,7 +38,7 @@ public class ShipGoodsListener extends ExchangeListener{
 		LOGGER.info("发货事件监听...");
 		
 		NotificationReader reader = new NotificationReader(aTextMessage);
-		String shopName = reader.eventStringValue("ShopName");
+		String shopName = reader.eventStringValue("shopName");
 		String orderId = reader.eventStringValue("orderId");
 		String nu = reader.eventStringValue("nu");
 		String com = reader.eventStringValue("com");
