@@ -101,7 +101,7 @@ public class GoodsSpecialAgent {
         if (null != list && list.size() > 0) {
             List<GoodsSkuSpecial> goodsSpecials = new ArrayList<>();
             for (Map map : list) {
-                if (null != map.get("supplyPrice")) {
+                if (null != map.get("supplyPrice") && "".equals(map.get("supplyPrice"))) {
                     Long supplyPrice = new BigDecimal((GetMapValueUtils.getFloatFromMapKey(map, "supplyPrice") * 10000)).longValue();
                     map.put("supplyPrice", supplyPrice);
                 }
