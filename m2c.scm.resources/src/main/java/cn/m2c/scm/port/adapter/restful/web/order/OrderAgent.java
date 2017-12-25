@@ -374,13 +374,9 @@ public class OrderAgent {
     	MResult result = new MResult(MCode.V_1);
     	try {
     		SendOrderCommand command = new SendOrderCommand(dealerOrderId, expressNo, expressName, expressPerson, expressPhone, 
-    				expressWay, expressNote, expressCode, userId);
+    				expressWay, expressNote, expressCode, userId,orderId,shopName);
     		String _attach= request.getHeader("attach");
     		dealerOrderApplication.updateExpress(command, _attach);
-=======
-    				expressWay, expressNote, expressCode, userId,orderId,shopName);
-    		dealerOrderApplication.updateExpress(command);
->>>>>>> local_luoqw
     		result.setStatus(MCode.V_200);
 		} catch (NegativeException e) {
 			result.setStatus(MCode.V_400);
