@@ -544,4 +544,87 @@ public class AfterSellOrderQuery {
 		return reasonList;
 		
 	}
+
+	/**
+	 * 根据商家订单id获取商家售后订单数量
+	 * @param userId
+	 * @param status
+	 * @param dealerOrderId
+	 * @return
+	 * @throws NegativeException 
+	 */
+	public Integer getAppDealerSaleAfterTotal(String userId, Integer status,
+			String dealerOrderId) throws NegativeException {
+		Integer result = 0;
+		try {
+			List<Object> params = new ArrayList<>(4);
+			StringBuilder sql = new StringBuilder();
+			sql.append("SELECT count(1) FROM t_scm_order_after_sell a \r\n")
+			.append("LEFT OUTER JOIN t_scm_order_detail b ON a.order_id=b.order_id AND a.dealer_order_id=b.dealer_order_id AND a.sku_id = b.sku_id AND a.sort_no=b.sort_no\r\n")
+			.append("LEFT OUTER JOIN t_scm_dealer c ON a.dealer_id = c.dealer_id \r\n")
+			.append(" WHERE a.user_id=?");
+			params.add(userId);
+			
+			if (status != null) {
+				sql.append(" AND a._status=? ");
+				params.add(status);
+			}
+			
+			if (!StringUtils.isEmpty(dealerOrderId)) {
+				sql.append(" AND a.dealer_order_id=? ");
+				params.add(dealerOrderId);
+			}
+			result = this.supportJdbcTemplate.jdbcTemplate().queryForObject(sql.toString(), params.toArray(), Integer.class);
+			
+		} catch (Exception e) {
+			throw new NegativeException(MCode.V_500, "查询APP商家售后单列表总数出错");
+		}
+		return result;
+	}
+
+	/**
+	 * 根据商家订单id获取商家售后订单
+	 * @param userId
+	 * @param status
+	 * @param dealerOrderId
+	 * @param pageIndex
+	 * @param pageNum
+	 * @return
+	 * @throws NegativeException 
+	 */
+	public List<AfterSellBean> getAppDealerSaleAfterList(String userId,
+			Integer status, String dealerOrderId, int pageIndex, int pageSize) throws NegativeException {
+		List<AfterSellBean> result = null;
+		try {
+			List<Object> params = new ArrayList<>(4);
+			StringBuilder sql = new StringBuilder();
+			sql.append("SELECT a.created_date, a.after_sell_order_id, a.order_id, a.dealer_order_id, a.dealer_id, a.goods_id, a.sku_id, a.sell_num, a._status, a.back_money, a.order_type\r\n")
+			.append(",c.dealer_name, b.goods_name, b.sku_name, b.goods_type, b.goods_type_id, b.discount_price, b.goods_icon\r\n") 
+			.append(", a.last_updated_date, a.reject_reason, a.reason, a.back_express_no, a.back_express_name, a.express_no, a.express_name, a.sort_no, a.return_freight ")
+			.append("FROM t_scm_order_after_sell a \r\n")
+			.append("LEFT OUTER JOIN t_scm_order_detail b ON a.order_id=b.order_id AND a.dealer_order_id=b.dealer_order_id AND a.sku_id = b.sku_id AND a.sort_no=b.sort_no\r\n")
+			.append("LEFT OUTER JOIN t_scm_dealer c ON a.dealer_id = c.dealer_id \r\n")
+			.append(" WHERE a.user_id=?");
+			params.add(userId);
+			
+			if (status != null) {
+				sql.append(" AND a._status=? ");
+				params.add(status);
+			}
+			if (!StringUtils.isEmpty(dealerOrderId)) {
+				sql.append(" AND a.dealer_order_id=?");
+				params.add(dealerOrderId);
+			}
+			
+			sql.append("ORDER BY a.created_date DESC LIMIT ?,?");
+			params.add((pageIndex - 1) * pageSize);
+			params.add(pageSize);
+			
+			result = this.supportJdbcTemplate.queryForBeanList(sql.toString(), AfterSellBean.class, params.toArray());
+			
+		} catch (Exception e) {
+			throw new NegativeException(MCode.V_500, "查询APP商家售后单列表出错");
+		}
+		return result;
+	}
 }
