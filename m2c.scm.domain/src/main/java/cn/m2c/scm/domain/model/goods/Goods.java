@@ -162,7 +162,9 @@ public class Goods extends ConcurrencySafeEntity {
      */
     private Integer goodsLaunchStatus;
 
-    /**最后更新时间*/
+    /**
+     * 最后更新时间
+     */
     private Date lastUpdateTime;
 
 
@@ -227,7 +229,7 @@ public class Goods extends ConcurrencySafeEntity {
         infoMap.put("num", 1);
         dealerInfo.put(this.dealerId, infoMap);
         // 数据统计事件
-        DomainEventPublisher.instance().publish(new DealerReportStatisticsEvent(dealerInfo,DealerReportType.GOODS_ADD, new Date()));
+        DomainEventPublisher.instance().publish(new DealerReportStatisticsEvent(dealerInfo, DealerReportType.GOODS_ADD, new Date()));
     }
 
     /**
@@ -328,6 +330,7 @@ public class Goods extends ConcurrencySafeEntity {
                             String goodsClassifyId, String goodsBrandId, String goodsBrandName, String goodsUnitId, Integer goodsMinQuantity,
                             String goodsPostageId, String goodsBarCode, String goodsKeyWord, String goodsGuarantee,
                             String goodsMainImages, String goodsDesc, String goodsSpecifications, String goodsSKUs) {
+        this.lastUpdateTime = new Date();
         String oldGoodsUnitId = this.goodsUnitId;
         String newGoodsUnitId = goodsUnitId;
         this.goodsName = goodsName;
@@ -417,6 +420,7 @@ public class Goods extends ConcurrencySafeEntity {
      * 删除商品
      */
     public void remove() {
+        this.lastUpdateTime = new Date();
         this.delStatus = 2;
         DomainEventPublisher
                 .instance()
@@ -427,6 +431,7 @@ public class Goods extends ConcurrencySafeEntity {
      * 上架,商品状态，1：仓库中，2：出售中，3：已售罄
      */
     public void upShelf() {
+        this.lastUpdateTime = new Date();
         this.goodsStatus = 2;
         Integer total = 0;
         for (GoodsSku goodsSku : this.goodsSKUs) {
@@ -444,6 +449,7 @@ public class Goods extends ConcurrencySafeEntity {
      * 下架,商品状态，1：仓库中，2：出售中，3：已售罄
      */
     public void offShelf() {
+        this.lastUpdateTime = new Date();
         this.goodsStatus = 1;
         DomainEventPublisher
                 .instance()
@@ -548,19 +554,20 @@ public class Goods extends ConcurrencySafeEntity {
 
     /**
      * 删除商品保障
+     *
      * @param guaranteeId
      */
-	public void delGoodsGuarantee(String guaranteeId) {
-		List list = ObjectSerializer.instance().deserialize(this.goodsGuarantee, List.class);
-		Iterator<String> it = list.iterator();
-		while(it.hasNext()) {
-			String goodsGuaranteeId = it.next();
-			if(goodsGuaranteeId.equals(guaranteeId)){
-				it.remove();
-			}
-		}
-		this.goodsGuarantee = JsonUtils.toStr(list);
-	}
+    public void delGoodsGuarantee(String guaranteeId) {
+        List list = ObjectSerializer.instance().deserialize(this.goodsGuarantee, List.class);
+        Iterator<String> it = list.iterator();
+        while (it.hasNext()) {
+            String goodsGuaranteeId = it.next();
+            if (goodsGuaranteeId.equals(guaranteeId)) {
+                it.remove();
+            }
+        }
+        this.goodsGuarantee = JsonUtils.toStr(list);
+    }
 
     public String goodsId() {
         return goodsId;
