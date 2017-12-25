@@ -4,7 +4,9 @@ import cn.m2c.common.JsonUtils;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsBean;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsGuaranteeBean;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsRecognizedBean;
+import cn.m2c.scm.application.goods.query.data.bean.GoodsSkuBean;
 import cn.m2c.scm.application.postage.data.bean.PostageModelBean;
+import cn.m2c.scm.application.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -69,7 +71,32 @@ public class GoodsDetailRepresentation {
         	this.goodsGuarantee = JsonUtils.toList(JsonUtils.toStr(goodsGuaranteeBeans), Map.class);
         }
         this.goodsSpecifications = JsonUtils.toList(bean.getGoodsSpecifications(), Map.class);
-        this.goodsSKUs = JsonUtils.toList(JsonUtils.toStr(bean.getGoodsSkuBeans()), Map.class);
+        List<Map> list = new ArrayList<>();
+        for(GoodsSkuBean goodsSkuBean: bean.getGoodsSkuBeans()) {
+        	Map map = new HashMap<>();
+        	map.put("goodsId", goodsSkuBean.getGoodsId());
+        	map.put("skuId", goodsSkuBean.getSkuId());
+        	map.put("skuName", goodsSkuBean.getSkuName());
+        	map.put("availableNum", goodsSkuBean.getAvailableNum());
+        	map.put("realNum", goodsSkuBean.getRealNum());
+        	map.put("weight", goodsSkuBean.getWeight());
+        	map.put("photographPrice", goodsSkuBean.getPhotographPrice()/100);//拍获价
+        	map.put("strPhotographPrice", Utils.moneyFormatCN(goodsSkuBean.getPhotographPrice()));
+        	map.put("marketPrice", goodsSkuBean.getMarketPrice()/100);//市场价
+        	map.put("strMarketPrice", Utils.moneyFormatCN(goodsSkuBean.getMarketPrice()));
+        	if(null != goodsSkuBean.getSupplyPrice()) {
+        		map.put("supplyPrice", goodsSkuBean.getSupplyPrice()/100);//供货价
+        		map.put("strSupplyPrice", Utils.moneyFormatCN(goodsSkuBean.getSupplyPrice()));
+        	}else {
+        		map.put("supplyPrice", goodsSkuBean.getSupplyPrice());
+        		map.put("strSupplyPrice", goodsSkuBean.getSupplyPrice());
+        	}
+        	map.put("goodsCode", goodsSkuBean.getGoodsCode());
+        	map.put("sellerNum", goodsSkuBean.getSellerNum());
+        	map.put("showStatus", goodsSkuBean.getShowStatus());
+        	list.add(map);
+        }
+        this.goodsSKUs = list;
         this.goodsMainImages = JsonUtils.toList(bean.getGoodsMainImages(), String.class);
         this.goodsDesc = bean.getGoodsDesc();
         this.settlementMode = settlementMode;

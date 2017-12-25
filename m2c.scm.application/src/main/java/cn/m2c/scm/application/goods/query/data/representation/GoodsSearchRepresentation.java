@@ -3,6 +3,7 @@ package cn.m2c.scm.application.goods.query.data.representation;
 import cn.m2c.common.JsonUtils;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsBean;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsSkuBean;
+import cn.m2c.scm.application.utils.Utils;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -25,6 +26,10 @@ public class GoodsSearchRepresentation {
     private String dealerType;
     private String dealerId;
     private String goodsId;
+    /**
+     * 新增返回字段，金额/10000
+     */
+    private String strGoodsPrice;
 
     public GoodsSearchRepresentation(GoodsBean bean, Map goodsClassifyMap, String dealerType) {
         List<String> mainImages = JsonUtils.toList(bean.getGoodsMainImages(), String.class);
@@ -58,7 +63,8 @@ public class GoodsSearchRepresentation {
                 stockNum = stockNum + skuBean.getAvailableNum();
                 sellNum = sellNum + skuBean.getSellerNum();
             }
-            this.goodsPrice = goodsSkuBeans.get(0).getPhotographPrice();
+            this.goodsPrice = goodsSkuBeans.get(0).getPhotographPrice()/100;
+            this.strGoodsPrice = Utils.moneyFormatCN(goodsSkuBeans.get(0).getPhotographPrice());
             this.stockNum = stockNum;
             this.sellNum = sellNum;
         }
