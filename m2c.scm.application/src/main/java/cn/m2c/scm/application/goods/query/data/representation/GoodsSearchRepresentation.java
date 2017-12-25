@@ -18,7 +18,7 @@ public class GoodsSearchRepresentation {
     private String goodsName;
     private String goodsClassify;
     private String brandName;
-    private Long goodsPrice;
+    private String goodsPrice;
     private Integer stockNum;
     private Integer sellNum;
     private Integer goodsStatus;
@@ -63,7 +63,7 @@ public class GoodsSearchRepresentation {
                 stockNum = stockNum + skuBean.getAvailableNum();
                 sellNum = sellNum + skuBean.getSellerNum();
             }
-            this.goodsPrice = Long.parseLong(Utils.moneyFormatCN(goodsSkuBeans.get(0).getPhotographPrice()));
+            this.goodsPrice = Utils.moneyFormatCN(goodsSkuBeans.get(0).getPhotographPrice());
             this.stockNum = stockNum;
             this.sellNum = sellNum;
         }
@@ -107,11 +107,11 @@ public class GoodsSearchRepresentation {
         this.brandName = brandName;
     }
 
-    public Long getGoodsPrice() {
+    public String getGoodsPrice() {
         return goodsPrice;
     }
 
-    public void setGoodsPrice(Long goodsPrice) {
+    public void setGoodsPrice(String goodsPrice) {
         this.goodsPrice = goodsPrice;
     }
 
