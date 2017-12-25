@@ -53,7 +53,7 @@ public class GoodsApplication {
     GoodsService goodsDubboService;
     @Resource(name = "goodsRestService")
     GoodsService goodsRestService;
-    
+
     @Resource
     private OperationLogManager operationLogManager;
 
@@ -109,8 +109,8 @@ public class GoodsApplication {
             }
         }
 
-        operationLogManager.operationLog("修改商品", _attach, goods);
-        
+        operationLogManager.operationLog("修改商品", _attach, goods, new String[]{"goods"}, new Class<?>[]{Goods.class});
+
         goods.modifyGoods(command.getGoodsName(), command.getGoodsSubTitle(),
                 command.getGoodsClassifyId(), command.getGoodsBrandId(), command.getGoodsBrandName(), command.getGoodsUnitId(), command.getGoodsMinQuantity(),
                 command.getGoodsPostageId(), command.getGoodsBarCode(), command.getGoodsKeyWord(), command.getGoodsGuarantee(),
