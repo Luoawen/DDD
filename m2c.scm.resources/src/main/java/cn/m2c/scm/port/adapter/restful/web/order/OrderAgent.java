@@ -209,6 +209,8 @@ public class OrderAgent {
      */
     @RequestMapping(value = "/aftersale/dealer/ship", method = RequestMethod.PUT)
     public ResponseEntity<MResult> afterSaleShip(
+    		@RequestParam(value = "orderId",required = false) String orderId,
+    		@RequestParam(value = "shopName",required = false) String shopName,
             @RequestParam(value = "userId", required = false) String userId
             ,@RequestParam(value = "expressNo", required = false) String expressNo
             ,@RequestParam(value = "expressCode", required = false) String expressCode
@@ -223,7 +225,7 @@ public class OrderAgent {
     	MResult result = new MResult(MCode.V_1);
         try {
         	SaleAfterShipCmd cmd = new SaleAfterShipCmd(userId, saleAfterNo, skuId,
-        			expressNo, expressCode, expressName, expressPerson, expressPhone, expressWay);
+        			expressNo, expressCode, expressName, expressPerson, expressPhone, expressWay,orderId,shopName);
         	saleAfterApp.dealerShipGoods(cmd);
             result.setStatus(MCode.V_200);
         } 
@@ -356,11 +358,13 @@ public class OrderAgent {
     		@RequestParam(value = "expressWay", required = false) Integer expressWay
     		,@RequestParam(value = "expressCode", required = false) String expressCode
     		,@RequestParam(value = "userId", required = false) String userId
+    		,@RequestParam(value = "orderId", required = false) String orderId
+    		,@RequestParam(value = "shopName", required = false) String shopName
     		){
     	MResult result = new MResult(MCode.V_1);
     	try {
     		SendOrderCommand command = new SendOrderCommand(dealerOrderId, expressNo, expressName, expressPerson, expressPhone, 
-    				expressWay, expressNote, expressCode, userId);
+    				expressWay, expressNote, expressCode, userId,orderId,shopName);
     		dealerOrderApplication.updateExpress(command);
     		result.setStatus(MCode.V_200);
 		} catch (NegativeException e) {
