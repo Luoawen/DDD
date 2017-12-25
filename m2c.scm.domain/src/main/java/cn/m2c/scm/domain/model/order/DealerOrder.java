@@ -2,6 +2,7 @@ package cn.m2c.scm.domain.model.order;
 
 import cn.m2c.ddd.common.domain.model.ConcurrencySafeEntity;
 import cn.m2c.ddd.common.domain.model.DomainEventPublisher;
+import cn.m2c.scm.domain.model.order.event.OrderShipEvent;
 import cn.m2c.scm.domain.model.order.event.SimpleMediaRes;
 import cn.m2c.scm.domain.model.order.log.event.OrderOptLogEvent;
 import org.apache.commons.lang3.StringUtils;
@@ -148,7 +149,7 @@ public class DealerOrder extends ConcurrencySafeEntity {
 	public boolean updateExpress(String expressName, String expressNo,
 			String expressNote, String expressPerson, String expressPhone,
 			Integer expressWay, String expressCode, String userId
-			, List<String> skuIds, List<Integer> sortNos) {
+			, List<String> skuIds, List<Integer> sortNos,String orderId,String shopName) {
 		if (status >= 2 || status < 1) {
 			return false;
 		}
@@ -170,6 +171,7 @@ public class DealerOrder extends ConcurrencySafeEntity {
 		status = 2;
 		updateTime = new Date();
 		DomainEventPublisher.instance().publish(new OrderOptLogEvent(orderId, dealerOrderId, "商家发货", userId));
+		DomainEventPublisher.instance().publish(new OrderShipEvent(orderId, shopName, expressCode, expressNo));
 		return true;
 	}
 	/***

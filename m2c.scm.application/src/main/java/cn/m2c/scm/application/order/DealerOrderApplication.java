@@ -82,7 +82,7 @@ public class DealerOrderApplication {
 		
 		if (!dealerOrder.updateExpress(command.getExpressName(), command.getExpressNo(), command.getExpressNote(),
 				command.getExpressPerson(), command.getExpressPhone(), command.getExpressWay(),
-				command.getExpressCode(), command.getUserId(), skuIds, sortNos)) {
+				command.getExpressCode(), command.getUserId(), skuIds, sortNos,command.getOrderId(),command.getShopName())) {
 			throw new NegativeException(MCode.V_300, "订单处于不可发货状态");
 		}
 		dealerOrderRepository.save(dealerOrder);
