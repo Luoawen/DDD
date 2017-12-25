@@ -3,6 +3,8 @@ package cn.m2c.scm.port.adapter.restful.admin.brand;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +32,9 @@ public class AdminBrandApproAgent {
 	@Autowired
 	BrandApproveApplication brandApproveApplication;
 
+	@Autowired
+	private  HttpServletRequest request;
+	
 	/**
 	 * 批量审核同意
 	 * 
@@ -48,7 +53,8 @@ public class AdminBrandApproAgent {
 				BrandApproveAgreeCommand command = new BrandApproveAgreeCommand(null, approveIds.get(i));
 				commands.add(command);
 			}
-			brandApproveApplication.batchAgreeBrandApprove(commands);
+			String _attach= request.getHeader("attach");
+			brandApproveApplication.batchAgreeBrandApprove(commands, _attach);
 			result.setStatus(MCode.V_200);
 		} catch (NegativeException ne) {
 			LOGGER.error("批量同意品牌审核:", ne);
@@ -79,7 +85,8 @@ public class AdminBrandApproAgent {
 				BrandApproveRejectCommand command = new BrandApproveRejectCommand(approveIds.get(i), rejectReason);
 				commands.add(command);
 			}
-			brandApproveApplication.batchRejectBrandApprove(commands);
+			String _attach= request.getHeader("attach");
+			brandApproveApplication.batchRejectBrandApprove(commands, _attach);
 			result.setStatus(MCode.V_200);
 		} catch (NegativeException ne) {
 			LOGGER.error("批量拒绝品牌审核:", ne);

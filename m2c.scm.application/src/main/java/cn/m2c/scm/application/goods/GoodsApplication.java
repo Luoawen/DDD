@@ -539,9 +539,9 @@ public class GoodsApplication {
     public void upShelfGoodsBatch(List goodsIds, String _attach) throws NegativeException {
         LOGGER.info("upShelfGoodsBatch goodsIds >>{}", goodsIds);
         List<Goods> goodsList = goodsRepository.queryGoodsByIdList(goodsIds);
-        operationLogManager.operationLog("商品批量上架", _attach, goodsList, new String[]{"goods"}, new Class<?>[]{Goods.class});
         if (null != goodsList && goodsList.size() > 0) {
             for (Goods goods : goodsList) {
+            	operationLogManager.operationLog("商品批量上架", _attach, goods, new String[]{"goods"}, new Class<?>[]{Goods.class});
                 goods.upShelf();
                 updateRecognizedImgStatus(goods.goodsRecognizeds(), 1);
             }
@@ -561,9 +561,9 @@ public class GoodsApplication {
     public void offShelfGoodsBatch(List goodsIds, String _attach) throws NegativeException {
         LOGGER.info("offShelfGoodsBatch goodsIds >>{}", goodsIds);
         List<Goods> goodsList = goodsRepository.queryGoodsByIdList(goodsIds);
-        operationLogManager.operationLog("商品批量上架", _attach, goodsList, new String[]{"goods"}, new Class<?>[]{Goods.class});
         if (null != goodsList && goodsList.size() > 0) {
             for (Goods goods : goodsList) {
+                operationLogManager.operationLog("商品批量上架", _attach, goods, new String[]{"goods"}, new Class<?>[]{Goods.class});
                 goods.offShelf();
                 updateRecognizedImgStatus(goods.goodsRecognizeds(), 0);
             }
