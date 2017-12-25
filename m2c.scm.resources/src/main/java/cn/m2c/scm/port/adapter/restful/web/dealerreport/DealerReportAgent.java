@@ -186,8 +186,8 @@ public class DealerReportAgent {
         map.put("orderNum", orderNum);
         map.put("orderRefundNum", orderRefundNum);
         map.put("goodsAddNum", goodsAddNum);
-        map.put("sellMoney", sellMoney);
-        map.put("refundMoney", refundMoney);
+        map.put("sellMoney", sellMoney/10000);
+        map.put("refundMoney", refundMoney/10000);
         map.put("goodsCommentNum", goodsCommentNum);
         return map;
     }
