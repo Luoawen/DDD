@@ -56,7 +56,7 @@ public class GoodsModelAll {
         this.goodsSkuId = goodsSkuBean.getSkuId();
         this.goodsSkuName = goodsSkuBean.getSkuName();
         DecimalFormat df = new DecimalFormat("0.00");
-        this.photographPrice = df.format(goodsSkuBean.getPhotographPrice().floatValue() / 100);
+        this.photographPrice = df.format(goodsSkuBean.getPhotographPrice().floatValue() / 10000);
         this.availableNum = goodsSkuBean.getAvailableNum();
         this.sellerNum = goodsSkuBean.getSellerNum();
         //商品状态，1：仓库中，2：出售中，3：已售罄
@@ -70,7 +70,7 @@ public class GoodsModelAll {
         this.goodsPostageName = goodsPostageName;
         // 结算模式 1：按供货价 2：按服务费率
         if (settlementMode == 1) {
-            this.supplyPrice = null != goodsSkuBean.getSupplyPrice() ? df.format(goodsSkuBean.getSupplyPrice().floatValue() / 100) : "";
+            this.supplyPrice = null != goodsSkuBean.getSupplyPrice() ? df.format(goodsSkuBean.getSupplyPrice().floatValue() / 10000) : "";
             this.serviceRate = "";
         } else {
             this.serviceRate = null == serviceRate ? "" : String.valueOf(serviceRate);
