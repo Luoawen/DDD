@@ -56,7 +56,7 @@ public class BrandApproveAgreeListener extends ExchangeListener {
         if (optFlag == 1) {
             brandApplication.addBrand(command);
         } else {
-            brandApplication.modifyBrand(command);
+            brandApplication.modifyBrand(command, null);
         }
     }
 
