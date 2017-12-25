@@ -177,8 +177,13 @@ public class GoodsInfoBean {
 	}
 	
 	public String getStrTotalPrice() {
+		
 		if (totalPrice == 0) {
-			totalPrice = price * sellNum;
+			if(this.isSpecial == 1) {
+				totalPrice = specialPrice * sellNum;
+			}else {
+				totalPrice = price * sellNum;
+			}
 		}
 		return Utils.moneyFormatCN(totalPrice);
 	}
