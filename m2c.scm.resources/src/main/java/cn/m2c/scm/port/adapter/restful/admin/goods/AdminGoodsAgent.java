@@ -21,6 +21,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * 商品
  */
@@ -32,16 +34,21 @@ public class AdminGoodsAgent {
     @Autowired
     GoodsApplication goodsApplication;
 
+    @Autowired
+	private  HttpServletRequest request;
+    
     /**
      * 商品批量上架,未鉴权
      */
+    @RequirePermissions(value = {"scm:goodsStorage:upShelfBatch"})
     @RequestMapping(value = {"web/goods/up/shelfbatch", "admin/goods/up/shelfbatch"}, method = RequestMethod.PUT)
     public ResponseEntity<MResult> upShelfGoodsBatch(
             @RequestParam("goodsIds") List goodsIds
     ) {
         MResult result = new MResult(MCode.V_1);
         try {
-            goodsApplication.upShelfGoodsBatch(goodsIds);
+        	String _attach= request.getHeader("attach");
+            goodsApplication.upShelfGoodsBatch(goodsIds, _attach);
             result.setStatus(MCode.V_200);
         } catch (NegativeException ne) {
             LOGGER.error("upShelfGoodsBatch NegativeException e:", ne);
@@ -59,13 +66,15 @@ public class AdminGoodsAgent {
      * @param goodsIds
      * @return
      */
+    @RequirePermissions(value = {"scm:goodsStorage:offShelfBatch"})
     @RequestMapping(value = {"web/goods/off/shelfbatch", "admin/goods/off/shelfbatch"}, method = RequestMethod.PUT)
     public ResponseEntity<MResult> offShelfGoodsBatch(
             @RequestParam("goodsIds") List goodsIds
     ) {
         MResult result = new MResult(MCode.V_1);
         try {
-            goodsApplication.offShelfGoodsBatch(goodsIds);
+        	String _attach= request.getHeader("attach");
+            goodsApplication.offShelfGoodsBatch(goodsIds, _attach);
             result.setStatus(MCode.V_200);
         } catch (NegativeException ne) {
             LOGGER.error("offShelfGoodsBatch NegativeException e:", ne);
@@ -94,7 +103,8 @@ public class AdminGoodsAgent {
         MResult result = new MResult(MCode.V_1);
         try {
             GoodsRecognizedModifyCommand command = new GoodsRecognizedModifyCommand(goodsId, recognizedNo, recognizedId, recognizedUrl);
-            goodsApplication.modifyRecognized(command);
+            String _attach= request.getHeader("attach");
+            goodsApplication.modifyRecognized(command, _attach);
             result.setStatus(MCode.V_200);
         } catch (NegativeException ne) {
             LOGGER.error("modifyRecognized NegativeException e:", ne);
@@ -151,7 +161,8 @@ public class AdminGoodsAgent {
         MResult result = new MResult(MCode.V_1);
         try {
             GoodsRecognizedDelCommand command = new GoodsRecognizedDelCommand(goodsId, recognizedNo, recognizedId, recognizedUrl);
-            goodsApplication.delRecognized(command);
+            String _attach= request.getHeader("attach");
+            goodsApplication.delRecognized(command, _attach);
             result.setStatus(MCode.V_200);
         } catch (NegativeException ne) {
             LOGGER.error("delRecognized NegativeException e:", ne);

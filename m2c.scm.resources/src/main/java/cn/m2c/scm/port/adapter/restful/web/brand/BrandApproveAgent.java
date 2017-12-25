@@ -28,6 +28,8 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * 品牌审核信息
  */
@@ -41,6 +43,9 @@ public class BrandApproveAgent {
     @Autowired
     BrandApproveQueryApplication brandApproveQueryApplication;
 
+    @Autowired
+	private  HttpServletRequest request;
+    
     /**
      * 获取ID
      *
@@ -141,7 +146,8 @@ public class BrandApproveAgent {
         try {
             BrandApproveCommand command = new BrandApproveCommand(null, brandId, brandName, brandNameEn, brandLogo, firstAreaCode,
                     twoAreaCode, threeAreaCode, firstAreaName, twoAreaName, threeAreaName, dealerId, dealerName);
-            brandApproveApplication.modifyBrand(command);
+            String _attach= request.getHeader("attach");
+            brandApproveApplication.modifyBrand(command, _attach);
             result.setStatus(MCode.V_200);
         } catch (NegativeException ne) {
             LOGGER.error("modifyBrand NegativeException e:", ne);
@@ -184,7 +190,8 @@ public class BrandApproveAgent {
         try {
             BrandApproveCommand command = new BrandApproveCommand(approveId, brandName, brandNameEn, brandLogo, firstAreaCode,
                     twoAreaCode, threeAreaCode, firstAreaName, twoAreaName, threeAreaName);
-            brandApproveApplication.modifyBrandApprove(command);
+            String _attach= request.getHeader("attach");
+            brandApproveApplication.modifyBrandApprove(command, _attach);
             result.setStatus(MCode.V_200);
         } catch (NegativeException ne) {
             LOGGER.error("modifyBrandApprove NegativeException e:", ne);
@@ -212,7 +219,8 @@ public class BrandApproveAgent {
         MResult result = new MResult(MCode.V_1);
         BrandApproveAgreeCommand command = new BrandApproveAgreeCommand(brandId, approveId);
         try {
-            brandApproveApplication.agreeBrandApprove(command);
+        	String _attach= request.getHeader("attach");
+            brandApproveApplication.agreeBrandApprove(command, _attach);
             result.setStatus(MCode.V_200);
         } catch (NegativeException ne) {
             LOGGER.error("brandApproveAgree NegativeException e:", ne);
@@ -242,7 +250,8 @@ public class BrandApproveAgent {
         MResult result = new MResult(MCode.V_1);
         BrandApproveRejectCommand command = new BrandApproveRejectCommand(approveId, rejectReason);
         try {
-            brandApproveApplication.rejectBrandApprove(command);
+        	String _attach= request.getHeader("attach");
+            brandApproveApplication.rejectBrandApprove(command, _attach);
             result.setStatus(MCode.V_200);
         } catch (NegativeException ne) {
             LOGGER.error("brandApproveReject NegativeException e:", ne);
@@ -267,7 +276,8 @@ public class BrandApproveAgent {
             @PathVariable("approveId") String approveId) {
         MResult result = new MResult(MCode.V_1);
         try {
-            brandApproveApplication.delBrandApprove(approveId);
+        	String _attach= request.getHeader("attach");
+            brandApproveApplication.delBrandApprove(approveId, _attach);
             result.setStatus(MCode.V_200);
         } catch (NegativeException ne) {
             LOGGER.error("deleteBrandApprove NegativeException e:", ne);

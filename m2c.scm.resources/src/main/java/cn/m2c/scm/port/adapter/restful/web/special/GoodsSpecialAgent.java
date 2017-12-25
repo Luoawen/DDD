@@ -1,5 +1,6 @@
 package cn.m2c.scm.port.adapter.restful.web.special;
 
+import cn.m2c.common.JsonUtils;
 import cn.m2c.common.MCode;
 import cn.m2c.common.MPager;
 import cn.m2c.common.MResult;
@@ -13,6 +14,8 @@ import cn.m2c.scm.application.special.data.representation.GoodsSpecialListRepres
 import cn.m2c.scm.application.special.query.GoodsSpecialQueryApplication;
 import cn.m2c.scm.domain.IDGenerator;
 import cn.m2c.scm.domain.NegativeException;
+import cn.m2c.scm.domain.model.special.GoodsSkuSpecial;
+import cn.m2c.scm.domain.util.GetMapValueUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,9 +27,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 商品特惠价
@@ -92,6 +97,17 @@ public class GoodsSpecialAgent {
             @RequestParam(value = "activityDescription", required = false) String activityDescription,
             @RequestParam(value = "goodsSkuSpecials", required = false) String goodsSkuSpecials) {
         MResult result = new MResult(MCode.V_1);
+        List<Map> list = JsonUtils.toList(goodsSkuSpecials, Map.class);
+        if (null != list && list.size() > 0) {
+            List<GoodsSkuSpecial> goodsSpecials = new ArrayList<>();
+            for (Map map : list) {
+                Long supplyPrice = new BigDecimal((GetMapValueUtils.getFloatFromMapKey(map, "supplyPrice") * 10000)).longValue();
+                Long specialPrice = new BigDecimal((GetMapValueUtils.getFloatFromMapKey(map, "specialPrice") * 10000)).longValue();
+                map.put("supplyPrice", supplyPrice);
+                map.put("specialPrice", specialPrice);
+            }
+            goodsSkuSpecials = JsonUtils.toStr(list);
+        }
         GoodsSpecialAddCommand command = new GoodsSpecialAddCommand(specialId, goodsId, goodsName, skuFlag, dealerId,
                 dealerName, startTime, endTime, congratulations, activityDescription, goodsSkuSpecials);
         try {

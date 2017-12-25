@@ -11,7 +11,6 @@ import cn.m2c.scm.application.dealer.data.bean.DealerBean;
 import cn.m2c.scm.application.dealer.query.DealerQuery;
 import cn.m2c.scm.application.goods.GoodsApproveApplication;
 import cn.m2c.scm.application.goods.command.GoodsApproveCommand;
-import cn.m2c.scm.application.goods.command.GoodsApproveRejectBatchCommand;
 import cn.m2c.scm.application.goods.command.GoodsApproveRejectCommand;
 import cn.m2c.scm.application.goods.query.GoodsApproveQueryApplication;
 import cn.m2c.scm.application.goods.query.GoodsGuaranteeQueryApplication;
@@ -24,6 +23,7 @@ import cn.m2c.scm.application.postage.query.PostageModelQueryApplication;
 import cn.m2c.scm.application.unit.query.UnitQuery;
 import cn.m2c.scm.domain.IDGenerator;
 import cn.m2c.scm.domain.NegativeException;
+import cn.m2c.scm.domain.util.GetMapValueUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,11 +36,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * 商品审核
@@ -154,6 +154,12 @@ public class GoodsApproveAgent {
                         return new ResponseEntity<MResult>(result, HttpStatus.OK);
                     }
                     map.put("skuId", skuId);
+                    Long marketPrice = new BigDecimal((GetMapValueUtils.getFloatFromMapKey(map, "marketPrice") * 10000)).longValue();
+                    Long photographPrice = new BigDecimal((GetMapValueUtils.getFloatFromMapKey(map, "photographPrice") * 10000)).longValue();
+                    Long supplyPrice = new BigDecimal((GetMapValueUtils.getFloatFromMapKey(map, "supplyPrice") * 10000)).longValue();
+                    map.put("marketPrice", marketPrice);
+                    map.put("photographPrice", photographPrice);
+                    map.put("supplyPrice", supplyPrice);
                 }
             } else {
                 result = new MResult(MCode.V_1, "商品规格为空");
@@ -189,7 +195,8 @@ public class GoodsApproveAgent {
     ) {
         MResult result = new MResult(MCode.V_1);
         try {
-            goodsApproveApplication.agreeGoodsApprove(goodsId);
+        	String _attach= request.getHeader("attach");
+            goodsApproveApplication.agreeGoodsApprove(goodsId, _attach);
             result.setStatus(MCode.V_200);
         } catch (NegativeException ne) {
             LOGGER.error("agreeGoodsApprove NegativeException e:", ne);
@@ -216,7 +223,8 @@ public class GoodsApproveAgent {
         MResult result = new MResult(MCode.V_1);
         try {
             GoodsApproveRejectCommand command = new GoodsApproveRejectCommand(goodsId, rejectReason);
-            goodsApproveApplication.rejectGoodsApprove(command);
+            String _attach= request.getHeader("attach");
+            goodsApproveApplication.rejectGoodsApprove(command, _attach);
             result.setStatus(MCode.V_200);
         } catch (NegativeException ne) {
             LOGGER.error("rejectGoodsApprove NegativeException e:", ne);
@@ -282,6 +290,12 @@ public class GoodsApproveAgent {
                         }
                         map.put("skuId", skuId);
                     }
+                    Long marketPrice = new BigDecimal((GetMapValueUtils.getFloatFromMapKey(map, "marketPrice") * 10000)).longValue();
+                    Long photographPrice = new BigDecimal((GetMapValueUtils.getFloatFromMapKey(map, "photographPrice") * 10000)).longValue();
+                    Long supplyPrice = new BigDecimal((GetMapValueUtils.getFloatFromMapKey(map, "supplyPrice") * 10000)).longValue();
+                    map.put("marketPrice", marketPrice);
+                    map.put("photographPrice", photographPrice);
+                    map.put("supplyPrice", supplyPrice);
                 }
                 goodsSKUs = JsonUtils.toStr(skuList);
             } else {
@@ -311,7 +325,8 @@ public class GoodsApproveAgent {
     ) {
         MResult result = new MResult(MCode.V_1);
         try {
-            goodsApproveApplication.deleteGoodsApprove(goodsId);
+        	String _attach= request.getHeader("attach");
+            goodsApproveApplication.deleteGoodsApprove(goodsId, _attach);
             result.setStatus(MCode.V_200);
         } catch (NegativeException ne) {
             LOGGER.error("delGoodsApprove NegativeException e:", ne);

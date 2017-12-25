@@ -3,6 +3,7 @@ package cn.m2c.scm.application.goods.query.data.representation;
 import cn.m2c.common.JsonUtils;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsApproveBean;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsSkuApproveBean;
+import cn.m2c.scm.application.utils.Utils;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -18,7 +19,7 @@ public class GoodsApproveSearchRepresentation {
     private String goodsName;
     private String goodsClassify;
     private String brandName;
-    private Long goodsPrice;
+    private String goodsPrice;
     private Integer stockNum;
     private Integer approveStatus;//审核状态，1：审核中，2：审核不通过
     private String dealerName;
@@ -58,7 +59,7 @@ public class GoodsApproveSearchRepresentation {
             for (GoodsSkuApproveBean skuBean : goodsSkuBeans) {
                 stockNum = stockNum + skuBean.getAvailableNum();
             }
-            this.goodsPrice = goodsSkuBeans.get(0).getPhotographPrice();
+            this.goodsPrice = Utils.moneyFormatCN(goodsSkuBeans.get(0).getPhotographPrice());
             this.stockNum = stockNum;
         }
 
@@ -109,11 +110,11 @@ public class GoodsApproveSearchRepresentation {
         this.brandName = brandName;
     }
 
-    public Long getGoodsPrice() {
+    public String getGoodsPrice() {
         return goodsPrice;
     }
 
-    public void setGoodsPrice(Long goodsPrice) {
+    public void setGoodsPrice(String goodsPrice) {
         this.goodsPrice = goodsPrice;
     }
 

@@ -2,6 +2,8 @@ package cn.m2c.scm.port.adapter.restful.admin.goods;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import cn.m2c.common.MCode;
 import cn.m2c.common.MResult;
+import cn.m2c.ddd.common.auth.RequirePermissions;
 import cn.m2c.scm.application.goods.GoodsApproveApplication;
 import cn.m2c.scm.application.goods.command.GoodsApproveRejectBatchCommand;
 import cn.m2c.scm.domain.NegativeException;
@@ -31,18 +34,23 @@ public class AdminGoodsApproveAgent {
 	@Autowired
     GoodsApproveApplication goodsApproveApplication;
 	
+	@Autowired
+	private  HttpServletRequest request;
+	
 	/**
      * 商品批量审核同意,未鉴权
      * @param goodsId
      * @return
      */
+	@RequirePermissions(value ={"scm:goodsCheck:agreebatch"})
     @RequestMapping(value = "/agreebatch", method = RequestMethod.POST)
     public ResponseEntity<MResult> agreeGoodsApproveBatch(
             @RequestParam(value = "goodsIds", required = false) List goodsIds
     ) {
     	MResult result = new MResult(MCode.V_1);
         try {
-            goodsApproveApplication.agreeGoodsApproveBatch(goodsIds);
+        	String _attach= request.getHeader("attach");
+            goodsApproveApplication.agreeGoodsApproveBatch(goodsIds, _attach);
             result.setStatus(MCode.V_200);
         } catch (NegativeException ne) {
             LOGGER.error("agreeGoodsApproveBatch NegativeException e:", ne);
@@ -57,6 +65,7 @@ public class AdminGoodsApproveAgent {
     /**
      * 批量拒绝商品审核,未鉴权
      */
+	@RequirePermissions(value ={"scm:goodsCheck:rejectbatch"})
     @RequestMapping(value = "/rejectbatch", method = RequestMethod.POST)
     public ResponseEntity<MResult> rejectGoodsApproveBatch(
             @RequestParam(value = "goodsIds", required = false) List goodsIds,
@@ -65,7 +74,8 @@ public class AdminGoodsApproveAgent {
     	MResult result = new MResult(MCode.V_1);
         try {
         	GoodsApproveRejectBatchCommand command = new GoodsApproveRejectBatchCommand(goodsIds, rejectReason);
-        	goodsApproveApplication.rejectGoodsApproveBatch(command);
+        	String _attach= request.getHeader("attach");
+        	goodsApproveApplication.rejectGoodsApproveBatch(command, _attach);
             result.setStatus(MCode.V_200);
         } catch (NegativeException ne) {
             LOGGER.error("rejectGoodsApprove NegativeException e:", ne);

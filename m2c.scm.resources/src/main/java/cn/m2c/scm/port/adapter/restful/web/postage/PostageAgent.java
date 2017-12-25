@@ -143,7 +143,8 @@ public class PostageAgent {
         MResult result = new MResult(MCode.V_1);
         try {
             PostageModelCommand command = new PostageModelCommand(dealerId, modelId);
-            postageModelApplication.delPostageModel(command);
+            String _attach= request.getHeader("attach");
+            postageModelApplication.delPostageModel(command, _attach);
             result.setStatus(MCode.V_200);
         } catch (NegativeException ne) {
             LOGGER.error("delPostageModel NegativeException e:", ne);
