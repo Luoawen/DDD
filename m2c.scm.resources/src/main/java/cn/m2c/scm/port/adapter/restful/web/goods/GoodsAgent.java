@@ -38,6 +38,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * 商品
  *
@@ -66,6 +68,8 @@ public class GoodsAgent {
     @Autowired
     PostageModelQueryApplication postageModelQueryApplication;
 
+    @Autowired
+	private  HttpServletRequest request;
 
     /**
      * 修改商品
@@ -135,7 +139,8 @@ public class GoodsAgent {
                     goodsClassifyId, goodsBrandId, goodsBrandName, goodsUnitId, goodsMinQuantity,
                     goodsPostageId, goodsBarCode, JsonUtils.toStr(goodsKeyWord), JsonUtils.toStr(goodsGuarantee),
                     JsonUtils.toStr(goodsMainImages), goodsDesc, goodsSpecifications, goodsSKUs);
-            goodsApplication.modifyGoods(command);
+            String _attach= request.getHeader("attach");
+            goodsApplication.modifyGoods(command, _attach);
             result.setStatus(MCode.V_200);
         } catch (NegativeException ne) {
             LOGGER.error("modifyGoods NegativeException e:", ne);
@@ -376,7 +381,8 @@ public class GoodsAgent {
             return new ResponseEntity<MResult>(result, HttpStatus.OK);
         }
         try {
-            goodsApplication.modifyGoodsMainImages(goodsId, images);
+        	String _attach= request.getHeader("attach");
+            goodsApplication.modifyGoodsMainImages(goodsId, images, _attach);
             result.setStatus(MCode.V_200);
         } catch (NegativeException ne) {
             LOGGER.error("modifyGoodsMainImages NegativeException e:", ne);

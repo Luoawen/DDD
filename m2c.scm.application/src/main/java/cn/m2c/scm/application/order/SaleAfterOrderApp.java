@@ -239,7 +239,8 @@ public class SaleAfterOrderApp {
 			throw new NegativeException(MCode.V_101, "无此售后单！");
 		}
 		operationLogManager.operationLog("商家换货发货", attach, order);
-		if (!order.dealerShip(cmd.getSdExpressInfo(), cmd.getUserId())) {
+		
+		if (!order.dealerShip(cmd.getSdExpressInfo(), cmd.getUserId(),cmd.getOrderId(),cmd.getShopName(),cmd.getExpressCode(),cmd.getExpressNo())) {
 			throw new NegativeException(MCode.V_103, "状态不正确，不能进行发货操作！");
 		}
 		saleAfterRepository.updateSaleAfterOrder(order);

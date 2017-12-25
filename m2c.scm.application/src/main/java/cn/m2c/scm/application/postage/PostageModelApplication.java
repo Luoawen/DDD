@@ -1,12 +1,16 @@
 package cn.m2c.scm.application.postage;
 
 import cn.m2c.common.MCode;
+import cn.m2c.ddd.common.logger.OperationLogManager;
 import cn.m2c.scm.application.postage.command.PostageModelCommand;
 import cn.m2c.scm.domain.NegativeException;
 import cn.m2c.scm.domain.model.goods.GoodsApproveRepository;
 import cn.m2c.scm.domain.model.goods.GoodsRepository;
 import cn.m2c.scm.domain.model.postage.PostageModel;
 import cn.m2c.scm.domain.model.postage.PostageModelRepository;
+
+import javax.annotation.Resource;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +32,9 @@ public class PostageModelApplication {
     @Autowired
     GoodsApproveRepository goodsApproveRepository;
 
+    @Resource
+    private OperationLogManager operationLogManager;
+    
     /**
      * 添加运费模板
      *
@@ -54,7 +61,7 @@ public class PostageModelApplication {
      * @param command
      */
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
-    public void modifyPostageModel(PostageModelCommand command) throws NegativeException {
+    public void modifyPostageModel(PostageModelCommand command, String _attach) throws NegativeException {
         LOGGER.info("modifyPostageModel command >>{}", command);
         PostageModel postageModel = postageModelRepository.getPostageModelById(command.getModelId());
         if (null == postageModel) {
@@ -63,6 +70,7 @@ public class PostageModelApplication {
         if (postageModelRepository.postageNameIsRepeat(command.getModelId(), command.getDealerId(), command.getModelName())) {
             throw new NegativeException(MCode.V_300, "运费模板名称已存在");
         }
+        operationLogManager.operationLog("修改运费模板", _attach, postageModel, new String[]{"postageModel"}, new Class<?>[]{PostageModel.class});
         postageModel.modifyPostageModel(command.getDealerId(), command.getModelId(), command.getModelName(), command.getChargeType(),
                 command.getModelDescription(), command.getPostageModelRule());
     }

@@ -4,6 +4,7 @@ import cn.m2c.common.JsonUtils;
 import cn.m2c.common.MCode;
 import cn.m2c.ddd.common.domain.model.DomainEventPublisher;
 import cn.m2c.ddd.common.event.annotation.EventListener;
+import cn.m2c.ddd.common.logger.OperationLogManager;
 import cn.m2c.scm.application.goods.command.GoodsCommand;
 import cn.m2c.scm.application.goods.command.GoodsRecognizedAddCommand;
 import cn.m2c.scm.application.goods.command.GoodsRecognizedDelCommand;
@@ -53,6 +54,9 @@ public class GoodsApplication {
     @Resource(name = "goodsRestService")
     GoodsService goodsRestService;
 
+    @Resource
+    private OperationLogManager operationLogManager;
+
     /**
      * 商品审核同意,保存商品
      *
@@ -82,7 +86,7 @@ public class GoodsApplication {
      */
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
     @EventListener(isListening = true)
-    public void modifyGoods(GoodsCommand command) throws NegativeException {
+    public void modifyGoods(GoodsCommand command, String _attach) throws NegativeException {
         LOGGER.info("modifyGoods command >>{}", command);
         Goods goods = goodsRepository.queryGoodsById(command.getGoodsId());
         if (null == goods) {
@@ -104,6 +108,8 @@ public class GoodsApplication {
                 }
             }
         }
+
+        operationLogManager.operationLog("修改商品", _attach, goods, new String[]{"goods"}, new Class<?>[]{Goods.class});
 
         goods.modifyGoods(command.getGoodsName(), command.getGoodsSubTitle(),
                 command.getGoodsClassifyId(), command.getGoodsBrandId(), command.getGoodsBrandName(), command.getGoodsUnitId(), command.getGoodsMinQuantity(),
@@ -507,12 +513,13 @@ public class GoodsApplication {
      */
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
     @EventListener(isListening = true)
-    public void modifyGoodsMainImages(String goodsId, List<String> images) throws NegativeException {
+    public void modifyGoodsMainImages(String goodsId, List<String> images, String _attach) throws NegativeException {
         LOGGER.info("modifyGoodsMainImages goodsId >>{}", goodsId);
         Goods goods = goodsRepository.queryGoodsById(goodsId);
         if (null == goods) {
             throw new NegativeException(MCode.V_300, "商品不存在");
         }
+        operationLogManager.operationLog("修改商品主图", _attach, goods, new String[]{"goods"}, new Class<?>[]{Goods.class});
         goods.modifyGoodsMainImages(images);
     }
 

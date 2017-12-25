@@ -9,6 +9,7 @@ import cn.m2c.ddd.common.domain.model.DomainEventPublisher;
 import cn.m2c.scm.domain.model.dealer.event.DealerReportStatisticsEvent;
 import cn.m2c.scm.domain.model.order.event.AfterRefundSuccEvt;
 import cn.m2c.scm.domain.model.order.event.AfterSaleAgreeEvt;
+import cn.m2c.scm.domain.model.order.event.OrderShipEvent;
 import cn.m2c.scm.domain.model.order.event.SaleAfterRefundEvt;
 import cn.m2c.scm.domain.model.order.log.event.OrderOptLogEvent;
 import cn.m2c.scm.domain.util.DealerReportType;
@@ -234,13 +235,14 @@ public class SaleAfterOrder extends ConcurrencySafeEntity {
      * @param e
      * @return
      */
-    public boolean dealerShip(ExpressInfo e, String userId) {
+    public boolean dealerShip(ExpressInfo e, String userId,String orderId,String shopName,String com,String nu) {
         if (status < 5)
             return false;
         sendExpress = e;
         status = 7;
         updateTime = new Date();
         DomainEventPublisher.instance().publish(new OrderOptLogEvent(saleAfterNo, dealerOrderId, "商家换货发货！", userId));
+        DomainEventPublisher.instance().publish(new OrderShipEvent(orderId, shopName, com, nu));
         return true;
     }
 

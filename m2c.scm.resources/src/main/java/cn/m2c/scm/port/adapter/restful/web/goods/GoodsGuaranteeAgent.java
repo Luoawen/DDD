@@ -24,6 +24,8 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * 商品保障
  */
@@ -37,6 +39,9 @@ public class GoodsGuaranteeAgent {
 
     @Autowired
     GoodsGuaranteeApplication goodsGuaranteeApplication;
+    
+    @Autowired
+	private  HttpServletRequest request;
     
     /**
      * 查询商品保障
@@ -124,7 +129,8 @@ public class GoodsGuaranteeAgent {
 		MResult result = new MResult(MCode.V_1);
 		try{
 			GoodsGuaranteeAddCommand command = new GoodsGuaranteeAddCommand(guaranteeId, guaranteeName, guaranteeDesc, dealerId);
-			goodsGuaranteeApplication.modifyGoodsGuarantee(command);
+			String _attach= request.getHeader("attach");
+			goodsGuaranteeApplication.modifyGoodsGuarantee(command, _attach);
 			result.setStatus(MCode.V_200);
 		}catch (NegativeException ne) {
             LOGGER.error("addGoodsSpecial NegativeException e:", ne);
