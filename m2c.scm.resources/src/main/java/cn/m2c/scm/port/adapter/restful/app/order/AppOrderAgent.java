@@ -625,4 +625,40 @@ public class AppOrderAgent {
         }
         return new ResponseEntity<MPager>(result, HttpStatus.OK);
     }
+    /**
+     * 
+     * @param userId 当前登录用户ID,app用户id
+     * @param pageIndex 
+     * @param pageNum
+     * @param status 0申请退货,1申请换货,2申请退款,3拒绝,4同意(退换货),5客户寄出,6商家收到,7商家寄出,8客户收到,9同意退款, 10确认退款,11交易完成，12交易关闭
+     * @return
+     */
+    @RequestMapping(value = "/app/dealerSaleAfter/list", method = RequestMethod.GET)
+    public ResponseEntity<MPager> getSaleAfterDealerOrderListByDealerOrderId(
+            @RequestParam(value = "userId", required = false) String userId
+            ,@RequestParam(value = "pageIndex", required = false, defaultValue="1") Integer pageIndex
+            ,@RequestParam(value = "pageNum", required = false, defaultValue="5") Integer pageNum
+            ,@RequestParam(value = "status", required = false) Integer status
+            ,@RequestParam(value = "dealerOrderId", required = false, defaultValue="") String dealerOrderId
+            ) {
+    	MPager result = new MPager(MCode.V_1);
+    	
+        try {
+        	
+        	if (StringUtils.isEmpty(userId)) {
+        		throw new NegativeException(MCode.V_1, "用户id为空！");
+        	}
+        	
+        	Integer total = saleAfterQuery.getAppDealerSaleAfterTotal(userId, status,dealerOrderId);
+        	List<AfterSellBean> cntList = saleAfterQuery.getAppDealerSaleAfterList(userId, status, dealerOrderId ,pageIndex, pageNum);
+            result.setPager(total, pageIndex, pageNum);
+            result.setContent(cntList);
+            result.setStatus(MCode.V_200);
+        } catch (Exception e) {
+            LOGGER.error("app get order list error, e:", e);
+            result.setStatus(MCode.V_400);
+            result.setErrorMessage(e.getMessage());
+        }
+        return new ResponseEntity<MPager>(result, HttpStatus.OK);
+    }
 }
