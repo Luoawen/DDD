@@ -38,7 +38,7 @@ public class AdminGoodsApproveAgent {
 	private  HttpServletRequest request;
 	
 	/**
-     * 商品批量审核同意,未鉴权
+     * 商品批量审核同意
      * @param goodsId
      * @return
      */
@@ -63,7 +63,7 @@ public class AdminGoodsApproveAgent {
     }
     
     /**
-     * 批量拒绝商品审核,未鉴权
+     * 批量拒绝商品审核
      */
 	@RequirePermissions(value ={"scm:goodsCheck:rejectbatch"})
     @RequestMapping(value = "/rejectbatch", method = RequestMethod.POST)

@@ -38,7 +38,7 @@ public class AdminGoodsAgent {
 	private  HttpServletRequest request;
     
     /**
-     * 商品批量上架,未鉴权
+     * 商品批量上架
      */
     @RequirePermissions(value = {"scm:goodsStorage:upShelfBatch"})
     @RequestMapping(value = {"web/goods/up/shelfbatch", "admin/goods/up/shelfbatch"}, method = RequestMethod.PUT)
@@ -61,7 +61,7 @@ public class AdminGoodsAgent {
     }
 
     /**
-     * 商品批量下架,未鉴权
+     * 商品批量下架
      *
      * @param goodsIds
      * @return

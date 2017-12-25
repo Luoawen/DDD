@@ -122,6 +122,15 @@
 			<mvc:mapping path="/shop/sys/shopInfo" />
 			<mvc:mapping path="/stantard" />
 			<mvc:mapping path="/unit" />
+			<mvc:mapping path="/**/mng" />
+			<mvc:mapping path="/**/mng/**" />
+			<mvc:mapping path="/**/admin/**" />
+			<bean class="cn.m2c.common.permission.interceptor.AccessTokenInterceptor" />
+		</mvc:interceptor>
+		<mvc:interceptor>
+			<mvc:mapping path="/**/mng" />
+			<mvc:mapping path="/**/mng/**" />
+			<mvc:mapping path="/**/admin/**" />
 			<bean
 				class="cn.m2c.common.permission.interceptor.GlobalPermissionInterceptor" />
 		</mvc:interceptor>
