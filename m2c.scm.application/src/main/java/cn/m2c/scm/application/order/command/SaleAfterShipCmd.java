@@ -35,6 +35,10 @@ public class SaleAfterShipCmd extends AssertionConcern {
 	/**配送方式 0:物流，1自有物流*/
 	private int expressWay;
 	
+	private String orderId;
+	
+	private String shopName;
+	
 	public SaleAfterShipCmd(String userId, String saleAfterNo, String skuId, String expressNo
 			, String expressCode, String expressName) throws NegativeException {
 		
@@ -64,7 +68,7 @@ public class SaleAfterShipCmd extends AssertionConcern {
 	
 	public SaleAfterShipCmd(String userId, String saleAfterNo, String skuId, String expressNo
 			, String expressCode, String expressName, String expressPerson, String expressPhone
-			, int expressWay) throws NegativeException {
+			, int expressWay,String orderId,String shopName) throws NegativeException {
 		
 		this(userId, saleAfterNo, skuId, expressNo, expressCode, expressName);
 		
@@ -79,6 +83,8 @@ public class SaleAfterShipCmd extends AssertionConcern {
 		this.expressWay = expressWay;
 		this.expressPerson = expressPerson;
 		this.expressPhone = expressPhone;
+		this.orderId = orderId;
+		this.shopName = shopName;
 	}
 	
 	public SaleAfterShipCmd(String userId, String saleAfterNo, String skuId, String expressNo
@@ -123,8 +129,24 @@ public class SaleAfterShipCmd extends AssertionConcern {
 		return skuId;
 	}
 	
+	public String getExpressNo() {
+		return expressNo;
+	}
+	
 	public void setExpressCode(String code) {
 		this.expressCode = code;
+	}
+	
+	public String getOrderId() {
+		return orderId;
+	}
+	
+	public String getShopName() {
+		return shopName;
+	}
+	
+	public String getExpressCode() {
+		return expressCode;
 	}
 	
 	public ExpressInfo getExpressInfo() {
