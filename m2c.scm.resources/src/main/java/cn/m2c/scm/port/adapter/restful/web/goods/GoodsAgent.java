@@ -130,9 +130,9 @@ public class GoodsAgent {
                         }
                         map.put("skuId", skuId);
                     }
-                    Long marketPrice = new BigDecimal((GetMapValueUtils.getFloatFromMapKey(map, "marketPrice") * 1000)).longValue();
-                    Long photographPrice = new BigDecimal((GetMapValueUtils.getFloatFromMapKey(map, "photographPrice") * 1000)).longValue();
-                    Long supplyPrice = new BigDecimal((GetMapValueUtils.getFloatFromMapKey(map, "supplyPrice") * 1000)).longValue();
+                    Long marketPrice = new BigDecimal((GetMapValueUtils.getFloatFromMapKey(map, "marketPrice") * 10000)).longValue();
+                    Long photographPrice = new BigDecimal((GetMapValueUtils.getFloatFromMapKey(map, "photographPrice") * 10000)).longValue();
+                    Long supplyPrice = new BigDecimal((GetMapValueUtils.getFloatFromMapKey(map, "supplyPrice") * 10000)).longValue();
                     map.put("marketPrice", marketPrice);
                     map.put("photographPrice", photographPrice);
                     map.put("supplyPrice", supplyPrice);
