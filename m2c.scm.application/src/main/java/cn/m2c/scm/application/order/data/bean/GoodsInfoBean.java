@@ -179,7 +179,7 @@ public class GoodsInfoBean {
 	public String getStrTotalPrice() {
 		
 		if (totalPrice == 0) {
-			if(this.isSpecial == 1) {
+			if(isSpecial != null && isSpecial == 1) {
 				totalPrice = specialPrice * sellNum;
 			}else {
 				totalPrice = price * sellNum;
