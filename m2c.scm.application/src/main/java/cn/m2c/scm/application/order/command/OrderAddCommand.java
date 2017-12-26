@@ -14,6 +14,7 @@ import cn.m2c.common.MCode;
 import cn.m2c.ddd.common.AssertionConcern;
 import cn.m2c.scm.application.order.data.bean.AppInfo;
 import cn.m2c.scm.application.order.query.dto.GoodsDto;
+import cn.m2c.scm.application.utils.Utils;
 import cn.m2c.scm.domain.NegativeException;
 import cn.m2c.scm.domain.model.order.InvoiceInfo;
 import cn.m2c.scm.domain.model.order.ReceiveAddr;
@@ -216,8 +217,17 @@ public class OrderAddCommand extends AssertionConcern implements Serializable {
 			//解析app传入的特惠价
 			String appSpecialPrice = "";
 			Integer isSpecial = goods.getInteger("isSpecial");
-			if(isSpecial!=null && isSpecial==1){
+			if(isSpecial != null && isSpecial==1){
 				appSpecialPrice = goods.getString("appSpecialPrice");
+				if (!StringUtils.isEmpty(appSpecialPrice)) {
+					// 因后台已经变成了1000表示1元
+					appSpecialPrice = String.valueOf(Long.parseLong(appSpecialPrice) * 100);
+				}
+				
+				String strPrice = goods.getString("strAppSpecialPrice");
+				if (!StringUtils.isEmpty(strPrice)) {
+					appSpecialPrice = String.valueOf(Float.parseFloat(strPrice) * Utils.DIVIDE);
+				}
 			}
 			int sl = goods.getIntValue("purNum");
 			if (sl < 1) {
@@ -243,7 +253,7 @@ public class OrderAddCommand extends AssertionConcern implements Serializable {
             	dto.setIsChange(goods.getIntValue("isChange"));
             
             if (goods.containsKey("isSpecial"))
-            	dto.setIsSpecial(goods.getIntValue("isSpecial"));
+            	dto.setIsSpecial(isSpecial);
 
             String mResId = goods.getString("mediaResId");
             dto.setMresId(mResId);
