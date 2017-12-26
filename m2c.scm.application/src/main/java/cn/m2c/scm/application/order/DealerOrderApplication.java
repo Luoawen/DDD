@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.apache.http.util.TextUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,14 +79,15 @@ public class DealerOrderApplication {
 				sortNos.add(s.getSortNo());
 			}
 		}
-		operationLogManager.operationLog("更新快递发货", attach, dealerOrder);
+		if (!TextUtils.isEmpty(attach))
+			operationLogManager.operationLog("更新快递发货", attach, dealerOrder);
 		
 		if (!dealerOrder.updateExpress(command.getExpressName(), command.getExpressNo(), command.getExpressNote(),
 				command.getExpressPerson(), command.getExpressPhone(), command.getExpressWay(),
-				command.getExpressCode(), command.getUserId(), skuIds, sortNos,command.getOrderId(),command.getShopName())) {
+				command.getExpressCode(), command.getUserId(), skuIds, sortNos, command.getShopName())) {
 			throw new NegativeException(MCode.V_300, "订单处于不可发货状态");
 		}
-	//	dealerOrderRepository.save(dealerOrder);
+		dealerOrderRepository.save(dealerOrder);
 	}
 
 	/**

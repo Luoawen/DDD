@@ -149,7 +149,7 @@ public class DealerOrder extends ConcurrencySafeEntity {
 	public boolean updateExpress(String expressName, String expressNo,
 			String expressNote, String expressPerson, String expressPhone,
 			Integer expressWay, String expressCode, String userId
-			, List<String> skuIds, List<Integer> sortNos,String orderId,String shopName) {
+			, List<String> skuIds, List<Integer> sortNos, String shopName) {
 		if (status >= 2 || status < 1) {
 			return false;
 		}

@@ -131,10 +131,14 @@ public class GoodsAgent {
                     }
                     Long marketPrice = new BigDecimal((GetMapValueUtils.getFloatFromMapKey(map, "marketPrice") * 10000)).longValue();
                     Long photographPrice = new BigDecimal((GetMapValueUtils.getFloatFromMapKey(map, "photographPrice") * 10000)).longValue();
-                    Long supplyPrice = new BigDecimal((GetMapValueUtils.getFloatFromMapKey(map, "supplyPrice") * 10000)).longValue();
+                    if(null != GetMapValueUtils.getFloatFromMapKey(map, "supplyPrice")) {
+                    	Long supplyPrice = new BigDecimal((GetMapValueUtils.getFloatFromMapKey(map, "supplyPrice") * 10000)).longValue();
+                        map.put("supplyPrice", supplyPrice);
+                    }else {
+                        map.put("supplyPrice", GetMapValueUtils.getFloatFromMapKey(map, "supplyPrice"));
+                    }
                     map.put("marketPrice", marketPrice);
                     map.put("photographPrice", photographPrice);
-                    map.put("supplyPrice", supplyPrice);
                 }
                 goodsSKUs = JsonUtils.toStr(skuList);
             } else {
