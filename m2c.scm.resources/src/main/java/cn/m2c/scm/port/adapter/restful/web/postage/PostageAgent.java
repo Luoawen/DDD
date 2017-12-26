@@ -23,11 +23,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * 运费模板
@@ -35,7 +34,6 @@ import javax.servlet.http.HttpServletRequest;
  * @author ps
  */
 @RestController
-@RequestMapping("/postage")
 public class PostageAgent {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(PostageAgent.class);
@@ -46,14 +44,14 @@ public class PostageAgent {
     PostageModelQueryApplication postageModelQueryApplication;
 
     @Autowired
-	private  HttpServletRequest request;
-    
+    private HttpServletRequest request;
+
     /**
      * 获取ID
      *
      * @return
      */
-    @RequestMapping(value = "/id", method = RequestMethod.GET)
+    @RequestMapping(value = "/web/postage/id", method = RequestMethod.GET)
     public ResponseEntity<MResult> getPostageId() {
         MResult result = new MResult(MCode.V_1);
         try {
@@ -78,7 +76,7 @@ public class PostageAgent {
      * @param modelDescription  模板说明
      * @return
      */
-    @RequestMapping(value = "", method = RequestMethod.POST)
+    @RequestMapping(value = "/web/postage", method = RequestMethod.POST)
     public ResponseEntity<MResult> addPostageModel(
             @RequestParam(value = "dealerId", required = false) String dealerId,
             @RequestParam(value = "modelId", required = false) String modelId,
@@ -112,7 +110,7 @@ public class PostageAgent {
      * @param modelDescription  模板说明
      * @return
      */
-    @RequestMapping(value = "", method = RequestMethod.PUT)
+    @RequestMapping(value = "/web/postage", method = RequestMethod.PUT)
     public ResponseEntity<MResult> modifyPostageModel(
             @RequestParam(value = "dealerId", required = false) String dealerId,
             @RequestParam(value = "modelId", required = false) String modelId,
@@ -123,7 +121,7 @@ public class PostageAgent {
         MResult result = new MResult(MCode.V_1);
         try {
             PostageModelCommand command = new PostageModelCommand(dealerId, modelId, modelName, chargeType, modelDescription, postageModelRules);
-            String _attach= request.getHeader("attach");
+            String _attach = request.getHeader("attach");
             postageModelApplication.modifyPostageModel(command, _attach);
             result.setStatus(MCode.V_200);
         } catch (NegativeException ne) {
@@ -136,14 +134,14 @@ public class PostageAgent {
         return new ResponseEntity<MResult>(result, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/web/postage", method = RequestMethod.DELETE)
     public ResponseEntity<MResult> delPostageModel(
             @RequestParam(value = "dealerId", required = false) String dealerId,
             @RequestParam(value = "modelId", required = false) String modelId) {
         MResult result = new MResult(MCode.V_1);
         try {
             PostageModelCommand command = new PostageModelCommand(dealerId, modelId);
-            String _attach= request.getHeader("attach");
+            String _attach = request.getHeader("attach");
             postageModelApplication.delPostageModel(command, _attach);
             result.setStatus(MCode.V_200);
         } catch (NegativeException ne) {
@@ -162,7 +160,7 @@ public class PostageAgent {
      * @param dealerId 经销商ID
      * @return
      */
-    @RequestMapping(value = "", method = RequestMethod.GET)
+    @RequestMapping(value = "/web/postage", method = RequestMethod.GET)
     public ResponseEntity<MResult> getPostageModel(
             @RequestParam(value = "dealerId", required = false) String dealerId) {
         MResult result = new MResult(MCode.V_1);
@@ -187,7 +185,7 @@ public class PostageAgent {
         return new ResponseEntity<MResult>(result, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "{modelId}", method = RequestMethod.GET)
+    @RequestMapping(value = "/web/postage/{modelId}", method = RequestMethod.GET)
     public ResponseEntity<MResult> postageModelDetail(
             @PathVariable("modelId") String modelId) {
         MResult result = new MResult(MCode.V_1);
@@ -204,23 +202,7 @@ public class PostageAgent {
         return new ResponseEntity<MResult>(result, HttpStatus.OK);
     }
 
-   /* @RequestMapping(value = "/rule", method = RequestMethod.GET)
-    public ResponseEntity<MResult> postageModelRule(
-            @RequestParam(value = "skuIds", required = false) List<String> skuIds,
-            @RequestParam(value = "cityCode", required = false) String cityCode) {
-        MResult result = new MResult(MCode.V_1);
-        try {
-            Map<String, PostageModelRuleRepresentation> map = postageModelQueryApplication.getGoodsPostageRule(skuIds, cityCode);
-            result.setContent(map);
-            result.setStatus(MCode.V_200);
-        } catch (Exception e) {
-            LOGGER.error("postageModelRule Exception e:", e);
-            result = new MResult(MCode.V_400, "查询运费模板规则失败");
-        }
-        return new ResponseEntity<MResult>(result, HttpStatus.OK);
-    }*/
-
-    @RequestMapping(value = "/rule", method = RequestMethod.GET)
+    @RequestMapping(value = "/postage/rule", method = RequestMethod.GET)
     public ResponseEntity<MResult> postageModelRule(
             @RequestParam(value = "goodsIds", required = false) List<String> goodsIds,
             @RequestParam(value = "cityCode", required = false) String cityCode) {

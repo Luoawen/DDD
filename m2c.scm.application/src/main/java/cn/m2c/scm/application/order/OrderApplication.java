@@ -270,7 +270,7 @@ public class OrderApplication {
         Iterator<String> it = specialPriceMap.keySet().iterator();
         while (it.hasNext()) {
             String key = it.next();
-            String specialPrice = (specialPriceMap.get(key) == null ? 0:specialPriceMap.get(key).specialPrice())+"";
+            String specialPrice = (specialPriceMap.get(key) == null ? String.valueOf(0):String.valueOf(specialPriceMap.get(key).specialPrice()));
             if(!StringUtils.isEmpty(specialPrice)){
                 for(GoodsDto d : gdes){
                     if(!StringUtils.isEmpty(d.getAppSpecialPrice()) && d.getSkuId().equals(key)){

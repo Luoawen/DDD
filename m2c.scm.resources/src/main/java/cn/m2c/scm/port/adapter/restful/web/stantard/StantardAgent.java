@@ -24,7 +24,6 @@ import cn.m2c.scm.domain.IDGenerator;
 import cn.m2c.scm.domain.NegativeException;
 
 @Controller
-@RequestMapping("/stantard")
 public class StantardAgent {
 	private final static Logger LOGGER = LoggerFactory.getLogger(StantardAgent.class);
 	
@@ -35,7 +34,7 @@ public class StantardAgent {
 	@Autowired
 	StantardQuery stantardQuery;
 	
-	@RequestMapping(value = "/id",method = RequestMethod.GET)
+	@RequestMapping(value = "/stantard/id",method = RequestMethod.GET)
 	public ResponseEntity<MResult> getStantardId(){
 		MResult result = new MResult(MCode.V_1);
         try {
@@ -54,7 +53,7 @@ public class StantardAgent {
 	 * @param stantardName
 	 * @return
 	 */
-	@RequestMapping(value = "/mng", method = RequestMethod.POST)
+	@RequestMapping(value = "/stantard/mng", method = RequestMethod.POST)
 	@RequirePermissions(value ={"scm:size:add"})
 	public ResponseEntity<MResult> addStandart(@RequestParam(value = "stantardName",required = false) String stantardName,
 			@RequestParam(value = "stantardId",required = false) String stantardId){
@@ -78,7 +77,7 @@ public class StantardAgent {
 	 * @param stantardName
 	 * @return
 	 */
-	@RequestMapping(value = "/mng", method = RequestMethod.DELETE)
+	@RequestMapping(value = "/stantard/mng", method = RequestMethod.DELETE)
 	@RequirePermissions(value ={"scm:size:delete"})
 	public ResponseEntity<MResult> delUnit(@RequestParam(value = "stantardId", required = false) String stantardId) {
 		MResult result = new MResult(MCode.V_1);
@@ -101,7 +100,7 @@ public class StantardAgent {
 	 * @param stantardName
 	 * @return
 	 */
-	@RequestMapping(value = "/mng", method = RequestMethod.PUT)
+	@RequestMapping(value = "/stantard/mng", method = RequestMethod.PUT)
 	@RequirePermissions(value ={"scm:size:update"})
 	public ResponseEntity<MResult> updateUnit(
 			@RequestParam(value = "stantardId", required = false) String stantardId,
@@ -127,7 +126,7 @@ public class StantardAgent {
 	 * @param rows
 	 * @return
 	 */
-	@RequestMapping(value = "", method = RequestMethod.GET)
+	@RequestMapping(value = {"/stantard","/web/stantard"}, method = RequestMethod.GET)
 	public ResponseEntity<MPager> list(
 			@RequestParam(value = "pageNum", required = false) Integer pageNum,
 			@RequestParam(value = "rows", required = false) Integer rows) {
@@ -154,7 +153,7 @@ public class StantardAgent {
 	 * @param stantardId
 	 * @return
 	 */
-	@RequestMapping(value = "/stantard", method = RequestMethod.GET)
+	@RequestMapping(value = "/stantard/stantard", method = RequestMethod.GET)
 	public ResponseEntity<MResult> getStantard(@RequestParam("stantardId") String stantardId) {
 		MResult result = new MResult(MCode.V_1);
 		try {

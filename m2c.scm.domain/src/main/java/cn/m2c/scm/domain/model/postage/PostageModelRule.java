@@ -77,10 +77,10 @@ public class PostageModelRule extends IdentifiedValueObject {
         this.cityCode = cityCode;
         this.firstWeight = firstWeight;
         this.firstPiece = firstPiece;
-        this.firstPostage = firstPostage * 10000;
+        this.firstPostage = firstPostage;
         this.continuedWeight = continuedWeight;
         this.continuedPiece = continuedPiece;
-        this.continuedPostage = continuedPostage * 10000;
+        this.continuedPostage = continuedPostage;
         this.defaultFlag = defaultFlag;
     }
 }

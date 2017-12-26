@@ -19,9 +19,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * 商品
@@ -93,7 +92,7 @@ public class AdminGoodsAgent {
      * @return
      */
     @RequestMapping(value = "/admin/goods/recognized/{goodsId}", method = RequestMethod.PUT)
-    @RequirePermissions(value = {"scm:goodsStorage:modifyRecognized"})
+    //@RequirePermissions(value = {"scm:goodsStorage:modifyRecognized"})
     public ResponseEntity<MResult> modifyRecognized(
             @PathVariable("goodsId") String goodsId,
             @RequestParam(value = "recognizedNo", required = false) String recognizedNo,
@@ -123,7 +122,7 @@ public class AdminGoodsAgent {
      * @return
      */
     @RequestMapping(value = "/admin/goods/recognized/{goodsId}", method = RequestMethod.POST)
-    @RequirePermissions(value = {"scm:goodsStorage:addRecognized"})
+    //@RequirePermissions(value = {"scm:goodsStorage:addRecognized"})
     public ResponseEntity<MResult> addRecognized(
             @PathVariable("goodsId") String goodsId,
             @RequestParam(value = "recognizedId", required = false) String recognizedId,
@@ -151,7 +150,7 @@ public class AdminGoodsAgent {
      * @return
      */
     @RequestMapping(value = "/admin/goods/recognized/{goodsId}", method = RequestMethod.DELETE)
-    @RequirePermissions(value = {"scm:goodsStorage:delRecognized"})
+    //@RequirePermissions(value = {"scm:goodsStorage:delRecognized"})
     public ResponseEntity<MResult> delRecognized(
             @PathVariable("goodsId") String goodsId,
             @RequestParam(value = "recognizedNo", required = false) String recognizedNo,

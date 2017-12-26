@@ -27,7 +27,6 @@ import cn.m2c.scm.domain.NegativeException;
 import cn.m2c.scm.port.adapter.restful.web.brand.BrandAgent;
 
 @RestController
-@RequestMapping("/unit")
 public class UnitAgent {
 	private final static Logger LOGGER = LoggerFactory.getLogger(BrandAgent.class);
 
@@ -37,7 +36,7 @@ public class UnitAgent {
 	@Autowired
 	UnitQuery unitQuery;
 	
-	@RequestMapping(value = "/id",method = RequestMethod.GET)
+	@RequestMapping(value = "/unit/id",method = RequestMethod.GET)
 	public ResponseEntity<MResult> getUnitId(){
 		MResult result = new MResult(MCode.V_1);
         try {
@@ -57,7 +56,7 @@ public class UnitAgent {
 	 * @param unitName
 	 * @return
 	 */
-	@RequestMapping(value = "/mng", method = RequestMethod.POST)
+	@RequestMapping(value = "/unit/mng", method = RequestMethod.POST)
 	@RequirePermissions(value ={"scm:unit:add"})
 	public ResponseEntity<MResult> addUnit(@RequestParam(value = "unitName", required = false) String unitName,
 			@RequestParam(value = "unitId", required = false) String unitId) {
@@ -82,7 +81,7 @@ public class UnitAgent {
 	 * @param unitName
 	 * @return
 	 */
-	@RequestMapping(value = "/mng", method = RequestMethod.DELETE)
+	@RequestMapping(value = "/unit/mng", method = RequestMethod.DELETE)
 	@RequirePermissions(value ={"scm:unit:delete"})
 	public ResponseEntity<MResult> delUnit(@RequestParam(value = "unitId", required = false) String unitId) {
 		MResult result = new MResult(MCode.V_1);
@@ -105,7 +104,7 @@ public class UnitAgent {
 	 * @param unitName
 	 * @return
 	 */
-	@RequestMapping(value = "/mng", method = RequestMethod.PUT)
+	@RequestMapping(value = "/unit/mng", method = RequestMethod.PUT)
 	@RequirePermissions(value ={"scm:unit:update"})
 	public ResponseEntity<MResult> updateUnit(
 			@RequestParam(value = "unitId", required = false) String unitId,
@@ -131,7 +130,7 @@ public class UnitAgent {
 	 * @param rows
 	 * @return
 	 */
-	@RequestMapping(value = "", method = RequestMethod.GET)
+	@RequestMapping(value = {"/web/unit","/unit"}, method = RequestMethod.GET)
 	public ResponseEntity<MPager> list(
 			@RequestParam(value = "pageNum", required = false) Integer pageNum,
 			@RequestParam(value = "rows", required = false) Integer rows) {
@@ -156,7 +155,7 @@ public class UnitAgent {
 	 * @param unitId
 	 * @return
 	 */
-	@RequestMapping(value = "/unit", method = RequestMethod.GET)
+	@RequestMapping(value = "/unit/unit", method = RequestMethod.GET)
 	public ResponseEntity<MResult> getUnit(@RequestParam(value = "unitId", required = false) String unitId){
 		MResult result = new MResult(MCode.V_1);
 		try {
@@ -172,7 +171,7 @@ public class UnitAgent {
 		return new ResponseEntity<MResult>(result,HttpStatus.OK);
 	}
 	
-	@RequestMapping(value = "/suibian", method = RequestMethod.GET)
+	@RequestMapping(value = "/unit/suibian", method = RequestMethod.GET)
 	public ResponseEntity<MResult> mathMonde(){
 		
 		MResult result = new MResult(MCode.V_1);

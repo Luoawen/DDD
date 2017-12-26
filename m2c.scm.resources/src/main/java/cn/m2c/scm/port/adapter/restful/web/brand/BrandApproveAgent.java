@@ -25,16 +25,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * 品牌审核信息
  */
 @RestController
-@RequestMapping("/brand/approve")
 public class BrandApproveAgent {
     private final static Logger LOGGER = LoggerFactory.getLogger(BrandApproveAgent.class);
 
@@ -44,14 +42,14 @@ public class BrandApproveAgent {
     BrandApproveQueryApplication brandApproveQueryApplication;
 
     @Autowired
-	private  HttpServletRequest request;
-    
+    private HttpServletRequest request;
+
     /**
      * 获取ID
      *
      * @return
      */
-    @RequestMapping(value = "/id", method = RequestMethod.GET)
+    @RequestMapping(value = "/web/brand/approve/id", method = RequestMethod.GET)
     public ResponseEntity<MResult> getBrandApproveId() {
         MResult result = new MResult(MCode.V_1);
         try {
@@ -82,7 +80,7 @@ public class BrandApproveAgent {
      * @param threeAreaName 三级区域名称
      * @return
      */
-    @RequestMapping(value = "", method = RequestMethod.POST)
+    @RequestMapping(value = "/web/brand/approve", method = RequestMethod.POST)
     public ResponseEntity<MResult> addBrandApprove(
             @RequestParam(value = "dealerId", required = false) String dealerId,
             @RequestParam(value = "dealerName", required = false) String dealerName,
@@ -128,7 +126,7 @@ public class BrandApproveAgent {
      * @param threeAreaName 三级区域名称
      * @return
      */
-    @RequestMapping(value = "/{brandId}", method = RequestMethod.POST)
+    @RequestMapping(value = "/web/brand/approve/{brandId}", method = RequestMethod.POST)
     public ResponseEntity<MResult> modifyBrand(
             @PathVariable("brandId") String brandId,
             @RequestParam(value = "dealerId", required = false) String dealerId,
@@ -146,7 +144,7 @@ public class BrandApproveAgent {
         try {
             BrandApproveCommand command = new BrandApproveCommand(null, brandId, brandName, brandNameEn, brandLogo, firstAreaCode,
                     twoAreaCode, threeAreaCode, firstAreaName, twoAreaName, threeAreaName, dealerId, dealerName);
-            String _attach= request.getHeader("attach");
+            String _attach = request.getHeader("attach");
             brandApproveApplication.modifyBrand(command, _attach);
             result.setStatus(MCode.V_200);
         } catch (NegativeException ne) {
@@ -174,7 +172,7 @@ public class BrandApproveAgent {
      * @param threeAreaName 三级区域名称
      * @return
      */
-    @RequestMapping(value = "/{approveId}", method = RequestMethod.PUT)
+    @RequestMapping(value = "/web/brand/approve/{approveId}", method = RequestMethod.PUT)
     public ResponseEntity<MResult> modifyBrandApprove(
             @PathVariable("approveId") String approveId,
             @RequestParam(value = "brandName", required = false) String brandName,
@@ -190,7 +188,7 @@ public class BrandApproveAgent {
         try {
             BrandApproveCommand command = new BrandApproveCommand(approveId, brandName, brandNameEn, brandLogo, firstAreaCode,
                     twoAreaCode, threeAreaCode, firstAreaName, twoAreaName, threeAreaName);
-            String _attach= request.getHeader("attach");
+            String _attach = request.getHeader("attach");
             brandApproveApplication.modifyBrandApprove(command, _attach);
             result.setStatus(MCode.V_200);
         } catch (NegativeException ne) {
@@ -210,8 +208,8 @@ public class BrandApproveAgent {
      * @param brandId
      * @return
      */
-    @RequestMapping(value = "/mng/agree", method = RequestMethod.POST)
-    @RequirePermissions(value ={"scm:brandApprove:agree"})
+    @RequestMapping(value = "/brand/approve/mng/agree", method = RequestMethod.POST)
+    @RequirePermissions(value = {"scm:brandApprove:agree"})
     public ResponseEntity<MResult> brandApproveAgree(
             @RequestParam(value = "approveId", required = false) String approveId,
             @RequestParam(value = "brandId", required = false) String brandId
@@ -219,7 +217,7 @@ public class BrandApproveAgent {
         MResult result = new MResult(MCode.V_1);
         BrandApproveAgreeCommand command = new BrandApproveAgreeCommand(brandId, approveId);
         try {
-        	String _attach= request.getHeader("attach");
+            String _attach = request.getHeader("attach");
             brandApproveApplication.agreeBrandApprove(command, _attach);
             result.setStatus(MCode.V_200);
         } catch (NegativeException ne) {
@@ -231,8 +229,7 @@ public class BrandApproveAgent {
         }
         return new ResponseEntity<MResult>(result, HttpStatus.OK);
     }
-    
-   
+
 
     /**
      * 商家管理平台审核拒绝
@@ -241,8 +238,8 @@ public class BrandApproveAgent {
      * @param rejectReason
      * @return
      */
-    @RequestMapping(value = "/mng/reject", method = RequestMethod.POST)
-    @RequirePermissions(value ={"scm:brandApprove:reject"})
+    @RequestMapping(value = "/brand/approve/mng/reject", method = RequestMethod.POST)
+    @RequirePermissions(value = {"scm:brandApprove:reject"})
     public ResponseEntity<MResult> brandApproveReject(
             @RequestParam(value = "approveId", required = false) String approveId,
             @RequestParam(value = "rejectReason", required = false) String rejectReason
@@ -250,7 +247,7 @@ public class BrandApproveAgent {
         MResult result = new MResult(MCode.V_1);
         BrandApproveRejectCommand command = new BrandApproveRejectCommand(approveId, rejectReason);
         try {
-        	String _attach= request.getHeader("attach");
+            String _attach = request.getHeader("attach");
             brandApproveApplication.rejectBrandApprove(command, _attach);
             result.setStatus(MCode.V_200);
         } catch (NegativeException ne) {
@@ -262,8 +259,7 @@ public class BrandApproveAgent {
         }
         return new ResponseEntity<MResult>(result, HttpStatus.OK);
     }
-    
-   
+
 
     /**
      * 删除品牌审核信息
@@ -271,12 +267,12 @@ public class BrandApproveAgent {
      * @param approveId
      * @return
      */
-    @RequestMapping(value = "/{approveId}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/web/brand/approve/{approveId}", method = RequestMethod.DELETE)
     public ResponseEntity<MResult> deleteBrandApprove(
             @PathVariable("approveId") String approveId) {
         MResult result = new MResult(MCode.V_1);
         try {
-        	String _attach= request.getHeader("attach");
+            String _attach = request.getHeader("attach");
             brandApproveApplication.delBrandApprove(approveId, _attach);
             result.setStatus(MCode.V_200);
         } catch (NegativeException ne) {
@@ -301,7 +297,7 @@ public class BrandApproveAgent {
      * @param rows      每页多少行
      * @return
      */
-    @RequestMapping(value = "", method = RequestMethod.GET)
+    @RequestMapping(value = {"/web/brand/approve", "/brand/approve"}, method = RequestMethod.GET)
     public ResponseEntity<MPager> queryBrandApprove(
             @RequestParam(value = "approveStatus", required = false) Integer approveStatus,//品牌审批状态，1：审批中，2：审批不通过
             @RequestParam(value = "dealerId", required = false) String dealerId,
@@ -341,7 +337,7 @@ public class BrandApproveAgent {
      * @param approveId
      * @return
      */
-    @RequestMapping(value = "/{approveId}", method = RequestMethod.GET)
+    @RequestMapping(value = {"/web/brand/approve/{approveId}", "/brand/approve/{approveId}"}, method = RequestMethod.GET)
     public ResponseEntity<MResult> queryBrandApproveDetail(@PathVariable("approveId") String approveId) {
         MResult result = new MResult(MCode.V_1);
         try {

@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author ps
  */
 @RestController
-@RequestMapping("/after/sale/address")
+@RequestMapping("/web/after/sale/address")
 public class AfterSaleAddressAgent {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(AfterSaleAddressAgent.class);

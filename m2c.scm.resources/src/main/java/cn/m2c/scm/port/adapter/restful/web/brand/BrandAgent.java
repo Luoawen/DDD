@@ -24,17 +24,15 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * 品牌信息
  */
 @RestController
-@RequestMapping("/brand")
 public class BrandAgent {
     private final static Logger LOGGER = LoggerFactory.getLogger(BrandAgent.class);
 
@@ -44,14 +42,14 @@ public class BrandAgent {
     BrandQueryApplication brandQueryApplication;
 
     @Autowired
-	private  HttpServletRequest request;
-    
+    private HttpServletRequest request;
+
     /**
      * 获取ID
      *
      * @return
      */
-    @RequestMapping(value = "/id", method = RequestMethod.GET)
+    @RequestMapping(value = "/brand/id", method = RequestMethod.GET)
     public ResponseEntity<MResult> getBrandId() {
         MResult result = new MResult(MCode.V_1);
         try {
@@ -81,8 +79,8 @@ public class BrandAgent {
      * @param threeAreaName 三级区域名称
      * @return
      */
-    @RequestMapping(value = "/mng", method = RequestMethod.POST)
-    @RequirePermissions(value ={"scm:brand:add"})
+    @RequestMapping(value = "/brand/mng", method = RequestMethod.POST)
+    @RequirePermissions(value = {"scm:brand:add"})
     public ResponseEntity<MResult> addBrand(
             @RequestParam(value = "brandId", required = false) String brandId,
             @RequestParam(value = "brandName", required = false) String brandName,
@@ -126,8 +124,8 @@ public class BrandAgent {
      * @param threeAreaName 三级区域名称
      * @return
      */
-    @RequestMapping(value = "/mng/{brandId}", method = RequestMethod.PUT)
-    @RequirePermissions(value ={"scm:brand:modify"})
+    @RequestMapping(value = "/brand/mng/{brandId}", method = RequestMethod.PUT)
+    @RequirePermissions(value = {"scm:brand:modify"})
     public ResponseEntity<MResult> modifyBrand(
             @PathVariable("brandId") String brandId,
             @RequestParam(value = "brandName", required = false) String brandName,
@@ -144,7 +142,7 @@ public class BrandAgent {
             BrandCommand command = new BrandCommand(brandId, brandName, brandNameEn, brandLogo, firstAreaCode,
                     twoAreaCode, threeAreaCode, firstAreaName, twoAreaName,
                     threeAreaName);
-            String _attach= request.getHeader("attach");
+            String _attach = request.getHeader("attach");
             brandApplication.modifyBrand(command, _attach);
             result.setStatus(MCode.V_200);
         } catch (NegativeException ne) {
@@ -163,13 +161,13 @@ public class BrandAgent {
      * @param brandId
      * @return
      */
-    @RequestMapping(value = {"/{brandId}","/mng/{brandId}"}, method = RequestMethod.DELETE)
-    @RequirePermissions(value ={"scm:brand:delete"})
+    @RequestMapping(value = {"/web/brand/{brandId}", "/brand/mng/{brandId}"}, method = RequestMethod.DELETE)
+    @RequirePermissions(value = {"scm:brand:delete"})
     public ResponseEntity<MResult> deleteBrand(
             @PathVariable("brandId") String brandId) {
         MResult result = new MResult(MCode.V_1);
         try {
-        	String _attach= request.getHeader("attach");
+            String _attach = request.getHeader("attach");
             brandApplication.delBrand(brandId, _attach);
             result.setStatus(MCode.V_200);
         } catch (NegativeException ne) {
@@ -194,7 +192,7 @@ public class BrandAgent {
      * @param rows      每页多少行
      * @return
      */
-    @RequestMapping(value = "", method = RequestMethod.GET)
+    @RequestMapping(value = {"/web/brand", "/brand"}, method = RequestMethod.GET)
     public ResponseEntity<MPager> queryBrand(
             @RequestParam(value = "dealerId", required = false) String dealerId,
             @RequestParam(value = "brandName", required = false) String brandName,
@@ -233,7 +231,7 @@ public class BrandAgent {
      * @param brandId
      * @return
      */
-    @RequestMapping(value = "/{brandId}", method = RequestMethod.GET)
+    @RequestMapping(value = {"/web/brand/{brandId}", "/brand/{brandId}"}, method = RequestMethod.GET)
     public ResponseEntity<MResult> queryBrandDetail(@PathVariable("brandId") String brandId) {
         MResult result = new MResult(MCode.V_1);
         try {
@@ -249,7 +247,7 @@ public class BrandAgent {
         return new ResponseEntity<MResult>(result, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/choice", method = RequestMethod.GET)
+    @RequestMapping(value = "/web/brand/choice", method = RequestMethod.GET)
     public ResponseEntity<MResult> queryBrandChoice(
             @RequestParam(value = "brandName", required = false) String brandName) {
         MResult result = new MResult(MCode.V_1);
