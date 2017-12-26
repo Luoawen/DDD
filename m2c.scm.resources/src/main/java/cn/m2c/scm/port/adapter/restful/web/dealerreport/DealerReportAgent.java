@@ -104,7 +104,7 @@ public class DealerReportAgent {
             Integer eightDay = Integer.parseInt(df.format(cal.getTime()));
             List<DealerDayReportBean> eightList = dealerReportQueryApplication.getDealerReportByDay(dealerId, eightDay);
             Map eightMap = getDealerDayReportData(eightList);
-            Long eightSellMoney = Long.parseLong(eightMap.get("sellMoney").toString());
+            Long eightSellMoney = new BigDecimal(Float.parseFloat(eightMap.get("sellMoney").toString()) * 10000).longValue();
 
             List<Integer> days = nearly7DaysTime();
             List<DealerDayReportBean> list = dealerReportQueryApplication.getDealerReportByDaySection(dealerId, days.get(0), days.get(days.size() - 1));
@@ -188,7 +188,7 @@ public class DealerReportAgent {
         map.put("orderRefundNum", orderRefundNum);
         map.put("goodsAddNum", goodsAddNum);
         map.put("sellMoney", Utils.moneyFormatCN(sellMoney));
-        map.put("refundMoney",  Utils.moneyFormatCN(refundMoney));
+        map.put("refundMoney", Utils.moneyFormatCN(refundMoney));
         map.put("goodsCommentNum", goodsCommentNum);
         return map;
     }
