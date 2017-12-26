@@ -249,9 +249,9 @@ public class GoodsSpecialQueryApplication {
     			GoodsSkuSpecialDetailAllBeanRepresentation representation = new GoodsSkuSpecialDetailAllBeanRepresentation(goodsSkuSpecialBean);
     			GoodsSkuBean goodsSkuBean = goodsQueryApplication.queryGoodsSkuBeanBySkuId(representation.getSkuId());
     			//原供货价
-    			representation.setGoodsSupplyPrice(goodsSkuBean.getSupplyPrice());
+    			representation.setGoodsSupplyPrice(Utils.moneyFormatCN(goodsSkuBean.getSupplyPrice()));
     			//原拍获价
-    			representation.setGoodsSkuPrice(goodsSkuBean.getPhotographPrice());
+    			representation.setGoodsSkuPrice(Utils.moneyFormatCN(goodsSkuBean.getPhotographPrice()));
     			list.add(representation);
     		}
     	}

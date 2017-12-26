@@ -1,9 +1,10 @@
 package cn.m2c.scm.application.special.data.representation;
 
-import java.util.Date;
-
 import cn.m2c.scm.application.special.data.bean.GoodsSkuSpecialBean;
 import cn.m2c.scm.application.special.data.bean.GoodsSpecialBean;
+import cn.m2c.scm.application.utils.Utils;
+
+import java.util.Date;
 
 /**
  * 特惠价列表表述对象
@@ -28,7 +29,7 @@ public class GoodsSpecialListRepresentation {
     /**
      * 页面展示最小特惠价
      */
-    private Long specialPriceMin;
+    private String specialPriceMin;
     
     public GoodsSpecialListRepresentation(GoodsSpecialBean goodsSpecialBean){
     	this.specialId = goodsSpecialBean.getSpecialId().toString();
@@ -50,7 +51,7 @@ public class GoodsSpecialListRepresentation {
     			specialPriceMinCompare = goodsSkuSpecialBean.getSpecialPrice();
     		}
     	}
-    	this.specialPriceMin = specialPriceMinCompare;
+    	this.specialPriceMin = Utils.moneyFormatCN(specialPriceMinCompare);
     }
     
 	public String getSpecialId() {
@@ -131,10 +132,10 @@ public class GoodsSpecialListRepresentation {
 	public void setGoodsSkuSpecials(List<Map> goodsSkuSpecials) {
 		this.goodsSkuSpecials = goodsSkuSpecials;
 	}*/
-	public Long getSpecialPriceMin() {
+	public String getSpecialPriceMin() {
 		return specialPriceMin;
 	}
-	public void setSpecialPriceMin(Long specialPriceMin) {
+	public void setSpecialPriceMin(String specialPriceMin) {
 		this.specialPriceMin = specialPriceMin;
 	}
 }

@@ -1,6 +1,7 @@
 package cn.m2c.scm.application.special.data.representation;
 
 import cn.m2c.scm.application.special.data.bean.GoodsSkuSpecialBean;
+import cn.m2c.scm.application.utils.Utils;
 
 /**
  * 商品特惠价详情表述对象(包含原供货价和拍获价)
@@ -12,26 +13,26 @@ public class GoodsSkuSpecialDetailAllBeanRepresentation {
     /**
      * 供货价
      */
-    private Long supplyPrice;
+    private String supplyPrice;
     /**
      * 特惠价
      */
-    private Long specialPrice;
+    private String specialPrice;
     /**
      * 原供货价
      */
-    private Long goodsSupplyPrice;
+    private String goodsSupplyPrice;
     /**
      * 原拍获价
      */
-    private Long goodsSkuPrice;
+    private String goodsSkuPrice;
     
     public GoodsSkuSpecialDetailAllBeanRepresentation(GoodsSkuSpecialBean bean) {
     	this.specialId = bean.getSpecialId();
     	this.skuId = bean.getSkuId();
     	this.skuName = bean.getSkuName();
-    	this.supplyPrice = bean.getSupplyPrice();
-    	this.specialPrice = bean.getSpecialPrice();
+    	this.supplyPrice =  Utils.moneyFormatCN(bean.getSupplyPrice());
+    	this.specialPrice =  Utils.moneyFormatCN(bean.getSpecialPrice());
     	//this.goodsSupplyPrice = bean.getGoodsSupplyPrice();
     	//this.goodsSkuPrice = bean.getGoodsSkuPrice();
     }
@@ -60,35 +61,35 @@ public class GoodsSkuSpecialDetailAllBeanRepresentation {
 		this.skuName = skuName;
 	}
 
-	public Long getSupplyPrice() {
+	public String getSupplyPrice() {
 		return supplyPrice;
 	}
 
-	public void setSupplyPrice(Long supplyPrice) {
+	public void setSupplyPrice(String supplyPrice) {
 		this.supplyPrice = supplyPrice;
 	}
 
-	public Long getSpecialPrice() {
+	public String getSpecialPrice() {
 		return specialPrice;
 	}
 
-	public void setSpecialPrice(Long specialPrice) {
+	public void setSpecialPrice(String specialPrice) {
 		this.specialPrice = specialPrice;
 	}
 
-	public Long getGoodsSupplyPrice() {
+	public String getGoodsSupplyPrice() {
 		return goodsSupplyPrice;
 	}
 
-	public void setGoodsSupplyPrice(Long goodsSupplyPrice) {
+	public void setGoodsSupplyPrice(String goodsSupplyPrice) {
 		this.goodsSupplyPrice = goodsSupplyPrice;
 	}
 
-	public Long getGoodsSkuPrice() {
+	public String getGoodsSkuPrice() {
 		return goodsSkuPrice;
 	}
 
-	public void setGoodsSkuPrice(Long goodsSkuPrice) {
+	public void setGoodsSkuPrice(String goodsSkuPrice) {
 		this.goodsSkuPrice = goodsSkuPrice;
 	}
     
