@@ -79,7 +79,7 @@ public class DealerOrderAgent {
 	 *            每页多少行
 	 * @return
 	 */
-	@RequestMapping(value = "/dealerorderlist", method = RequestMethod.GET)
+	@RequestMapping(value = {"/dealerorderlist", "/web/dealerorderlist"}, method = RequestMethod.GET)
 	public ResponseEntity<MPager> getDealerOrderList(
 			@RequestParam(value = "dealerId", required = false) String dealerId,
 			@RequestParam(value = "dealerOrderId", required = false) String dealerOrderId,
