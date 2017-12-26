@@ -8,6 +8,7 @@ import cn.m2c.scm.domain.util.GetMapValueUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -92,6 +93,11 @@ public class PostageModelCommand extends AssertionConcern implements Serializabl
                     size = size + cityCodeSet.size();
                     set.addAll(cityCodeSet);
                 }
+
+                Long firstPostage = new BigDecimal(GetMapValueUtils.getFloatFromMapKey(map, "firstPostage") * 10000).longValue();
+                Long continuedPostage = new BigDecimal(GetMapValueUtils.getFloatFromMapKey(map, "continuedPostage") * 10000).longValue();
+                map.put("firstPostage", firstPostage);
+                map.put("continuedPostage", continuedPostage);
             }
             if (!size.equals(set.size())) { //城市编码冲突
                 throw new NegativeException(MCode.V_1, "运费模板指定地区规则冲突");
@@ -102,7 +108,7 @@ public class PostageModelCommand extends AssertionConcern implements Serializabl
         this.modelName = modelName;
         this.chargeType = chargeType;
         this.modelDescription = modelDescription;
-        this.postageModelRule = postageModelRule;
+        this.postageModelRule = JsonUtils.toStr(ruleList);
     }
 
     public String getDealerId() {
