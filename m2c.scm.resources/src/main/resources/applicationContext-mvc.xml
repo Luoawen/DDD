@@ -65,16 +65,7 @@
 	</bean>
 
 	<bean id="conversionService" class="org.springframework.format.support.FormattingConversionServiceFactoryBean" />
-	<!--  
-	<mvc:interceptors>	
-		<mvc:interceptor >
-			<mvc:mapping path="/**" />
-			<mvc:exclude-mapping path="/index.html"/>
-			<mvc:exclude-mapping path="/"/>
-			<bean class="cn.m2c.support.interfaces.LoginInterceptor" />		
-		</mvc:interceptor>
-	</mvc:interceptors>
-	-->
+	
 	 <mvc:interceptors>
 		<mvc:interceptor>
 			<mvc:mapping path="/**/mng" />
@@ -93,6 +84,7 @@
 		</mvc:interceptor>		
 		<mvc:interceptor>
             <mvc:mapping path="/**/web/**" /> <!-- 拦截C端系统所有的请求接口，除登录找回密码等接口 -->
+            <mvc:exclude-mapping path="/**/export/**"/>
             <bean class="cn.m2c.common.permission.interceptor.AuthorizationInterceptor" />
        </mvc:interceptor>
 	</mvc:interceptors> 
