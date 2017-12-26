@@ -28,7 +28,7 @@ import java.util.List;
  * @author ps
  */
 @RestController
-@RequestMapping("/goods/spec/value")
+@RequestMapping("/web/goods/spec/value")
 public class GoodsSpecValueAgent {
     private final static Logger LOGGER = LoggerFactory.getLogger(GoodsSpecValueAgent.class);
     @Autowired

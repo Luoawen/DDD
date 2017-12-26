@@ -132,7 +132,7 @@ public class OrderAgent {
 	 * @param dealerOrderId
 	 * @return
 	 */
-	@RequestMapping(value = "/dealer/orderdetail",method = RequestMethod.GET)
+	@RequestMapping(value = {"/dealer/orderdetail", "/web/dealer/orderdetail"},method = RequestMethod.GET)
 	public ResponseEntity<MResult> getDealerOrderDetail(@RequestParam(value = "dealerOrderId",required = false)String dealerOrderId){
 		MResult result = new MResult(MCode.V_1);
 		try {
@@ -152,7 +152,7 @@ public class OrderAgent {
 	 * @param dealerId
 	 * @return
 	 */
-	@RequestMapping(value="/dealer/agree-apply-sale", method=RequestMethod.PUT)
+	@RequestMapping(value= {"/dealer/agree-apply-sale", "/web/dealer/agree-apply-sale"}, method=RequestMethod.PUT)
 	public ResponseEntity<MResult> agreeApplySaleAfter(
 			@RequestParam(value = "userId", required = false) String userId
             ,@RequestParam(value = "saleAfterNo", required = false) String saleAfterNo
@@ -185,7 +185,7 @@ public class OrderAgent {
 	 * @param rejectReason
 	 * @return
 	 */
-	@RequestMapping(value="/dealer/reject-apply-sale", method=RequestMethod.PUT)
+	@RequestMapping(value= {"/dealer/reject-apply-sale", "/web/dealer/reject-apply-sale"}, method=RequestMethod.PUT)
 	public ResponseEntity<MResult> rejectApplySaleAftet(@RequestParam(value = "userId", required = false) String userId
             ,@RequestParam(value = "saleAfterNo", required = false) String saleAfterNo
             ,@RequestParam(value = "dealerId", required = false) String dealerId
@@ -215,7 +215,7 @@ public class OrderAgent {
      * @param orderId
      * @return
      */
-    @RequestMapping(value = "/aftersale/dealer/ship", method = RequestMethod.PUT)
+    @RequestMapping(value = {"/aftersale/dealer/ship", "/web/aftersale/dealer/ship"}, method = RequestMethod.PUT)
     public ResponseEntity<MResult> afterSaleShip(
     		@RequestParam(value = "orderId",required = false) String orderId,
     		@RequestParam(value = "shopName",required = false) String shopName,
@@ -254,7 +254,7 @@ public class OrderAgent {
      * @param orderId
      * @return
      */
-    @RequestMapping(value = "/aftersale/dealer-rev", method = RequestMethod.PUT)
+    @RequestMapping(value = {"/aftersale/dealer-rev", "/web/aftersale/dealer-rev"}, method = RequestMethod.PUT)
     public ResponseEntity<MResult> userConfirmRev(
             @RequestParam(value = "userId", required = false) String userId
             ,@RequestParam(value = "skuId", required = false) String skuId
@@ -283,7 +283,7 @@ public class OrderAgent {
      * @param orderId
      * @return
      */
-    @RequestMapping(value = "/aftersale/dealer/agree-rt-money", method = RequestMethod.PUT)
+    @RequestMapping(value = {"/aftersale/dealer/agree-rt-money", "/web/aftersale/dealer/agree-rt-money"}, method = RequestMethod.PUT)
     public ResponseEntity<MResult> agreeBackMoney(
             @RequestParam(value = "userId", required = false) String userId
             ,@RequestParam(value = "skuId", required = false) String skuId
@@ -358,7 +358,7 @@ public class OrderAgent {
       *2更新状态为已发货
       *3发出已发货事件（先不做，后期需要再做）
      */
-    @RequestMapping(value="/dealer/sendOrder", method = RequestMethod.PUT)
+    @RequestMapping(value= {"/dealer/sendOrder", "/web/dealer/sendOrder"}, method = RequestMethod.PUT)
     public ResponseEntity<MResult> sendOrder(
     		@RequestParam(value = "dealerOrderId", required = false) String dealerOrderId,
     		@RequestParam(value = "expressNo", required = false) String expressNo,
@@ -429,7 +429,7 @@ public class OrderAgent {
     /**
      * 查询所有物流公司信息
      */
-    @RequestMapping(value="/dealer/express", method = RequestMethod.GET)
+    @RequestMapping(value= {"/dealer/express", "/web/dealer/express"}, method = RequestMethod.GET)
     public ResponseEntity<MResult> getAllExpress(){
     	MResult result = new MResult(MCode.V_1);
     	try {
@@ -445,7 +445,7 @@ public class OrderAgent {
 	/**
 	 * 查询操作日志
 	 */
-	@RequestMapping(value = "/logs/{dealerOrderId}", method = RequestMethod.GET)
+	@RequestMapping(value = {"/logs/{dealerOrderId}","/web/logs/{dealerOrderId}"}, method = RequestMethod.GET)
 	public ResponseEntity<MPager> getOrderLogs(@PathVariable("dealerOrderId") String dealerOrderId,
 			@RequestParam(value = "orderId", required = false) String orderId,
 			@RequestParam(value = "pageNum", required = false, defaultValue = "1") Integer pageNum,
@@ -470,7 +470,7 @@ public class OrderAgent {
 	 * @param dealerOrderId
 	 * @return
 	 */
-	@RequestMapping(value = "/dealer/expressDetail", method = RequestMethod.GET)
+	@RequestMapping(value = {"/dealer/expressDetail", "/web/dealer/expressDetail"}, method = RequestMethod.GET)
 	public ResponseEntity<MResult> getOrderDetailExpress(
 			@RequestParam(value = "dealerOrderId", required = true) String dealerOrderId){
 		MResult result = new MResult(MCode.V_1);

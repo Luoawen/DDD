@@ -47,7 +47,6 @@ import java.util.Map;
  * @author ps
  */
 @RestController
-@RequestMapping("/goods")
 public class GoodsAgent {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(GoodsAgent.class);
@@ -92,7 +91,7 @@ public class GoodsAgent {
      * @param goodsSKUs        商品sku规格列表,格式：[{"availableNum":200,"goodsCode":"111111","marketPrice":6000,"photographPrice":5000,"showStatus":2,"skuId":"SPSHA5BDED943A1D42CC9111B3723B0987BF","skuName":"L,红","supplyPrice":4000,"weight":20.5}]
      * @return
      */
-    @RequestMapping(value = "", method = RequestMethod.PUT)
+    @RequestMapping(value = "/web/goods", method = RequestMethod.PUT)
     public ResponseEntity<MResult> modifyGoods(
             @RequestParam(value = "goodsId", required = false) String goodsId,
             @RequestParam(value = "dealerId", required = false) String dealerId,
@@ -166,7 +165,7 @@ public class GoodsAgent {
      * @param goodsId
      * @return
      */
-    @RequestMapping(value = "/{goodsId}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/web/goods/{goodsId}", method = RequestMethod.DELETE)
     public ResponseEntity<MResult> delGoods(
             @PathVariable("goodsId") String goodsId
     ) {
@@ -191,7 +190,7 @@ public class GoodsAgent {
      * @param goodsId
      * @return
      */
-    @RequestMapping(value = {"/up/shelf/{goodsId}", "/mng/up/shelf/{goodsId}"}, method = RequestMethod.PUT)
+    @RequestMapping(value = {"/web/goods/up/shelf/{goodsId}", "/goods/mng/up/shelf/{goodsId}"}, method = RequestMethod.PUT)
     @RequirePermissions(value = {"scm:goodsStorage:upShelf"})
     public ResponseEntity<MResult> upShelfGoods(
             @PathVariable("goodsId") String goodsId
@@ -217,7 +216,7 @@ public class GoodsAgent {
      * @param goodsId
      * @return
      */
-    @RequestMapping(value = {"/off/shelf/{goodsId}", "/mng/off/shelf/{goodsId}"}, method = RequestMethod.PUT)
+    @RequestMapping(value = {"/web/goods/off/shelf/{goodsId}", "/goods/mng/off/shelf/{goodsId}"}, method = RequestMethod.PUT)
     @RequirePermissions(value = {"scm:goodsStorage:offShelf"})
     public ResponseEntity<MResult> offShelfGoods(
             @PathVariable("goodsId") String goodsId
@@ -251,7 +250,7 @@ public class GoodsAgent {
      * @param rows            每页多少行
      * @return
      */
-    @RequestMapping(value = "", method = RequestMethod.GET)
+    @RequestMapping(value = {"/web/goods", "/goods"}, method = RequestMethod.GET)
     public ResponseEntity<MPager> searchGoodsByCondition(
             @RequestParam(value = "dealerId", required = false) String dealerId,
             @RequestParam(value = "goodsClassifyId", required = false) String goodsClassifyId,
@@ -310,7 +309,7 @@ public class GoodsAgent {
      * @param isDelete 商品是否已删除，可查出已删商品所有的保障(不论保障是否删除)
      * @return
      */
-    @RequestMapping(value = "/{goodsId}", method = RequestMethod.GET)
+    @RequestMapping(value = {"/web/goods/{goodsId}", "/goods/{goodsId}"}, method = RequestMethod.GET)
     public ResponseEntity<MResult> queryGoodsDetail(
             @PathVariable("goodsId") String goodsId,
             @RequestParam(value = "isDelete", required = false) Integer isDelete
@@ -347,7 +346,7 @@ public class GoodsAgent {
      * @param goodsCode
      * @return
      */
-    @RequestMapping(value = "/code", method = RequestMethod.GET)
+    @RequestMapping(value = "/web/goods/code", method = RequestMethod.GET)
     public ResponseEntity<MResult> queryGoodsSkuByCode(
             @RequestParam(value = "dealerId", required = false) String dealerId,
             @RequestParam(value = "goodsCode", required = false) String goodsCode
@@ -380,7 +379,7 @@ public class GoodsAgent {
      * @param goodsId
      * @return
      */
-    @RequestMapping(value = "/main/image/{goodsId}", method = RequestMethod.PUT)
+    @RequestMapping(value = "/goods/main/image/{goodsId}", method = RequestMethod.PUT)
     public ResponseEntity<MResult> modifyGoodsMainImages(
             @PathVariable("goodsId") String goodsId,
             @RequestParam(value = "images", required = false) List images

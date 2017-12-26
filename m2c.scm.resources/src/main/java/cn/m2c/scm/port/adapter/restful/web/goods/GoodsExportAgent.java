@@ -32,7 +32,6 @@ import java.util.Map;
  * @author ps
  */
 @RestController
-@RequestMapping("/goods")
 public class GoodsExportAgent {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(GoodsExportAgent.class);
@@ -46,7 +45,7 @@ public class GoodsExportAgent {
     @Autowired
     PostageModelQueryApplication postageModelQueryApplication;
 
-    @RequestMapping(value = {"/export"}, method = RequestMethod.GET)
+    @RequestMapping(value = {"/web/goods/export", "/goods/export"}, method = RequestMethod.GET)
     public void exportExcel(HttpServletResponse response,
                             String dealerId, String goodsClassifyId, Integer goodsStatus,
                             String condition, String startTime, String endTime) throws Exception {
@@ -58,8 +57,8 @@ public class GoodsExportAgent {
             //结算模式 1：按供货价 2：按服务费率
             settlementMode = dealerQuery.getDealerCountMode(dealerId);
         }
-        if(StringUtils.isNotEmpty(dealerId)) {//商家平台导出，没有商家名和平台sku
-        	if (null != goodsBeanList && goodsBeanList.size() > 0) {
+        if (StringUtils.isNotEmpty(dealerId)) {//商家平台导出，没有商家名和平台sku
+            if (null != goodsBeanList && goodsBeanList.size() > 0) {
                 List<GoodsServiceRateModel> goodsServiceRateModels = new ArrayList<>();
                 List<GoodsSupplyPriceModel> goodsSupplyPriceModels = new ArrayList<>();
                 List<GoodsModel> goodsModels = new ArrayList<>();
@@ -105,8 +104,8 @@ public class GoodsExportAgent {
             } else {
                 ExcelUtil.writeExcel(response, fileName, null, GoodsModel.class);
             }
-        }else{//管理平台导出
-        	if (null != goodsBeanList && goodsBeanList.size() > 0) {
+        } else {//管理平台导出
+            if (null != goodsBeanList && goodsBeanList.size() > 0) {
                 List<GoodsServiceRateModelAll> goodsServiceRateModels = new ArrayList<>();
                 List<GoodsSupplyPriceModelAll> goodsSupplyPriceModels = new ArrayList<>();
                 List<GoodsModelAll> goodsModels = new ArrayList<>();
@@ -125,16 +124,16 @@ public class GoodsExportAgent {
                     for (GoodsSkuBean goodsSkuBean : goodsSkuBeanList) {
                         if (StringUtils.isNotEmpty(dealerId)) {
                             if (settlementMode == 2) {
-                            	GoodsServiceRateModelAll goodsServiceRateModel = new GoodsServiceRateModelAll(goodsBean, goodsSkuBean, goodsClassifyMap,
+                                GoodsServiceRateModelAll goodsServiceRateModel = new GoodsServiceRateModelAll(goodsBean, goodsSkuBean, goodsClassifyMap,
                                         serviceRate, goodsPostageName);
                                 goodsServiceRateModels.add(goodsServiceRateModel);
                             } else {
-                            	GoodsSupplyPriceModelAll goodsSupplyPriceModel = new GoodsSupplyPriceModelAll(goodsBean, goodsSkuBean, goodsClassifyMap,
+                                GoodsSupplyPriceModelAll goodsSupplyPriceModel = new GoodsSupplyPriceModelAll(goodsBean, goodsSkuBean, goodsClassifyMap,
                                         goodsPostageName);
                                 goodsSupplyPriceModels.add(goodsSupplyPriceModel);
                             }
                         } else {
-                        	GoodsModelAll goodsModel = new GoodsModelAll(goodsBean, goodsSkuBean, goodsClassifyMap, serviceRate,
+                            GoodsModelAll goodsModel = new GoodsModelAll(goodsBean, goodsSkuBean, goodsClassifyMap, serviceRate,
                                     goodsPostageName, settlementMode);
                             goodsModels.add(goodsModel);
                         }
@@ -153,6 +152,6 @@ public class GoodsExportAgent {
                 ExcelUtil.writeExcel(response, fileName, null, GoodsModelAll.class);
             }
         }
-        
+
     }
 }

@@ -28,7 +28,7 @@ import java.util.List;
  * 商品评论
  */
 @RestController
-@RequestMapping("/goods/comment")
+@RequestMapping("/")
 public class GoodsCommentAgent {
     private static final Logger LOGGER = LoggerFactory.getLogger(GoodsCommentAgent.class);
 
@@ -37,7 +37,7 @@ public class GoodsCommentAgent {
     @Autowired
     GoodsCommentApplication goodsCommentApplication;
 
-    @RequestMapping(value = "", method = RequestMethod.GET)
+    @RequestMapping(value = {"goods/comment","web/goods/comment"}, method = RequestMethod.GET)
     public ResponseEntity<MPager> queryGoodsComment(
             @RequestParam(value = "dealerId", required = false) String dealerId,
             @RequestParam(value = "replyStatus", required = false) Integer replyStatus,//回复状态 1未回复  2 已回复
@@ -81,7 +81,7 @@ public class GoodsCommentAgent {
      * @param replyContent
      * @return
      */
-    @RequestMapping(value = "/reply", method = RequestMethod.PUT)
+    @RequestMapping(value = "web/goods/comment/reply", method = RequestMethod.PUT)
     public ResponseEntity<MResult> replyComment(
             @RequestParam(value = "commentId", required = false) String commentId,
             @RequestParam(value = "replyContent", required = false) String replyContent
@@ -107,7 +107,7 @@ public class GoodsCommentAgent {
      * @param commentId
      * @return
      */
-    @RequestMapping(value = "/mng/{commentId}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "goods/comment/mng/{commentId}", method = RequestMethod.DELETE)
     @RequirePermissions(value ={"scm:goodsAppraise:delete"})
     public ResponseEntity<MResult> delComment(
             @PathVariable("commentId") String commentId
@@ -132,7 +132,7 @@ public class GoodsCommentAgent {
      *
      * @return
      */
-    @RequestMapping(value = "/over/24h/bad/comment", method = RequestMethod.POST)
+    @RequestMapping(value = "goods/comment/over/24h/bad/comment", method = RequestMethod.POST)
     public ResponseEntity<MResult> over24HBadCommentUpdateStatus() {
         MResult result = new MResult(MCode.V_1);
         try {

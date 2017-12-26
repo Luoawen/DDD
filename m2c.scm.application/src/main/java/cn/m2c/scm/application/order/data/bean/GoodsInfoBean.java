@@ -107,6 +107,8 @@ public class GoodsInfoBean {
 	}
 
 	public Long getChangePrice() {
+		if (changePrice == null)
+			changePrice = 0l;
 		return changePrice/100;
 	}
 	

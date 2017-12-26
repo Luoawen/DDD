@@ -281,7 +281,7 @@ public class DealerAgent {
 		  * @param dealerId
 		  * @return
 		  */
-		 @RequestMapping(value = "/{dealerId}", method = RequestMethod.GET)
+		 @RequestMapping(value = {"/{dealerId}" , "/web/{dealerId}"}, method = RequestMethod.GET)
 		    public ResponseEntity<MResult> queryDealer(
 		            @PathVariable(value = "dealerId", required = true) String dealerId
 		            ) {
@@ -357,7 +357,7 @@ public class DealerAgent {
 		 /**
 		  * 获取平台的押金
 		  */
-		 @RequestMapping(value = "/dealerDeposit", method = RequestMethod.GET)
+		 @RequestMapping(value ={"/dealerDeposit" , "/web/dealerDeposit"}, method = RequestMethod.GET)
 		    public ResponseEntity<MResult> getDealerDeposit(
 		            @RequestParam(value = "dealerId", required = true) String dealerId
 		            ) {

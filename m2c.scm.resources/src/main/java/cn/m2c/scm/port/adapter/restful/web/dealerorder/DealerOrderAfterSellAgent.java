@@ -42,7 +42,7 @@ public class DealerOrderAfterSellAgent {
 	 * @param rows
 	 * @return
 	 */
-	@RequestMapping(value = "/dealerorderafterselllist",method = RequestMethod.GET)
+	@RequestMapping(value = {"/dealerorderafterselllist", "/web/dealerorderafterselllist"},method = RequestMethod.GET)
 	public ResponseEntity<MPager> getDealerOrderAfterSellList(
 			@RequestParam(value = "dealerId",required = false)String dealerId,
 			@RequestParam(value = "dealerOrderId",required = false)String dealerOrderId,
@@ -75,7 +75,7 @@ public class DealerOrderAfterSellAgent {
 	 * @param afterSellOrderId
 	 * @return
 	 */
-	@RequestMapping(value = "/dealerorderafterselldetail",method = RequestMethod.GET)
+	@RequestMapping(value = {"/dealerorderafterselldetail", "/web/dealerorderafterselldetail"},method = RequestMethod.GET)
 	public ResponseEntity<MResult> getAfterSellDealerOrderDetail(
 			@RequestParam(value = "dealerId",required = false)String dealerId,
 			@RequestParam(value = "afterSellOrderId",required = false)String afterSellOrderId) {
@@ -101,7 +101,7 @@ public class DealerOrderAfterSellAgent {
 	 * @param afterSellOrderId
 	 * @return
 	 */
-	@RequestMapping(value = "/cost/freight",method = RequestMethod.GET)
+	@RequestMapping(value = {"/cost/freight", "/web/cost/freight"},method = RequestMethod.GET)
 	public ResponseEntity<MResult> getCostFreight(
 			@RequestParam(value="userId", required = false)String userId
 			,@RequestParam(value="dealerOrderId", required = false) String dealerOrderId

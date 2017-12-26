@@ -91,7 +91,7 @@ public class OrderExportAgent {
      * @param orderClassify
      * @param invoice
      */
-    @RequestMapping(value = "/dealerorderlist", method = RequestMethod.GET)
+    @RequestMapping(value = {"/dealerorderlist", "/web/dealerorderlist"}, method = RequestMethod.GET)
     public void getDealerOrderList(HttpServletResponse response,
                                    @RequestParam(value = "dealerId", required = false) String dealerId,
                                    @RequestParam(value = "dealerOrderId", required = false) String dealerOrderId,
