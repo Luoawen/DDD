@@ -36,5 +36,13 @@ public interface GoodsRepository {
      * @param goodsName
      * @param goodsNum
      */
-    void saveGoodsSalesList(Integer month, String dealerId, String goodsId, String goodsName, String goodsNum) throws NegativeException;
+    void saveGoodsSalesList(Integer month, String dealerId, String goodsId, String goodsName, Integer goodsNum) throws NegativeException;
+
+    /**
+     * 查询商家含有制定保障的商品
+     * @param dealerId
+     * @param guaranteeId
+     * @return
+     */
+	List<Goods> queryGoodsByDealerIdAndGuaranteeId(String dealerId, String guaranteeId);
 }

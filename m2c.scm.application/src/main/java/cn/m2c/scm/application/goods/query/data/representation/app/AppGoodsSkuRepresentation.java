@@ -1,6 +1,7 @@
 package cn.m2c.scm.application.goods.query.data.representation.app;
 
 import cn.m2c.scm.application.goods.query.data.bean.GoodsSkuBean;
+import cn.m2c.scm.application.utils.Utils;
 
 /**
  * sku
@@ -32,12 +33,23 @@ public class AppGoodsSkuRepresentation {
      * 特惠价
      */
     private Long specialPrice;
+    
+    /**
+     * 新增字段，拍获价/10000
+     */
+    private String strPhotographPrice;
+    
+    /**
+     * 新增字段，特惠价/10000
+     */
+    private String strSpecialPrice;
 
     public AppGoodsSkuRepresentation(GoodsSkuBean bean) {
         this.skuId = bean.getSkuId();
         this.skuName = "".equals(bean.getSkuName()) ? "默认" : bean.getSkuName();
         this.availableNum = bean.getAvailableNum();
-        this.photographPrice = bean.getPhotographPrice();
+        this.photographPrice = bean.getPhotographPrice()/100;
+        this.strPhotographPrice = Utils.moneyFormatCN(bean.getPhotographPrice());
         this.weight = bean.getWeight();
     }
 
@@ -88,4 +100,20 @@ public class AppGoodsSkuRepresentation {
     public void setSpecialPrice(Long specialPrice) {
         this.specialPrice = specialPrice;
     }
+
+	public String getStrPhotographPrice() {
+		return strPhotographPrice;
+	}
+
+	public void setStrPhotographPrice(String strPhotographPrice) {
+		this.strPhotographPrice = strPhotographPrice;
+	}
+
+	public String getStrSpecialPrice() {
+		return strSpecialPrice;
+	}
+
+	public void setStrSpecialPrice(String strSpecialPrice) {
+		this.strSpecialPrice = strSpecialPrice;
+	}
 }

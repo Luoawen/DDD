@@ -4,12 +4,17 @@ import cn.m2c.common.JsonUtils;
 import cn.m2c.common.MCode;
 import cn.m2c.ddd.common.domain.model.DomainEventPublisher;
 import cn.m2c.ddd.common.event.annotation.EventListener;
+import cn.m2c.ddd.common.logger.OperationLogManager;
 import cn.m2c.scm.application.goods.command.GoodsCommand;
+import cn.m2c.scm.application.goods.command.GoodsRecognizedAddCommand;
+import cn.m2c.scm.application.goods.command.GoodsRecognizedDelCommand;
 import cn.m2c.scm.application.goods.command.GoodsRecognizedModifyCommand;
+import cn.m2c.scm.application.goods.command.GoodsSalesListCommand;
 import cn.m2c.scm.application.goods.command.MDViewGoodsCommand;
 import cn.m2c.scm.domain.NegativeException;
 import cn.m2c.scm.domain.model.goods.Goods;
 import cn.m2c.scm.domain.model.goods.GoodsApproveRepository;
+import cn.m2c.scm.domain.model.goods.GoodsRecognized;
 import cn.m2c.scm.domain.model.goods.GoodsRepository;
 import cn.m2c.scm.domain.model.goods.GoodsSku;
 import cn.m2c.scm.domain.model.goods.GoodsSkuRepository;
@@ -27,6 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -47,6 +53,9 @@ public class GoodsApplication {
     GoodsService goodsDubboService;
     @Resource(name = "goodsRestService")
     GoodsService goodsRestService;
+
+    @Resource
+    private OperationLogManager operationLogManager;
 
     /**
      * 商品审核同意,保存商品
@@ -77,7 +86,7 @@ public class GoodsApplication {
      */
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
     @EventListener(isListening = true)
-    public void modifyGoods(GoodsCommand command) throws NegativeException {
+    public void modifyGoods(GoodsCommand command, String _attach) throws NegativeException {
         LOGGER.info("modifyGoods command >>{}", command);
         Goods goods = goodsRepository.queryGoodsById(command.getGoodsId());
         if (null == goods) {
@@ -100,6 +109,8 @@ public class GoodsApplication {
             }
         }
 
+        operationLogManager.operationLog("修改商品", _attach, goods, new String[]{"goods"}, null);
+
         goods.modifyGoods(command.getGoodsName(), command.getGoodsSubTitle(),
                 command.getGoodsClassifyId(), command.getGoodsBrandId(), command.getGoodsBrandName(), command.getGoodsUnitId(), command.getGoodsMinQuantity(),
                 command.getGoodsPostageId(), command.getGoodsBarCode(), command.getGoodsKeyWord(), command.getGoodsGuarantee(),
@@ -114,12 +125,13 @@ public class GoodsApplication {
      */
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
     @EventListener(isListening = true)
-    public void deleteGoods(String goodsId) throws NegativeException {
+    public void deleteGoods(String goodsId, String _attach) throws NegativeException {
         LOGGER.info("deleteGoods goodsId >>{}", goodsId);
         Goods goods = goodsRepository.queryGoodsById(goodsId);
         if (null == goods) {
             throw new NegativeException(MCode.V_300, "商品不存在");
         }
+        operationLogManager.operationLog("删除商品", _attach, goods, new String[]{"goods"}, null);
         goods.remove();
     }
 
@@ -131,19 +143,15 @@ public class GoodsApplication {
      */
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
     @EventListener(isListening = true)
-    public void upShelfGoods(String goodsId) throws NegativeException {
+    public void upShelfGoods(String goodsId, String _attach) throws NegativeException {
         LOGGER.info("upShelfGoods goodsId >>{}", goodsId);
         Goods goods = goodsRepository.queryGoodsById(goodsId);
         if (null == goods) {
             throw new NegativeException(MCode.V_300, "商品不存在");
         }
+        operationLogManager.operationLog("商品上架", _attach, goods, new String[]{"goods"}, null);
         goods.upShelf();
-        if (StringUtils.isNotEmpty(goods.recognizedId())) {
-            boolean result = goodsDubboService.updateRecognizedImgStatus(goods.recognizedId(), goods.recognizedUrl(), 1);
-            if (!result) {
-                LOGGER.error("商品上架，更新识别图片状态失败");
-            }
-        }
+        updateRecognizedImgStatus(goods.goodsRecognizeds(), 1);
     }
 
     /**
@@ -154,19 +162,15 @@ public class GoodsApplication {
      */
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
     @EventListener(isListening = true)
-    public void offShelfGoods(String goodsId) throws NegativeException {
+    public void offShelfGoods(String goodsId, String _attach) throws NegativeException {
         LOGGER.info("offShelfGoods goodsId >>{}", goodsId);
         Goods goods = goodsRepository.queryGoodsById(goodsId);
         if (null == goods) {
             throw new NegativeException(MCode.V_300, "商品不存在");
         }
+        operationLogManager.operationLog("商品下架", _attach, goods, new String[]{"goods"}, null);
         goods.offShelf();
-        if (StringUtils.isNotEmpty(goods.recognizedId())) {
-            boolean result = goodsDubboService.updateRecognizedImgStatus(goods.recognizedId(), goods.recognizedUrl(), 0);
-            if (!result) {
-                LOGGER.error("商品下架，更新识别图片状态失败");
-            }
-        }
+        updateRecognizedImgStatus(goods.goodsRecognizeds(), 0);
     }
 
     /**
@@ -176,20 +180,63 @@ public class GoodsApplication {
      * @throws NegativeException
      */
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
-    public void modifyRecognized(GoodsRecognizedModifyCommand command) throws NegativeException {
+    public void modifyRecognized(GoodsRecognizedModifyCommand command, String _attach) throws NegativeException {
         LOGGER.info("modifyRecognized command >>{}", command);
         Goods goods = goodsRepository.queryGoodsById(command.getGoodsId());
         if (null == goods) {
             throw new NegativeException(MCode.V_300, "商品不存在");
         }
-        goods.modifyRecognized(command.getRecognizedId(), command.getRecognizedUrl());
+        operationLogManager.operationLog("修改商品识别图", _attach, goods, new String[]{"goods"}, null);
+        goods.modifyRecognized(command.getRecognizedNo(), command.getRecognizedId(), command.getRecognizedUrl());
         Integer status = goods.goodsStatus() == 1 ? 0 : 1;
         if (StringUtils.isEmpty(command.getRecognizedId())) {
             status = 0;
         }
-        boolean result = goodsDubboService.updateRecognizedImgStatus(goods.recognizedId(), goods.recognizedUrl(), status);
+        boolean result = goodsDubboService.updateRecognizedImgStatus(command.getRecognizedId(), command.getRecognizedUrl(), status);
+        if (!result) {
+            LOGGER.error("商品修改广告图，更新识别图片状态失败");
+        }
+    }
+
+    /**
+     * 增加商品识别图
+     *
+     * @param command
+     * @throws NegativeException
+     */
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+    public void addRecognized(GoodsRecognizedAddCommand command) throws NegativeException {
+        LOGGER.info("addRecognized command >>{}", command);
+        Goods goods = goodsRepository.queryGoodsById(command.getGoodsId());
+        if (null == goods) {
+            throw new NegativeException(MCode.V_300, "商品不存在");
+        }
+        goods.addRecognized(command.getRecognizedId(), command.getRecognizedUrl());
+        Integer status = goods.goodsStatus() == 1 ? 0 : 1;
+        boolean result = goodsDubboService.updateRecognizedImgStatus(command.getRecognizedId(), command.getRecognizedUrl(), status);
         if (!result) {
             LOGGER.error("商品添加广告图，更新识别图片状态失败");
+        }
+    }
+
+    /**
+     * 删除商品识别图
+     *
+     * @param command
+     * @throws NegativeException
+     */
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+    public void delRecognized(GoodsRecognizedDelCommand command, String _attach) throws NegativeException {
+        LOGGER.info("delRecognized command >>{}", command);
+        Goods goods = goodsRepository.queryGoodsById(command.getGoodsId());
+        if (null == goods) {
+            throw new NegativeException(MCode.V_300, "商品不存在");
+        }
+        operationLogManager.operationLog("删除商品识别图", _attach, goods, new String[]{"goods"}, null);
+        goods.delRecognized(command.getRecognizedNo());
+        boolean result = goodsDubboService.updateRecognizedImgStatus(command.getRecognizedId(), command.getRecognizedUrl(), 0);
+        if (!result) {
+            LOGGER.error("商品删除广告图，更新识别图片状态失败");
         }
     }
 
@@ -322,10 +369,12 @@ public class GoodsApplication {
     }
 
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
-    public void GoodsSkuUpdateByOrderPayed(Map<String, Object> map) {
+    public void GoodsSkuUpdateByOrderPayed(Map<String, Object> map, Integer month) throws NegativeException {
         LOGGER.info("goodsApplication GoodsSkuUpdateByOrderPayed start...");
         LOGGER.info("GoodsSkuUpdateByOrderPayed param=>" + JsonUtils.toStr(map));
         if (null != map && map.size() > 0) {
+            Map<String, Integer> goodsMap = new HashMap<>();
+            Map<String, Goods> goodsInfoMap = new HashMap<>();
             for (Map.Entry<String, Object> entry : map.entrySet()) {
                 String skuId = entry.getKey();
                 Integer num = Integer.parseInt(String.valueOf(entry.getValue()));
@@ -333,6 +382,21 @@ public class GoodsApplication {
                 if (null != goodsSku) {
                     goodsSku.orderPayed(num);
                 }
+
+                Goods goods = goodsRepository.queryGoodsById(goodsSku.goods().getId());
+                if (goodsMap.containsKey(goods.goodsId())) {
+                    goodsMap.put(goods.goodsId(), num + goodsMap.get(goods.goodsId()));
+                } else {
+                    goodsMap.put(goods.goodsId(), num);
+                    goodsInfoMap.put(goods.goodsId(), goods);
+                }
+            }
+
+            // 销量排行榜
+            for (Map.Entry<String, Integer> entry : goodsMap.entrySet()) {
+                Goods goods = goodsInfoMap.get(entry.getKey());
+                goodsRepository.saveGoodsSalesList(month, goods.dealerId(), entry.getKey(),
+                        goods.goodsName(), entry.getValue());
             }
         }
         LOGGER.info("goodsApplication GoodsSkuUpdateByOrderPayed end...");
@@ -358,10 +422,12 @@ public class GoodsApplication {
     }
 
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
-    public void GoodsSkuUpdateByOrderReturnGoods(Map<String, Object> map) {
+    public void GoodsSkuUpdateByOrderReturnGoods(Map<String, Object> map, Integer month) throws NegativeException {
         LOGGER.info("goodsApplication GoodsSkuUpdateByOrderReturnGoods start...");
         LOGGER.info("GoodsSkuUpdateByOrderReturnGoods param=>" + JsonUtils.toStr(map));
         if (null != map && map.size() > 0) {
+            Map<String, Integer> goodsMap = new HashMap<>();
+            Map<String, Goods> goodsInfoMap = new HashMap<>();
             for (Map.Entry<String, Object> entry : map.entrySet()) {
                 String skuId = entry.getKey();
                 Integer num = Integer.parseInt(String.valueOf(entry.getValue()));
@@ -371,6 +437,21 @@ public class GoodsApplication {
                     Goods goods = goodsRepository.queryGoodsById(goodsSku.goods().getId());
                     goods.orderCancel();
                 }
+
+                Goods goods = goodsRepository.queryGoodsById(goodsSku.goods().getId());
+                if (goodsMap.containsKey(goods.goodsId())) {
+                    goodsMap.put(goods.goodsId(), num + goodsMap.get(goods.goodsId()));
+                } else {
+                    goodsMap.put(goods.goodsId(), num);
+                    goodsInfoMap.put(goods.goodsId(), goods);
+                }
+            }
+
+            // 销量排行榜
+            for (Map.Entry<String, Integer> entry : goodsMap.entrySet()) {
+                Goods goods = goodsInfoMap.get(entry.getKey());
+                goodsRepository.saveGoodsSalesList(month, goods.dealerId(), entry.getKey(),
+                        goods.goodsName(), Integer.parseInt("-" + entry.getValue()));
             }
         }
         LOGGER.info("goodsApplication GoodsSkuUpdateByOrderReturnGoods end...");
@@ -437,62 +518,103 @@ public class GoodsApplication {
      */
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
     @EventListener(isListening = true)
-    public void modifyGoodsMainImages(String goodsId, List<String> images) throws NegativeException {
+    public void modifyGoodsMainImages(String goodsId, List<String> images, String _attach) throws NegativeException {
         LOGGER.info("modifyGoodsMainImages goodsId >>{}", goodsId);
         Goods goods = goodsRepository.queryGoodsById(goodsId);
         if (null == goods) {
             throw new NegativeException(MCode.V_300, "商品不存在");
         }
+        operationLogManager.operationLog("修改商品主图", _attach, goods, new String[]{"goods"}, null);
         goods.modifyGoodsMainImages(images);
     }
-    
+
     /**
      * 商品批量上架
+     *
      * @param goodsIds
-     * @throws NegativeException 
+     * @throws NegativeException
      */
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
     @EventListener(isListening = true)
-	public void upShelfGoodsBatch(List goodsIds) throws NegativeException {
-		LOGGER.info("upShelfGoodsBatch goodsIds >>{}", goodsIds);
-		List<Goods> goodsList = goodsRepository.queryGoodsByIdList(goodsIds);
-		if(null != goodsList && goodsList.size()>0) {
-			for(Goods goods : goodsList) {
-				goods.upShelf();
-		        if (StringUtils.isNotEmpty(goods.recognizedId())) {
-		            boolean result = goodsDubboService.updateRecognizedImgStatus(goods.recognizedId(), goods.recognizedUrl(), 1);
-		            if (!result) {
-		                LOGGER.error("商品批量上架，更新识别图片状态失败");
-		            }
-		        }
-			}
-		}else {
-			throw new NegativeException(MCode.V_300, "所选商品不存在");
-		}
-	}
-    
+    public void upShelfGoodsBatch(List goodsIds, String _attach) throws NegativeException {
+        LOGGER.info("upShelfGoodsBatch goodsIds >>{}", goodsIds);
+        List<Goods> goodsList = goodsRepository.queryGoodsByIdList(goodsIds);
+        if (null != goodsList && goodsList.size() > 0) {
+            for (Goods goods : goodsList) {
+            	operationLogManager.operationLog("商品批量上架", _attach, goods, new String[]{"goods"}, null);
+                goods.upShelf();
+                updateRecognizedImgStatus(goods.goodsRecognizeds(), 1);
+            }
+        } else {
+            throw new NegativeException(MCode.V_300, "所选商品不存在");
+        }
+    }
+
     /**
      * 商品批量下架
+     *
      * @param goodsIds
-     * @throws NegativeException 
+     * @throws NegativeException
      */
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
     @EventListener(isListening = true)
-	public void offShelfGoodsBatch(List goodsIds) throws NegativeException {
-		LOGGER.info("offShelfGoodsBatch goodsIds >>{}", goodsIds);
-		List<Goods> goodsList = goodsRepository.queryGoodsByIdList(goodsIds);
-		if(null != goodsList && goodsList.size()>0) {
-			for(Goods goods : goodsList) {
-				goods.offShelf();
-		        if (StringUtils.isNotEmpty(goods.recognizedId())) {
-		            boolean result = goodsDubboService.updateRecognizedImgStatus(goods.recognizedId(), goods.recognizedUrl(), 0);
-		            if (!result) {
-		                LOGGER.error("商品批量下架，更新识别图片状态失败");
-		            }
-		        }
-			}
-		}else {
-			throw new NegativeException(MCode.V_300, "所选商品不存在");
-		}
-	}
+    public void offShelfGoodsBatch(List goodsIds, String _attach) throws NegativeException {
+        LOGGER.info("offShelfGoodsBatch goodsIds >>{}", goodsIds);
+        List<Goods> goodsList = goodsRepository.queryGoodsByIdList(goodsIds);
+        if (null != goodsList && goodsList.size() > 0) {
+            for (Goods goods : goodsList) {
+                operationLogManager.operationLog("商品批量上架", _attach, goods, new String[]{"goods"}, null);
+                goods.offShelf();
+                updateRecognizedImgStatus(goods.goodsRecognizeds(), 0);
+            }
+        } else {
+            throw new NegativeException(MCode.V_300, "所选商品不存在");
+        }
+    }
+
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+    private void updateRecognizedImgStatus(List<GoodsRecognized> goodsRecognizeds, Integer status) {
+        if (null != goodsRecognizeds && goodsRecognizeds.size() > 0) {
+            for (GoodsRecognized goodsRecognized : goodsRecognizeds) {
+                boolean result = goodsDubboService.updateRecognizedImgStatus(goodsRecognized.recognizedId(), goodsRecognized.recognizedUrl(), status);
+                if (!result) {
+                    LOGGER.error("更新识别图片状态失败");
+                }
+            }
+        }
+    }
+
+    /**
+     * 修改商品库中商品的保障(商品保障删除后需同时删除商品的对应保障)
+     *
+     * @param dealerId
+     * @param guaranteeId
+     */
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+    public void modifyGoodsGuarantee(String dealerId, String guaranteeId) {
+        LOGGER.info("modifyGoodsGuarantee dealerId >>{}", dealerId);
+        LOGGER.info("modifyGoodsGuarantee guaranteeId >>{}", guaranteeId);
+        //查询该商家含有该商品保障的商品
+        List<Goods> goodsList = goodsRepository.queryGoodsByDealerIdAndGuaranteeId(dealerId, guaranteeId);
+        if (null != goodsList && goodsList.size() > 0) {
+            for (Goods goods : goodsList) {
+                //更新商品的保障信息
+                goods.delGoodsGuarantee(guaranteeId);
+            }
+        }
+    }
+
+    /**
+     * 商品销量榜更新
+     *
+     * @param command
+     * @throws NegativeException
+     */
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+    @EventListener(isListening = true)
+    public void saveGoodsSalesList(GoodsSalesListCommand command) throws NegativeException {
+        LOGGER.info("saveGoodsSalesList command >>{}", command);
+        goodsRepository.saveGoodsSalesList(command.getMonth(), command.getDealerId(), command.getGoodsId(),
+                command.getGoodsName(), command.getGoodsNum());
+    }
 }

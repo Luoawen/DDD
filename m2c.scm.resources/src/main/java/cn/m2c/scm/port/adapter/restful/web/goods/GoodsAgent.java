@@ -11,7 +11,6 @@ import cn.m2c.scm.application.dealer.data.bean.DealerBean;
 import cn.m2c.scm.application.dealer.query.DealerQuery;
 import cn.m2c.scm.application.goods.GoodsApplication;
 import cn.m2c.scm.application.goods.command.GoodsCommand;
-import cn.m2c.scm.application.goods.command.GoodsRecognizedModifyCommand;
 import cn.m2c.scm.application.goods.query.GoodsGuaranteeQueryApplication;
 import cn.m2c.scm.application.goods.query.GoodsQueryApplication;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsBean;
@@ -23,6 +22,7 @@ import cn.m2c.scm.application.postage.data.bean.PostageModelBean;
 import cn.m2c.scm.application.postage.query.PostageModelQueryApplication;
 import cn.m2c.scm.application.unit.query.UnitQuery;
 import cn.m2c.scm.domain.NegativeException;
+import cn.m2c.scm.domain.util.GetMapValueUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,6 +35,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -67,6 +69,8 @@ public class GoodsAgent {
     @Autowired
     PostageModelQueryApplication postageModelQueryApplication;
 
+    @Autowired
+    private HttpServletRequest request;
 
     /**
      * 修改商品
@@ -126,6 +130,12 @@ public class GoodsAgent {
                         }
                         map.put("skuId", skuId);
                     }
+                    Long marketPrice = new BigDecimal((GetMapValueUtils.getFloatFromMapKey(map, "marketPrice") * 10000)).longValue();
+                    Long photographPrice = new BigDecimal((GetMapValueUtils.getFloatFromMapKey(map, "photographPrice") * 10000)).longValue();
+                    Long supplyPrice = new BigDecimal((GetMapValueUtils.getFloatFromMapKey(map, "supplyPrice") * 10000)).longValue();
+                    map.put("marketPrice", marketPrice);
+                    map.put("photographPrice", photographPrice);
+                    map.put("supplyPrice", supplyPrice);
                 }
                 goodsSKUs = JsonUtils.toStr(skuList);
             } else {
@@ -136,7 +146,8 @@ public class GoodsAgent {
                     goodsClassifyId, goodsBrandId, goodsBrandName, goodsUnitId, goodsMinQuantity,
                     goodsPostageId, goodsBarCode, JsonUtils.toStr(goodsKeyWord), JsonUtils.toStr(goodsGuarantee),
                     JsonUtils.toStr(goodsMainImages), goodsDesc, goodsSpecifications, goodsSKUs);
-            goodsApplication.modifyGoods(command);
+            String _attach = request.getHeader("attach");
+            goodsApplication.modifyGoods(command, _attach);
             result.setStatus(MCode.V_200);
         } catch (NegativeException ne) {
             LOGGER.error("modifyGoods NegativeException e:", ne);
@@ -161,7 +172,8 @@ public class GoodsAgent {
     ) {
         MResult result = new MResult(MCode.V_1);
         try {
-            goodsApplication.deleteGoods(goodsId);
+            String _attach = request.getHeader("attach");
+            goodsApplication.deleteGoods(goodsId, _attach);
             result.setStatus(MCode.V_200);
         } catch (NegativeException ne) {
             LOGGER.error("delGoods NegativeException e:", ne);
@@ -186,7 +198,8 @@ public class GoodsAgent {
     ) {
         MResult result = new MResult(MCode.V_1);
         try {
-            goodsApplication.upShelfGoods(goodsId);
+            String _attach = request.getHeader("attach");
+            goodsApplication.upShelfGoods(goodsId, _attach);
             result.setStatus(MCode.V_200);
         } catch (NegativeException ne) {
             LOGGER.error("upShelfGoods NegativeException e:", ne);
@@ -197,7 +210,7 @@ public class GoodsAgent {
         }
         return new ResponseEntity<MResult>(result, HttpStatus.OK);
     }
-    
+
     /**
      * 商品下架
      *
@@ -211,7 +224,8 @@ public class GoodsAgent {
     ) {
         MResult result = new MResult(MCode.V_1);
         try {
-            goodsApplication.offShelfGoods(goodsId);
+            String _attach = request.getHeader("attach");
+            goodsApplication.offShelfGoods(goodsId, _attach);
             result.setStatus(MCode.V_200);
         } catch (NegativeException ne) {
             LOGGER.error("offShelfGoods NegativeException e:", ne);
@@ -219,34 +233,6 @@ public class GoodsAgent {
         } catch (Exception e) {
             LOGGER.error("offShelfGoods Exception e:", e);
             result = new MResult(MCode.V_400, "商品下架失败");
-        }
-        return new ResponseEntity<MResult>(result, HttpStatus.OK);
-    }
-
-    /**
-     * 修改商品识别图
-     *
-     * @param goodsId
-     * @return
-     */
-    @RequestMapping(value = {"/recognized/{goodsId}", "/mng/recognized/{goodsId}"}, method = RequestMethod.PUT)
-    @RequirePermissions(value = {"scm:goodsStorage:modifyRecognized"})
-    public ResponseEntity<MResult> modifyRecognized(
-            @PathVariable("goodsId") String goodsId,
-            @RequestParam(value = "recognizedId", required = false) String recognizedId,
-            @RequestParam(value = "recognizedUrl", required = false) String recognizedUrl
-    ) {
-        MResult result = new MResult(MCode.V_1);
-        try {
-            GoodsRecognizedModifyCommand command = new GoodsRecognizedModifyCommand(goodsId, recognizedId, recognizedUrl);
-            goodsApplication.modifyRecognized(command);
-            result.setStatus(MCode.V_200);
-        } catch (NegativeException ne) {
-            LOGGER.error("modifyRecognized NegativeException e:", ne);
-            result = new MResult(ne.getStatus(), ne.getMessage());
-        } catch (Exception e) {
-            LOGGER.error("modifyRecognized Exception e:", e);
-            result = new MResult(MCode.V_400, "修改商品识别图失败");
         }
         return new ResponseEntity<MResult>(result, HttpStatus.OK);
     }
@@ -321,18 +307,20 @@ public class GoodsAgent {
      * 查询商品详情
      *
      * @param goodsId
+     * @param isDelete 商品是否已删除，可查出已删商品所有的保障(不论保障是否删除)
      * @return
      */
     @RequestMapping(value = "/{goodsId}", method = RequestMethod.GET)
     public ResponseEntity<MResult> queryGoodsDetail(
-            @PathVariable("goodsId") String goodsId
+            @PathVariable("goodsId") String goodsId,
+            @RequestParam(value = "isDelete", required = false) Integer isDelete
     ) {
         MResult result = new MResult(MCode.V_1);
         try {
             GoodsBean goodsBean = goodsQueryApplication.queryGoodsByGoodsId(goodsId);
             if (null != goodsBean) {
                 Map goodsClassifyMap = goodsClassifyQueryApplication.getClassifyMap(goodsBean.getGoodsClassifyId());
-                List<GoodsGuaranteeBean> goodsGuarantee = goodsGuaranteeQueryApplication.queryGoodsGuaranteeByIds(JsonUtils.toList(goodsBean.getGoodsGuarantee(), String.class));
+                List<GoodsGuaranteeBean> goodsGuarantee = goodsGuaranteeQueryApplication.queryGoodsGuaranteeByIdsAndIsDelete(JsonUtils.toList(goodsBean.getGoodsGuarantee(), String.class), isDelete);
                 String goodsUnitName = unitQuery.getUnitNameByUnitId(goodsBean.getGoodsUnitId());
                 //结算模式 1：按供货价 2：按服务费率
                 Integer settlementMode = dealerQuery.getDealerCountMode(goodsBean.getDealerId());
@@ -403,7 +391,8 @@ public class GoodsAgent {
             return new ResponseEntity<MResult>(result, HttpStatus.OK);
         }
         try {
-            goodsApplication.modifyGoodsMainImages(goodsId, images);
+            String _attach = request.getHeader("attach");
+            goodsApplication.modifyGoodsMainImages(goodsId, images, _attach);
             result.setStatus(MCode.V_200);
         } catch (NegativeException ne) {
             LOGGER.error("modifyGoodsMainImages NegativeException e:", ne);

@@ -3,6 +3,8 @@ package cn.m2c.scm.port.adapter.restful.admin.brand;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import cn.m2c.common.MCode;
 import cn.m2c.common.MResult;
+import cn.m2c.ddd.common.auth.RequirePermissions;
 import cn.m2c.scm.application.brand.BrandApproveApplication;
 import cn.m2c.scm.application.brand.command.BrandApproveAgreeCommand;
 import cn.m2c.scm.application.brand.command.BrandApproveRejectCommand;
@@ -22,7 +25,7 @@ import cn.m2c.scm.domain.NegativeException;
 
 
 @RestController
-@RequestMapping("/web/admin/brand/approve")
+@RequestMapping("/admin/brand/approve")
 public class AdminBrandApproAgent {
 	
 	private final static Logger LOGGER = LoggerFactory.getLogger(AdminBrandApproAgent.class);
@@ -30,6 +33,9 @@ public class AdminBrandApproAgent {
 	@Autowired
 	BrandApproveApplication brandApproveApplication;
 
+	@Autowired
+	private  HttpServletRequest request;
+	
 	/**
 	 * 批量审核同意
 	 * 
@@ -37,6 +43,7 @@ public class AdminBrandApproAgent {
 	 * @param brandIds
 	 * @return
 	 */
+	@RequirePermissions(value ={"scm:brandApprove:batchagree"})
 	@RequestMapping(value = "/batchagree", method = RequestMethod.POST)
 	public ResponseEntity<MResult> brandApproveBatchAgree(
 			@RequestParam(value = "approveIds", required = false) List<String> approveIds,
@@ -48,7 +55,8 @@ public class AdminBrandApproAgent {
 				BrandApproveAgreeCommand command = new BrandApproveAgreeCommand(null, approveIds.get(i));
 				commands.add(command);
 			}
-			brandApproveApplication.batchAgreeBrandApprove(commands);
+			String _attach= request.getHeader("attach");
+			brandApproveApplication.batchAgreeBrandApprove(commands, _attach);
 			result.setStatus(MCode.V_200);
 		} catch (NegativeException ne) {
 			LOGGER.error("批量同意品牌审核:", ne);
@@ -67,6 +75,7 @@ public class AdminBrandApproAgent {
      * @param brandIds
      * @return
      */
+	@RequirePermissions(value ={"scm:brandApprove:batchreject"})
     @RequestMapping(value = "/batchreject",method = RequestMethod.POST)
     public ResponseEntity<MResult> brandApproveBatchReject(
     		@RequestParam(value = "approveIds",required = false) List<String> approveIds,
@@ -79,7 +88,8 @@ public class AdminBrandApproAgent {
 				BrandApproveRejectCommand command = new BrandApproveRejectCommand(approveIds.get(i), rejectReason);
 				commands.add(command);
 			}
-			brandApproveApplication.batchRejectBrandApprove(commands);
+			String _attach= request.getHeader("attach");
+			brandApproveApplication.batchRejectBrandApprove(commands, _attach);
 			result.setStatus(MCode.V_200);
 		} catch (NegativeException ne) {
 			LOGGER.error("批量拒绝品牌审核:", ne);

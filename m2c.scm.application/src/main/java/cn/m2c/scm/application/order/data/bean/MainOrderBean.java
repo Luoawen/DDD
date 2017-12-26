@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import cn.m2c.ddd.common.AssertionConcern;
-import cn.m2c.ddd.common.persistence.orm.ColumnAlias;
 
 public class MainOrderBean extends AssertionConcern implements Serializable {
 
@@ -32,23 +31,22 @@ public class MainOrderBean extends AssertionConcern implements Serializable {
 	/**
 	 * 订单商品金额
 	 */
-	//	@ColumnAlias(value = "goods_amount")
-	private long goodAmount;
+	private String goodAmount;
 	/**
 	 * 订单运费
 	 */
 	//@ColumnAlias(value = "order_freight")
-	private long oderFreight;
+	private String oderFreight;
 	/**
 	 * 平台优惠
 	 */
 	//@ColumnAlias(value = "plateform_discount")
-	private long plateFormDiscount;
+	private String plateFormDiscount;
 	/**
 	 * 商家优惠
 	 */
 	//@ColumnAlias(value = "dealer_discount")
-	private long dealerDiscount;
+	private String dealerDiscount;
 	/**订单状态*/
 	private int status;
 	
@@ -132,19 +130,19 @@ public class MainOrderBean extends AssertionConcern implements Serializable {
 		return createDate;
 	}
 
-	public long getGoodAmount() {
+	public String getGoodAmount() {
 		return goodAmount;
 	}
 
-	public long getOderFreight() {
+	public String getOderFreight() {
 		return oderFreight;
 	}
 
-	public long getPlateFormDiscount() {
+	public String getPlateFormDiscount() {
 		return plateFormDiscount;
 	}
 
-	public long getDealerDiscount() {
+	public String getDealerDiscount() {
 		return dealerDiscount;
 	}
 
@@ -164,19 +162,19 @@ public class MainOrderBean extends AssertionConcern implements Serializable {
 		this.createDate = createDate;
 	}
 
-	public void setGoodAmount(long goodAmount) {
+	public void setGoodAmount(String goodAmount) {
 		this.goodAmount = goodAmount;
 	}
 
-	public void setOderFreight(long oderFreight) {
+	public void setOderFreight(String oderFreight) {
 		this.oderFreight = oderFreight;
 	}
 
-	public void setPlateFormDiscount(long plateFormDiscount) {
+	public void setPlateFormDiscount(String plateFormDiscount) {
 		this.plateFormDiscount = plateFormDiscount;
 	}
 
-	public void setDealerDiscount(long dealerDiscount) {
+	public void setDealerDiscount(String dealerDiscount) {
 		this.dealerDiscount = dealerDiscount;
 	}
 

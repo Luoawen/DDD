@@ -28,6 +28,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * 品牌信息
  */
@@ -41,6 +43,9 @@ public class BrandAgent {
     @Autowired
     BrandQueryApplication brandQueryApplication;
 
+    @Autowired
+	private  HttpServletRequest request;
+    
     /**
      * 获取ID
      *
@@ -139,7 +144,8 @@ public class BrandAgent {
             BrandCommand command = new BrandCommand(brandId, brandName, brandNameEn, brandLogo, firstAreaCode,
                     twoAreaCode, threeAreaCode, firstAreaName, twoAreaName,
                     threeAreaName);
-            brandApplication.modifyBrand(command);
+            String _attach= request.getHeader("attach");
+            brandApplication.modifyBrand(command, _attach);
             result.setStatus(MCode.V_200);
         } catch (NegativeException ne) {
             LOGGER.error("modifyBrand NegativeException e:", ne);
@@ -163,7 +169,8 @@ public class BrandAgent {
             @PathVariable("brandId") String brandId) {
         MResult result = new MResult(MCode.V_1);
         try {
-            brandApplication.delBrand(brandId);
+        	String _attach= request.getHeader("attach");
+            brandApplication.delBrand(brandId, _attach);
             result.setStatus(MCode.V_200);
         } catch (NegativeException ne) {
             LOGGER.error("deleteBrand NegativeException e:", ne);

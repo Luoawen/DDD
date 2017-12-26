@@ -96,18 +96,6 @@ public class GoodsBean {
     private String goodsGuarantee;
 
     /**
-     * 识别图片id
-     */
-    @ColumnAlias(value = "recognized_id")
-    private String recognizedId;
-
-    /**
-     * 识别图片url
-     */
-    @ColumnAlias(value = "recognized_url")
-    private String recognizedUrl;
-
-    /**
      * 商品主图  存储类型是[“url1”,"url2"]
      */
     @ColumnAlias(value = "goods_main_images")
@@ -156,6 +144,11 @@ public class GoodsBean {
      */
     @ColumnAlias(value = "goods_launch_status")
     private Integer goodsLaunchStatus;
+
+    /**
+     * 商品识别图
+     */
+    private List<GoodsRecognizedBean> goodsRecognizedBeans;
     
     public Integer getId() {
         return id;
@@ -277,20 +270,12 @@ public class GoodsBean {
         this.goodsGuarantee = goodsGuarantee;
     }
 
-    public String getRecognizedId() {
-        return recognizedId;
+    public List<GoodsRecognizedBean> getGoodsRecognizedBeans() {
+        return goodsRecognizedBeans;
     }
 
-    public void setRecognizedId(String recognizedId) {
-        this.recognizedId = recognizedId;
-    }
-
-    public String getRecognizedUrl() {
-        return recognizedUrl;
-    }
-
-    public void setRecognizedUrl(String recognizedUrl) {
-        this.recognizedUrl = recognizedUrl;
+    public void setGoodsRecognizedBeans(List<GoodsRecognizedBean> goodsRecognizedBeans) {
+        this.goodsRecognizedBeans = goodsRecognizedBeans;
     }
 
     public String getGoodsMainImages() {

@@ -3,6 +3,8 @@ package cn.m2c.scm.application.order;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.Resource;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import cn.m2c.common.MCode;
 import cn.m2c.ddd.common.event.annotation.EventListener;
+import cn.m2c.ddd.common.logger.OperationLogManager;
 import cn.m2c.scm.application.order.command.SendOrderCommand;
 import cn.m2c.scm.application.order.command.UpdateAddrCommand;
 import cn.m2c.scm.application.order.command.UpdateAddrFreightCmd;
@@ -46,6 +49,9 @@ public class DealerOrderApplication {
 	
 	@Autowired
 	AfterSellOrderQuery afterQuery;
+	
+	@Resource
+    private OperationLogManager operationLogManager; 
 	/**
 	 * 更新物流信息
 	 * 
@@ -54,7 +60,7 @@ public class DealerOrderApplication {
 	 */
 	@Transactional(rollbackFor = { Exception.class, RuntimeException.class, NegativeException.class })
 	@EventListener
-	public void updateExpress(SendOrderCommand command) throws NegativeException {
+	public void updateExpress(SendOrderCommand command, String attach) throws NegativeException {
 
 		LOGGER.info("更新物流信息");
 		DealerOrder dealerOrder = dealerOrderRepository.getDealerOrderById(command.getDealerOrderId());
@@ -72,13 +78,14 @@ public class DealerOrderApplication {
 				sortNos.add(s.getSortNo());
 			}
 		}
+		operationLogManager.operationLog("更新快递发货", attach, dealerOrder);
 		
 		if (!dealerOrder.updateExpress(command.getExpressName(), command.getExpressNo(), command.getExpressNote(),
 				command.getExpressPerson(), command.getExpressPhone(), command.getExpressWay(),
-				command.getExpressCode(), command.getUserId(), skuIds, sortNos)) {
+				command.getExpressCode(), command.getUserId(), skuIds, sortNos,command.getOrderId(),command.getShopName())) {
 			throw new NegativeException(MCode.V_300, "订单处于不可发货状态");
 		}
-		dealerOrderRepository.save(dealerOrder);
+	//	dealerOrderRepository.save(dealerOrder);
 	}
 
 	/**
@@ -89,10 +96,13 @@ public class DealerOrderApplication {
 	 */
 	@Transactional(rollbackFor = { Exception.class, RuntimeException.class, NegativeException.class })
 	@EventListener
-	public void updateAddress(UpdateAddrCommand command) throws NegativeException {
+	public void updateAddress(UpdateAddrCommand command, String _attach) throws NegativeException {
 		DealerOrder dealerOrder = dealerOrderRepository.getDealerOrderById(command.getDealerOrderId());
 		if (dealerOrder == null)
 			throw new NegativeException(NegativeCode.DEALER_ORDER_IS_NOT_EXIST, "此商家订单不存在.");
+		
+		operationLogManager.operationLog("修改收货地址", _attach, dealerOrder);
+		
 		ReceiveAddr addr = dealerOrder.getAddr();
 		addr.updateAddr(command.getProvince(), command.getProvCode(), command.getCity(), command.getCityCode(),
 				command.getArea(), command.getAreaCode(), command.getStreet(), command.getRevPerson(),
@@ -109,10 +119,13 @@ public class DealerOrderApplication {
 	 */
 	@Transactional(rollbackFor = { Exception.class, RuntimeException.class, NegativeException.class })
 	@EventListener
-	public void updateOrderFreight(UpdateOrderFreightCmd command) throws NegativeException {
+	public void updateOrderFreight(UpdateOrderFreightCmd command, String attach) throws NegativeException {
 		DealerOrder dealerOrder = dealerOrderRepository.getDealerOrderById(command.getDealerOrderId());
 		if (dealerOrder == null)
 			throw new NegativeException(NegativeCode.DEALER_ORDER_IS_NOT_EXIST, "此商家订单不存在.");
+		
+		operationLogManager.operationLog("修改运费", attach, dealerOrder);
+		
 		dealerOrder.updateOrderFreight(command.getOrderFreight(), command.getUserId());
 		dealerOrderRepository.save(dealerOrder);
 	}
@@ -125,7 +138,7 @@ public class DealerOrderApplication {
 	 */
 	@Transactional(rollbackFor = { Exception.class, RuntimeException.class, NegativeException.class })
 	@EventListener
-	public void updateAddrFreight(UpdateAddrFreightCmd cmd) throws NegativeException {
+	public void updateAddrFreight(UpdateAddrFreightCmd cmd, String attach) throws NegativeException {
 
 		DealerOrder dealerOrder = dealerOrderRepository.getDealerOrderById(cmd.getDealerOrderId());
 		if (dealerOrder == null)
@@ -147,9 +160,11 @@ public class DealerOrderApplication {
 			mOrder.updateFreight(dealerOrder);
 			orderRepository.updateMainOrder(mOrder);
 		}
+		operationLogManager.operationLog("修改运费及收货地址", attach, mOrder);
 		mOrder = null;
-		if (updatedFreight || updatedAddr)
+		if (updatedFreight || updatedAddr) {
 			dealerOrderRepository.updateFreight(dealerOrder);
+		}
 	}
 
 	/**

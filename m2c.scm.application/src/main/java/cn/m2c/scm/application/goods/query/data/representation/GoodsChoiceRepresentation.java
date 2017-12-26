@@ -3,6 +3,7 @@ package cn.m2c.scm.application.goods.query.data.representation;
 import cn.m2c.common.JsonUtils;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsBean;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsSkuBean;
+import cn.m2c.scm.application.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,7 +18,7 @@ public class GoodsChoiceRepresentation {
     private String dealerName;
     private String goodsName;
     private String goodsId;
-    private Long goodsPrice;
+    private String goodsPrice;
     private String goodsImageUrl;
     private List<Map> goodsSkuList;
     private Integer skuSingleFlag;
@@ -30,7 +31,7 @@ public class GoodsChoiceRepresentation {
         this.goodsName = bean.getGoodsName();
         this.goodsId = bean.getGoodsId();
         if (null != bean.getGoodsSkuBeans() && bean.getGoodsSkuBeans().size() > 0) {
-            this.goodsPrice = bean.getGoodsSkuBeans().get(0).getPhotographPrice();
+            this.goodsPrice = Utils.moneyFormatCN(bean.getGoodsSkuBeans().get(0).getPhotographPrice());
             if (null == this.goodsSkuList) {
                 this.goodsSkuList = new ArrayList<>();
             }
@@ -39,8 +40,12 @@ public class GoodsChoiceRepresentation {
                 map.put("goodsSkuId", skuBean.getSkuId());
                 map.put("goodsSkuName", skuBean.getSkuName());
                 map.put("goodsSkuInventory", skuBean.getAvailableNum());
-                map.put("goodsSkuPrice", skuBean.getPhotographPrice());
-                map.put("goodsSupplyPrice", skuBean.getSupplyPrice());
+                map.put("goodsSkuPrice", Utils.moneyFormatCN(skuBean.getPhotographPrice()));
+                if(null != skuBean.getSupplyPrice()) {//供货价是否为空
+                	map.put("goodsSupplyPrice", Utils.moneyFormatCN(skuBean.getSupplyPrice()));
+                }else {
+                	map.put("goodsSupplyPrice", skuBean.getSupplyPrice());
+                }
                 this.goodsSkuList.add(map);
             }
         }
@@ -83,11 +88,11 @@ public class GoodsChoiceRepresentation {
         this.goodsId = goodsId;
     }
 
-    public Long getGoodsPrice() {
+    public String getGoodsPrice() {
         return goodsPrice;
     }
 
-    public void setGoodsPrice(Long goodsPrice) {
+    public void setGoodsPrice(String goodsPrice) {
         this.goodsPrice = goodsPrice;
     }
 

@@ -12,6 +12,12 @@ public class GoodsRecognizedModifyCommand extends AssertionConcern implements Se
      * 商品id
      */
     private String goodsId;
+
+    /**
+     * 识别图编号
+     */
+    private String recognizedNo;
+
     /**
      * 识别图片id
      */
@@ -22,8 +28,9 @@ public class GoodsRecognizedModifyCommand extends AssertionConcern implements Se
      */
     private String recognizedUrl;
 
-    public GoodsRecognizedModifyCommand(String goodsId, String recognizedId, String recognizedUrl) {
+    public GoodsRecognizedModifyCommand(String goodsId, String recognizedNo, String recognizedId, String recognizedUrl) {
         this.goodsId = goodsId;
+        this.recognizedNo = recognizedNo;
         this.recognizedId = recognizedId;
         this.recognizedUrl = recognizedUrl;
     }
@@ -38,5 +45,9 @@ public class GoodsRecognizedModifyCommand extends AssertionConcern implements Se
 
     public String getRecognizedUrl() {
         return recognizedUrl;
+    }
+
+    public String getRecognizedNo() {
+        return recognizedNo;
     }
 }

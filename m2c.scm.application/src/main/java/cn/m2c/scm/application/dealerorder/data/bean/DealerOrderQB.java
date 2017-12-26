@@ -2,6 +2,8 @@ package cn.m2c.scm.application.dealerorder.data.bean;
 
 import java.util.List;
 
+import cn.m2c.scm.application.utils.Utils;
+
 /***
  * 商家订单BEAN
  * @author 89776
@@ -93,7 +95,13 @@ public class DealerOrderQB {
 	}
 
 	public Long getGoodsMoney() {
-		return goodsMoney;
+		if (null == goodsMoney)
+			goodsMoney = 0l;
+		return goodsMoney/100;
+	}
+	
+	public String getStrGoodsMoney() {
+		return Utils.moneyFormatCN(goodsMoney);
 	}
 
 	public void setGoodsMoney(long goodsMoney) {
@@ -101,7 +109,11 @@ public class DealerOrderQB {
 	}
 
 	public Long getOrderFreight() {
-		return orderFreight;
+		return orderFreight/100;
+	}
+	
+	public String getStrOrderFreight() {
+		return Utils.moneyFormatCN(orderFreight);
 	}
 
 	public void setOrderFreight(long orderFreight) {
@@ -109,7 +121,11 @@ public class DealerOrderQB {
 	}
 
 	public Long getPlateDiscount() {
-		return plateDiscount;
+		return plateDiscount/100;
+	}
+	
+	public String getStrPlateDiscount() {
+		return Utils.moneyFormatCN(plateDiscount);
 	}
 
 	public void setPlateDiscount(long plateDiscount) {
@@ -117,7 +133,11 @@ public class DealerOrderQB {
 	}
 
 	public Long getDealerDiscount() {
-		return dealerDiscount;
+		return dealerDiscount/100;
+	}
+	
+	public String getStrDealerDiscount() {
+		return Utils.moneyFormatCN(dealerDiscount);
 	}
 
 	public void setDealerDiscount(long dealerDiscount) {
@@ -229,7 +249,13 @@ public class DealerOrderQB {
 	}
 
 	public Long getAfterMoney() {
-		return afterMoney;
+		if (afterMoney == null)
+			afterMoney = 0l;
+		return afterMoney/100;
+	}
+	
+	public String getStrAfterMoney() {
+		return Utils.moneyFormatCN(afterMoney);
 	}
 
 	public void setAfterMoney(long afterMoney) {

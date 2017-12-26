@@ -4,6 +4,7 @@ import java.util.Date;
 
 import cn.m2c.ddd.common.persistence.orm.ColumnAlias;
 import cn.m2c.scm.application.order.data.bean.GoodsInfoBean;
+import cn.m2c.scm.application.utils.Utils;
 
 public class DealerOrderAfterSellDetailBean {
 
@@ -112,7 +113,11 @@ public class DealerOrderAfterSellDetailBean {
 	}
 
 	public long getBackMoney() {
-		return backMoney;
+		return backMoney/100;
+	}
+	
+	public String getStrBackMoney() {
+		return Utils.moneyFormatCN(backMoney);
 	}
 
 	public String getReason() {
@@ -125,7 +130,11 @@ public class DealerOrderAfterSellDetailBean {
 
 
 	public long getOrderTotalMoney() {
-		return (orderTotalMoney + this.getOrderFreight() - this.getPlateformDiscount() - this.getDealerDiscount());
+		return (orderTotalMoney + this.getOrderFreight() - this.getPlateformDiscount() - this.getDealerDiscount())/100;
+	}
+	
+	public String getStrOrderTotalMoney() {
+		return Utils.moneyFormatCN((orderTotalMoney + this.getOrderFreight() - this.getPlateformDiscount() - this.getDealerDiscount()));
 	}
 
 	public void setStatus(Integer status) {
@@ -133,12 +142,22 @@ public class DealerOrderAfterSellDetailBean {
 	}
 
 	public long getOrderFreight() {
-		return orderFreight;
+		return orderFreight/100;
+	}
+	
+	public String getStrOrderFreight() {
+		return Utils.moneyFormatCN(orderFreight);
 	}
 
+
 	public long getPlateformDiscount() {
-		return plateformDiscount;
+		return plateformDiscount/100;
 	}
+	
+	public String getStrPlateformDiscount() {
+		return Utils.moneyFormatCN(plateformDiscount);
+	}
+
 
 	public String getRejectReason() {
 		return rejectReason;
@@ -149,7 +168,11 @@ public class DealerOrderAfterSellDetailBean {
 	}
 
 	public long getDealerDiscount() {
-		return dealerDiscount;
+		return dealerDiscount/100;
+	}
+	
+	public String getStrDealerDiscount() {
+		return Utils.moneyFormatCN(dealerDiscount);
 	}
 
 	public void setOrderFreight(long orderFreight) {
@@ -205,7 +228,11 @@ public class DealerOrderAfterSellDetailBean {
 	}
 
 	public long getBackFreight() {
-		return backFreight;
+		return backFreight/100;
+	}
+	
+	public String getStrBackFreight() {
+		return Utils.moneyFormatCN(backFreight);
 	}
 
 	public void setBackFreight(long backFreight) {

@@ -63,9 +63,9 @@ public class GoodsRestServiceImpl implements GoodsService {
     }
 
     @Override
-    public List<Map> getGoodsFullCut(String dealerId, String goodsId, String classifyId) {
-        String url = M2C_HOST_URL + "/m2c.market/fullcut/list?dealer_id={0}&goods_id={1}&classify_id={2}";
-        String result = restTemplate.getForObject(url, String.class, dealerId, goodsId, classifyId);
+    public List<Map> getGoodsFullCut(String userId, String dealerId, String goodsId, String classifyId) {
+        String url = M2C_HOST_URL + "/m2c.market/domain/fullcut/list?dealer_id={0}&goods_id={1}&classify_id={2}&user_id={3}";
+        String result = restTemplate.getForObject(url, String.class, dealerId, goodsId, classifyId,userId);
         JSONObject json = JSONObject.parseObject(result);
         if (json.getInteger("status") == 200) {
             JSONArray contents = json.getJSONArray("content");
@@ -77,6 +77,12 @@ public class GoodsRestServiceImpl implements GoodsService {
                     List<Map> contentList = new ArrayList<>();
                     Object contentJson = contentJsons.next();
                     JSONObject contentObject = JSONObject.parseObject(JSONObject.toJSONString(contentJson));
+                    Integer numPerOne = contentObject.getInteger("numPerOne");
+                    Integer numPerDay = contentObject.getInteger("numPerDay");
+                    resultMap.put("numPerOne", numPerOne);
+                    resultMap.put("numPerDay", numPerDay);
+                    resultMap.put("numLimit", new StringBuffer().append("每人优惠").append(numPerOne).append("次，每天仅可优惠").append(numPerDay).append("次").toString());
+
                     Iterator<Object> it = contentObject.getJSONArray("itemList").iterator();
                     while (it.hasNext()) {
                         Map jo = (Map) it.next();
@@ -85,11 +91,12 @@ public class GoodsRestServiceImpl implements GoodsService {
                         map.put("itemName", itemName);
                         contentList.add(map);
                     }
-                    resultMap.put("itemNames", contentList); 
+                    resultMap.put("itemNames", contentList);
                     Integer rangeType = contentObject.getInteger("rangeType");
                     resultMap.put("rangeType", rangeType);
 
                     resultMap.put("fullCutName", contentObject.getString("fullCutName"));
+                    resultMap.put("fullCutType", contentObject.getInteger("fullCutType")); //满减形式，1：减钱，2：打折，3：换购
 
                     Iterator<Object> rangeIt = contentObject.getJSONArray("suitableRangeList").iterator();
                     List<String> idList = new ArrayList<>();
@@ -191,5 +198,4 @@ public class GoodsRestServiceImpl implements GoodsService {
         }
         return 0;
     }
-
 }

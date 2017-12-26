@@ -1,6 +1,7 @@
 package cn.m2c.scm.application.order.data.bean;
 
 import cn.m2c.ddd.common.persistence.orm.ColumnAlias;
+import cn.m2c.scm.application.utils.Utils;
 
 /**
  * 商品信息
@@ -86,7 +87,11 @@ public class GoodsInfoBean {
 	}
 	
 	public long getSpecialPrice() {
-		return specialPrice;
+		return specialPrice/100;
+	}
+	
+	public String getStrSpecialPrice() {
+		return Utils.moneyFormatCN(specialPrice);
 	}
 
 	public Integer getIsSpecial() {
@@ -102,10 +107,16 @@ public class GoodsInfoBean {
 	}
 
 	public Long getChangePrice() {
-		return changePrice;
+		return changePrice/100;
+	}
+	
+	public String getStrChangePrice() {
+		return Utils.moneyFormatCN(changePrice);
 	}
 
 	public void setChangePrice(Long changePrice) {
+		if (changePrice == null)
+			changePrice = 0l;
 		this.changePrice = changePrice;
 	}
 
@@ -144,7 +155,11 @@ public class GoodsInfoBean {
 	}
 
 	public long getPrice() {
-		return price;
+		return price/100;
+	}
+	
+	public String getStrPrice() {
+		return Utils.moneyFormatCN(price);
 	}
 
 	public String getUnitName() {
@@ -158,7 +173,14 @@ public class GoodsInfoBean {
 		if (totalPrice == 0) {
 			totalPrice = price * sellNum;
 		}
-		return totalPrice;
+		return totalPrice/100;
+	}
+	
+	public String getStrTotalPrice() {
+		if (totalPrice == 0) {
+			totalPrice = price * sellNum;
+		}
+		return Utils.moneyFormatCN(totalPrice);
 	}
 	/*
 	public long getTotalPrice() {
@@ -174,7 +196,11 @@ public class GoodsInfoBean {
 	}
 
 	public long getFreight() {
-		return freight;
+		return freight/100;
+	}
+	
+	public String getStrFreight() {
+		return Utils.moneyFormatCN(freight);
 	}
 
 	public void setGoodsImage(String goodsImage) {

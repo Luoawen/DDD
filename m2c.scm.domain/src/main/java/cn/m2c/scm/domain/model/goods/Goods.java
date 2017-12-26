@@ -4,6 +4,7 @@ import cn.m2c.common.JsonUtils;
 import cn.m2c.ddd.common.domain.model.ConcurrencySafeEntity;
 import cn.m2c.ddd.common.domain.model.DomainEventPublisher;
 import cn.m2c.ddd.common.serializer.ObjectSerializer;
+import cn.m2c.scm.domain.model.dealer.event.DealerReportStatisticsEvent;
 import cn.m2c.scm.domain.model.goods.event.GoodsAddEvent;
 import cn.m2c.scm.domain.model.goods.event.GoodsApproveAddEvent;
 import cn.m2c.scm.domain.model.goods.event.GoodsChangedEvent;
@@ -11,12 +12,14 @@ import cn.m2c.scm.domain.model.goods.event.GoodsDeleteEvent;
 import cn.m2c.scm.domain.model.goods.event.GoodsModifyApproveSkuEvent;
 import cn.m2c.scm.domain.model.goods.event.GoodsOffShelfEvent;
 import cn.m2c.scm.domain.model.goods.event.GoodsUpShelfEvent;
+import cn.m2c.scm.domain.util.DealerReportType;
 import cn.m2c.scm.domain.util.GetMapValueUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -95,14 +98,14 @@ public class Goods extends ConcurrencySafeEntity {
     private String goodsGuarantee;
 
     /**
-     * 识别图片id
+     * 是否有识别图，0:没有，1：有
      */
-    private String recognizedId;
+    private Integer recognizedFlag;
 
     /**
-     * 识别图片url
+     * 识别图列表
      */
-    private String recognizedUrl;
+    private List<GoodsRecognized> goodsRecognizeds;
 
     /**
      * 商品主图  存储类型是[“url1”,"url2"]
@@ -159,6 +162,12 @@ public class Goods extends ConcurrencySafeEntity {
      */
     private Integer goodsLaunchStatus;
 
+    /**
+     * 最后更新时间
+     */
+    private Date lastUpdateTime;
+
+
     public Goods() {
         super();
     }
@@ -214,6 +223,13 @@ public class Goods extends ConcurrencySafeEntity {
         DomainEventPublisher
                 .instance()
                 .publish(new GoodsAddEvent(this.goodsId, this.goodsUnitId, getStandardId(goodsSpecifications)));
+
+        Map<String, Map> dealerInfo = new HashMap<>();
+        Map infoMap = new HashMap<>();
+        infoMap.put("num", 1);
+        dealerInfo.put(this.dealerId, infoMap);
+        // 数据统计事件
+        DomainEventPublisher.instance().publish(new DealerReportStatisticsEvent(dealerInfo, DealerReportType.GOODS_ADD, new Date()));
     }
 
     /**
@@ -273,9 +289,9 @@ public class Goods extends ConcurrencySafeEntity {
                 if (null == goodsSku) {// 增加规格
                     this.goodsSKUs.add(createGoodsSku(map));
                     Map skuMap = new HashMap<>();
-                    skuMap.put("skuId",skuId);
+                    skuMap.put("skuId", skuId);
                     String skuName = GetMapValueUtils.getStringFromMapKey(map, "skuName");
-                    skuMap.put("skuName",skuName);
+                    skuMap.put("skuName", skuName);
                     addSkuList.add(skuMap);
                 } else { // 修改供货价和拍获价
                     Long photographPrice = GetMapValueUtils.getLongFromMapKey(map, "photographPrice");
@@ -314,6 +330,7 @@ public class Goods extends ConcurrencySafeEntity {
                             String goodsClassifyId, String goodsBrandId, String goodsBrandName, String goodsUnitId, Integer goodsMinQuantity,
                             String goodsPostageId, String goodsBarCode, String goodsKeyWord, String goodsGuarantee,
                             String goodsMainImages, String goodsDesc, String goodsSpecifications, String goodsSKUs) {
+        this.lastUpdateTime = new Date();
         String oldGoodsUnitId = this.goodsUnitId;
         String newGoodsUnitId = goodsUnitId;
         this.goodsName = goodsName;
@@ -403,6 +420,7 @@ public class Goods extends ConcurrencySafeEntity {
      * 删除商品
      */
     public void remove() {
+        this.lastUpdateTime = new Date();
         this.delStatus = 2;
         DomainEventPublisher
                 .instance()
@@ -413,6 +431,7 @@ public class Goods extends ConcurrencySafeEntity {
      * 上架,商品状态，1：仓库中，2：出售中，3：已售罄
      */
     public void upShelf() {
+        this.lastUpdateTime = new Date();
         this.goodsStatus = 2;
         Integer total = 0;
         for (GoodsSku goodsSku : this.goodsSKUs) {
@@ -430,6 +449,7 @@ public class Goods extends ConcurrencySafeEntity {
      * 下架,商品状态，1：仓库中，2：出售中，3：已售罄
      */
     public void offShelf() {
+        this.lastUpdateTime = new Date();
         this.goodsStatus = 1;
         DomainEventPublisher
                 .instance()
@@ -439,10 +459,40 @@ public class Goods extends ConcurrencySafeEntity {
     /**
      * 修改商品识别图
      */
-    public void modifyRecognized(String recognizedId, String recognizedUrl) {
-        this.recognizedId = StringUtils.isEmpty(recognizedId) ? null : recognizedId;
-        this.recognizedUrl = StringUtils.isEmpty(recognizedUrl) ? null : recognizedUrl;
+    public void modifyRecognized(String recognizedNo, String recognizedId, String recognizedUrl) {
+        for (GoodsRecognized goodsRecognized : this.goodsRecognizeds) {
+            if (goodsRecognized.isEqualsRecognizedNo(recognizedNo)) {
+                goodsRecognized.modifyRecognized(recognizedId, recognizedUrl);
+            }
+        }
     }
+
+    /**
+     * 添加商品识别图
+     */
+    public void addRecognized(String recognizedId, String recognizedUrl) {
+        if (null == this.goodsRecognizeds) {
+            this.goodsRecognizeds = new ArrayList<>();
+        }
+        this.goodsRecognizeds.add(new GoodsRecognized(this, recognizedId, recognizedUrl));
+        this.recognizedFlag = 1;
+    }
+
+    /**
+     * 删除商品识别图
+     */
+    public void delRecognized(String recognizedNo) {
+        Iterator<GoodsRecognized> it = this.goodsRecognizeds.iterator();
+        while (it.hasNext()) {
+            if (it.next().isEqualsRecognizedNo(recognizedNo)) {
+                it.remove();
+            }
+        }
+        if (null == this.goodsRecognizeds || this.goodsRecognizeds.size() <= 0) {
+            this.recognizedFlag = 0;
+        }
+    }
+
 
     public Integer getId() {
         return Integer.parseInt(String.valueOf(this.id()));
@@ -490,12 +540,8 @@ public class Goods extends ConcurrencySafeEntity {
         this.goodsLaunchStatus = 1;
     }
 
-    public String recognizedId() {
-        return recognizedId;
-    }
-
-    public String recognizedUrl() {
-        return recognizedUrl;
+    public List<GoodsRecognized> goodsRecognizeds() {
+        return goodsRecognizeds;
     }
 
     public Integer goodsStatus() {
@@ -504,5 +550,34 @@ public class Goods extends ConcurrencySafeEntity {
 
     public void modifyGoodsMainImages(List<String> images) {
         this.goodsMainImages = JsonUtils.toStr(images);
+    }
+
+    /**
+     * 删除商品保障
+     *
+     * @param guaranteeId
+     */
+    public void delGoodsGuarantee(String guaranteeId) {
+        List list = ObjectSerializer.instance().deserialize(this.goodsGuarantee, List.class);
+        Iterator<String> it = list.iterator();
+        while (it.hasNext()) {
+            String goodsGuaranteeId = it.next();
+            if (goodsGuaranteeId.equals(guaranteeId)) {
+                it.remove();
+            }
+        }
+        this.goodsGuarantee = JsonUtils.toStr(list);
+    }
+
+    public String goodsId() {
+        return goodsId;
+    }
+
+    public String dealerId() {
+        return dealerId;
+    }
+
+    public String goodsName() {
+        return goodsName;
     }
 }

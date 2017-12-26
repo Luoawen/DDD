@@ -319,8 +319,7 @@ public class GoodsQueryAgent {
     }
 
     @RequestMapping(value = "/recognized/id", method = RequestMethod.GET)
-    public ResponseEntity<MResult> getRecognizedGoods(
-            @RequestParam(value = "goodsId", required = false) String goodsId) {
+    public ResponseEntity<MResult> getRecognizedGoods() {
         MResult result = new MResult(MCode.V_1);
         try {
             List<String> recognizedIds = goodsQueryApplication.getRecognizedGoods();

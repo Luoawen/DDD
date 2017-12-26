@@ -3,9 +3,12 @@ package cn.m2c.scm.application.goods.query.data.representation;
 import cn.m2c.common.JsonUtils;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsApproveBean;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsGuaranteeBean;
+import cn.m2c.scm.application.goods.query.data.bean.GoodsSkuApproveBean;
 import cn.m2c.scm.application.postage.data.bean.PostageModelBean;
+import cn.m2c.scm.application.utils.Utils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -25,7 +28,7 @@ public class GoodsApproveDetailRepresentation {
     private Integer goodsMinQuantity;
     private String goodsBarCode;
     private List<String> goodsKeyWord;
-    private List<String> goodsGuarantee;
+    private List<Map> goodsGuarantee;
     private List<Map> goodsSpecifications;
     private List<Map> goodsSKUs;
     private List<String> goodsMainImages;
@@ -57,15 +60,35 @@ public class GoodsApproveDetailRepresentation {
         this.goodsBarCode = bean.getGoodsBarCode();
         this.goodsKeyWord = JsonUtils.toList(bean.getGoodsKeyWord(), String.class);
         if (null != goodsGuarantees && goodsGuarantees.size() > 0) {
-            if (null == goodsGuarantee) {
+            /*if (null == goodsGuarantee) {
                 this.goodsGuarantee = new ArrayList<>();
             }
             for (GoodsGuaranteeBean guaranteeBean : goodsGuarantees) {
                 this.goodsGuarantee.add(guaranteeBean.getGuaranteeDesc());
-            }
+            }*/
+        	this.goodsGuarantee = JsonUtils.toList(JsonUtils.toStr(goodsGuarantees), Map.class);
         }
         this.goodsSpecifications = JsonUtils.toList(bean.getGoodsSpecifications(), Map.class);
-        this.goodsSKUs = JsonUtils.toList(JsonUtils.toStr(bean.getGoodsSkuApproves()), Map.class);
+        List<Map> list = new ArrayList<>();
+        for(GoodsSkuApproveBean goodsSkuBean: bean.getGoodsSkuApproves()) {
+            Map map = new HashMap<>();
+            map.put("goodsId", goodsSkuBean.getGoodsId());
+            map.put("skuId", goodsSkuBean.getSkuId());
+            map.put("skuName", goodsSkuBean.getSkuName());
+            map.put("availableNum", goodsSkuBean.getAvailableNum());
+            map.put("weight", goodsSkuBean.getWeight());
+            map.put("photographPrice", Utils.moneyFormatCN(goodsSkuBean.getPhotographPrice()));//拍获价
+            map.put("marketPrice", Utils.moneyFormatCN(goodsSkuBean.getMarketPrice()));//市场价
+            if(null != goodsSkuBean.getSupplyPrice()) {
+                map.put("supplyPrice", Utils.moneyFormatCN(goodsSkuBean.getSupplyPrice()));//供货价
+            }else {
+                map.put("supplyPrice", goodsSkuBean.getSupplyPrice());
+            }
+            map.put("goodsCode", goodsSkuBean.getGoodsCode());
+            map.put("showStatus", goodsSkuBean.getShowStatus());
+            list.add(map);
+        }
+        this.goodsSKUs = list;
         this.goodsMainImages = JsonUtils.toList(bean.getGoodsMainImages(), String.class);
         this.goodsDesc = bean.getGoodsDesc();
         this.approveStatus = bean.getApproveStatus();
@@ -248,11 +271,11 @@ public class GoodsApproveDetailRepresentation {
         this.skuFlag = skuFlag;
     }
 
-    public List<String> getGoodsGuarantee() {
+    public List<Map> getGoodsGuarantee() {
         return goodsGuarantee;
     }
 
-    public void setGoodsGuarantee(List<String> goodsGuarantee) {
+    public void setGoodsGuarantee(List<Map> goodsGuarantee) {
         this.goodsGuarantee = goodsGuarantee;
     }
 

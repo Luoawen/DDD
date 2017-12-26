@@ -2,7 +2,6 @@ package cn.m2c.scm.application.order.query;
 
 
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -175,10 +174,10 @@ public class OrderQuery {
 				mainOrder.setOrderId(allOrder.getOrderId());
 				mainOrder.setPayNo(allOrder.getPayNo());
 				mainOrder.setCreateDate(allOrder.getCreatedDate());
-				mainOrder.setGoodAmount(allOrder.getMainGoodsAmount());
-				mainOrder.setOderFreight(allOrder.getMainOrderFreight());
-				mainOrder.setDealerDiscount(allOrder.getPpDealerDiscount());
-				mainOrder.setPlateFormDiscount(allOrder.getPpDiscount());
+				mainOrder.setGoodAmount(allOrder.getGoodsAmount());
+				mainOrder.setOderFreight(allOrder.getStrMainOrderFreight());
+				mainOrder.setDealerDiscount(allOrder.getStrPpDealerDiscount());
+				mainOrder.setPlateFormDiscount(allOrder.getStrPpDiscount());
 				List<OrderDealerBean> dealerOrderList = new ArrayList<OrderDealerBean>();
 				mainOrder.setDealerOrderBeans(dealerOrderList);
 			}
@@ -186,10 +185,10 @@ public class OrderQuery {
 			dealerBean.setOrderId(allOrder.getOrderId());
 			dealerBean.setDealerName(allOrder.getDealerName());
 			dealerBean.setDealerOrderId(allOrder.getDealerOrderId());
-			dealerBean.setGoodAmount(allOrder.getDealerGoodsAmount());
-			dealerBean.setOderFreight(allOrder.getDealerOrderFreight());
-			dealerBean.setPlateFormDiscount(allOrder.getPlateformDiscount());
-			dealerBean.setDealerDiscount(allOrder.getDealerDiscount());
+			dealerBean.setGoodAmount(allOrder.getStrDealerGoodsAmount());
+			dealerBean.setOderFreight(allOrder.getStrDealerOrderFreight());
+			dealerBean.setPlateFormDiscount(allOrder.getStrPlateformDiscount());
+			dealerBean.setDealerDiscount(allOrder.getStrDealerDiscount());
 			dealerBean.setStatus(allOrder.getStatus());
 			mainOrder.getDealerOrderBeans().add(dealerBean);
 		}
@@ -609,5 +608,23 @@ public class OrderQuery {
 		if (object != null && object instanceof BigDecimal)
 			sum = ((BigDecimal)object).longValue();
 		 return sum;
+	}
+
+	/**
+	 * 根据主订单id获取用户id
+	 * @param orderId
+	 * @return
+	 * @throws NegativeException 
+	 */
+	public String getOrderUserId(String orderId) throws NegativeException {
+		String userId = "";
+		try {
+			String sql = "SELECT user_id FROM t_scm_order_main WHERE order_id = ?";
+			userId  = supportJdbcTemplate.jdbcTemplate().queryForObject(sql, String.class,orderId);
+		} catch (Exception e) {
+			LOGGER.info(" 根据主订单id获取用户id",e);
+			throw new  NegativeException(500,"根据订单id查询用户id失败");
+		}
+		return userId;
 	}
 }

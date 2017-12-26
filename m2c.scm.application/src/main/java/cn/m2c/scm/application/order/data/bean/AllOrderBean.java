@@ -5,6 +5,7 @@ import java.util.Date;
 
 import cn.m2c.ddd.common.AssertionConcern;
 import cn.m2c.ddd.common.persistence.orm.ColumnAlias;
+import cn.m2c.scm.application.utils.Utils;
 
 public class AllOrderBean extends AssertionConcern implements Serializable {
 	
@@ -48,24 +49,33 @@ public class AllOrderBean extends AssertionConcern implements Serializable {
 	/** 商家名 **/
 	@ColumnAlias(value = "dealer_name")
 	private String dealerName;
-	
+	/**主订单中的平台优惠*/
 	@ColumnAlias(value = "pDiscount")
-	private long ppDiscount;    
+	private long ppDiscount;   
+	/**主订单中的商家优惠*/
     @ColumnAlias(value = "pDealerDiscount")
 	private long ppDealerDiscount;
 
 	public long getPpDiscount() {
-		return ppDiscount;
+		return ppDiscount/100;
 	}
-
+	
+	public String getStrPpDiscount() {
+		return Utils.moneyFormatCN(ppDiscount);
+	}
+	
 	public void setPpDiscount(long ppDiscount) {
 		this.ppDiscount = ppDiscount;
 	}
 
 	public long getPpDealerDiscount() {
-		return ppDealerDiscount;
+		return ppDealerDiscount/100;
 	}
-
+	
+	public String getStrPpDealerDiscount() {
+		return Utils.moneyFormatCN(ppDealerDiscount);
+	}
+	
 	public void setPpDealerDiscount(long ppDealerDiscount) {
 		this.ppDealerDiscount = ppDealerDiscount;
 	}
@@ -91,29 +101,53 @@ public class AllOrderBean extends AssertionConcern implements Serializable {
 	}
 
 	public long getMainGoodsAmount() {
-		return mainGoodsAmount;
+		return mainGoodsAmount/100;
+	}
+	
+	public String getGoodsAmount() {
+		return Utils.moneyFormatCN(mainGoodsAmount);
 	}
 
 	public long getMainOrderFreight() {
-		return mainOrderFreight;
+		return mainOrderFreight/100;
 	}
-
+	
+	public String getStrMainOrderFreight() {
+		return Utils.moneyFormatCN(mainOrderFreight);
+	}
+	
 	public long getDealerOrderFreight() {
-		return dealerOrderFreight;
+		return dealerOrderFreight/100;
 	}
-
+	
+	public String getStrDealerOrderFreight() {
+		return Utils.moneyFormatCN(dealerOrderFreight);
+	}
+	
 	public long getPlateformDiscount() {
-		return plateformDiscount;
+		return plateformDiscount/100;
 	}
-
+	
+	public String getStrPlateformDiscount() {
+		return Utils.moneyFormatCN(plateformDiscount);
+	}
+	
 	public long getDealerDiscount() {
-		return dealerDiscount;
+		return dealerDiscount/100;
 	}
-
+	
+	public String getStrDealerDiscount() {
+		return Utils.moneyFormatCN(dealerDiscount);
+	}
+	
 	public long getDealerGoodsAmount() {
-		return dealerGoodsAmount;
+		return dealerGoodsAmount/100;
 	}
-
+	
+	public String getStrDealerGoodsAmount() {
+		return Utils.moneyFormatCN(dealerGoodsAmount);
+	}
+	
 	public Integer getStatus() {
 		return status;
 	}

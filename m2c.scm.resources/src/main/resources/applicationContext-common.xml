@@ -92,5 +92,18 @@
 		<property name="domainName" value="${ddd-cfg.domainName}"></property>
 	</bean>
 
-
+	<!-- 操作日志发送者  前期rabbitmq,后期考虑netty-->
+	<bean id="operationLogSender" class="cn.m2c.ddd.common.port.adapter.logger.sender.rabbitmq.OperationLogRabbitmqSender">
+		<constructor-arg index="0" ref="connectionFactory"></constructor-arg>
+		<constructor-arg index="1" ref="rabbitmqConfiguration"></constructor-arg>
+		<constructor-arg index="2" value="queue.m2c.common.cn.m2c.common.port.adapter.listener.rabbitmq.operationloglistener"></constructor-arg>
+		<constructor-arg index="3" value="exchange.m2c.common.cn.m2c.common.operationLog"></constructor-arg>
+		<constructor-arg index="4" value="routingKey.m2c.common.cn.m2c.common.operationLog"></constructor-arg>
+	</bean>
+	
+	<!-- 操作日志管理中心-->
+	<bean id="operationLogManager" class="cn.m2c.ddd.common.logger.process.OperationLogProcess">
+	    <constructor-arg index="0" ref="operationLogSender"></constructor-arg> 
+	    <constructor-arg index="1" ref="commonConfiguration"></constructor-arg>
+	</bean>
 </beans>

@@ -6,6 +6,7 @@ import java.util.List;
 
 import cn.m2c.ddd.common.AssertionConcern;
 import cn.m2c.ddd.common.persistence.orm.ColumnAlias;
+import cn.m2c.scm.application.utils.Utils;
 /***
  * 主订单bean, 用于查询模式，APP订单详情
  * @author fanjc
@@ -254,26 +255,50 @@ public class AppOrderDtl extends AssertionConcern implements Serializable {
 
 	public long getGoodAmount() {
 		if (status != null && status >=1)
-			return dGoodsAmount;
-		return goodAmount;
+			return dGoodsAmount/100;
+		return goodAmount/100;
+	}
+	
+	public String getStrGoodAmount() {
+		if (status != null && status >=1)
+			return Utils.moneyFormatCN(dGoodsAmount);
+		return Utils.moneyFormatCN(goodAmount);
 	}
 
 	public long getOderFreight() {
 		if (status != null && status >=1)
-			return dOrderFreight;
-		return oderFreight;
+			return dOrderFreight/100;
+		return oderFreight/100;
+	}
+	
+	public String getStrOrderFreight() {
+		if (status != null && status >=1)
+			return Utils.moneyFormatCN(dOrderFreight);
+		return Utils.moneyFormatCN(oderFreight);
 	}
 
 	public long getPlateFormDiscount() {
 		if (status != null && status >=1)
-			return dPlateformDiscount;
-		return plateFormDiscount;
+			return dPlateformDiscount/100;
+		return plateFormDiscount/100;
+	}
+	
+	public String getStrPlateFormDiscount() {
+		if (status != null && status >=1)
+			return Utils.moneyFormatCN(dPlateformDiscount);
+		return Utils.moneyFormatCN(plateFormDiscount);
 	}
 
 	public long getDealerDiscount() {
 		if (status != null && status >=1)
-			return dDealerDiscount;
-		return dealerDiscount;
+			return dDealerDiscount/100;
+		return dealerDiscount/100;
+	}
+	
+	public String getStrDealerDiscount() {
+		if (status != null && status >=1)
+			return Utils.moneyFormatCN(dDealerDiscount);
+		return Utils.moneyFormatCN(dealerDiscount);
 	}
 
 	public void setOrderId(String orderId) {

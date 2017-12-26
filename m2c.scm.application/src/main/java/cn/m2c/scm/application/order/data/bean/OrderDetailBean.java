@@ -3,6 +3,7 @@ package cn.m2c.scm.application.order.data.bean;
 import java.util.Date;
 
 import cn.m2c.ddd.common.persistence.orm.ColumnAlias;
+import cn.m2c.scm.application.utils.Utils;
 
 public class OrderDetailBean {
 
@@ -61,8 +62,13 @@ public class OrderDetailBean {
 	public Integer getIsSpecial() {
 		return isSpecial;
 	}
+	
 	public long getSpecialPrice() {
-		return specialPrice;
+		return specialPrice/100;
+	}
+	
+	public String getStrSpecialPrice() {
+		return Utils.moneyFormatCN(specialPrice);
 	}
 	public void setIsSpecial(Integer isSpecial) {
 		this.isSpecial = isSpecial;
@@ -76,10 +82,21 @@ public class OrderDetailBean {
 	public void setIsChange(Integer isChange) {
 		this.isChange = isChange;
 	}
-	public Long getChangePrice() {
-		return changePrice;
+	public long getChangePrice() {
+		if (null == changePrice)
+			return 0;
+		return changePrice/100;
 	}
+	
+	public String getStrChangePrice() {
+		if (null == changePrice)
+			return "";
+		return Utils.moneyFormatCN(changePrice);
+	}
+	
 	public void setChangePrice(Long changePrice) {
+		if (null == changePrice)
+			changePrice = 0l;
 		this.changePrice = changePrice;
 	}
 	public Integer getAfterStatus() {
@@ -121,14 +138,25 @@ public class OrderDetailBean {
 	private String goodsTypeId;
 	
 	public long getDiscountPrice() {
-		return discountPrice;
+		return discountPrice/100;
 	}
+	
+	public String getStrDiscountPrice() {
+		return Utils.moneyFormatCN(discountPrice);
+	}
+	
 	public void setDiscountPrice(long discountPrice) {
 		this.discountPrice = discountPrice;
 	}
+	
 	public long getFreight() {
-		return freight;
+		return freight/100;
 	}
+	public String getStrFreight() {
+		return Utils.moneyFormatCN(freight);
+	}
+	
+	
 	public void setFreight(long freight) {
 		this.freight = freight;
 	}

@@ -42,7 +42,7 @@ public interface GoodsService {
      * @param classifyId 商品分类ID
      * @return
      */
-    List<Map> getGoodsFullCut(String dealerId, String goodsId, String classifyId);
+    List<Map> getGoodsFullCut(String userId, String dealerId, String goodsId, String classifyId);
 
     /**
      * 查询商品是否被用户收藏

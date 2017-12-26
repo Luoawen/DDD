@@ -3,11 +3,14 @@ package cn.m2c.scm.port.adapter.restful.web.order;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -24,6 +27,7 @@ import cn.m2c.scm.application.order.command.AproveSaleAfterCmd;
 import cn.m2c.scm.application.order.command.SaleAfterCmd;
 import cn.m2c.scm.application.order.command.SaleAfterShipCmd;
 import cn.m2c.scm.application.order.command.SendOrderCommand;
+import cn.m2c.scm.application.order.command.SendOrderSMSCommand;
 import cn.m2c.scm.application.order.data.bean.DealerOrderBean;
 import cn.m2c.scm.application.order.data.bean.DealerOrderDetailBean;
 import cn.m2c.scm.application.order.data.bean.MainOrderBean;
@@ -57,6 +61,9 @@ public class OrderAgent {
     
     @Autowired
     OrderQueryApplication orderAppQuery;
+    
+    @Autowired
+	private  HttpServletRequest request;
 	/**
 	 * 查询订单列表
 	 * @param orderStatus 订单状态
@@ -146,7 +153,8 @@ public class OrderAgent {
 	 * @return
 	 */
 	@RequestMapping(value="/dealer/agree-apply-sale", method=RequestMethod.PUT)
-	public ResponseEntity<MResult> agreeApplySaleAfter(@RequestParam(value = "userId", required = false) String userId
+	public ResponseEntity<MResult> agreeApplySaleAfter(
+			@RequestParam(value = "userId", required = false) String userId
             ,@RequestParam(value = "saleAfterNo", required = false) String saleAfterNo
             ,@RequestParam(value = "dealerId", required = false) String dealerId
             ,@RequestParam(value = "rtFreight", required = false, defaultValue="0") float rtFreight
@@ -154,7 +162,8 @@ public class OrderAgent {
 		MResult result = new MResult(MCode.V_1);
 		try {
 			AproveSaleAfterCmd cmd = new AproveSaleAfterCmd(userId, saleAfterNo, dealerId, rtFreight);
-			saleAfterApp.agreeApply(cmd);
+			String _attach= request.getHeader("attach");
+			saleAfterApp.agreeApply(cmd, _attach);
 			result.setStatus(MCode.V_200);
 		}
 		catch (NegativeException e) {
@@ -185,7 +194,8 @@ public class OrderAgent {
 		MResult result = new MResult(MCode.V_1);
 		try {
 			AproveSaleAfterCmd cmd = new AproveSaleAfterCmd(userId, saleAfterNo, dealerId, rejectReason, rejectReasonCode);
-			saleAfterApp.rejectApply(cmd);
+			String _attach= request.getHeader("attach");
+			saleAfterApp.rejectApply(cmd, _attach);
 			result.setStatus(MCode.V_200);
 		}
 		catch (NegativeException e) {
@@ -207,6 +217,8 @@ public class OrderAgent {
      */
     @RequestMapping(value = "/aftersale/dealer/ship", method = RequestMethod.PUT)
     public ResponseEntity<MResult> afterSaleShip(
+    		@RequestParam(value = "orderId",required = false) String orderId,
+    		@RequestParam(value = "shopName",required = false) String shopName,
             @RequestParam(value = "userId", required = false) String userId
             ,@RequestParam(value = "expressNo", required = false) String expressNo
             ,@RequestParam(value = "expressCode", required = false) String expressCode
@@ -221,8 +233,9 @@ public class OrderAgent {
     	MResult result = new MResult(MCode.V_1);
         try {
         	SaleAfterShipCmd cmd = new SaleAfterShipCmd(userId, saleAfterNo, skuId,
-        			expressNo, expressCode, expressName, expressPerson, expressPhone, expressWay);
-        	saleAfterApp.dealerShipGoods(cmd);
+        			expressNo, expressCode, expressName, expressPerson, expressPhone, expressWay, orderId, shopName);
+        	String _attach= request.getHeader("attach");
+        	saleAfterApp.dealerShipGoods(cmd, _attach);
             result.setStatus(MCode.V_200);
         } 
         catch (NegativeException e) {
@@ -250,7 +263,8 @@ public class OrderAgent {
     	MResult result = new MResult(MCode.V_1);
         try {
         	SaleAfterCmd cmd = new SaleAfterCmd(userId, saleAfterNo, skuId);
-        	saleAfterApp.dealerConfirmRev(cmd);
+        	String _attach= request.getHeader("attach");
+        	saleAfterApp.dealerConfirmRev(cmd, _attach);
             result.setStatus(MCode.V_200);
         } 
         catch (NegativeException e) {
@@ -278,7 +292,8 @@ public class OrderAgent {
     	MResult result = new MResult(MCode.V_1);
         try {
         	SaleAfterCmd cmd = new SaleAfterCmd(userId, saleAfterNo, skuId);
-        	saleAfterApp.agreeBackMoney(cmd);
+        	String _attach= request.getHeader("attach");
+        	saleAfterApp.agreeBackMoney(cmd, _attach);
             result.setStatus(MCode.V_200);
         } 
         catch (NegativeException e) {
@@ -354,12 +369,15 @@ public class OrderAgent {
     		@RequestParam(value = "expressWay", required = false) Integer expressWay
     		,@RequestParam(value = "expressCode", required = false) String expressCode
     		,@RequestParam(value = "userId", required = false) String userId
+    		,@RequestParam(value = "orderId", required = false) String orderId
+    		,@RequestParam(value = "shopName", required = false) String shopName
     		){
     	MResult result = new MResult(MCode.V_1);
     	try {
     		SendOrderCommand command = new SendOrderCommand(dealerOrderId, expressNo, expressName, expressPerson, expressPhone, 
-    				expressWay, expressNote, expressCode, userId);
-    		dealerOrderApplication.updateExpress(command);
+    				expressWay, expressNote, expressCode, userId,orderId,shopName);
+    		String _attach= request.getHeader("attach");
+    		dealerOrderApplication.updateExpress(command, _attach);
     		result.setStatus(MCode.V_200);
 		} catch (NegativeException e) {
 			result.setStatus(MCode.V_400);
@@ -475,4 +493,33 @@ public class OrderAgent {
 		}
 		return new ResponseEntity<MResult>(result,HttpStatus.OK);
 	}
+	
+	/**
+	 * 发货成功发送短信接口
+	 * @param orderId
+	 * @return
+	 */
+	@RequestMapping(value = "/web/orderSendSMS", method = RequestMethod.POST)
+	public ResponseEntity<MResult> orderSendSMS(@RequestParam(value = "shopName") String shopName,
+			@RequestParam(value = "orderId") String orderId){
+		MResult result = new MResult(MCode.V_1);
+		
+		try {
+			if(StringUtils.isEmpty(orderId)){
+				result.setErrorMessage("用户ID不能为空");
+				return new ResponseEntity<MResult>(result,HttpStatus.OK);
+			}
+			String userId = orderQuery.getOrderUserId(orderId);
+			SendOrderSMSCommand cmd = new SendOrderSMSCommand(userId,shopName);
+			orderapplication.sendOrderSMS(cmd);
+			result.setStatus(MCode.V_200);
+		}catch (NegativeException ne){
+			LOGGER.error("发送发货短信失败", ne);
+			result = new MResult(ne.getStatus(), ne.getMessage());
+		} catch (Exception e) {
+			LOGGER.info("发送发货短信失败");
+		}
+		return new ResponseEntity<MResult>(result,HttpStatus.OK);
+	}
+	
 }

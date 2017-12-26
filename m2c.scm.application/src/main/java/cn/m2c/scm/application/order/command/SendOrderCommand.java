@@ -27,6 +27,10 @@ public class SendOrderCommand extends AssertionConcern{
 	
 	private String userId;
 	
+	private String orderId;
+	
+	private String shopName;
+	
 	public String getUserId() {
 		return userId;
 	}
@@ -45,7 +49,7 @@ public class SendOrderCommand extends AssertionConcern{
 	public SendOrderCommand(String dealerOrderId, String expressNo,
 			String expressName, String expressPerson, String expressPhone,
 			Integer expressWay, String expressNote, String expressCode
-			,String userId) throws NegativeException {
+			,String userId,String orderId,String shopName) throws NegativeException {
 		super();
 		this.dealerOrderId = dealerOrderId;
 		this.expressNo = expressNo;
@@ -56,6 +60,8 @@ public class SendOrderCommand extends AssertionConcern{
 		this.expressNote = expressNote;
 		this.expressCode = expressCode;
 		this.userId = userId;
+		this.orderId = orderId;
+		this.shopName = shopName;
 		
 		if (expressWay != 0 && expressWay != 1) {// 增加判断若为空则需要抛出异常。
 			throw new NegativeException(MCode.V_1, "expressWay 参数不正确.");
@@ -76,8 +82,23 @@ public class SendOrderCommand extends AssertionConcern{
 		if (StringUtils.isEmpty(dealerOrderId)) {// 增加判断若为空则需要抛出异常。
 			throw new NegativeException(MCode.V_1, "dealerOrderId 参数为空.");
 		}
+		
+		if (StringUtils.isEmpty(orderId)) {// 增加判断若为空则需要抛出异常。
+			throw new NegativeException(MCode.V_1, "orderId 参数为空.");
+		}
+		if (StringUtils.isEmpty(shopName)) {// 增加判断若为空则需要抛出异常。
+			throw new NegativeException(MCode.V_1, "shopName 参数为空.");
+		}
 	}
 
+	
+	public String getOrderId() {
+		return orderId;
+	}
+	
+	public String getShopName() {
+		return shopName;
+	}
 
 	public String getDealerOrderId() {
 		return dealerOrderId;

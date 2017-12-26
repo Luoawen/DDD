@@ -3,6 +3,7 @@ package cn.m2c.scm.application.goods.query.data.representation.app;
 import cn.m2c.common.JsonUtils;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsBean;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsSkuBean;
+import cn.m2c.scm.application.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +22,10 @@ public class AppGoodsByIdsRepresentation {
     private String classifyId;
     private String dealerId;
     private Integer skuFlag;
+    /**
+     * 新增字段，价格/10000
+     */
+    private String strGoodsPrice;
 
     public AppGoodsByIdsRepresentation(GoodsBean bean, List<Map> goodsTags) {
         this.goodsId = bean.getGoodsId();
@@ -31,7 +36,8 @@ public class AppGoodsByIdsRepresentation {
         }
         List<GoodsSkuBean> goodsSkuBeans = bean.getGoodsSkuBeans();
         if (null != goodsSkuBeans && goodsSkuBeans.size() > 0) {
-            this.goodsPrice = goodsSkuBeans.get(0).getPhotographPrice();
+            this.goodsPrice = goodsSkuBeans.get(0).getPhotographPrice()/100;
+            this.strGoodsPrice = Utils.moneyFormatCN(goodsSkuBeans.get(0).getPhotographPrice());
             if (null == this.goodsSKUs) {
                 this.goodsSKUs = new ArrayList<>();
             }
@@ -118,4 +124,12 @@ public class AppGoodsByIdsRepresentation {
     public void setSkuFlag(Integer skuFlag) {
         this.skuFlag = skuFlag;
     }
+
+	public String getStrGoodsPrice() {
+		return strGoodsPrice;
+	}
+
+	public void setStrGoodsPrice(String strGoodsPrice) {
+		this.strGoodsPrice = strGoodsPrice;
+	}
 }

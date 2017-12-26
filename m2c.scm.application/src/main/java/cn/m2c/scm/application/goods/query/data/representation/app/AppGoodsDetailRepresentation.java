@@ -7,6 +7,8 @@ import cn.m2c.scm.application.goods.query.data.bean.GoodsGuaranteeBean;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsSkuBean;
 import cn.m2c.scm.application.special.data.bean.GoodsSkuSpecialBean;
 import cn.m2c.scm.application.special.data.bean.GoodsSpecialBean;
+import cn.m2c.scm.application.utils.Utils;
+
 import com.baidu.disconf.client.usertools.DisconfDataGetter;
 
 import java.text.SimpleDateFormat;
@@ -131,7 +133,8 @@ public class AppGoodsDetailRepresentation {
                     if (null != skuSpecials && skuSpecials.size() > 0) {
                         for (GoodsSkuSpecialBean skuSpecialBean : skuSpecials) {
                             if (skuSpecialBean.getSkuId().equals(sku.getSkuId())) {
-                                sku.setSpecialPrice(skuSpecialBean.getSpecialPrice());
+                                sku.setSpecialPrice(skuSpecialBean.getSpecialPrice()/100);
+                                sku.setStrSpecialPrice(Utils.moneyFormatCN(skuSpecialBean.getSpecialPrice()));
                             }
                         }
                     }

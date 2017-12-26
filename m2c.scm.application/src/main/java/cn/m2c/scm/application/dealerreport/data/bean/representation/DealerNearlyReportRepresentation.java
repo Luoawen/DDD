@@ -13,7 +13,7 @@ public class DealerNearlyReportRepresentation {
         this.time = time;
         this.ratioFlag = ratioFlag;
         this.ratio = ratio;
-        this.sellMoney = sellMoney;
+        this.sellMoney = sellMoney / 10000;
     }
 
     public String getTime() {

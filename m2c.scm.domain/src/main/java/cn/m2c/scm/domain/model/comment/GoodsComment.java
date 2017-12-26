@@ -2,9 +2,16 @@ package cn.m2c.scm.domain.model.comment;
 
 import cn.m2c.common.JsonUtils;
 import cn.m2c.ddd.common.domain.model.ConcurrencySafeEntity;
+import cn.m2c.ddd.common.domain.model.DomainEventPublisher;
+import cn.m2c.scm.domain.model.comment.event.GoodsCommentAddEvent;
+import cn.m2c.scm.domain.model.dealer.event.DealerReportStatisticsEvent;
+import cn.m2c.scm.domain.util.DealerReportType;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 商品评论
@@ -165,9 +172,16 @@ public class GoodsComment extends ConcurrencySafeEntity {
         this.replyStatus = 1;
         this.commentStatus = 1;
 
-        /*DomainEventPublisher
+        DomainEventPublisher
                 .instance()
-                .publish(new GoodsCommentAddEvent(this.orderId, this.skuId));*/
+                .publish(new GoodsCommentAddEvent(this.buyerId, this.commentId, this.orderId, this.goodsId, this.skuId));
+
+        Map<String, Map> dealerInfo = new HashMap<>();
+        Map infoMap = new HashMap<>();
+        infoMap.put("num", 1);
+        dealerInfo.put(this.dealerId, infoMap);
+        // 数据统计事件
+        DomainEventPublisher.instance().publish(new DealerReportStatisticsEvent(dealerInfo, DealerReportType.GOODS_COMMENT, new Date()));
     }
 
     /**
@@ -197,6 +211,7 @@ public class GoodsComment extends ConcurrencySafeEntity {
     public String orderId() {
         return orderId;
     }
+
     public String skuId() {
         return skuId;
     }
