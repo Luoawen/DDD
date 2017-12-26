@@ -151,6 +151,21 @@ public class GoodsSpecialAgent {
             @RequestParam(value = "activityDescription", required = false) String activityDescription,
             @RequestParam(value = "goodsSkuSpecials", required = false) String goodsSkuSpecials) {
         MResult result = new MResult(MCode.V_1);
+        List<Map> list = JsonUtils.toList(goodsSkuSpecials, Map.class);
+        if (null != list && list.size() > 0) {
+            List<GoodsSkuSpecial> goodsSpecials = new ArrayList<>();
+            for (Map map : list) {
+                if (null != map.get("supplyPrice") && !"".equals(map.get("supplyPrice"))) {
+                    Long supplyPrice = new BigDecimal((GetMapValueUtils.getFloatFromMapKey(map, "supplyPrice") * 10000)).longValue();
+                    map.put("supplyPrice", supplyPrice);
+                }
+
+                Long specialPrice = new BigDecimal((GetMapValueUtils.getFloatFromMapKey(map, "specialPrice") * 10000)).longValue();
+
+                map.put("specialPrice", specialPrice);
+            }
+            goodsSkuSpecials = JsonUtils.toStr(list);
+        }
         GoodsSpecialModifyCommand command = new GoodsSpecialModifyCommand(specialId, startTime, endTime, congratulations, activityDescription, goodsSkuSpecials);
         try {
             goodsSpecialApplication.modifyGoodsSpecial(command);
