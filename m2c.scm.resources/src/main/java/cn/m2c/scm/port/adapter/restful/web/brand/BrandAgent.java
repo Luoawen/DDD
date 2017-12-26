@@ -247,7 +247,7 @@ public class BrandAgent {
         return new ResponseEntity<MResult>(result, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/choice", method = RequestMethod.GET)
+    @RequestMapping(value = "/web/brand/choice", method = RequestMethod.GET)
     public ResponseEntity<MResult> queryBrandChoice(
             @RequestParam(value = "brandName", required = false) String brandName) {
         MResult result = new MResult(MCode.V_1);
