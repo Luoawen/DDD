@@ -80,12 +80,14 @@
 			<mvc:mapping path="/**/mng" />
 			<mvc:mapping path="/**/mng/**" />
 			<mvc:mapping path="/**/admin/**" />
+			<mvc:exclude-mapping path="/**/admin/goods/recognized/**" />
 			<bean class="cn.m2c.common.permission.interceptor.AccessTokenInterceptor" />
 		</mvc:interceptor>
 		<mvc:interceptor>
 			<mvc:mapping path="/**/mng" />
 			<mvc:mapping path="/**/mng/**" />
 			<mvc:mapping path="/**/admin/**" />
+			<mvc:exclude-mapping path="/**/admin/goods/recognized/**" />
 			<bean
 				class="cn.m2c.common.permission.interceptor.GlobalPermissionInterceptor" />
 		</mvc:interceptor>		
