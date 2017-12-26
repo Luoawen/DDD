@@ -79,4 +79,12 @@ public class AppGoodsSearchRepresentation {
     public void setGoodsTags(List<Map> goodsTags) {
         this.goodsTags = goodsTags;
     }
+
+    public String getStrGoodsPrice() {
+        return strGoodsPrice;
+    }
+
+    public void setStrGoodsPrice(String strGoodsPrice) {
+        this.strGoodsPrice = strGoodsPrice;
+    }
 }
