@@ -281,7 +281,7 @@ public class DealerAgent {
 		  * @param dealerId
 		  * @return
 		  */
-		 @RequestMapping(value = "/{dealerId}", method = RequestMethod.GET)
+		 @RequestMapping(value = {"/{dealerId}" , "/web/{dealerId}"}, method = RequestMethod.GET)
 		    public ResponseEntity<MResult> queryDealer(
 		            @PathVariable(value = "dealerId", required = true) String dealerId
 		            ) {

@@ -107,7 +107,7 @@ public class ShopAgent {
 		  * @param dealerId
 		  * @return
 		  */
-		 @RequestMapping(value = "/shopInfo", method = RequestMethod.PUT)
+		 @RequestMapping(value = {"/shopInfo" , "/web/shopInfo"}, method = RequestMethod.PUT)
 		    public ResponseEntity<MResult> updateShopInfo(
 		            @RequestParam(value = "dealerId", required = true) String dealerId,
 		            @RequestParam(value = "shopId", required = false) String shopId,
@@ -138,7 +138,7 @@ public class ShopAgent {
 		  * @param dealerId
 		  * @return
 		  */
-		 @RequestMapping(value = "/shopInfo", method = RequestMethod.POST)
+		 @RequestMapping(value = {"/shopInfo" , "/web/shopInfo"}, method = RequestMethod.POST)
 		    public ResponseEntity<MResult> addShopInfo(
 		            @RequestParam(value = "dealerId", required = true) String dealerId,
 		            @RequestParam(value = "shopName", required = true) String shopName,
@@ -167,7 +167,7 @@ public class ShopAgent {
 		  * @param dealerId
 		  * @return
 		  */
-		 @RequestMapping(value = "/shopInfo", method = RequestMethod.GET)
+		 @RequestMapping(value = {"/shopInfo" , "/web/shopInfo"}, method = RequestMethod.GET)
 		    public ResponseEntity<MResult> queryShopInfo(
 		            @RequestParam(value = "dealerId", required = true) String dealerId
 		            ) {
@@ -253,7 +253,7 @@ public class ShopAgent {
 		  * @param dealerId
 		  * @return
 		  */
-		 @RequestMapping(value = "shopcreatedtime",method = RequestMethod.GET)
+		 @RequestMapping(value = {"shopcreatedtime" , "web/shopcreatedtime"},method = RequestMethod.GET)
 		 public ResponseEntity<MResult> getShopCreatedTime(@RequestParam(value = "dealerId",required = true) String dealerId){
 			 MResult result = new MResult(MCode.V_1);
 			 
