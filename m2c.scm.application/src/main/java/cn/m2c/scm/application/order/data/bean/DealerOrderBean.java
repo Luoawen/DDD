@@ -11,7 +11,7 @@ public class DealerOrderBean {
 	private String dealerOrderId;
 	@ColumnAlias(value= "dealer_id")
 	private String dealerId;
-	/**订单状态 0待付款，1等发货，2待收货，3完成，4交易完成，5交易关闭，-1已取消*/
+	/**订单状态 0待付款，1待发货，2待收货，3完成，4交易完成，5交易关闭，-1已取消*/
 	@ColumnAlias(value= "_status")
 	private Integer status;
 	@ColumnAlias(value= "province_code")

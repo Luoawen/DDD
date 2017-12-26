@@ -245,7 +245,7 @@ public class DealerOrderAgent {
 		return new ResponseEntity<MResult>(result, HttpStatus.OK);
 	}
 
-	@RequestMapping(value = "/addrfreight", method = RequestMethod.PUT)
+	@RequestMapping(value = {"/addrfreight", "/web/addrfreight"}, method = RequestMethod.PUT)
 	public ResponseEntity<MResult> updateAddrFreight(
 			@RequestParam(value = "dealerOrderId", required = false) String dealerOrderId,
 			@RequestParam(value = "province", required = false) String province,

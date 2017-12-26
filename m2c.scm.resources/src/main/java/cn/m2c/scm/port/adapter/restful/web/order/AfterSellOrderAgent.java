@@ -88,7 +88,7 @@ public class AfterSellOrderAgent {
 	 * @param afterSellOrderId
 	 * @return
 	 */
-	@RequestMapping("/manager/aftreselllogistics")
+	@RequestMapping(value = {"/manager/aftreselllogistics", "/web/manager/aftreselllogistics"}, method = RequestMethod.GET)
 	public ResponseEntity<MResult> getAftreSellLogistics(
 			@RequestParam(value = "afterSellOrderId", required = false) String afterSellOrderId) {
 		MResult result = new MResult(MCode.V_1);

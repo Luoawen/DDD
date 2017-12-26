@@ -55,7 +55,7 @@ public class DealerOrderExpModel {
 
     public DealerOrderExpModel(DealerGoodsBean goodsBean, DealerOrderQB dealerOrderQB) {
         this.dealerOrderId = dealerOrderQB.getDealerOrderId();
-        //订单状态, 0待付款，1等发货，2待收货，3完成，4交易完成，5交易关闭，-1已取消
+        //订单状态, 0待付款，1待发货，2待收货，3完成，4交易完成，5交易关闭，-1已取消
         this.orderStatus = getStatusStr(dealerOrderQB.getOrderStatus());
         this.payNo = null == dealerOrderQB.getPayNo() ? "" : dealerOrderQB.getPayNo();
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -92,7 +92,7 @@ public class DealerOrderExpModel {
                     statusStr = "待付款";
                     break;
                 case 1:
-                    statusStr = "等发货";
+                    statusStr = "待发货";
                     break;
                 case 2:
                     statusStr = "待收货";
