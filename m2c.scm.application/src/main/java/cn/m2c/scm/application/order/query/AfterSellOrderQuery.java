@@ -562,7 +562,7 @@ public class AfterSellOrderQuery {
 			sql.append("SELECT count(1) FROM t_scm_order_after_sell a \r\n")
 			.append("LEFT OUTER JOIN t_scm_order_detail b ON a.order_id=b.order_id AND a.dealer_order_id=b.dealer_order_id AND a.sku_id = b.sku_id AND a.sort_no=b.sort_no\r\n")
 			.append("LEFT OUTER JOIN t_scm_dealer c ON a.dealer_id = c.dealer_id \r\n")
-			.append(" WHERE a.user_id=?");
+			.append(" WHERE a.user_id=? AND a._status != -1 ");
 			params.add(userId);
 			
 			if (status != null) {
@@ -604,7 +604,7 @@ public class AfterSellOrderQuery {
 			.append("FROM t_scm_order_after_sell a \r\n")
 			.append("LEFT OUTER JOIN t_scm_order_detail b ON a.order_id=b.order_id AND a.dealer_order_id=b.dealer_order_id AND a.sku_id = b.sku_id AND a.sort_no=b.sort_no\r\n")
 			.append("LEFT OUTER JOIN t_scm_dealer c ON a.dealer_id = c.dealer_id \r\n")
-			.append(" WHERE a.user_id=?");
+			.append(" WHERE a.user_id=? AND a._status != -1 ");
 			params.add(userId);
 			
 			if (status != null) {
