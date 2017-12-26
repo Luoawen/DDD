@@ -51,7 +51,7 @@ public class SaleAfterShipCmd extends AssertionConcern {
 		}
 		
 		if (StringUtils.isEmpty(expressNo)) {
-			throw new NegativeException(MCode.V_1, "快递单号参数为空(dealerId)！");
+			throw new NegativeException(MCode.V_1, "快递单号参数为空(expressNo)！");
 		}
 		
 		if (StringUtils.isEmpty(skuId)) {
