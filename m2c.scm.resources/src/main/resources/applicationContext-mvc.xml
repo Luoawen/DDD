@@ -95,6 +95,21 @@
             <mvc:exclude-mapping path="/**/mng" />
             <mvc:exclude-mapping path="/**/mng/**" />
             <mvc:exclude-mapping path="/**/admin/**" />
+            <mvc:exclude-mapping path="/**/goods/choice" />
+			<mvc:exclude-mapping path="/**/goods/classify/tree" />
+			<mvc:exclude-mapping path="/**/shop/sys/shop" />
+			<mvc:exclude-mapping path="/**/goods/detail/multiple" />
+			<mvc:exclude-mapping path="/**/dealer/sys/dealers" />
+			<mvc:exclude-mapping path="/**/domain/goods/ids" />
+			<mvc:exclude-mapping path="/**/shop/sys/shopinfos" />
+			<mvc:exclude-mapping path="/**/user/getUserInfoByIds" /> 
+			<mvc:exclude-mapping path="/**/order-out/**" />
+			<mvc:exclude-mapping path="/**/shop/sys/shop"/>
+            <mvc:exclude-mapping path="/**/shop/sys/detail"/>
+            <mvc:exclude-mapping path="/**/dealer/sys/dealers"/>
+            <mvc:exclude-mapping path="/**/dealer/sys/getDealerName"/>
+            <mvc:exclude-mapping path="/**/dealer/sys/dealerStatus-out"/>
+            <mvc:exclude-mapping path="/**/shop/sys/shopInfo-out"/>       
             <bean class="cn.m2c.common.permission.interceptor.AuthorizationInterceptor" />
        </mvc:interceptor>
 	</mvc:interceptors> 
