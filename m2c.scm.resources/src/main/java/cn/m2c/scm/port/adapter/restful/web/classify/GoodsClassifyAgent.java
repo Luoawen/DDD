@@ -29,7 +29,6 @@ import java.util.Map;
  * 商品分类
  */
 @RestController
-@RequestMapping("/goods/classify")
 public class GoodsClassifyAgent {
     private final static Logger LOGGER = LoggerFactory.getLogger(GoodsClassifyAgent.class);
 
@@ -47,7 +46,7 @@ public class GoodsClassifyAgent {
      * @param level            层级，1：一级分类,2：二级分类,3：三级分类...
      * @return
      */
-    @RequestMapping(value = "/mng", method = RequestMethod.POST)
+    @RequestMapping(value = "/goods/classify/mng", method = RequestMethod.POST)
     @RequirePermissions(value = {"scm:goodsClassify:add"})
     public ResponseEntity<MResult> addGoodsClassify(
             @RequestParam(value = "classifyName", required = false) String classifyName,
@@ -76,7 +75,7 @@ public class GoodsClassifyAgent {
      * @param classifyName
      * @return
      */
-    @RequestMapping(value = "mng/{classifyId}/name", method = RequestMethod.PUT)
+    @RequestMapping(value = "/goods/classify/mng/{classifyId}/name", method = RequestMethod.PUT)
     @RequirePermissions(value = {"scm:goodsClassify:update"})
     public ResponseEntity<MResult> modifyGoodsClassifyName(
             @PathVariable("classifyId") String classifyId,
@@ -102,7 +101,7 @@ public class GoodsClassifyAgent {
      * @param serviceRate
      * @return
      */
-    @RequestMapping(value = "/mng/{classifyId}/service/rate", method = RequestMethod.PUT)
+    @RequestMapping(value = "/goods/classify/mng/{classifyId}/service/rate", method = RequestMethod.PUT)
     @RequirePermissions(value = {"scm:serviceRate:modify"})
     public ResponseEntity<MResult> modifyGoodsClassifyServiceRate(
             @PathVariable("classifyId") String classifyId,
@@ -128,7 +127,7 @@ public class GoodsClassifyAgent {
      * @param classifyId
      * @return
      */
-    @RequestMapping(value = "/mng/{classifyId}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/goods/classify/mng/{classifyId}", method = RequestMethod.DELETE)
     @RequirePermissions(value = {"scm:goodsClassify:delete"})
     public ResponseEntity<MResult> deleteGoodsClassify(
             @PathVariable("classifyId") String classifyId) {
@@ -151,7 +150,7 @@ public class GoodsClassifyAgent {
      *
      * @return
      */
-    @RequestMapping(value = "/tree", method = RequestMethod.GET)
+    @RequestMapping(value = {"/web/goods/classify/tree", "/goods/classify/tree"}, method = RequestMethod.GET)
     public ResponseEntity<MResult> queryGoodsClassifyTree(
             @RequestParam(value = "parentClassifyId", required = false) String parentClassifyId) {
         MResult result = new MResult(MCode.V_1);
@@ -171,7 +170,7 @@ public class GoodsClassifyAgent {
      *
      * @return
      */
-    @RequestMapping(value = "/service/rate/is/null", method = RequestMethod.GET)
+    @RequestMapping(value = "/goods/classify/service/rate/is/null", method = RequestMethod.GET)
     public ResponseEntity<MResult> queryRateIsNull() {
         MResult result = new MResult(MCode.V_1);
         try {
@@ -190,7 +189,7 @@ public class GoodsClassifyAgent {
      *
      * @return
      */
-    @RequestMapping(value = "/{classifyId}", method = RequestMethod.GET)
+    @RequestMapping(value = "/goods/classify/{classifyId}", method = RequestMethod.GET)
     public ResponseEntity<MResult> queryGoodsClassifyDetail(@PathVariable("classifyId") String classifyId) {
         MResult result = new MResult(MCode.V_1);
         try {
@@ -212,7 +211,7 @@ public class GoodsClassifyAgent {
      * @param level
      * @return
      */
-    @RequestMapping(value = "/level", method = RequestMethod.GET)
+    @RequestMapping(value = "/goods/classify/level", method = RequestMethod.GET)
     public ResponseEntity<MResult> queryGoodsClassifyByLevel(
             @RequestParam(value = "level", required = false) Integer level) {
         MResult result = new MResult(MCode.V_1);
@@ -239,7 +238,7 @@ public class GoodsClassifyAgent {
      * @param classifyId
      * @return
      */
-    @RequestMapping(value = "/service/rate", method = RequestMethod.GET)
+    @RequestMapping(value = {"/web/goods/classify/service/rate","/goods/classify/service/rate"}, method = RequestMethod.GET)
     public ResponseEntity<MResult> queryServiceRateByClassifyId(
             @RequestParam(value = "classifyId", required = false) String classifyId) {
         MResult result = new MResult(MCode.V_1);

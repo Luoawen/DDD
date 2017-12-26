@@ -48,7 +48,6 @@ import java.util.Map;
  * @author ps
  */
 @RestController
-@RequestMapping("/goods/approve")
 public class GoodsApproveAgent {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(GoodsApproveAgent.class);
@@ -71,14 +70,14 @@ public class GoodsApproveAgent {
     PostageModelQueryApplication postageModelQueryApplication;
 
     @Autowired
-	private  HttpServletRequest request;
-    
+    private HttpServletRequest request;
+
     /**
      * 获取ID
      *
      * @return
      */
-    @RequestMapping(value = "/id", method = RequestMethod.GET)
+    @RequestMapping(value = "/web/goods/approve/id", method = RequestMethod.GET)
     public ResponseEntity<MResult> getGoodsApproveId() {
         MResult result = new MResult(MCode.V_1);
         try {
@@ -115,7 +114,7 @@ public class GoodsApproveAgent {
      * @param goodsSkuApproves    商品sku规格列表,格式：[{"availableNum":200,"goodsCode":"111111","marketPrice":6000,"photographPrice":5000,"showStatus":2,"skuName":"L,红","supplyPrice":4000,"weight":20.5}]
      * @return
      */
-    @RequestMapping(value = "", method = RequestMethod.POST)
+    @RequestMapping(value = "/web/goods/approve", method = RequestMethod.POST)
     public ResponseEntity<MResult> addGoodsApprove(
             @RequestParam(value = "goodsId", required = false) String goodsId,
             @RequestParam(value = "dealerId", required = false) String dealerId,
@@ -188,14 +187,14 @@ public class GoodsApproveAgent {
      * @param goodsId
      * @return
      */
-    @RequestMapping(value = "/mng/agree", method = RequestMethod.POST)
-    @RequirePermissions(value ={"scm:goodsCheck:agree"})
+    @RequestMapping(value = "/goods/approve/mng/agree", method = RequestMethod.POST)
+    @RequirePermissions(value = {"scm:goodsCheck:agree"})
     public ResponseEntity<MResult> agreeGoodsApprove(
             @RequestParam(value = "goodsId", required = false) String goodsId
     ) {
         MResult result = new MResult(MCode.V_1);
         try {
-        	String _attach= request.getHeader("attach");
+            String _attach = request.getHeader("attach");
             goodsApproveApplication.agreeGoodsApprove(goodsId, _attach);
             result.setStatus(MCode.V_200);
         } catch (NegativeException ne) {
@@ -207,15 +206,15 @@ public class GoodsApproveAgent {
         }
         return new ResponseEntity<MResult>(result, HttpStatus.OK);
     }
-    
+
     /**
      * 拒绝商品审核
      *
      * @param goodsId
      * @return
      */
-    @RequestMapping(value = "/mng/reject", method = RequestMethod.POST)
-    @RequirePermissions(value ={"scm:goodsCheck:reject"})
+    @RequestMapping(value = "/goods/approve/mng/reject", method = RequestMethod.POST)
+    @RequirePermissions(value = {"scm:goodsCheck:reject"})
     public ResponseEntity<MResult> rejectGoodsApprove(
             @RequestParam(value = "goodsId", required = false) String goodsId,
             @RequestParam(value = "rejectReason", required = false) String rejectReason
@@ -223,7 +222,7 @@ public class GoodsApproveAgent {
         MResult result = new MResult(MCode.V_1);
         try {
             GoodsApproveRejectCommand command = new GoodsApproveRejectCommand(goodsId, rejectReason);
-            String _attach= request.getHeader("attach");
+            String _attach = request.getHeader("attach");
             goodsApproveApplication.rejectGoodsApprove(command, _attach);
             result.setStatus(MCode.V_200);
         } catch (NegativeException ne) {
@@ -256,7 +255,7 @@ public class GoodsApproveAgent {
      * @param goodsSKUs        商品sku规格列表,格式：[{"availableNum":200,"goodsCode":"111111","marketPrice":6000,"photographPrice":5000,"showStatus":2,"skuId":"SPSHA5BDED943A1D42CC9111B3723B0987BF","skuName":"L,红","supplyPrice":4000,"weight":20.5}]
      * @return
      */
-    @RequestMapping(value = "", method = RequestMethod.PUT)
+    @RequestMapping(value = "/web/goods/approve", method = RequestMethod.PUT)
     public ResponseEntity<MResult> modifyGoodsApprove(
             @RequestParam(value = "goodsId", required = false) String goodsId,
             @RequestParam(value = "dealerId", required = false) String dealerId,
@@ -306,7 +305,7 @@ public class GoodsApproveAgent {
                     goodsClassifyId, goodsBrandId, goodsBrandName, goodsUnitId, goodsMinQuantity,
                     goodsPostageId, goodsBarCode, goodsKeyWord, goodsGuarantee,
                     goodsMainImages, goodsDesc, goodsSpecifications, goodsSKUs);
-            String _attach= request.getHeader("attach");
+            String _attach = request.getHeader("attach");
             goodsApproveApplication.modifyGoodsApprove(command, _attach);
             result.setStatus(MCode.V_200);
         } catch (NegativeException ne) {
@@ -319,13 +318,13 @@ public class GoodsApproveAgent {
         return new ResponseEntity<MResult>(result, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/{goodsId}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/web/goods/approve/{goodsId}", method = RequestMethod.DELETE)
     public ResponseEntity<MResult> delGoodsApprove(
             @PathVariable("goodsId") String goodsId
     ) {
         MResult result = new MResult(MCode.V_1);
         try {
-        	String _attach= request.getHeader("attach");
+            String _attach = request.getHeader("attach");
             goodsApproveApplication.deleteGoodsApprove(goodsId, _attach);
             result.setStatus(MCode.V_200);
         } catch (NegativeException ne) {
@@ -351,7 +350,7 @@ public class GoodsApproveAgent {
      * @param rows            每页多少行
      * @return
      */
-    @RequestMapping(value = "", method = RequestMethod.GET)
+    @RequestMapping(value = {"/web/goods/approve", "/goods/approve"}, method = RequestMethod.GET)
     public ResponseEntity<MPager> searchGoodsApproveByCondition(
             @RequestParam(value = "dealerId", required = false) String dealerId,
             @RequestParam(value = "goodsClassifyId", required = false) String goodsClassifyId,
@@ -397,7 +396,7 @@ public class GoodsApproveAgent {
      * @param goodsId
      * @return
      */
-    @RequestMapping(value = "/{goodsId}", method = RequestMethod.GET)
+    @RequestMapping(value = {"/web/goods/approve/{goodsId}", "/goods/approve/{goodsId}"}, method = RequestMethod.GET)
     public ResponseEntity<MResult> queryGoodsApproveDetail(
             @PathVariable("goodsId") String goodsId
     ) {
