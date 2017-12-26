@@ -5,6 +5,7 @@ import cn.m2c.common.MResult;
 import cn.m2c.scm.application.dealerreport.data.bean.DealerDayReportBean;
 import cn.m2c.scm.application.dealerreport.data.bean.representation.DealerNearlyReportRepresentation;
 import cn.m2c.scm.application.dealerreport.query.DealerReportQueryApplication;
+import cn.m2c.scm.application.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -186,8 +187,8 @@ public class DealerReportAgent {
         map.put("orderNum", orderNum);
         map.put("orderRefundNum", orderRefundNum);
         map.put("goodsAddNum", goodsAddNum);
-        map.put("sellMoney", sellMoney / 10000);
-        map.put("refundMoney", refundMoney / 10000);
+        map.put("sellMoney", Utils.moneyFormatCN(sellMoney));
+        map.put("refundMoney",  Utils.moneyFormatCN(refundMoney));
         map.put("goodsCommentNum", goodsCommentNum);
         return map;
     }
