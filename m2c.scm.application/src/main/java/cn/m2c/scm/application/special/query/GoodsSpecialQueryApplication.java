@@ -30,7 +30,7 @@ public class GoodsSpecialQueryApplication {
 
     @Autowired
     GoodsQueryApplication goodsQueryApplication;
-    
+
     public SupportJdbcTemplate getSupportJdbcTemplate() {
         return supportJdbcTemplate;
     }
@@ -98,7 +98,7 @@ public class GoodsSpecialQueryApplication {
             Map map = new HashMap<>();
             for (GoodsSkuSpecialBean bean : goodsSkuSpecialBeans) {
                 GoodsSpecialBean goodsSpecialBean = queryGoodsSpecialBySpecialId(bean.getSpecialId());
-                if (null != goodsSpecialBean){
+                if (null != goodsSpecialBean) {
                     bean.setGoodsSpecialId(goodsSpecialBean.getSpecialId());
                 }
                 map.put(bean.getSkuId(), bean);
@@ -167,7 +167,7 @@ public class GoodsSpecialQueryApplication {
      * @return
      */
     public List<GoodsSpecialBean> queryGoodsSpecialBeanList(Integer status, String startTime, String endTime,
-                                                                    String searchMessage, Integer pageNum, Integer rows) {
+                                                            String searchMessage, Integer pageNum, Integer rows) {
         StringBuilder sql = new StringBuilder();
         List<Object> params = new ArrayList<Object>();
         sql.append(" SELECT ");
@@ -208,7 +208,7 @@ public class GoodsSpecialQueryApplication {
         List<GoodsSpecialBean> goodsSpecialBeanLists = this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsSpecialBean.class, params.toArray());
         if (goodsSpecialBeanLists != null && goodsSpecialBeanLists.size() >= 0) {
             for (GoodsSpecialBean goodsSpecialBean : goodsSpecialBeanLists) {
-            	goodsSpecialBean.setGoodsSpecialSkuBeans(queryGoodsSkuSpecialBySpecialId(goodsSpecialBean.getId()));
+                goodsSpecialBean.setGoodsSpecialSkuBeans(queryGoodsSkuSpecialBySpecialId(goodsSpecialBean.getId()));
             }
         }
         return goodsSpecialBeanLists;
@@ -237,25 +237,26 @@ public class GoodsSpecialQueryApplication {
 
     /**
      * 查询特惠价sku详情
+     *
      * @param goodsId
      * @return
      */
-    public List<GoodsSkuSpecialDetailAllBeanRepresentation> queryGoodsSkuSpecialDetailAllBeanList(Integer specialId){
-    	//查出商品sku详情
-    	List<GoodsSkuSpecialBean> goodsSkuSpecialBeanList = queryGoodsSkuSpecialBySpecialId(specialId);
-		List<GoodsSkuSpecialDetailAllBeanRepresentation> list = new ArrayList<>();
-    	if(null != goodsSkuSpecialBeanList && goodsSkuSpecialBeanList.size() > 0) {
-    		for(GoodsSkuSpecialBean goodsSkuSpecialBean : goodsSkuSpecialBeanList) {
-    			GoodsSkuSpecialDetailAllBeanRepresentation representation = new GoodsSkuSpecialDetailAllBeanRepresentation(goodsSkuSpecialBean);
-    			GoodsSkuBean goodsSkuBean = goodsQueryApplication.queryGoodsSkuBeanBySkuId(representation.getSkuId());
-    			//原供货价
-    			representation.setGoodsSupplyPrice(Utils.moneyFormatCN(goodsSkuBean.getSupplyPrice()));
-    			//原拍获价
-    			representation.setGoodsSkuPrice(Utils.moneyFormatCN(goodsSkuBean.getPhotographPrice()));
-    			list.add(representation);
-    		}
-    	}
-    	return list;
+    public List<GoodsSkuSpecialDetailAllBeanRepresentation> queryGoodsSkuSpecialDetailAllBeanList(Integer specialId) {
+        //查出商品sku详情
+        List<GoodsSkuSpecialBean> goodsSkuSpecialBeanList = queryGoodsSkuSpecialBySpecialId(specialId);
+        List<GoodsSkuSpecialDetailAllBeanRepresentation> list = new ArrayList<>();
+        if (null != goodsSkuSpecialBeanList && goodsSkuSpecialBeanList.size() > 0) {
+            for (GoodsSkuSpecialBean goodsSkuSpecialBean : goodsSkuSpecialBeanList) {
+                GoodsSkuSpecialDetailAllBeanRepresentation representation = new GoodsSkuSpecialDetailAllBeanRepresentation(goodsSkuSpecialBean);
+                GoodsSkuBean goodsSkuBean = goodsQueryApplication.queryGoodsSkuBeanBySkuId(representation.getSkuId());
+                //原供货价
+                representation.setGoodsSupplyPrice(null != goodsSkuBean.getSupplyPrice() && "".equals(goodsSkuBean.getSupplyPrice()) ? Utils.moneyFormatCN(goodsSkuBean.getSupplyPrice()) : null);
+                //原拍获价
+                representation.setGoodsSkuPrice(Utils.moneyFormatCN(goodsSkuBean.getPhotographPrice()));
+                list.add(representation);
+            }
+        }
+        return list;
     }
-    
+
 }
