@@ -24,7 +24,7 @@ public class OrderShipEvent implements DomainEvent {
 	private int eventVersion;
 
 	public OrderShipEvent(String orderId, String shopName, String com, String nu) {
-		super();
+		this();
 		this.orderId = orderId;
 		this.shopName = shopName;
 		this.com = com;
