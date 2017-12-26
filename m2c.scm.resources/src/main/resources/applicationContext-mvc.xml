@@ -91,29 +91,10 @@
 			<bean
 				class="cn.m2c.common.permission.interceptor.GlobalPermissionInterceptor" />
 		</mvc:interceptor>		
-		<!-- <mvc:interceptor>
-            <mvc:mapping path="/*" /> 拦截C端系统所有的请求接口，除登录找回密码等接口
-            <mvc:exclude-mapping path="/**/app/**" />
-            <mvc:exclude-mapping path="/**/mng" />
-            <mvc:exclude-mapping path="/**/mng/**" />
-            <mvc:exclude-mapping path="/**/admin/**" />
-            <mvc:exclude-mapping path="/**/goods/choice" />
-			<mvc:exclude-mapping path="/**/goods/classify/tree" />
-			<mvc:exclude-mapping path="/**/shop/sys/shop" />
-			<mvc:exclude-mapping path="/**/goods/detail/multiple" />
-			<mvc:exclude-mapping path="/**/dealer/sys/dealers" />
-			<mvc:exclude-mapping path="/**/domain/goods/ids" />
-			<mvc:exclude-mapping path="/**/shop/sys/shopinfos" />
-			<mvc:exclude-mapping path="/**/user/getUserInfoByIds" /> 
-			<mvc:exclude-mapping path="/**/order-out/**" />
-			<mvc:exclude-mapping path="/**/shop/sys/shop"/>
-            <mvc:exclude-mapping path="/**/shop/sys/detail"/>
-            <mvc:exclude-mapping path="/**/dealer/sys/dealers"/>
-            <mvc:exclude-mapping path="/**/dealer/sys/getDealerName"/>
-            <mvc:exclude-mapping path="/**/dealer/sys/dealerStatus-out"/>
-            <mvc:exclude-mapping path="/**/shop/sys/shopInfo-out"/>       
+		<mvc:interceptor>
+            <mvc:mapping path="/**/web/**" /> <!-- 拦截C端系统所有的请求接口，除登录找回密码等接口 -->
             <bean class="cn.m2c.common.permission.interceptor.AuthorizationInterceptor" />
-       </mvc:interceptor> -->
+       </mvc:interceptor>
 	</mvc:interceptors> 
 	
 </beans>  
