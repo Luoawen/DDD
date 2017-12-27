@@ -14,6 +14,8 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.http.protocol.HttpRequestExecutor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -28,6 +30,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import cn.m2c.common.MCode;
+import cn.m2c.scm.application.order.OrderApplication;
 import cn.m2c.scm.application.order.data.bean.MediaResBean;
 import cn.m2c.scm.application.utils.EXPRESSMD5;
 import cn.m2c.scm.application.utils.HttpRequest;
@@ -44,6 +47,8 @@ import cn.m2c.scm.domain.service.order.OrderService;
  */
 @Service
 public class OrderServiceImpl implements OrderService {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(OrderService.class);
 	/***/
 	private static final String M2C_HOST_URL = DisconfDataGetter.getByFileItem("constants.properties", "m2c.host.url").toString().trim();
 	private static final String KUAIDI_100_URL = DisconfDataGetter.getByFileItem("constants.properties", "express.url").toString().trim();
@@ -276,6 +281,7 @@ public class OrderServiceImpl implements OrderService {
 					throw new NegativeException(401,"发送失败");
 				}
 			} catch (Exception e) {
+				LOGGER.error("Exception----->>>",e);
 				throw new NegativeException(400,"发送短信出问题");
 			}		
 			System.out.println("返回数据"+resp);
