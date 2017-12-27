@@ -1,5 +1,6 @@
 package cn.m2c.scm.domain.model.goods.event;
 
+import cn.m2c.common.JsonUtils;
 import cn.m2c.ddd.common.domain.model.DomainEvent;
 import cn.m2c.scm.domain.model.goods.GoodsRecognized;
 
@@ -8,6 +9,7 @@ import java.util.List;
 
 /**
  * 商品上架
+ * status 识别图状态
  */
 public class GoodsUpShelfEvent implements DomainEvent {
 
@@ -17,7 +19,7 @@ public class GoodsUpShelfEvent implements DomainEvent {
     private String goodsId;
     private String goodsPostageId;
     
-    private List<GoodsRecognized> goodsRecognizeds;
+    private String goodsRecognizeds;
     private Integer status;
     
     private Date occurredOn;
@@ -27,7 +29,7 @@ public class GoodsUpShelfEvent implements DomainEvent {
         this.goodsPostageId = goodsPostageId;
         this.goodsId = goodsId;
         
-        this.goodsRecognizeds = goodsRecognizeds;
+        this.goodsRecognizeds = JsonUtils.toStr(goodsRecognizeds);
         this.status = status;
         
         this.occurredOn = new Date();

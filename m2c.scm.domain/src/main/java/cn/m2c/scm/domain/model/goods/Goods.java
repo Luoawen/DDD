@@ -453,7 +453,7 @@ public class Goods extends ConcurrencySafeEntity {
         this.goodsStatus = 1;
         DomainEventPublisher
                 .instance()
-                .publish(new GoodsOffShelfEvent(this.goodsId, this.goodsPostageId));
+                .publish(new GoodsOffShelfEvent(this.goodsId, this.goodsPostageId, this.goodsRecognizeds(), 0));
     }
 
     /**

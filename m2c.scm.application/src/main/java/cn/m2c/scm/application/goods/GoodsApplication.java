@@ -595,7 +595,7 @@ public class GoodsApplication {
         if (null != goodsList && goodsList.size() > 0) {
             for (Goods goods : goodsList) {
                 goods.offShelf();
-                updateRecognizedImgStatus(goods.goodsRecognizeds(), 0);
+                //updateRecognizedImgStatus(goods.goodsRecognizeds(), 0);
             }
         } else {
             throw new NegativeException(MCode.V_300, "所选商品不存在");

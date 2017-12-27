@@ -10,6 +10,7 @@ import org.springframework.orm.hibernate4.HibernateTransactionManager;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
+import cn.m2c.common.JsonUtils;
 import cn.m2c.ddd.common.application.configuration.RabbitmqConfiguration;
 import cn.m2c.ddd.common.event.ConsumedEventStore;
 import cn.m2c.ddd.common.port.adapter.messaging.rabbitmq.ExchangeListener;
@@ -17,16 +18,16 @@ import cn.m2c.scm.application.goods.GoodsApplication;
 import cn.m2c.scm.domain.model.goods.GoodsRecognized;
 
 /**
- * 商品批量上架，监听上架时修改识别图 
+ * 商品批量上/下架，监听上/下架时修改识别图 
  *
  */
-public class GoodsUpShelfListener extends ExchangeListener {
-	private static final Logger LOGGER = LoggerFactory.getLogger(GoodsUpShelfListener.class);
+public class GoodsUpOrOffShelfListener extends ExchangeListener {
+	private static final Logger LOGGER = LoggerFactory.getLogger(GoodsUpOrOffShelfListener.class);
 	
 	@Autowired
 	GoodsApplication goodsApplication;
 	
-	public GoodsUpShelfListener(RabbitmqConfiguration rabbitmqConfiguration,
+	public GoodsUpOrOffShelfListener(RabbitmqConfiguration rabbitmqConfiguration,
 			HibernateTransactionManager hibernateTransactionManager, ConsumedEventStore consumedEventStore) {
 		super(rabbitmqConfiguration, hibernateTransactionManager, consumedEventStore);
 	}
@@ -41,16 +42,19 @@ public class GoodsUpShelfListener extends ExchangeListener {
 		LOGGER.info("GoodsUpShelfListener aTextMessage => " + aTextMessage);
 		JSONObject jsonObject = JSONObject.parseObject(aTextMessage);
 	    JSONObject object = jsonObject.getJSONObject("event");
-	    JSONArray array = object.getJSONArray("goodsRecognizeds");
-	    if(null != array) {
-	    	List<GoodsRecognized> list = array.toJavaList(GoodsRecognized.class);
-	    	goodsApplication.updateRecognizedImgStatus(list, 1);
+	    Integer status = object.getInteger("status");
+	    String goodsRecognizedsStr = object.getString("goodsRecognizeds");
+	    List<GoodsRecognized> list = JsonUtils.toList(goodsRecognizedsStr, GoodsRecognized.class);
+	    //JSONArray array = object.getJSONArray("goodsRecognizeds");
+	    if(null != list && list.size() > 0) {
+	    	//List<GoodsRecognized> list = array.toJavaList(GoodsRecognized.class);
+	    	goodsApplication.updateRecognizedImgStatus(list, status);
 	    }
 	}
 
 	@Override
 	protected String[] listensTo() {
-		return new String[]{"cn.m2c.scm.domain.model.goods.event.GoodsUpShelfEvent"};
+		return new String[]{"cn.m2c.scm.domain.model.goods.event.GoodsUpShelfEvent","cn.m2c.scm.domain.model.goods.event.GoodsOffShelfEvent"};
 	}
 
 }
