@@ -559,17 +559,23 @@ public class GoodsApplication {
         LOGGER.info("商品批量上架日志总耗时---------- >>{}",endLogTime - startLogTime);
         
         if (null != goodsList && goodsList.size() > 0) {
+        	boolean flag = false;
             for (Goods goods : goodsList) {
             	Long startUpdateTime = System.currentTimeMillis();
-            	goods.upShelf();
+            	if(goods.goodsStatus() != 2) {//已上架
+            		goods.upShelf();
+            		flag = true;
+            	}
             	Long endUpdateTime = System.currentTimeMillis();
                 LOGGER.info("更新商品上架状态总计耗时+++ >>{}",endUpdateTime - startUpdateTime);
-            	
             	
                 //Long startUpdateImgTime = System.currentTimeMillis();
                 //updateRecognizedImgStatus(goods.goodsRecognizeds(), 1);
                 //Long endUpdateImgTime = System.currentTimeMillis();
                 //LOGGER.info("更新识别图总计耗时+++ >>{}",endUpdateImgTime - startUpdateImgTime);
+            }
+            if(!flag) {
+            	throw new NegativeException(MCode.V_300, "商品已批量上架成功");
             }
         } else {
             throw new NegativeException(MCode.V_300, "所选商品不存在");
@@ -593,9 +599,16 @@ public class GoodsApplication {
             operationLogManager.operationLog("商品批量上架", _attach, goodsList, new String[]{"goods"}, null);
         }
         if (null != goodsList && goodsList.size() > 0) {
+        	boolean flag = false;
             for (Goods goods : goodsList) {
-                goods.offShelf();
-                //updateRecognizedImgStatus(goods.goodsRecognizeds(), 0);
+            	if(goods.goodsStatus() != 1) {//未下架
+            		goods.offShelf();
+            		flag = true;
+                    //updateRecognizedImgStatus(goods.goodsRecognizeds(), 0);	
+            	}
+            }
+            if(!flag) {
+            	throw new NegativeException(MCode.V_300, "商品已批量下架成功");
             }
         } else {
             throw new NegativeException(MCode.V_300, "所选商品不存在");
