@@ -175,17 +175,19 @@ public class SaleAfterOrderApp {
 		}
 		operationLogManager.operationLog("同意售后申请", attach, order);
 		order.updateBackMoney(money);
-		float frt = cmd.getRtFreight();
+		double frt = cmd.getRtFreight();
 		if (order.isOnlyRtMoney()) {
 			DealerOrderMoneyBean odb = saleOrderQuery.getDealerOrderById(order.dealerOrderId());
 			if (odb != null && odb.getStatus() == 1) {
 				if(frt * Utils.DIVIDE > odb.getOrderFreight())
 					frt = odb.getOrderFreight();
+				else
+					frt = (frt * Utils.DIVIDE);
 			}
 			else
 				frt = 0;
 		}
-		if (order.agreeApply(cmd.getUserId(), (int)frt)) {
+		if (order.agreeApply(cmd.getUserId(), (long)frt)) {
 			itemDtl.returnInventory(cmd.getSaleAfterNo(), order.getBackNum(), order.orderType());
 			saleAfterRepository.updateSaleAfterOrder(order);
 		}

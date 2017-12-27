@@ -155,12 +155,12 @@ public class SaleAfterOrder extends ConcurrencySafeEntity {
     /***
      * 同意售后申请
      */
-    public boolean agreeApply(String userId, int rtFreight) {
+    public boolean agreeApply(String userId, long rtFreight) {
 
         if (rtFreight < 0)
             return false;
         else if (status == 2) {
-            returnFreight = rtFreight * 100l;
+            returnFreight = rtFreight;
         }
 
         if (status < 4 && status != 3)
