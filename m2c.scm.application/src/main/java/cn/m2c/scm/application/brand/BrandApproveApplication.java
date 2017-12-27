@@ -134,16 +134,23 @@ public class BrandApproveApplication {
      */
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
     @EventListener(isListening = true)
-    public void batchAgreeBrandApprove(List<BrandApproveAgreeCommand> commands, String _attach) throws NegativeException {
-    	for (BrandApproveAgreeCommand command : commands) {
-    		BrandApprove brandApprove = brandApproveRepository.getBrandApproveByApproveId(command.getBrandApproveId());
-    		 if (null == brandApprove) {
-    	            throw new NegativeException(MCode.V_300, "审核品牌信息不存在");
-    	        }
-    		 operationLogManager.operationLog("批量同意品牌审核", _attach, brandApprove);
-    	        brandApprove.agree();
-    	        brandApproveRepository.remove(brandApprove);
-		}
+    public void batchAgreeBrandApprove(List<String> approveIds, String _attach) throws NegativeException {
+    		LOGGER.info("品牌审核批量拒绝...");
+    		
+    		List<BrandApprove> brandApproves = brandApproveRepository.queryBrandByIdList(approveIds);
+    		
+    		if(brandApproves != null && brandApproves.size() > 0) {
+    			operationLogManager.operationLog("批量同意品牌审核", _attach, brandApproves);
+    			for (BrandApprove brandApprove : brandApproves) {
+    				if (null == brandApprove) {
+    					throw new NegativeException(MCode.V_300, "审核品牌信息不存在");
+    				}
+    				brandApprove.agree();
+    				brandApproveRepository.remove(brandApprove);
+    			}
+    		}else {
+    			throw new NegativeException(MCode.V_300, "审核品牌信息不存在");
+			}
     }
 
     /**
@@ -162,17 +169,27 @@ public class BrandApproveApplication {
         brandApprove.reject(command.getRejectReason());
     }
     
+    
+    
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
     @EventListener(isListening = true)
-    public void batchRejectBrandApprove(List<BrandApproveRejectCommand> commands, String _attach) throws NegativeException {
-    	for (BrandApproveRejectCommand command : commands) {
-    		BrandApprove brandApprove = brandApproveRepository.getBrandApproveByApproveId(command.getBrandApproveId());
-    		 if (null == brandApprove) {
-    	            throw new NegativeException(MCode.V_300, "审核品牌信息不存在");
-    	        }
-    		 operationLogManager.operationLog("批量拒绝品牌审核", _attach, brandApprove);
-    		 brandApprove.reject(command.getRejectReason());
-		}
+    public void batchRejectBrandApprove(List<String> approveIds, String _attach, String rejectReason) throws NegativeException {
+    		LOGGER.info("品牌审核批量拒绝...");
+  
+    		List<BrandApprove> brandApproves = brandApproveRepository.queryBrandByIdList(approveIds);
+    		
+    		if (brandApproves != null && brandApproves.size() >0) {
+    			operationLogManager.operationLog("批量拒绝品牌审核", _attach, brandApproves);
+    			for (BrandApprove brandApprove : brandApproves) {
+    				if (null == brandApprove) {
+        	            throw new NegativeException(MCode.V_300, "审核品牌信息不存在");
+        	        }
+        		 brandApprove.reject(rejectReason);
+				}
+			}else {
+				throw new NegativeException(MCode.V_300, "审核品牌信息不存在");
+			}
+    		
     }
 
     /**
