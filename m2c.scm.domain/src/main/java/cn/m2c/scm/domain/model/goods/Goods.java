@@ -478,6 +478,14 @@ public class Goods extends ConcurrencySafeEntity {
         this.recognizedFlag = 1;
     }
 
+    public boolean overRecognizedMaxLimit(Integer maxLimit) {
+        if (null == this.goodsRecognizeds || this.goodsRecognizeds.size() == 0) {
+            return false;
+        } else {
+            return this.goodsRecognizeds.size() >= maxLimit;
+        }
+    }
+
     /**
      * 删除商品识别图
      */

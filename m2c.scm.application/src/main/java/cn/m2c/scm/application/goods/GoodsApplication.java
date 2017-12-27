@@ -23,6 +23,7 @@ import cn.m2c.scm.domain.model.goods.event.GoodsAppSearchMDEvent;
 import cn.m2c.scm.domain.model.goods.event.GoodsAppViewMDEvent;
 import cn.m2c.scm.domain.model.goods.event.GoodsOutInventoryEvent;
 import cn.m2c.scm.domain.service.goods.GoodsService;
+import cn.m2c.scm.domain.util.GetDisconfDataGetter;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -210,6 +211,11 @@ public class GoodsApplication {
         Goods goods = goodsRepository.queryGoodsById(command.getGoodsId());
         if (null == goods) {
             throw new NegativeException(MCode.V_300, "商品不存在");
+        }
+        // 商品识别图限制
+        Integer recognizedMax = Integer.parseInt(GetDisconfDataGetter.getDisconfProperty("goods.recognized.upload.max.limit"));
+        if (goods.overRecognizedMaxLimit(recognizedMax)) {
+            throw new NegativeException(MCode.V_400, " 商品识别图超过最大限制");
         }
         goods.addRecognized(command.getRecognizedId(), command.getRecognizedUrl());
         Integer status = goods.goodsStatus() == 1 ? 0 : 1;
@@ -541,7 +547,7 @@ public class GoodsApplication {
         List<Goods> goodsList = goodsRepository.queryGoodsByIdList(goodsIds);
         if (null != goodsList && goodsList.size() > 0) {
             for (Goods goods : goodsList) {
-            	operationLogManager.operationLog("商品批量上架", _attach, goods, new String[]{"goods"}, null);
+                operationLogManager.operationLog("商品批量上架", _attach, goods, new String[]{"goods"}, null);
                 goods.upShelf();
                 updateRecognizedImgStatus(goods.goodsRecognizeds(), 1);
             }
