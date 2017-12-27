@@ -49,17 +49,13 @@ public class ShipGoodsListener extends ExchangeListener{
 		if(StringUtils.isEmpty(shopName)) {
 			throw new NegativeException(MCode.V_401,"店铺名为空！");
 		}
-		if(StringUtils.isEmpty(nu)) {
-			throw new NegativeException(MCode.V_401,"物流公司单号为空！");
-		}
-		if(StringUtils.isEmpty(com)) {
-			throw new NegativeException(MCode.V_401,"物流公司编码为空！");
-		}
 		String userId = orderQuery.getOrderUserId(orderId);
 		SendOrderSMSCommand cmd = new SendOrderSMSCommand(userId,shopName);
 		orderapplication.sendOrderSMS(cmd);
-		
-		orderapplication.registExpress(com,nu);
+		//如果不是自有物流那么去注册监听
+		if(!StringUtils.isEmpty(com)){
+			orderapplication.registExpress(com,nu);
+		}
 		
 		
 	}
