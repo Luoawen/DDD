@@ -566,10 +566,10 @@ public class GoodsApplication {
                 LOGGER.info("更新商品上架状态总计耗时+++ >>{}",endUpdateTime - startUpdateTime);
             	
             	
-                Long startUpdateImgTime = System.currentTimeMillis();
-                updateRecognizedImgStatus(goods.goodsRecognizeds(), 1);
-                Long endUpdateImgTime = System.currentTimeMillis();
-                LOGGER.info("更新识别图总计耗时+++ >>{}",endUpdateImgTime - startUpdateImgTime);
+                //Long startUpdateImgTime = System.currentTimeMillis();
+                //updateRecognizedImgStatus(goods.goodsRecognizeds(), 1);
+                //Long endUpdateImgTime = System.currentTimeMillis();
+                //LOGGER.info("更新识别图总计耗时+++ >>{}",endUpdateImgTime - startUpdateImgTime);
             }
         } else {
             throw new NegativeException(MCode.V_300, "所选商品不存在");
@@ -595,7 +595,7 @@ public class GoodsApplication {
         if (null != goodsList && goodsList.size() > 0) {
             for (Goods goods : goodsList) {
                 goods.offShelf();
-                updateRecognizedImgStatus(goods.goodsRecognizeds(), 0);
+                //updateRecognizedImgStatus(goods.goodsRecognizeds(), 0);
             }
         } else {
             throw new NegativeException(MCode.V_300, "所选商品不存在");
@@ -603,7 +603,7 @@ public class GoodsApplication {
     }
 
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
-    private void updateRecognizedImgStatus(List<GoodsRecognized> goodsRecognizeds, Integer status) {
+    public void updateRecognizedImgStatus(List<GoodsRecognized> goodsRecognizeds, Integer status) {
         if (null != goodsRecognizeds && goodsRecognizeds.size() > 0) {
             for (GoodsRecognized goodsRecognized : goodsRecognizeds) {
                 boolean result = goodsDubboService.updateRecognizedImgStatus(goodsRecognized.recognizedId(), goodsRecognized.recognizedUrl(), status);
