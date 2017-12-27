@@ -1171,7 +1171,7 @@ public class GoodsQueryApplication {
         sql.append(" SELECT ");
         sql.append(" * ");
         sql.append(" FROM ");
-        sql.append(" t_scm_goods_recognized WHERE 1 = 1 AND goods_id = ?");
+        sql.append(" t_scm_goods_recognized WHERE 1 = 1 AND goods_id = ? order by id desc");
         return this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsRecognizedBean.class, goodsId);
     }
 
