@@ -50,13 +50,8 @@ public class AdminBrandApproAgent {
 			@RequestParam(value = "brandIds", required = false) List<String> brandIds) {
 		MResult result = new MResult(MCode.V_1);
 		try {
-			List<BrandApproveAgreeCommand> commands = new ArrayList<BrandApproveAgreeCommand>();
-			for (int i = 0; i < approveIds.size(); ++i) {
-				BrandApproveAgreeCommand command = new BrandApproveAgreeCommand(null, approveIds.get(i));
-				commands.add(command);
-			}
 			String _attach= request.getHeader("attach");
-			brandApproveApplication.batchAgreeBrandApprove(commands, _attach);
+			brandApproveApplication.batchAgreeBrandApprove(approveIds, _attach);
 			result.setStatus(MCode.V_200);
 		} catch (NegativeException ne) {
 			LOGGER.error("批量同意品牌审核:", ne);
@@ -83,13 +78,8 @@ public class AdminBrandApproAgent {
     		){
     	MResult result = new MResult(MCode.V_1);
     	try {
-    		List<BrandApproveRejectCommand> commands = new ArrayList<BrandApproveRejectCommand>();
-			for(int i = 0;i < approveIds.size(); ++i) {
-				BrandApproveRejectCommand command = new BrandApproveRejectCommand(approveIds.get(i), rejectReason);
-				commands.add(command);
-			}
 			String _attach= request.getHeader("attach");
-			brandApproveApplication.batchRejectBrandApprove(commands, _attach);
+			brandApproveApplication.batchRejectBrandApprove(approveIds, _attach,rejectReason);
 			result.setStatus(MCode.V_200);
 		} catch (NegativeException ne) {
 			LOGGER.error("批量拒绝品牌审核:", ne);

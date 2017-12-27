@@ -1,8 +1,11 @@
 package cn.m2c.scm.port.adapter.persistence.hibernate.brand;
 
 import cn.m2c.ddd.common.port.adapter.persistence.hibernate.HibernateSupperRepository;
+import cn.m2c.scm.application.utils.Utils;
 import cn.m2c.scm.domain.model.brand.BrandApprove;
 import cn.m2c.scm.domain.model.brand.BrandApproveRepository;
+import cn.m2c.scm.domain.model.goods.Goods;
+
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Query;
 import org.springframework.stereotype.Repository;
@@ -60,4 +63,12 @@ public class HibernateBrandApproveRepository extends HibernateSupperRepository i
         List<BrandApprove> list = query.list();
         return null != list && list.size() > 0;
     }
+
+	@Override
+	public List<BrandApprove> queryBrandByIdList(List<String> approveIds) {
+		StringBuilder sql = new StringBuilder("select * from t_scm_brand_approve where status = 1");
+        sql.append(" and approve_id in (" + Utils.listParseString(approveIds) + ")");
+        Query query = this.session().createSQLQuery(sql.toString()).addEntity(BrandApprove.class);
+        return query.list();
+	}
 }
