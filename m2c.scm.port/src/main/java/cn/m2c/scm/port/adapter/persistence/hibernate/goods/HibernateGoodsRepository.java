@@ -95,8 +95,9 @@ public class HibernateGoodsRepository extends HibernateSupperRepository implemen
 
     @Override
     public List<Goods> queryGoodsByIdList(List goodsIds) {
-        StringBuilder sql = new StringBuilder("select * from t_scm_goods where del_status = 1");
-        sql.append(" and goods_id in (" + Utils.listParseString(goodsIds) + ")");
+        StringBuilder sql = new StringBuilder("select * from t_scm_goods where ");
+        sql.append(" goods_id in (" + Utils.listParseString(goodsIds) + ") ");
+        sql.append(" and del_status = 1 ");
         Query query = this.session().createSQLQuery(sql.toString()).addEntity(Goods.class);
         return query.list();
     }

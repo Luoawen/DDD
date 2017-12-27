@@ -268,11 +268,12 @@ public class OrderQueryApplication {
 			params.add(userId);
 			
 			if (commentStatus != null && commentStatus == 1) {
-				sql.append(" AND b.dealer_order_id in (SELECT e.dealer_order_id FROM t_scm_order_detail e WHERE e.comment_status=0 AND e._status IN (?,?,?))");
+				sql.append(" AND b.dealer_order_id in (SELECT DISTINCT e.dealer_order_id FROM t_scm_order_detail e WHERE e.comment_status=0 AND e._status IN (?))");//,?,?
 				status = 3;
 				params.add(status);
-				params.add(4);
-				params.add(5);
+				// 只能查正常的已经收货的可评价的订单
+				//params.add(4);
+				//params.add(5);
 			}
 			else if (status != null && status==2) {
 				sql.append(" AND b._status IN (?, ?) ");
@@ -285,7 +286,7 @@ public class OrderQueryApplication {
 			}
 			
 			if (!StringUtils.isEmpty(keyword)) {
-				sql.append(" AND (b.order_id LIKE concat('%',?,'%') OR (b.dealer_order_id IN (SELECT e.dealer_order_id FROM t_scm_order_detail e WHERE e.goods_name LIKE concat('%',?,'%'))))");
+				sql.append(" AND (b.order_id LIKE concat('%',?,'%') OR (b.dealer_order_id IN (SELECT DISTINCT e.dealer_order_id FROM t_scm_order_detail e WHERE e.goods_name LIKE concat('%',?,'%'))))");
 				params.add(keyword);
 				params.add(keyword);
 			}
