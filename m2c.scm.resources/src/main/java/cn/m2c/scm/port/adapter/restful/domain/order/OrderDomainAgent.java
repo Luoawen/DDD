@@ -1,4 +1,4 @@
-package cn.m2c.scm.port.adapter.restful.web.order;
+package cn.m2c.scm.port.adapter.restful.domain.order;
 
 import java.util.List;
 
