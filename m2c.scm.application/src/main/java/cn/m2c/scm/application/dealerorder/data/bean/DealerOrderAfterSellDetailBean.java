@@ -51,6 +51,12 @@ public class DealerOrderAfterSellDetailBean {
 	 */
 	//@ColumnAlias(value = "order_id")
 	@ColumnAlias(value = "dealer_order_id")
+	private String dealerOrderId;
+	
+	/**
+	 * 主订单号
+	 */
+	@ColumnAlias(value = "order_id")
 	private String orderId;
 	/**
 	 * 订单总额
@@ -106,6 +112,15 @@ public class DealerOrderAfterSellDetailBean {
 
 	public Integer getOrderType() {
 		return orderType;
+	}
+	
+	
+	public String getDealerOrderId() {
+		return dealerOrderId;
+	}
+
+	public void setDealerOrderId(String dealerOrderId) {
+		this.dealerOrderId = dealerOrderId;
 	}
 
 	public String getAfterSellDealerOrderId() {
