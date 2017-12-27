@@ -238,7 +238,7 @@ public class GoodsSpecialQueryApplication {
     /**
      * 查询特惠价sku详情
      *
-     * @param goodsId
+     * @param specialId
      * @return
      */
     public List<GoodsSkuSpecialDetailAllBeanRepresentation> queryGoodsSkuSpecialDetailAllBeanList(Integer specialId) {
@@ -250,7 +250,7 @@ public class GoodsSpecialQueryApplication {
                 GoodsSkuSpecialDetailAllBeanRepresentation representation = new GoodsSkuSpecialDetailAllBeanRepresentation(goodsSkuSpecialBean);
                 GoodsSkuBean goodsSkuBean = goodsQueryApplication.queryGoodsSkuBeanBySkuId(representation.getSkuId());
                 //原供货价
-                representation.setGoodsSupplyPrice(null != goodsSkuBean.getSupplyPrice() && "".equals(goodsSkuBean.getSupplyPrice()) ? Utils.moneyFormatCN(goodsSkuBean.getSupplyPrice()) : null);
+                representation.setGoodsSupplyPrice(null != goodsSkuBean.getSupplyPrice() && !"".equals(goodsSkuBean.getSupplyPrice()) ? Utils.moneyFormatCN(goodsSkuBean.getSupplyPrice()) : null);
                 //原拍获价
                 representation.setGoodsSkuPrice(Utils.moneyFormatCN(goodsSkuBean.getPhotographPrice()));
                 list.add(representation);
