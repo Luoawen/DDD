@@ -85,6 +85,7 @@
 		<mvc:interceptor>
             <mvc:mapping path="/**/web/**" /> <!-- 拦截C端系统所有的请求接口，除登录找回密码等接口 -->
             <mvc:exclude-mapping path="/**/export/**"/>
+            <mvc:exclude-mapping path="/**/domain/**"/>
             <bean class="cn.m2c.common.permission.interceptor.AuthorizationInterceptor" />
        </mvc:interceptor>
 	</mvc:interceptors> 

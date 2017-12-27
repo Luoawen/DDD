@@ -627,4 +627,25 @@ public class OrderQuery {
 		}
 		return userId;
 	}
+	
+	/***
+	 * 获取某个商家的下单成功用户ID列表
+	 * @param dealerId
+	 * @return
+	 */
+	public List<String> getDealerUsersHasPurchase(String dealerId) throws NegativeException {
+		
+		List<String> result = null;
+		
+		if (StringUtils.isEmpty(dealerId)) {
+			return result;
+		}
+		
+		StringBuilder sql = new StringBuilder();
+		sql.append(" SELECT DISTINCT a.user_id FROM t_scm_order_main a, t_scm_order_dealer b WHERE a.order_id=b.order_id\r\n")
+		.append("AND b._status >=1\r\n")
+		.append("AND b.dealer_id=?");		
+		result = supportJdbcTemplate.jdbcTemplate().queryForList(sql.toString(), String.class, dealerId);		
+		return result;
+	}
 }
