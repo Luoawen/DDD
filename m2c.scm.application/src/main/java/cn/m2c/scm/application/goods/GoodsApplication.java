@@ -562,7 +562,7 @@ public class GoodsApplication {
         	boolean flag = false;
             for (Goods goods : goodsList) {
             	Long startUpdateTime = System.currentTimeMillis();
-            	if(goods.goodsStatus() != 2) {//已上架
+            	if(goods.goodsStatus() != 2) {//未上架
             		goods.upShelf();
             		flag = true;
             	}
