@@ -220,13 +220,13 @@ public class OrderAddCommand extends AssertionConcern implements Serializable {
 			if(isSpecial != null && isSpecial==1){
 				appSpecialPrice = goods.getString("appSpecialPrice");
 				if (!StringUtils.isEmpty(appSpecialPrice)) {
-					// 因后台已经变成了1000表示1元
+					// 因后台已经变成了100表示1元
 					appSpecialPrice = String.valueOf(Long.parseLong(appSpecialPrice) * 100);
 				}
 				
 				String strPrice = goods.getString("strAppSpecialPrice");
 				if (!StringUtils.isEmpty(strPrice)) {
-					appSpecialPrice = String.valueOf(Float.parseFloat(strPrice) * Utils.DIVIDE);
+					appSpecialPrice = String.valueOf((long)(Float.parseFloat(strPrice) * Utils.DIVIDE));
 				}
 			}
 			int sl = goods.getIntValue("purNum");
