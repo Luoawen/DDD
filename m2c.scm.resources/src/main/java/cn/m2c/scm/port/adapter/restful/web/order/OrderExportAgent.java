@@ -105,7 +105,8 @@ public class OrderExportAgent {
                                    @RequestParam(value = "hasMedia", required = false) Integer hasMedia,
                                    @RequestParam(value = "orderClassify", required = false) Integer orderClassify,
                                    @RequestParam(value = "invoice", required = false) Integer invoice) {
-        List<DealerOrderQB> dealerOrderList = dealerOrderQuery.dealerOrderQueryExport(dealerId,
+        //DealerOrderQB 里面所有金额都除了100, 所以再导出时只需再除100即可！！！
+    	List<DealerOrderQB> dealerOrderList = dealerOrderQuery.dealerOrderQueryExport(dealerId,
                 orderStatus, afterSellStatus, startTime, endTime, condition, payWay, commentStatus, orderClassify,
                 hasMedia, invoice);
         String fileName = "订货单.xls";

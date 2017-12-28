@@ -3,7 +3,6 @@ package cn.m2c.scm.application.order.data.export;
 import cn.m2c.scm.application.dealerorder.data.bean.DealerGoodsBean;
 import cn.m2c.scm.application.dealerorder.data.bean.DealerOrderQB;
 import cn.m2c.scm.application.utils.ExcelField;
-import cn.m2c.scm.application.utils.Utils;
 
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -64,17 +63,17 @@ public class DealerOrderExpModel {
         this.payDate = null != dealerOrderQB.getPayTime() ? df.format(new Date(dealerOrderQB.getPayTime())) : "";
         this.goodsName = goodsBean.getGoodsName();
         this.skuName = goodsBean.getSkuName();
-        //DecimalFormat df1 = new DecimalFormat("0.00");
+        DecimalFormat df1 = new DecimalFormat("0.00");
         if(goodsBean.getIsSpecial() == 0) {//不执行特惠价
-            this.goodsPrice = Utils.moneyFormatCN(goodsBean.getDiscountPrice());//*
+            this.goodsPrice = df1.format(goodsBean.getDiscountPrice().floatValue() / (double)100);//*
         }else if(goodsBean.getIsSpecial() == 1){//执行特惠价
         	Long specialPrice = Long.valueOf(goodsBean.getSpecialPrice());
-        	this.goodsPrice = Utils.moneyFormatCN(specialPrice);
+        	this.goodsPrice = df1.format(specialPrice.floatValue() / (double)100);
         }
         this.goodsNum = goodsBean.getSellNum();
-        this.postage = Utils.moneyFormatCN(dealerOrderQB.getOrderFreight());//*
-        this.discountAmount = Utils.moneyFormatCN(dealerOrderQB.getPlateDiscount()+dealerOrderQB.getDealerDiscount());
-        this.orderMoney = Utils.moneyFormatCN(dealerOrderQB.getGoodsMoney() + dealerOrderQB.getOrderFreight() - dealerOrderQB.getDealerDiscount() - dealerOrderQB.getPlateDiscount());
+        this.postage = df1.format(dealerOrderQB.getOrderFreight().floatValue() / (double)100);//*
+        this.discountAmount = df1.format((dealerOrderQB.getPlateDiscount().floatValue()+dealerOrderQB.getDealerDiscount().floatValue())/(double)100);
+        this.orderMoney = df1.format((dealerOrderQB.getGoodsMoney().floatValue() + dealerOrderQB.getOrderFreight().floatValue() - dealerOrderQB.getDealerDiscount().floatValue() - dealerOrderQB.getPlateDiscount().floatValue()) / (double)100);
         this.revPerson = dealerOrderQB.getRevPerson();
         this.revPhone = dealerOrderQB.getRevPhone();
         this.revAddress = dealerOrderQB.getRevAddress();
@@ -82,7 +81,7 @@ public class DealerOrderExpModel {
         this.saleAfterType = getAfterType(dealerOrderQB.getAfterOrderType());
         this.saleAfterStatus = getAfterStatusStr(dealerOrderQB.getAfterOrderType(),dealerOrderQB.getAfterStatus());
         this.saleAfterNum = null == dealerOrderQB.getAfterNum() ? "" : String.valueOf(dealerOrderQB.getAfterNum());
-        this.saleAfterMoney = Utils.moneyFormatCN(dealerOrderQB.getAfterMoney());
+        this.saleAfterMoney = df1.format(dealerOrderQB.getAfterMoney().floatValue() / (double)100);
     }
 
     private String getStatusStr(Integer status) {
