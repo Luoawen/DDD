@@ -220,7 +220,11 @@ public class DealerOrder extends ConcurrencySafeEntity {
 	Map<String, Integer> getSaleNums() {
 		Map<String, Integer> arr = new HashMap<String, Integer>();
 		for (DealerOrderDtl dtl : orderDtls) {
-			arr.put(dtl.getSkuId(), (dtl.getSaleNum() == null ? 0: dtl.getSaleNum()));
+			Integer num = arr.get(dtl.getSkuId());
+			if (num != null)
+				arr.put(dtl.getSkuId(), (num + (dtl.getSaleNum() == null ? 0: dtl.getSaleNum())));
+			else
+				arr.put(dtl.getSkuId(), (dtl.getSaleNum() == null ? 0: dtl.getSaleNum()));
 		}
 		return arr;
 	}
