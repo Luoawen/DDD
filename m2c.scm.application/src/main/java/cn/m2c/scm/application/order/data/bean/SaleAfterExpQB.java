@@ -131,6 +131,9 @@ public class SaleAfterExpQB {
 	}
 
 	public Long getBackMoney() {
+		if(null == backMoney) {
+			backMoney = 0l;
+		}
 		return backMoney;
 	}
 
