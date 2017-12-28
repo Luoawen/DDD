@@ -152,7 +152,7 @@ public class GoodsApplication {
         }
         operationLogManager.operationLog("商品上架", _attach, goods, new String[]{"goods"}, null);
         goods.upShelf();
-        updateRecognizedImgStatus(goods.goodsRecognizeds(), 1);
+        //updateRecognizedImgStatus(goods.goodsRecognizeds(), 1);
     }
 
     /**
@@ -171,7 +171,7 @@ public class GoodsApplication {
         }
         operationLogManager.operationLog("商品下架", _attach, goods, new String[]{"goods"}, null);
         goods.offShelf();
-        updateRecognizedImgStatus(goods.goodsRecognizeds(), 0);
+        //updateRecognizedImgStatus(goods.goodsRecognizeds(), 0);
     }
 
     /**
