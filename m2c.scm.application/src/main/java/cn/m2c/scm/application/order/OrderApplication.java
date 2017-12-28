@@ -269,7 +269,7 @@ public class OrderApplication {
         Iterator<String> it = specialPriceMap.keySet().iterator();
         while (it.hasNext()) {
             String key = it.next();
-            String specialPrice = (specialPriceMap.get(key) == null ? String.valueOf(0):String.valueOf(specialPriceMap.get(key).specialPrice()/10000));
+            String specialPrice = (specialPriceMap.get(key) == null ? String.valueOf(0):String.valueOf(specialPriceMap.get(key).specialPrice()));
             if(!StringUtils.isEmpty(specialPrice)){
             	LOGGER.info("商品那边的特惠价"+specialPrice);
                 for(GoodsDto d : gdes){
