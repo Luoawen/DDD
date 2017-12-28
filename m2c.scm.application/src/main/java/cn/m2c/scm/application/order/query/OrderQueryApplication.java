@@ -482,7 +482,7 @@ public class OrderQueryApplication {
 				pa = new Object[] {result.getDealerOrderId()};
 				Integer count = this.supportJdbcTemplate.jdbcTemplate().queryForObject(sql.toString(), pa, Integer.class);
 				if (count > 0)
-					result.setHasSaleAfter(1);
+					result.setHasSaleAfter(count);
 			}
 			
 		} catch (Exception e) {
