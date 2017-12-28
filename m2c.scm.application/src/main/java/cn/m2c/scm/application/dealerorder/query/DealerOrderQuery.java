@@ -855,32 +855,32 @@ public class DealerOrderQuery {
 		.append(", c.rev_person, c.rev_phone, c.street_addr, c.province, c.city, c.area_county, d.after_sell_order_id, d.back_money, d.return_freight, d.order_type, d.sell_num afNum, d._status afStatus\r\n")
 		.append("FROM t_scm_order_detail a\r\n")
 		.append("LEFT OUTER JOIN t_scm_order_main b ON a.order_id=b.order_id\r\n")
-		.append("LEFT OUTER JOIN t_scm_order_after_sell d ON a.sku_id=d.sku_id AND a.sort_no=d.sort_no AND a.dealer_order_id=d.dealer_order_id AND d.is_invalide=0 ");
+		.append("LEFT OUTER JOIN t_scm_order_after_sell d ON a.sku_id=d.sku_id AND a.sort_no=d.sort_no AND a.dealer_order_id=d.dealer_order_id ");
 		if (afterSellStatus != null && afterSellStatus >= 20 && afterSellStatus < 28) {
 			switch (afterSellStatus) {
 			case 20: // 待商家同意
-				sql.append(" AND d._status IN(?,?,?)\r\n");
+				sql.append(" AND d._status IN(?,?,?) AND d.is_invalide=0\r\n");
 				params.add(0);
 				params.add(1);
 				params.add(2);
 				break;
 			case 21:// 待顾客寄回商品
-				sql.append(" AND d.order_type IN(0,1) AND af._status =?\r\n");
+				sql.append(" AND d.order_type IN(0,1) AND af._status =? AND d.is_invalide=0\r\n");
 				params.add(4);
 				break;
 			case 22:// 待商家确认退款
 				sql.append(
-						" AND ((d.order_type=0 AND d._status =?) OR (d.order_type=1 AND d._status =?) OR (d.order_type=2 AND d._status =?))\r\n");
+						" AND d.is_invalide=0 AND ((d.order_type=0 AND d._status =?) OR (d.order_type=1 AND d._status =?) OR (d.order_type=2 AND d._status =?))\r\n");
 				params.add(8);
 				params.add(6);
 				params.add(4);
 				break;
 			case 23:// 待商家发货
-				sql.append(" AND (d.order_type=2 AND d._status =?)\r\n");
+				sql.append(" AND (d.order_type=2 AND d._status =?) AND d.is_invalide=0\r\n");
 				params.add(6);
 				break;
 			case 24:// 待顾客收货
-				sql.append(" AND (d.order_type=2 AND d._status =?)\r\n");
+				sql.append(" AND (d.order_type=2 AND d._status =?) AND d.is_invalide=0\r\n");
 				params.add(7);
 				break;
 			case 25:// 售后已完成
@@ -892,7 +892,7 @@ public class DealerOrderQuery {
 				params.add(-1);
 				break;
 			case 27:// 商家已拒绝
-				sql.append(" AND d._status = ?\r\n");
+				sql.append(" AND d._status = ? AND d.is_invalide=0\r\n");
 				params.add(3);
 				break;
 			}
@@ -982,7 +982,7 @@ public class DealerOrderQuery {
 				break;
 			}
 		}
-		
+		sql.append(" GROUP BY dealer_order_id, sku_id, afStatus ");
 		sql.append(" ORDER BY a.dealer_order_id DESC, a.created_date DESC limit 0,3000");
 
 		List<OrderDtlBean> beanList = this.supportJdbcTemplate.queryForBeanList(sql.toString(), OrderDtlBean.class, params.toArray());
