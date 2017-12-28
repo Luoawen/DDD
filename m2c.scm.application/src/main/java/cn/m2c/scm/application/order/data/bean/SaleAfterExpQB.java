@@ -33,6 +33,8 @@ public class SaleAfterExpQB {
 	private Long specialPrice;
 	
 	public Integer getIsSpecial() {
+		if (null == isSpecial)
+			isSpecial = 0;
 		return isSpecial;
 	}
 
