@@ -96,6 +96,7 @@ public class HibernateSaleAfterOrderRepository extends HibernateSupperRepository
 	
 	@Override
 	public List<SaleAfterOrder> getSaleAfterApplyed(int hour) {
+		//this.session().createSQLQuery("UPDATE t_scm_order_after_sell SET is_invalide=1 WHERE _status=-1 AND is_invalide=0").executeUpdate();
 		return (List<SaleAfterOrder>)this.session().createSQLQuery("SELECT * FROM t_scm_order_after_sell WHERE _status IN(0,1,2) AND round((UNIX_TIMESTAMP(now())-UNIX_TIMESTAMP(last_updated_date))/60)/"+hour+" > 1")//60/
 				.addEntity(SaleAfterOrder.class).list();
 	}
