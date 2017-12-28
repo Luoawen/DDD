@@ -3,6 +3,8 @@ package cn.m2c.scm.application.goods.query.data.export;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsBean;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsSkuBean;
 import cn.m2c.scm.application.utils.ExcelField;
+import cn.m2c.scm.application.utils.Utils;
+
 import org.apache.commons.lang3.StringUtils;
 
 import java.text.DecimalFormat;
@@ -55,8 +57,8 @@ public class GoodsModelAll {
         this.goodsCode = StringUtils.isEmpty(goodsSkuBean.getGoodsCode()) ? "" : goodsSkuBean.getGoodsCode();
         this.goodsSkuId = goodsSkuBean.getSkuId();
         this.goodsSkuName = goodsSkuBean.getSkuName();
-        DecimalFormat df = new DecimalFormat("0.00");
-        this.photographPrice = df.format(goodsSkuBean.getPhotographPrice().floatValue() / 10000);
+        //DecimalFormat df = new DecimalFormat("0.00");
+        this.photographPrice = Utils.moneyFormatCN(goodsSkuBean.getPhotographPrice());
         this.availableNum = goodsSkuBean.getAvailableNum();
         this.sellerNum = goodsSkuBean.getSellerNum();
         //商品状态，1：仓库中，2：出售中，3：已售罄
@@ -70,7 +72,7 @@ public class GoodsModelAll {
         this.goodsPostageName = goodsPostageName;
         // 结算模式 1：按供货价 2：按服务费率
         if (settlementMode == 1) {
-            this.supplyPrice = null != goodsSkuBean.getSupplyPrice() ? df.format(goodsSkuBean.getSupplyPrice().floatValue() / 10000) : "";
+            this.supplyPrice = null != goodsSkuBean.getSupplyPrice() ? Utils.moneyFormatCN(goodsSkuBean.getSupplyPrice()) : "";
             this.serviceRate = "";
         } else {
             this.serviceRate = null == serviceRate ? "" : String.valueOf(serviceRate);
