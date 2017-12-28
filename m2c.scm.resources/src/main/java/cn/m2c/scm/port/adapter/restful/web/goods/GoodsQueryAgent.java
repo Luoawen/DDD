@@ -15,6 +15,7 @@ import cn.m2c.scm.application.goods.query.data.representation.GoodsInformationRe
 import cn.m2c.scm.application.goods.query.data.representation.GoodsRandomRepresentation;
 import cn.m2c.scm.application.goods.query.data.representation.GoodsSimpleDetailRepresentation;
 import cn.m2c.scm.application.goods.query.data.representation.GoodsSkuInfoRepresentation;
+import cn.m2c.scm.domain.util.GetDisconfDataGetter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -257,9 +258,9 @@ public class GoodsQueryAgent {
      * @return
      */
     @RequestMapping(value = "/recognizeds", method = RequestMethod.GET)
-    public ResponseEntity<MResult> queryRecognizedsByGoodsIds(
+    public ResponseEntity<MPager> queryRecognizedsByGoodsIds(
             @RequestParam(value = "goodsIds", required = false) List<String> goodsIds) {
-        MResult result = new MResult(MCode.V_1);
+        MPager result = new MPager(MCode.V_1);
         try {
             List<GoodsBean> goodsBeans = goodsQueryApplication.queryAllGoodsByGoodsIds(goodsIds);
             if (null != goodsBeans && goodsBeans.size() > 0) {
@@ -270,11 +271,14 @@ public class GoodsQueryAgent {
                 result.setContent(resultList);
             }
             result.setStatus(MCode.V_200);
+            // 商品识别图限制
+            Integer recognizedMax = Integer.parseInt(GetDisconfDataGetter.getDisconfProperty("goods.recognized.upload.max.limit"));
+            result.setTotalCount(recognizedMax);
         } catch (Exception e) {
             LOGGER.error("queryRecognizedsByGoodsIds Exception e:", e);
-            result = new MResult(MCode.V_400, "查询商品识别图失败");
+            result = new MPager(MCode.V_400, "查询商品识别图失败");
         }
-        return new ResponseEntity<MResult>(result, HttpStatus.OK);
+        return new ResponseEntity<MPager>(result, HttpStatus.OK);
     }
 
     /**

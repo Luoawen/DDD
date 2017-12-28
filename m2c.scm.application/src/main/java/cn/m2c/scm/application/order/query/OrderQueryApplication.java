@@ -667,7 +667,7 @@ public class OrderQueryApplication {
 			.append("	AND a.order_id=b.order_id AND b.dealer_order_id IN (\r\n") 
 			.append("	SELECT DISTINCT	c.dealer_order_id\r\n") 
 			.append("	FROM t_scm_order_detail c\r\n")
-			.append("    WHERE	c.comment_status = 0)");
+			.append("    WHERE	c.comment_status = 0 AND c._status=3 )");
 			
 			params.add(userId);
 			params.add(userId);
