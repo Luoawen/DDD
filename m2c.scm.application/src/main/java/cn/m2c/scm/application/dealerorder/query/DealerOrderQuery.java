@@ -855,7 +855,7 @@ public class DealerOrderQuery {
 		.append(", c.rev_person, c.rev_phone, c.street_addr, c.province, c.city, c.area_county, d.after_sell_order_id, d.back_money, d.return_freight, d.order_type, d.sell_num afNum, d._status afStatus\r\n")
 		.append("FROM t_scm_order_detail a\r\n")
 		.append("LEFT OUTER JOIN t_scm_order_main b ON a.order_id=b.order_id\r\n")
-		.append("LEFT OUTER JOIN t_scm_order_after_sell d ON a.sku_id=d.sku_id AND a.sort_no=d.sort_no AND a.dealer_order_id=d.dealer_order_id ");
+		.append("LEFT OUTER JOIN t_scm_order_after_sell d ON a.sku_id=d.sku_id AND a.sort_no=d.sort_no AND a.dealer_order_id=d.dealer_order_id AND d.is_invalide=0 ");
 		if (afterSellStatus != null && afterSellStatus >= 20 && afterSellStatus < 28) {
 			switch (afterSellStatus) {
 			case 20: // 待商家同意
