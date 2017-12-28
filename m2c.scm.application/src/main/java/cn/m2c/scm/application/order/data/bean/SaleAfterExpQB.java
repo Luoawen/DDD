@@ -43,6 +43,9 @@ public class SaleAfterExpQB {
 	}
 
 	public Long getSpecialPrice() {
+		if(null == specialPrice) {
+			specialPrice = 0l;
+		}
 		return specialPrice;
 	}
 
@@ -55,6 +58,8 @@ public class SaleAfterExpQB {
 	}
 	
 	public Long getSaleAfterGoodsPrice() {
+		if (null == saleAfterGoodsPrice)
+			saleAfterGoodsPrice = 0l;
 		return saleAfterGoodsPrice;
 	}
 	
@@ -63,6 +68,9 @@ public class SaleAfterExpQB {
     }
     
     public Long getReturnFreight() {
+    	if(null == returnFreight) {
+    		returnFreight = 0l;
+    	}
     	return returnFreight;
     }
 
@@ -123,6 +131,9 @@ public class SaleAfterExpQB {
 	}
 
 	public Long getBackMoney() {
+		if(null == backMoney) {
+			backMoney = 0l;
+		}
 		return backMoney;
 	}
 

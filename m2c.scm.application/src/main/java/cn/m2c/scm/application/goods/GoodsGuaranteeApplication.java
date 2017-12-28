@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,7 +77,8 @@ public class GoodsGuaranteeApplication {
 		if(guaranteeNameIsRepeat) {
 			throw new NegativeException(MCode.V_300,"标题已存在");
 		}
-		operationLogManager.operationLog("修改商品保障", _attach, goodsGuarantee);
+		if (StringUtils.isNotEmpty(_attach))
+			operationLogManager.operationLog("修改商品保障", _attach, goodsGuarantee);
 		goodsGuarantee.modifyGoodsGuarantee(command.getGuaranteeName(), command.getGuaranteeDesc());
 		goodsGuaranteeRepository.save(goodsGuarantee);
 	}
@@ -94,7 +96,8 @@ public class GoodsGuaranteeApplication {
 		if(null == goodsGuarantee) {
 			throw new NegativeException(MCode.V_300,"商品保障不存在");
 		}
-		operationLogManager.operationLog("删除商品保障", _attach, goodsGuarantee);
+		if (StringUtils.isNotEmpty(_attach))
+			operationLogManager.operationLog("删除商品保障", _attach, goodsGuarantee);
 		goodsGuarantee.remove();
 		goodsGuaranteeRepository.save(goodsGuarantee);
 	}
