@@ -94,8 +94,17 @@ public class AppOrderDtl extends AssertionConcern implements Serializable {
 	private long dPlateformDiscount;
 	@ColumnAlias(value = "dDealerDiscount")
 	private long dDealerDiscount;
+	/**是否有售后， 0无， 1有*/
+	private int hasSaleAfter = 0;
 	
-	
+	public int getHasSaleAfter() {
+		return hasSaleAfter;
+	}
+
+	public void setHasSaleAfter(int hasSaleAfter) {
+		this.hasSaleAfter = hasSaleAfter;
+	}
+
 	public void setdOrderFreight(long dOrderFreight) {
 		this.dOrderFreight = dOrderFreight;
 	}
