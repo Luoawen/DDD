@@ -475,6 +475,14 @@ public class OrderQueryApplication {
 				}
 				result.setGoodses(this.supportJdbcTemplate.queryForBeanList(sql.toString(), 
 						OrderDetailBean.class, pa));
+				
+				sql.delete(0, sql.length());
+				sql.append("SELECT count(1) FROM t_scm_order_after_sell a ")
+				.append(" WHERE a.dealer_order_id=? ");
+				pa = new Object[] {result.getDealerOrderId()};
+				Integer count = this.supportJdbcTemplate.jdbcTemplate().queryForObject(sql.toString(), pa, Integer.class);
+				if (count > 0)
+					result.setHasSaleAfter(1);
 			}
 			
 		} catch (Exception e) {
