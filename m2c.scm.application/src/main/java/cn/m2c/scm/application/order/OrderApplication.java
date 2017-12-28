@@ -274,6 +274,7 @@ public class OrderApplication {
             	LOGGER.info("商品那边的特惠价"+specialPrice);
                 for(GoodsDto d : gdes){
                     if(!StringUtils.isEmpty(d.getAppSpecialPrice()) && d.getSkuId().equals(key)){
+                    	LOGGER.info("app那边的特惠价"+d.getAppSpecialPrice());
                         if(!d.getAppSpecialPrice().equals(specialPrice)){
                             throw new NegativeException(MCode.V_101, "特惠价变更"+key);
                         }
