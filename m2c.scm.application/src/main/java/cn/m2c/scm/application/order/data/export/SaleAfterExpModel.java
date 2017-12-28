@@ -5,6 +5,7 @@ import java.util.Date;
 
 import cn.m2c.scm.application.order.data.bean.SaleAfterExpQB;
 import cn.m2c.scm.application.utils.ExcelField;
+import cn.m2c.scm.application.utils.Utils;
 
 /**
  * 售后订单导出样式
@@ -118,16 +119,16 @@ public class SaleAfterExpModel {
     	//this.goodsTitle = goodsTitle;
     	//售后总价    售后单价   运费   ordertypestr   statusstr
         this.saleAfterNo = saleAfterExpQB.getSaleAfterNo();
-        DecimalFormat df1 = new DecimalFormat("0.00");
-        this.backMoney = df1.format((saleAfterExpQB.getBackMoney().floatValue()+saleAfterExpQB.getReturnFreight().floatValue())/(double)100);
+        //this.backMoney = df1.format((saleAfterExpQB.getBackMoney().floatValue()+saleAfterExpQB.getReturnFreight().floatValue())/(double)100);
+        this.backMoney = Utils.moneyFormatCN(saleAfterExpQB.getBackMoney() + saleAfterExpQB.getReturnFreight());
         this.dealerOrderId = saleAfterExpQB.getDealerOrderId();
         if(saleAfterExpQB.getIsSpecial() == 0) {//不是特惠价,售后单价展示“拍获价”
-            this.saleAfterGoodsPrice = df1.format(saleAfterExpQB.getSaleAfterGoodsPrice().floatValue()/(double)100);
+            this.saleAfterGoodsPrice = Utils.moneyFormatCN(saleAfterExpQB.getSaleAfterGoodsPrice());
         }else if(saleAfterExpQB.getIsSpecial() == 1) {//特惠价，售后单价展示“特惠价”
-        	this.saleAfterGoodsPrice = df1.format(saleAfterExpQB.getSpecialPrice().floatValue()/(double)100);
+        	this.saleAfterGoodsPrice = Utils.moneyFormatCN(saleAfterExpQB.getSpecialPrice());
         }
         this.sellNum = saleAfterExpQB.getSellNum();
-        this.returnFreight = df1.format(saleAfterExpQB.getReturnFreight().floatValue()/(double)100);
+        this.returnFreight = Utils.moneyFormatCN(saleAfterExpQB.getReturnFreight());
         
     	this.goodsName = saleAfterExpQB.getGoodsName();
         
