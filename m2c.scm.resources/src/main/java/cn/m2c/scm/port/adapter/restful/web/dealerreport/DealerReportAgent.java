@@ -162,7 +162,7 @@ public class DealerReportAgent {
     private Integer getRatio(Long sellMoney, Long preSellMoney) {
         BigDecimal sellMoneyDecimal = new BigDecimal(sellMoney);
         BigDecimal preSellMoneyDecimal = new BigDecimal(preSellMoney);
-        BigDecimal ratioDec = ((sellMoneyDecimal.subtract(preSellMoneyDecimal)).divide(preSellMoneyDecimal, 2, BigDecimal.ROUND_HALF_UP)).multiply(new BigDecimal(100));
+        BigDecimal ratioDec = ((sellMoneyDecimal.subtract(preSellMoneyDecimal)).divide(preSellMoneyDecimal, 4, BigDecimal.ROUND_HALF_UP)).multiply(new BigDecimal(100));
         return ratioDec.intValue();
     }
 
