@@ -265,15 +265,16 @@ public class OrderApplication {
         LOGGER.info("开始计算app传入特惠价和商品的sku的特惠价比较");
         if (null == specialPriceMap)
         	return;
-        LOGGER.info("specialPriceMap:"+specialPriceMap.toString()+"-----------------gdes:"+gdes.toString());
-
+        LOGGER.info("---"+specialPriceMap.keySet());
         Iterator<String> it = specialPriceMap.keySet().iterator();
         while (it.hasNext()) {
             String key = it.next();
             String specialPrice = (specialPriceMap.get(key) == null ? String.valueOf(0):String.valueOf(specialPriceMap.get(key).specialPrice()));
             if(!StringUtils.isEmpty(specialPrice)){
+            	LOGGER.info("商品那边的特惠价"+specialPrice);
                 for(GoodsDto d : gdes){
                     if(!StringUtils.isEmpty(d.getAppSpecialPrice()) && d.getSkuId().equals(key)){
+                    	LOGGER.info("app那边的特惠价"+d.getAppSpecialPrice());
                         if(!d.getAppSpecialPrice().equals(specialPrice)){
                             throw new NegativeException(MCode.V_101, "特惠价变更"+key);
                         }
