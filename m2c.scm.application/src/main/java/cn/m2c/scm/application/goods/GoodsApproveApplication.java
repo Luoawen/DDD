@@ -14,6 +14,8 @@ import cn.m2c.scm.domain.model.goods.GoodsRepository;
 import cn.m2c.scm.domain.model.goods.GoodsSkuRepository;
 import cn.m2c.scm.domain.model.shop.Shop;
 import cn.m2c.scm.domain.model.shop.ShopRepository;
+
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -120,7 +122,8 @@ public class GoodsApproveApplication {
         if (null == goodsApprove) {
             throw new NegativeException(MCode.V_300, "商品审核信息不存在");
         }
-        operationLogManager.operationLog("同意商品审核", _attach, goodsApprove, new String[]{"goodsApprove"}, null);
+        if (StringUtils.isNotEmpty(_attach))
+        	operationLogManager.operationLog("同意商品审核", _attach, goodsApprove, new String[]{"goodsApprove"}, null);
         goodsApprove.agree();
         goodsApproveRepository.remove(goodsApprove);
     }
@@ -137,7 +140,8 @@ public class GoodsApproveApplication {
         if (null == goodsApprove) {
             throw new NegativeException(MCode.V_300, "商品审核信息不存在");
         }
-        operationLogManager.operationLog("拒绝商品审核", _attach, goodsApprove, new String[]{"goodsApprove"}, null);
+        if (StringUtils.isNotEmpty(_attach))
+        	operationLogManager.operationLog("拒绝商品审核", _attach, goodsApprove, new String[]{"goodsApprove"}, null);
         goodsApprove.reject(command.getRejectReason());
     }
 
@@ -148,7 +152,8 @@ public class GoodsApproveApplication {
         if (null == goodsApprove) {
             throw new NegativeException(MCode.V_300, "商品审核信息不存在");
         }
-        operationLogManager.operationLog("修改商品审核信息", _attach, goodsApprove, new String[]{"goodsApprove"}, null);
+        if (StringUtils.isNotEmpty(_attach))
+        	operationLogManager.operationLog("修改商品审核信息", _attach, goodsApprove, new String[]{"goodsApprove"}, null);
         goodsApprove.modifyGoodsApprove(command.getGoodsName(), command.getGoodsSubTitle(),
                 command.getGoodsClassifyId(), command.getGoodsBrandId(), command.getGoodsBrandName(), command.getGoodsUnitId(), command.getGoodsMinQuantity(),
                 command.getGoodsPostageId(), command.getGoodsBarCode(), JsonUtils.toStr(command.getGoodsKeyWord()), JsonUtils.toStr(command.getGoodsGuarantee()),
@@ -162,7 +167,8 @@ public class GoodsApproveApplication {
         if (null == goodsApprove) {
             throw new NegativeException(MCode.V_300, "商品审核信息不存在");
         }
-        operationLogManager.operationLog("删除商品审核信息", _attach, goodsApprove, new String[]{"goodsApprove"}, null);
+        if (StringUtils.isNotEmpty(_attach))
+        	operationLogManager.operationLog("删除商品审核信息", _attach, goodsApprove, new String[]{"goodsApprove"}, null);
         goodsApprove.remove();
     }
 
@@ -223,7 +229,8 @@ public class GoodsApproveApplication {
     	List<GoodsApprove> goodsApproveList = goodsApproveRepository.queryGoodsApproveByIdList(goodsIds);
     	if(null != goodsApproveList && goodsApproveList.size()>0) {
     		for(GoodsApprove goodsApprove : goodsApproveList) {
-    	    	operationLogManager.operationLog("批量同意商品审核", _attach, goodsApprove, new String[]{"goodsApprove"}, null);
+    			if (StringUtils.isNotEmpty(_attach))
+    				operationLogManager.operationLog("批量同意商品审核", _attach, goodsApprove, new String[]{"goodsApprove"}, null);
     			goodsApprove.agree();
     	        goodsApproveRepository.remove(goodsApprove);
     		}
@@ -243,7 +250,8 @@ public class GoodsApproveApplication {
     	List<GoodsApprove> goodsApproveList = goodsApproveRepository.queryGoodsApproveByIdList(command.getGoodsIds());
     	if(goodsApproveList != null && goodsApproveList.size() > 0) {
     		for(GoodsApprove goodsApprove : goodsApproveList) {
-    	    	operationLogManager.operationLog("批量拒绝商品审核", _attach, goodsApprove, new String[]{"goodsApprove"}, null);
+    			if (StringUtils.isNotEmpty(_attach))
+    				operationLogManager.operationLog("批量拒绝商品审核", _attach, goodsApprove, new String[]{"goodsApprove"}, null);
     			goodsApprove.reject(command.getRejectReason());
     		}
     	}else {

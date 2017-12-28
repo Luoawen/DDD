@@ -5,7 +5,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import org.apache.http.util.TextUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,7 +79,7 @@ public class DealerOrderApplication {
 				sortNos.add(s.getSortNo());
 			}
 		}
-		if (!TextUtils.isEmpty(attach))
+		if (StringUtils.isNotEmpty(attach))
 			operationLogManager.operationLog("更新快递发货", attach, dealerOrder);
 		
 		if (!dealerOrder.updateExpress(command.getExpressName(), command.getExpressNo(), command.getExpressNote(),
@@ -103,7 +103,8 @@ public class DealerOrderApplication {
 		if (dealerOrder == null)
 			throw new NegativeException(NegativeCode.DEALER_ORDER_IS_NOT_EXIST, "此商家订单不存在.");
 		
-		operationLogManager.operationLog("修改收货地址", _attach, dealerOrder);
+		if (StringUtils.isNotEmpty(_attach))
+			operationLogManager.operationLog("修改收货地址", _attach, dealerOrder);
 		
 		ReceiveAddr addr = dealerOrder.getAddr();
 		addr.updateAddr(command.getProvince(), command.getProvCode(), command.getCity(), command.getCityCode(),
@@ -125,8 +126,8 @@ public class DealerOrderApplication {
 		DealerOrder dealerOrder = dealerOrderRepository.getDealerOrderById(command.getDealerOrderId());
 		if (dealerOrder == null)
 			throw new NegativeException(NegativeCode.DEALER_ORDER_IS_NOT_EXIST, "此商家订单不存在.");
-		
-		operationLogManager.operationLog("修改运费", attach, dealerOrder);
+		if (StringUtils.isNotEmpty(attach))
+			operationLogManager.operationLog("修改运费", attach, dealerOrder);
 		
 		dealerOrder.updateOrderFreight(command.getOrderFreight(), command.getUserId());
 		dealerOrderRepository.save(dealerOrder);
@@ -162,7 +163,8 @@ public class DealerOrderApplication {
 			mOrder.updateFreight(dealerOrder);
 			orderRepository.updateMainOrder(mOrder);
 		}
-		operationLogManager.operationLog("修改运费及收货地址", attach, mOrder);
+		if (StringUtils.isNotEmpty(attach))
+			operationLogManager.operationLog("修改运费及收货地址", attach, mOrder);
 		mOrder = null;
 		if (updatedFreight || updatedAddr) {
 			dealerOrderRepository.updateFreight(dealerOrder);

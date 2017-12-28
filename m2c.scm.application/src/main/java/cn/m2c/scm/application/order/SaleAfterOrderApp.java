@@ -173,7 +173,8 @@ public class SaleAfterOrderApp {
 				//money = 0;
 			}
 		}
-		operationLogManager.operationLog("同意售后申请", attach, order);
+		if (StringUtils.isNotEmpty(attach))
+			operationLogManager.operationLog("同意售后申请", attach, order);
 		order.updateBackMoney(money);
 		double frt = cmd.getRtFreight();
 		if (order.isOnlyRtMoney()) {
@@ -207,7 +208,8 @@ public class SaleAfterOrderApp {
 		if (order == null) {
 			throw new NegativeException(MCode.V_101, "无此售后单！");
 		}
-		operationLogManager.operationLog("拒绝售后申请", attach, order);
+		if (StringUtils.isNotEmpty(attach))
+			operationLogManager.operationLog("拒绝售后申请", attach, order);
 		order.rejectSute(cmd.getRejectReason(), cmd.getRejectReasonCode(), cmd.getUserId());
 		saleAfterRepository.updateSaleAfterOrder(order);
 	}
@@ -240,7 +242,8 @@ public class SaleAfterOrderApp {
 		if (order == null || !order.isSame(cmd.getSkuId())) {
 			throw new NegativeException(MCode.V_101, "无此售后单！");
 		}
-		operationLogManager.operationLog("商家换货发货", attach, order);
+		if (StringUtils.isNotEmpty(attach))
+			operationLogManager.operationLog("商家换货发货", attach, order);
 		
 		if (!order.dealerShip(cmd.getSdExpressInfo(), cmd.getUserId(),cmd.getOrderId(),cmd.getShopName(),cmd.getExpressCode(),cmd.getExpressNo())) {
 			throw new NegativeException(MCode.V_103, "状态不正确，不能进行发货操作！");
@@ -326,7 +329,8 @@ public class SaleAfterOrderApp {
 		if (StringUtils.isEmpty(payNo)) {
 			throw new NegativeException(MCode.V_101, "售后单状态不正确！");
 		}
-		operationLogManager.operationLog("商家同意退款", attach, order);
+		if (StringUtils.isNotEmpty(attach))
+			operationLogManager.operationLog("商家同意退款", attach, order);
 		if (!order.agreeBackMoney(cmd.getUserId(), payNo)) {
 			throw new NegativeException(MCode.V_103, "状态不正确，不能进行此操作！");
 		}
@@ -361,7 +365,8 @@ public class SaleAfterOrderApp {
 		if (order == null || !order.isSame(cmd.getSkuId())) {
 			throw new NegativeException(MCode.V_101, "无此售后单！");
 		}
-		operationLogManager.operationLog("商家确认收货", attach, order);
+		if (StringUtils.isNotEmpty(attach))
+			operationLogManager.operationLog("商家确认收货", attach, order);
 		if (!order.dealerConfirmRev(cmd.getUserId())) {
 			throw new NegativeException(MCode.V_103, "状态不正确，不能进行收货操作！");
 		}
