@@ -95,7 +95,8 @@ public class GoodsCommentAgent {
         MResult result = new MResult(MCode.V_1);
         try {
             ReplyGoodsCommentCommand command = new ReplyGoodsCommentCommand(commentId, replyContent);
-            goodsCommentApplication.replyGoodsComment(command);
+            String _attach = request.getHeader("attach");
+            goodsCommentApplication.replyGoodsComment(command, _attach);
             result.setStatus(MCode.V_200);
         } catch (NegativeException ne) {
             LOGGER.error("replyComment NegativeException e:", ne);
