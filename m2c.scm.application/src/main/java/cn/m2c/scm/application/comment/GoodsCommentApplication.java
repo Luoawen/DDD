@@ -2,12 +2,15 @@ package cn.m2c.scm.application.comment;
 
 import cn.m2c.common.MCode;
 import cn.m2c.ddd.common.event.annotation.EventListener;
+import cn.m2c.ddd.common.logger.OperationLogManager;
 import cn.m2c.scm.application.comment.command.AddGoodsCommentCommand;
 import cn.m2c.scm.application.comment.command.ReplyGoodsCommentCommand;
 import cn.m2c.scm.application.order.DealerOrderApplication;
 import cn.m2c.scm.domain.NegativeException;
 import cn.m2c.scm.domain.model.comment.GoodsComment;
 import cn.m2c.scm.domain.model.comment.GoodsCommentRepository;
+
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +18,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+
+import javax.annotation.Resource;
 
 /**
  * 商品评价
@@ -29,6 +34,9 @@ public class GoodsCommentApplication {
     @Autowired
     private DealerOrderApplication orderApp;
 
+    @Resource
+    private OperationLogManager operationLogManager;
+    
     /**
      * 增加评论
      *
@@ -68,13 +76,15 @@ public class GoodsCommentApplication {
 
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
     @EventListener(isListening = true)
-    public void delGoodsComment(String commentId) throws NegativeException {
+    public void delGoodsComment(String commentId, String _attach) throws NegativeException {
         LOGGER.info("delGoodsComment commentId >>{}", commentId);
         // 查询评论信息
         GoodsComment goodsComment = goodsCommentRepository.queryGoodsCommentById(commentId);
         if (null == goodsComment) {
             throw new NegativeException(MCode.V_300, "评论信息不存在");
         }
+        if (StringUtils.isNotEmpty(_attach))
+        	operationLogManager.operationLog("删除评论", _attach, goodsComment, new String[]{"goodsComment"}, null);
         goodsComment.remove();
 
         // 更新订单状态
