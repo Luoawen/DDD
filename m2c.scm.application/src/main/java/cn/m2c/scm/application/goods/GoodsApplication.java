@@ -585,7 +585,7 @@ public class GoodsApplication {
         LOGGER.info("offShelfGoodsBatch goodsIds >>{}", goodsIds);
         List<Goods> goodsList = goodsRepository.queryGoodsByIdList(goodsIds);
         if(StringUtils.isNotEmpty(_attach)) {
-            operationLogManager.operationLog("商品批量上架", _attach, goodsList, new String[]{"goods"}, null);
+            operationLogManager.operationLog("商品批量下架", _attach, goodsList, new String[]{"goods"}, null);
         }
         if (null != goodsList && goodsList.size() > 0) {
         	boolean flag = false;
