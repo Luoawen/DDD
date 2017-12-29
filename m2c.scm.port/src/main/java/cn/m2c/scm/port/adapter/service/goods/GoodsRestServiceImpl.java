@@ -142,14 +142,20 @@ public class GoodsRestServiceImpl implements GoodsService {
     @Override
     public String getUserIsFavoriteGoods(String userId, String goodsId, String token) {
         String url = M2C_HOST_URL + "/m2c.users/favorite/app/detail?token={0}&userId={1}&goodsId={2}";
-        String result = restTemplate.getForObject(url, String.class, token, userId, goodsId);
-        JSONObject json = JSONObject.parseObject(result);
-        if (json.getInteger("status") == 200) {
-            JSONObject contents = json.getJSONObject("content");
-            if (null != contents) {
-                String favoriteId = contents.getString("favoriteId");
-                return favoriteId;
+        try {
+            String result = restTemplate.getForObject(url, String.class, token, userId, goodsId);
+            JSONObject json = JSONObject.parseObject(result);
+            if (json.getInteger("status") == 200) {
+                JSONObject contents = json.getJSONObject("content");
+                if (null != contents) {
+                    String favoriteId = contents.getString("favoriteId");
+                    return favoriteId;
+                }
             }
+        } catch (Exception e) {
+            LOGGER.error("查询用户是否收藏商品失败");
+            LOGGER.error("getUserIsFavoriteGoods failed.url=>" + url);
+            LOGGER.error("getUserIsFavoriteGoods failed.param=>goodsId=" + goodsId + ",userId=" + userId);
         }
         return null;
     }
@@ -162,20 +168,26 @@ public class GoodsRestServiceImpl implements GoodsService {
     @Override
     public Map getMediaInfo(String mediaResourceId) {
         String url = M2C_HOST_URL + "/m2c.media/mres/detail/" + mediaResourceId + "/client";
-        String result = restTemplate.getForObject(url, String.class);
-        JSONObject json = JSONObject.parseObject(result);
-        if (json.getInteger("status") == 200) {
-            JSONObject contentObject = json.getJSONObject("content");
-            if (null != contentObject) {
-                String mediaId = contentObject.getString("mediaId");
-                String mediaName = contentObject.getString("mediaName");
-                String mresName = contentObject.getString("mresName");
-                Map<String, Object> mediaInfo = new HashMap<>();
-                mediaInfo.put("mediaId", mediaId);
-                mediaInfo.put("mediaName", mediaName);
-                mediaInfo.put("mresName", mresName);
-                return mediaInfo;
+        try {
+            String result = restTemplate.getForObject(url, String.class);
+            JSONObject json = JSONObject.parseObject(result);
+            if (json.getInteger("status") == 200) {
+                JSONObject contentObject = json.getJSONObject("content");
+                if (null != contentObject) {
+                    String mediaId = contentObject.getString("mediaId");
+                    String mediaName = contentObject.getString("mediaName");
+                    String mresName = contentObject.getString("mresName");
+                    Map<String, Object> mediaInfo = new HashMap<>();
+                    mediaInfo.put("mediaId", mediaId);
+                    mediaInfo.put("mediaName", mediaName);
+                    mediaInfo.put("mresName", mresName);
+                    return mediaInfo;
+                }
             }
+        } catch (Exception e) {
+            LOGGER.error("查询媒体信息失败");
+            LOGGER.error("getMediaInfo failed.url=>" + url);
+            LOGGER.error("getMediaInfo failed.param=>mediaResourceId=" + mediaResourceId);
         }
         return null;
     }
@@ -183,22 +195,28 @@ public class GoodsRestServiceImpl implements GoodsService {
     @Override
     public Map getUserInfoByUserId(String userId) {
         String url = M2C_HOST_URL + "/m2c.users/user/detail?token={0}&userId={1}";
-        String result = restTemplate.getForObject(url, String.class, "", userId);
-        JSONObject json = JSONObject.parseObject(result);
-        if (json.getInteger("status") == 200) {
-            JSONObject contentObject = json.getJSONObject("content");
-            if (null != contentObject) {
-                String areaProvince = contentObject.getString("areaProvince");
-                String areaDistrict = contentObject.getString("areaDistrict");
-                String provinceCode = contentObject.getString("provinceCode");
-                String districtCode = contentObject.getString("districtCode");
-                Map<String, Object> userInfo = new HashMap<>();
-                userInfo.put("areaProvince", areaProvince);
-                userInfo.put("areaDistrict", areaDistrict);
-                userInfo.put("provinceCode", provinceCode);
-                userInfo.put("districtCode", districtCode);
-                return userInfo;
+        try {
+            String result = restTemplate.getForObject(url, String.class, "", userId);
+            JSONObject json = JSONObject.parseObject(result);
+            if (json.getInteger("status") == 200) {
+                JSONObject contentObject = json.getJSONObject("content");
+                if (null != contentObject) {
+                    String areaProvince = contentObject.getString("areaProvince");
+                    String areaDistrict = contentObject.getString("areaDistrict");
+                    String provinceCode = contentObject.getString("provinceCode");
+                    String districtCode = contentObject.getString("districtCode");
+                    Map<String, Object> userInfo = new HashMap<>();
+                    userInfo.put("areaProvince", areaProvince);
+                    userInfo.put("areaDistrict", areaDistrict);
+                    userInfo.put("provinceCode", provinceCode);
+                    userInfo.put("districtCode", districtCode);
+                    return userInfo;
+                }
             }
+        } catch (Exception e) {
+            LOGGER.error("查询用户信息失败");
+            LOGGER.error("getUserInfoByUserId failed.url=>" + url);
+            LOGGER.error("getUserInfoByUserId failed.param=>userId=" + userId);
         }
         return null;
     }
@@ -206,10 +224,15 @@ public class GoodsRestServiceImpl implements GoodsService {
     @Override
     public Integer getCartGoodsTotal(String userId) {
         String url = M2C_HOST_URL + "/m2c.users/cart/getTotalQuantity?userId=" + userId;
-        String result = restTemplate.getForObject(url, String.class);
-        JSONObject json = JSONObject.parseObject(result);
-        if (json.getInteger("status") == 200) {
-            return json.getInteger("content");
+        try {
+            String result = restTemplate.getForObject(url, String.class);
+            JSONObject json = JSONObject.parseObject(result);
+            if (json.getInteger("status") == 200) {
+                return json.getInteger("content");
+            }
+        } catch (Exception e) {
+            LOGGER.error("查询用户购物车中商品数量失败");
+            LOGGER.error("getCartGoodsTotal failed.url=>" + url);
         }
         return 0;
     }
