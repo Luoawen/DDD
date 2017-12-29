@@ -68,8 +68,8 @@ public class GoodsAgent {
     @Autowired
     PostageModelQueryApplication postageModelQueryApplication;
 
-    @Autowired
-    private HttpServletRequest request;
+    //@Autowired
+    //private HttpServletRequest request;
 
     /**
      * 修改商品
@@ -109,7 +109,8 @@ public class GoodsAgent {
             @RequestParam(value = "goodsMainImages", required = false) List goodsMainImages,
             @RequestParam(value = "goodsDesc", required = false) String goodsDesc,
             @RequestParam(value = "goodsSpecifications", required = false) String goodsSpecifications,
-            @RequestParam(value = "goodsSKUs", required = false) String goodsSKUs) {
+            @RequestParam(value = "goodsSKUs", required = false) String goodsSKUs,
+            HttpServletRequest request) {
         MResult result = new MResult(MCode.V_1);
         try {
             List<Map> skuList = JsonUtils.toList(goodsSKUs, Map.class);
@@ -171,7 +172,8 @@ public class GoodsAgent {
      */
     @RequestMapping(value = "/web/goods/{goodsId}", method = RequestMethod.DELETE)
     public ResponseEntity<MResult> delGoods(
-            @PathVariable("goodsId") String goodsId
+            @PathVariable("goodsId") String goodsId,
+            HttpServletRequest request
     ) {
         MResult result = new MResult(MCode.V_1);
         try {
@@ -197,7 +199,8 @@ public class GoodsAgent {
     @RequestMapping(value = {"/web/goods/up/shelf/{goodsId}", "/goods/mng/up/shelf/{goodsId}"}, method = RequestMethod.PUT)
     @RequirePermissions(value = {"scm:goodsStorage:upShelf"})
     public ResponseEntity<MResult> upShelfGoods(
-            @PathVariable("goodsId") String goodsId
+            @PathVariable("goodsId") String goodsId,
+            HttpServletRequest request
     ) {
         MResult result = new MResult(MCode.V_1);
         try {
@@ -223,7 +226,8 @@ public class GoodsAgent {
     @RequestMapping(value = {"/web/goods/off/shelf/{goodsId}", "/goods/mng/off/shelf/{goodsId}"}, method = RequestMethod.PUT)
     @RequirePermissions(value = {"scm:goodsStorage:offShelf"})
     public ResponseEntity<MResult> offShelfGoods(
-            @PathVariable("goodsId") String goodsId
+            @PathVariable("goodsId") String goodsId,
+            HttpServletRequest request
     ) {
         MResult result = new MResult(MCode.V_1);
         try {
@@ -386,7 +390,8 @@ public class GoodsAgent {
     @RequestMapping(value = "/goods/main/image/{goodsId}", method = RequestMethod.PUT)
     public ResponseEntity<MResult> modifyGoodsMainImages(
             @PathVariable("goodsId") String goodsId,
-            @RequestParam(value = "images", required = false) List images
+            @RequestParam(value = "images", required = false) List images,
+            HttpServletRequest request
     ) {
         MResult result = new MResult(MCode.V_1);
         if (null == images || images.size() == 0) {

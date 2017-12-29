@@ -151,8 +151,10 @@ public class GoodsApplication {
         if (null == goods) {
             throw new NegativeException(MCode.V_300, "商品不存在");
         }
+        LOGGER.info("日志商品上架打印==>", _attach);
         if (StringUtils.isNotEmpty(_attach))
         	operationLogManager.operationLog("商品上架", _attach, goods, new String[]{"goods"}, null);
+        LOGGER.info("日志商品上架打印==>", _attach);
         goods.upShelf();
         //updateRecognizedImgStatus(goods.goodsRecognizeds(), 1);
     }
