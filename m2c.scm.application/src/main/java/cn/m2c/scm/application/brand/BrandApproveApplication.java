@@ -75,7 +75,7 @@ public class BrandApproveApplication {
         }
         BrandApprove brandApprove = brandApproveRepository.getBrandApproveByBrandId(command.getBrandId());
         if (StringUtils.isNotEmpty(_attach))
-        	operationLogManager.operationLog("修改品牌库中品牌(商家平台,需审核)", _attach, brandApprove);
+        	operationLogManager.operationLog("修改品牌(商家平台)", _attach, brandApprove);
         if (null == brandApprove) {//不存在审核记录，就增加一条审核记录
             brandApprove = new BrandApprove(IDGenerator.get(IDGenerator.SCM_BRANDE_APPROVE_PREFIX_TITLE), command.getBrandId(), command.getBrandName(), command.getBrandNameEn(), command.getBrandLogo(), command.getFirstAreaCode(),
                     command.getTwoAreaCode(), command.getThreeAreaCode(), command.getFirstAreaName(), command.getTwoAreaName(),
@@ -106,7 +106,7 @@ public class BrandApproveApplication {
             throw new NegativeException(MCode.V_301, "品牌名称已存在");
         }
         if (StringUtils.isNotEmpty(_attach))
-        	operationLogManager.operationLog("修改审批中的品牌信息(商家平台)", _attach, brandApprove);
+        	operationLogManager.operationLog("修改审批品牌(商家平台)", _attach, brandApprove);
         brandApprove.modifyBrandApprove(command.getBrandName(), command.getBrandNameEn(), command.getBrandLogo(), command.getFirstAreaCode(),
                 command.getTwoAreaCode(), command.getThreeAreaCode(), command.getFirstAreaName(), command.getTwoAreaName(),
                 command.getThreeAreaName());
@@ -126,7 +126,7 @@ public class BrandApproveApplication {
             throw new NegativeException(MCode.V_300, "审核品牌信息不存在");
         }
         if (StringUtils.isNotEmpty(_attach))
-        	operationLogManager.operationLog("商家管理平台审核品牌同意", _attach, brandApprove);
+        	operationLogManager.operationLog("审核品牌同意", _attach, brandApprove);
         brandApprove.agree();
         brandApproveRepository.remove(brandApprove);
     }
@@ -171,7 +171,7 @@ public class BrandApproveApplication {
             throw new NegativeException(MCode.V_300, "审核品牌信息不存在");
         }
         if (StringUtils.isNotEmpty(_attach))
-        	operationLogManager.operationLog("商家管理平台审核品牌拒绝", _attach, brandApprove);
+        	operationLogManager.operationLog("审核品牌拒绝", _attach, brandApprove);
         brandApprove.reject(command.getRejectReason());
     }
     
@@ -212,7 +212,7 @@ public class BrandApproveApplication {
             throw new NegativeException(MCode.V_300, "审核品牌信息不存在");
         }
         if (StringUtils.isNotEmpty(_attach))
-        	operationLogManager.operationLog("删除品牌审核信息", _attach, brandApprove);
+        	operationLogManager.operationLog("删除品牌审核", _attach, brandApprove);
         brandApprove.delete();
     }
 
