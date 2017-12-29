@@ -155,7 +155,7 @@ public class GoodsCommentQueryApplication {
         return this.getSupportJdbcTemplate().queryForBean(sql.toString(), GoodsReplyCommentBean.class, commentId);
     }
 
-    public List<GoodsCommentBean> searchGoodsComment(String dealerId, Integer replyStatus, Integer starLevel,
+    public List<GoodsCommentBean> searchGoodsComment(String dealerId, Integer replyStatus, Integer starLevel, Integer commentLevel,
                                                      String startTime, String endTime, String condition, Integer imageStatus,
                                                      Integer pageNum, Integer rows) {
         List<Object> params = new ArrayList<Object>();
@@ -176,26 +176,30 @@ public class GoodsCommentQueryApplication {
             sql.append(" AND star_level = ? ");
             params.add(starLevel);
         }
+        if (null != commentLevel) {
+            sql.append(" AND commentLevel = ? ");
+            params.add(commentLevel);
+        }
         if (StringUtils.isNotEmpty(startTime) && StringUtils.isNotEmpty(endTime)) {
             sql.append(" AND created_date BETWEEN ? AND ? ");
             params.add(startTime + " 00:00:00");
             params.add(endTime + " 23:59:59");
         }
         if (StringUtils.isNotEmpty(condition)) {
-        	if(null != dealerId && StringUtils.isNotEmpty(dealerId)) {
-	            sql.append(" AND (goods_name LIKE ? OR order_id LIKE ? OR buyer_name LIKE ? OR buyer_phone_number LIKE ?)");
-	            params.add("%" + condition + "%");
-	            params.add("%" + condition + "%");
-	            params.add("%" + condition + "%");
-	            params.add("%" + condition + "%");
-        	}else {
-        		sql.append(" AND (goods_name LIKE ? OR order_id LIKE ? OR buyer_name LIKE ? OR buyer_phone_number LIKE ? OR dealer_name LIKE ?)");
-	            params.add("%" + condition + "%");
-	            params.add("%" + condition + "%");
-	            params.add("%" + condition + "%");
-	            params.add("%" + condition + "%");
-	            params.add("%" + condition + "%");
-        	}
+            if (null != dealerId && StringUtils.isNotEmpty(dealerId)) {
+                sql.append(" AND (goods_name LIKE ? OR order_id LIKE ? OR buyer_name LIKE ? OR buyer_phone_number LIKE ?)");
+                params.add("%" + condition + "%");
+                params.add("%" + condition + "%");
+                params.add("%" + condition + "%");
+                params.add("%" + condition + "%");
+            } else {
+                sql.append(" AND (goods_name LIKE ? OR order_id LIKE ? OR buyer_name LIKE ? OR buyer_phone_number LIKE ? OR dealer_name LIKE ?)");
+                params.add("%" + condition + "%");
+                params.add("%" + condition + "%");
+                params.add("%" + condition + "%");
+                params.add("%" + condition + "%");
+                params.add("%" + condition + "%");
+            }
         }
         if (null != imageStatus) {
             sql.append(" AND image_status = ? ");
@@ -216,7 +220,7 @@ public class GoodsCommentQueryApplication {
         return goodsCommentBeans;
     }
 
-    public Integer searchGoodsCommentTotal(String dealerId, Integer replyStatus, Integer starLevel,
+    public Integer searchGoodsCommentTotal(String dealerId, Integer replyStatus, Integer starLevel, Integer commentLevel,
                                            String startTime, String endTime, String condition, Integer imageStatus) {
         List<Object> params = new ArrayList<Object>();
         StringBuilder sql = new StringBuilder();
@@ -236,26 +240,30 @@ public class GoodsCommentQueryApplication {
             sql.append(" AND star_level = ? ");
             params.add(starLevel);
         }
+        if (null != commentLevel) {
+            sql.append(" AND commentLevel = ? ");
+            params.add(commentLevel);
+        }
         if (StringUtils.isNotEmpty(startTime) && StringUtils.isNotEmpty(endTime)) {
             sql.append(" AND created_date BETWEEN ? AND ? ");
             params.add(startTime + " 00:00:00");
             params.add(endTime + " 23:59:59");
         }
         if (StringUtils.isNotEmpty(condition)) {
-        	if(null != dealerId && StringUtils.isNotEmpty(dealerId)) {
-	            sql.append(" AND (goods_name LIKE ? OR order_id LIKE ? OR buyer_name LIKE ? OR buyer_phone_number LIKE ?)");
-	            params.add("%" + condition + "%");
-	            params.add("%" + condition + "%");
-	            params.add("%" + condition + "%");
-	            params.add("%" + condition + "%");
-        	}else {
-        		sql.append(" AND (goods_name LIKE ? OR order_id LIKE ? OR buyer_name LIKE ? OR buyer_phone_number LIKE ? OR dealer_name LIKE ?)");
-	            params.add("%" + condition + "%");
-	            params.add("%" + condition + "%");
-	            params.add("%" + condition + "%");
-	            params.add("%" + condition + "%");
-	            params.add("%" + condition + "%");
-        	}
+            if (null != dealerId && StringUtils.isNotEmpty(dealerId)) {
+                sql.append(" AND (goods_name LIKE ? OR order_id LIKE ? OR buyer_name LIKE ? OR buyer_phone_number LIKE ?)");
+                params.add("%" + condition + "%");
+                params.add("%" + condition + "%");
+                params.add("%" + condition + "%");
+                params.add("%" + condition + "%");
+            } else {
+                sql.append(" AND (goods_name LIKE ? OR order_id LIKE ? OR buyer_name LIKE ? OR buyer_phone_number LIKE ? OR dealer_name LIKE ?)");
+                params.add("%" + condition + "%");
+                params.add("%" + condition + "%");
+                params.add("%" + condition + "%");
+                params.add("%" + condition + "%");
+                params.add("%" + condition + "%");
+            }
         }
         if (null != imageStatus) {
             sql.append(" AND image_status = ? ");
