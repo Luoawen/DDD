@@ -86,6 +86,7 @@ public class GoodsApproveDetailRepresentation {
             }
             map.put("goodsCode", goodsSkuBean.getGoodsCode());
             map.put("showStatus", goodsSkuBean.getShowStatus());
+            map.put("show",goodsSkuBean.isShow());
             list.add(map);
         }
         this.goodsSKUs = list;
