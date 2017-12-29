@@ -3,6 +3,7 @@ package cn.m2c.scm.port.adapter.restful.web.seller;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
@@ -40,6 +41,8 @@ public class SellerAgent {
 	@Autowired
 	SellerQuery sellerQuery;
 
+	@Autowired
+	private  HttpServletRequest request;
 	/**
 	 * 获取主键id 
 	 * uuid
@@ -167,7 +170,8 @@ public class SellerAgent {
 			SellerCommand command = new SellerCommand(sellerId, sellerName, sellerPhone, sellerSex, sellerNo,
 					sellerPass, sellerConfirmPass, sellerProvince, sellerCity, sellerArea, sellerPcode, sellerCcode,
 					sellerAcode, sellerqq, sellerWechat, sellerRemark);
-			sellerApplication.update(command);
+			String _attach= request.getHeader("attach");
+			sellerApplication.update(command,_attach);
 			result.setStatus(MCode.V_200);
 		}catch (IllegalArgumentException e) {
 			log.error("修改业务员出错", e);

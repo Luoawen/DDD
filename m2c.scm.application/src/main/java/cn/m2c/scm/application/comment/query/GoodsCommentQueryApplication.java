@@ -177,7 +177,7 @@ public class GoodsCommentQueryApplication {
             params.add(starLevel);
         }
         if (null != commentLevel) {
-            sql.append(" AND commentLevel = ? ");
+            sql.append(" AND comment_level = ? ");
             params.add(commentLevel);
         }
         if (StringUtils.isNotEmpty(startTime) && StringUtils.isNotEmpty(endTime)) {
@@ -241,7 +241,7 @@ public class GoodsCommentQueryApplication {
             params.add(starLevel);
         }
         if (null != commentLevel) {
-            sql.append(" AND commentLevel = ? ");
+            sql.append(" AND comment_level = ? ");
             params.add(commentLevel);
         }
         if (StringUtils.isNotEmpty(startTime) && StringUtils.isNotEmpty(endTime)) {

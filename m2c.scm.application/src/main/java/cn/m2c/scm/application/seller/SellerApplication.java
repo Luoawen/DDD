@@ -1,5 +1,8 @@
 package cn.m2c.scm.application.seller;
 
+import javax.annotation.Resource;
+
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import cn.m2c.common.MCode;
 import cn.m2c.ddd.common.event.annotation.EventListener;
+import cn.m2c.ddd.common.logger.OperationLogManager;
 import cn.m2c.scm.application.seller.command.SellerCommand;
 import cn.m2c.scm.domain.NegativeCode;
 import cn.m2c.scm.domain.NegativeException;
@@ -24,7 +28,8 @@ public class SellerApplication {
 	SellerRepository sellerRepository;
 	@Autowired
 	SellerService sellerService;
-	
+	@Resource
+    private OperationLogManager operationLogManager;
 
 	@Transactional(rollbackFor = { Exception.class, RuntimeException.class, NegativeException.class })
 	@EventListener
@@ -48,7 +53,7 @@ public class SellerApplication {
 
 	@Transactional(rollbackFor = { Exception.class, RuntimeException.class, NegativeException.class })
 	@EventListener
-	public void update(SellerCommand command) throws NegativeException {
+	public void update(SellerCommand command,String _attach) throws NegativeException {
 		// TODO Auto-generated method stub
 		log.info("---修改经销商业务员", command.toString());
 		Seller seller = sellerRepository.getSeller(command.getSellerId());
@@ -57,7 +62,10 @@ public class SellerApplication {
 		if(!seller.getSellerPhone().equals(command.getSellerPhone()) && !sellerService.isSellerPhoneExist(command.getSellerPhone())){
 			throw new NegativeException(NegativeCode.SELLER_PHONE_IS_EXIST, "此业务员手机号已存在.");
 		}
-			seller.update(command.getSellerName(), command.getSellerPhone(), command.getSellerSex(), command.getSellerNo(),
+		if (StringUtils.isNotEmpty(_attach))
+			operationLogManager.operationLog("修改招商业务员业务员", _attach, seller);
+		
+		seller.update(command.getSellerName(), command.getSellerPhone(), command.getSellerSex(), command.getSellerNo(),
 					command.getSellerConfirmPass(), command.getSellerProvince(), command.getSellerCity(),
 					command.getSellerArea(), command.getSellerPcode(), command.getSellerCcode(), command.getSellerAcode(),
 					command.getSellerqq(), command.getSellerWechat(), command.getSellerRemark());

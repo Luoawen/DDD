@@ -25,6 +25,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * 商品分类
  */
@@ -37,6 +39,9 @@ public class GoodsClassifyAgent {
     @Autowired
     GoodsClassifyQueryApplication goodsClassifyQueryApplication;
 
+    @Autowired
+    private HttpServletRequest request;
+    
     /**
      * 增加商品分类
      *
@@ -83,7 +88,8 @@ public class GoodsClassifyAgent {
         MResult result = new MResult(MCode.V_1);
         try {
             GoodsClassifyModifyCommand command = new GoodsClassifyModifyCommand(classifyId, classifyName);
-            goodsClassifyApplication.modifyGoodsClassifyName(command);
+            String _attach = request.getHeader("attach");
+            goodsClassifyApplication.modifyGoodsClassifyName(command, _attach);
             result.setStatus(MCode.V_200);
         } catch (NegativeException ne) {
             LOGGER.error("modifyGoodsClassifyName NegativeException e:", ne);
@@ -109,7 +115,8 @@ public class GoodsClassifyAgent {
         MResult result = new MResult(MCode.V_1);
         try {
             GoodsClassifyModifyCommand command = new GoodsClassifyModifyCommand(classifyId, serviceRate);
-            goodsClassifyApplication.modifyGoodsClassifyServiceRate(command);
+            String _attach = request.getHeader("attach");
+            goodsClassifyApplication.modifyGoodsClassifyServiceRate(command, _attach);
             result.setStatus(MCode.V_200);
         } catch (NegativeException ne) {
             LOGGER.error("modifyGoodsClassifyServiceRate NegativeException e:", ne);
@@ -133,7 +140,8 @@ public class GoodsClassifyAgent {
             @PathVariable("classifyId") String classifyId) {
         MResult result = new MResult(MCode.V_1);
         try {
-            goodsClassifyApplication.deleteGoodsClassify(classifyId);
+        	String _attach = request.getHeader("attach");
+            goodsClassifyApplication.deleteGoodsClassify(classifyId, _attach);
             result.setStatus(MCode.V_200);
         } catch (NegativeException ne) {
             LOGGER.error("deleteGoodsClassify NegativeException e:", ne);
