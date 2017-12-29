@@ -57,11 +57,11 @@ public class UnitApplication {
 	public void delUnit(String unitId,String _attach) throws NegativeException {
 		LOGGER.info("delUnit unitName >>{}", unitId);
 		Unit unit = unitRepository.getUnitByUnitId(unitId);
-		if (unit.getUseNum() > 0) {
-			throw new NegativeException(MCode.V_300, "计量单位被商品使用不能删除");
-		}
 		if (null == unit) {
 			throw new NegativeException(MCode.V_300, "计量单位不存在");
+		}
+		if (unit.getUseNum() > 0) {
+			throw new NegativeException(MCode.V_300, "计量单位被商品使用不能删除");
 		}
 		if (StringUtils.isNotEmpty(_attach))
 			operationLogManager.operationLog("删除计量单位", _attach, unit);
