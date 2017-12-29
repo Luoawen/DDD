@@ -33,6 +33,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * 商品特惠价
  */
@@ -46,6 +48,9 @@ public class GoodsSpecialAgent {
     @Autowired
     GoodsSpecialQueryApplication goodsSpecialQueryApplication;
 
+    @Autowired
+    private HttpServletRequest request;
+    
     /**
      * 获取ID
      *
@@ -168,7 +173,8 @@ public class GoodsSpecialAgent {
         }
         GoodsSpecialModifyCommand command = new GoodsSpecialModifyCommand(specialId, startTime, endTime, congratulations, activityDescription, goodsSkuSpecials);
         try {
-            goodsSpecialApplication.modifyGoodsSpecial(command);
+        	String _attach = request.getHeader("attach");
+            goodsSpecialApplication.modifyGoodsSpecial(command, _attach);
             result.setStatus(MCode.V_200);
         } catch (NegativeException ne) {
             LOGGER.error("modifyGoodsSpecial NegativeException e:", ne);
@@ -264,7 +270,8 @@ public class GoodsSpecialAgent {
     ) {
         MResult result = new MResult(MCode.V_1);
         try {
-            goodsSpecialApplication.endGoodsSpecial(specialId);
+        	String _attach = request.getHeader("attach");
+            goodsSpecialApplication.endGoodsSpecial(specialId, _attach);
             result.setStatus(MCode.V_200);
         } catch (NegativeException ne) {
             LOGGER.error("endGoodsSpecial NegativeException e:", ne);
