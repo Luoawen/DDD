@@ -2,6 +2,8 @@ package cn.m2c.scm.port.adapter.restful.web.stantard;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +35,9 @@ public class StantardAgent {
 	
 	@Autowired
 	StantardQuery stantardQuery;
+	
+	@Autowired
+	private  HttpServletRequest request;
 	
 	@RequestMapping(value = "/stantard/id",method = RequestMethod.GET)
 	public ResponseEntity<MResult> getStantardId(){
@@ -82,7 +87,8 @@ public class StantardAgent {
 	public ResponseEntity<MResult> delUnit(@RequestParam(value = "stantardId", required = false) String stantardId) {
 		MResult result = new MResult(MCode.V_1);
 		try {
-			stantardApplication.delStantard(stantardId);
+			String _attach= request.getHeader("attach");
+			stantardApplication.delStantard(stantardId,_attach);
 			result.setStatus(MCode.V_200);
 		} catch (NegativeException ne) {
 			LOGGER.error("delStantard NegativeException e:", ne);
@@ -107,8 +113,9 @@ public class StantardAgent {
 			@RequestParam(value = "stantardName", required = false) String stantardName) {
 		MResult result = new MResult(MCode.V_1);
 		try {
+			String _attach= request.getHeader("attach");
 			StantardCommand command = new StantardCommand(stantardId, stantardName);
-			stantardApplication.modifyStantard(command);
+			stantardApplication.modifyStantard(command,_attach);
 			result.setStatus(MCode.V_200);
 		} catch (NegativeException ne) {
 			LOGGER.error("modifyStantard NegativeException e:", ne);

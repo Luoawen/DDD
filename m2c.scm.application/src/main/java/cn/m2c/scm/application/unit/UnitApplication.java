@@ -1,5 +1,8 @@
 package cn.m2c.scm.application.unit;
 
+import javax.annotation.Resource;
+
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import cn.m2c.common.MCode;
 import cn.m2c.ddd.common.event.annotation.EventListener;
+import cn.m2c.ddd.common.logger.OperationLogManager;
 import cn.m2c.scm.application.unit.command.UnitCommand;
 import cn.m2c.scm.domain.NegativeException;
 import cn.m2c.scm.domain.model.unit.Unit;
@@ -20,6 +24,8 @@ public class UnitApplication {
 	@Autowired
 	UnitRepository unitRepository;
 
+	@Resource
+    private OperationLogManager operationLogManager;
 	/**
 	 * 添加计量单位
 	 * 
@@ -48,7 +54,7 @@ public class UnitApplication {
 	 * @throws NegativeException
 	 */
 	@Transactional(rollbackFor = { Exception.class, RuntimeException.class, NegativeException.class })
-	public void delUnit(String unitId) throws NegativeException {
+	public void delUnit(String unitId,String _attach) throws NegativeException {
 		LOGGER.info("delUnit unitName >>{}", unitId);
 		Unit unit = unitRepository.getUnitByUnitId(unitId);
 		if (unit.getUseNum() > 0) {
@@ -57,6 +63,9 @@ public class UnitApplication {
 		if (null == unit) {
 			throw new NegativeException(MCode.V_300, "计量单位不存在");
 		}
+		if (StringUtils.isNotEmpty(_attach))
+			operationLogManager.operationLog("删除计量单位", _attach, unit);
+		
 		unit.deleteUnit();
 		unitRepository.saveUnit(unit);
 	}
@@ -68,7 +77,7 @@ public class UnitApplication {
 	 * @throws NegativeException
 	 */
 	@Transactional(rollbackFor = { Exception.class, RuntimeException.class, NegativeException.class })
-	public void modifyUnit(UnitCommand command) throws NegativeException {
+	public void modifyUnit(UnitCommand command,String _attach) throws NegativeException {
 		LOGGER.info("modify unitName >>{}", command.getUnitName());
 		Unit unit = unitRepository.getUnitByUnitId(command.getUnitId());
 		if (null == unit) 
@@ -79,6 +88,8 @@ public class UnitApplication {
 				throw new NegativeException(MCode.V_301, "计量单位已存在");
 			}
 		}
+		if (StringUtils.isNotEmpty(_attach))
+			operationLogManager.operationLog("修改计量单位", _attach, unit);
 		System.out.println("-------计量单位："+command.getUnitId());
 		System.out.println("---"+command.toString());
 		unit.modify(command.getUnitId(), command.getUnitName(), command.getUnitStatus());
