@@ -37,11 +37,12 @@ public class GoodsCommentAgent {
     @Autowired
     GoodsCommentApplication goodsCommentApplication;
 
-    @RequestMapping(value = {"goods/comment","web/goods/comment"}, method = RequestMethod.GET)
+    @RequestMapping(value = {"goods/comment", "web/goods/comment"}, method = RequestMethod.GET)
     public ResponseEntity<MPager> queryGoodsComment(
             @RequestParam(value = "dealerId", required = false) String dealerId,
             @RequestParam(value = "replyStatus", required = false) Integer replyStatus,//回复状态 1未回复  2 已回复
             @RequestParam(value = "starLevel", required = false) Integer starLevel,//星级
+            @RequestParam(value = "commentLevel", required = false) Integer commentLevel,//评论级别 1好 2中 3差
             @RequestParam(value = "startTime", required = false) String startTime,//开始时间
             @RequestParam(value = "endTime", required = false) String endTime,//结束时间
             @RequestParam(value = "condition", required = false) String condition,//条件
@@ -51,10 +52,10 @@ public class GoodsCommentAgent {
         MPager result = new MPager(MCode.V_1);
 
         try {
-            Integer total = goodsCommentQueryApplication.searchGoodsCommentTotal(dealerId, replyStatus, starLevel,
+            Integer total = goodsCommentQueryApplication.searchGoodsCommentTotal(dealerId, replyStatus, starLevel, commentLevel,
                     startTime, endTime, condition, imageStatus);
             if (total > 0) {
-                List<GoodsCommentBean> beans = goodsCommentQueryApplication.searchGoodsComment(dealerId, replyStatus, starLevel,
+                List<GoodsCommentBean> beans = goodsCommentQueryApplication.searchGoodsComment(dealerId, replyStatus, starLevel, commentLevel,
                         startTime, endTime, condition, imageStatus, pageNum, rows);
                 if (null != beans && beans.size() > 0) {
                     List<CommentRepresentation> representations = new ArrayList<>();
@@ -108,7 +109,7 @@ public class GoodsCommentAgent {
      * @return
      */
     @RequestMapping(value = "goods/comment/mng/{commentId}", method = RequestMethod.DELETE)
-    @RequirePermissions(value ={"scm:goodsAppraise:delete"})
+    @RequirePermissions(value = {"scm:goodsAppraise:delete"})
     public ResponseEntity<MResult> delComment(
             @PathVariable("commentId") String commentId
     ) {
