@@ -25,6 +25,7 @@ public class CommentRepresentation {
     private String orderId;
     private String replyTime;
     private String dealerName;
+    private Integer commentLevel; //评论级别 1好 2中 3差
 
     public CommentRepresentation(GoodsCommentBean bean) {
         this.dealerName = bean.getDealerName();
@@ -49,6 +50,7 @@ public class CommentRepresentation {
             this.replyTime = format.format(bean.getGoodsReplyCommentBean().getCreatedDate());
         }
         this.commentTime = format.format(bean.getCreatedDate());
+        this.commentLevel = bean.getCommentLevel();
     }
 
     public String getBuyerIcon() {
@@ -169,5 +171,13 @@ public class CommentRepresentation {
 
     public void setDealerName(String dealerName) {
         this.dealerName = dealerName;
+    }
+
+    public Integer getCommentLevel() {
+        return commentLevel;
+    }
+
+    public void setCommentLevel(Integer commentLevel) {
+        this.commentLevel = commentLevel;
     }
 }
