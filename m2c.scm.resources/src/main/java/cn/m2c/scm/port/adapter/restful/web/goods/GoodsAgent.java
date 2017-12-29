@@ -109,8 +109,7 @@ public class GoodsAgent {
             @RequestParam(value = "goodsMainImages", required = false) List goodsMainImages,
             @RequestParam(value = "goodsDesc", required = false) String goodsDesc,
             @RequestParam(value = "goodsSpecifications", required = false) String goodsSpecifications,
-            @RequestParam(value = "goodsSKUs", required = false) String goodsSKUs,
-            HttpServletRequest request) {
+            @RequestParam(value = "goodsSKUs", required = false) String goodsSKUs) {
         MResult result = new MResult(MCode.V_1);
         try {
             List<Map> skuList = JsonUtils.toList(goodsSKUs, Map.class);
@@ -172,8 +171,7 @@ public class GoodsAgent {
      */
     @RequestMapping(value = "/web/goods/{goodsId}", method = RequestMethod.DELETE)
     public ResponseEntity<MResult> delGoods(
-            @PathVariable("goodsId") String goodsId,
-            HttpServletRequest request
+            @PathVariable("goodsId") String goodsId
     ) {
         MResult result = new MResult(MCode.V_1);
         try {
