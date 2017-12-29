@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +43,9 @@ public class ShopAgent {
 	
 	@Autowired
 	GoodsQueryApplication goodsQuery;
+	
+	@Autowired
+	private  HttpServletRequest request;
 	/**
 	 * 查询店铺列表
 	 * @param dealerName
@@ -119,8 +124,9 @@ public class ShopAgent {
 		            ) {
 			 MResult result = new MResult(MCode.V_1);
 		        try {
+		        	String _attach= request.getHeader("attach");
 		        	ShopInfoUpdateCommand command = new ShopInfoUpdateCommand(dealerId,shopId, shopName, shopIcon, shopIntroduce,shopReceipt, customerServiceTel);
-		        	shopApplication.updateShopInfo(command);
+		        	shopApplication.updateShopInfo(command,_attach);
 		            result.setStatus(MCode.V_200);
 		        }catch (IllegalArgumentException e) {
 					log.error("修改店铺信息出错出错", e);
