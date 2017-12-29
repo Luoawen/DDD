@@ -1,6 +1,7 @@
 package cn.m2c.scm.application.dealer;
 
 import cn.m2c.ddd.common.event.annotation.EventListener;
+import cn.m2c.ddd.common.logger.OperationLogManager;
 import cn.m2c.scm.application.dealer.command.DealerAddOrUpdateCommand;
 import cn.m2c.scm.application.dealer.command.DealerDayReportCommand;
 import cn.m2c.scm.application.seller.command.SellerCommand;
@@ -9,13 +10,17 @@ import cn.m2c.scm.domain.NegativeException;
 import cn.m2c.scm.domain.model.dealer.Dealer;
 import cn.m2c.scm.domain.model.dealer.DealerRepository;
 import cn.m2c.scm.domain.service.dealer.DealerService;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
+
+import javax.annotation.Resource;
 
 
 @Service
@@ -27,7 +32,8 @@ public class DealerApplication {
     DealerRepository dealerRepository;
     @Autowired
     DealerService dealerService;
-
+    @Resource
+    private OperationLogManager operationLogManager; 
 
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
     @EventListener
@@ -46,12 +52,15 @@ public class DealerApplication {
 
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
     @EventListener
-    public void updateDealer(DealerAddOrUpdateCommand command) throws NegativeException {
+    public void updateDealer(DealerAddOrUpdateCommand command,String _attach) throws NegativeException {
         log.info("---修改经销商参数", command.toString());
         //---修改操作清除缓存
         Dealer dealer = dealerRepository.getDealer(command.getDealerId());
         if (dealer == null)
             throw new NegativeException(NegativeCode.DEALER_IS_NOT_EXIST, "此经销商不存在.");
+        
+        if(!StringUtils.isEmpty(_attach))
+        	operationLogManager.operationLog("修改商家", _attach, dealer);
         //-----发送经销商更新事件
         dealer.update(command.getUserId(), command.getUserName(), command.getUserPhone(), command.getDealerName(), command.getDealerClassify(), command.getCooperationMode(), command.getStartSignDate(), command.getEndSignDate(), command.getDealerProvince(), command.getDealerCity(), command.getDealerArea(), command.getDealerPcode(), command.getDealerCcode(), command.getDealerAcode(), command.getDealerDetailAddress(), command.getCountMode(), command.getDeposit(), command.getIsPayDeposit(), command.getManagerName(), command.getManagerPhone(), command.getManagerqq(), command.getManagerWechat(), command.getManagerEmail(), command.getManagerDepartment(), command.getSellerId(), command.getSellerName(), command.getSellerPhone());
         dealerRepository.save(dealer);

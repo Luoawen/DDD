@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +48,8 @@ public class DealerAgent {
 	@Autowired
 	DealerClassifyQuery dealerClassifyQuery;
 	
+	@Autowired
+	private  HttpServletRequest request;
 	/**
 	 * 获取主键id 
 	 * uuid
@@ -204,7 +208,8 @@ public class DealerAgent {
 			MResult result = new MResult(MCode.V_1);
 			try {
 				DealerAddOrUpdateCommand command = new DealerAddOrUpdateCommand(dealerId,userId,userName,userPhone, dealerName, dealerClassify, cooperationMode, startSignDate, endSignDate, dealerProvince, dealerCity, dealerArea, dealerPcode, dealerCcode, dealerAcode, dealerDetailAddress, countMode, deposit, isPayDeposit, managerName, managerPhone, managerqq, managerWechat, managerEmail, managerDepartment, sellerId,sellerName,sellerPhone);
-				application.updateDealer(command);
+				String _attach= request.getHeader("attach");
+				application.updateDealer(command,_attach);
 				result.setStatus(MCode.V_200);
 			}catch (IllegalArgumentException e) {
 				log.error("修改经销商出错", e);
