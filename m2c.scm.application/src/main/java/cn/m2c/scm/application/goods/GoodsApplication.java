@@ -553,7 +553,7 @@ public class GoodsApplication {
         List<Goods> goodsList = goodsRepository.queryGoodsByIdList(goodsIds);
         
         if(StringUtils.isNotEmpty(_attach)) {
-        	operationLogManager.operationLog("商品批量上架 >>{}", _attach, goodsList, new String[]{"goods"}, null);
+        	operationLogManager.operationLog("商品批量上架", _attach, goodsList, new String[]{"goods"}, null);
         }
         
         if (null != goodsList && goodsList.size() > 0) {
