@@ -145,11 +145,11 @@ public class DealerOrderAfterSellDetailBean {
 
 
 	public long getOrderTotalMoney() {
-		return (orderTotalMoney + this.getOrderFreight() - this.getPlateformDiscount() - this.getDealerDiscount())/100;
+		return (orderTotalMoney/100 + this.getOrderFreight() - this.getPlateformDiscount() - this.getDealerDiscount());
 	}
 	
 	public String getStrOrderTotalMoney() {
-		return Utils.moneyFormatCN((orderTotalMoney + this.getOrderFreight() - this.getPlateformDiscount() - this.getDealerDiscount()));
+		return Utils.moneyFormatCN((orderTotalMoney + orderFreight - plateformDiscount - dealerDiscount));
 	}
 
 	public void setStatus(Integer status) {
