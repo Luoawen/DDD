@@ -9,6 +9,9 @@ import cn.m2c.scm.application.address.data.representation.AfterSaleAddressRepres
 import cn.m2c.scm.application.address.query.AfterSaleAddressQueryApplication;
 import cn.m2c.scm.domain.IDGenerator;
 import cn.m2c.scm.domain.NegativeException;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,6 +39,9 @@ public class AfterSaleAddressAgent {
     @Autowired
     AfterSaleAddressQueryApplication afterSaleAddressQueryApplication;
 
+    @Autowired
+    private HttpServletRequest request;
+    
     /**
      * 获取ID
      *
@@ -133,7 +139,8 @@ public class AfterSaleAddressAgent {
         try {
             AfterSaleAddressCommand command = new AfterSaleAddressCommand(addressId, dealerId, proCode, cityCode, areaCode,
                     proName, cityName, areaName, address, contactName, contactNumber);
-            afterSaleAddressApplication.modifyAfterSaleAddress(command);
+            String _attach = request.getHeader("attach");
+            afterSaleAddressApplication.modifyAfterSaleAddress(command, _attach);
             result.setStatus(MCode.V_200);
         } catch (Exception e) {
             LOGGER.error("modifyAfterSaleAddress Exception e:", e);
