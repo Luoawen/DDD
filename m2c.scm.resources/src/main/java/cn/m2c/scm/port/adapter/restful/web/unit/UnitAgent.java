@@ -4,6 +4,10 @@ import java.util.List;
 
 
 
+
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +39,8 @@ public class UnitAgent {
 
 	@Autowired
 	UnitQuery unitQuery;
+	@Autowired
+	private  HttpServletRequest request;
 	
 	@RequestMapping(value = "/unit/id",method = RequestMethod.GET)
 	public ResponseEntity<MResult> getUnitId(){
@@ -86,7 +92,8 @@ public class UnitAgent {
 	public ResponseEntity<MResult> delUnit(@RequestParam(value = "unitId", required = false) String unitId) {
 		MResult result = new MResult(MCode.V_1);
 		try {
-			unitApplication.delUnit(unitId);
+			String _attach= request.getHeader("attach");
+			unitApplication.delUnit(unitId,_attach);
 			result.setStatus(MCode.V_200);
 		} catch (NegativeException ne) {
 			LOGGER.error("deleteUnit NegativeException e:", ne);
@@ -111,8 +118,9 @@ public class UnitAgent {
 			@RequestParam(value = "unitName", required = false) String unitName) {
 		MResult result = new MResult(MCode.V_1);
 		try {
+			String _attach= request.getHeader("attach");
 			UnitCommand command = new UnitCommand(unitId,unitName);
-			unitApplication.modifyUnit(command);
+			unitApplication.modifyUnit(command,_attach);
 			result.setStatus(MCode.V_200);
 		} catch (NegativeException ne) {
 			LOGGER.error("modifyUnit NegativeException e:", ne);
