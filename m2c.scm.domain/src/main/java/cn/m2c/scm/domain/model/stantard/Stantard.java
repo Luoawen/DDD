@@ -22,7 +22,6 @@ public class Stantard extends ConcurrencySafeEntity{
 	private Integer useNum;//被使用  默认0，为0时可以删除，大于0不能删除
 
 	
-	private Integer concurrencyVersion;
 	private Date createdDate;
 	private Date lastUpdatedDate;
 
