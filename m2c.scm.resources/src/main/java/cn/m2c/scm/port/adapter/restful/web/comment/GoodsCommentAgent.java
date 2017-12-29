@@ -24,6 +24,8 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * 商品评论
  */
@@ -37,6 +39,9 @@ public class GoodsCommentAgent {
     @Autowired
     GoodsCommentApplication goodsCommentApplication;
 
+    @Autowired
+    private HttpServletRequest request;
+    
     @RequestMapping(value = {"goods/comment", "web/goods/comment"}, method = RequestMethod.GET)
     public ResponseEntity<MPager> queryGoodsComment(
             @RequestParam(value = "dealerId", required = false) String dealerId,
@@ -115,7 +120,8 @@ public class GoodsCommentAgent {
     ) {
         MResult result = new MResult(MCode.V_1);
         try {
-            goodsCommentApplication.delGoodsComment(commentId);
+        	String _attach = request.getHeader("attach");
+            goodsCommentApplication.delGoodsComment(commentId, _attach);
             result.setStatus(MCode.V_200);
         } catch (NegativeException ne) {
             LOGGER.error("delComment NegativeException e:", ne);
