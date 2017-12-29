@@ -1,11 +1,15 @@
 package cn.m2c.scm.application.shop;
 
+import javax.annotation.Resource;
+
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import cn.m2c.ddd.common.logger.OperationLogManager;
 import cn.m2c.scm.application.shop.command.ShopInfoUpdateCommand;
 import cn.m2c.scm.domain.NegativeCode;
 import cn.m2c.scm.domain.NegativeException;
@@ -18,18 +22,23 @@ public class ShopApplication {
 	
 	@Autowired
 	ShopRepository shopRepository;
+	
+	@Resource
+    private OperationLogManager operationLogManager;
 	/**
 	 * 修改店铺信息
 	 * @param command
 	 * @throws NegativeException
 	 */
 	@Transactional(rollbackFor = {Exception.class,RuntimeException.class,NegativeException.class})
-	public void updateShopInfo(ShopInfoUpdateCommand command) throws NegativeException {
+	public void updateShopInfo(ShopInfoUpdateCommand command,String _attach) throws NegativeException {
 		// TODO Auto-generated method stub
 		log.info("---修改经销商店铺信息");
 		Shop shop = shopRepository.getShop(command.getDealerId());
 		if(shop==null)
 			throw new NegativeException(NegativeCode.DEALER_SHOP_IS_NOT_EXIST, "此经销商店铺不存在.");
+		if (StringUtils.isNotEmpty(_attach))
+			operationLogManager.operationLog("修改店铺信息", _attach, shop);
 		shop.updateShopInfo(command.getShopName(),command.getShopIntroduce(),command.getShopIcon(),command.getShopReceipt(),command.getCustomerServiceTel());
 		shopRepository.save(shop);
 	}
