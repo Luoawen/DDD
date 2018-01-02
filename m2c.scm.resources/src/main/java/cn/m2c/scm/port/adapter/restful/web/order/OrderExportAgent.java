@@ -1,5 +1,6 @@
 package cn.m2c.scm.port.adapter.restful.web.order;
 
+import cn.m2c.ddd.common.auth.RequirePermissions;
 import cn.m2c.scm.application.dealerorder.data.bean.DealerGoodsBean;
 import cn.m2c.scm.application.dealerorder.data.bean.DealerOrderQB;
 import cn.m2c.scm.application.dealerorder.data.bean.OrderDtlBean;
@@ -154,7 +155,8 @@ public class OrderExportAgent {
      * @param commentStatus
      * @param hasMedia
      */
-    @RequestMapping(value = "/all/orderDtl", method = RequestMethod.GET)
+    @RequestMapping(value = "/admin/all/orderDtl", method = RequestMethod.GET)
+    @RequirePermissions(value = {"scm:order:export"})
     public void getAllOrderDtl(HttpServletResponse response,
     		@RequestParam(value = "orderStatus",required = false)Integer orderStatus,
 			@RequestParam(value = "afterSellStatus",required = false)Integer afterSellStatus,

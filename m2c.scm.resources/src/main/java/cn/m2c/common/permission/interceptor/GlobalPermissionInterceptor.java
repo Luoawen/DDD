@@ -211,7 +211,7 @@ public class GlobalPermissionInterceptor extends HandlerInterceptorAdapter
     {
         logger.info("headers:"
                 + JSONObject.toJSONString(request.getHeaderNames()));
-        String accessToken = request.getHeader("ACCESS_TOKEN");
+        String accessToken = request.getHeader(ACCESS_TOKEN);
         accessToken = accessToken != null ? accessToken : request
                 .getParameter(ACCESS_TOKEN);
         return accessToken;
