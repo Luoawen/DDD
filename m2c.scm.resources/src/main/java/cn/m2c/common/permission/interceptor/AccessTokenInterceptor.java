@@ -179,7 +179,10 @@ public class AccessTokenInterceptor implements HandlerInterceptor
     {
         String accessToken = request.getHeader("access_token");
         accessToken = accessToken != null ? accessToken : request
-                .getParameter(TOKEN);
+                .getParameter(ACCESS_TOKEN);
+        
+        /*accessToken = accessToken != null ? accessToken : request
+                .getParameter(TOKEN);*/
         return accessToken;
     }
 
