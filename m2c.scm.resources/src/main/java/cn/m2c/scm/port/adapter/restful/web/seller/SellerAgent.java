@@ -236,7 +236,8 @@ public class SellerAgent {
 	 * 
 	 * @return
 	 */
-	@RequestMapping(value = "/exportSeller", method = RequestMethod.GET)
+	@RequestMapping(value = "/admin/exportSeller", method = RequestMethod.GET)
+	@RequirePermissions(value = {"scm:seller:export"})
 	public ResponseEntity<MPager> getSellerExport(
 			HttpServletResponse response,
 			@RequestParam(value = "filter", required = false) String filter,
