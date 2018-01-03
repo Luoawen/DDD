@@ -561,10 +561,10 @@ public class OrderAgent {
      * @param nu
      * @return
      */
-    @RequestMapping(value = "/web/rigistExpress",method = RequestMethod.POST)
-    public ResponseEntity<MResult> registPress(
-    		 @RequestParam(value = "com", required = true) String com,
-             @RequestParam(value = "nu", required = true) String nu) {
+    @RequestMapping(value = "/web/rigisterExpress",method = RequestMethod.POST)
+    public ResponseEntity<MResult> registExpress(
+    		 @RequestParam(value = "com", defaultValue = "") String com,
+             @RequestParam(value = "nu", defaultValue = "") String nu) {
     	MPager result = new MPager(MCode.V_1);
     	try {
 			if(StringUtils.isEmpty(com)){
