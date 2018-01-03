@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -12,6 +14,7 @@ import com.google.gson.Gson;
 
 import cn.m2c.common.MCode;
 import cn.m2c.ddd.common.AssertionConcern;
+import cn.m2c.scm.application.order.ExpressPlatformApplication;
 import cn.m2c.scm.application.order.data.bean.AppInfo;
 import cn.m2c.scm.application.order.query.dto.GoodsDto;
 import cn.m2c.scm.application.utils.Utils;
@@ -24,7 +27,7 @@ import cn.m2c.scm.domain.model.order.ReceiveAddr;
  *
  */
 public class OrderAddCommand extends AssertionConcern implements Serializable {
-	
+	private static final Logger LOGGER = LoggerFactory.getLogger(OrderAddCommand.class);
 	private static final long serialVersionUID = 1L;
 
 	private String orderId;
@@ -226,9 +229,10 @@ public class OrderAddCommand extends AssertionConcern implements Serializable {
 				
 				String strPrice = goods.getString("strAppSpecialPrice");
 				if (!StringUtils.isEmpty(strPrice)) {
-					appSpecialPrice = String.valueOf((long)(Float.parseFloat(strPrice) * Utils.DIVIDE));
+					appSpecialPrice = String.valueOf((long)(Float.parseFloat(strPrice) * (long)Utils.DIVIDE));
 				}
 			}
+			LOGGER.info("-----处理后的appSpecialPrice"+appSpecialPrice);
 			int sl = goods.getIntValue("purNum");
 			if (sl < 1) {
 				throw new NegativeException(MCode.V_1, "购买数量必须大于0！");

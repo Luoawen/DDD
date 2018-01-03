@@ -212,6 +212,8 @@ public class OrderApplication {
         List<MarketBean> mks = orderDomainService.getMarketingsByIds(marketIds, cmd.getUserId(), MarketBean[].class);
         // 计算营销活动优惠
         OrderMarketCalc.calMarkets(mks, gdes);
+        //计算优惠券
+        
         
         // 获取结算方式
         Map<String, Integer> dealerCount = getDealerWay(idsSet);
