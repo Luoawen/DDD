@@ -82,4 +82,14 @@ public interface GoodsService {
      * @return
      */
     Integer getCartGoodsTotal(String userId);
+
+    /**
+     * 获取商品优惠券信息
+     *
+     * @param dealerId   商家ID
+     * @param goodsId    商品ID
+     * @param classifyId 商品分类ID
+     * @return
+     */
+    List<Map> getGoodsCoupon(String userId, String dealerId, String goodsId, String classifyId);
 }

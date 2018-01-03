@@ -46,10 +46,11 @@ public class AppGoodsDetailRepresentation {
     private String desc;
     private String customerTel;
     private Map goodsSpecial;
+    private List<Map> coupons;
 
     public AppGoodsDetailRepresentation(GoodsBean bean, List<GoodsGuaranteeBean> goodsGuaranteeBeans,
                                         String goodsUnitName, String mresId, Integer commentTotal, GoodsCommentBean goodsCommentBean,
-                                        List<Map> fullCuts, List<Map> goodsTags, String favoriteId, String phone, GoodsSpecialBean goodsSpecialBean) {
+                                        List<Map> fullCuts, List<Map> coupons, List<Map> goodsTags, String favoriteId, String phone, GoodsSpecialBean goodsSpecialBean) {
         this.skuFlag = bean.getSkuFlag();
         this.dealerId = bean.getDealerId();
         this.dealerName = bean.getDealerName();
@@ -111,6 +112,7 @@ public class AppGoodsDetailRepresentation {
             this.goodsComment.put("replyCommentContent", replyCommentContent);
         }
         this.fullCuts = fullCuts;
+        this.coupons = coupons;
         this.favoriteId = favoriteId;
         if (null != goodsTags && goodsTags.size() > 0) {
             this.goodsTags = goodsTags;
@@ -122,7 +124,7 @@ public class AppGoodsDetailRepresentation {
         if (null != goodsSpecialBean) {
             this.goodsSpecial = new HashMap<>();
             SimpleDateFormat df = new SimpleDateFormat("yyyy.MM.dd");
-            this.goodsSpecial.put("specialId",goodsSpecialBean.getSpecialId());
+            this.goodsSpecial.put("specialId", goodsSpecialBean.getSpecialId());
             this.goodsSpecial.put("startTime", df.format(goodsSpecialBean.getStartTime()));
             this.goodsSpecial.put("endTime", df.format(goodsSpecialBean.getEndTime()));
             this.goodsSpecial.put("congratulations", goodsSpecialBean.getCongratulations());
@@ -133,7 +135,7 @@ public class AppGoodsDetailRepresentation {
                     if (null != skuSpecials && skuSpecials.size() > 0) {
                         for (GoodsSkuSpecialBean skuSpecialBean : skuSpecials) {
                             if (skuSpecialBean.getSkuId().equals(sku.getSkuId())) {
-                                sku.setSpecialPrice(skuSpecialBean.getSpecialPrice()/100);
+                                sku.setSpecialPrice(skuSpecialBean.getSpecialPrice() / 100);
                                 sku.setStrSpecialPrice(Utils.moneyFormatCN(skuSpecialBean.getSpecialPrice()));
                             }
                         }
@@ -325,5 +327,13 @@ public class AppGoodsDetailRepresentation {
 
     public void setGoodsSpecial(Map goodsSpecial) {
         this.goodsSpecial = goodsSpecial;
+    }
+
+    public List<Map> getCoupons() {
+        return coupons;
+    }
+
+    public void setCoupons(List<Map> coupons) {
+        this.coupons = coupons;
     }
 }

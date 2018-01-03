@@ -236,4 +236,52 @@ public class GoodsRestServiceImpl implements GoodsService {
         }
         return 0;
     }
+
+    @Override
+    public List<Map> getGoodsCoupon(String userId, String dealerId, String goodsId, String classifyId) {
+        String url = M2C_HOST_URL + "/m2c.market/domain/coupon/suitable/goods/list?dealer_id={0}&goods_id={1}&classify_id={2}&user_id={3}";
+        try {
+            String result = restTemplate.getForObject(url, String.class, dealerId, goodsId, classifyId, userId);
+            JSONObject json = JSONObject.parseObject(result);
+            if (json.getInteger("status") == 200) {
+                JSONArray contents = json.getJSONArray("content");
+                if (null != contents && contents.size() > 0) {
+                    List<Map> resultList = new ArrayList<>();
+                    Iterator<Object> contentIt = contents.iterator();
+                    while (contentIt.hasNext()) {
+                        Object contentJson = contentIt.next();
+                        JSONObject contentObject = JSONObject.parseObject(JSONObject.toJSONString(contentJson));
+                        // 优惠券ID
+                        String couponId = contentObject.getString("couponId");
+                        // 优惠券优惠形式：1 减钱 2 打折
+                        Integer couponForm = contentObject.getInteger("couponForm");
+                        // 优惠券类型：1：代金券，2：打折券，3：分享券
+                        Integer couponType = contentObject.getInteger("couponType");
+                        // 门槛文案
+                        String thresholdContent = contentObject.getString("thresholdContent");
+
+                        Map tempMap = new HashMap<>();
+                        tempMap.put("couponId", couponId);
+                        tempMap.put("couponForm", couponForm);
+                        tempMap.put("couponType", couponType);
+                        tempMap.put("thresholdContent", thresholdContent);
+
+                        resultList.add(tempMap);
+                    }
+                    return resultList;
+                }
+            } else {
+                LOGGER.error("查询商品优惠券信息失败");
+                LOGGER.error("getGoodsCoupon failed.url=>" + url);
+                LOGGER.error("getGoodsCoupon failed.error=>" + json.getString("errorMessage"));
+                LOGGER.error("getGoodsCoupon failed.param=>dealerId=" + dealerId + ",goodsId=" + goodsId + ",classifyId=" + classifyId + ",userId=" + userId);
+            }
+        } catch (Exception e) {
+            LOGGER.error("查询商品优惠券信息异常");
+            LOGGER.error("getGoodsCoupon exception.url=>" + url);
+            LOGGER.error("getGoodsCoupon exception.error=>" + e.getMessage());
+            LOGGER.error("getGoodsCoupon exception.param=>dealerId=" + dealerId + ",goodsId=" + goodsId + ",classifyId=" + classifyId + ",userId=" + userId);
+        }
+        return null;
+    }
 }

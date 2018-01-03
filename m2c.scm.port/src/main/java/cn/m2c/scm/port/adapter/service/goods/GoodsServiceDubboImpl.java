@@ -100,4 +100,9 @@ public class GoodsServiceDubboImpl implements GoodsService {
     public Integer getCartGoodsTotal(String userId) {
         return null;
     }
+
+    @Override
+    public List<Map> getGoodsCoupon(String userId, String dealerId, String goodsId, String classifyId) {
+        return null;
+    }
 }

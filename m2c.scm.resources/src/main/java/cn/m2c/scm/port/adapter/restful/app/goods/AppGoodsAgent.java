@@ -147,6 +147,9 @@ public class AppGoodsAgent {
                 List<Map> goodsTags = goodsRestService.getGoodsTags(goodsBean.getDealerId(), goodsBean.getGoodsId(), goodsBean.getGoodsClassifyId());
                 List<Map> fullCut = goodsRestService.getGoodsFullCut(userId, goodsBean.getDealerId(), goodsBean.getGoodsId(), goodsBean.getGoodsClassifyId());
 
+                // 优惠券
+                List<Map> coupons = goodsRestService.getGoodsCoupon(userId, goodsBean.getDealerId(), goodsBean.getGoodsId(), goodsBean.getGoodsClassifyId());
+
                 //查询商品被收藏id 
                 String favoriteId = null;
                 if (null != userId) {
@@ -155,7 +158,7 @@ public class AppGoodsAgent {
                 }
                 String phone = shopQuery.getDealerShopCustmerTel(goodsBean.getDealerId());
                 AppGoodsDetailRepresentation representation = new AppGoodsDetailRepresentation(goodsBean,
-                        goodsGuarantee, goodsUnitName, null, commentTotal, goodsCommentBean, fullCut, goodsTags, favoriteId, phone, null);
+                        goodsGuarantee, goodsUnitName, null, commentTotal, goodsCommentBean, fullCut, coupons, goodsTags, favoriteId, phone, null);
                 result.setContent(representation);
             }
             result.setStatus(MCode.V_200);
@@ -323,6 +326,9 @@ public class AppGoodsAgent {
 
                     List<Map> fullCut = goodsRestService.getGoodsFullCut(userId, goodsBean.getDealerId(), goodsBean.getGoodsId(), goodsBean.getGoodsClassifyId());
 
+                    // 优惠券
+                    List<Map> coupons = goodsRestService.getGoodsCoupon(userId, goodsBean.getDealerId(), goodsBean.getGoodsId(), goodsBean.getGoodsClassifyId());
+
                     List<Map> goodsTags = goodsRestService.getGoodsTags(goodsBean.getDealerId(), goodsBean.getGoodsId(), goodsBean.getGoodsClassifyId());
 
                     //查询商品被收藏id 
@@ -341,7 +347,7 @@ public class AppGoodsAgent {
                     }
 
                     AppGoodsDetailRepresentation representation = new AppGoodsDetailRepresentation(goodsBean,
-                            goodsGuarantee, goodsUnitName, mresId, commentTotal, goodsCommentBean, fullCut, goodsTags, favoriteId, phone, goodsSpecialBean);
+                            goodsGuarantee, goodsUnitName, mresId, commentTotal, goodsCommentBean, fullCut, coupons, goodsTags, favoriteId, phone, goodsSpecialBean);
                     representations.add(representation);
                 }
                 result.setContent(representations);
