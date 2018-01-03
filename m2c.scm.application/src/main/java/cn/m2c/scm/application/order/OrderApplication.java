@@ -26,6 +26,8 @@ import cn.m2c.scm.application.postage.data.representation.PostageModelRuleRepres
 import cn.m2c.scm.application.postage.query.PostageModelQueryApplication;
 import cn.m2c.scm.domain.NegativeCode;
 import cn.m2c.scm.domain.NegativeException;
+import cn.m2c.scm.domain.model.expressPlatform.ExpressPlatform;
+import cn.m2c.scm.domain.model.expressPlatform.ExpressPlatformRepository;
 import cn.m2c.scm.domain.model.order.AppOrdInfo;
 import cn.m2c.scm.domain.model.order.DealerOrder;
 import cn.m2c.scm.domain.model.order.DealerOrderDtl;
@@ -89,6 +91,9 @@ public class OrderApplication {
     GoodsClassifyQueryApplication goodsClassQuery;//商品分类
     @Autowired
     GoodsSpecialRepository goodsSpecialRsp;//特惠价
+    
+    @Autowired
+    ExpressPlatformRepository expressPlatformRepository;
 
     /**
      * 提交订单
@@ -1061,7 +1066,10 @@ public class OrderApplication {
 	 * @param nu
 	 * @throws NegativeException 
 	 */
-	public void registExpress(String com, String nu) throws NegativeException {
+	public void registExpress(String com, String nu,Integer shipType) throws NegativeException {
+		ExpressPlatform ep = new ExpressPlatform();
+		ep.save(com, nu, shipType);
+		expressPlatformRepository.saveOrUpdate(ep);
 		orderDomainService.registExpress(com,nu);
 	}
 }

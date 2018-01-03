@@ -12,10 +12,11 @@
 		<property name="createdDate" generated="insert" not-null="true">
 			<column name="created_date" sql-type="timestamp" default="CURRENT_TIMESTAMP"></column>
 		</property>
-		
 		<property name="com" column="com" type="string" />
 		<property name="nu" column="nu" type="string" />
 		<property name="resData" column="res_data" type="string" />
 		<property name="lastUpdatedDate" column="last_updated_date" type="timestamp" />
+		<property name="shipGoodsTime" column="ship_goods_time" type="timestamp"></property>
+		<property name="shipType" column="ship_type" type="int"></property>
 	</class>
 </hibernate-mapping>
