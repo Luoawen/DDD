@@ -530,7 +530,7 @@ public class OrderAgent {
      * @param 
      * @return
      */
-    @RequestMapping(value = "/web/expressInfo", method = RequestMethod.GET)
+    @RequestMapping(value = {"/web/expressInfo","/expressInfo"}, method = RequestMethod.GET)
     public ResponseEntity<MPager> getExpressInfo(
             @RequestParam(value = "com",defaultValue="") String com
             ,@RequestParam(value = "nu", defaultValue="") String nu
@@ -561,7 +561,7 @@ public class OrderAgent {
      * @param nu
      * @return
      */
-    @RequestMapping(value = "/web/rigisterExpress",method = RequestMethod.POST)
+    @RequestMapping(value = {"/web/rigisterExpress","/rigisterExpress"},method = RequestMethod.POST)
     public ResponseEntity<MResult> registExpress(
     		 @RequestParam(value = "com", defaultValue = "") String com,
              @RequestParam(value = "nu", defaultValue = "") String nu) {
