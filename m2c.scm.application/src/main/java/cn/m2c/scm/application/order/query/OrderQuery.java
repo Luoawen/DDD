@@ -409,7 +409,6 @@ public class OrderQuery {
 		.append(" LEFT OUTER JOIN t_scm_order_main t3 ON t1.order_id = t3.order_id\r\n") 
 		.append(" LEFT OUTER JOIN t_scm_dealer t2 ON t1.dealer_id = t2.dealer_id ")
 		.append(" WHERE t1.dealer_order_id = ?"); 
-		System.out.println("==================SQL===============>"+sql.toString());
 		DealerOrderDetailBean dealerOrderDetailBean = this.supportJdbcTemplate.queryForBean(sql.toString(), DealerOrderDetailBean.class, dealerOrderId);
 		if (dealerOrderDetailBean != null) {
 			dealerOrderDetailBean.setDealerOrderId(dealerOrderId);
@@ -441,7 +440,7 @@ public class OrderQuery {
 	 */
 	public List<GoodsInfoBean> getGoodsInfoList(String dealerOrderId) {
 		StringBuilder sql = new StringBuilder();
-		sql.append(" SELECT  dtl.goods_icon, dtl.goods_name,dtl.sku_name, dtl.sku_id, a.sell_num afNum, dtl.sort_no, dtl.goods_amount, \r\n")
+		sql.append(" SELECT  dtl.goods_icon, dtl.goods_name,dtl.sku_name, dtl.sku_id,a.after_sell_order_id, a._status AS afterSellStatus, a.sell_num afNum, dtl.sort_no, dtl.goods_amount, \r\n")
 		.append(" dtl.media_res_id,dtl.sell_num,dtl.goods_unit, dtl.discount_price,dtl.freight, dtl.is_change, dtl.change_price,dtl.is_special,dtl.special_price \r\n") 
 		.append(" FROM  t_scm_order_dealer dealer \r\n")
 		.append(" ,t_scm_order_detail dtl \r\n")
