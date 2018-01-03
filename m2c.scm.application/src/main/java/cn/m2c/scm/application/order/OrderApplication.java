@@ -172,9 +172,6 @@ public class OrderApplication {
         }
 
         long orderTime = System.currentTimeMillis();
-        // 满足优惠券后，修改优惠券(锁定)
-        //JSONArray coups = cmd.getCoupons();
-        //orderDomainService.lockCoupons(null);
         
         // 获取商品详情
         List<GoodsDto> goodDtls = gQueryApp.getGoodsDtl(skus.keySet());
@@ -213,7 +210,8 @@ public class OrderApplication {
         // 计算营销活动优惠
         OrderMarketCalc.calMarkets(mks, gdes);
         //计算优惠券
-        
+        // 查询并计算优惠券是否ok,并填充好数据
+        //orderDomainService.lockCoupons(null);
         
         // 获取结算方式
         Map<String, Integer> dealerCount = getDealerWay(idsSet);

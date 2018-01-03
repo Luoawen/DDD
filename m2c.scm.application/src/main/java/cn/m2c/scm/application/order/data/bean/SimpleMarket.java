@@ -29,9 +29,20 @@ public class SimpleMarket {
 	
 	@ColumnAlias(value = "share_percent")
 	private String sharePercent;
+	
+	@ColumnAlias(value = "market_name")
+	private String marketName;
 	/**用于退货后是否还处于满足状态*/
 	private boolean isFull = true;
 	
+	public String getMarketName() {
+		return marketName;
+	}
+
+	public void setMarketName(String marketName) {
+		this.marketName = marketName;
+	}
+
 	public String getSharePercent() {
 		return sharePercent;
 	}

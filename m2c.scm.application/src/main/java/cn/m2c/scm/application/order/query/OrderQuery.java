@@ -511,13 +511,13 @@ public class OrderQuery {
 		
 		
 		sql.delete(0, sql.length());
-		sql.append("SELECT marketing_id, market_level,market_type, threshold, threshold_type, discount, share_percent \r\n")
-		.append(" FROM t_scm_order_marketing_used WHERE order_id=? ");
+		sql.append("SELECT marketing_id, market_level, market_type, threshold, threshold_type, discount, share_percent, market_name \r\n")
+		.append(" FROM t_scm_order_marketing_used WHERE order_id=? AND _status=1 ");
 		order.setMarkets(supportJdbcTemplate.queryForBeanList(sql.toString(), SimpleMarket.class, orderNo));
 		
 		sql.delete(0, sql.length());
 		sql.append("SELECT coupon_id, coupon_form, coupon_type, threshold, threshold_type, discount, share_percent, coupon_name \r\n")
-		.append(" FROM t_scm_order_coupon_used WHERE order_id=? ");
+		.append(" FROM t_scm_order_coupon_used WHERE order_id=? AND _status=1");
 		order.setCoupons(supportJdbcTemplate.queryForBeanList(sql.toString(), SimpleCoupon.class, orderNo));
 		
 		sql.delete(0, sql.length());
