@@ -561,8 +561,8 @@ public class OrderAgent {
      * @param nu
      * @return
      */
-    @RequestMapping(value = "/web/rigistExpress",method = RequestMethod.POST)
-    public ResponseEntity<MResult> registPress(
+    @RequestMapping(value = "/web/rigisterExpress",method = RequestMethod.POST)
+    public ResponseEntity<MResult> registExpress(
     		 @RequestParam(value = "com", defaultValue = "") String com,
              @RequestParam(value = "nu", defaultValue = "") String nu) {
     	MPager result = new MPager(MCode.V_1);
