@@ -109,7 +109,7 @@ public class DealerOrderApplication {
 		ReceiveAddr addr = dealerOrder.getAddr();
 		addr.updateAddr(command.getProvince(), command.getProvCode(), command.getCity(), command.getCityCode(),
 				command.getArea(), command.getAreaCode(), command.getStreet(), command.getRevPerson(),
-				command.getPhone());
+				command.getPhone(), command.getPostCode());
 		dealerOrder.updateAddr(addr, command.getUserId());
 		dealerOrderRepository.save(dealerOrder);
 	}
@@ -152,7 +152,8 @@ public class DealerOrderApplication {
 
 		ReceiveAddr addr = dealerOrder.getAddr();
 		boolean updatedAddr = addr.updateAddr(cmd.getProvince(), cmd.getProvCode(), cmd.getCity(), cmd.getCityCode(),
-				cmd.getArea(), cmd.getAreaCode(), cmd.getStreet(), cmd.getRevPerson(), cmd.getPhone());
+				cmd.getArea(), cmd.getAreaCode(), cmd.getStreet(), cmd.getRevPerson(), cmd.getPhone()
+				, null);
 		
 		MainOrder mOrder = orderRepository.getOrderById(dealerOrder.getOrderNo());
 		if (updatedAddr) {

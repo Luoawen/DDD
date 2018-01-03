@@ -73,6 +73,9 @@
         	<property name="changePrice" column="change_price" type="long"/>
         	<property name="isSpecial" column="is_special" type="int"/>
         	<property name="specialPrice" column="special_price" type="long"/>
+        	
+        	<property name="couponId" column="coupon_id" type="string"/>
+        	<property name="couponDiscount" column="coupon_discount" type="long"/>
         </component>
         
         <component name="marketInfo">

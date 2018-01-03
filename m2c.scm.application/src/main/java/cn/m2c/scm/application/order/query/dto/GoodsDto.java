@@ -75,9 +75,30 @@ public class GoodsDto {
 	private String mresId;
 	/**app传入的特惠价价格，字符串为了后期小数点后四位拓展*/
 	private String appSpecialPrice;
-
+	/**在订单中的序号*/
 	private int index;
 	
+	/**优惠券id*/
+	private String couponId;
+	/**优惠券优惠金额*/
+	private long couponDiscount;
+	
+	public String getCouponId() {
+		return couponId;
+	}
+
+	public void setCouponId(String couponId) {
+		this.couponId = couponId;
+	}
+
+	public long getCouponDiscount() {
+		return couponDiscount;
+	}
+
+	public void setCouponDiscount(long couponDiscount) {
+		this.couponDiscount = couponDiscount;
+	}
+
 	public int getIndex() {
 		return index;
 	}
@@ -349,7 +370,7 @@ public class GoodsDto {
 				,goodsType, goodsTypeId, goodsUnit, skuId
 				,skuName, price, supplyPrice, discountPrice, goodsIcon
 				,weight, purNum, freight, plateformDiscount, isChange, changePrice
-				,isSpecial, specialPrice);		
+				,isSpecial, specialPrice, couponId, couponDiscount);		
 	}
 	
 	public SimpleMarketInfo toMarketInfo() {

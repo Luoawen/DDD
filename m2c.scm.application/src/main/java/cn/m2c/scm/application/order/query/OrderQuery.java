@@ -19,6 +19,7 @@ import cn.m2c.common.MCode;
 import cn.m2c.ddd.common.port.adapter.persistence.springJdbc.SupportJdbcTemplate;
 import cn.m2c.scm.application.order.data.bean.OrderDealerBean;
 import cn.m2c.scm.application.order.data.bean.OrderGoodsBean;
+import cn.m2c.scm.application.order.data.bean.SimpleCoupon;
 import cn.m2c.scm.application.order.data.bean.SimpleMarket;
 import cn.m2c.scm.domain.NegativeException;
 import cn.m2c.scm.application.order.data.bean.AllOrderBean;
@@ -513,6 +514,11 @@ public class OrderQuery {
 		sql.append("SELECT marketing_id, market_level,market_type, threshold, threshold_type, discount, share_percent \r\n")
 		.append(" FROM t_scm_order_marketing_used WHERE order_id=? ");
 		order.setMarkets(supportJdbcTemplate.queryForBeanList(sql.toString(), SimpleMarket.class, orderNo));
+		
+		sql.delete(0, sql.length());
+		sql.append("SELECT coupon_id, coupon_form, coupon_type, threshold, threshold_type, discount, share_percent, coupon_name \r\n")
+		.append(" FROM t_scm_order_coupon_used WHERE order_id=? ");
+		order.setCoupons(supportJdbcTemplate.queryForBeanList(sql.toString(), SimpleCoupon.class, orderNo));
 		
 		sql.delete(0, sql.length());
 		sql.append("SELECT order_id, os, os_version, app_version, sn \r\n")

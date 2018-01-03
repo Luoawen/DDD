@@ -39,6 +39,8 @@ public class UpdateAddrCommand {
 	private String phone;
 	
 	private String userId;
+	
+	private String postCode;
 
 	public UpdateAddrCommand(String dealerOrderId, String province, String provCode, String city, String cityCode,
 			String area, String areaCode, String street,String revPerson,String phone, String userId) {
@@ -53,6 +55,10 @@ public class UpdateAddrCommand {
 		this.street = street;
 		this.revPerson = revPerson;
 		this.phone = phone;
+	}
+
+	public String getPostCode() {
+		return postCode;
 	}
 
 	public String getUserId() {
