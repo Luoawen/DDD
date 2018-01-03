@@ -180,10 +180,10 @@ public class SaleAfterOrderApp {
 		if (order.isOnlyRtMoney()) {
 			DealerOrderMoneyBean odb = saleOrderQuery.getDealerOrderById(order.dealerOrderId());
 			if (odb != null && odb.getStatus() == 1) {
-				if(frt * Utils.DIVIDE > odb.getOrderFreight())
+				if(frt * (long)Utils.DIVIDE > odb.getOrderFreight())
 					frt = odb.getOrderFreight();
 				else
-					frt = (frt * Utils.DIVIDE);
+					frt = (frt * (long)Utils.DIVIDE);
 			}
 			else
 				frt = 0;
