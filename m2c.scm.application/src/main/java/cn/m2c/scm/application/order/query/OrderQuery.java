@@ -409,6 +409,7 @@ public class OrderQuery {
 		.append(" LEFT OUTER JOIN t_scm_order_main t3 ON t1.order_id = t3.order_id\r\n") 
 		.append(" LEFT OUTER JOIN t_scm_dealer t2 ON t1.dealer_id = t2.dealer_id ")
 		.append(" WHERE t1.dealer_order_id = ?"); 
+		System.out.println("==================SQL===============>"+sql.toString());
 		DealerOrderDetailBean dealerOrderDetailBean = this.supportJdbcTemplate.queryForBean(sql.toString(), DealerOrderDetailBean.class, dealerOrderId);
 		if (dealerOrderDetailBean != null) {
 			dealerOrderDetailBean.setDealerOrderId(dealerOrderId);
