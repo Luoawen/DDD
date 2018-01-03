@@ -576,6 +576,7 @@ public class OrderAgent {
 				return new ResponseEntity<MResult>(result, HttpStatus.OK);
 			}
 			orderapplication.registExpress(com, nu);
+			result.setContent("注册物流成功！");
 			result.setStatus(MCode.V_200);
 		} catch (NegativeException e) {
 			LOGGER.error("注册物流出错！", e);
