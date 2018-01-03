@@ -30,6 +30,7 @@ public class ExpressPlatform extends ConcurrencySafeEntity{
 	public void save(String com,String nu,Integer shipType) {
 		this.com = com;
 		this.nu = nu;
+		this.resData = "";
 		this.shipGoodsTime = new Date();
 		this.shipType = shipType;
 	}

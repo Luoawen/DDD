@@ -1071,6 +1071,7 @@ public class OrderApplication {
 	 * @param nu
 	 * @throws NegativeException 
 	 */
+	@Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
 	public void registExpress(String com, String nu,Integer shipType) throws NegativeException {
 		ExpressPlatform ep = new ExpressPlatform();
 		ep.save(com, nu, shipType);
