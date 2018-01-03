@@ -34,7 +34,7 @@ public class ShopApplication {
 	public void updateShopInfo(ShopInfoUpdateCommand command,String _attach) throws NegativeException {
 		// TODO Auto-generated method stub
 		log.info("---修改经销商店铺信息");
-		Shop shop = shopRepository.getShop(command.getDealerId());
+		Shop shop = shopRepository.getShopByShopID(command.getShopId());
 		if(shop==null)
 			throw new NegativeException(NegativeCode.DEALER_SHOP_IS_NOT_EXIST, "此经销商店铺不存在.");
 		if (StringUtils.isNotEmpty(_attach))
