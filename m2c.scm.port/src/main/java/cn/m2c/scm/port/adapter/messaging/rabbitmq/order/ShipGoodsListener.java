@@ -54,7 +54,7 @@ public class ShipGoodsListener extends ExchangeListener{
 		orderapplication.sendOrderSMS(cmd);
 		//如果不是自有物流那么去注册监听
 		if(!StringUtils.isEmpty(com)){
-			orderapplication.registExpress(com,nu);
+			orderapplication.registExpress(com,nu,0);
 		}
 		
 		
