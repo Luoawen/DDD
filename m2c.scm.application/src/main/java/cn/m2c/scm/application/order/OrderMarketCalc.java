@@ -109,16 +109,16 @@ public class OrderMarketCalc {
      */
     private static void isFullAndSet(MarketBean bean, int level, List<GoodsDto> goodsLs) throws NegativeException {
         // 满减类型 1：减钱，2：打折，3：换购
-        int t = bean.getFullCutType();
+        int cutType = bean.getFullCutType();
         //获取 层级对应的数量 (优惠金额，折扣，换购价等，与上面的类型对应)
         int as = bean.getLevelNum(level);
         // 获取门槛
-        int threshold = bean.getThreshold();
+        long threshold = bean.getThreshold();
         // 获取门槛类型
         int type = bean.getThresholdType();
         double totalMoney = 0;
         int totalNum = 0;
-        int changeMoney = 0;
+        long changeMoney = 0;
         int changeNum = 0;
         for (GoodsDto d : goodsLs) {
             if (d.isChange() == 0) {
@@ -140,52 +140,112 @@ public class OrderMarketCalc {
         }
         
         if ((type == 1 && totalMoney >= threshold) || (type == 2 && totalNum >= threshold)) {
-            if (t == 3) {
-
-                if ((type == 1 && totalMoney < threshold * changeNum) || (type == 2 && totalNum < threshold * changeNum))
-                    throw new NegativeException(MCode.V_301, bean.getFullCutId());
-                    //changeMoney  换货总共优惠的金额   as换货价  changeNum换货数量
-//                if (changeMoney < as * changeNum) { // 不满足换购条件
-//                    throw new NegativeException(MCode.V_301, bean.getFullCutId());
-//                }
-
-                int last = goodsLs.size() - 1;
-                if (goodsLs.get(last).isChange() == 1)
-                	last = last - 1;
-            	//long subSum = 0;//前多少个的处理
-                for (GoodsDto d : goodsLs) {
-                    if (d.isChange() != 0) {
-                        d.setChangePrice(as);
-                        //d.setPlateformDiscount((d.getThePrice() - d.getChangePrice()) * d.getPurNum());
-                        d.setPlateformDiscount((d.getThePrice() - as) * d.getPurNum());                        
-                    }
-                    else {
-                    	/*BigDecimal g = new BigDecimal(changeMoney * d.getThePrice() * d.getPurNum());
-                    	BigDecimal t1 = new BigDecimal(totalMoney);
-                    	t1 = g.divide(t1, 3, BigDecimal.ROUND_HALF_DOWN);
-                    	
-                    	//long a = (long) (0.5 + changeMoney * d.getThePrice() * d.getPurNum() / totalMoney);
-                    	long a = t1.longValue();
-                    	if (last > 0 && d == goodsLs.get(last)) {
-                    		d.setPlateformDiscount(changeMoney - subSum);
-                    	}
-                    	else {
-                    		d.setPlateformDiscount(a);
-                    		subSum += a;
-                    	} */                    	
-                    }
-                    d.setMarketType(bean.getFullCutType());
-                	d.setThreshold(threshold);
-                	d.setThresholdType(type);
-                    d.setSharePercent(bean.getCostList());
-                }
-
+            if (cutType == 3) {
+            	calcChangeOld(type, totalMoney, threshold, changeNum, totalNum, goodsLs, as, bean);
+            	//calcChange(type, totalMoney, threshold, changeNum, totalNum, goodsLs, as, bean, changeMoney);
             } else {// 满足其他条件需要做的计算
-                calcItem(t, as, totalMoney, totalNum, changeMoney, goodsLs,
+                calcItem(cutType, as, totalMoney, totalNum, changeMoney, goodsLs,
                         type, threshold, bean.getFullCutName(), bean.getCostList());
             }
         } else { // 不满足则需要抛出异常
             throw new NegativeException(MCode.V_301, bean.getFullCutId());
+        }
+    }
+    /***
+     * 计算换购
+     * @param type 门槛类型
+     * @param totalMoney 分母
+     * @param threshold 门槛
+     * @param changeNum 换购数量
+     * @param totalNum 总数量
+     * @param goodsLs 数据
+     * @param as 层级对应的数量或金额
+     * @param bean 营销实体
+     */
+    private static void calcChangeOld(int type, double totalMoney, long threshold, int changeNum, int totalNum, 
+    		List<GoodsDto> goodsLs, int as, MarketBean bean) throws NegativeException {
+    	
+    	if ((type == 1 && totalMoney < threshold * changeNum) || (type == 2 && totalNum < threshold * changeNum))
+            throw new NegativeException(MCode.V_301, bean.getFullCutId());
+        //changeMoney  换货总共优惠的金额   as换货价  changeNum换货数量
+        int last = goodsLs.size() - 1;
+        if (goodsLs.get(last).isChange() == 1)
+        	last = last - 1;
+    	//long subSum = 0;//前多少个的处理
+        for (GoodsDto d : goodsLs) {
+            if (d.isChange() == 1) {
+                d.setChangePrice(as);
+                //d.setPlateformDiscount((d.getThePrice() - d.getChangePrice()) * d.getPurNum());
+                d.setPlateformDiscount((d.getThePrice() - as) * d.getPurNum());                        
+            }
+            /*else {
+            	BigDecimal g = new BigDecimal(changeMoney * d.getThePrice() * d.getPurNum());
+            	BigDecimal t1 = new BigDecimal(totalMoney);
+            	t1 = g.divide(t1, 3, BigDecimal.ROUND_HALF_DOWN);
+            	
+            	//long a = (long) (0.5 + changeMoney * d.getThePrice() * d.getPurNum() / totalMoney);
+            	long a = t1.longValue();
+            	if (last > 0 && d == goodsLs.get(last)) {
+            		d.setPlateformDiscount(changeMoney - subSum);
+            	}
+            	else {
+            		d.setPlateformDiscount(a);
+            		subSum += a;
+            	}                     	
+            }*/
+            d.setMarketType(bean.getFullCutType());
+        	d.setThreshold(threshold);
+        	d.setThresholdType(type);
+            d.setSharePercent(bean.getCostList());
+        }
+    }
+    
+    /***
+     * 计算换购 新
+     * @param type 门槛类型
+     * @param totalMoney 分母
+     * @param threshold 门槛
+     * @param changeNum 换购数量
+     * @param totalNum 总数量
+     * @param goodsLs 数据
+     * @param as 层级对应的数量或金额
+     * @param bean 营销实体
+     */
+    private static void calcChange(int type, double totalMoney, long threshold, int changeNum, int totalNum, 
+    		List<GoodsDto> goodsLs, int as, MarketBean bean, long changeMoney) throws NegativeException {
+    	
+    	if ((type == 1 && totalMoney < threshold * changeNum) || (type == 2 && totalNum < threshold * changeNum))
+            throw new NegativeException(MCode.V_301, bean.getFullCutId());
+        //changeMoney  换货总共优惠的金额   as换货价  changeNum换货数量
+        int last = goodsLs.size() - 1;
+        if (goodsLs.get(last).isChange() == 1)
+        	last = last - 1;
+    	long subSum = 0;//前多少个的处理
+        for (GoodsDto d : goodsLs) {
+            if (d.isChange() == 1) {
+                d.setChangePrice(as);
+                //d.setPlateformDiscount((d.getThePrice() - d.getChangePrice()) * d.getPurNum());
+                //d.setPlateformDiscount((d.getThePrice() - as) * d.getPurNum());                        
+            }
+            else {
+            	BigDecimal g = new BigDecimal(changeMoney * d.getThePrice() * d.getPurNum());
+            	BigDecimal t1 = new BigDecimal(totalMoney);
+            	// 所占比重
+            	t1 = g.divide(t1, 3, BigDecimal.ROUND_HALF_DOWN);
+            	
+            	long a = t1.longValue();
+            	if (last > 0 && d == goodsLs.get(last)) {
+            		d.setPlateformDiscount(changeMoney - subSum);
+            	}
+            	else {
+            		d.setPlateformDiscount(a);
+            		subSum += a;
+            	}                     	
+            }
+            d.setMarketType(bean.getFullCutType());
+        	d.setThreshold(threshold);
+        	d.setThresholdType(type);
+            d.setSharePercent(bean.getCostList());
         }
     }
 
@@ -203,8 +263,8 @@ public class OrderMarketCalc {
      * @param marketName
      * @param sharePercent
      */
-    private static void calcItem(int fullType, int fullNum, double totalMoney, int totalNum, int changeMoney, List<GoodsDto> goodsLs
-            , int thresholdType, int threshold, String marketName, String sharePercent) {
+    private static void calcItem(int fullType, int fullNum, double totalMoney, int totalNum, long changeMoney, List<GoodsDto> goodsLs
+            , int thresholdType, long threshold, String marketName, String sharePercent) {
     	int last = goodsLs.size() - 1;
     	long subSum = 0;//前多少个的处理
         for (GoodsDto d : goodsLs) {
@@ -362,7 +422,7 @@ public class OrderMarketCalc {
                 if (total == 0)
             		total = 1;
                 switch (a) {
-                    case 1:
+                    case 1:// 减钱
                     	BigDecimal g = new BigDecimal(bean.getGoodsAmount()* discount);
                     	BigDecimal t = new BigDecimal(total);
                         bean.setDiscountMoney(g.divide(t, 3, BigDecimal.ROUND_HALF_DOWN).longValue());
@@ -370,7 +430,7 @@ public class OrderMarketCalc {
                     case 2://打折就不用计算
                         // bean.setDiscountMoney((long)(bean.getGoodsAmount() * discount / 1000.0));
                         break;
-                    case 3:
+                    case 3:// 换购
                     	/*g = new BigDecimal(bean.getGoodsAmount()* discount);
                     	t = new BigDecimal(total);
                         //bean.setDiscountMoney((long) (bean.getGoodsAmount() * discount / (total + 0.0)));

@@ -226,7 +226,7 @@ public class HibernateSaleAfterOrderRepository extends HibernateSupperRepository
 		if (null == list || list.size() < 0)
 			return 0;
 		
-		StringBuilder sqlBuild = new StringBuilder("SELECT count(1) FROM t_scm_order_after_sell WHERE order_id=:orderId AND (");
+		StringBuilder sqlBuild = new StringBuilder("SELECT count(1) FROM t_scm_order_after_sell WHERE order_id=:orderId AND _status NOT IN(-1,3,10,11,12) AND (");
 		int c = 0;
 		for (Object[] arr : list) {
 			if (c > 0) {

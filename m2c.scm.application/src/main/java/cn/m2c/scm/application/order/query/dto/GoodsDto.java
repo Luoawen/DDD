@@ -49,7 +49,7 @@ public class GoodsDto {
 	/**营销层级*/
 	private int marketLevel;
 	/**营销层级门槛*/
-	private int threshold;
+	private long threshold;
 	
 	/**平台优惠*/
 	private long plateformDiscount = 0;
@@ -179,7 +179,7 @@ public class GoodsDto {
 		this.marketName = marketName;
 	}
 
-	public void setThreshold(int threshold) {
+	public void setThreshold(long threshold) {
 		this.threshold = threshold;
 	}
 
@@ -219,7 +219,7 @@ public class GoodsDto {
 		this.marketLevel = marketLevel;
 	}
 
-	public Integer getThreshold() {
+	public long getThreshold() {
 		return threshold;
 	}
 
