@@ -297,7 +297,7 @@ public class DealerOrderAfterSellQuery {
 		StringBuilder sql = new StringBuilder();
 		List<Object> param = new ArrayList<Object>();
 		DealerOrderAfterSellDetailBean bean = null;
-		sql.append(" SELECT af._status,af.order_type,af.after_sell_order_id,af.back_money,af.reason, af.order_id, ")
+		sql.append(" SELECT af._status, af.sku_id, af.order_type,af.after_sell_order_id,af.back_money,af.reason, af.order_id, ")
 		.append(" af.created_date,af.return_freight,af.reject_reason, dealer.dealer_order_id, dealer._status doStatus");
 		sql.append(" ,af.order_id,dealer.goods_amount,dealer.order_freight,dealer.plateform_discount,dealer.dealer_discount ");
 		sql.append("  FROM t_scm_order_after_sell af ");
