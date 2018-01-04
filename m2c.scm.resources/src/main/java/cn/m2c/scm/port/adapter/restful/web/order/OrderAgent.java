@@ -574,12 +574,10 @@ public class OrderAgent {
     	MPager result = new MPager(MCode.V_1);
     	try {
 			if(StringUtils.isEmpty(com)){
-				result.setContent("物流公司编码不能为空");
-				return new ResponseEntity<MResult>(result, HttpStatus.OK);
+				throw new NegativeException(MCode.V_400,"物流公司编码不能为空");
 			}
 			if(StringUtils.isEmpty(nu)){
-				result.setContent("物流号不能为空");
-				return new ResponseEntity<MResult>(result, HttpStatus.OK);
+				throw new NegativeException(MCode.V_400,"物流号不能为空");
 			}
 			
 			SaleAfterShipCmd cmd = new SaleAfterShipCmd(userId, saleAfterNo, skuId, nu, com, expressName);
