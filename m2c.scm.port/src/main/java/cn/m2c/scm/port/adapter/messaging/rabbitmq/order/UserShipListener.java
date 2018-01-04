@@ -38,7 +38,7 @@ public class UserShipListener extends ExchangeListener {
 
 	@Override
 	protected void filteredDispatch(String aType, String aTextMessage) throws Exception {
-		LOGGER.info("用户发货物流注册消费...");
+		LOGGER.info("用户发货物流注册消费...",aTextMessage);
 		NotificationReader reader = new NotificationReader(aTextMessage);
 		try {
 			String com = reader.eventStringValue("com");
