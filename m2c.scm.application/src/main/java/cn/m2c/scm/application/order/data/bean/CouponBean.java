@@ -17,6 +17,8 @@ public class CouponBean {
 	private String couponName;
 	/**优惠券折扣或优惠*/
 	private Integer discount;
+	/**商家优惠和平台优惠*/
+	private Integer creatorType;
 	public String getCouponId() {
 		return couponId;
 	}
@@ -65,12 +67,20 @@ public class CouponBean {
 	public void setDiscount(Integer discount) {
 		this.discount = discount;
 	}
+	public Integer getCreatorType() {
+		return creatorType;
+	}
+	public void setCreatorType(Integer creatorType) {
+		this.creatorType = creatorType;
+	}
 	@Override
 	public String toString() {
-		return "营销返回的CouponBean [couponId=" + couponId + ", couponForm="
+		return "CouponBean 的信息[couponId=" + couponId + ", couponForm="
 				+ couponForm + ", threshold=" + threshold + ", couponType="
 				+ couponType + ", thresholdType=" + thresholdType
 				+ ", sharePercent=" + sharePercent + ", couponName="
-				+ couponName + ", discount=" + discount + "]";
+				+ couponName + ", discount=" + discount + ", creatorType="
+				+ creatorType + "]";
 	}
+	
 }
