@@ -277,13 +277,15 @@ public class GoodsRestServiceImpl implements GoodsService {
                         Integer totalCount = contentObject.getInteger("totalCount");
                         // 标签文案
                         String labelContent = contentObject.getString("labelContent");
+                        // 生成者类型，1.平台，2.商家
+                        Integer creatorType = contentObject.getInteger("creatorType");
 
                         Map tempMap = new HashMap<>();
                         tempMap.put("couponId", couponId);
                         tempMap.put("couponForm", couponForm);
                         tempMap.put("couponType", couponType);
-                        tempMap.put("thresholdContent", thresholdContent);
-                        tempMap.put("value", Utils.moneyFormatCN(Long.parseLong(value)));
+                        tempMap.put("content", thresholdContent);
+                        tempMap.put("faceValue", Utils.moneyFormatCN(Long.parseLong(value)));
                         tempMap.put("couponName", couponName);
                         tempMap.put("rangeContent", rangeContent);
                         tempMap.put("expirationTime", expirationTime);
@@ -292,7 +294,7 @@ public class GoodsRestServiceImpl implements GoodsService {
                         tempMap.put("ableToReceive", ableToReceive);
                         tempMap.put("totalCount", totalCount);
                         tempMap.put("labelContent", labelContent);
-
+                        tempMap.put("creatorType", creatorType);
                         resultList.add(tempMap);
                     }
                     return resultList;
