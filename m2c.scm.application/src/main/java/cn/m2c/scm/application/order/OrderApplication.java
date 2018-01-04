@@ -13,6 +13,7 @@ import cn.m2c.scm.application.order.command.OrderAddCommand;
 import cn.m2c.scm.application.order.command.OrderPayedCmd;
 import cn.m2c.scm.application.order.command.PayOrderCmd;
 import cn.m2c.scm.application.order.command.SendOrderSMSCommand;
+import cn.m2c.scm.application.order.data.bean.CouponBean;
 import cn.m2c.scm.application.order.data.bean.FreightCalBean;
 import cn.m2c.scm.application.order.data.bean.GoodsReqBean;
 import cn.m2c.scm.application.order.data.bean.MarketBean;
@@ -215,9 +216,17 @@ public class OrderApplication {
         // 计算营销活动优惠
         OrderMarketCalc.calMarkets(mks, gdes);
         //计算优惠券
-        // 查询并计算优惠券是否ok,并填充好数据
-        //orderDomainService.lockCoupons(null);
-        
+        //1.获取满足条件的优惠券id
+        String couponId = getCouponId(gdes);
+        //2.根据优惠券id查询营销接口获取优惠券详情
+        if(!StringUtils.isEmpty(couponId)){
+        	CouponBean couponBean = orderDomainService.getCouponById(couponId,CouponBean.class);
+        	LOGGER.info("获取到营销模块的优惠券的信息-----"+couponBean==null?"":couponBean.toString());
+        	//3.计算优惠券优惠后最后的金额
+        	//3.1首先将满足此优惠券的sku放入列表中<sku,GoodsDto>
+//        	Map<String,GoodsDto> couponGoodDto = getCouponDto(gdes);
+        	OrderCouponCalc.calCoupon(gdes,couponBean);
+        }
         // 获取结算方式
         Map<String, Integer> dealerCount = getDealerWay(idsSet);
         List<DealerOrder> dealerOrders = trueSplit(dealerOrderMap, cmd, dealerCount,
@@ -264,6 +273,41 @@ public class OrderApplication {
 
 
     /**
+     * 数据组装，获取此订单里面所有的Sku
+     * @param gdes
+     * @return
+     */
+//    private Map<String, GoodsDto> getCouponDto(List<GoodsDto> gdes) {
+//    	Map<String, GoodsDto> resMap = new HashMap<String, GoodsDto>();
+//    	for (GoodsDto goodsDto : gdes) {
+//    		if(!StringUtils.isEmpty(goodsDto.getCouponId())){
+//    			resMap.put(goodsDto.getSkuId(), goodsDto);
+//    		}
+//		}
+//		return resMap;
+//	}
+
+
+	/**
+     * 获取订单中使用的优惠券信息
+     * @param gdes
+     * @return
+     */
+    private String getCouponId(List<GoodsDto> gdes) {
+    	String couponId = "";
+    	for (GoodsDto goodsDto : gdes) {
+    		if(!StringUtils.isEmpty(goodsDto.getCouponId())){
+    			couponId = goodsDto.getCouponId();
+    			LOGGER.info("订单中使用的优惠券id是"+couponId);
+    			return couponId;
+    		}
+		}
+    	LOGGER.info("订单中所有商品没有传入使用的优惠券");
+		return couponId;
+	}
+
+
+	/**
      * 判断从商品那边获取的特惠价和app传入的特惠价是否相等
      * @param specialPriceMap
      * @param gdes
