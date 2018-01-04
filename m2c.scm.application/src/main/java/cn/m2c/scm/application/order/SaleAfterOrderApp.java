@@ -76,6 +76,15 @@ public class SaleAfterOrderApp {
 		}
 		
 		int orderType = cmd.getType() == 3 ? 0 : cmd.getType(); //0换货， 1退货，2仅退款                  app传 1退货，2退款，3换货
+		
+		// 增加售后限制, 换货除外
+		if (orderType != 0) {
+			int count = saleAfterRepository.checkCanApply(itemDtl.getOrderId(), itemDtl.getMarketId(), itemDtl.getCouponId());
+			if (count > 0) {
+				throw new NegativeException(MCode.V_100, "商品处于不可申请售后状态，因参与活动的其他商品正在申请中！");
+			}
+		}
+		
 		int status = 2; //0申请退货,1申请换货,2申请退款          订单类型，0换货， 1退货，2仅退款
 		switch (orderType) {
 			case 0:

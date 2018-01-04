@@ -107,4 +107,12 @@ public interface SaleAfterOrderRepository {
 	 * @param sortNo
 	 */
 	public void invalideBefore(String skuId, String dealerOrderId, int sortNo);
+	/***
+	 * 检查是否已经有售后申请或售后中的存在
+	 * @param orderId
+	 * @param marketId
+	 * @param couponId
+	 * @return
+	 */
+	public int checkCanApply(String orderId, String marketId, String couponId);
 }

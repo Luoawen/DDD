@@ -332,6 +332,12 @@ public class DealerOrderDtl extends ConcurrencySafeEntity {
         return null;
     }
 
+    public String getCouponId() {
+        if (goodsInfo != null)
+            return goodsInfo.getCouponId();
+
+        return null;
+    }
     /***
      * 获取商品价格
      *
@@ -381,5 +387,9 @@ public class DealerOrderDtl extends ConcurrencySafeEntity {
             aa.put(goodsInfo.getSkuId(), num);
             DomainEventPublisher.instance().publish(new OrderSkuReturnEvent(orderId, aa, dealerOrderId, afterNo, new Date()));
         }
+    }
+    
+    public String getOrderId() {
+    	return orderId;
     }
 }

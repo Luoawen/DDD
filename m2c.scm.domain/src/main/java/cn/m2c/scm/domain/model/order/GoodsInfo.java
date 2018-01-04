@@ -143,4 +143,11 @@ public class GoodsInfo extends ValueObject {
 	long changePrice() {
 		return changePrice * sellNum;
 	}
+	/***
+	 * 获取优惠券id
+	 * @return
+	 */
+	String getCouponId() {
+		return couponId;
+	}
 }

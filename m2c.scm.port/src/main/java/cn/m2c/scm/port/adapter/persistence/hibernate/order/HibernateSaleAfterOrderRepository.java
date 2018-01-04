@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Query;
+import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -194,5 +195,50 @@ public class HibernateSaleAfterOrderRepository extends HibernateSupperRepository
 	public void invalideBefore(String skuId, String dealerOrderId, int sortNo) {
 		this.session().createSQLQuery("UPDATE t_scm_order_after_sell SET is_invalide=1 WHERE sku_id =:skuId AND dealer_order_id= :dealerOrderId AND sort_no=:sortNo AND _status < 4")
 		.setParameter("skuId", skuId).setParameter("dealerOrderId", dealerOrderId).setParameter("sortNo", sortNo).executeUpdate();
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public int checkCanApply(String orderId, String marketId, String couponId) {
+		
+		if (StringUtils.isEmpty(marketId) && StringUtils.isEmpty(couponId))
+			return 0;
+		
+		String sql = "SELECT sku_id, sort_no FROM t_scm_order_detail WHERE order_id=:orderId";
+		if (StringUtils.isNotEmpty(marketId)) {
+			if (StringUtils.isNotEmpty(couponId))
+				sql += " AND (marketing_id=:mkid OR coupon_id=:couponId)";
+			else
+				sql += " AND (marketing_id=:mkid)";
+		}
+		else if (StringUtils.isNotEmpty(couponId))
+			sql += " AND coupon_id=:couponId";
+		
+		SQLQuery query = this.session().createSQLQuery(sql);
+		if (StringUtils.isNotEmpty(marketId))
+			query.setParameter("mkid", marketId);
+		if (StringUtils.isNotEmpty(couponId))
+			query.setParameter("couponId", couponId);
+		query.setParameter("orderId", orderId);
+		
+		List<Object[]> list = (List<Object[]>)query.list();
+		
+		if (null == list || list.size() < 0)
+			return 0;
+		
+		StringBuilder sqlBuild = new StringBuilder("SELECT count(1) FROM t_scm_order_after_sell WHERE order_id=:orderId AND (");
+		int c = 0;
+		for (Object[] arr : list) {
+			if (c > 0) {
+				sqlBuild.append(" OR ");
+			}
+			sqlBuild.append("(sku_id='")
+			.append(arr[0]).append("' AND sort_no=").append(arr[1]).append(")");
+			c ++;
+		}
+		sqlBuild.append(")");
+		Object o = this.session().createSQLQuery(sqlBuild.toString()).setParameter("orderId", orderId).uniqueResult();
+		
+		return o == null? 0: ((BigInteger)o).intValue();
 	}
 }
