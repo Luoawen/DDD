@@ -663,7 +663,7 @@ public class GoodsQueryApplication {
     }
 
     public List<GoodsBean> appSearchGoods(String dealerId, String goodsClassifyId, String condition, Integer sortType,
-                                          Integer sort, Integer rangeType, List<String> ids, Integer pageNum, Integer rows) {
+                                          Integer sort, Integer rangeType, List<String> ids, Map couponMap, Integer pageNum, Integer rows) {
         List<Object> params = new ArrayList<Object>();
         StringBuilder sql = new StringBuilder();
         sql.append(" SELECT ");
@@ -693,6 +693,9 @@ public class GoodsQueryApplication {
                 }
             }
         }
+
+        // 优惠券搜索处理
+        couponChoiceDeal(sql, couponMap);
 
         if (StringUtils.isNotEmpty(dealerId)) {
             sql.append(" AND g.dealer_id =? ");
@@ -747,7 +750,7 @@ public class GoodsQueryApplication {
         return goodsBeanList;
     }
 
-    public Integer appSearchGoodsTotal(String dealerId, String goodsClassifyId, String condition, Integer rangeType, List<String> ids) {
+    public Integer appSearchGoodsTotal(String dealerId, String goodsClassifyId, String condition, Integer rangeType, List<String> ids, Map couponMap) {
         List<Object> params = new ArrayList<Object>();
         StringBuilder sql = new StringBuilder();
         sql.append(" SELECT ");
@@ -778,6 +781,9 @@ public class GoodsQueryApplication {
             }
         }
 
+        // 优惠券搜索处理
+        couponChoiceDeal(sql, couponMap);
+
         if (StringUtils.isNotEmpty(dealerId)) {
             sql.append(" AND g.dealer_id =? ");
             params.add(dealerId);
@@ -807,6 +813,64 @@ public class GoodsQueryApplication {
         }
         sql.append(" AND g.del_status= 1 AND g.goods_status <> 1");
         return supportJdbcTemplate.jdbcTemplate().queryForObject(sql.toString(), params.toArray(), Integer.class);
+    }
+
+    private void couponChoiceDeal(StringBuilder sql, Map couponMap) {
+        if (null != couponMap) { // 优惠券信息
+            /**
+             * 优惠券作用范围，0：全场，1：商家，2：商品，3：品类
+             * 备注：
+             * 当作用范围为全场时，dealerId、goodsId、categoryId为排除的对象；当作用范围不是全场时，三个id为优惠券实际作用的对象
+             */
+            Integer couponRangeType = (Integer) couponMap.get("rangeType");
+            List<String> dealerIdList = null == couponMap.get("dealerIdList") ? null : (List) couponMap.get("dealerIdList");
+            List<String> goodsIdsList = null == couponMap.get("goodsIdsList") ? null : (List) couponMap.get("goodsIdsList");
+            List<String> categoryList = null == couponMap.get("categoryList") ? null : (List) couponMap.get("categoryList");
+            if (couponRangeType == 0) { //优惠券全场
+                if (null != dealerIdList && dealerIdList.size() > 0) {
+                    sql.append(" AND g.dealer_id not in (" + Utils.listParseString(dealerIdList) + ") ");
+                }
+                if (null != goodsIdsList && goodsIdsList.size() > 0) {
+                    sql.append(" AND g.goods_id not in (" + Utils.listParseString(goodsIdsList) + ") ");
+                }
+                if (null != categoryList && categoryList.size() > 0) {
+                    List<String> classifyIds = new ArrayList<>();
+                    for (String id : categoryList) {
+                        List<String> goodsClassifyIds = goodsClassifyQueryApplication.recursionQueryGoodsSubClassifyId(id, new ArrayList<String>());
+                        if (null != goodsClassifyIds && goodsClassifyIds.size() > 0) {
+                            classifyIds.addAll(goodsClassifyIds);
+                        }
+                    }
+                    if (null != classifyIds && classifyIds.size() > 0) {
+                        sql.append(" AND g.goods_classify_id not in (" + Utils.listParseString(classifyIds) + ") ");
+                    }
+                }
+            }
+            if (couponRangeType == 1) { //优惠券商家
+                if (null != dealerIdList && dealerIdList.size() > 0) {
+                    sql.append(" AND g.dealer_id in (" + Utils.listParseString(dealerIdList) + ") ");
+                }
+            }
+            if (couponRangeType == 2) { //优惠券商品
+                if (null != goodsIdsList && goodsIdsList.size() > 0) {
+                    sql.append(" AND g.goods_id in (" + Utils.listParseString(goodsIdsList) + ") ");
+                }
+            }
+            if (couponRangeType == 3) { //优惠券品类
+                if (null != categoryList && categoryList.size() > 0) {
+                    List<String> classifyIds = new ArrayList<>();
+                    for (String id : categoryList) {
+                        List<String> goodsClassifyIds = goodsClassifyQueryApplication.recursionQueryGoodsSubClassifyId(id, new ArrayList<String>());
+                        if (null != goodsClassifyIds && goodsClassifyIds.size() > 0) {
+                            classifyIds.addAll(goodsClassifyIds);
+                        }
+                    }
+                    if (null != classifyIds && classifyIds.size() > 0) {
+                        sql.append(" AND g.goods_classify_id in (" + Utils.listParseString(classifyIds) + ") ");
+                    }
+                }
+            }
+        }
     }
 
 
