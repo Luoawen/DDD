@@ -324,6 +324,28 @@ public class OrderServiceImpl implements OrderService {
 			throw new NegativeException(MCode.V_400,"内部错误");
 		}
 	}
+
+	/**
+	 * 获取优惠券信息
+	 */
+	@Override
+	public <T> T getCouponById(String couponId, Class<T> cla)
+			throws NegativeException {
+		String url = M2C_HOST_URL + "/m2c.market/domain/coupon/detail/{0}";
+		String rtResult = restTemplate.getForObject(url, String.class ,couponId);
+		JSONObject json = JSONObject.parseObject(rtResult);
+		T result = null;
+		if (json.getInteger("status") == 200) {
+			String content = json.getString("content");
+			Gson gson = new Gson();
+			//result = gson.fromJson(content, new TypeToken<List<T>>() {}.getType());
+//	        	result = Arrays.asList(gson.fromJson(content, cla));
+			result = gson.fromJson(content, cla);
+		}else{
+			throw new NegativeException(150,"获取营销模块优惠券出错");
+		}
+		return result;
+	}
 	
 	
 }
