@@ -26,6 +26,12 @@ public class AftreSellLogisticsBean {
 	@ColumnAlias(value = "back_express_name")
 	private String backExpressName;
 	/**
+	 * 用户寄回物流公司编号
+	 */
+	@ColumnAlias(value = "back_express_code")
+	private String backExpressCode;
+
+	/**
 	 * 物流单号
 	 */
 	@ColumnAlias(value = "back_express_no")
@@ -41,7 +47,8 @@ public class AftreSellLogisticsBean {
 	
 	@ColumnAlias(value = "order_type")
 	private Integer orderType;
-
+	
+	
 	/**
 	 * 商品信息
 	 */
@@ -66,6 +73,14 @@ public class AftreSellLogisticsBean {
 	public Integer getOrderType() {
 		return orderType;
 	}
+	
+	public String getBackExpressCode() {
+		return backExpressCode;
+	}
+
+	public void setBackExpressCode(String backExpressCode) {
+		this.backExpressCode = backExpressCode;
+	}
 
 	public void setOrderType(Integer orderType) {
 		this.orderType = orderType;
@@ -89,7 +104,6 @@ public class AftreSellLogisticsBean {
 
 	public void setStatus(Integer status) {
 		this.status = status;
-
 	}
 
 	public void setAfterSellOrderId(String afterSellOrderId) {

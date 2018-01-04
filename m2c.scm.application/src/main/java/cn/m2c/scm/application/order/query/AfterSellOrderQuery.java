@@ -257,7 +257,7 @@ public class AfterSellOrderQuery {
 	public AftreSellLogisticsBean afterSellOrderLogisticsQuery(String afterSellOrderId) {
 		StringBuilder sql = new StringBuilder();
 		sql.append(" SELECT ");
-		sql.append(" af._status, af.after_sell_order_id, af.order_type ");
+		sql.append(" af._status, af.after_sell_order_id, af.order_type, af.back_express_code ");
 		sql.append(" ,af.back_express_no, af.back_express_name ");
 		sql.append(" ,af.express_no, af.express_name ");
 		sql.append(" FROM t_scm_order_after_sell af ");
