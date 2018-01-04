@@ -285,7 +285,11 @@ public class GoodsRestServiceImpl implements GoodsService {
                         tempMap.put("couponForm", couponForm);
                         tempMap.put("couponType", couponType);
                         tempMap.put("content", thresholdContent);
-                        tempMap.put("faceValue", Utils.moneyFormatCN(Long.parseLong(value)));
+                        if (couponForm == 1) { // 减钱
+                            tempMap.put("faceValue", Long.parseLong(value) / 10000);
+                        } else { // 打折
+                            tempMap.put("faceValue", value);
+                        }
                         tempMap.put("couponName", couponName);
                         tempMap.put("rangeContent", rangeContent);
                         tempMap.put("expirationTime", expirationTime);
