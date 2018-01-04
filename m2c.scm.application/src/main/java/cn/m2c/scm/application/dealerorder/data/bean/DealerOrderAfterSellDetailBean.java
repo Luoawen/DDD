@@ -82,6 +82,9 @@ public class DealerOrderAfterSellDetailBean {
 	@ColumnAlias(value = "dealer_discount")
 	private long dealerDiscount;
 	
+	@ColumnAlias(value = "sku_id")
+	private String skuId;
+	
 	private String dealerId;
 	
 	
@@ -125,6 +128,14 @@ public class DealerOrderAfterSellDetailBean {
 
 	public String getAfterSellDealerOrderId() {
 		return afterSellDealerOrderId;
+	}
+	
+	public String getSkuId() {
+		return skuId;
+	}
+
+	public void setSkuId(String skuId) {
+		this.skuId = skuId;
 	}
 
 	public long getBackMoney() {

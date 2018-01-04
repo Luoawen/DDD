@@ -14,6 +14,9 @@ public class ExpressInfoBean {
 
 	@ColumnAlias(value = "ship_type")
 	private Integer shipType;
+	
+	@ColumnAlias(value = "com")
+	private String expressCode;
 
 	public String getResData() {
 		return resData;
@@ -38,5 +41,17 @@ public class ExpressInfoBean {
 	public void setShipType(Integer shipType) {
 		this.shipType = shipType;
 	}
+
+	public String getExpressCode() {
+		return expressCode;
+	}
+
+	public void setExpressCode(String expressCode) {
+		this.expressCode = expressCode;
+	}
+
+	
+	
+	
 
 }
