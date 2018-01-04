@@ -353,13 +353,13 @@ public class GoodsRestServiceImpl implements GoodsService {
                     return resultMap;
                 }
             } else {
-                LOGGER.error("查询商品优惠券信息失败");
+                LOGGER.error("查询商品优惠券适用范围信息失败");
                 LOGGER.error("getCouponRange failed.url=>" + url);
                 LOGGER.error("getCouponRange failed.error=>" + json.getString("errorMessage"));
                 LOGGER.error("getCouponRange failed.param=>couponId=" + couponId);
             }
         } catch (Exception e) {
-            LOGGER.error("查询商品优惠券信息异常");
+            LOGGER.error("查询商品优惠券适用范围信息异常");
             LOGGER.error("getCouponRange exception.url=>" + url);
             LOGGER.error("getCouponRange exception.error=>" + e.getMessage());
             LOGGER.error("getCouponRange exception.param=>couponId=" + couponId);
