@@ -239,7 +239,7 @@ public class GoodsRestServiceImpl implements GoodsService {
 
     @Override
     public List<Map> getGoodsCoupon(String userId, String dealerId, String goodsId, String classifyId) {
-        String url = M2C_HOST_URL + "/m2c.market/domain/coupon/suitable/goods/list?dealer_id={0}&goods_id={1}&classify_id={2}&user_id={3}";
+        String url = M2C_HOST_URL + "/m2c.market/domain/coupon/suitable/goods/list?dealer_id={0}&goods_id={1}&category_id={2}&user_id={3}";
         try {
             String result = restTemplate.getForObject(url, String.class, dealerId, goodsId, classifyId, userId);
             JSONObject json = JSONObject.parseObject(result);
@@ -259,12 +259,39 @@ public class GoodsRestServiceImpl implements GoodsService {
                         Integer couponType = contentObject.getInteger("couponType");
                         // 门槛文案
                         String thresholdContent = contentObject.getString("thresholdContent");
+                        // 面值
+                        String value = contentObject.getString("value");
+                        // 优惠券名称
+                        String couponName = contentObject.getString("couponName");
+                        // 作用范围页面内容
+                        String rangeContent = contentObject.getString("rangeContent");
+                        // 有效期 ,返回格式:XXXX.XX.XX - XXXX.XX.XX
+                        String expirationTime = contentObject.getString("expirationTime");
+                        // 有效期开始时间
+                        String expirationTimeStart = contentObject.getString("expirationTimeStart");
+                        // 有效期截止时间
+                        String expirationTimeEnd = contentObject.getString("expirationTimeEnd");
+                        // 是否可领取 true：可以，false：不可以
+                        Boolean ableToReceive = contentObject.getBoolean("ableToReceive");
+                        // 优惠券总数
+                        Integer totalCount = contentObject.getInteger("totalCount");
+                        // 标签文案
+                        String labelContent = contentObject.getString("labelContent");
 
                         Map tempMap = new HashMap<>();
                         tempMap.put("couponId", couponId);
                         tempMap.put("couponForm", couponForm);
                         tempMap.put("couponType", couponType);
                         tempMap.put("thresholdContent", thresholdContent);
+                        tempMap.put("value", Utils.moneyFormatCN(Long.parseLong(value)));
+                        tempMap.put("couponName", couponName);
+                        tempMap.put("rangeContent", rangeContent);
+                        tempMap.put("expirationTime", expirationTime);
+                        tempMap.put("expirationTimeStart", expirationTimeStart);
+                        tempMap.put("expirationTimeEnd", expirationTimeEnd);
+                        tempMap.put("ableToReceive", ableToReceive);
+                        tempMap.put("totalCount", totalCount);
+                        tempMap.put("labelContent", labelContent);
 
                         resultList.add(tempMap);
                     }
@@ -274,13 +301,13 @@ public class GoodsRestServiceImpl implements GoodsService {
                 LOGGER.error("查询商品优惠券信息失败");
                 LOGGER.error("getGoodsCoupon failed.url=>" + url);
                 LOGGER.error("getGoodsCoupon failed.error=>" + json.getString("errorMessage"));
-                LOGGER.error("getGoodsCoupon failed.param=>dealerId=" + dealerId + ",goodsId=" + goodsId + ",classifyId=" + classifyId + ",userId=" + userId);
+                LOGGER.error("getGoodsCoupon failed.param=>dealerId=" + dealerId + ",goodsId=" + goodsId + ",category_id=" + classifyId + ",userId=" + userId);
             }
         } catch (Exception e) {
             LOGGER.error("查询商品优惠券信息异常");
             LOGGER.error("getGoodsCoupon exception.url=>" + url);
             LOGGER.error("getGoodsCoupon exception.error=>" + e.getMessage());
-            LOGGER.error("getGoodsCoupon exception.param=>dealerId=" + dealerId + ",goodsId=" + goodsId + ",classifyId=" + classifyId + ",userId=" + userId);
+            LOGGER.error("getGoodsCoupon exception.param=>dealerId=" + dealerId + ",goodsId=" + goodsId + ",category_id=" + classifyId + ",userId=" + userId);
         }
         return null;
     }
