@@ -11,6 +11,7 @@ import cn.m2c.scm.domain.model.order.event.AfterRefundSuccEvt;
 import cn.m2c.scm.domain.model.order.event.AfterSaleAgreeEvt;
 import cn.m2c.scm.domain.model.order.event.OrderShipEvent;
 import cn.m2c.scm.domain.model.order.event.SaleAfterRefundEvt;
+import cn.m2c.scm.domain.model.order.event.UserShipEvent;
 import cn.m2c.scm.domain.model.order.log.event.OrderOptLogEvent;
 import cn.m2c.scm.domain.util.DealerReportType;
 
@@ -215,13 +216,14 @@ public class SaleAfterOrder extends ConcurrencySafeEntity {
      * @param e
      * @return
      */
-    public boolean clientShip(ExpressInfo e, String userId) {
+    public boolean clientShip(ExpressInfo e, String userId,String com,String nu) {
         if (status != 4)
             return false;
         status = 5;
         backExpress = e;
         updateTime = new Date();
         DomainEventPublisher.instance().publish(new OrderOptLogEvent(saleAfterNo, null, "客户退货发货！", userId));
+        DomainEventPublisher.instance().publish(new UserShipEvent(com, nu));
         return true;
     }
 
