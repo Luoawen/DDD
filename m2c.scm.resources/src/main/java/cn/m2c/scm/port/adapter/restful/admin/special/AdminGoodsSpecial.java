@@ -21,7 +21,7 @@ import cn.m2c.scm.domain.NegativeException;
  * 特惠价图片 
  */
 @RestController
-@RequestMapping("admin/goods/special")
+@RequestMapping("/admin/goods/special")
 public class AdminGoodsSpecial {
 	private final static Logger LOGGER = LoggerFactory.getLogger(AdminGoodsSpecial.class);
 	
