@@ -756,7 +756,7 @@ public class OrderQueryApplication {
 	 * @throws NegativeException 
 	 */
 	public ExpressInfoBean queryExpress(String com, String nu) throws NegativeException {
-		String sql = "SELECT res_data,ship_goods_time,ship_type FROM t_scm_express_platform WHERE com=? AND nu=? ";
+		String sql = "SELECT res_data,ship_goods_time,ship_type,com FROM t_scm_express_platform WHERE com=? AND nu=? ";
 		ExpressInfoBean result = null;
 		try {
 			List<Object> params = new ArrayList<>();

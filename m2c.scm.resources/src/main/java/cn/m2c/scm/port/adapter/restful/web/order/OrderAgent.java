@@ -557,27 +557,32 @@ public class OrderAgent {
     }
     
     /**
-     * 注册物流信息
+     * 商家替用户添加物流信息
      * @param com
      * @param nu
      * @return
      */
     @RequestMapping(value = {"/web/rigisterExpress","/rigisterExpress"},method = RequestMethod.POST)
     public ResponseEntity<MResult> registExpress(
+    		@RequestParam(value = "userId", required = false) String userId
+            ,@RequestParam(value = "skuId", required = false) String skuId
+            ,@RequestParam(value = "saleAfterNo", required = false) String saleAfterNo
+            ,@RequestParam(value = "expressName", required = false) String expressName,
     		 @RequestParam(value = "com", defaultValue = "") String com,
              @RequestParam(value = "nu", defaultValue = "") String nu,
              @RequestParam(value = "shipType",required = false)Integer shipType) {
     	MPager result = new MPager(MCode.V_1);
     	try {
 			if(StringUtils.isEmpty(com)){
-				result.setContent("物流公司编码不能为空");
-				return new ResponseEntity<MResult>(result, HttpStatus.OK);
+				throw new NegativeException(MCode.V_400,"物流公司编码不能为空");
 			}
 			if(StringUtils.isEmpty(nu)){
-				result.setContent("物流号不能为空");
-				return new ResponseEntity<MResult>(result, HttpStatus.OK);
+				throw new NegativeException(MCode.V_400,"物流号不能为空");
 			}
+			
+			SaleAfterShipCmd cmd = new SaleAfterShipCmd(userId, saleAfterNo, skuId, nu, com, expressName);
 			orderapplication.registExpress(com, nu,shipType);
+			saleAfterApp.userShipGoods(cmd);
 			result.setContent("注册物流成功！");
 			result.setStatus(MCode.V_200);
 		} catch (NegativeException e) {

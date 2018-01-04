@@ -82,12 +82,27 @@ public class DealerOrderAfterSellDetailBean {
 	@ColumnAlias(value = "dealer_discount")
 	private long dealerDiscount;
 	
+	@ColumnAlias(value = "sku_id")
+	private String skuId;
+	
+	@ColumnAlias(value = "express_code")
+	private String expressCode;
+	
 	private String dealerId;
 	
 	
 	public Integer getDoStatus() {
 		return doStatus;
 	}
+	
+	public String getExpressCode() {
+		return expressCode;
+	}
+
+	public void setExpressCode(String expressCode) {
+		this.expressCode = expressCode;
+	}
+
 
 	public void setDoStatus(Integer doStatus) {
 		this.doStatus = doStatus;
@@ -125,6 +140,14 @@ public class DealerOrderAfterSellDetailBean {
 
 	public String getAfterSellDealerOrderId() {
 		return afterSellDealerOrderId;
+	}
+	
+	public String getSkuId() {
+		return skuId;
+	}
+
+	public void setSkuId(String skuId) {
+		this.skuId = skuId;
 	}
 
 	public long getBackMoney() {

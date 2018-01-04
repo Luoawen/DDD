@@ -242,4 +242,10 @@
         <constructor-arg index="1" ref="transactionManager"/>
         <constructor-arg index="2" ref="consumedEventStore"/>
     </bean>
+    
+    <bean class="cn.m2c.scm.port.adapter.messaging.rabbitmq.order.UserShipListener">
+        <constructor-arg index="0" ref="rabbitmqConfiguration"/>
+        <constructor-arg index="1" ref="transactionManager"/>
+        <constructor-arg index="2" ref="consumedEventStore"/>
+    </bean>
 </beans>

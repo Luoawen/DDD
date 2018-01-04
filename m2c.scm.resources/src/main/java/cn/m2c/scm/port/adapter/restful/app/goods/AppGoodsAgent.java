@@ -220,15 +220,20 @@ public class AppGoodsAgent {
             @RequestParam(value = "sort", required = false) Integer sort,
             @RequestParam(value = "rangeType", required = false) Integer rangeType,
             @RequestParam(value = "ids", required = false) List<String> ids,
+            @RequestParam(value = "couponId", required = false) String couponId, // 优惠券id
             @RequestParam(value = "pageNum", required = false, defaultValue = "1") Integer pageNum,
             @RequestParam(value = "rows", required = false, defaultValue = "10") Integer rows) {
         MPager result = new MPager(MCode.V_1);
         try {
-            Integer total = goodsQueryApplication.appSearchGoodsTotal(dealerId, goodsClassifyId, condition, rangeType, ids);
+            Map couponMap = null;
+            if (StringUtils.isNotEmpty(couponId)){
+                couponMap = goodsRestService.getCouponRange(couponId);
+            }
+            Integer total = goodsQueryApplication.appSearchGoodsTotal(dealerId, goodsClassifyId, condition, rangeType, ids, couponMap);
             if (total > 0) {
                 Map resultMap = new HashMap<>();
                 List<GoodsBean> goodsBeans = goodsQueryApplication.appSearchGoods(dealerId, goodsClassifyId, condition, sortType,
-                        sort, rangeType, ids, pageNum, rows);
+                        sort, rangeType, ids, couponMap, pageNum, rows);
                 if (null != goodsBeans && goodsBeans.size() > 0) {
                     List<AppGoodsSearchRepresentation> representations = new ArrayList<AppGoodsSearchRepresentation>();
                     List<String> goodsClassifyIds = new ArrayList<>();

@@ -92,4 +92,11 @@ public interface GoodsService {
      * @return
      */
     List<Map> getGoodsCoupon(String userId, String dealerId, String goodsId, String classifyId);
+
+    /**
+     * 优惠券适用范围
+     * @param couponId 优惠券id
+     * @return
+     */
+    Map getCouponRange(String couponId);
 }
