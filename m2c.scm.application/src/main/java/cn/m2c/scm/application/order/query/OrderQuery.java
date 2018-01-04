@@ -19,6 +19,7 @@ import cn.m2c.common.MCode;
 import cn.m2c.ddd.common.port.adapter.persistence.springJdbc.SupportJdbcTemplate;
 import cn.m2c.scm.application.order.data.bean.OrderDealerBean;
 import cn.m2c.scm.application.order.data.bean.OrderGoodsBean;
+import cn.m2c.scm.application.order.data.bean.SimpleCoupon;
 import cn.m2c.scm.application.order.data.bean.SimpleMarket;
 import cn.m2c.scm.domain.NegativeException;
 import cn.m2c.scm.application.order.data.bean.AllOrderBean;
@@ -409,6 +410,7 @@ public class OrderQuery {
 		.append(" LEFT OUTER JOIN t_scm_order_main t3 ON t1.order_id = t3.order_id\r\n") 
 		.append(" LEFT OUTER JOIN t_scm_dealer t2 ON t1.dealer_id = t2.dealer_id ")
 		.append(" WHERE t1.dealer_order_id = ?"); 
+		System.out.println("==================SQL===============>"+sql.toString());
 		DealerOrderDetailBean dealerOrderDetailBean = this.supportJdbcTemplate.queryForBean(sql.toString(), DealerOrderDetailBean.class, dealerOrderId);
 		if (dealerOrderDetailBean != null) {
 			dealerOrderDetailBean.setDealerOrderId(dealerOrderId);
@@ -509,9 +511,14 @@ public class OrderQuery {
 		
 		
 		sql.delete(0, sql.length());
-		sql.append("SELECT marketing_id, market_level,market_type, threshold, threshold_type, discount, share_percent \r\n")
-		.append(" FROM t_scm_order_marketing_used WHERE order_id=? ");
+		sql.append("SELECT marketing_id, market_level, market_type, threshold, threshold_type, discount, share_percent, market_name \r\n")
+		.append(" FROM t_scm_order_marketing_used WHERE order_id=? AND _status=1 ");
 		order.setMarkets(supportJdbcTemplate.queryForBeanList(sql.toString(), SimpleMarket.class, orderNo));
+		
+		sql.delete(0, sql.length());
+		sql.append("SELECT coupon_id, coupon_form, coupon_type, threshold, threshold_type, discount, share_percent, coupon_name \r\n")
+		.append(" FROM t_scm_order_coupon_used WHERE order_id=? AND _status=1");
+		order.setCoupons(supportJdbcTemplate.queryForBeanList(sql.toString(), SimpleCoupon.class, orderNo));
 		
 		sql.delete(0, sql.length());
 		sql.append("SELECT order_id, os, os_version, app_version, sn \r\n")

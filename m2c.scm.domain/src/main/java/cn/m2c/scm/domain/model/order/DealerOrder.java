@@ -55,6 +55,11 @@ public class DealerOrder extends ConcurrencySafeEntity {
 	private List<DealerOrderDtl> orderDtls;
 	/**更新时间*/
 	private Date updateTime;
+	
+	/**
+     * 优惠券优惠金额
+     */
+    private Long couponDiscount = 0l;
 
 	public Long getDealerOrderMoney(){
 		return this.goodsAmount + this.orderFreight - this.plateformDiscount - this.dealerDiscount;
@@ -83,7 +88,8 @@ public class DealerOrder extends ConcurrencySafeEntity {
 	public DealerOrder(String orderId, String dealerOrderId,
 			String dealerId, long goodsAmount, long orderFreight
 			,long plateformDiscount, long dealerDiscount, String noted, Integer termOfPayment
-			, ReceiveAddr addr, InvoiceInfo invoice, List<DealerOrderDtl> orderDtl) {
+			, ReceiveAddr addr, InvoiceInfo invoice, List<DealerOrderDtl> orderDtl
+			, long couponDiscount) {
 		this.orderId = orderId;
 		this.dealerId = dealerId;
 		this.dealerOrderId = dealerOrderId;
@@ -97,6 +103,7 @@ public class DealerOrder extends ConcurrencySafeEntity {
 		this.plateformDiscount = plateformDiscount;
 		this.dealerDiscount = dealerDiscount;
 		this.termOfPayment = termOfPayment;
+		this.couponDiscount = couponDiscount;
 	}
 	
 	public Long getGoodsAmount() {
@@ -113,6 +120,10 @@ public class DealerOrder extends ConcurrencySafeEntity {
 
 	public Long getDealerDiscount() {
 		return dealerDiscount;
+	}
+	
+	public Long getCouponDiscount() {
+		return couponDiscount;
 	}
 	
 	public ReceiveAddr getAddr() {

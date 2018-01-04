@@ -13,8 +13,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import cn.m2c.common.MCode;
 import cn.m2c.common.RedisUtil;
 import cn.m2c.ddd.common.port.adapter.persistence.springJdbc.SupportJdbcTemplate;
+import cn.m2c.scm.application.order.command.ExpressInfoBean;
 import cn.m2c.scm.application.order.command.GetOrderCmd;
 import cn.m2c.scm.application.order.data.bean.AppOrderBean;
 import cn.m2c.scm.application.order.data.bean.AppOrderDtl;
@@ -753,17 +755,17 @@ public class OrderQueryApplication {
 	 * @return
 	 * @throws NegativeException 
 	 */
-	public String queryExpress(String com, String nu) throws NegativeException {
-		String sql = "SELECT res_data FROM t_scm_express_platform WHERE com=? AND nu=? ";
-		String result = "";
+	public ExpressInfoBean queryExpress(String com, String nu) throws NegativeException {
+		String sql = "SELECT res_data,ship_goods_time,ship_type FROM t_scm_express_platform WHERE com=? AND nu=? ";
+		ExpressInfoBean result = null;
 		try {
 			List<Object> params = new ArrayList<>();
 			params.add(com);
 			params.add(nu);
-			result = this.getSupportJdbcTemplate().jdbcTemplate().queryForObject(sql, String.class,params.toArray());
+			result = this.getSupportJdbcTemplate().queryForBean(sql.toString(), ExpressInfoBean.class,params.toArray());
 		} catch (Exception e) {
 			LOGGER.error("---查询物流信息"+e.getMessage(),e);
-			throw new NegativeException(400, "查询物流信息");
+			throw new NegativeException(MCode.V_400, "查询物流信息出错");
 		}
 		return result;
 	}

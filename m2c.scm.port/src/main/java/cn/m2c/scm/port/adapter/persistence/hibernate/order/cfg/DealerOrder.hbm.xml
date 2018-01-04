@@ -29,6 +29,7 @@
 	        <property name="street" column="street_addr" type="string"/>
 	        <property name="revPerson" column="rev_person" type="string"/>
 	        <property name="phone" column="rev_phone" type="string"/>
+	        <property name="postCode" column="post_code" type="string"/>
         </component>
         
         <property name="goodsAmount" column="goods_amount" type="long"/>
@@ -37,6 +38,7 @@
         <property name="dealerDiscount" column="dealer_discount" type="long"/>
         <property name="noted" column="noted" type="string"/>
         <property name="termOfPayment" column="term_of_payment" type="int"/>
+        <property name="couponDiscount" column="coupon_discount" type="long"/>
         
         <component name="invoice">
 	        <property name="header" column="invoice_header" type="string"/>

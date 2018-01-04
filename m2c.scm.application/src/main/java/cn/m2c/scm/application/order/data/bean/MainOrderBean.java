@@ -61,11 +61,21 @@ public class MainOrderBean extends AssertionConcern implements Serializable {
 	private List<OrderDealerBean> dealerOrderBeans;
 	/**订单中的商品列表*/
 	private Map<String, List<OrderGoodsBean>> goodses;
-	
+	/**订单中的营销活动*/
 	private List<SimpleMarket> markets;
 	
 	private AppInfo appInfo;
+	/**订单中的优惠券*/
+	private List<SimpleCoupon> coupons;
 	
+	public List<SimpleCoupon> getCoupons() {
+		return coupons;
+	}
+
+	public void setCoupons(List<SimpleCoupon> coupons) {
+		this.coupons = coupons;
+	}
+
 	public List<SimpleMarket> getMarkets() {
 		return markets;
 	}

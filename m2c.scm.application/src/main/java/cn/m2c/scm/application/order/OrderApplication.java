@@ -26,6 +26,8 @@ import cn.m2c.scm.application.postage.data.representation.PostageModelRuleRepres
 import cn.m2c.scm.application.postage.query.PostageModelQueryApplication;
 import cn.m2c.scm.domain.NegativeCode;
 import cn.m2c.scm.domain.NegativeException;
+import cn.m2c.scm.domain.model.expressPlatform.ExpressPlatform;
+import cn.m2c.scm.domain.model.expressPlatform.ExpressPlatformRepository;
 import cn.m2c.scm.domain.model.order.AppOrdInfo;
 import cn.m2c.scm.domain.model.order.DealerOrder;
 import cn.m2c.scm.domain.model.order.DealerOrderDtl;
@@ -89,6 +91,9 @@ public class OrderApplication {
     GoodsClassifyQueryApplication goodsClassQuery;//商品分类
     @Autowired
     GoodsSpecialRepository goodsSpecialRsp;//特惠价
+    
+    @Autowired
+    ExpressPlatformRepository expressPlatformRepository;
 
     /**
      * 提交订单
@@ -172,9 +177,6 @@ public class OrderApplication {
         }
 
         long orderTime = System.currentTimeMillis();
-        // 满足优惠券后，修改优惠券(锁定)
-        //JSONArray coups = cmd.getCoupons();
-        //orderDomainService.lockCoupons(null);
         
         // 获取商品详情
         List<GoodsDto> goodDtls = gQueryApp.getGoodsDtl(skus.keySet());
@@ -213,29 +215,33 @@ public class OrderApplication {
         // 计算营销活动优惠
         OrderMarketCalc.calMarkets(mks, gdes);
         //计算优惠券
-        
+        // 查询并计算优惠券是否ok,并填充好数据
+        //orderDomainService.lockCoupons(null);
         
         // 获取结算方式
         Map<String, Integer> dealerCount = getDealerWay(idsSet);
         List<DealerOrder> dealerOrders = trueSplit(dealerOrderMap, cmd, dealerCount,
                 resMap);
 
-        int goodsAmounts = 0;
-        int freight = 0;
-        int plateDiscount = 0;
-        int dealerDiscount = 0;
+        long goodsAmounts = 0;
+        long freight = 0;
+        long plateDiscount = 0;
+        long dealerDiscount = 0;
+        long couponDiscount = 0;
         // 计算主订单费用
         for (DealerOrder d : dealerOrders) {
             freight += d.getOrderFreight();
             goodsAmounts += d.getGoodsAmount();
             plateDiscount += (d.getPlateformDiscount() == null ? 0 : d.getPlateformDiscount());
             dealerDiscount += d.getDealerDiscount();
+            couponDiscount += (d.getCouponDiscount() == null ? 0 : d.getCouponDiscount());
         }
         
         List<MarketUseBean> useList = new ArrayList<>();
         MainOrder order = new MainOrder(cmd.getOrderId(), cmd.getAddr(), goodsAmounts, freight
                 , plateDiscount, dealerDiscount, cmd.getUserId(), cmd.getNoted(), dealerOrders, null
-                , getUsedMarket(cmd.getOrderId(), gdes, useList), cmd.getLatitude(), cmd.getLongitude());
+                , getUsedMarket(cmd.getOrderId(), gdes, useList), cmd.getLatitude(), cmd.getLongitude()
+                , couponDiscount);
         // 组织保存(重新设置计算好的价格)
         order.add(skus, cmd.getFrom());
         orderRepository.save(order);
@@ -382,9 +388,10 @@ public class OrderApplication {
 
             List<DealerOrderDtl> dtls = new ArrayList<DealerOrderDtl>();
             int freight = 0;
-            int goodsAmount = 0;
+            long goodsAmount = 0;
             long plateDiscount = 0;
-            int dealerDiscount = 0;
+            long dealerDiscount = 0;
+            long couponDiscount = 0;
             int termOfPayment = 0;
             if (null != dc && null != dc.get(dealerId)) {
                 termOfPayment = dc.get(dealerId);
@@ -396,6 +403,7 @@ public class OrderApplication {
                 freight += bean.getFreight();
                 goodsAmount += (int) (num * bean.getThePrice());
                 plateDiscount += bean.getPlateformDiscount();
+                couponDiscount += bean.getCouponDiscount();
                 String resId = bean.getMresId();
                 MediaResBean mb = null;
                 if (!StringUtils.isEmpty(resId))
@@ -414,7 +422,7 @@ public class OrderApplication {
             }
             rs.add(new DealerOrder(cmd.getOrderId(), dealerOrderId, dealerId, goodsAmount, freight,
                     plateDiscount, dealerDiscount, cmd.getNoted(), termOfPayment
-                    , cmd.getAddr(), cmd.getInvoice(), dtls));
+                    , cmd.getAddr(), cmd.getInvoice(), dtls, couponDiscount));
             c++;
         }
         return rs;
@@ -1061,7 +1069,11 @@ public class OrderApplication {
 	 * @param nu
 	 * @throws NegativeException 
 	 */
-	public void registExpress(String com, String nu) throws NegativeException {
+	@Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+	public void registExpress(String com, String nu,Integer shipType) throws NegativeException {
+		ExpressPlatform ep = new ExpressPlatform();
+		ep.save(com, nu, shipType);
+		expressPlatformRepository.saveOrUpdate(ep);
 		orderDomainService.registExpress(com,nu);
 	}
 }

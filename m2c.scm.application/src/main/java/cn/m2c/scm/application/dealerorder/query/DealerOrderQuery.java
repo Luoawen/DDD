@@ -242,8 +242,9 @@ public class DealerOrderQuery {
         params.add(dealerId);
 
         if (!StringUtils.isEmpty(condition)) {
-            sql.append(" AND (dtl.goods_name LIKE CONCAT('%',?,'%') OR a.dealer_order_id LIKE CONCAT('%',?,'%') OR om.pay_no LIKE CONCAT('%',?,'%') OR\r\n");
+            sql.append(" AND (dtl.goods_name LIKE CONCAT('%',?,'%') OR a.dealer_order_id LIKE CONCAT('%',?,'%') OR af.after_sell_order_id LIKE CONCAT('%',?,'%') OR om.pay_no LIKE CONCAT('%',?,'%') OR\r\n");
             sql.append(" a.rev_phone LIKE CONCAT('%',?,'%'))\r\n");
+            params.add(condition);
             params.add(condition);
             params.add(condition);
             params.add(condition);
@@ -428,8 +429,9 @@ public class DealerOrderQuery {
         params.add(dealerId);
 
         if (!StringUtils.isEmpty(condition)) {
-            sql.append(" AND (dtl.goods_name LIKE CONCAT('%',?,'%') OR a.dealer_order_id LIKE CONCAT('%',?,'%') OR om.pay_no LIKE CONCAT('%',?,'%') OR\r\n");
+            sql.append(" AND (dtl.goods_name LIKE CONCAT('%',?,'%') OR a.dealer_order_id LIKE CONCAT('%',?,'%') OR af.after_sell_order_id LIKE CONCAT('%',?,'%') OR om.pay_no LIKE CONCAT('%',?,'%') OR\r\n");
             sql.append(" a.rev_phone LIKE CONCAT('%',?,'%'))\r\n");
+            params.add(condition);
             params.add(condition);
             params.add(condition);
             params.add(condition);
@@ -505,7 +507,6 @@ public class DealerOrderQuery {
             params.add(startTime + " 00:00:00");
             params.add(endTime + " 23:59:59");
         }
-        System.out.println("SHOW  sQL-------------------------->"+sql);
         return this.supportJdbcTemplate.jdbcTemplate().queryForObject(sql.toString(), Integer.class, params.toArray());
 
     }

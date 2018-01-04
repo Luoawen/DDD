@@ -24,6 +24,7 @@ import cn.m2c.scm.application.order.DealerOrderApplication;
 import cn.m2c.scm.application.order.OrderApplication;
 import cn.m2c.scm.application.order.SaleAfterOrderApp;
 import cn.m2c.scm.application.order.command.AproveSaleAfterCmd;
+import cn.m2c.scm.application.order.command.ExpressInfoBean;
 import cn.m2c.scm.application.order.command.SaleAfterCmd;
 import cn.m2c.scm.application.order.command.SaleAfterShipCmd;
 import cn.m2c.scm.application.order.command.SendOrderCommand;
@@ -530,7 +531,7 @@ public class OrderAgent {
      * @param 
      * @return
      */
-    @RequestMapping(value = "/web/expressInfo", method = RequestMethod.GET)
+    @RequestMapping(value = {"/web/expressInfo","/expressInfo"}, method = RequestMethod.GET)
     public ResponseEntity<MPager> getExpressInfo(
             @RequestParam(value = "com",defaultValue="") String com
             ,@RequestParam(value = "nu", defaultValue="") String nu
@@ -545,8 +546,8 @@ public class OrderAgent {
         		result.setContent("物流号不能为空");
         		 return new ResponseEntity<MPager>(result, HttpStatus.OK);
         	}
-        	String rtResult = orderQueryApp.queryExpress(com, nu);
-        	result.setContent(rtResult);
+        	 ExpressInfoBean queryExpress = orderQueryApp.queryExpress(com, nu);
+        	result.setContent(queryExpress);
             result.setStatus(MCode.V_200);
         } catch (Exception e) {
             LOGGER.error("查询物流列表出错", e);
@@ -561,10 +562,11 @@ public class OrderAgent {
      * @param nu
      * @return
      */
-    @RequestMapping(value = "/web/rigisterExpress",method = RequestMethod.POST)
+    @RequestMapping(value = {"/web/rigisterExpress","/rigisterExpress"},method = RequestMethod.POST)
     public ResponseEntity<MResult> registExpress(
     		 @RequestParam(value = "com", defaultValue = "") String com,
-             @RequestParam(value = "nu", defaultValue = "") String nu) {
+             @RequestParam(value = "nu", defaultValue = "") String nu,
+             @RequestParam(value = "shipType",required = false)Integer shipType) {
     	MPager result = new MPager(MCode.V_1);
     	try {
 			if(StringUtils.isEmpty(com)){
@@ -575,7 +577,8 @@ public class OrderAgent {
 				result.setContent("物流号不能为空");
 				return new ResponseEntity<MResult>(result, HttpStatus.OK);
 			}
-			orderapplication.registExpress(com, nu);
+			orderapplication.registExpress(com, nu,shipType);
+			result.setContent("注册物流成功！");
 			result.setStatus(MCode.V_200);
 		} catch (NegativeException e) {
 			LOGGER.error("注册物流出错！", e);

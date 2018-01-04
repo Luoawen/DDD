@@ -12,20 +12,20 @@ public class OrderResult {
 
 	private String orderId;
 	
-	private int goodsMoney = 0;
+	private long goodsMoney = 0;
 	
-	private int freight = 0;
+	private long freight = 0;
 	
-	private int plateformDiscount;
+	private long plateformDiscount;
 	
-	private int dealerDiscount;
+	private long dealerDiscount;
 
 	public OrderResult() {
 		
 	}
 	
-	public OrderResult(String orderNo, int goodsMoney, 
-			int freight, int plateformDiscount, int dealerDiscount) {
+	public OrderResult(String orderNo, long goodsMoney, 
+			long freight, long plateformDiscount, long dealerDiscount) {
 		orderId = orderNo;
 		this.goodsMoney = goodsMoney;
 		this.freight = freight;
@@ -41,7 +41,7 @@ public class OrderResult {
 		this.orderId = orderId;
 	}
 
-	public int getGoodsMoney() {
+	public long getGoodsMoney() {
 		return goodsMoney/100;
 	}
 	
@@ -53,7 +53,7 @@ public class OrderResult {
 		this.goodsMoney = goodsMoney;
 	}
 
-	public int getFreight() {
+	public long getFreight() {
 		return freight/100;
 	}
 	
@@ -65,7 +65,7 @@ public class OrderResult {
 		this.freight = freight;
 	}
 
-	public int getPlateformDiscount() {
+	public long getPlateformDiscount() {
 		return plateformDiscount/100;
 	}
 	
@@ -77,7 +77,7 @@ public class OrderResult {
 		this.plateformDiscount = plateformDiscount;
 	}
 
-	public int getDealerDiscount() {
+	public long getDealerDiscount() {
 		return dealerDiscount/100;
 	}
 	

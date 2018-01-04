@@ -29,13 +29,16 @@ public class ReceiveAddr extends ValueObject {
 	/**联系电话*/
 	private String phone;
 	
+	/**邮编*/
+	private String postCode;
+	
 	public ReceiveAddr() {
 		super();
 	}
 	
 	public ReceiveAddr(String prov, String provCode, String city,
 			String cityCode, String area, String areaCode, 
-			String street, String pName, String phone) {
+			String street, String pName, String phone, String postCode) {
 		this.province = prov;
 		provinceCode = provCode;
 		this.city = city;
@@ -45,6 +48,8 @@ public class ReceiveAddr extends ValueObject {
 		this.street = street;
 		revPerson = pName;
 		this.phone = phone;
+		
+		this.postCode = postCode;
 	}
 	
 	public String getCityCode() {
@@ -60,7 +65,7 @@ public class ReceiveAddr extends ValueObject {
 	 * @param street
 	 */
 	public boolean updateAddr(String province,String provCode,String city,String cityCode,String area,String areaCode,
-			String street, String revPerson, String phone) {
+			String street, String revPerson, String phone, String postCode) {
 		if(StringUtils.isEmpty(provCode)) 
 			return false;
 		if(StringUtils.isEmpty(province)) 
@@ -84,6 +89,7 @@ public class ReceiveAddr extends ValueObject {
 		this.street = street;
 		this.revPerson = revPerson;
 		this.phone = phone;
+		this.postCode = postCode;
 		
 		return true;
 	}

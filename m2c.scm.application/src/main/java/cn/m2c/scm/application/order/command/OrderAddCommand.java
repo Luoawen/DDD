@@ -14,7 +14,6 @@ import com.google.gson.Gson;
 
 import cn.m2c.common.MCode;
 import cn.m2c.ddd.common.AssertionConcern;
-import cn.m2c.scm.application.order.ExpressPlatformApplication;
 import cn.m2c.scm.application.order.data.bean.AppInfo;
 import cn.m2c.scm.application.order.query.dto.GoodsDto;
 import cn.m2c.scm.application.utils.Utils;
@@ -37,8 +36,6 @@ public class OrderAddCommand extends AssertionConcern implements Serializable {
 	private String noted;
 	
 	private List<GoodsDto> goodses;
-	
-	private JSONArray coupons;
 	
 	private InvoiceInfo invoice;
 	/**收货地址*/
@@ -86,14 +83,6 @@ public class OrderAddCommand extends AssertionConcern implements Serializable {
 		this.from = from;
 		checkGoodses(goodses);
 		
-		if (!StringUtils.isEmpty(coupons)) {
-			try {
-				this.coupons = JSONObject.parseArray(coupons);
-			}
-			catch (Exception e) {
-				throw new NegativeException(MCode.V_1, "优惠券参数格式不正确！");
-			}
-		}
 		this.latitude = latitude;
 		this.longitude = longitude;
 		
@@ -258,7 +247,10 @@ public class OrderAddCommand extends AssertionConcern implements Serializable {
             
             if (goods.containsKey("isSpecial"))
             	dto.setIsSpecial(isSpecial);
-
+            
+            String couponId = goods.getString("couponId");
+            dto.setCouponId(couponId);
+            
             String mResId = goods.getString("mediaResId");
             dto.setMresId(mResId);
             goodses.add(dto);
@@ -303,10 +295,6 @@ public class OrderAddCommand extends AssertionConcern implements Serializable {
 
 	public List<GoodsDto> getGoodses() {
 		return goodses;
-	}
-
-	public JSONArray getCoupons() {
-		return coupons;
 	}
 
 	public InvoiceInfo getInvoice() {

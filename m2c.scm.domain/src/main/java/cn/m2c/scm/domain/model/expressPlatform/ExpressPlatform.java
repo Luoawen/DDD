@@ -13,6 +13,8 @@ public class ExpressPlatform extends ConcurrencySafeEntity{
 	private String resData;
 	private Date createdDate;
 	private Date lastUpdatedDate;
+	private Date shipGoodsTime;         //发货时间
+	private Integer shipType;           //发货类型：0 商家发货物流信息 1 用户售后寄回物流信息
 	
 	public ExpressPlatform() {
 		super();
@@ -23,5 +25,13 @@ public class ExpressPlatform extends ConcurrencySafeEntity{
 		this.nu = nu;
 		this.resData = resData;
 		this.lastUpdatedDate = new Date();
+	}
+	
+	public void save(String com,String nu,Integer shipType) {
+		this.com = com;
+		this.nu = nu;
+		this.resData = "";
+		this.shipGoodsTime = new Date();
+		this.shipType = shipType;
 	}
 }

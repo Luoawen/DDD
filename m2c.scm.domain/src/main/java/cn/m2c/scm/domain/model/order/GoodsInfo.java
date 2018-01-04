@@ -53,6 +53,15 @@ public class GoodsInfo extends ValueObject {
 	/**特惠价*/
 	private long specialPrice;
 	
+	/**
+     * 优惠券优惠金额
+     */
+    private Long couponDiscount = 0l;
+    /**
+     * 优惠券ID
+     */
+    private String couponId;
+	
 	public Integer getSellNum() {
 		if (sellNum == null)
 			sellNum = 0;
@@ -75,7 +84,8 @@ public class GoodsInfo extends ValueObject {
 			,String goodsType, String goodsTypeId, String goodsUnit, String skuId
 			,String skuName, long price, long supplyPrice, long discountPrice, String goodsIcon
 			,float weight, int sellNum, Long freight, long plateformDiscount
-			,int isChange, long changePrice, int isSpecial, long specialPrice) {
+			,int isChange, long changePrice, int isSpecial, long specialPrice
+			,String couponId, long couponDiscount) {
 		this.rate = rate;
 		this.goodsId = goodsId;
 		this.goodsName = goodsName;
@@ -97,6 +107,8 @@ public class GoodsInfo extends ValueObject {
 		this.changePrice = changePrice;
 		this.isSpecial = isSpecial;
 		this.specialPrice = specialPrice;
+		this.couponDiscount = couponDiscount;
+		this.couponId = couponId;
 	}
 	
 	public long getDiscountPrice() {
@@ -124,7 +136,10 @@ public class GoodsInfo extends ValueObject {
 	boolean isChange() {
 		return isChange == 1;
 	}
-	
+	/***
+	 * 换购金额
+	 * @return
+	 */
 	long changePrice() {
 		return changePrice * sellNum;
 	}

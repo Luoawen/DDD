@@ -9,6 +9,7 @@ import cn.m2c.scm.application.order.SaleAfterOrderApp;
 import cn.m2c.scm.application.order.command.AddSaleAfterCmd;
 import cn.m2c.scm.application.order.command.CancelOrderCmd;
 import cn.m2c.scm.application.order.command.ConfirmSkuCmd;
+import cn.m2c.scm.application.order.command.ExpressInfoBean;
 import cn.m2c.scm.application.order.command.GetOrderCmd;
 import cn.m2c.scm.application.order.command.OrderAddCommand;
 import cn.m2c.scm.application.order.command.PayOrderCmd;
@@ -569,6 +570,7 @@ public class AppOrderAgent {
     public ResponseEntity<MPager> registExpress(
             @RequestParam(value = "com",defaultValue="") String com
             ,@RequestParam(value = "nu", defaultValue="") String nu
+            ,@RequestParam(value = "shipType",required = false) Integer shipType
             ) {
     	MPager result = new MPager(MCode.V_1);
         try {
@@ -580,7 +582,7 @@ public class AppOrderAgent {
         		result.setContent("物流号不能为空");
         		 return new ResponseEntity<MPager>(result, HttpStatus.OK);
         	}
-        	orderApp.registExpress(com,nu);
+        	orderApp.registExpress(com,nu,shipType);
         	result.setContent("注册快递100物流单号成功");
             result.setStatus(MCode.V_200);
         }catch (NegativeException ne) {
@@ -613,8 +615,8 @@ public class AppOrderAgent {
         		result.setContent("物流号不能为空");
         		 return new ResponseEntity<MPager>(result, HttpStatus.OK);
         	}
-        	String expressInfo = orderQueryApp.queryExpress(com,nu);
-        	result.setContent(expressInfo);
+        	 ExpressInfoBean queryExpress = orderQueryApp.queryExpress(com,nu);
+        	result.setContent(queryExpress);
             result.setStatus(MCode.V_200);
         }catch (NegativeException ne) {
             LOGGER.error("查询物流单号出错", ne);

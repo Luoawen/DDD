@@ -10,20 +10,19 @@ public class SimpleCoupon extends IdentifiedDomainObject {
 
 	/**订单ID*/
 	private String orderId;
-	//private MainOrder order;
-	/**优惠券ID*/
-	private String couponId;
 	/**1可用，0不可用*/
 	private Integer status = 1;
+	
+	private CouponInfo couponInfo;
 	
 	public SimpleCoupon() {
 		super();
 	}
 	
-	public SimpleCoupon(String orderId, String couponId) {
+	public SimpleCoupon(String orderId, CouponInfo couponInfo) {
 		super();
 		this.orderId = orderId;
-		this.couponId = couponId;
+		this.couponInfo = couponInfo;
 	}
 	
 	public void disenabled() {

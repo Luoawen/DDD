@@ -61,6 +61,10 @@ public class MainOrder extends ConcurrencySafeEntity {
      */
     private Long dealerDiscount = 0l;
     /**
+     * 优惠券优惠金额
+     */
+    private Long couponDiscount = 0l;
+    /**
      * 下单用户ID
      */
     private String userId;
@@ -103,7 +107,8 @@ public class MainOrder extends ConcurrencySafeEntity {
     // String payNo, int payWay, Date payTime,
     public MainOrder(String orderId, ReceiveAddr addr, long goodsAmount, long orderFreight, long plateformDiscount
             , long dealerDiscount, String userId, String noted, List<DealerOrder> dealerOrders
-            , List<SimpleCoupon> coupons, List<SimpleMarketing> marketings, Double latitude, Double longitude) {
+            , List<SimpleCoupon> coupons, List<SimpleMarketing> marketings, Double latitude, Double longitude
+            , long couponDiscount) {
         this.orderId = orderId;
         this.addr = addr;
         this.goodsAmount = goodsAmount;
@@ -117,6 +122,7 @@ public class MainOrder extends ConcurrencySafeEntity {
         this.marketings = marketings;
         this.latitude = latitude;
         this.longitude = longitude;
+        this.couponDiscount = couponDiscount;
     }
 
     /**
