@@ -40,7 +40,7 @@ public abstract class IDGenerator {
     public static final String SCM_SUIBIAN_PREFIX_TITLE = "DE";
     public static final String SCM_GOODS_SPECIAL_PREFIX_TITLE = "SPYH";//商品优惠价前缀
     public static final String SCM_GOODS_GUARANTEE_PREFIX_TITLE = "SPBZ";//商品保障前缀
-    public static final String SCM_GOODS_SPECIAL_IMAGE_ID = "THTP";//特惠价图片
+    public static final String SCM_GOODS_SPECIAL_IMAGE = "SCM_GOODS_SPECIAL_IMAGE";//特惠价图片
     /**
      * 鐢熸垚搴忓垪ID
      *

@@ -258,5 +258,4 @@ public class GoodsSpecialQueryApplication {
         }
         return list;
     }
-
 }
