@@ -30,9 +30,13 @@ public class ConfigModifyCommand  extends AssertionConcern implements Serializab
 		if(null == configStatus) {
 			throw new NegativeException(MCode.V_1, "配置状态不能为空");
 		}
+		if(StringUtils.isNotEmpty(configDescribe) && StringUtils.isNotEmpty(configDescribe.trim())) {
+			this.configDescribe = configDescribe.trim();
+		}else {
+			this.configDescribe = null;
+		}
 		this.configKey = configKey;
 		this.configValue = configValue;
-		this.configDescribe = configDescribe.trim();
 		this.configStatus = configStatus;
 	}
 

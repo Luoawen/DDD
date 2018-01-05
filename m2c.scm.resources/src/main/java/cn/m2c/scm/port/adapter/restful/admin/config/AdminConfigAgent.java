@@ -16,6 +16,9 @@ import cn.m2c.common.MResult;
 import cn.m2c.scm.application.config.ConfigApplication;
 import cn.m2c.scm.application.config.command.ConfigCommand;
 import cn.m2c.scm.application.config.command.ConfigModifyCommand;
+import cn.m2c.scm.application.config.data.bean.ConfigBean;
+import cn.m2c.scm.application.config.data.representation.ConfigBeanRepresentation;
+import cn.m2c.scm.application.config.query.ConfigQueryApplication;
 import cn.m2c.scm.domain.IDGenerator;
 import cn.m2c.scm.domain.NegativeException;
 
@@ -30,6 +33,9 @@ public class AdminConfigAgent {
 	
 	@Autowired
 	ConfigApplication configApplication;
+	
+	@Autowired
+	ConfigQueryApplication configQueryApplication;
 	
 	/**
      * 获取特惠价图片key
@@ -53,7 +59,7 @@ public class AdminConfigAgent {
      * 保存配置
      * @return
      */
-    @RequestMapping(value = "/save" ,method = RequestMethod.POST)
+    @RequestMapping(value = "/save", method = RequestMethod.POST)
 	public ResponseEntity<MResult> saveConfig(
 	    	@RequestParam(value = "configKey",required = false) String configKey,
 			@RequestParam(value = "configValue", required = false) String configValue,
@@ -78,7 +84,7 @@ public class AdminConfigAgent {
      * 修改配置
      * @return
      */
-    @RequestMapping(value = "/modify/{configKey}" ,method = RequestMethod.PUT)
+    @RequestMapping(value = "/modify/{configKey}", method = RequestMethod.PUT)
     public ResponseEntity<MResult> modifyConfig(
     		@PathVariable(value = "configKey") String configKey,
     		@RequestParam(value = "configValue", required = false) String configValue,
@@ -99,4 +105,29 @@ public class AdminConfigAgent {
 		}
 		return new ResponseEntity<MResult>(result, HttpStatus.OK);
     }
+    
+    /**
+     * 查询配置(特惠价图片等)
+     * @param configKey
+     * @return
+     */
+    @RequestMapping(value = "/{configKey}", method = RequestMethod.GET)
+    public ResponseEntity<MResult> getConfigByConfigKey(
+    		@PathVariable(value = "configKey") String configKey
+    		){
+    	MResult result = new MResult(MCode.V_1);
+    	try {
+    		ConfigBean configBean = configQueryApplication.queryConfigBeanByConfigKey(configKey);
+    		if(null != configBean) {
+    			ConfigBeanRepresentation representation = new ConfigBeanRepresentation(configBean);
+    			result.setContent(representation);
+    		}
+    		result.setStatus(MCode.V_200);
+    	}catch (Exception e) {
+            LOGGER.error("getConfigByConfigKey Exception e:", e);
+            result = new MResult(MCode.V_400, "查询配置失败");
+        }
+    	return new ResponseEntity<MResult>(result, HttpStatus.OK);
+    }
+    
 }

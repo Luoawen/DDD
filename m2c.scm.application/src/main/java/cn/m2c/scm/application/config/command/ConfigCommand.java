@@ -27,9 +27,13 @@ public class ConfigCommand  extends AssertionConcern implements Serializable {
 		if(StringUtils.isEmpty(configValue) && StringUtils.isEmpty(configValue.trim())) {
 			throw new NegativeException(MCode.V_1, "配置内容不能为空");
 		}
+		if(StringUtils.isNotEmpty(configDescribe) && StringUtils.isNotEmpty(configDescribe.trim())) {
+			this.configDescribe = configDescribe.trim();
+		}else {
+			this.configDescribe = null;
+		}
 		this.configKey = configKey;
 		this.configValue = configValue;
-		this.configDescribe = configDescribe.trim();
 		this.configStatus = 1;
 	}
 
