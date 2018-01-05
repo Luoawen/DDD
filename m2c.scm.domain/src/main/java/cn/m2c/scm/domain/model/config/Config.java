@@ -28,10 +28,9 @@ public class Config  extends ConcurrencySafeEntity {
 		this.lastUpdatedDate = new Date();
 	}
 
-	public void modifyConfig(String configValue, String configDescribe, Integer configStatus) {
+	public void modifyConfig(String configValue, String configDescribe) {
 		this.configValue = configValue;
 		this.configDescribe = configDescribe;
-		this.configStatus = configStatus;
 		this.lastUpdatedDate = new Date();
 	}
 	

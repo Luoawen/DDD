@@ -10,7 +10,7 @@ import cn.m2c.ddd.common.AssertionConcern;
 import cn.m2c.scm.domain.NegativeException;
 
 /**
- * 新增配置 
+ * 新增修改配置 
  */
 public class ConfigCommand  extends AssertionConcern implements Serializable {
 	private String configKey;

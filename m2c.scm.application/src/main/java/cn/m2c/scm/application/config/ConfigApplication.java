@@ -10,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import cn.m2c.common.MCode;
 import cn.m2c.scm.application.config.command.ConfigCommand;
-import cn.m2c.scm.application.config.command.ConfigModifyCommand;
 import cn.m2c.scm.domain.NegativeException;
 import cn.m2c.scm.domain.model.config.Config;
 import cn.m2c.scm.domain.model.config.ConfigRepository;
@@ -44,17 +43,17 @@ public class ConfigApplication {
 
 	/**
 	 * 修改配置
-	 * @param configModifyCommand
+	 * @param ConfigCommand
 	 * @throws NegativeException 
 	 */
 	@Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
-	public void modifyConfig(ConfigModifyCommand command) throws NegativeException {
+	public void modifyConfig(ConfigCommand command) throws NegativeException {
 		LOGGER.info("modifyConfig command >>{}", command);
 		Config config = configRepository.queryConfigByKey(command.getConfigKey());
 		if(null == config) {
 			throw new NegativeException(MCode.V_300, "配置不存在");
 		}
-		config.modifyConfig(command.getConfigValue(), command.getConfigDescribe(), command.getConfigStatus());
+		config.modifyConfig(command.getConfigValue(), command.getConfigDescribe());
 	}
 	
 	
