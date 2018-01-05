@@ -153,7 +153,7 @@ public class GoodsApproveAgent {
                         return new ResponseEntity<MResult>(result, HttpStatus.OK);
                     }
                     map.put("skuId", skuId);
-                    Long marketPrice = new BigDecimal((GetMapValueUtils.getFloatFromMapKey(map, "marketPrice") * 10000)).longValue();
+                    Long marketPrice = null != map.get("marketPrice") && !"NaN".equals( map.get("marketPrice")) ? new BigDecimal((GetMapValueUtils.getFloatFromMapKey(map, "marketPrice") * 10000)).longValue() : null;
                     Long photographPrice = new BigDecimal((GetMapValueUtils.getFloatFromMapKey(map, "photographPrice") * 10000)).longValue();
                     if(null != GetMapValueUtils.getFloatFromMapKey(map, "supplyPrice")) {
                     	Long supplyPrice = new BigDecimal((GetMapValueUtils.getFloatFromMapKey(map, "supplyPrice") * 10000)).longValue();
@@ -294,7 +294,7 @@ public class GoodsApproveAgent {
                         }
                         map.put("skuId", skuId);
                     }
-                    Long marketPrice = new BigDecimal((GetMapValueUtils.getFloatFromMapKey(map, "marketPrice") * 10000)).longValue();
+                    Long marketPrice = null != map.get("marketPrice") && !"NaN".equals( map.get("marketPrice")) ? new BigDecimal((GetMapValueUtils.getFloatFromMapKey(map, "marketPrice") * 10000)).longValue() : null;
                     Long photographPrice = new BigDecimal((GetMapValueUtils.getFloatFromMapKey(map, "photographPrice") * 10000)).longValue();
                     if(null != GetMapValueUtils.getFloatFromMapKey(map, "supplyPrice")) {
                     	Long supplyPrice = new BigDecimal((GetMapValueUtils.getFloatFromMapKey(map, "supplyPrice") * 10000)).longValue();
