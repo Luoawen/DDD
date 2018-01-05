@@ -68,30 +68,34 @@ public class GoodsDetailRepresentation {
             for (GoodsGuaranteeBean guaranteeBean : goodsGuaranteeBeans) {
                 this.goodsGuarantee.add(guaranteeBean.getGuaranteeDesc());
             }*/
-        	this.goodsGuarantee = JsonUtils.toList(JsonUtils.toStr(goodsGuaranteeBeans), Map.class);
+            this.goodsGuarantee = JsonUtils.toList(JsonUtils.toStr(goodsGuaranteeBeans), Map.class);
         }
         this.goodsSpecifications = JsonUtils.toList(bean.getGoodsSpecifications(), Map.class);
         List<Map> list = new ArrayList<>();
-        for(GoodsSkuBean goodsSkuBean: bean.getGoodsSkuBeans()) {
-        	Map map = new HashMap<>();
-        	map.put("goodsId", goodsSkuBean.getGoodsId());
-        	map.put("skuId", goodsSkuBean.getSkuId());
-        	map.put("skuName", goodsSkuBean.getSkuName());
-        	map.put("availableNum", goodsSkuBean.getAvailableNum());
-        	map.put("realNum", goodsSkuBean.getRealNum());
-        	map.put("weight", goodsSkuBean.getWeight());
-        	map.put("photographPrice", Utils.moneyFormatCN(goodsSkuBean.getPhotographPrice()));//拍获价
-        	map.put("marketPrice", Utils.moneyFormatCN(goodsSkuBean.getMarketPrice()));//市场价
-        	if(null != goodsSkuBean.getSupplyPrice()) {
-        		map.put("supplyPrice", Utils.moneyFormatCN(goodsSkuBean.getSupplyPrice()));//供货价
-        	}else {
-        		map.put("supplyPrice", goodsSkuBean.getSupplyPrice());
-        	}
-        	map.put("goodsCode", goodsSkuBean.getGoodsCode());
-        	map.put("sellerNum", goodsSkuBean.getSellerNum());
-        	map.put("showStatus", goodsSkuBean.getShowStatus());
-            map.put("show",goodsSkuBean.isShow());
-        	list.add(map);
+        for (GoodsSkuBean goodsSkuBean : bean.getGoodsSkuBeans()) {
+            Map map = new HashMap<>();
+            map.put("goodsId", goodsSkuBean.getGoodsId());
+            map.put("skuId", goodsSkuBean.getSkuId());
+            map.put("skuName", goodsSkuBean.getSkuName());
+            map.put("availableNum", goodsSkuBean.getAvailableNum());
+            map.put("realNum", goodsSkuBean.getRealNum());
+            map.put("weight", goodsSkuBean.getWeight());
+            map.put("photographPrice", Utils.moneyFormatCN(goodsSkuBean.getPhotographPrice()));//拍获价
+            if (null != goodsSkuBean.getMarketPrice()) {
+                map.put("marketPrice", Utils.moneyFormatCN(goodsSkuBean.getMarketPrice()));//市场价
+            } else {
+                map.put("marketPrice", goodsSkuBean.getMarketPrice());
+            }
+            if (null != goodsSkuBean.getSupplyPrice()) {
+                map.put("supplyPrice", Utils.moneyFormatCN(goodsSkuBean.getSupplyPrice()));//供货价
+            } else {
+                map.put("supplyPrice", goodsSkuBean.getSupplyPrice());
+            }
+            map.put("goodsCode", goodsSkuBean.getGoodsCode());
+            map.put("sellerNum", goodsSkuBean.getSellerNum());
+            map.put("showStatus", goodsSkuBean.getShowStatus());
+            map.put("show", goodsSkuBean.isShow());
+            list.add(map);
         }
         this.goodsSKUs = list;
         this.goodsMainImages = JsonUtils.toList(bean.getGoodsMainImages(), String.class);
