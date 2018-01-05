@@ -445,7 +445,7 @@ public class OrderQuery {
 		.append(" dtl.media_res_id,dtl.sell_num,dtl.goods_unit, dtl.discount_price,dtl.freight, dtl.is_change, dtl.change_price,dtl.is_special,dtl.special_price \r\n") 
 		.append(" FROM  t_scm_order_dealer dealer \r\n")
 		.append(" ,t_scm_order_detail dtl \r\n")
-		.append(" LEFT OUTER JOIN t_scm_order_after_sell a ON a.dealer_order_id=dtl.dealer_order_id AND a.sku_id = dtl.sku_id AND a._status NOT IN(-1, 3) AND a.sort_no=dtl.sort_no \r\n")
+		.append(" LEFT OUTER JOIN (SELECT * FROM t_scm_order_after_sell GROUP BY sku_id,dealer_order_id) a ON a.dealer_order_id=dtl.dealer_order_id AND a.sku_id = dtl.sku_id AND a.sort_no=dtl.sort_no \r\n")
 		.append(" WHERE dealer.dealer_order_id = ? ")
 		.append(" AND dealer.dealer_order_id = dtl.dealer_order_id ");
 		//.append(" AND dtl.sku_id NOT IN (SELECT a.sku_id FROM t_scm_order_after_sell a WHERE a.dealer_order_id=dtl.dealer_order_id AND a._status >= 4) ");
