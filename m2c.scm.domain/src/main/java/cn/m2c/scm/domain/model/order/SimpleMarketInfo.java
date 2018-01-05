@@ -14,7 +14,7 @@ public class SimpleMarketInfo extends ValueObject {
 	/**营销层级*/
 	private Integer marketLevel;
 	/**营销层级门槛*/
-	private long threshold;
+	private Long threshold;
 	/**营销形式，1：减钱，2：打折，3：换购*/
 	private Integer marketType;
 	/**门槛类型，1：金额，2：件数*/
