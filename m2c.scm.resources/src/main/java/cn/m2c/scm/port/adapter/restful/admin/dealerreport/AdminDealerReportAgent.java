@@ -17,8 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/admin/dealer/report")
-public class DealerReportAgent {
-    private static final Logger LOGGER = LoggerFactory.getLogger(DealerReportAgent.class);
+public class AdminDealerReportAgent {
+    private static final Logger LOGGER = LoggerFactory.getLogger(AdminDealerReportAgent.class);
 
     @Autowired
     DealerReportQueryApplication dealerReportQueryApplication;
