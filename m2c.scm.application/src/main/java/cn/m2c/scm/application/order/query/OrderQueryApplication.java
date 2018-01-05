@@ -235,7 +235,7 @@ public class OrderQueryApplication {
 	public List<OrderExpressBean> getAllExpress() throws NegativeException {
 		List<OrderExpressBean> expressList = null;
 		try {
-			String sql = "SELECT * FROM t_scm_order_exp_company WHERE exp_status=1";
+			String sql = "SELECT * FROM t_scm_order_exp_company WHERE exp_status=1 ORDER BY exp_company_code";
 			expressList = this.getSupportJdbcTemplate().queryForBeanList(sql, OrderExpressBean.class);
 		} catch (Exception e) {
 			LOGGER.error("---查询物流公司列表出错",e);
