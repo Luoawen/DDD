@@ -72,15 +72,16 @@ public class GoodsDetailRepresentation {
         }
         this.goodsSpecifications = JsonUtils.toList(bean.getGoodsSpecifications(), Map.class);
         List<Map> list = new ArrayList<>();
-        for (GoodsSkuBean goodsSkuBean : bean.getGoodsSkuBeans()) {
-            Map map = new HashMap<>();
-            map.put("goodsId", goodsSkuBean.getGoodsId());
-            map.put("skuId", goodsSkuBean.getSkuId());
-            map.put("skuName", goodsSkuBean.getSkuName());
-            map.put("availableNum", goodsSkuBean.getAvailableNum());
-            map.put("realNum", goodsSkuBean.getRealNum());
-            map.put("weight", goodsSkuBean.getWeight());
-            map.put("photographPrice", Utils.moneyFormatCN(goodsSkuBean.getPhotographPrice()));//拍获价
+
+        for(GoodsSkuBean goodsSkuBean: bean.getGoodsSkuBeans()) {
+        	Map map = new HashMap<>();
+        	map.put("goodsId", goodsSkuBean.getGoodsId());
+        	map.put("skuId", goodsSkuBean.getSkuId());
+        	map.put("skuName", goodsSkuBean.getSkuName());
+        	map.put("availableNum", goodsSkuBean.getAvailableNum());
+        	map.put("realNum", goodsSkuBean.getRealNum());
+        	map.put("weight", goodsSkuBean.getWeight());
+        	map.put("photographPrice", Utils.moneyFormatCN(goodsSkuBean.getPhotographPrice()));//拍获价
             if (null != goodsSkuBean.getMarketPrice()) {
                 map.put("marketPrice", Utils.moneyFormatCN(goodsSkuBean.getMarketPrice()));//市场价
             } else {
