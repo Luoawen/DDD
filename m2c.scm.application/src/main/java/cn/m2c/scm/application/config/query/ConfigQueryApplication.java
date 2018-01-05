@@ -23,7 +23,11 @@ public class ConfigQueryApplication {
         return supportJdbcTemplate;
     }
 	
-    
+    /**
+     * 根据configKey查询ConfigBean
+     * @param configKey
+     * @return
+     */
 	public ConfigBean queryConfigBeanByConfigKey(String configKey) {
 		StringBuilder sql = new StringBuilder();
         sql.append(" SELECT * from t_scm_config where config_key = ? ");

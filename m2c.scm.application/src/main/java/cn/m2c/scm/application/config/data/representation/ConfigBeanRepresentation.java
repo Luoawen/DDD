@@ -8,12 +8,12 @@ import cn.m2c.scm.application.config.data.bean.ConfigBean;
  * 配置表述对象
  */
 public class ConfigBeanRepresentation {
-	private String configKey;
-	private String configValue;
-	private String configDescribe;
-	private Integer configStatus;
-	private Date createdDate;
-	private Date lastUpdatedDate;
+	private String configKey;      //配置名
+	private String configValue;    //配置值
+	private String configDescribe; //配置说明
+	private Integer configStatus;  //配置状态
+	private Date createdDate;      //创建时间
+	private Date lastUpdatedDate;  //最后更新时间
 	
 	public ConfigBeanRepresentation (ConfigBean bean) {
 		this.configKey = bean.getConfigKey();

@@ -8,10 +8,10 @@ import cn.m2c.ddd.common.domain.model.ConcurrencySafeEntity;
  * 配置(特惠价图片) 
  */
 public class Config  extends ConcurrencySafeEntity {
-	private String configKey;
-	private String configValue;
-	private String configDescribe;
-	private Integer configStatus;
+	private String configKey;      //配置名
+	private String configValue;    //配置值
+	private String configDescribe; //配置说明
+	private Integer configStatus;  //配置状态（1正常，2不可用）
 	private Date createdDate;
 	private Date lastUpdatedDate;
 	
@@ -28,6 +28,11 @@ public class Config  extends ConcurrencySafeEntity {
 		this.lastUpdatedDate = new Date();
 	}
 
+	/**
+	 * 修改配置(配置内容，配置说明)
+	 * @param configValue
+	 * @param configDescribe
+	 */
 	public void modifyConfig(String configValue, String configDescribe) {
 		this.configValue = configValue;
 		this.configDescribe = configDescribe;

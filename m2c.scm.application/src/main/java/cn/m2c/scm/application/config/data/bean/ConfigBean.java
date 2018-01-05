@@ -8,19 +8,33 @@ import cn.m2c.ddd.common.persistence.orm.ColumnAlias;
  * 配置 
  */
 public class ConfigBean {
-
+	/**
+	 * 主键id
+	 */
 	@ColumnAlias(value = "id")
 	private Integer id;
 	
+	/**
+	 * 配置名
+	 */
 	@ColumnAlias(value = "config_key")
 	private String configKey;
 	
+	/**
+	 * 配置值
+	 */
 	@ColumnAlias(value = "config_value")
 	private String configValue;
 	
+	/**
+	 * 配置说明
+	 */
 	@ColumnAlias(value = "config_describe")
 	private String configDescribe;
 	
+	/**
+	 * 配置状态（1正常，2不可用）
+	 */
 	@ColumnAlias(value = "config_status")
 	private Integer configStatus;
 	
