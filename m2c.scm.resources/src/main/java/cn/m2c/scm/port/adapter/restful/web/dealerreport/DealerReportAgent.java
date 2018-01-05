@@ -29,7 +29,7 @@ import java.util.Map;
  * 商家首页
  */
 @RestController
-@RequestMapping("/web/dealer/report")
+@RequestMapping(value = {"/web/dealer/report", "/admin/dealer/report"})
 public class DealerReportAgent {
     private static final Logger LOGGER = LoggerFactory.getLogger(DealerReportAgent.class);
 
