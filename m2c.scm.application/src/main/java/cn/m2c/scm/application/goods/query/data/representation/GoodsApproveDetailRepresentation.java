@@ -78,7 +78,11 @@ public class GoodsApproveDetailRepresentation {
             map.put("availableNum", goodsSkuBean.getAvailableNum());
             map.put("weight", goodsSkuBean.getWeight());
             map.put("photographPrice", Utils.moneyFormatCN(goodsSkuBean.getPhotographPrice()));//拍获价
-            map.put("marketPrice", Utils.moneyFormatCN(goodsSkuBean.getMarketPrice()));//市场价
+            if (null != goodsSkuBean.getMarketPrice()) {
+                map.put("marketPrice", Utils.moneyFormatCN(goodsSkuBean.getMarketPrice()));//市场价
+            } else {
+                map.put("marketPrice", goodsSkuBean.getMarketPrice());
+            }
             if(null != goodsSkuBean.getSupplyPrice()) {
                 map.put("supplyPrice", Utils.moneyFormatCN(goodsSkuBean.getSupplyPrice()));//供货价
             }else {
