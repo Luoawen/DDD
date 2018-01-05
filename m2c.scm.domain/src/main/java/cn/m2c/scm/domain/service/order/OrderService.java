@@ -5,8 +5,6 @@ import java.util.Map;
 
 import cn.m2c.scm.domain.NegativeException;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 
 
 /***
@@ -116,4 +114,12 @@ public interface OrderService {
 	 * @throws NegativeException
 	 */
 	public void registExpress(String com, String nu) throws NegativeException;
+	/**
+	 * 获取优惠券信息
+	 * @param couponId
+	 * @param cla 
+	 * @return
+	 * @throws NegativeException
+	 */
+	public <T> T getCouponById(String couponId, Class<T> cla) throws NegativeException;
 }

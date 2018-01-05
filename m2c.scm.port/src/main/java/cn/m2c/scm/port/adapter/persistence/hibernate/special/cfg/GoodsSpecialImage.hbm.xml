@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping default-access="field"
+	default-cascade="all">
+    <class name="cn.m2c.scm.domain.model.special.GoodsSpecialImage" table="t_scm_goods_special_image" lazy="true"
+           optimistic-lock="version" dynamic-insert="true" dynamic-update="true">
+
+        <id name="id" column="id" type="long" unsaved-value="-1">
+			<generator class="native" />
+		</id>
+        <version name="concurrencyVersion" column="concurrency_version" type="int"/>
+        <property name="imageId" column="image_id" type="string"/>
+        <property name="specialImageUrl" column="special_image_url" type="string"/>
+        <property name="createdDate" generated="insert" not-null="true">
+			<column name="created_date" sql-type="timestamp" default="CURRENT_TIMESTAMP"></column>
+		</property>
+        <property name="lastUpdatedDate" column="last_updated_date" type="timestamp"/>
+    </class>
+</hibernate-mapping>

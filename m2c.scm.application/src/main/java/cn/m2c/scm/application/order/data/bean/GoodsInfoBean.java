@@ -84,6 +84,9 @@ public class GoodsInfoBean {
 	@ColumnAlias(value = "afterSellStatus")
 	private Integer afterSellStatus;
 	
+	@ColumnAlias(value = "afterOrderType")
+	private Integer afterOrderType;
+	
 	public Integer getSortNo() {
 		return sortNo;
 	}
@@ -106,6 +109,14 @@ public class GoodsInfoBean {
 
 	public void setSpecialPrice(long specialPrice) {
 		this.specialPrice = specialPrice;
+	}
+
+	public Integer getAfterOrderType() {
+		return afterOrderType;
+	}
+
+	public void setAfterOrderType(Integer afterOrderType) {
+		this.afterOrderType = afterOrderType;
 	}
 
 	public String getAfterSellOrderId() {
