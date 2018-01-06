@@ -3,12 +3,9 @@ package cn.m2c.scm.application.special;
 import cn.m2c.common.MCode;
 import cn.m2c.ddd.common.logger.OperationLogManager;
 import cn.m2c.scm.application.special.command.GoodsSpecialAddCommand;
-import cn.m2c.scm.application.special.command.GoodsSpecialImageCommand;
 import cn.m2c.scm.application.special.command.GoodsSpecialModifyCommand;
 import cn.m2c.scm.domain.NegativeException;
 import cn.m2c.scm.domain.model.special.GoodsSpecial;
-import cn.m2c.scm.domain.model.special.GoodsSpecialImage;
-import cn.m2c.scm.domain.model.special.GoodsSpecialImageRepository;
 import cn.m2c.scm.domain.model.special.GoodsSpecialRepository;
 
 import org.apache.commons.lang3.StringUtils;
@@ -34,9 +31,6 @@ public class GoodsSpecialApplication {
 
     @Autowired
     GoodsSpecialRepository goodsSpecialRepository;
-
-    @Autowired
-    GoodsSpecialImageRepository goodsSpecialImageRepository;
     
     @Resource
     private OperationLogManager operationLogManager;
@@ -165,22 +159,4 @@ public class GoodsSpecialApplication {
             }
         }
     }
-
-    /**
-     * 保存特惠价图片
-     * @param specialImage
-     */
-    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
-	public void saveGoodsSpecialImage(GoodsSpecialImageCommand goodsSpecialImageCommand) {
-		LOGGER.info("saveGoodsSpecialImage goodsSpecialImageCommand >>{}", goodsSpecialImageCommand);
-		//查数据库表中第一条（目前只有一条）
-		GoodsSpecialImage goodsSpecialImage = goodsSpecialImageRepository.queryGoodsSpecialImageById();
-		//GoodsSpecialImage goodsSpecialImage = goodsSpecialImageRepository.queryGoodsSpecialImage(goodsSpecialImageCommand.getImageId());
-		if(null == goodsSpecialImage) {//新增
-			goodsSpecialImage = new GoodsSpecialImage(goodsSpecialImageCommand.getImageId(),goodsSpecialImageCommand.getSpecialImageUrl());
-			goodsSpecialImageRepository.saveImage(goodsSpecialImage);
-		}else {//修改
-			goodsSpecialImage.modifySpecialImageUrl(goodsSpecialImageCommand.getSpecialImageUrl());
-		}
-	}
 }

@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 商家首页报表
@@ -81,5 +82,20 @@ public class DealerReportQueryApplication {
             params.add(dealerId);
         }
         return this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), DealerDayReportBean.class, params.toArray());
+    }
+
+    public List<Map<String, Object>> getDealerMonthSellTop(Integer startTime, Integer endTime) {
+        List<Object> params = new ArrayList<Object>();
+        StringBuilder sql = new StringBuilder();
+        sql.append(" SELECT ");
+        sql.append(" t.dealer_id as dealerId,sum(sell_money) as money ");
+        sql.append(" FROM ");
+        sql.append(" t_scm_dealer_day_report t WHERE 1 = 1");
+        sql.append(" AND t.day >= ?");
+        sql.append(" AND t.day <= ?");
+        sql.append(" AND t.sell_money <> 0 group by t.dealer_id order by money desc limit 0,5");
+        params.add(startTime);
+        params.add(endTime);
+        return this.getSupportJdbcTemplate().jdbcTemplate().queryForList(sql.toString(), params.toArray());
     }
 }

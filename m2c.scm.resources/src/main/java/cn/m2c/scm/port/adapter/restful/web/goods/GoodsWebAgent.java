@@ -21,7 +21,6 @@ import java.util.List;
  * 商品销量榜
  */
 @RestController
-@RequestMapping("/web/goods")
 public class GoodsWebAgent {
     private static final Logger LOGGER = LoggerFactory.getLogger(GoodsWebAgent.class);
 
@@ -36,7 +35,7 @@ public class GoodsWebAgent {
      * @param dealerId 商家id
      * @return
      */
-    @RequestMapping(value = "/sales/list/top5", method = RequestMethod.GET)
+    @RequestMapping(value = "/web/goods/sales/list/top5", method = RequestMethod.GET)
     public ResponseEntity<MResult> queryGoodsSalesListTop5(
             @RequestParam(value = "month", required = false) Integer month,
             @RequestParam(value = "dealerId", required = false) String dealerId) {
@@ -58,7 +57,7 @@ public class GoodsWebAgent {
      * @param dealerId 商家id
      * @return
      */
-    @RequestMapping(value = "/for/sale/num", method = RequestMethod.GET)
+    @RequestMapping(value = {"/web/goods/for/sale/num","/admin/goods/for/sale/num"}, method = RequestMethod.GET)
     public ResponseEntity<MResult> queryGoodsForSaleNum(
             @RequestParam(value = "dealerId", required = false) String dealerId) {
         MResult result = new MResult(MCode.V_1);
