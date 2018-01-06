@@ -12,6 +12,7 @@ import cn.m2c.common.MCode;
 import cn.m2c.ddd.common.port.adapter.persistence.springJdbc.SupportJdbcTemplate;
 import cn.m2c.scm.application.order.data.bean.AfterSellApplyReason;
 import cn.m2c.scm.application.order.data.bean.AfterSellBean;
+import cn.m2c.scm.application.order.data.bean.AfterSellFlowBean;
 import cn.m2c.scm.application.order.data.bean.AfterSellOrderBean;
 import cn.m2c.scm.application.order.data.bean.AfterSellOrderDetailBean;
 import cn.m2c.scm.application.order.data.bean.AftreSellLogisticsBean;
@@ -626,5 +627,27 @@ public class AfterSellOrderQuery {
 			throw new NegativeException(MCode.V_500, "查询APP商家售后单列表出错");
 		}
 		return result;
+	}
+	
+	
+	/**
+	 * 查询售后流程记录
+	 * @param afterSellNo
+	 * @return
+	 * @throws NegativeException
+	 */
+	public List<AfterSellFlowBean> getAfterSellFlow(String afterSellNo) throws NegativeException{
+		List<AfterSellFlowBean> result = null;
+		
+		try {
+			StringBuilder sql = new StringBuilder();
+			sql.append(" SELECT * FROM t_scm_after_sell_flow WHERE after_sell_order_id = ? ");
+			result = this.supportJdbcTemplate.queryForBeanList(sql.toString(), AfterSellFlowBean.class,afterSellNo);
+		} catch (Exception e) {
+			throw new NegativeException(MCode.V_500,"查询售后流程记录出错");
+		}
+		
+		return result;
+		
 	}
 }
