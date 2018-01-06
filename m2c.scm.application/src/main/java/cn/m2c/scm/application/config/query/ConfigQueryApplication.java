@@ -30,7 +30,7 @@ public class ConfigQueryApplication {
      */
 	public ConfigBean queryConfigBeanByConfigKey(String configKey) {
 		StringBuilder sql = new StringBuilder();
-        sql.append(" SELECT * from t_scm_config where config_key = ? ");
+        sql.append(" SELECT * FROM t_scm_config WHERE config_key = ? AND config_status = 1 ");
         ConfigBean configBean = this.getSupportJdbcTemplate().queryForBean(sql.toString(), ConfigBean.class, configKey);
 		return configBean;
 	}
