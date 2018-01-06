@@ -97,6 +97,7 @@ public class AppOrderAgent {
     public ResponseEntity<MResult> submitOrder(
             @RequestParam(value = "goodses", required = false) String goodses
             ,@RequestParam(value = "userId", required = false) String userId
+            ,@RequestParam(value = "couponUserId", required = false) String couponUserId
             ,@RequestParam(value = "orderId", required = false) String orderId
             ,@RequestParam(value = "invoice", required = false) String invoice
             ,@RequestParam(value = "addr", required = false) String addr
@@ -112,7 +113,7 @@ public class AppOrderAgent {
     		) {
     	MResult result = new MResult(MCode.V_1);
         try {
-        	OrderAddCommand cmd = new OrderAddCommand(orderId, userId, noted, goodses, invoice, addr, coupons,
+        	OrderAddCommand cmd = new OrderAddCommand(orderId, userId,couponUserId, noted, goodses, invoice, addr, coupons,
         			latitude, longitude, from, appVersion, os, osVersion, sn);
             result.setContent(orderApp.submitOrder(cmd));
             result.setStatus(MCode.V_200);

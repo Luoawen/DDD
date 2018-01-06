@@ -21,6 +21,7 @@
 	        <property name="couponName" column="coupon_name" type="string"/>
 	        <property name="discount" column="discount" type="int"/>
 	        <property name="couponForm" column="coupon_form" type="int"/>
+	        <property name="couponUserId" column="coupon_user_id" type="string"/>
         </component>
         
         <!-- <many-to-one name="order" column="order_id" class="cn.m2c.scm.domain.model.order.MainOrder" fetch="join" 

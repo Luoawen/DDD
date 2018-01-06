@@ -64,7 +64,7 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	@Override
-	public <T> boolean lockMarketIds(List<T> marketIds, String orderNo, String userId) {
+	public <T> boolean lockMarketIds(List<T> marketIds, String useCouponList ,String orderNo, String userId) {
 		// TODO Auto-generated method stub
 		if (null == marketIds || marketIds.size() < 1) {
 			return true;
@@ -329,10 +329,11 @@ public class OrderServiceImpl implements OrderService {
 	 * 获取优惠券信息
 	 */
 	@Override
-	public <T> T getCouponById(String couponId, Class<T> cla)
+	public <T> T getCouponById(String couponId, String couponUserId,
+			String userId,Class<T> cla)
 			throws NegativeException {
-		String url = M2C_HOST_URL + "/m2c.market/domain/coupon/detail/{0}";
-		String rtResult = restTemplate.getForObject(url, String.class ,couponId);
+		String url = M2C_HOST_URL + "/m2c.market/domain/coupon/query/detail/content?userId={0}&couponId={1}&couponUserId={2}";
+		String rtResult = restTemplate.getForObject(url, String.class ,userId,couponId,couponUserId);
 		JSONObject json = JSONObject.parseObject(rtResult);
 		T result = null;
 		if (json.getInteger("status") == 200) {

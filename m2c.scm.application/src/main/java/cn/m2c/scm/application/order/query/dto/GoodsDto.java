@@ -2,6 +2,8 @@ package cn.m2c.scm.application.order.query.dto;
 
 import org.apache.commons.lang3.StringUtils;
 
+import cn.m2c.scm.application.order.data.bean.CouponBean;
+import cn.m2c.scm.domain.model.order.CouponInfo;
 import cn.m2c.scm.domain.model.order.GoodsInfo;
 import cn.m2c.scm.domain.model.order.SimpleMarketInfo;
 
@@ -380,6 +382,15 @@ public class GoodsDto {
 		}
 		return null; 
 	}
+	
+	public CouponInfo toCouponInfo(String couponUserId, CouponBean couponBean) {
+		if(!StringUtils.isEmpty(couponBean.getCouponId())){
+			return new CouponInfo( couponBean.getCouponId(), couponBean.getCouponForm(), couponBean.getThreshold(),
+					couponBean.getCouponType(), couponBean.getThresholdType(), couponBean.getSharePercent(), couponBean.getCouponName()
+					, (int)couponBean.getDiscountNum(),couponUserId);
+		}
+		return null;
+	}
 	/***
 	 * 从src copy相对应的属性到本对象
 	 * @param src
@@ -400,4 +411,8 @@ public class GoodsDto {
 		goodsIcon = src.getGoodsIcon();
 		dealerId = src.getDealerId();		
 	}
+
+	
+
+	
 }

@@ -33,6 +33,8 @@ public class OrderAddCommand extends AssertionConcern implements Serializable {
 	
 	private String userId;
 	
+	private String couponUserId;
+	
 	private String noted;
 	
 	private List<GoodsDto> goodses;
@@ -64,7 +66,7 @@ public class OrderAddCommand extends AssertionConcern implements Serializable {
 		return info;
 	}
 	
-	public OrderAddCommand(String orderId, String userId, String noted
+	public OrderAddCommand(String orderId, String userId, String couponUserId,String noted
 			,String goodses, String invoice, String addr, String coupons
 			, Double latitude, Double longitude, Integer from
 			,String appVer, String os, String osVer, String sn
@@ -78,6 +80,7 @@ public class OrderAddCommand extends AssertionConcern implements Serializable {
 		}
 		
 		this.userId = userId;
+		this.couponUserId = couponUserId;
 		this.orderId = orderId;
 		this.noted = noted;
 		this.from = from;
@@ -303,6 +306,9 @@ public class OrderAddCommand extends AssertionConcern implements Serializable {
 
 	public ReceiveAddr getAddr() {
 		return addr;
+	}
+	public String getCouponUserId() {
+		return couponUserId;
 	}
 	
 }
