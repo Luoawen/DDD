@@ -449,7 +449,6 @@ public class OrderQuery {
 		.append(" WHERE dealer.dealer_order_id = ? ")
 		.append(" AND dealer.dealer_order_id = dtl.dealer_order_id ");
 		//.append(" AND dtl.sku_id NOT IN (SELECT a.sku_id FROM t_scm_order_after_sell a WHERE a.dealer_order_id=dtl.dealer_order_id AND a._status >= 4) ");
-		System.out.println("SQL----------------------->"+sql);
 		List<GoodsInfoBean> goodsInfoList = this.supportJdbcTemplate.queryForBeanList(sql.toString(),
 				GoodsInfoBean.class, dealerOrderId);
 		/*for (GoodsInfoBean goodsInfo : goodsInfoList) {

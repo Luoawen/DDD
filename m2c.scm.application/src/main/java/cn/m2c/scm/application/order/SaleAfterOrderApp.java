@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.baidu.disconf.client.usertools.DisconfDataGetter;
+
 import cn.m2c.common.MCode;
 import cn.m2c.ddd.common.event.annotation.EventListener;
 import cn.m2c.ddd.common.logger.OperationLogManager;
@@ -27,6 +29,8 @@ import cn.m2c.scm.application.order.data.bean.SkuNumBean;
 import cn.m2c.scm.application.order.query.AfterSellOrderQuery;
 import cn.m2c.scm.application.utils.Utils;
 import cn.m2c.scm.domain.NegativeException;
+import cn.m2c.scm.domain.model.order.AfterSellFlow;
+import cn.m2c.scm.domain.model.order.AfterSellFlowRepository;
 import cn.m2c.scm.domain.model.order.DealerOrderDtl;
 import cn.m2c.scm.domain.model.order.SaleAfterOrder;
 import cn.m2c.scm.domain.model.order.SaleAfterOrderRepository;
@@ -47,8 +51,15 @@ public class SaleAfterOrderApp {
 	@Autowired
 	AfterSellOrderQuery saleOrderQuery;
 	
+	@Autowired
+	AfterSellFlowRepository afterSellFlowRepository;
+	
 	@Resource
     private OperationLogManager operationLogManager; 
+	
+	private static final String SCM_JOB_USER = DisconfDataGetter.getByFileItem("constants.properties", "scm.job.user").toString().trim();
+
+	
 	/***
 	 * 创建售后单
 	 * @param cmd
@@ -127,6 +138,7 @@ public class SaleAfterOrderApp {
 		if (num > itemDtl.sellNum())
 			num = itemDtl.sellNum();
 		
+		AfterSellFlow afterSellFlow = new AfterSellFlow();
 		// 使之前申请的失效 20171218添加		
 		saleAfterRepository.invalideBefore(cmd.getSkuId(), cmd.getDealerOrderId(), _sortNo);
 		
@@ -136,6 +148,8 @@ public class SaleAfterOrderApp {
 				, _sortNo);
 		afterOrder.addApply();
 		saleAfterRepository.save(afterOrder);
+		afterSellFlow.add(cmd.getSaleAfterNo(), 0, cmd.getUserId(),cmd.getReason(),cmd.getReasonCode(),null,null);
+		afterSellFlowRepository.save(afterSellFlow);
 		LOGGER.info("新增加售后申请成功！");
 	}
 	/***
@@ -199,7 +213,11 @@ public class SaleAfterOrderApp {
 		}
 		if (order.agreeApply(cmd.getUserId(), (long)frt)) {
 			itemDtl.returnInventory(cmd.getSaleAfterNo(), order.getBackNum(), order.orderType());
+			AfterSellFlow afterSellFlow = new AfterSellFlow();
 			saleAfterRepository.updateSaleAfterOrder(order);
+			afterSellFlow.add(cmd.getSaleAfterNo(), 4, cmd.getUserId(),null,null,null,null);
+			System.out.println(afterSellFlow);
+			afterSellFlowRepository.save(afterSellFlow);
 		}
 		else {
 			throw new NegativeException(MCode.V_101, "售后单状态不正确或已经同意过了！");
@@ -219,8 +237,11 @@ public class SaleAfterOrderApp {
 		}
 		if (StringUtils.isNotEmpty(attach))
 			operationLogManager.operationLog("拒绝售后申请", attach, order);
+		AfterSellFlow afterSellFlow = new AfterSellFlow();
 		order.rejectSute(cmd.getRejectReason(), cmd.getRejectReasonCode(), cmd.getUserId());
 		saleAfterRepository.updateSaleAfterOrder(order);
+		afterSellFlow.add(cmd.getSaleAfterNo(), 3, cmd.getUserId(),null,null,cmd.getRejectReason(),cmd.getRejectReasonCode());
+		afterSellFlowRepository.save(afterSellFlow);
 	}
 	
 	/***
@@ -238,6 +259,9 @@ public class SaleAfterOrderApp {
 			throw new NegativeException(MCode.V_103, "状态不正确，不能进行发货操作！");
 		}
 		saleAfterRepository.updateSaleAfterOrder(order);
+		AfterSellFlow afterSellFlow = new AfterSellFlow();
+		afterSellFlow.add(cmd.getSaleAfterNo(), 5, cmd.getUserId(),null,null,null,null);
+		afterSellFlowRepository.save(afterSellFlow);
 	}
 	
 	/***
@@ -258,6 +282,9 @@ public class SaleAfterOrderApp {
 			throw new NegativeException(MCode.V_103, "状态不正确，不能进行发货操作！");
 		}
 		saleAfterRepository.updateSaleAfterOrder(order);
+		AfterSellFlow afterSellFlow = new AfterSellFlow();
+		afterSellFlow.add(cmd.getSaleAfterNo(), 7, cmd.getUserId(),null,null,null,null);
+		afterSellFlowRepository.save(afterSellFlow);
 	}
 	
 	
@@ -277,6 +304,9 @@ public class SaleAfterOrderApp {
 			throw new NegativeException(MCode.V_103, "状态不正确，不能进行发货操作！");
 		}
 		saleAfterRepository.updateSaleAfterOrder(order);
+		AfterSellFlow afterSellFlow = new AfterSellFlow();
+		afterSellFlow.add(cmd.getSaleAfterNo(), 10, cmd.getUserId(),null,null,null,null);
+		afterSellFlowRepository.save(afterSellFlow);
 	}
 	
 	/***
@@ -344,6 +374,10 @@ public class SaleAfterOrderApp {
 			throw new NegativeException(MCode.V_103, "状态不正确，不能进行此操作！");
 		}
 		saleAfterRepository.updateSaleAfterOrder(order);
+		AfterSellFlow afterSellFlow = new AfterSellFlow();
+		afterSellFlow.add(cmd.getSaleAfterNo(), 9, cmd.getUserId(),null,null,null,null);
+		System.out.println(afterSellFlow);
+		afterSellFlowRepository.save(afterSellFlow);
 	}
 	
 	/***
@@ -361,6 +395,9 @@ public class SaleAfterOrderApp {
 			throw new NegativeException(MCode.V_103, "状态不正确，不能进行收货操作！");
 		}
 		saleAfterRepository.updateSaleAfterOrder(order);
+		AfterSellFlow afterSellFlow = new AfterSellFlow();
+		afterSellFlow.add(cmd.getSaleAfterNo(), 8, cmd.getUserId(),null,null,null,null);
+		afterSellFlowRepository.save(afterSellFlow);
 	}
 	
 	/***
@@ -399,18 +436,20 @@ public class SaleAfterOrderApp {
 		}
 		
 		List<SaleAfterOrder> saleAfterOrders = saleAfterRepository.getSaleAfterOrderStatusAgree(hour);
-		
+		AfterSellFlow afterSellFlow = new AfterSellFlow();
 		if (saleAfterOrders.size() == 0)
 			throw new NegativeException(MCode.V_1, "没有满足条件的商家订单.");
 		
 		for (SaleAfterOrder afterOrder : saleAfterOrders) {
-			jobUpdateSaleAfter(afterOrder);
+			jobUpdateSaleAfter(afterOrder,afterSellFlow);
 		}
 	}
 	@Transactional(rollbackFor = { Exception.class, RuntimeException.class,NegativeException.class }, propagation = Propagation.REQUIRES_NEW)
-	private void jobUpdateSaleAfter(SaleAfterOrder afterOrder) {
+	private void jobUpdateSaleAfter(SaleAfterOrder afterOrder,AfterSellFlow afterSellFlow) {
 		afterOrder.updateStatusAgreeAfterSale();
 		saleAfterRepository.save(afterOrder);
+		afterSellFlow.add(afterOrder.getSaleAfterNo(), 11, SCM_JOB_USER, null, null, null, null);
+		afterSellFlowRepository.save(afterSellFlow);
 	}
 	
 	/**
@@ -429,18 +468,20 @@ public class SaleAfterOrderApp {
 			e.printStackTrace();
 		}
 		List<SaleAfterOrder> saleAfterOrders= saleAfterRepository.getSaleAfterApplyed(hour);
+		AfterSellFlow afterSellFlow = new AfterSellFlow();
 		if (saleAfterOrders.size() == 0)
 			return ;
 		
 		for (SaleAfterOrder afterOrder : saleAfterOrders) {
-			jobCancelAfterOrder(afterOrder);
+			jobCancelAfterOrder(afterOrder,afterSellFlow);
 		}
 	}
 	
 	@Transactional(rollbackFor = { Exception.class, RuntimeException.class,NegativeException.class }, propagation = Propagation.REQUIRES_NEW)
-	private void jobCancelAfterOrder(SaleAfterOrder afterOrder) {
+	private void jobCancelAfterOrder(SaleAfterOrder afterOrder,AfterSellFlow afterSellFlow) {
 		if (afterOrder.cancel())
 			saleAfterRepository.save(afterOrder);
+			afterSellFlow.add(afterOrder.getSaleAfterNo(), -1, SCM_JOB_USER, null, null, null, null);
 	}
 	
 	/**
@@ -459,11 +500,12 @@ public class SaleAfterOrderApp {
 			e.printStackTrace();
 		}
 		List<SaleAfterOrder> saleAfterOrders = saleAfterRepository.getAgreeRtMoney(hour);
+		AfterSellFlow afterSellFlow = new AfterSellFlow();
 		if (saleAfterOrders.size() == 0)
 			return ;
 		try {
 			for (SaleAfterOrder afterOrder : saleAfterOrders) {
-				jobAfterAgreed(afterOrder, userId);
+				jobAfterAgreed(afterOrder, userId,afterSellFlow);
 			}
 		} catch (NegativeException e) {
 			e.printStackTrace();
@@ -471,7 +513,7 @@ public class SaleAfterOrderApp {
 	}
 	
 	@Transactional(rollbackFor = { Exception.class, RuntimeException.class,NegativeException.class }, propagation = Propagation.REQUIRES_NEW)
-	private void jobAfterAgreed(SaleAfterOrder afterOrder, String userId) throws NegativeException {
+	private void jobAfterAgreed(SaleAfterOrder afterOrder, String userId,AfterSellFlow afterSellFlow) throws NegativeException {
 		String payNo = saleOrderQuery.getMainOrderPayNo(afterOrder.orderId());
 		if (StringUtils.isEmpty(payNo)) {
 			throw new NegativeException(MCode.V_101, "售后单状态不正确！");
@@ -481,6 +523,8 @@ public class SaleAfterOrderApp {
 		}
 		
 		saleAfterRepository.save(afterOrder);
+		afterSellFlow.add(afterOrder.getSaleAfterNo(), 10, SCM_JOB_USER, null, null, null, null);
+		afterSellFlowRepository.save(afterSellFlow);
 	}
 	
 	/**
@@ -536,11 +580,12 @@ public class SaleAfterOrderApp {
 			e.printStackTrace();
 		}
 		List<SaleAfterOrder> saleAfterOrders = saleAfterRepository.getDealerSend(hour);
+		AfterSellFlow afterSellFlow = new AfterSellFlow();
 		if (saleAfterOrders.size() == 0)
 			return ;
 		try {
 			for (SaleAfterOrder afterOrder : saleAfterOrders) {
-				jobUserAutoRec(afterOrder, userId);
+				jobUserAutoRec(afterOrder, userId,afterSellFlow);
 			}
 		} catch (NegativeException e) {
 			e.printStackTrace();
@@ -548,7 +593,7 @@ public class SaleAfterOrderApp {
 	}
 	
 	@Transactional(rollbackFor = { Exception.class, RuntimeException.class,NegativeException.class }, propagation = Propagation.REQUIRES_NEW)
-	private void jobUserAutoRec(SaleAfterOrder afterOrder, String userId) throws NegativeException {
+	private void jobUserAutoRec(SaleAfterOrder afterOrder, String userId,AfterSellFlow afterSellFlow) throws NegativeException {
 		
 		if (!afterOrder.userConfirmRev(userId)) {
 			throw new NegativeException(MCode.V_103, "状态不正确，不能进行此操作！");
@@ -556,6 +601,7 @@ public class SaleAfterOrderApp {
 		// 查询出订单详情中的对应记录 标记为完成状态
 		// adfsaf;
 		saleAfterRepository.save(afterOrder);
+		afterSellFlow.add(afterOrder.getSaleAfterNo(), 8, SCM_JOB_USER, null, null, null, null);
 	}
 	
 	/**

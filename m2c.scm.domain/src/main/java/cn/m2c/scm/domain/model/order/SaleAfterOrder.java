@@ -379,6 +379,10 @@ public class SaleAfterOrder extends ConcurrencySafeEntity {
             return 0;
         return backNum;
     }
+    
+    public String getSaleAfterNo() {
+		return saleAfterNo;
+	}
 
     /***
      * 订单类型
