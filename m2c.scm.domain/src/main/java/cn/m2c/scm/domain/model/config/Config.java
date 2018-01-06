@@ -2,12 +2,12 @@ package cn.m2c.scm.domain.model.config;
 
 import java.util.Date;
 
-import cn.m2c.ddd.common.domain.model.ConcurrencySafeEntity;
+import cn.m2c.ddd.common.domain.model.Entity;
 
 /**
  * 配置(特惠价图片) 
  */
-public class Config  extends ConcurrencySafeEntity {
+public class Config  extends Entity {
 	private String configKey;      //配置名
 	private String configValue;    //配置值
 	private String configDescribe; //配置说明
