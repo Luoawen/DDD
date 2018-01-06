@@ -102,6 +102,12 @@ public class GoodsBean {
     private String goodsMainImages;
 
     /**
+     * 商品主图视频
+     */
+    @ColumnAlias(value = "goods_main_video")
+    private String goodsMainVideo;
+    
+    /**
      * 商品描述
      */
     @ColumnAlias(value = "goods_desc")
@@ -348,6 +354,14 @@ public class GoodsBean {
 
 	public void setGoodsLaunchStatus(Integer goodsLaunchStatus) {
 		this.goodsLaunchStatus = goodsLaunchStatus;
+	}
+
+	public String getGoodsMainVideo() {
+		return goodsMainVideo;
+	}
+
+	public void setGoodsMainVideo(String goodsMainVideo) {
+		this.goodsMainVideo = goodsMainVideo;
 	}
     
 }

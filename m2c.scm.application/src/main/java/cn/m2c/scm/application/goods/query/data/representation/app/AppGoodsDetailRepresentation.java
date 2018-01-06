@@ -37,6 +37,7 @@ public class AppGoodsDetailRepresentation {
     private List<Map> goodsSpecifications;
     private List<AppGoodsSkuRepresentation> goodsSKUs;
     private List<String> goodsMainImages;
+    private String goodsMainVideo;
     private String mresId;
     private String goodsDescUrl;
     private Map goodsComment;
@@ -87,6 +88,7 @@ public class AppGoodsDetailRepresentation {
             }
         }
         this.goodsMainImages = JsonUtils.toList(bean.getGoodsMainImages(), String.class);
+        this.goodsMainVideo = bean.getGoodsMainVideo();
         this.mresId = mresId;
         this.goodsDescUrl = M2C_HOST_URL + "/m2c.scm/goods/app/desc?goodsId=" + this.goodsId;
 
@@ -351,4 +353,13 @@ public class AppGoodsDetailRepresentation {
     public Map getConfigs() {
     	return configs;
     }
+
+	public String getGoodsMainVideo() {
+		return goodsMainVideo;
+	}
+
+	public void setGoodsMainVideo(String goodsMainVideo) {
+		this.goodsMainVideo = goodsMainVideo;
+	}
+    
 }
