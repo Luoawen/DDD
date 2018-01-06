@@ -81,7 +81,7 @@
         <component name="marketInfo">
         	<property name="marketingId" column="marketing_id" type="string"/>
 	    	<property name="marketLevel" column="market_level" type="int"/>
-	        <property name="threshold" column="threshold" type="int"/>
+	        <property name="threshold" column="threshold" type="long"/>
         </component>
         
         <component name="mediaInfo">

@@ -17,6 +17,7 @@ import cn.m2c.scm.application.order.command.SaleAfterCmd;
 import cn.m2c.scm.application.order.command.SaleAfterShipCmd;
 import cn.m2c.scm.application.order.data.bean.AfterSellApplyReason;
 import cn.m2c.scm.application.order.data.bean.AfterSellBean;
+import cn.m2c.scm.application.order.data.bean.AfterSellFlowBean;
 import cn.m2c.scm.application.order.data.bean.AppOrderBean;
 import cn.m2c.scm.application.order.data.bean.AppOrderDtl;
 import cn.m2c.scm.application.order.data.bean.OrderExpressBean;
@@ -679,6 +680,28 @@ public class AppOrderAgent {
 		} catch (Exception e) {
 			LOGGER.info("查询物流公司失败");
 		}
+    	return new ResponseEntity<MResult>(result,HttpStatus.OK);
+    }
+    
+    
+    /**
+     * 售后单好查询售后流程记录
+     * @param saleAfterNo
+     * @return
+     */
+    @RequestMapping(value = "app/after/sell/flow",method = RequestMethod.GET)
+    public ResponseEntity<MResult> afterSellFlow(@RequestParam(value = "saleAfterNo",required = false)String saleAfterNo){
+    	MResult result = new MResult(MCode.V_1);
+    	
+    	try {
+			List<AfterSellFlowBean> afterSellFlow = saleAfterQuery.getAfterSellFlow(saleAfterNo);
+			result.setContent(afterSellFlow);
+			result.setStatus(MCode.V_200);
+		} catch (NegativeException e) {
+			LOGGER.error("查询售后流程记录出错",e);
+			result = new MResult(MCode.V_400, e.getMessage());
+		}
+    	
     	return new ResponseEntity<MResult>(result,HttpStatus.OK);
     }
 }
