@@ -131,6 +131,7 @@ public class GoodsApproveAgent {
             @RequestParam(value = "goodsKeyWord", required = false) List goodsKeyWord,
             @RequestParam(value = "goodsGuarantee", required = false) List goodsGuarantee,
             @RequestParam(value = "goodsMainImages", required = false) List goodsMainImages,
+            @RequestParam(value = "goodsMainVideo", required = false) String goodsMainVideo,
             @RequestParam(value = "goodsDesc", required = false) String goodsDesc,
             @RequestParam(value = "goodsShelves", required = false) Integer goodsShelves,
             @RequestParam(value = "goodsSpecifications", required = false) String goodsSpecifications,
@@ -173,7 +174,7 @@ public class GoodsApproveAgent {
             GoodsApproveCommand command = new GoodsApproveCommand(goodsId, dealerId, dealerName, goodsName, goodsSubTitle,
                     goodsClassifyId, goodsBrandId, goodsBrandName, goodsUnitId, goodsMinQuantity,
                     goodsPostageId, goodsBarCode, goodsKeyWord, goodsGuarantee,
-                    goodsMainImages, goodsDesc, goodsShelves, goodsSpecifications, goodsSkuApproves, skuFlag);
+                    goodsMainImages, goodsMainVideo, goodsDesc, goodsShelves, goodsSpecifications, goodsSkuApproves, skuFlag);
             goodsApproveApplication.addGoodsApprove(command);
             result.setStatus(MCode.V_200);
         } catch (NegativeException ne) {
@@ -276,6 +277,7 @@ public class GoodsApproveAgent {
             @RequestParam(value = "goodsKeyWord", required = false) List goodsKeyWord,
             @RequestParam(value = "goodsGuarantee", required = false) List goodsGuarantee,
             @RequestParam(value = "goodsMainImages", required = false) List goodsMainImages,
+            @RequestParam(value = "goodsMainVideo", required = false) String goodsMainVideo,
             @RequestParam(value = "goodsDesc", required = false) String goodsDesc,
             @RequestParam(value = "goodsSpecifications", required = false) String goodsSpecifications,
             @RequestParam(value = "goodsSKUs", required = false) String goodsSKUs) {
@@ -315,7 +317,7 @@ public class GoodsApproveAgent {
             GoodsApproveCommand command = new GoodsApproveCommand(goodsId, dealerId, goodsName, goodsSubTitle,
                     goodsClassifyId, goodsBrandId, goodsBrandName, goodsUnitId, goodsMinQuantity,
                     goodsPostageId, goodsBarCode, goodsKeyWord, goodsGuarantee,
-                    goodsMainImages, goodsDesc, goodsSpecifications, goodsSKUs);
+                    goodsMainImages, goodsMainVideo, goodsDesc, goodsSpecifications, goodsSKUs);
             String _attach = request.getHeader("attach");
             goodsApproveApplication.modifyGoodsApprove(command, _attach);
             result.setStatus(MCode.V_200);

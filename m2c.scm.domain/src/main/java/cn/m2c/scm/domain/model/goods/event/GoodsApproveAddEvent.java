@@ -83,6 +83,11 @@ public class GoodsApproveAddEvent implements DomainEvent {
      * 商品主图  存储类型是[“url1”,"url2"]
      */
     private String goodsMainImages;
+    
+    /**
+     * 商品主图视频
+     */
+    private String goodsMainVideo;
 
     /**
      * 商品描述
@@ -104,7 +109,7 @@ public class GoodsApproveAddEvent implements DomainEvent {
     public GoodsApproveAddEvent(String goodsId, String dealerId, String dealerName, String goodsName,
                                 String goodsSubTitle, String goodsClassifyId, String goodsBrandId, String goodsBrandName, String goodsUnitId,
                                 Integer goodsMinQuantity, String goodsPostageId, String goodsBarCode,
-                                String goodsKeyWord, String goodsGuarantee, String goodsMainImages, String goodsDesc,
+                                String goodsKeyWord, String goodsGuarantee, String goodsMainImages, String goodsMainVideo, String goodsDesc,
                                 String goodsSpecifications, String goodsSkuApproves, Integer skuFlag) {
         this.goodsId = goodsId;
         this.dealerId = dealerId;
@@ -121,6 +126,7 @@ public class GoodsApproveAddEvent implements DomainEvent {
         this.goodsKeyWord = goodsKeyWord;
         this.goodsGuarantee = goodsGuarantee;
         this.goodsMainImages = goodsMainImages;
+        this.goodsMainVideo = goodsMainVideo;
         this.goodsDesc = goodsDesc;
         this.goodsSpecifications = goodsSpecifications;
         this.goodsSkuApproves = goodsSkuApproves;

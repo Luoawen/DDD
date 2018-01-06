@@ -94,6 +94,11 @@ public class GoodsApproveCommand extends AssertionConcern implements Serializabl
     private List goodsMainImages;
 
     /**
+     * 商品主图视频
+     */
+    private String goodsMainVideo;
+    
+    /**
      * 商品描述
      */
     private String goodsDesc;
@@ -120,7 +125,7 @@ public class GoodsApproveCommand extends AssertionConcern implements Serializabl
     public GoodsApproveCommand(String goodsId, String dealerId, String dealerName, String goodsName, String goodsSubTitle,
                                String goodsClassifyId, String goodsBrandId, String goodsBrandName, String goodsUnitId, Integer goodsMinQuantity,
                                String goodsPostageId, String goodsBarCode, List goodsKeyWord, List goodsGuarantee,
-                               List goodsMainImages, String goodsDesc, Integer goodsShelves, String goodsSpecifications, String goodsSkuApproves ,Integer skuFlag) throws NegativeException {
+                               List goodsMainImages, String goodsMainVideo, String goodsDesc, Integer goodsShelves, String goodsSpecifications, String goodsSkuApproves ,Integer skuFlag) throws NegativeException {
         if (StringUtils.isEmpty(goodsId)) {
             throw new NegativeException(MCode.V_1, "商品ID为空");
         }
@@ -201,6 +206,7 @@ public class GoodsApproveCommand extends AssertionConcern implements Serializabl
         this.goodsKeyWord = goodsKeyWord;
         this.goodsGuarantee = goodsGuarantee;
         this.goodsMainImages = goodsMainImages;
+        this.goodsMainVideo = goodsMainVideo;//主图视频
         this.goodsDesc = goodsDesc;
         this.goodsShelves = goodsShelves;
         this.goodsSpecifications = goodsSpecifications;
@@ -212,7 +218,7 @@ public class GoodsApproveCommand extends AssertionConcern implements Serializabl
     public GoodsApproveCommand(String goodsId, String dealerId, String dealerName, String goodsName, String goodsSubTitle,
                                String goodsClassifyId, String goodsBrandId, String goodsBrandName, String goodsUnitId, Integer goodsMinQuantity,
                                String goodsPostageId, String goodsBarCode, List goodsKeyWord, List goodsGuarantee,
-                               List goodsMainImages, String goodsDesc, String goodsSpecifications, String goodsSkuApproves,Integer skuFlag) {
+                               List goodsMainImages, String goodsMainVideo, String goodsDesc, String goodsSpecifications, String goodsSkuApproves,Integer skuFlag) {
         this.goodsId = goodsId;
         this.dealerId = dealerId;
         this.dealerName = dealerName;
@@ -228,6 +234,7 @@ public class GoodsApproveCommand extends AssertionConcern implements Serializabl
         this.goodsKeyWord = goodsKeyWord;
         this.goodsGuarantee = goodsGuarantee;
         this.goodsMainImages = goodsMainImages;
+        this.goodsMainVideo = goodsMainVideo;//主图视频
         this.goodsDesc = goodsDesc;
         this.goodsSpecifications = goodsSpecifications;
         this.goodsSkuApproves = goodsSkuApproves;
@@ -237,7 +244,7 @@ public class GoodsApproveCommand extends AssertionConcern implements Serializabl
     public GoodsApproveCommand(String goodsId, String dealerId, String goodsName, String goodsSubTitle,
                                String goodsClassifyId, String goodsBrandId, String goodsBrandName, String goodsUnitId, Integer goodsMinQuantity,
                                String goodsPostageId, String goodsBarCode, List goodsKeyWord, List goodsGuarantee,
-                               List goodsMainImages, String goodsDesc, String goodsSpecifications, String goodsSkuApproves) {
+                               List goodsMainImages, String goodsMainVideo, String goodsDesc, String goodsSpecifications, String goodsSkuApproves) {
         this.goodsId = goodsId;
         this.dealerId = dealerId;
         this.goodsName = goodsName;
@@ -252,6 +259,7 @@ public class GoodsApproveCommand extends AssertionConcern implements Serializabl
         this.goodsKeyWord = goodsKeyWord;
         this.goodsGuarantee = goodsGuarantee;
         this.goodsMainImages = goodsMainImages;
+        this.goodsMainVideo = goodsMainVideo;//商品主图
         this.goodsDesc = goodsDesc;
         this.goodsSpecifications = goodsSpecifications;
         this.goodsSkuApproves = goodsSkuApproves;
@@ -339,5 +347,9 @@ public class GoodsApproveCommand extends AssertionConcern implements Serializabl
 
     public Integer getSkuFlag() {
         return skuFlag;
+    }
+    
+    public String getGoodsMainVideo() {
+    	return goodsMainVideo;
     }
 }
