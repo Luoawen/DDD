@@ -61,4 +61,24 @@ public class AdminDealerReportAgent {
         }
         return new ResponseEntity<MResult>(result, HttpStatus.OK);
     }
+
+    /**
+     * 商家总数
+     *
+     * @return
+     */
+    @RequestMapping(value = "/dealer/total", method = RequestMethod.GET)
+    public ResponseEntity<MResult> getDealerTotal(
+    ) {
+        MResult result = new MResult(MCode.V_1);
+        try {
+            Integer total = dealerQuery.getDealerTotal();
+            result.setContent(total);
+            result.setStatus(MCode.V_200);
+        } catch (Exception e) {
+            LOGGER.error("getDealerTotal Exception e:", e);
+            result = new MResult(MCode.V_400, "获取商家总数失败");
+        }
+        return new ResponseEntity<MResult>(result, HttpStatus.OK);
+    }
 }
