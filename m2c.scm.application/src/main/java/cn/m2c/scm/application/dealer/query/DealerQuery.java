@@ -406,7 +406,7 @@ public class DealerQuery {
      * @return
      * @throws NegativeException
      */
-    public Integer getDealerTotal() throws NegativeException {
+    public Integer getDealerTotal() {
         Integer total = 0;
         try {
             String sql = "select count(1) from t_scm_dealer";
@@ -415,5 +415,10 @@ public class DealerQuery {
             log.error("查询商家总数失败", e);
         }
         return total;
+    }
+
+    public List<String> getDealerIdsByShopName(String shopName) {
+        String sql = "select dealer_id from t_scm_dealer_shop where shop_name like ?";
+        return this.supportJdbcTemplate.jdbcTemplate().queryForList(sql, String.class, "%" + shopName + "%");
     }
 }
