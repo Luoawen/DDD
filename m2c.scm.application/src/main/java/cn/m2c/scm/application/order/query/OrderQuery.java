@@ -592,79 +592,10 @@ public class OrderQuery {
         sql.append(" SELECT count(d.id)");
         sql.append(" FROM t_scm_order_dealer d,t_scm_order_main m,t_scm_order_detail dtl");
         sql.append(" WHERE d.order_id = m.order_id and d.dealer_order_id = dtl.dealer_order_id");
-        if (StringUtils.isNotEmpty(dealerOrderId)) {
-            sql.append(" AND d.dealer_order_id = ?");
-            params.add(dealerOrderId);
-        }
-        if (StringUtils.isNotEmpty(orderId)) {
-            sql.append(" AND d.order_id = ?");
-            params.add(orderId);
-        }
-        // 订单状态:0.待付款 1.待发货 2.待收货 3.已完成 4.交易完成 5.交易关闭 -1.已取消
-        if (null != orderStatus) {
-            sql.append(" AND d._status =  ? ");
-            params.add(orderStatus);
-        }
-
-        // 售后状态处理
-        afterSaleStatusDeal(afterSellStatus, sql, params);
-        // 评论状态:0.待评论 1.已评论
-        if (commentStatus != null && commentStatus >= 0) {
-            sql.append(" AND dtl.comment_status = ?");
-            params.add(commentStatus);
-        }
-        // 支付状态:0.未支付 1.已支付
-        if (null != payStatus) {
-            if (payStatus == 0) {
-                sql.append(" AND d._status in (0,-1) ");
-            }
-            if (payStatus == 1) {
-                sql.append(" AND d._status in (1,2,3,4,5) ");
-            }
-        }
-        // 支付方式:1.支付宝 2.微信
-        if (null != payWay) {
-            sql.append(" AND m.pay_way = ? ");
-            params.add(payWay);
-        }
-
-        // 商品名称或编号
-        if (StringUtils.isNotEmpty(goodsNameOrId)) {
-            sql.append(" AND (dtl.goods_id = ? OR dtl.goods_name like ?)");
-            params.add(goodsNameOrId);
-            params.add("%" + goodsNameOrId + "%");
-        }
-
-        // 店铺名称
-        if (StringUtils.isNotEmpty(shopName)) {
-            List<String> dealerIds = dealerQuery.getDealerIdsByShopName(shopName);
-            if (null != dealerIds && dealerIds.size() > 0) {
-                sql.append(" AND d.dealer_id in (" + Utils.listParseString(dealerIds) + ") ");
-            }
-        }
-
-        // 订单下单时间
-        if (StringUtils.isNotEmpty(orderStartTime) && StringUtils.isNotEmpty(orderEndTime)) {
-            sql.append(" AND (d.created_date BETWEEN ? AND ?)");
-            params.add(orderStartTime + " 00:00:00");
-            params.add(orderEndTime + " 23:59:59");
-        }
-
-        // 下单用户名或账号，精准匹配
-        if (StringUtils.isNotEmpty(userName)) {
-            String userId = orderService.getUserIdByUserName(userName);
-            if (StringUtils.isNotEmpty(userId)) {
-                sql.append(" AND m.user_id = ?");
-                params.add(userId);
-            }
-        }
-
-        // 媒体ID或广告位ID，精准匹配
-        if (StringUtils.isNotEmpty(mediaOrResId)) {
-            sql.append(" AND (dtl.media_res_id = ? OR dtl.media_id = ?)");
-            params.add(mediaOrResId);
-            params.add(mediaOrResId);
-        }
+        // 条件处理
+        getAdminOrderListConditionDeal(orderId, dealerOrderId, orderStatus, afterSellStatus, commentStatus,
+                payStatus, payWay, goodsNameOrId, shopName, orderStartTime, orderEndTime,
+                userName, mediaOrResId, sql, params);
         return supportJdbcTemplate.jdbcTemplate().queryForObject(sql.toString(), Integer.class, params.toArray());
     }
 
@@ -678,6 +609,20 @@ public class OrderQuery {
         sql.append(" m.user_id as userId,d.dealer_id as dealerId,m.created_date");
         sql.append(" FROM t_scm_order_dealer d,t_scm_order_main m,t_scm_order_detail dtl");
         sql.append(" WHERE d.order_id = m.order_id and d.dealer_order_id = dtl.dealer_order_id");
+        // 条件处理
+        getAdminOrderListConditionDeal(orderId, dealerOrderId, orderStatus, afterSellStatus, commentStatus,
+                payStatus, payWay, goodsNameOrId, shopName, orderStartTime, orderEndTime,
+                userName, mediaOrResId, sql, params);
+        sql.append(" ORDER BY m.order_id DESC, m.created_date DESC ");
+        sql.append(" LIMIT ?,?");
+        params.add(rows * (pageNum - 1));
+        params.add(rows);
+        return supportJdbcTemplate.jdbcTemplate().queryForList(sql.toString(), params.toArray());
+    }
+
+    private void getAdminOrderListConditionDeal(String orderId, String dealerOrderId, Integer orderStatus, Integer afterSellStatus, Integer commentStatus,
+                                                Integer payStatus, Integer payWay, String goodsNameOrId, String shopName, String orderStartTime, String orderEndTime,
+                                                String userName, String mediaOrResId, StringBuilder sql, List<Object> params) {
         if (StringUtils.isNotEmpty(dealerOrderId)) {
             sql.append(" AND d.dealer_order_id = ?");
             params.add(dealerOrderId);
@@ -751,11 +696,6 @@ public class OrderQuery {
             params.add(mediaOrResId);
             params.add(mediaOrResId);
         }
-        sql.append(" ORDER BY m.order_id DESC, m.created_date DESC ");
-        sql.append(" LIMIT ?,?");
-        params.add(rows * (pageNum - 1));
-        params.add(rows);
-        return supportJdbcTemplate.jdbcTemplate().queryForList(sql.toString(), params.toArray());
     }
 
     /**
