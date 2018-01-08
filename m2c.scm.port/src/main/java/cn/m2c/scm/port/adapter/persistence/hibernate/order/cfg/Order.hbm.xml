@@ -12,10 +12,10 @@
         <version name="concurrencyVersion" column="concurrency_version" type="int"/>
         <property name="orderId" column="order_id" type="string"/>
         <property name="payNo" column="pay_no" type="string"/>
-        <property name="payWay" column="pay_way" type="int"/>
+        <property name="payWay" column="pay_way" />
         <property name="payTime" column="pay_time" type="timestamp"/>
-        <property name="status" column="_status" type="int"/>
-        <property name="delFlag" column="del_flag" type="int"/>
+        <property name="status" column="_status" />
+        <property name="delFlag" column="del_flag" />
         <property name="updateTime" column="last_updated_date" type="timestamp"/>
         
         <component name="addr">
@@ -31,13 +31,13 @@
 	        <property name="postCode" column="post_code" type="string"/>
         </component>
         
-        <property name="goodsAmount" column="goods_amount" type="long"/>
-        <property name="orderFreight" column="order_freight" type="long"/>
-        <property name="plateformDiscount" column="plateform_discount" type="long"/>
-        <property name="dealerDiscount" column="dealer_discount" type="long"/>
+        <property name="goodsAmount" column="goods_amount" />
+        <property name="orderFreight" column="order_freight"/>
+        <property name="plateformDiscount" column="plateform_discount" />
+        <property name="dealerDiscount" column="dealer_discount" />
         <property name="userId" column="user_id" type="string"/>
         <property name="noted" column="noted" type="string"/>
-        <property name="couponDiscount" column="coupon_discount" type="long"/>
+        <property name="couponDiscount" column="coupon_discount" />
         
         <property name="latitude" column="latitude" type="double"/>
         <property name="longitude" column="longitude" type="double"/>
@@ -47,14 +47,14 @@
         	<one-to-many class="cn.m2c.scm.domain.model.order.DealerOrder" />
         </bag>
         
-        <bag name="coupons" cascade="all-delete-orphan" lazy="false" inverse="true">
+         <bag name="coupons" cascade="all-delete-orphan" lazy="false" inverse="true">
         	<key column="order_id" property-ref="orderId"/>
         	<one-to-many class="cn.m2c.scm.domain.model.order.SimpleCoupon"/>
-        </bag>
+        </bag> 
         
-        <bag name="marketings" cascade="all-delete-orphan" lazy="false" inverse="true">
+       <bag name="marketings" cascade="all-delete-orphan" lazy="false" inverse="true">
         	<key column="order_id" property-ref="orderId"/>
         	<one-to-many class="cn.m2c.scm.domain.model.order.SimpleMarketing"/>
-        </bag>
+        </bag> 
     </class>
 </hibernate-mapping>

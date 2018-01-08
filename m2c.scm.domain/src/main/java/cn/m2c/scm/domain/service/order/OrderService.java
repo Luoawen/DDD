@@ -28,7 +28,7 @@ public interface OrderService {
 	 * @param userId
 	 * @return 成功与否
 	 */
-	public <T> boolean lockMarketIds(List<T> marketIds,String useCouponList, String orderNo, String userId);
+	public <T> boolean lockMarketIds(List<T> marketIds,String couponUserId, String orderNo, String userId,long orderAmount,long orderTime,String useCouponList);
 	/***
 	 * 解锁优惠券
 	 * @param couponsIds

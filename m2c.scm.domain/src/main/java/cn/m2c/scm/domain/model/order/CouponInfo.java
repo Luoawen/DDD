@@ -24,7 +24,7 @@ public class CouponInfo extends ValueObject {
 	/**优惠券名称*/
 	private String couponName;
 	/**优惠券折扣或优惠*/
-	private Integer discount;
+	private long discount;
 	/**优惠券唯一标识码*/
 	private String couponUserId;
 	public CouponInfo() {
@@ -33,7 +33,7 @@ public class CouponInfo extends ValueObject {
 	
 	public CouponInfo(String couponId, int couponForm, int threshold,
 			int couponType, int thresholdType, String sharePercent, String couponName
-			, int discount,String couponUserId) {
+			, long discount,String couponUserId) {
 		super();
 		this.couponId = couponId;
 		this.couponForm = couponForm;

@@ -64,13 +64,20 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	@Override
-	public <T> boolean lockMarketIds(List<T> marketIds, String useCouponList ,String orderNo, String userId) {
+	public <T> boolean lockMarketIds(List<T> marketIds,String couponUserId, String orderNo, String userId,long orderAmount,long orderTime,String useCouponList) {
 		// TODO Auto-generated method stub
 		if (null == marketIds || marketIds.size() < 1) {
 			return true;
 		}
-		String url = M2C_HOST_URL + "/m2c.market/domain/fullcut/use?goods_list={0}&order_id={1}&user_id={2}";
-		String rtResult = restTemplate.postForObject(url, null, String.class, JSONObject.toJSONString(marketIds), orderNo, userId);
+		System.out.println("1:"+JSONObject.toJSONString(marketIds));
+		System.out.println("1:"+couponUserId);
+		System.out.println("1:"+orderNo);
+		System.out.println("1:"+userId);
+		System.out.println("1:"+orderAmount);
+		System.out.println("1:"+orderTime);
+		System.out.println("1:"+useCouponList);
+		String url = M2C_HOST_URL + "/m2c.market/domain/fullcut/use?goods_list={0}&order_id={1}&user_id={2}&coupon_goods_list={3}&order_amount={4}&order_time={5}&coupon_user_id={6}";
+		String rtResult = restTemplate.postForObject(url, null, String.class, JSONObject.toJSONString(marketIds), orderNo, userId ,useCouponList,orderAmount,orderTime,couponUserId);
 		JSONObject json = JSONObject.parseObject(rtResult);
         if (json.getInteger("status") != 200) {
         	return false;

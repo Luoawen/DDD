@@ -114,7 +114,7 @@ public class OrderCouponCalc {
 			countNum +=  goodsDto.getPurNum();
 			sum +=  (goodsDto.getThePrice() * goodsDto.getPurNum() - goodsDto.getPlateformDiscount());
 		}
-		if(countNum>couponBean.getThreshold()){
+		if(countNum>=couponBean.getThreshold()){
 			countCouponDiscount(couponsGoods,couponBean,sum);
 		}
 	}
@@ -129,7 +129,7 @@ public class OrderCouponCalc {
 		for (GoodsDto goodsDto : couponsGoods) {
 			 sum +=  (goodsDto.getThePrice() * goodsDto.getPurNum() - goodsDto.getPlateformDiscount());
 		}
-		if(sum>couponBean.getThreshold()){//满足门槛
+		if(sum>=couponBean.getThreshold()){//满足门槛
 			countCouponDiscount(couponsGoods,couponBean,sum);
 			
 		}

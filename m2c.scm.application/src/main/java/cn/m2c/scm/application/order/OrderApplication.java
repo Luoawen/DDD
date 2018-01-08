@@ -14,6 +14,7 @@ import cn.m2c.scm.application.order.command.OrderPayedCmd;
 import cn.m2c.scm.application.order.command.PayOrderCmd;
 import cn.m2c.scm.application.order.command.SendOrderSMSCommand;
 import cn.m2c.scm.application.order.data.bean.CouponBean;
+import cn.m2c.scm.application.order.data.bean.CouponUseBean;
 import cn.m2c.scm.application.order.data.bean.FreightCalBean;
 import cn.m2c.scm.application.order.data.bean.GoodsReqBean;
 import cn.m2c.scm.application.order.data.bean.MarketBean;
@@ -249,9 +250,10 @@ public class OrderApplication {
             dealerDiscount += d.getDealerDiscount();
             couponDiscount += (d.getCouponDiscount() == null ? 0 : d.getCouponDiscount());
         }
-        
+        //结算金额
+        long orderAmount = goodsAmounts - plateDiscount - dealerDiscount - couponDiscount;
         List<MarketUseBean> useList = new ArrayList<>();
-        List<MarketUseBean> useCouponList = new ArrayList<>();
+        List<CouponUseBean> useCouponList = new ArrayList<>();
         MainOrder order = new MainOrder(cmd.getOrderId(), cmd.getAddr(), goodsAmounts, freight
                 , plateDiscount, dealerDiscount, cmd.getUserId(), cmd.getNoted(), dealerOrders
                 , getUsedCoupon(cmd.getOrderId(),cmd.getCouponUserId(),couponBean, gdes, useCouponList)
@@ -261,9 +263,9 @@ public class OrderApplication {
         order.add(skus, cmd.getFrom());
         orderRepository.save(order);
         // 锁定营销 , orderNo, 营销ID, userId -----
-//        if (!orderDomainService.lockMarketIds(useList, cmd.getCouponUserId(),cmd.getOrderId(), cmd.getUserId())) {
-//            throw new NegativeException(MCode.V_300, "活动已被用完！");
-//        }
+        if (!orderDomainService.lockMarketIds(useList, cmd.getCouponUserId(),cmd.getOrderId(), cmd.getUserId(),orderAmount,orderTime,JSONObject.toJSONString(useCouponList))) {
+            throw new NegativeException(MCode.V_300, "活动已被用完！");
+        }
         
         try {
         	AppOrdInfo appInfo = cmd.getInfo().toAppInfo();
@@ -431,11 +433,11 @@ public class OrderApplication {
      */
     private List<SimpleCoupon> getUsedCoupon(String orderId,
 			String couponUserId, CouponBean couponBean, List<GoodsDto> gdes,
-			List<MarketUseBean> useCouponList) {
+			List<CouponUseBean> useCouponList) {
     	List<SimpleCoupon> result = new ArrayList<SimpleCoupon>();
     	for (GoodsDto b : gdes) {
     		if(!StringUtils.isEmpty(b.getCouponId())){
-    			useCouponList.add(new MarketUseBean(b.getGoodsId(), b.getCouponId(), b.getSkuId(), b.getPurNum()));
+    			useCouponList.add(new CouponUseBean(b.getGoodsId(), b.getCouponId(), b.getSkuId(), b.getPurNum()));
     			CouponInfo info = b.toCouponInfo(couponUserId,couponBean);
     			if(info!=null){
     	    		result.add(new SimpleCoupon(orderId, info));
