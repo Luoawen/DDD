@@ -129,4 +129,6 @@ public interface OrderService {
 	 * @return
      */
 	public String getUserIdByUserName(String userName);
+
+	String getMediaName(String mediaId);
 }

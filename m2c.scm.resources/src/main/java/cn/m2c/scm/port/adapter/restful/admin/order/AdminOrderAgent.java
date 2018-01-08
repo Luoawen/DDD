@@ -2,6 +2,7 @@ package cn.m2c.scm.port.adapter.restful.admin.order;
 
 import cn.m2c.common.MCode;
 import cn.m2c.common.MPager;
+import cn.m2c.common.MResult;
 import cn.m2c.scm.application.order.query.OrderQuery;
 import cn.m2c.scm.application.shop.data.bean.ShopBean;
 import cn.m2c.scm.application.shop.query.ShopQuery;
@@ -13,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -61,7 +63,7 @@ public class AdminOrderAgent {
      * @return
      */
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public ResponseEntity<MPager> getOrderList(
+    public ResponseEntity<MPager> getAdminOrderList(
             @RequestParam(value = "orderId", required = false) String orderId, // 平台订单号
             @RequestParam(value = "dealerOrderId", required = false) String dealerOrderId, // 商家订单号
             @RequestParam(value = "orderStatus", required = false) Integer orderStatus, // 订单状态:0.待付款 1.待发货 2.待收货 3.已完成 4.交易完成 5.交易关闭 -1.已取消
@@ -102,8 +104,9 @@ public class AdminOrderAgent {
                         Long dealerAmount = null == map.get("dealerAmount") ? 0 : Long.parseLong(map.get("dealerAmount").toString());
                         Long platformDiscount = null == map.get("platformDiscount") ? 0 : Long.parseLong(map.get("platformDiscount").toString());
                         Long dealerDiscount = null == map.get("dealerDiscount") ? 0 : Long.parseLong(map.get("dealerDiscount").toString());
+                        Long couponDiscount = null == map.get("couponDiscount") ? 0 : Long.parseLong(map.get("couponDiscount").toString());
                         Long orderFreight = null == map.get("orderFreight") ? 0 : Long.parseLong(map.get("orderFreight").toString());
-                        Long orderMoney = dealerAmount + orderFreight - platformDiscount - dealerDiscount;
+                        Long orderMoney = dealerAmount + orderFreight - platformDiscount - dealerDiscount - couponDiscount;
                         // 订单总额
                         resultMap.put("orderMoney", Utils.moneyFormatCN(orderMoney));
                         // 下单用户
@@ -114,7 +117,7 @@ public class AdminOrderAgent {
                         ShopBean shop = shopQuery.getShop(map.get("dealerId").toString());
                         resultMap.put("shopName", null != shop ? shop.getShopName() : null);
                         // 下单时间
-                        Date date = (Date) map.get("created_date");
+                        Date date = (Date) map.get("createdDate");
                         resultMap.put("createTime", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date));
                         resultList.add(resultMap);
                     }
@@ -124,8 +127,24 @@ public class AdminOrderAgent {
             result.setPager(total, pageNum, rows);
             result.setStatus(MCode.V_200);
         } catch (Exception e) {
-
+            LOGGER.error("查询订单列表失败", e.getMessage());
+            result = new MPager(MCode.V_400, "服务器开小差");
         }
         return new ResponseEntity<MPager>(result, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/{dealerOrderId}", method = RequestMethod.GET)
+    public ResponseEntity<MResult> getDealerOrderDetail(
+            @PathVariable("dealerOrderId") String dealerOrderId) {
+        MResult result = new MResult(MCode.V_1);
+        try {
+            Map<String, Object> map = orderQuery.getAdminOrderDetail(dealerOrderId);
+            result.setContent(map);
+            result.setStatus(MCode.V_200);
+        } catch (Exception e) {
+            LOGGER.error("查询订单详情失败", e.getMessage());
+            result = new MPager(MCode.V_400, "服务器开小差");
+        }
+        return new ResponseEntity<MResult>(result, HttpStatus.OK);
     }
 }

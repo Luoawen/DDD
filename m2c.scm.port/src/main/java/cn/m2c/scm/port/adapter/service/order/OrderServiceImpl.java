@@ -6,12 +6,15 @@ import java.lang.reflect.Type;
 import java.net.URL;
 import java.net.URLConnection;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import cn.m2c.common.JsonUtils;
 import org.apache.commons.logging.Log;
 import org.apache.http.protocol.HttpRequestExecutor;
 import org.slf4j.Logger;
@@ -377,6 +380,35 @@ public class OrderServiceImpl implements OrderService {
             LOGGER.error("getUserIdByUserName exception.url=>" + url);
             LOGGER.error("getUserIdByUserName exception.error=>" + e.getMessage());
             LOGGER.error("getUserIdByUserName exception.param=>userName=" + userName);
+        }
+        return null;
+    }
+
+    @Override
+    public String getMediaName(String mediaId) {
+        List<String> mediaIds = new ArrayList<String>();
+        mediaIds.add(mediaId);
+        String url = M2C_HOST_URL + "/m2c.media/media/info/client?mediaIds="+JsonUtils.toStr(mediaIds);
+        try {
+            String result = restTemplate.getForObject(url, String.class);
+            JSONObject json = JSONObject.parseObject(result);
+            if (json.getInteger("status") == 200) {
+                JSONArray contents = json.getJSONArray("content");
+                if (null != contents && contents.size() > 0) {
+                    JSONObject contentObject = JSONObject.parseObject(JSONObject.toJSONString(contents.get(0)));
+                    return contentObject.getString("mediaName");
+                }
+            } else {
+                LOGGER.error("根据媒体id查询媒体信息失败");
+                LOGGER.error("getMediaName failed.url=>" + url);
+                LOGGER.error("getMediaName failed.error=>" + json.getString("errorMessage"));
+                LOGGER.error("getMediaName failed.param=>mediaId=" + mediaId);
+            }
+        } catch (Exception e) {
+            LOGGER.error("根据媒体id查询媒体信息异常");
+            LOGGER.error("getMediaName exception.url=>" + url);
+            LOGGER.error("getMediaName exception.error=>" + e.getMessage());
+            LOGGER.error("getMediaName exception.param=>mediaId=" + mediaId);
         }
         return null;
     }

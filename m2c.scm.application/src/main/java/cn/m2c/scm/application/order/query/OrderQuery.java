@@ -589,13 +589,15 @@ public class OrderQuery {
                                             String userName, String mediaOrResId) {
         List<Object> params = new ArrayList<Object>();
         StringBuilder sql = new StringBuilder();
-        sql.append(" SELECT count(d.id)");
+        sql.append(" SELECT  count(*) from (");
+        sql.append(" SELECT d.*");
         sql.append(" FROM t_scm_order_dealer d,t_scm_order_main m,t_scm_order_detail dtl");
         sql.append(" WHERE d.order_id = m.order_id and d.dealer_order_id = dtl.dealer_order_id");
         // 条件处理
         getAdminOrderListConditionDeal(orderId, dealerOrderId, orderStatus, afterSellStatus, commentStatus,
                 payStatus, payWay, goodsNameOrId, shopName, orderStartTime, orderEndTime,
                 userName, mediaOrResId, sql, params);
+        sql.append(" group by d.dealer_order_id) a");
         return supportJdbcTemplate.jdbcTemplate().queryForObject(sql.toString(), Integer.class, params.toArray());
     }
 
@@ -605,15 +607,15 @@ public class OrderQuery {
         List<Object> params = new ArrayList<Object>();
         StringBuilder sql = new StringBuilder();
         sql.append(" SELECT d.order_id as orderId,d.dealer_order_id as dealerOrderId,d._status as orderStatus,");
-        sql.append(" d.goods_amount as dealerAmount, d.plateform_discount as platformDiscount, d.dealer_discount as dealerDiscount, d.order_freight as orderFreight,");
-        sql.append(" m.user_id as userId,d.dealer_id as dealerId,m.created_date");
+        sql.append(" d.goods_amount as dealerAmount, d.plateform_discount as platformDiscount, d.dealer_discount as dealerDiscount, d.order_freight as orderFreight,d.coupon_discount as couponDiscount,");
+        sql.append(" m.user_id as userId,d.dealer_id as dealerId,m.created_date as createdDate");
         sql.append(" FROM t_scm_order_dealer d,t_scm_order_main m,t_scm_order_detail dtl");
         sql.append(" WHERE d.order_id = m.order_id and d.dealer_order_id = dtl.dealer_order_id");
         // 条件处理
         getAdminOrderListConditionDeal(orderId, dealerOrderId, orderStatus, afterSellStatus, commentStatus,
                 payStatus, payWay, goodsNameOrId, shopName, orderStartTime, orderEndTime,
                 userName, mediaOrResId, sql, params);
-        sql.append(" ORDER BY m.order_id DESC, m.created_date DESC ");
+        sql.append(" group by dealerOrderId ORDER BY m.order_id DESC, m.created_date DESC ");
         sql.append(" LIMIT ?,?");
         params.add(rows * (pageNum - 1));
         params.add(rows);
@@ -746,5 +748,35 @@ public class OrderQuery {
                     break;
             }
         }
+    }
+
+    public Map<String, Object> getAdminOrderDetail(String dealerOrderId) {
+        StringBuilder sql = new StringBuilder();
+        sql.append(" SELECT d.order_id as orderId,d.dealer_order_id as dealerOrderId,d._status as orderStatus,");
+        sql.append(" d.goods_amount as dealerAmount, d.order_freight as orderFreight,");
+        sql.append(" d.plateform_discount as platformDiscount, d.dealer_discount as dealerDiscount,d.coupon_discount as couponDiscount,");
+        sql.append(" m.user_id as userId,d.dealer_id as dealerId,m.created_date as createdDate,m.pay_way as payWay,m.pay_no as payNo,");
+        sql.append(" dtl.invoice_header as invoiceHeader,dtl.invoice_type as invoiceType,dtl.invoice_name as invoiceName,dtl.invoice_code as invoiceCode");
+        sql.append(" FROM t_scm_order_dealer d,t_scm_order_main m,t_scm_order_detail dtl");
+        sql.append(" WHERE d.dealer_order_id=? and d.order_id = m.order_id and d.dealer_order_id = dtl.dealer_order_id group by dealerOrderId");
+        Map<String, Object> map = supportJdbcTemplate.jdbcTemplate().queryForMap(sql.toString(), dealerOrderId);
+        if (null != map) {
+            StringBuilder dtlSql = new StringBuilder();
+            dtlSql.append(" select dtl.goods_name as goodsName,dtl.goods_icon as goodsIcon,dtl.media_id as mediaId,dtl.media_res_id as mediaResId,dtl.sell_num as sellNum,");
+            dtlSql.append(" dtl.goods_unit as goodsUnit,dtl.discount_price as price,dtl.goods_amount as goodsAmount,dtl.freight as freight");
+            dtlSql.append(" from t_scm_order_detail dtl where dtl.dealer_order_id=?");
+            List<Map<String, Object>> dtlList = supportJdbcTemplate.jdbcTemplate().queryForList(dtlSql.toString(), dealerOrderId);
+            if (null != dtlList && dtlList.size() > 0) {
+                for (Map<String, Object> dtlMap : dtlList) {
+                    String mediaId = null != dtlMap.get("mediaId") ? dtlMap.get("mediaId").toString() : null;
+                    if (StringUtils.isNotEmpty(mediaId)) {
+                        String mediaName = orderService.getMediaName(mediaId);
+                        dtlMap.put("mediaName", mediaName);
+                    }
+                }
+                map.put("dtlList", dtlList);
+            }
+        }
+        return map;
     }
 }
