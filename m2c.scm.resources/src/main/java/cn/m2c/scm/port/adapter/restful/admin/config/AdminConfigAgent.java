@@ -1,5 +1,7 @@
 package cn.m2c.scm.port.adapter.restful.admin.config;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +36,9 @@ public class AdminConfigAgent {
 	
 	@Autowired
 	ConfigQueryApplication configQueryApplication;
+	
+	@Autowired
+    private HttpServletRequest request;
 	
     /**
      * 保存配置
@@ -73,7 +78,8 @@ public class AdminConfigAgent {
     	MResult result = new MResult(MCode.V_1);
     	try {
     		ConfigCommand configCommand = new ConfigCommand(configKey, configValue, configDescribe);
-    		configApplication.modifyConfig(configCommand);
+    		String _attach = request.getHeader("attach");
+    		configApplication.modifyConfig(configCommand, _attach);
     		result.setStatus(MCode.V_200);
     	} catch (NegativeException ne) {
 			LOGGER.error("modifyConfig NegativeException e:", ne);
