@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping default-access="field"
+	default-cascade="all">
+    <class name="cn.m2c.scm.domain.model.config.Config" table="t_scm_config" lazy="true"
+           optimistic-lock="version" dynamic-insert="true" dynamic-update="true">
+
+        <id name="id" column="id" type="long" unsaved-value="-1">
+			<generator class="native" />
+		</id>
+        <property name="configKey" column="config_key" type="string"/>
+        <property name="configValue" column="config_value" type="string"/>
+        <property name="configDescribe" column="config_describe" type="string"/>
+        <property name="configStatus" column="config_status" type="int"/>
+        <property name="createdDate" generated="insert" not-null="true">
+			<column name="created_date" sql-type="timestamp" default="CURRENT_TIMESTAMP"></column>
+		</property>
+        <property name="lastUpdatedDate" column="last_updated_date" type="timestamp"/>
+    </class>
+</hibernate-mapping>

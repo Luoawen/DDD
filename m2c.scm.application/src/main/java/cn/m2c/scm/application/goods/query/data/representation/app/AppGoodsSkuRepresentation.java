@@ -33,24 +33,30 @@ public class AppGoodsSkuRepresentation {
      * 特惠价
      */
     private Long specialPrice;
-    
+
     /**
      * 新增字段，拍获价/10000
      */
     private String strPhotographPrice;
-    
+
     /**
      * 新增字段，特惠价/10000
      */
     private String strSpecialPrice;
 
+    /**
+     * 市场价/10000
+     */
+    private String strMarketPrice;
+
     public AppGoodsSkuRepresentation(GoodsSkuBean bean) {
         this.skuId = bean.getSkuId();
         this.skuName = "".equals(bean.getSkuName()) ? "默认" : bean.getSkuName();
         this.availableNum = bean.getAvailableNum();
-        this.photographPrice = bean.getPhotographPrice()/100;
+        this.photographPrice = bean.getPhotographPrice() / 100;
         this.strPhotographPrice = Utils.moneyFormatCN(bean.getPhotographPrice());
         this.weight = bean.getWeight();
+        this.strMarketPrice = null != bean.getMarketPrice() ? Utils.moneyFormatCN(bean.getMarketPrice()) : null;
     }
 
     public String getSkuId() {
@@ -101,19 +107,27 @@ public class AppGoodsSkuRepresentation {
         this.specialPrice = specialPrice;
     }
 
-	public String getStrPhotographPrice() {
-		return strPhotographPrice;
-	}
+    public String getStrPhotographPrice() {
+        return strPhotographPrice;
+    }
 
-	public void setStrPhotographPrice(String strPhotographPrice) {
-		this.strPhotographPrice = strPhotographPrice;
-	}
+    public void setStrPhotographPrice(String strPhotographPrice) {
+        this.strPhotographPrice = strPhotographPrice;
+    }
 
-	public String getStrSpecialPrice() {
-		return strSpecialPrice;
-	}
+    public String getStrSpecialPrice() {
+        return strSpecialPrice;
+    }
 
-	public void setStrSpecialPrice(String strSpecialPrice) {
-		this.strSpecialPrice = strSpecialPrice;
-	}
+    public void setStrSpecialPrice(String strSpecialPrice) {
+        this.strSpecialPrice = strSpecialPrice;
+    }
+
+    public String getStrMarketPrice() {
+        return strMarketPrice;
+    }
+
+    public void setStrMarketPrice(String strMarketPrice) {
+        this.strMarketPrice = strMarketPrice;
+    }
 }

@@ -66,11 +66,11 @@ public class GoodsApproveDetailRepresentation {
             for (GoodsGuaranteeBean guaranteeBean : goodsGuarantees) {
                 this.goodsGuarantee.add(guaranteeBean.getGuaranteeDesc());
             }*/
-        	this.goodsGuarantee = JsonUtils.toList(JsonUtils.toStr(goodsGuarantees), Map.class);
+            this.goodsGuarantee = JsonUtils.toList(JsonUtils.toStr(goodsGuarantees), Map.class);
         }
         this.goodsSpecifications = JsonUtils.toList(bean.getGoodsSpecifications(), Map.class);
         List<Map> list = new ArrayList<>();
-        for(GoodsSkuApproveBean goodsSkuBean: bean.getGoodsSkuApproves()) {
+        for (GoodsSkuApproveBean goodsSkuBean : bean.getGoodsSkuApproves()) {
             Map map = new HashMap<>();
             map.put("goodsId", goodsSkuBean.getGoodsId());
             map.put("skuId", goodsSkuBean.getSkuId());
@@ -78,15 +78,19 @@ public class GoodsApproveDetailRepresentation {
             map.put("availableNum", goodsSkuBean.getAvailableNum());
             map.put("weight", goodsSkuBean.getWeight());
             map.put("photographPrice", Utils.moneyFormatCN(goodsSkuBean.getPhotographPrice()));//拍获价
-            map.put("marketPrice", Utils.moneyFormatCN(goodsSkuBean.getMarketPrice()));//市场价
-            if(null != goodsSkuBean.getSupplyPrice()) {
+            if (null != goodsSkuBean.getMarketPrice()) {
+                map.put("marketPrice", Utils.moneyFormatCN(goodsSkuBean.getMarketPrice()));//市场价
+            } else {
+                map.put("marketPrice", goodsSkuBean.getMarketPrice());
+            }
+            if (null != goodsSkuBean.getSupplyPrice()) {
                 map.put("supplyPrice", Utils.moneyFormatCN(goodsSkuBean.getSupplyPrice()));//供货价
-            }else {
+            } else {
                 map.put("supplyPrice", goodsSkuBean.getSupplyPrice());
             }
             map.put("goodsCode", goodsSkuBean.getGoodsCode());
             map.put("showStatus", goodsSkuBean.getShowStatus());
-            map.put("show",goodsSkuBean.isShow());
+            map.put("show", goodsSkuBean.isShow());
             list.add(map);
         }
         this.goodsSKUs = list;

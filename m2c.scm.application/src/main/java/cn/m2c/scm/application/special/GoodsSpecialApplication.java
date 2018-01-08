@@ -31,7 +31,7 @@ public class GoodsSpecialApplication {
 
     @Autowired
     GoodsSpecialRepository goodsSpecialRepository;
-
+    
     @Resource
     private OperationLogManager operationLogManager;
     

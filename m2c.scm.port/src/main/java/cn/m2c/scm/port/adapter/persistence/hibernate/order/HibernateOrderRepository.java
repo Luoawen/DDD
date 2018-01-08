@@ -186,10 +186,12 @@ public class HibernateOrderRepository extends HibernateSupperRepository implemen
 		List<DealerOrderDtl> result = (List<DealerOrderDtl>) query.list();*/
 		/*System.out.println("chaxunjieguo-------------------->"+result);
 		 if (result.size() > 0 && result != null) {
-			return true;
-		}else {
 			return false;
-		}*/
+		}else {
+			return true;
+			
+		}
+		*/
 		Object o = this.session().createSQLQuery("SELECT count(1) FROM t_scm_order_detail WHERE sku_id=:skuId AND dealer_order_id =:dealerOrderId")
 				.setParameter("skuId", skuId).setParameter("dealerOrderId", dealerOrderId).uniqueResult();
 		BigInteger b = (BigInteger)o;
