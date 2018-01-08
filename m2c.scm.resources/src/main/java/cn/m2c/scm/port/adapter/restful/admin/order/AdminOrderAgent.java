@@ -3,6 +3,11 @@ package cn.m2c.scm.port.adapter.restful.admin.order;
 import cn.m2c.common.MCode;
 import cn.m2c.common.MPager;
 import cn.m2c.scm.application.order.query.OrderQuery;
+import cn.m2c.scm.application.shop.data.bean.ShopBean;
+import cn.m2c.scm.application.shop.query.ShopQuery;
+import cn.m2c.scm.application.utils.OrderUtils;
+import cn.m2c.scm.application.utils.Utils;
+import cn.m2c.scm.domain.service.order.OrderService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +18,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,7 +35,31 @@ public class AdminOrderAgent {
 
     @Autowired
     OrderQuery orderQuery;
+    @Autowired
+    OrderService orderService;
+    @Autowired
+    ShopQuery shopQuery;
 
+    /**
+     * 后台运营管理平台订单列表
+     *
+     * @param orderId
+     * @param dealerOrderId
+     * @param orderStatus
+     * @param afterSellStatus
+     * @param commentStatus
+     * @param payStatus
+     * @param payWay
+     * @param goodsNameOrId
+     * @param shopName
+     * @param orderStartTime
+     * @param orderEndTime
+     * @param userName
+     * @param mediaOrResId
+     * @param pageNum
+     * @param rows
+     * @return
+     */
     @RequestMapping(value = "", method = RequestMethod.GET)
     public ResponseEntity<MPager> getOrderList(
             @RequestParam(value = "orderId", required = false) String orderId, // 平台订单号
@@ -48,26 +79,53 @@ public class AdminOrderAgent {
             @RequestParam(value = "rows", required = false, defaultValue = "5") Integer rows // 每页多少行
     ) {
         MPager result = new MPager(MCode.V_1);
-        Integer total = orderQuery.getAdminDealerOrderTotal(orderId, dealerOrderId, orderStatus, afterSellStatus, commentStatus,
-                payStatus, payWay, goodsNameOrId, shopName, orderStartTime, orderEndTime,
-                userName, mediaOrResId);
-        if (total > 0) {
-            List<Map<String, Object>> list = orderQuery.getAdminDealerOrderList(orderId, dealerOrderId, orderStatus, afterSellStatus, commentStatus,
+        try {
+            Integer total = orderQuery.getAdminDealerOrderTotal(orderId, dealerOrderId, orderStatus, afterSellStatus, commentStatus,
                     payStatus, payWay, goodsNameOrId, shopName, orderStartTime, orderEndTime,
-                    userName, mediaOrResId, pageNum, rows);
-            if (null != list && list.size() > 0) {
-                List<Map> resultList = new ArrayList<>();
-                for (Map<String, Object> map : list) {
-                    Map resultMap = new HashMap<>();
-                    resultMap.put("orderId", map.get("orderId"));
-                    resultMap.put("dealerOrderId", map.get("dealerOrderId"));
-                    resultMap.put("dealerOrderId", map.get("dealerOrderId"));
+                    userName, mediaOrResId);
+            if (total > 0) {
+                List<Map<String, Object>> list = orderQuery.getAdminDealerOrderList(orderId, dealerOrderId, orderStatus, afterSellStatus, commentStatus,
+                        payStatus, payWay, goodsNameOrId, shopName, orderStartTime, orderEndTime,
+                        userName, mediaOrResId, pageNum, rows);
+                if (null != list && list.size() > 0) {
+                    List<Map> resultList = new ArrayList<>();
+                    for (Map<String, Object> map : list) {
+                        Map resultMap = new HashMap<>();
+                        // 订单号
+                        resultMap.put("orderId", map.get("orderId"));
+                        // 商家订单号
+                        resultMap.put("dealerOrderId", map.get("dealerOrderId"));
+                        // 订单状态
+                        resultMap.put("orderStatus", map.get("orderStatus"));
+                        resultMap.put("orderStatusStr", OrderUtils.getStatusStr(Integer.parseInt(map.get("orderStatus").toString())));
+
+                        Long dealerAmount = null == map.get("dealerAmount") ? 0 : Long.parseLong(map.get("dealerAmount").toString());
+                        Long platformDiscount = null == map.get("platformDiscount") ? 0 : Long.parseLong(map.get("platformDiscount").toString());
+                        Long dealerDiscount = null == map.get("dealerDiscount") ? 0 : Long.parseLong(map.get("dealerDiscount").toString());
+                        Long orderFreight = null == map.get("orderFreight") ? 0 : Long.parseLong(map.get("orderFreight").toString());
+                        Long orderMoney = dealerAmount + orderFreight - platformDiscount - dealerDiscount;
+                        // 订单总额
+                        resultMap.put("orderMoney", Utils.moneyFormatCN(orderMoney));
+                        // 下单用户
+                        resultMap.put("userName", orderService.getUserMobileByUserId(map.get("userId").toString()));
+                        // 支付状态
+                        resultMap.put("payStatusStr", OrderUtils.getPayStatusStr(Integer.parseInt(map.get("orderStatus").toString())));
+                        // 店铺名称
+                        ShopBean shop = shopQuery.getShop(map.get("dealerId").toString());
+                        resultMap.put("shopName", null != shop ? shop.getShopName() : null);
+                        // 下单时间
+                        Date date = (Date) map.get("created_date");
+                        resultMap.put("createTime", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date));
+                        resultList.add(resultMap);
+                    }
+                    result.setContent(resultList);
                 }
-                result.setContent(list);
             }
+            result.setPager(total, pageNum, rows);
+            result.setStatus(MCode.V_200);
+        } catch (Exception e) {
+
         }
-        result.setPager(total, pageNum, rows);
-        result.setStatus(MCode.V_200);
         return new ResponseEntity<MPager>(result, HttpStatus.OK);
     }
 }
