@@ -122,4 +122,12 @@ public interface OrderService {
 	 * @throws NegativeException
 	 */
 	public <T> T getCouponById(String couponId,String couponUserId,String userId, Class<T> cla) throws NegativeException;
+	/**
+	 * 根据用户名查询用户id
+	 * @param userName
+	 * @return
+     */
+	public String getUserIdByUserName(String userName);
+
+	String getMediaName(String mediaId);
 }
