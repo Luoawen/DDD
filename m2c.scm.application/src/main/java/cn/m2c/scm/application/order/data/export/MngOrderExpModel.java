@@ -2,6 +2,7 @@ package cn.m2c.scm.application.order.data.export;
 
 import cn.m2c.scm.application.dealerorder.data.bean.OrderDtlBean;
 import cn.m2c.scm.application.utils.ExcelField;
+import cn.m2c.scm.application.utils.OrderUtils;
 import cn.m2c.scm.application.utils.Utils;
 
 import java.text.SimpleDateFormat;
@@ -66,7 +67,7 @@ public class MngOrderExpModel {
     public MngOrderExpModel(OrderDtlBean dtl) {
         this.dealerOrderId = dtl.getDealerOrderId();
         //订单状态, 0待付款，1待发货，2待收货，3完成，4交易完成，5交易关闭，-1已取消
-        this.orderStatus = getStatusStr(dtl.getOrderStatus());
+        this.orderStatus = OrderUtils.getStatusStr(dtl.getOrderStatus());
         this.payNo = null == dtl.getPayNo() ? "" : dtl.getPayNo();
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         this.createdDate = null != dtl.getCreatedDate() ? df.format(dtl.getCreatedDate()) : "";
@@ -86,8 +87,8 @@ public class MngOrderExpModel {
         this.revPhone = dtl.getRevPhone();
         this.revAddress = dtl.getProvince() + dtl.getCity() + dtl.getAreaCounty() + dtl.getRevAddress();
         this.saleAfterNo = null == dtl.getAfterSellDealerOrderId() ? "" : dtl.getAfterSellDealerOrderId();
-        this.saleAfterType = getAfterType(dtl.getAfterOrderType());
-        this.saleAfterStatus = getAfterStatusStr(dtl.getAfterOrderType(),dtl.getAfterStatus());
+        this.saleAfterType = OrderUtils.getAfterType(dtl.getAfterOrderType());
+        this.saleAfterStatus = OrderUtils.getAfterStatusStr(dtl.getAfterOrderType(),dtl.getAfterStatus());
         this.saleAfterNum = null == dtl.getAfterNum() ? "" : String.valueOf(dtl.getAfterNum());
         
         this.saleAfterMoney = Utils.moneyFormatCN(dtl.getAfterMoney());
@@ -99,142 +100,4 @@ public class MngOrderExpModel {
         secondName = dtl.getSecondType();
         thirdName = dtl.getThirdType();
     }
-
-    private String getStatusStr(Integer status) {
-        String statusStr = "";
-        if (null != status) {
-            switch (status) {
-                case 0:
-                    statusStr = "待付款";
-                    break;
-                case 1:
-                    statusStr = "待发货";
-                    break;
-                case 2:
-                    statusStr = "待收货";
-                    break;
-                case 3:
-                    statusStr = "完成";
-                    break;
-                case 4:
-                    statusStr = "交易完成";
-                    break;
-                case 5:
-                    statusStr = "交易关闭";
-                    break;
-                case -1:
-                    statusStr = "已取消";
-                    break;
-            }
-        }
-        return statusStr;
-    }
-
-    // 订单类型，0换货， 1退货，2仅退款
-    private String getAfterType(Integer status) {
-        String statusStr = "";
-        if (null != status) {
-            switch (status) {
-                case 0:
-                    statusStr = "换货";
-                    break;
-                case 1:
-                    statusStr = "退货";
-                    break;
-                case 2:
-                    statusStr = "仅退款";
-                    break;
-            }
-        }
-        return statusStr;
-    }
-
-    // 状态：待商家同意，待顾客寄回商品，待商家确认退款，待商家发货，待顾客收货，售后已完成，售后已取消，商家已拒绝
-    private String getAfterStatusStr(Integer afterType,Integer status) {
-    	String statusStr = "";
-    	if(null != afterType && null != status) {
-    		switch (afterType) {
-				case 0://换货
-					switch (status) {
-						case -1:
-							statusStr = "售后已取消";
-							break;
-						case 3:
-							statusStr = "商家已拒绝";
-							break;
-						case 1:
-							statusStr = "待商家同意";
-							break;
-						case 4:
-							statusStr = "待顾客寄回商品";
-							break;
-						case 5:
-						case 6:
-							statusStr = "待商家发货";
-							break;
-						case 7:
-							statusStr = "待顾客收货";
-							break;
-						case 8:
-						case 9:
-						case 10:
-						case 11:
-						case 12:
-							statusStr = "售后已完成";
-							break;
-						}
-					break;
-				case 1://退货
-					switch (status) {
-						case -1:
-							statusStr = "售后已取消";
-							break;
-						case 3:
-							statusStr = "商家已拒绝";
-							break;
-						case 0:
-							statusStr = "待商家同意";
-							break;
-						case 4:
-							statusStr = "待顾客寄回商品";
-							break;
-						case 5:
-						case 6:
-							statusStr = "待商家确认退款";
-							break;
-						case 9:
-						case 10:
-						case 11:
-						case 12:
-							statusStr = "售后已完成";
-							break;
-					}
-	                break;
-	            case 2://仅退款
-	            	switch (status) {
-		            	case -1:
-							statusStr = "售后已取消";
-							break;
-						case 3:
-							statusStr = "商家已拒绝";
-							break;
-						case 2:
-							statusStr = "待商家同意";
-							break;
-						case 4:
-							statusStr = "待商家确认退款";
-							break;
-						case 9:
-						case 10:
-						case 11:
-						case 12:
-							statusStr = "售后已完成";
-							break;
-					}
-	                break;
-			}
-    	}
-    	return statusStr;
-    }
-    
 }

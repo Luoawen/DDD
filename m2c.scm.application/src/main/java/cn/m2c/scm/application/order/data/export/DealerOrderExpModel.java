@@ -3,6 +3,7 @@ package cn.m2c.scm.application.order.data.export;
 import cn.m2c.scm.application.dealerorder.data.bean.DealerGoodsBean;
 import cn.m2c.scm.application.dealerorder.data.bean.DealerOrderQB;
 import cn.m2c.scm.application.utils.ExcelField;
+import cn.m2c.scm.application.utils.OrderUtils;
 
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -56,7 +57,7 @@ public class DealerOrderExpModel {
     public DealerOrderExpModel(DealerGoodsBean goodsBean, DealerOrderQB dealerOrderQB) {
         this.dealerOrderId = dealerOrderQB.getDealerOrderId();
         //订单状态, 0待付款，1待发货，2待收货，3完成，4交易完成，5交易关闭，-1已取消
-        this.orderStatus = getStatusStr(dealerOrderQB.getOrderStatus());
+        this.orderStatus = OrderUtils.getStatusStr(dealerOrderQB.getOrderStatus());
         this.payNo = null == dealerOrderQB.getPayNo() ? "" : dealerOrderQB.getPayNo();
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         this.createdDate = null != new Date(dealerOrderQB.getCreatedDate()) ? df.format(new Date(dealerOrderQB.getCreatedDate())) : "";
@@ -64,209 +65,23 @@ public class DealerOrderExpModel {
         this.goodsName = goodsBean.getGoodsName();
         this.skuName = goodsBean.getSkuName();
         DecimalFormat df1 = new DecimalFormat("0.00");
-        if(goodsBean.getIsSpecial() == 0) {//不执行特惠价
-            this.goodsPrice = df1.format(goodsBean.getDiscountPrice().floatValue() / (double)100);//*
-        }else if(goodsBean.getIsSpecial() == 1){//执行特惠价
-        	Long specialPrice = Long.valueOf(goodsBean.getSpecialPrice());
-        	this.goodsPrice = df1.format(specialPrice.floatValue() / (double)100);
+        if (goodsBean.getIsSpecial() == 0) {//不执行特惠价
+            this.goodsPrice = df1.format(goodsBean.getDiscountPrice().floatValue() / (double) 100);//*
+        } else if (goodsBean.getIsSpecial() == 1) {//执行特惠价
+            Long specialPrice = Long.valueOf(goodsBean.getSpecialPrice());
+            this.goodsPrice = df1.format(specialPrice.floatValue() / (double) 100);
         }
         this.goodsNum = goodsBean.getSellNum();
-        this.postage = df1.format(dealerOrderQB.getOrderFreight().floatValue() / (double)100);//*
-        this.discountAmount = df1.format((dealerOrderQB.getPlateDiscount().floatValue()+dealerOrderQB.getDealerDiscount().floatValue())/(double)100);
-        this.orderMoney = df1.format((dealerOrderQB.getGoodsMoney().floatValue() + dealerOrderQB.getOrderFreight().floatValue() - dealerOrderQB.getDealerDiscount().floatValue() - dealerOrderQB.getPlateDiscount().floatValue()) / (double)100);
+        this.postage = df1.format(dealerOrderQB.getOrderFreight().floatValue() / (double) 100);//*
+        this.discountAmount = df1.format((dealerOrderQB.getPlateDiscount().floatValue() + dealerOrderQB.getDealerDiscount().floatValue()) / (double) 100);
+        this.orderMoney = df1.format((dealerOrderQB.getGoodsMoney().floatValue() + dealerOrderQB.getOrderFreight().floatValue() - dealerOrderQB.getDealerDiscount().floatValue() - dealerOrderQB.getPlateDiscount().floatValue()) / (double) 100);
         this.revPerson = dealerOrderQB.getRevPerson();
         this.revPhone = dealerOrderQB.getRevPhone();
         this.revAddress = dealerOrderQB.getRevAddress();
         this.saleAfterNo = null == dealerOrderQB.getAfterSellDealerOrderId() ? "" : dealerOrderQB.getAfterSellDealerOrderId();
-        this.saleAfterType = getAfterType(dealerOrderQB.getAfterOrderType());
-        this.saleAfterStatus = getAfterStatusStr(dealerOrderQB.getAfterOrderType(),dealerOrderQB.getAfterStatus());
+        this.saleAfterType = OrderUtils.getAfterType(dealerOrderQB.getAfterOrderType());
+        this.saleAfterStatus = OrderUtils.getAfterStatusStr(dealerOrderQB.getAfterOrderType(), dealerOrderQB.getAfterStatus());
         this.saleAfterNum = null == dealerOrderQB.getAfterNum() ? "" : String.valueOf(dealerOrderQB.getAfterNum());
-        this.saleAfterMoney = df1.format(dealerOrderQB.getAfterMoney().floatValue() / (double)100);
+        this.saleAfterMoney = df1.format(dealerOrderQB.getAfterMoney().floatValue() / (double) 100);
     }
-
-    private String getStatusStr(Integer status) {
-        String statusStr = "";
-        if (null != status) {
-            switch (status) {
-                case 0:
-                    statusStr = "待付款";
-                    break;
-                case 1:
-                    statusStr = "待发货";
-                    break;
-                case 2:
-                    statusStr = "待收货";
-                    break;
-                case 3:
-                    statusStr = "完成";
-                    break;
-                case 4:
-                    statusStr = "交易完成";
-                    break;
-                case 5:
-                    statusStr = "交易关闭";
-                    break;
-                case -1:
-                    statusStr = "已取消";
-                    break;
-            }
-        }
-        return statusStr;
-    }
-
-    // 订单类型，0换货， 1退货，2仅退款
-    private String getAfterType(Integer status) {
-        String statusStr = "";
-        if (null != status) {
-            switch (status) {
-                case 0:
-                    statusStr = "换货";
-                    break;
-                case 1:
-                    statusStr = "退货";
-                    break;
-                case 2:
-                    statusStr = "仅退款";
-                    break;
-            }
-        }
-        return statusStr;
-    }
-
-    // 状态：待商家同意，待顾客寄回商品，待商家确认退款，待商家发货，待顾客收货，售后已完成，售后已取消，商家已拒绝
-    private String getAfterStatusStr(Integer afterType,Integer status) {
-    	String statusStr = "";
-    	if(null != afterType && null != status) {
-    		switch (afterType) {
-				case 0://换货
-					switch (status) {
-						case -1:
-							statusStr = "售后已取消";
-							break;
-						case 3:
-							statusStr = "商家已拒绝";
-							break;
-						case 1:
-							statusStr = "待商家同意";
-							break;
-						case 4:
-							statusStr = "待顾客寄回商品";
-							break;
-						case 5:
-						case 6:
-							statusStr = "待商家发货";
-							break;
-						case 7:
-							statusStr = "待顾客收货";
-							break;
-						case 8:
-						case 9:
-						case 10:
-						case 11:
-						case 12:
-							statusStr = "售后已完成";
-							break;
-						}
-					break;
-				case 1://退货
-					switch (status) {
-						case -1:
-							statusStr = "售后已取消";
-							break;
-						case 3:
-							statusStr = "商家已拒绝";
-							break;
-						case 0:
-							statusStr = "待商家同意";
-							break;
-						case 4:
-							statusStr = "待顾客寄回商品";
-							break;
-						case 5:
-						case 6:
-							statusStr = "待商家确认退款";
-							break;
-						case 9:
-						case 10:
-						case 11:
-						case 12:
-							statusStr = "售后已完成";
-							break;
-					}
-	                break;
-	            case 2://仅退款
-	            	switch (status) {
-		            	case -1:
-							statusStr = "售后已取消";
-							break;
-						case 3:
-							statusStr = "商家已拒绝";
-							break;
-						case 2:
-							statusStr = "待商家同意";
-							break;
-						case 4:
-							statusStr = "待商家确认退款";
-							break;
-						case 9:
-						case 10:
-						case 11:
-						case 12:
-							statusStr = "售后已完成";
-							break;
-					}
-	                break;
-			}
-    	}
-    	return statusStr;
-    }
-    
-    // 状态，0申请退货,1申请换货,2申请退款,3拒绝,4同意(退换货),5客户寄出,6商家收到,7商家寄出,8客户收到,9同意退款, 10确认退款,11交易完成，12交易关闭
-    /*private String getAfterStatusStr(Integer status) {
-        String statusStr = "";
-        if (null != status) {
-            switch (status) {
-                case 0:
-                    statusStr = "申请退货";
-                    break;
-                case 1:
-                    statusStr = "申请换货";
-                    break;
-                case 2:
-                    statusStr = "申请退款";
-                    break;
-                case 3:
-                    statusStr = "拒绝";
-                    break;
-                case 4:
-                    statusStr = "同意(退换货)";
-                    break;
-                case 5:
-                    statusStr = "客户寄出";
-                    break;
-                case 6:
-                    statusStr = "商家收到";
-                    break;
-                case 7:
-                    statusStr = "商家寄出";
-                    break;
-                case 8:
-                    statusStr = "客户收到";
-                    break;
-                case 9:
-                    statusStr = "同意退款";
-                    break;
-                case 10:
-                    statusStr = "确认退款";
-                    break;
-                case 11:
-                    statusStr = "交易完成";
-                    break;
-                case 12:
-                    statusStr = "交易关闭";
-                    break;
-            }
-        }
-        return statusStr;
-    }*/
 }

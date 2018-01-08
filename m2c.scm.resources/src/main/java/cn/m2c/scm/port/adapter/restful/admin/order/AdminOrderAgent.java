@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -54,6 +56,13 @@ public class AdminOrderAgent {
                     payStatus, payWay, goodsNameOrId, shopName, orderStartTime, orderEndTime,
                     userName, mediaOrResId, pageNum, rows);
             if (null != list && list.size() > 0) {
+                List<Map> resultList = new ArrayList<>();
+                for (Map<String, Object> map : list) {
+                    Map resultMap = new HashMap<>();
+                    resultMap.put("orderId", map.get("orderId"));
+                    resultMap.put("dealerOrderId", map.get("dealerOrderId"));
+                    resultMap.put("dealerOrderId", map.get("dealerOrderId"));
+                }
                 result.setContent(list);
             }
         }
