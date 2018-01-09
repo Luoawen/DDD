@@ -70,9 +70,9 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-	public <T> boolean lockMarketIds(List<T> marketIds,String couponUserId, String orderNo, String userId,long orderAmount,long orderTime,String useCouponList) {
+	public <T> boolean lockMarketIds(List<T> marketIds,String couponUserId, String orderNo, String userId,long orderAmount,long orderTime,String useCouponList) throws NegativeException{
 		// TODO Auto-generated method stub
-		if (null == marketIds || marketIds.size() < 1) {
+		if ((null == marketIds || marketIds.size() < 1) && StringUtils.isEmpty(couponUserId) ) {
 			return true;
 		}
 		System.out.println("1:"+JSONObject.toJSONString(marketIds));
