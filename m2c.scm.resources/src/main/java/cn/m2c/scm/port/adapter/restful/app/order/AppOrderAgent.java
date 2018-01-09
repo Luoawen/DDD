@@ -114,6 +114,8 @@ public class AppOrderAgent {
             ,@RequestParam(value = "osVersion", required = false) String osVersion
             ,@RequestParam(value = "sn", required = false) String sn
     		) {
+    	LOGGER.info("goodses:"+goodses);
+    	LOGGER.info("couponUserId:"+couponUserId);
     	MResult result = new MResult(MCode.V_1);
         try {
         	OrderAddCommand cmd = new OrderAddCommand(orderId, userId,couponUserId, noted, goodses, invoice, addr, coupons,
