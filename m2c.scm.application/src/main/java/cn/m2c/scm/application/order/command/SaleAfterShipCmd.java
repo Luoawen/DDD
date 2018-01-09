@@ -164,6 +164,10 @@ public class SaleAfterShipCmd extends AssertionConcern {
 		return orderId;
 	}
 	
+	public String getExpressName() {
+		return expressName;
+	}
+	
 	public String getShopName() {
 		return shopName;
 	}

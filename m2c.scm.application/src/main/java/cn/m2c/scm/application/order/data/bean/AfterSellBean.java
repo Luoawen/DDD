@@ -46,6 +46,12 @@ public class AfterSellBean {
 	@ColumnAlias(value = "created_date")
 	private Date createDate;
 	
+	@ColumnAlias(value = "back_express_no")
+	private String backExpressNo; 
+	
+	@ColumnAlias(value = "back_express_name")
+	private String backExpressName;
+	
 	@ColumnAlias(value = "dealer_order_id")
 	private String dealerOrderId;
 	
@@ -113,6 +119,23 @@ public class AfterSellBean {
 		if (null == backFreight)
 			backFreight = 0l;
 		this.backFreight = backFreight;
+	}
+
+	
+	public String getBackExpressNo() {
+		return backExpressNo;
+	}
+
+	public String getBackExpressName() {
+		return backExpressName;
+	}
+
+	public void setBackExpressNo(String backExpressNo) {
+		this.backExpressNo = backExpressNo;
+	}
+
+	public void setBackExpressName(String backExpressName) {
+		this.backExpressName = backExpressName;
 	}
 
 	public Integer getSortNo() {

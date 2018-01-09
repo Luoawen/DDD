@@ -97,6 +97,19 @@ public class AppOrderDtl extends AssertionConcern implements Serializable {
 	/**是否有售后， 0无， 1有*/
 	private int hasSaleAfter = 0;
 	
+	@ColumnAlias(value = "coupon_discount")
+	private long couponDiscount;
+	
+	public long getCouponDiscount() {
+		return couponDiscount/10000;
+	}
+	public String getStrCouponDiscount(){
+		return Utils.moneyFormatCN(couponDiscount);
+	}
+	public void setCouponDiscount(long couponDiscount) {
+		this.couponDiscount = couponDiscount;
+	}
+	
 	public int getHasSaleAfter() {
 		return hasSaleAfter;
 	}

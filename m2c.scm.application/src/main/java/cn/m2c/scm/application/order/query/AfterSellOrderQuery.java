@@ -425,7 +425,7 @@ public class AfterSellOrderQuery {
 		try {
 			List<Object> params = new ArrayList<>(4);
 			StringBuilder sql = new StringBuilder();
-			sql.append("SELECT a.created_date, a.after_sell_order_id, a.order_id, a.dealer_order_id, a.dealer_id, a.goods_id, a.sku_id, a.sell_num, a._status, a.back_money, a.order_type\r\n")
+			sql.append("SELECT a.created_date, a.back_express_name, a.back_express_no, a.after_sell_order_id, a.order_id, a.dealer_order_id, a.dealer_id, a.goods_id, a.sku_id, a.sell_num, a._status, a.back_money, a.order_type\r\n")
 			.append(",c.dealer_name, b.goods_name, b.sku_name, b.goods_type, b.goods_type_id, b.discount_price, b.goods_icon\r\n") 
 			.append(", a.last_updated_date, a.reject_reason, a.reason, a.back_express_no, a.back_express_name, a.express_no, a.express_name, a.sort_no, a.return_freight ")
 			.append("FROM t_scm_order_after_sell a \r\n")

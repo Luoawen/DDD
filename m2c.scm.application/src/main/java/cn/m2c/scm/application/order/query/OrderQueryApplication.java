@@ -434,7 +434,7 @@ public class OrderQueryApplication {
 				sql.append(" limit 1");
 			}
 			else {
-				sql.append("SELECT b.province_code, b.province, b.city, b.city_code, b.area_code, b.area_county, b.street_addr\r\n")
+				sql.append("SELECT b.province_code, b.coupon_discount, b.province, b.city, b.city_code, b.area_code, b.area_county, b.street_addr\r\n")
 				.append(", a.order_freight, a.order_id, a.goods_amount, a.plateform_discount, a.dealer_discount, d.customer_service_tel\r\n")
 				.append(", b.invoice_code, b.invoice_header, b.invoice_name, b.invoice_type, a.created_date, b._status\r\n") 
 				.append(", b.order_freight dOrderFreight, b.goods_amount dGoodsAmount, b.plateform_discount dPlateformDiscount, b.dealer_discount dDealerDiscount\r\n")
@@ -460,7 +460,7 @@ public class OrderQueryApplication {
 			
 			if (result != null) {
 				sql.delete(0, sql.length());
-				sql.append("SELECT a.coupon_discount, a.goods_icon, a.goods_name, a.goods_title, a.sku_name, a.sku_id, a.sell_num, a.discount_price, a.freight, a.goods_amount, a.sort_no, a.is_special, a.special_price \r\n")
+				sql.append("SELECT a.goods_icon, a.goods_name, a.goods_title, a.sku_name, a.sku_id, a.sell_num, a.discount_price, a.freight, a.goods_amount, a.sort_no, a.is_special, a.special_price \r\n")
 				.append(", b._status afterStatus, a.goods_id, a.goods_type_id, a.express_no, a.express_code, a.express_name, a.express_way, a.comment_status, a.is_change,a.change_price ")
 				.append(" FROM t_scm_order_detail a ")
 				.append(" LEFT OUTER JOIN t_scm_order_after_sell b ON b.order_id=a.order_id AND b.dealer_order_id = a.dealer_order_id AND b._status NOT IN(-1, 3) AND a.sku_id=b.sku_id")
