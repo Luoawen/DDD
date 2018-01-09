@@ -139,7 +139,53 @@ public class AdminOrderAgent {
         MResult result = new MResult(MCode.V_1);
         try {
             Map<String, Object> map = orderQuery.getAdminOrderDetail(dealerOrderId);
-            result.setContent(map);
+            if (null != map) {
+                Map resultMap = new HashMap<>();
+
+                // 订单基础信息
+                // 订单号
+                resultMap.put("orderId", map.get("orderId"));
+                // 商家订单号
+                resultMap.put("dealerOrderId", map.get("dealerOrderId"));
+                // 订单状态
+                resultMap.put("orderStatus", map.get("orderStatus"));
+                resultMap.put("orderStatusStr", OrderUtils.getStatusStr(Integer.parseInt(map.get("orderStatus").toString())));
+
+                // 订单用户信息
+                // 下单用户
+                resultMap.put("userName", orderService.getUserMobileByUserId(map.get("userId").toString()));
+                // 收货地址
+                resultMap.put("province", map.get("province"));
+                resultMap.put("city", map.get("city"));
+                resultMap.put("areaCounty", map.get("areaCounty"));
+                resultMap.put("streetAddress", map.get("streetAddress"));
+                // 收货人
+                resultMap.put("revPerson", map.get("revPerson"));
+                // 联系电话
+                resultMap.put("revPhone", map.get("revPhone"));
+
+                // 商家商品信息
+                // 店铺名称
+                ShopBean shop = shopQuery.getShop(map.get("dealerId").toString());
+                resultMap.put("shopName", null != shop ? shop.getShopName() : null);
+
+                // 资金信息
+                // 支付状态
+                resultMap.put("payStatusStr", OrderUtils.getPayStatusStr(Integer.parseInt(map.get("orderStatus").toString())));
+                // 支付方式
+                resultMap.put("payWay", map.get("payWay"));
+                // 支付单号
+                resultMap.put("payWay", map.get("payNo"));
+
+                // 发票信息
+                resultMap.put("invoiceHeader", map.get("invoiceHeader"));
+                resultMap.put("invoiceType", map.get("invoiceType"));
+                resultMap.put("invoiceName", map.get("invoiceName"));
+                resultMap.put("invoiceCode", map.get("invoiceCode"));
+
+
+                result.setContent(map);
+            }
             result.setStatus(MCode.V_200);
         } catch (Exception e) {
             LOGGER.error("查询订单详情失败", e.getMessage());

@@ -756,6 +756,7 @@ public class OrderQuery {
         sql.append(" d.goods_amount as dealerAmount, d.order_freight as orderFreight,");
         sql.append(" d.plateform_discount as platformDiscount, d.dealer_discount as dealerDiscount,d.coupon_discount as couponDiscount,");
         sql.append(" m.user_id as userId,d.dealer_id as dealerId,m.created_date as createdDate,m.pay_way as payWay,m.pay_no as payNo,");
+        sql.append(" dtl.rev_person as revPerson,dtl.rev_phone as revPhone,dtl.province,dtl.city,dtl.area_county as areaCounty,dtl.street_addr as streetAddress,");
         sql.append(" dtl.invoice_header as invoiceHeader,dtl.invoice_type as invoiceType,dtl.invoice_name as invoiceName,dtl.invoice_code as invoiceCode");
         sql.append(" FROM t_scm_order_dealer d,t_scm_order_main m,t_scm_order_detail dtl");
         sql.append(" WHERE d.dealer_order_id=? and d.order_id = m.order_id and d.dealer_order_id = dtl.dealer_order_id group by dealerOrderId");
