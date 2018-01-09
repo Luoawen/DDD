@@ -705,4 +705,34 @@ public class AppOrderAgent {
     	
     	return new ResponseEntity<MResult>(result,HttpStatus.OK);
     }
+    
+    /**
+     * 获取物流信息
+     * @param 
+     * @return
+     */
+    @RequestMapping(value = "app/ship/expressInfo", method = RequestMethod.GET)
+    public ResponseEntity<MPager> getExpressInfos(
+            @RequestParam(value = "com",defaultValue="") String com
+            ,@RequestParam(value = "nu", defaultValue="") String nu
+            ) {
+    	MPager result = new MPager(MCode.V_1);
+        try {
+        	if(StringUtils.isEmpty(com)){
+        		result.setContent("物流公司编码不能为空");
+        		 return new ResponseEntity<MPager>(result, HttpStatus.OK);
+        	}
+        	if(StringUtils.isEmpty(nu)){
+        		result.setContent("物流号不能为空");
+        		 return new ResponseEntity<MPager>(result, HttpStatus.OK);
+        	}
+        	 ExpressInfoBean queryExpress = orderQueryApp.queryExpress(com, nu);
+        	result.setContent(queryExpress);
+            result.setStatus(MCode.V_200);
+        } catch (Exception e) {
+            LOGGER.error("查询物流列表出错", e);
+            result = new MPager(MCode.V_400, e.getMessage());
+        }
+        return new ResponseEntity<MPager>(result, HttpStatus.OK);
+    }
 }
