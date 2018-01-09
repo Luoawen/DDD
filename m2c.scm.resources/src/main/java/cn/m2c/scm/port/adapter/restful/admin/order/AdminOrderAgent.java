@@ -154,6 +154,9 @@ public class AdminOrderAgent {
                 // 订单状态
                 resultMap.put("orderStatus", map.get("orderStatus"));
                 resultMap.put("orderStatusStr", OrderUtils.getStatusStr(Integer.parseInt(map.get("orderStatus").toString())));
+                // 下单时间
+                Date date = (Date) map.get("createdDate");
+                resultMap.put("createTime", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date));
 
                 // 订单用户信息
                 // 下单用户
