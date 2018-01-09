@@ -57,4 +57,7 @@ public class CouponInfo extends ValueObject {
 	String getCouponName() {
 		return couponName;
 	}
+	String getCouponUserId() {
+		return couponUserId;
+	}
 }
