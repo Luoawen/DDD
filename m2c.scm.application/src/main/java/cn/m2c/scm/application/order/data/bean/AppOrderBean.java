@@ -59,6 +59,9 @@ public class AppOrderBean extends AssertionConcern implements Serializable {
 	
 	@ColumnAlias(value = "_status")
 	private Integer status;
+	
+	@ColumnAlias(value = "coupon_discount")
+	private long couponDiscount;
 	/**
 	 * 商品列表
 	 */
@@ -102,6 +105,18 @@ public class AppOrderBean extends AssertionConcern implements Serializable {
 
 	public String getOrderId() {
 		return orderId;
+	}
+
+	public long getCouponDiscount() {
+		return couponDiscount/10000;
+	}
+
+	public String getStrCouponDiscount(){
+		return Utils.moneyFormatCN(couponDiscount);
+	}
+	
+	public void setCouponDiscount(long couponDiscount) {
+		this.couponDiscount = couponDiscount;
 	}
 
 	public String getPayNo() {
