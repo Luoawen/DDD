@@ -3,6 +3,8 @@ package cn.m2c.scm.port.adapter.restful.admin.order;
 import cn.m2c.common.MCode;
 import cn.m2c.common.MPager;
 import cn.m2c.common.MResult;
+import cn.m2c.scm.application.dealer.data.bean.DealerBean;
+import cn.m2c.scm.application.dealer.query.DealerQuery;
 import cn.m2c.scm.application.order.query.OrderQuery;
 import cn.m2c.scm.application.shop.data.bean.ShopBean;
 import cn.m2c.scm.application.shop.query.ShopQuery;
@@ -41,6 +43,8 @@ public class AdminOrderAgent {
     OrderService orderService;
     @Autowired
     ShopQuery shopQuery;
+    @Autowired
+    DealerQuery dealerQuery;
 
     /**
      * 后台运营管理平台订单列表
@@ -170,9 +174,11 @@ public class AdminOrderAgent {
 
 
                 // 商家商品信息
-                // 店铺名称
-                ShopBean shop = shopQuery.getShop(map.get("dealerId").toString());
-                resultMap.put("shopName", null != shop ? shop.getShopName() : null);
+                // 商家和店铺名称
+                DealerBean dealerBean = dealerQuery.getDealer(map.get("dealerId").toString());
+                ShopBean shopBean = shopQuery.getShop(map.get("dealerId").toString());
+                resultMap.put("dealerName", null != dealerBean ? dealerBean.getDealerName() : null);
+                resultMap.put("shopName", null != shopBean ? shopBean.getShopName() : null);
 
                 // 资金信息
                 // 支付状态
@@ -180,7 +186,7 @@ public class AdminOrderAgent {
                 // 支付方式
                 resultMap.put("payWay", map.get("payWay"));
                 // 支付单号
-                resultMap.put("payWay", map.get("payNo"));
+                resultMap.put("payNo", map.get("payNo"));
                 // 发票信息
                 resultMap.put("invoiceHeader", map.get("invoiceHeader"));
                 resultMap.put("invoiceType", map.get("invoiceType"));
