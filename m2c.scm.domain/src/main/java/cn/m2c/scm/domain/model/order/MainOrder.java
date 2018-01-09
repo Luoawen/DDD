@@ -165,7 +165,7 @@ public class MainOrder extends ConcurrencySafeEntity {
             markets.put("userId", userId);
             markets.put("status", 0);
         }
-
+        
         DomainEventPublisher.instance().publish(new OrderCancelEvent(orderId, allSales, markets));
         allSales = null;
         DomainEventPublisher.instance().publish(new OrderOptLogEvent(orderId, null, "订单取消成功", userId));
@@ -238,10 +238,17 @@ public class MainOrder extends ConcurrencySafeEntity {
             markets.put("userId", userId);
             markets.put("status", 1);
         }
+        //----------------支付成功使用优惠券
+        String couponUserId = "";
+        if (coupons != null && coupons.size()>0) {
+        	if(coupons.get(0).getCouponInfo()!=null){
+        		couponUserId = coupons.get(0).getCouponInfo().getCouponUserId();
+        	}
+		}
         updateTime = new Date();
         DomainEventPublisher.instance().publish(new OrderOptLogEvent(orderId, null, "订单支付成功", uId));
 
-        DomainEventPublisher.instance().publish(new OrderPayedEvent(orderId, allSales, allRes, markets, payTime, userId));
+        DomainEventPublisher.instance().publish(new OrderPayedEvent(orderId, allSales, allRes, markets, payTime, userId ,couponUserId));
 
 
         allSales = null;

@@ -28,4 +28,8 @@ public class SimpleCoupon extends IdentifiedDomainObject {
 	public void disenabled() {
 		status = 0;
 	}
+	
+	CouponInfo getCouponInfo() {
+		return couponInfo;
+	}
 }

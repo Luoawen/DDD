@@ -12,6 +12,10 @@ import java.util.Map;
  * created date 2017年10月23日
  * copyrighted@m2c
  */
+/**
+ * @author ps
+ *
+ */
 public class OrderPayedEvent implements DomainEvent {
 	/**销量*/
 	private Map<String, Integer> sales;
@@ -29,6 +33,8 @@ public class OrderPayedEvent implements DomainEvent {
     private Date payTime;
     
     private String userId;
+    /**优惠券唯一使用id*/
+    private String couponUserId;
     
 	public Date getPayTime() {
 		return payTime;
@@ -41,7 +47,7 @@ public class OrderPayedEvent implements DomainEvent {
 	}
 	
 	public OrderPayedEvent(String orderNo, Map<String, Integer> s, List<SimpleMediaRes> reses, Map<String, Object> markets
-			, Date payTime, String userId) {
+			, Date payTime, String userId ,String couponUserId) {
 		this();
 		sales = s;
 		this.orderNo = orderNo;
@@ -49,6 +55,7 @@ public class OrderPayedEvent implements DomainEvent {
 		this.markets = markets;
 		this.payTime = payTime;
 		this.userId = userId;
+		this.couponUserId = couponUserId;
 	}
 	@Override
 	public int eventVersion() {
@@ -77,7 +84,12 @@ public class OrderPayedEvent implements DomainEvent {
 	public Map<String, Object> getMarkets() {
 		return markets;
 	}
-	
+	public void setCouponUserId(String couponUserId) {
+		this.couponUserId = couponUserId;
+	}
+	public String getCouponUserId() {
+		return couponUserId;
+	}
 	public static void main(String[] args) {
 		/*Gson gson = new Gson();
 		Map<String, Integer> s = new HashMap<String, Integer>();
