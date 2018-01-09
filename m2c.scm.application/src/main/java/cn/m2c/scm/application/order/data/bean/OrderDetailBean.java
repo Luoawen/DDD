@@ -71,7 +71,7 @@ public class OrderDetailBean {
 	}
 	
 	public long getCouponDiscount() {
-		return couponDiscount/1000;
+		return couponDiscount/10000;
 	}
 	public String getStrCouponDiscount(){
 		return Utils.moneyFormatCN(couponDiscount);
