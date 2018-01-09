@@ -52,6 +52,16 @@ public class AfterSellFlow extends ConcurrencySafeEntity{
 		super();
 	}
 
+	/**
+	 * 添加售后流程记录
+	 * @param afterSellOrderId    售后订单号
+	 * @param status              状态ID
+	 * @param userId			    操作人id	
+	 * @param applyReason		    售后申请原因
+	 * @param applyReasonCode	    申请原因Code
+	 * @param rejectReason		    申请拒绝理由
+	 * @param rejectReasonCode	    拒绝原因Code
+	 */
 	public void add(String afterSellOrderId, Integer status, String userId,String applyReason,Integer applyReasonCode,String rejectReason,Integer rejectReasonCode) {
 		
 		LOGGER.info("售后记录...");
