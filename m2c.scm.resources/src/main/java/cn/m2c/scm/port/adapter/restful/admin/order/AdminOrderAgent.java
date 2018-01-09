@@ -101,12 +101,12 @@ public class AdminOrderAgent {
                         resultMap.put("orderStatus", map.get("orderStatus"));
                         resultMap.put("orderStatusStr", OrderUtils.getStatusStr(Integer.parseInt(map.get("orderStatus").toString())));
 
-                        Long dealerAmount = null == map.get("dealerAmount") ? 0 : Long.parseLong(map.get("dealerAmount").toString());
+                        Long goodsAmount = null == map.get("goodsAmount") ? 0 : Long.parseLong(map.get("goodsAmount").toString());
                         Long platformDiscount = null == map.get("platformDiscount") ? 0 : Long.parseLong(map.get("platformDiscount").toString());
                         Long dealerDiscount = null == map.get("dealerDiscount") ? 0 : Long.parseLong(map.get("dealerDiscount").toString());
                         Long couponDiscount = null == map.get("couponDiscount") ? 0 : Long.parseLong(map.get("couponDiscount").toString());
                         Long orderFreight = null == map.get("orderFreight") ? 0 : Long.parseLong(map.get("orderFreight").toString());
-                        Long orderMoney = dealerAmount + orderFreight - platformDiscount - dealerDiscount - couponDiscount;
+                        Long orderMoney = goodsAmount + orderFreight - platformDiscount - dealerDiscount - couponDiscount;
                         // 订单总额
                         resultMap.put("orderMoney", Utils.moneyFormatCN(orderMoney));
                         // 下单用户
@@ -163,6 +163,11 @@ public class AdminOrderAgent {
                 resultMap.put("revPerson", map.get("revPerson"));
                 // 联系电话
                 resultMap.put("revPhone", map.get("revPhone"));
+                // 买家留言
+                resultMap.put("noted", map.get("noted"));
+                // 评论状态
+                resultMap.put("commentStatus", map.get("commentStatus"));
+
 
                 // 商家商品信息
                 // 店铺名称
@@ -176,15 +181,31 @@ public class AdminOrderAgent {
                 resultMap.put("payWay", map.get("payWay"));
                 // 支付单号
                 resultMap.put("payWay", map.get("payNo"));
-
                 // 发票信息
                 resultMap.put("invoiceHeader", map.get("invoiceHeader"));
                 resultMap.put("invoiceType", map.get("invoiceType"));
                 resultMap.put("invoiceName", map.get("invoiceName"));
                 resultMap.put("invoiceCode", map.get("invoiceCode"));
+                // 商品信息
+                resultMap.put("dtlList", map.get("dtlList"));
 
-
-                result.setContent(map);
+                Long goodsAmount = null == map.get("goodsAmount") ? 0 : Long.parseLong(map.get("goodsAmount").toString());
+                Long platformDiscount = null == map.get("platformDiscount") ? 0 : Long.parseLong(map.get("platformDiscount").toString());
+                Long dealerDiscount = null == map.get("dealerDiscount") ? 0 : Long.parseLong(map.get("dealerDiscount").toString());
+                Long couponDiscount = null == map.get("couponDiscount") ? 0 : Long.parseLong(map.get("couponDiscount").toString());
+                Long orderFreight = null == map.get("orderFreight") ? 0 : Long.parseLong(map.get("orderFreight").toString());
+                Long orderMoney = goodsAmount + orderFreight - platformDiscount - dealerDiscount - couponDiscount;
+                // 商品总额
+                resultMap.put("goodsAmount", Utils.moneyFormatCN(goodsAmount));
+                // 运费
+                resultMap.put("orderFreight", Utils.moneyFormatCN(orderFreight));
+                // 满减
+                resultMap.put("FullCutDiscount", Utils.moneyFormatCN(platformDiscount));
+                // 优惠券
+                resultMap.put("couponDiscount", Utils.moneyFormatCN(couponDiscount));
+                // 订单总额
+                resultMap.put("orderMoney", Utils.moneyFormatCN(orderMoney));
+                result.setContent(resultMap);
             }
             result.setStatus(MCode.V_200);
         } catch (Exception e) {

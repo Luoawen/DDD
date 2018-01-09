@@ -607,7 +607,7 @@ public class OrderQuery {
         List<Object> params = new ArrayList<Object>();
         StringBuilder sql = new StringBuilder();
         sql.append(" SELECT d.order_id as orderId,d.dealer_order_id as dealerOrderId,d._status as orderStatus,");
-        sql.append(" d.goods_amount as dealerAmount, d.plateform_discount as platformDiscount, d.dealer_discount as dealerDiscount, d.order_freight as orderFreight,d.coupon_discount as couponDiscount,");
+        sql.append(" d.goods_amount as goodsAmount, d.plateform_discount as platformDiscount, d.dealer_discount as dealerDiscount, d.order_freight as orderFreight,d.coupon_discount as couponDiscount,");
         sql.append(" m.user_id as userId,d.dealer_id as dealerId,m.created_date as createdDate");
         sql.append(" FROM t_scm_order_dealer d,t_scm_order_main m,t_scm_order_detail dtl");
         sql.append(" WHERE d.order_id = m.order_id and d.dealer_order_id = dtl.dealer_order_id");
@@ -753,11 +753,11 @@ public class OrderQuery {
     public Map<String, Object> getAdminOrderDetail(String dealerOrderId) {
         StringBuilder sql = new StringBuilder();
         sql.append(" SELECT d.order_id as orderId,d.dealer_order_id as dealerOrderId,d._status as orderStatus,");
-        sql.append(" d.goods_amount as dealerAmount, d.order_freight as orderFreight,");
+        sql.append(" d.goods_amount as goodsAmount, d.order_freight as orderFreight,");
         sql.append(" d.plateform_discount as platformDiscount, d.dealer_discount as dealerDiscount,d.coupon_discount as couponDiscount,");
         sql.append(" m.user_id as userId,d.dealer_id as dealerId,m.created_date as createdDate,m.pay_way as payWay,m.pay_no as payNo,");
-        sql.append(" dtl.rev_person as revPerson,dtl.rev_phone as revPhone,dtl.province,dtl.city,dtl.area_county as areaCounty,dtl.street_addr as streetAddress,");
-        sql.append(" dtl.invoice_header as invoiceHeader,dtl.invoice_type as invoiceType,dtl.invoice_name as invoiceName,dtl.invoice_code as invoiceCode");
+        sql.append(" dtl.rev_person as revPerson,dtl.rev_phone as revPhone,dtl.noted,dtl.province,dtl.city,dtl.area_county as areaCounty,dtl.street_addr as streetAddress,");
+        sql.append(" dtl.invoice_header as invoiceHeader,dtl.invoice_type as invoiceType,dtl.invoice_name as invoiceName,dtl.invoice_code as invoiceCode,dtl.comment_status as commentStatus");
         sql.append(" FROM t_scm_order_dealer d,t_scm_order_main m,t_scm_order_detail dtl");
         sql.append(" WHERE d.dealer_order_id=? and d.order_id = m.order_id and d.dealer_order_id = dtl.dealer_order_id group by dealerOrderId");
         Map<String, Object> map = supportJdbcTemplate.jdbcTemplate().queryForMap(sql.toString(), dealerOrderId);
@@ -774,6 +774,13 @@ public class OrderQuery {
                         String mediaName = orderService.getMediaName(mediaId);
                         dtlMap.put("mediaName", mediaName);
                     }
+
+                    Long goodsAmount = null == dtlMap.get("goodsAmount") ? 0 : Long.parseLong(dtlMap.get("goodsAmount").toString());
+                    Long freight = null == dtlMap.get("freight") ? 0 : Long.parseLong(dtlMap.get("freight").toString());
+                    Long price = null == dtlMap.get("price") ? 0 : Long.parseLong(dtlMap.get("price").toString());
+                    dtlMap.put("goodsAmount", Utils.moneyFormatCN(goodsAmount));
+                    dtlMap.put("freight", Utils.moneyFormatCN(freight));
+                    dtlMap.put("price", Utils.moneyFormatCN(price));
                 }
                 map.put("dtlList", dtlList);
             }
