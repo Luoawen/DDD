@@ -641,7 +641,7 @@ public class AfterSellOrderQuery {
 		
 		try {
 			StringBuilder sql = new StringBuilder();
-			sql.append(" SELECT * FROM t_scm_after_sell_flow WHERE after_sell_order_id = ? ");
+			sql.append(" SELECT * FROM t_scm_after_sell_flow WHERE after_sell_order_id = ? ORDER BY created_date DESC");
 			result = this.supportJdbcTemplate.queryForBeanList(sql.toString(), AfterSellFlowBean.class,afterSellNo);
 		} catch (Exception e) {
 			throw new NegativeException(MCode.V_500,"查询售后流程记录出错");
