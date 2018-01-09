@@ -148,6 +148,16 @@ public class DealerOrderDetailBean {
 	private String  areaCode;
 	
 	private String dealerOrderId;
+	
+	private Integer isShowShip;      //是否展示发货 0 不展示，1 展示
+	
+	public Integer getIsShowShip() {
+		return 0;
+	}
+
+	public void setIsShowShip(Integer isShowShip) {
+		this.isShowShip = isShowShip;
+	}
 
 	public Integer getOrderStatus() {
 		return orderStatus;
