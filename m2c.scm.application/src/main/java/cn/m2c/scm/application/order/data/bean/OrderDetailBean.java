@@ -53,6 +53,9 @@ public class OrderDetailBean {
 	@ColumnAlias(value = "sort_no")
 	private Integer sortNo;
 	
+	@ColumnAlias(value = "coupon_discount")
+	private long couponDiscount;
+	
 	public Integer getSortNo() {
 		return sortNo;
 	}
@@ -67,6 +70,15 @@ public class OrderDetailBean {
 		return specialPrice/100;
 	}
 	
+	public long getCouponDiscount() {
+		return couponDiscount/1000;
+	}
+	public String getStrCouponDiscount(){
+		return Utils.moneyFormatCN(couponDiscount);
+	}
+	public void setCouponDiscount(long couponDiscount) {
+		this.couponDiscount = couponDiscount;
+	}
 	public String getStrSpecialPrice() {
 		return Utils.moneyFormatCN(specialPrice);
 	}

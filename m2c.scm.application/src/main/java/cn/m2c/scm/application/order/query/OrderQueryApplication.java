@@ -460,7 +460,7 @@ public class OrderQueryApplication {
 			
 			if (result != null) {
 				sql.delete(0, sql.length());
-				sql.append("SELECT a.goods_icon, a.goods_name, a.goods_title, a.sku_name, a.sku_id, a.sell_num, a.discount_price, a.freight, a.goods_amount, a.sort_no, a.is_special, a.special_price \r\n")
+				sql.append("SELECT a.coupon_discount, a.goods_icon, a.goods_name, a.goods_title, a.sku_name, a.sku_id, a.sell_num, a.discount_price, a.freight, a.goods_amount, a.sort_no, a.is_special, a.special_price \r\n")
 				.append(", b._status afterStatus, a.goods_id, a.goods_type_id, a.express_no, a.express_code, a.express_name, a.express_way, a.comment_status, a.is_change,a.change_price ")
 				.append(" FROM t_scm_order_detail a ")
 				.append(" LEFT OUTER JOIN t_scm_order_after_sell b ON b.order_id=a.order_id AND b.dealer_order_id = a.dealer_order_id AND b._status NOT IN(-1, 3) AND a.sku_id=b.sku_id")
