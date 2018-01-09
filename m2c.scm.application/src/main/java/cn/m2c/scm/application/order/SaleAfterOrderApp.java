@@ -216,7 +216,6 @@ public class SaleAfterOrderApp {
 			AfterSellFlow afterSellFlow = new AfterSellFlow();
 			saleAfterRepository.updateSaleAfterOrder(order);
 			afterSellFlow.add(cmd.getSaleAfterNo(), 4, cmd.getUserId(),null,null,null,null);
-			System.out.println(afterSellFlow);
 			afterSellFlowRepository.save(afterSellFlow);
 		}
 		else {
