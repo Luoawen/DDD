@@ -140,4 +140,16 @@ public class OrderUtils {
         }
         return statusStr;
     }
+
+    public static String getPayStatusStr(Integer orderStatus) {
+        String payStatusStr = "";
+        if (null != orderStatus) {
+            if (orderStatus != 0 && orderStatus != -1) {
+                payStatusStr = "已支付";
+            } else {
+                payStatusStr = "未支付";
+            }
+        }
+        return payStatusStr;
+    }
 }

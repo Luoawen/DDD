@@ -28,7 +28,7 @@ public interface OrderService {
 	 * @param userId
 	 * @return 成功与否
 	 */
-	public <T> boolean lockMarketIds(List<T> marketIds, String orderNo, String userId);
+	public <T> boolean lockMarketIds(List<T> marketIds,String couponUserId, String orderNo, String userId,long orderAmount,long orderTime,String useCouponList);
 	/***
 	 * 解锁优惠券
 	 * @param couponsIds
@@ -121,12 +121,13 @@ public interface OrderService {
 	 * @return
 	 * @throws NegativeException
 	 */
-	public <T> T getCouponById(String couponId, Class<T> cla) throws NegativeException;
-
+	public <T> T getCouponById(String couponId,String couponUserId,String userId, Class<T> cla) throws NegativeException;
 	/**
 	 * 根据用户名查询用户id
 	 * @param userName
 	 * @return
      */
 	public String getUserIdByUserName(String userName);
+
+	String getMediaName(String mediaId);
 }

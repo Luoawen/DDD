@@ -6,12 +6,15 @@ import java.lang.reflect.Type;
 import java.net.URL;
 import java.net.URLConnection;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import cn.m2c.common.JsonUtils;
 import org.apache.commons.logging.Log;
 import org.apache.http.protocol.HttpRequestExecutor;
 import org.slf4j.Logger;
@@ -67,14 +70,21 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public <T> boolean lockMarketIds(List<T> marketIds, String orderNo, String userId) {
-        // TODO Auto-generated method stub
-        if (null == marketIds || marketIds.size() < 1) {
-            return true;
-        }
-        String url = M2C_HOST_URL + "/m2c.market/domain/fullcut/use?goods_list={0}&order_id={1}&user_id={2}";
-        String rtResult = restTemplate.postForObject(url, null, String.class, JSONObject.toJSONString(marketIds), orderNo, userId);
-        JSONObject json = JSONObject.parseObject(rtResult);
+	public <T> boolean lockMarketIds(List<T> marketIds,String couponUserId, String orderNo, String userId,long orderAmount,long orderTime,String useCouponList) {
+		// TODO Auto-generated method stub
+		if (null == marketIds || marketIds.size() < 1) {
+			return true;
+		}
+		System.out.println("1:"+JSONObject.toJSONString(marketIds));
+		System.out.println("1:"+couponUserId);
+		System.out.println("1:"+orderNo);
+		System.out.println("1:"+userId);
+		System.out.println("1:"+orderAmount);
+		System.out.println("1:"+orderTime);
+		System.out.println("1:"+useCouponList);
+		String url = M2C_HOST_URL + "/m2c.market/domain/fullcut/use?goods_list={0}&order_id={1}&user_id={2}&coupon_goods_list={3}&order_amount={4}&order_time={5}&coupon_user_id={6}";
+		String rtResult = restTemplate.postForObject(url, null, String.class, JSONObject.toJSONString(marketIds), orderNo, userId ,useCouponList,orderAmount,orderTime,couponUserId);
+		JSONObject json = JSONObject.parseObject(rtResult);
         if (json.getInteger("status") != 200) {
             return false;
         }
@@ -334,19 +344,20 @@ public class OrderServiceImpl implements OrderService {
     }
 
     /**
-     * 获取优惠券信息
-     */
-    @Override
-    public <T> T getCouponById(String couponId, Class<T> cla)
-            throws NegativeException {
-        String url = M2C_HOST_URL + "/m2c.market/domain/coupon/detail/{0}";
-        String rtResult = restTemplate.getForObject(url, String.class, couponId);
-        JSONObject json = JSONObject.parseObject(rtResult);
-        T result = null;
-        if (json.getInteger("status") == 200) {
-            String content = json.getString("content");
-            Gson gson = new Gson();
-            //result = gson.fromJson(content, new TypeToken<List<T>>() {}.getType());
+	 * 获取优惠券信息
+	 */
+	@Override
+	public <T> T getCouponById(String couponId, String couponUserId,
+			String userId,Class<T> cla)
+			throws NegativeException {
+		String url = M2C_HOST_URL + "/m2c.market/domain/coupon/query/detail/content?userId={0}&couponId={1}&couponUserId={2}";
+		String rtResult = restTemplate.getForObject(url, String.class ,userId,couponId,couponUserId);
+		JSONObject json = JSONObject.parseObject(rtResult);
+		T result = null;
+		if (json.getInteger("status") == 200) {
+			String content = json.getString("content");
+			Gson gson = new Gson();
+			//result = gson.fromJson(content, new TypeToken<List<T>>() {}.getType());
 //	        	result = Arrays.asList(gson.fromJson(content, cla));
             result = gson.fromJson(content, cla);
         } else {
@@ -377,6 +388,35 @@ public class OrderServiceImpl implements OrderService {
             LOGGER.error("getUserIdByUserName exception.url=>" + url);
             LOGGER.error("getUserIdByUserName exception.error=>" + e.getMessage());
             LOGGER.error("getUserIdByUserName exception.param=>userName=" + userName);
+        }
+        return null;
+    }
+
+    @Override
+    public String getMediaName(String mediaId) {
+        List<String> mediaIds = new ArrayList<String>();
+        mediaIds.add(mediaId);
+        String url = M2C_HOST_URL + "/m2c.media/media/info/client?mediaIds="+JsonUtils.toStr(mediaIds);
+        try {
+            String result = restTemplate.getForObject(url, String.class);
+            JSONObject json = JSONObject.parseObject(result);
+            if (json.getInteger("status") == 200) {
+                JSONArray contents = json.getJSONArray("content");
+                if (null != contents && contents.size() > 0) {
+                    JSONObject contentObject = JSONObject.parseObject(JSONObject.toJSONString(contents.get(0)));
+                    return contentObject.getString("mediaName");
+                }
+            } else {
+                LOGGER.error("根据媒体id查询媒体信息失败");
+                LOGGER.error("getMediaName failed.url=>" + url);
+                LOGGER.error("getMediaName failed.error=>" + json.getString("errorMessage"));
+                LOGGER.error("getMediaName failed.param=>mediaId=" + mediaId);
+            }
+        } catch (Exception e) {
+            LOGGER.error("根据媒体id查询媒体信息异常");
+            LOGGER.error("getMediaName exception.url=>" + url);
+            LOGGER.error("getMediaName exception.error=>" + e.getMessage());
+            LOGGER.error("getMediaName exception.param=>mediaId=" + mediaId);
         }
         return null;
     }
