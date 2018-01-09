@@ -340,16 +340,20 @@ public class OrderQuery {
         }
         List<GoodsInfoBean> goodsInfoList = getGoodsInfoList(dealerOrderId);
       //判断所有订单是否有售后满足发货条件
-        Integer temp = 0;
-        for (GoodsInfoBean goodsInfoBean : goodsInfoList) {
-			if (goodsInfoBean.getAfterSellStatus() == -1 || goodsInfoBean.getAfterSellStatus() == 0 || goodsInfoBean.getAfterSellStatus() == 1
-					|| goodsInfoBean.getAfterSellStatus() == 2 || goodsInfoBean.getAfterSellStatus() == 3) {
-				temp ++;
+        for (GoodsInfoBean bean : goodsInfoList) {
+        	Integer temp = 0;
+        	if (StringUtils.isNotEmpty(bean.getAfterSellOrderId())) {
+        		for (GoodsInfoBean goodsInfoBean : goodsInfoList) {
+            		if (goodsInfoBean.getAfterSellStatus() == -1 || goodsInfoBean.getAfterSellStatus() == 0 || goodsInfoBean.getAfterSellStatus() == 1
+            				|| goodsInfoBean.getAfterSellStatus() == 2 || goodsInfoBean.getAfterSellStatus() == 3) {
+            			temp ++;
+            		}
+            	}
+        		if (temp == 0) {
+            		dealerOrderDetailBean.setIsShowShip(1);
+            	}
 			}
 		}
-        if (temp == 0) {
-			dealerOrderDetailBean.setIsShowShip(1);
-        }
         dealerOrderDetailBean.setGoodsInfoBeans(goodsInfoList);
         /*for (GoodsInfoBean goodsInfo : dealerOrderDetailBean.getGoodsInfoBeans()) {
             totalPrice += goodsInfo.getTotalPrice();
