@@ -40,6 +40,11 @@ public class GoodsSpecialBean {
     private Date createTime;
     private List<GoodsSkuSpecialBean> goodsSpecialSkuBeans;
 
+    /**
+     * 特惠价角标
+     */
+    private String specialIcon;
+
     public Integer getId() {
         return id;
     }
@@ -150,5 +155,13 @@ public class GoodsSpecialBean {
 
     public void setGoodsSpecialSkuBeans(List<GoodsSkuSpecialBean> goodsSpecialSkuBeans) {
         this.goodsSpecialSkuBeans = goodsSpecialSkuBeans;
+    }
+
+    public String getSpecialIcon() {
+        return specialIcon;
+    }
+
+    public void setSpecialIcon(String specialIcon) {
+        this.specialIcon = specialIcon;
     }
 }
