@@ -1,6 +1,7 @@
 package cn.m2c.scm.application.order.query;
 
 
+import cn.m2c.common.JsonUtils;
 import cn.m2c.common.MCode;
 import cn.m2c.ddd.common.port.adapter.persistence.springJdbc.SupportJdbcTemplate;
 import cn.m2c.scm.application.dealer.query.DealerQuery;
@@ -339,21 +340,21 @@ public class OrderQuery {
             dealerOrderDetailBean.setDealerOrderId(dealerOrderId);
         }
         List<GoodsInfoBean> goodsInfoList = getGoodsInfoList(dealerOrderId);
-      //判断所有订单是否有售后满足发货条件
+        //判断所有订单是否有售后满足发货条件
         for (GoodsInfoBean bean : goodsInfoList) {
-        	Integer temp = 0;
-        	if (StringUtils.isNotEmpty(bean.getAfterSellOrderId())) {
-        		for (GoodsInfoBean goodsInfoBean : goodsInfoList) {
-            		if (goodsInfoBean.getAfterSellStatus() == -1 || goodsInfoBean.getAfterSellStatus() == 0 || goodsInfoBean.getAfterSellStatus() == 1
-            				|| goodsInfoBean.getAfterSellStatus() == 2 || goodsInfoBean.getAfterSellStatus() == 3) {
-            			temp ++;
-            		}
-            	}
-        		if (temp == 0) {
-            		dealerOrderDetailBean.setIsShowShip(1);
-            	}
-			}
-		}
+            Integer temp = 0;
+            if (StringUtils.isNotEmpty(bean.getAfterSellOrderId())) {
+                for (GoodsInfoBean goodsInfoBean : goodsInfoList) {
+                    if (goodsInfoBean.getAfterSellStatus() == -1 || goodsInfoBean.getAfterSellStatus() == 0 || goodsInfoBean.getAfterSellStatus() == 1
+                            || goodsInfoBean.getAfterSellStatus() == 2 || goodsInfoBean.getAfterSellStatus() == 3) {
+                        temp++;
+                    }
+                }
+                if (temp == 0) {
+                    dealerOrderDetailBean.setIsShowShip(1);
+                }
+            }
+        }
         dealerOrderDetailBean.setGoodsInfoBeans(goodsInfoList);
         /*for (GoodsInfoBean goodsInfo : dealerOrderDetailBean.getGoodsInfoBeans()) {
             totalPrice += goodsInfo.getTotalPrice();
@@ -381,17 +382,19 @@ public class OrderQuery {
      */
     public List<GoodsInfoBean> getGoodsInfoList(String dealerOrderId) {
         StringBuilder sql = new StringBuilder();
+        List<Object> params = new ArrayList<Object>();
         sql.append(" SELECT  dtl.goods_icon, dtl.goods_name,dtl.sku_name, dtl.sku_id,a.after_sell_order_id, a._status AS afterSellStatus, a.order_type AS afterOrderType, a.sell_num afNum, dtl.sort_no, dtl.goods_amount, \r\n")
                 .append(" dtl.media_res_id,dtl.sell_num,dtl.goods_unit, dtl.discount_price,dtl.freight, dtl.is_change, dtl.change_price,dtl.is_special,dtl.special_price \r\n")
                 .append(" FROM  t_scm_order_dealer dealer \r\n")
                 .append(" ,t_scm_order_detail dtl \r\n")
-                .append(" LEFT OUTER JOIN (SELECT * FROM t_scm_order_after_sell ORDER BY created_date ) a ON a.dealer_order_id=dtl.dealer_order_id AND a.sku_id = dtl.sku_id AND a.sort_no=dtl.sort_no \r\n")
+                .append(" LEFT OUTER JOIN (SELECT * FROM t_scm_order_after_sell WHERE dealer_order_id = ?  ORDER BY created_date DESC LIMIT 1 ) a ON a.dealer_order_id=dtl.dealer_order_id AND a.sku_id = dtl.sku_id AND a.sort_no=dtl.sort_no \r\n")
                 .append(" WHERE dealer.dealer_order_id = ? ")
-                .append(" AND dealer.dealer_order_id = dtl.dealer_order_id ORDER BY a.created_date DESC LIMIT 1 ");
+                .append(" AND dealer.dealer_order_id = dtl.dealer_order_id ");
         //.append(" AND dtl.sku_id NOT IN (SELECT a.sku_id FROM t_scm_order_after_sell a WHERE a.dealer_order_id=dtl.dealer_order_id AND a._status >= 4) ");
-        System.out.println("SQL----------------------->" + sql);
+        params.add(dealerOrderId);
+        params.add(dealerOrderId);
         List<GoodsInfoBean> goodsInfoList = this.supportJdbcTemplate.queryForBeanList(sql.toString(),
-                GoodsInfoBean.class, dealerOrderId);
+                GoodsInfoBean.class, params.toArray());
         /*for (GoodsInfoBean goodsInfo : goodsInfoList) {
             goodsInfo.setTotalPrice(goodsInfo.getPrice() * goodsInfo.getSellNum());
 		}*/
@@ -778,7 +781,7 @@ public class OrderQuery {
         Map<String, Object> map = supportJdbcTemplate.jdbcTemplate().queryForMap(sql.toString(), dealerOrderId);
         if (null != map) {
             StringBuilder dtlSql = new StringBuilder();
-            dtlSql.append(" select dtl.goods_name as goodsName,dtl.goods_icon as goodsIcon,dtl.media_id as mediaId,dtl.media_res_id as mediaResId,dtl.sell_num as sellNum,");
+            dtlSql.append(" select dtl.goods_name as goodsName,dtl.goods_icon as goodsIcon,dtl.sku_name as skuName,dtl.media_id as mediaId,dtl.media_res_id as mediaResId,dtl.sell_num as sellNum,");
             dtlSql.append(" dtl.goods_unit as goodsUnit,dtl.discount_price as price,dtl.goods_amount as goodsAmount,dtl.freight as freight");
             dtlSql.append(" from t_scm_order_detail dtl where dtl.dealer_order_id=?");
             List<Map<String, Object>> dtlList = supportJdbcTemplate.jdbcTemplate().queryForList(dtlSql.toString(), dealerOrderId);
@@ -788,6 +791,12 @@ public class OrderQuery {
                     if (StringUtils.isNotEmpty(mediaId)) {
                         String mediaName = orderService.getMediaName(mediaId);
                         dtlMap.put("mediaName", mediaName);
+                    }
+
+                    String goodsIconStr = null != dtlMap.get("goodsIcon") ? String.valueOf(dtlMap.get("goodsIcon")) : null;
+                    List<String> goodsIcons = JsonUtils.toList(goodsIconStr, String.class);
+                    if (null != goodsIcons && goodsIcons.size() > 0) {
+                        dtlMap.put("goodsIcon", goodsIcons.get(0));
                     }
 
                     Long goodsAmount = null == dtlMap.get("goodsAmount") ? 0 : Long.parseLong(dtlMap.get("goodsAmount").toString());
