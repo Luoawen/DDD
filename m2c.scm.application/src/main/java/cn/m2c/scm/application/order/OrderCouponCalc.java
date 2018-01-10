@@ -9,6 +9,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import cn.m2c.scm.application.order.data.bean.CouponBean;
+import cn.m2c.scm.application.order.data.bean.SimpleCoupon;
+import cn.m2c.scm.application.order.data.bean.SkuNumBean;
 import cn.m2c.scm.application.order.query.dto.GoodsDto;
 
 /**
@@ -161,6 +163,27 @@ public class OrderCouponCalc {
 				dto.setCouponDiscount(couponDiscount);
 			}
 		}
+	}
+
+	/**
+	 * 计算售后优惠金额
+	 * @param couponInfo
+	 * @param totalSku
+	 * @param skuId
+	 * @param _sortNo
+	 * @return
+	 */
+	public static long calcReturnMoney(SimpleCoupon couponInfo,
+			List<SkuNumBean> totalSku, String skuId, int _sortNo) {
+		long discount = 0;
+		List<SkuNumBean> couponSkuBean = new ArrayList<SkuNumBean>();
+		for (SkuNumBean bean : totalSku) {
+			if(!StringUtils.isEmpty(couponInfo.getCouponId())){
+				couponSkuBean.add(bean);
+			}
+		}
+		
+		return discount;
 	}
 
 }
