@@ -9,35 +9,44 @@ import cn.m2c.ddd.common.domain.model.ConcurrencySafeEntity;
 
 /**
  * 售后流程记录
+ * 
  * @author lqwen
  *
  */
-public class AfterSellFlow extends ConcurrencySafeEntity{
-	
+public class AfterSellFlow extends ConcurrencySafeEntity {
+
 	private final static Logger LOGGER = LoggerFactory.getLogger(AfterSellFlow.class);
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	
+
 	private String afterSellOrderId;
-	
+
 	private Integer status;
-	
+
 	private String statusName;
-	
+
 	private Date createdDate;
-	
+
 	private String userId;
-	
+
 	private String rejectReason;
-	
+
 	private Integer rejectReasonCode;
-	
+
 	private String applyReason;
-	
+
 	private Integer applyReasonCode;
+
+	private String expressNo;
+
+	private String expressName;
+
+	private String backExpressNo;
+
+	private String backExpressName;
 
 	public AfterSellFlow(String afterSellOrderId, Integer status, String statusName, Date createdDate, String userId) {
 		super();
@@ -47,15 +56,34 @@ public class AfterSellFlow extends ConcurrencySafeEntity{
 		this.createdDate = createdDate;
 		this.userId = userId;
 	}
-	
+
 	public AfterSellFlow() {
 		super();
 	}
 
-	public void add(String afterSellOrderId, Integer status, String userId,String applyReason,Integer applyReasonCode,String rejectReason,Integer rejectReasonCode) {
-		
+	/**
+	 * 添加售后流程记录
+	 * 
+	 * @param afterSellOrderId
+	 *            售后订单号
+	 * @param status
+	 *            状态ID
+	 * @param userId
+	 *            操作人id
+	 * @param applyReason
+	 *            售后申请原因
+	 * @param applyReasonCode
+	 *            申请原因Code
+	 * @param rejectReason
+	 *            申请拒绝理由
+	 * @param rejectReasonCode
+	 *            拒绝原因Code
+	 */
+	public void add(String afterSellOrderId, Integer status, String userId, String applyReason, Integer applyReasonCode,
+			String rejectReason, Integer rejectReasonCode) {
+
 		LOGGER.info("售后记录...");
-		
+
 		this.afterSellOrderId = afterSellOrderId;
 		this.status = status;
 		this.userId = userId;
@@ -64,7 +92,32 @@ public class AfterSellFlow extends ConcurrencySafeEntity{
 		this.applyReasonCode = applyReasonCode;
 		this.rejectReason = rejectReason;
 		this.rejectReasonCode = rejectReasonCode;
-		
+		saveStatusName(status);
+	}
+
+	public void save(String afterSellOrderId, Integer status, String userId, String applyReason,
+			Integer applyReasonCode, String rejectReason, Integer rejectReasonCode, String expressNo,
+			String expressName, String backExpressNo, String backExpressName) {
+
+		LOGGER.info("售后记录...");
+
+		this.afterSellOrderId = afterSellOrderId;
+		this.status = status;
+		this.userId = userId;
+		this.createdDate = new Date();
+		this.applyReason = applyReason;
+		this.applyReasonCode = applyReasonCode;
+		this.rejectReason = rejectReason;
+		this.rejectReasonCode = rejectReasonCode;
+		this.expressName = expressName;
+		this.expressNo = expressNo;
+		this.backExpressNo = backExpressNo;
+		this.backExpressName = backExpressName;
+		saveStatusName(status);
+
+	}
+
+	public void saveStatusName(Integer status) {
 		switch (status) {
 		case -1:
 			this.statusName = "售后已取消";
@@ -107,9 +160,9 @@ public class AfterSellFlow extends ConcurrencySafeEntity{
 		return "AfterSellFlow [afterSellOrderId=" + afterSellOrderId + ", status=" + status + ", statusName="
 				+ statusName + ", createdDate=" + createdDate + ", userId=" + userId + ", rejectReason=" + rejectReason
 				+ ", rejectReasonCode=" + rejectReasonCode + ", applyReason=" + applyReason + ", applyReasonCode="
-				+ applyReasonCode + "]";
+				+ applyReasonCode + ", expressNo=" + expressNo + ", expressName=" + expressName + ", backExpressNo="
+				+ backExpressNo + ", backExpressName=" + backExpressName + "]";
 	}
 
-	
-	
+
 }

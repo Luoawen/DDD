@@ -258,8 +258,8 @@ public class OrderQueryApplication {
 		try {
 			List<Object> params = new ArrayList<>(4);
 			StringBuilder sql = new StringBuilder();
-			sql.append("SELECT a.province_code, a.province, a.city, a.city_code, a.area_code, a.area_county, a.street_addr\r\n")
-			.append(", a.order_freight, a.order_id, a.goods_amount, a.plateform_discount, a.dealer_discount\r\n")
+			sql.append("SELECT a.province_code, b.coupon_discount, a.province, a.city, a.city_code, a.area_code, a.area_county, a.street_addr\r\n");
+			sql.append(", a.order_freight, a.order_id, a.goods_amount, a.plateform_discount, a.dealer_discount\r\n")
 			.append(", b.order_freight dOrderFreight, b.goods_amount dGoodsAmount, b.plateform_discount dPlateformDiscount, b.dealer_discount dDealerDiscount\r\n")
 			.append(", b.invoice_code, b.invoice_header, b.invoice_name, b.invoice_type, a.created_date, b._status\r\n") 
 			.append(", b.dealer_id, c.dealer_name, b.dealer_order_id\r\n") 
@@ -434,7 +434,7 @@ public class OrderQueryApplication {
 				sql.append(" limit 1");
 			}
 			else {
-				sql.append("SELECT b.province_code, b.province, b.city, b.city_code, b.area_code, b.area_county, b.street_addr\r\n")
+				sql.append("SELECT b.province_code, b.coupon_discount, b.province, b.city, b.city_code, b.area_code, b.area_county, b.street_addr\r\n")
 				.append(", a.order_freight, a.order_id, a.goods_amount, a.plateform_discount, a.dealer_discount, d.customer_service_tel\r\n")
 				.append(", b.invoice_code, b.invoice_header, b.invoice_name, b.invoice_type, a.created_date, b._status\r\n") 
 				.append(", b.order_freight dOrderFreight, b.goods_amount dGoodsAmount, b.plateform_discount dPlateformDiscount, b.dealer_discount dDealerDiscount\r\n")

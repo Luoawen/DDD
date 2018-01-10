@@ -100,6 +100,7 @@ public class AppOrderAgent {
     public ResponseEntity<MResult> submitOrder(
             @RequestParam(value = "goodses", required = false) String goodses
             ,@RequestParam(value = "userId", required = false) String userId
+            ,@RequestParam(value = "couponUserId", required = false) String couponUserId
             ,@RequestParam(value = "orderId", required = false) String orderId
             ,@RequestParam(value = "invoice", required = false) String invoice
             ,@RequestParam(value = "addr", required = false) String addr
@@ -113,9 +114,11 @@ public class AppOrderAgent {
             ,@RequestParam(value = "osVersion", required = false) String osVersion
             ,@RequestParam(value = "sn", required = false) String sn
     		) {
+    	LOGGER.info("goodses:"+goodses);
+    	LOGGER.info("couponUserId:"+couponUserId);
     	MResult result = new MResult(MCode.V_1);
         try {
-        	OrderAddCommand cmd = new OrderAddCommand(orderId, userId, noted, goodses, invoice, addr, coupons,
+        	OrderAddCommand cmd = new OrderAddCommand(orderId, userId,couponUserId, noted, goodses, invoice, addr, coupons,
         			latitude, longitude, from, appVersion, os, osVersion, sn);
             result.setContent(orderApp.submitOrder(cmd));
             result.setStatus(MCode.V_200);
@@ -703,5 +706,35 @@ public class AppOrderAgent {
 		}
     	
     	return new ResponseEntity<MResult>(result,HttpStatus.OK);
+    }
+    
+    /**
+     * 获取物流信息
+     * @param 
+     * @return
+     */
+    @RequestMapping(value = "app/ship/expressInfo", method = RequestMethod.GET)
+    public ResponseEntity<MPager> getExpressInfos(
+            @RequestParam(value = "com",defaultValue="") String com
+            ,@RequestParam(value = "nu", defaultValue="") String nu
+            ) {
+    	MPager result = new MPager(MCode.V_1);
+        try {
+        	if(StringUtils.isEmpty(com)){
+        		result.setContent("物流公司编码不能为空");
+        		 return new ResponseEntity<MPager>(result, HttpStatus.OK);
+        	}
+        	if(StringUtils.isEmpty(nu)){
+        		result.setContent("物流号不能为空");
+        		 return new ResponseEntity<MPager>(result, HttpStatus.OK);
+        	}
+        	 ExpressInfoBean queryExpress = orderQueryApp.queryExpress(com, nu);
+        	result.setContent(queryExpress);
+            result.setStatus(MCode.V_200);
+        } catch (Exception e) {
+            LOGGER.error("查询物流列表出错", e);
+            result = new MPager(MCode.V_400, e.getMessage());
+        }
+        return new ResponseEntity<MPager>(result, HttpStatus.OK);
     }
 }

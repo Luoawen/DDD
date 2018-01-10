@@ -14,6 +14,7 @@ import cn.m2c.scm.application.order.command.OrderPayedCmd;
 import cn.m2c.scm.application.order.command.PayOrderCmd;
 import cn.m2c.scm.application.order.command.SendOrderSMSCommand;
 import cn.m2c.scm.application.order.data.bean.CouponBean;
+import cn.m2c.scm.application.order.data.bean.CouponUseBean;
 import cn.m2c.scm.application.order.data.bean.FreightCalBean;
 import cn.m2c.scm.application.order.data.bean.GoodsReqBean;
 import cn.m2c.scm.application.order.data.bean.MarketBean;
@@ -30,10 +31,12 @@ import cn.m2c.scm.domain.NegativeException;
 import cn.m2c.scm.domain.model.expressPlatform.ExpressPlatform;
 import cn.m2c.scm.domain.model.expressPlatform.ExpressPlatformRepository;
 import cn.m2c.scm.domain.model.order.AppOrdInfo;
+import cn.m2c.scm.domain.model.order.CouponInfo;
 import cn.m2c.scm.domain.model.order.DealerOrder;
 import cn.m2c.scm.domain.model.order.DealerOrderDtl;
 import cn.m2c.scm.domain.model.order.MainOrder;
 import cn.m2c.scm.domain.model.order.OrderRepository;
+import cn.m2c.scm.domain.model.order.SimpleCoupon;
 import cn.m2c.scm.domain.model.order.SimpleMarketInfo;
 import cn.m2c.scm.domain.model.order.SimpleMarketing;
 import cn.m2c.scm.domain.model.special.GoodsSkuSpecial;
@@ -218,14 +221,16 @@ public class OrderApplication {
         //计算优惠券
         //1.获取满足条件的优惠券id
         String couponId = getCouponId(gdes);
+        CouponBean couponBean = null;
         //2.根据优惠券id查询营销接口获取优惠券详情
         if(!StringUtils.isEmpty(couponId)){
-        	CouponBean couponBean = orderDomainService.getCouponById(couponId,CouponBean.class);
+        	 couponBean = orderDomainService.getCouponById(couponId,cmd.getCouponUserId(),cmd.getUserId(),CouponBean.class);
         	LOGGER.info("获取到营销模块的优惠券的信息-----"+couponBean==null?"":couponBean.toString());
         	//3.计算优惠券优惠后最后的金额
         	//3.1首先将满足此优惠券的sku放入列表中<sku,GoodsDto>
 //        	Map<String,GoodsDto> couponGoodDto = getCouponDto(gdes);
-        	OrderCouponCalc.calCoupon(gdes,couponBean);
+        	if(couponBean!=null)
+        		OrderCouponCalc.calCoupon(gdes,couponBean);
         }
         // 获取结算方式
         Map<String, Integer> dealerCount = getDealerWay(idsSet);
@@ -245,17 +250,20 @@ public class OrderApplication {
             dealerDiscount += d.getDealerDiscount();
             couponDiscount += (d.getCouponDiscount() == null ? 0 : d.getCouponDiscount());
         }
-        
+        //结算金额
+        long orderAmount = goodsAmounts - plateDiscount - dealerDiscount - couponDiscount;
         List<MarketUseBean> useList = new ArrayList<>();
+        List<CouponUseBean> useCouponList = new ArrayList<>();
         MainOrder order = new MainOrder(cmd.getOrderId(), cmd.getAddr(), goodsAmounts, freight
-                , plateDiscount, dealerDiscount, cmd.getUserId(), cmd.getNoted(), dealerOrders, null
+                , plateDiscount, dealerDiscount, cmd.getUserId(), cmd.getNoted(), dealerOrders
+                , getUsedCoupon(cmd.getOrderId(),cmd.getCouponUserId(),couponBean, gdes, useCouponList)
                 , getUsedMarket(cmd.getOrderId(), gdes, useList), cmd.getLatitude(), cmd.getLongitude()
                 , couponDiscount);
         // 组织保存(重新设置计算好的价格)
         order.add(skus, cmd.getFrom());
         orderRepository.save(order);
-        // 锁定营销 , orderNo, 营销ID, userId
-        if (!orderDomainService.lockMarketIds(useList, cmd.getOrderId(), cmd.getUserId())) {
+        // 锁定营销 , orderNo, 营销ID, userId -----
+        if (!orderDomainService.lockMarketIds(useList, cmd.getCouponUserId(),cmd.getOrderId(), cmd.getUserId(),orderAmount,orderTime,JSONObject.toJSONString(useCouponList))) {
             throw new NegativeException(MCode.V_300, "活动已被用完！");
         }
         
@@ -286,6 +294,9 @@ public class OrderApplication {
 //		}
 //		return resMap;
 //	}
+
+
+	
 
 
 	/**
@@ -411,6 +422,30 @@ public class OrderApplication {
         return result;
     }
 
+    /**
+     * 获取应用的优惠券信息
+     * @param orderId
+     * @param couponUserId
+     * @param couponBean 
+     * @param gdes
+     * @param useCouponList
+     * @return
+     */
+    private List<SimpleCoupon> getUsedCoupon(String orderId,
+			String couponUserId, CouponBean couponBean, List<GoodsDto> gdes,
+			List<CouponUseBean> useCouponList) {
+    	List<SimpleCoupon> result = new ArrayList<SimpleCoupon>();
+    	for (GoodsDto b : gdes) {
+    		if(!StringUtils.isEmpty(b.getCouponId())){
+    			useCouponList.add(new CouponUseBean(b.getGoodsId(), b.getCouponId(), b.getSkuId(), b.getPurNum()));
+    			CouponInfo info = b.toCouponInfo(couponUserId,couponBean);
+    			if(info!=null){
+    	    		result.add(new SimpleCoupon(orderId, info));
+    	    	}
+    		}
+    	}
+		return result;
+	}
     /***
      * 真实拆分订单到商家
      *
@@ -1120,4 +1155,6 @@ public class OrderApplication {
 		expressPlatformRepository.saveOrUpdate(ep);
 		orderDomainService.registExpress(com,nu);
 	}
+	
+	
 }

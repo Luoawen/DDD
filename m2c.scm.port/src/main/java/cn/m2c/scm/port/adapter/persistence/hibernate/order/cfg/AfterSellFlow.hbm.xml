@@ -22,5 +22,9 @@
 		<property name="rejectReasonCode" column="reject_reason_code" type="int"></property>
 		<property name="applyReason" column="apply_reason" type="string"></property>
 		<property name="applyReasonCode" column="apply_reason_code" type="int"></property>
+		<property name="backExpressName" column="back_express_name" type="string"></property>
+		<property name="backExpressNo" column="back_express_no" type="string"></property>
+		<property name="expressName" column="express_name" type="string"></property>
+		<property name="expressNo" column="express_no" type="string"></property>
 	</class>
 </hibernate-mapping>

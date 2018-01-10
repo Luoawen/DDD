@@ -18,12 +18,13 @@ public class OrderOptLogEvent implements DomainEvent {
 	/**操作人*/
 	private String optUser;
 	
+	
 	private Date occurredOn;
 	
     private int eventVersion;
 	
 	public OrderOptLogEvent(String orderId, String dealerOrderId,
-			String optContent, String optUser) {
+			String optContent, String optUser ) {
 		this();
 		this.orderId = orderId;
 		this.dealerOrderId = dealerOrderId;

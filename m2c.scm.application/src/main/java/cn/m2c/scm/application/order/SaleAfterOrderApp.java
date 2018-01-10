@@ -216,7 +216,6 @@ public class SaleAfterOrderApp {
 			AfterSellFlow afterSellFlow = new AfterSellFlow();
 			saleAfterRepository.updateSaleAfterOrder(order);
 			afterSellFlow.add(cmd.getSaleAfterNo(), 4, cmd.getUserId(),null,null,null,null);
-			System.out.println(afterSellFlow);
 			afterSellFlowRepository.save(afterSellFlow);
 		}
 		else {
@@ -260,7 +259,7 @@ public class SaleAfterOrderApp {
 		}
 		saleAfterRepository.updateSaleAfterOrder(order);
 		AfterSellFlow afterSellFlow = new AfterSellFlow();
-		afterSellFlow.add(cmd.getSaleAfterNo(), 5, cmd.getUserId(),null,null,null,null);
+		afterSellFlow.save(cmd.getSaleAfterNo(), 5, cmd.getUserId(), null, null, null, null, null, null, cmd.getExpressNo(), cmd.getExpressName());
 		afterSellFlowRepository.save(afterSellFlow);
 	}
 	
@@ -283,7 +282,7 @@ public class SaleAfterOrderApp {
 		}
 		saleAfterRepository.updateSaleAfterOrder(order);
 		AfterSellFlow afterSellFlow = new AfterSellFlow();
-		afterSellFlow.add(cmd.getSaleAfterNo(), 7, cmd.getUserId(),null,null,null,null);
+		afterSellFlow.save(cmd.getSaleAfterNo(), 7, cmd.getUserId(), null, null, null, null, cmd.getExpressNo(), cmd.getExpressName(), null, null);
 		afterSellFlowRepository.save(afterSellFlow);
 	}
 	
