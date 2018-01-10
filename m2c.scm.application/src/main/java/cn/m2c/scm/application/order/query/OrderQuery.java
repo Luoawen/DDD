@@ -1,6 +1,7 @@
 package cn.m2c.scm.application.order.query;
 
 
+import cn.m2c.common.JsonUtils;
 import cn.m2c.common.MCode;
 import cn.m2c.ddd.common.port.adapter.persistence.springJdbc.SupportJdbcTemplate;
 import cn.m2c.scm.application.dealer.query.DealerQuery;
@@ -339,21 +340,21 @@ public class OrderQuery {
             dealerOrderDetailBean.setDealerOrderId(dealerOrderId);
         }
         List<GoodsInfoBean> goodsInfoList = getGoodsInfoList(dealerOrderId);
-      //判断所有订单是否有售后满足发货条件
+        //判断所有订单是否有售后满足发货条件
         for (GoodsInfoBean bean : goodsInfoList) {
-        	Integer temp = 0;
-        	if (StringUtils.isNotEmpty(bean.getAfterSellOrderId())) {
-        		for (GoodsInfoBean goodsInfoBean : goodsInfoList) {
-            		if (goodsInfoBean.getAfterSellStatus() == -1 || goodsInfoBean.getAfterSellStatus() == 0 || goodsInfoBean.getAfterSellStatus() == 1
-            				|| goodsInfoBean.getAfterSellStatus() == 2 || goodsInfoBean.getAfterSellStatus() == 3) {
-            			temp ++;
-            		}
-            	}
-        		if (temp == 0) {
-            		dealerOrderDetailBean.setIsShowShip(1);
-            	}
-			}
-		}
+            Integer temp = 0;
+            if (StringUtils.isNotEmpty(bean.getAfterSellOrderId())) {
+                for (GoodsInfoBean goodsInfoBean : goodsInfoList) {
+                    if (goodsInfoBean.getAfterSellStatus() == -1 || goodsInfoBean.getAfterSellStatus() == 0 || goodsInfoBean.getAfterSellStatus() == 1
+                            || goodsInfoBean.getAfterSellStatus() == 2 || goodsInfoBean.getAfterSellStatus() == 3) {
+                        temp++;
+                    }
+                }
+                if (temp == 0) {
+                    dealerOrderDetailBean.setIsShowShip(1);
+                }
+            }
+        }
         dealerOrderDetailBean.setGoodsInfoBeans(goodsInfoList);
         /*for (GoodsInfoBean goodsInfo : dealerOrderDetailBean.getGoodsInfoBeans()) {
             totalPrice += goodsInfo.getTotalPrice();
@@ -790,6 +791,12 @@ public class OrderQuery {
                     if (StringUtils.isNotEmpty(mediaId)) {
                         String mediaName = orderService.getMediaName(mediaId);
                         dtlMap.put("mediaName", mediaName);
+                    }
+
+                    String goodsIconStr = null != dtlMap.get("goodsIcon") ? String.valueOf(dtlMap.get("goodsIcon")) : null;
+                    List<String> goodsIcons = JsonUtils.toList(goodsIconStr, String.class);
+                    if (null != goodsIcons && goodsIcons.size() > 0) {
+                        dtlMap.put("goodsIcon", goodsIcons.get(0));
                     }
 
                     Long goodsAmount = null == dtlMap.get("goodsAmount") ? 0 : Long.parseLong(dtlMap.get("goodsAmount").toString());
