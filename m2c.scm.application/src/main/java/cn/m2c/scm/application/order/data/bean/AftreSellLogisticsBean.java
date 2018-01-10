@@ -78,11 +78,15 @@ public class AftreSellLogisticsBean {
 	@ColumnAlias(value = "express_time")
 	private String expressTime;
 	
+	@ColumnAlias(value = "express_code")
+	private String expressCode;
 	
 	/**
 	 * 商品信息
 	 */
 	private GoodsInfoBean goodsInfo;
+	
+	
 
 	public String getBackExpressName() {
 		return backExpressName;
@@ -114,6 +118,14 @@ public class AftreSellLogisticsBean {
 
 	public void setOrderType(Integer orderType) {
 		this.orderType = orderType;
+	}
+
+	public String getExpressCode() {
+		return expressCode;
+	}
+
+	public void setExpressCode(String expressCode) {
+		this.expressCode = expressCode;
 	}
 
 	public Integer getStatus() {
