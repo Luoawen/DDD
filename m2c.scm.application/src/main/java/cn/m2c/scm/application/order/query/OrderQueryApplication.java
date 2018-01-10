@@ -528,7 +528,7 @@ public class OrderQueryApplication {
 					.append("FROM t_scm_order_dealer b \r\n")
 					.append("LEFT OUTER JOIN t_scm_order_main a ON a.order_id=b.order_id\r\n")
 					.append("LEFT OUTER JOIN t_scm_dealer c ON c.dealer_id = b.dealer_id \r\n")
-					.append("WHERE a.user_id=?  AND b.del_flag=0 AND (b._status IN (1, 2, 3))\r\n")
+					.append("WHERE a.user_id=?  AND b.del_flag=0 AND (b._status IN (1, 2, 3, 4, 5))\r\n")      //添加售后保护期已过的订单
 					.append("AND b.dealer_order_id IN (SELECT cc.dealer_order_id FROM t_scm_order_detail cc \r\n")
 					.append("WHERE (cc.sort_no = 0 AND cc.sort_no NOT IN(SELECT aa.sort_no FROM t_scm_order_detail aa, t_scm_order_after_sell bb \r\n")
 					.append("WHERE aa.dealer_order_id = b.dealer_order_id \r\n")
@@ -554,8 +554,8 @@ public class OrderQueryApplication {
 			params.add((pageIndex - 1) * pageSize);
 			params.add(pageSize);
 			
+			System.out.println("outside SQL--------------------->"+sql);
 			result = this.supportJdbcTemplate.queryForBeanList(sql.toString(), AppOrderBean.class, params.toArray());
-			
 			if (result != null) {
 				int sz = result.size();
 				String tmpOrderId = null; 
@@ -568,6 +568,7 @@ public class OrderQueryApplication {
 					.append(" WHERE a.order_id=? AND a.dealer_order_id=? AND ((a.sort_no=0 AND a.sku_id NOT IN (SELECT b.sku_id FROM t_scm_order_after_sell b WHERE b._status NOT IN(-1, 3) AND b.dealer_order_id=a.dealer_order_id AND b.order_id=a.order_id AND b.sort_no=a.sort_no))")
 					.append(" OR (a.sort_no !=0 AND a.sort_no NOT IN (SELECT b.sort_no FROM t_scm_order_after_sell b WHERE b._status NOT IN(-1, 3) AND b.dealer_order_id=a.dealer_order_id AND b.order_id=a.order_id AND b.sort_no=a.sort_no)))")
 					;
+					System.out.println("Inside SQL----------------------------->"+sql);
 					o.setGoodses(this.supportJdbcTemplate.queryForBeanList(sql.toString(), 
 							OrderDetailBean.class, new Object[] {tmpOrderId, o.getDealerOrderId()}));
 				}
