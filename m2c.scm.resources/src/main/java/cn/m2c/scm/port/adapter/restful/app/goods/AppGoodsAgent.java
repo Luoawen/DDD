@@ -8,6 +8,8 @@ import cn.m2c.scm.application.classify.data.bean.GoodsClassifyBean;
 import cn.m2c.scm.application.classify.query.GoodsClassifyQueryApplication;
 import cn.m2c.scm.application.comment.query.GoodsCommentQueryApplication;
 import cn.m2c.scm.application.comment.query.data.bean.GoodsCommentBean;
+import cn.m2c.scm.application.config.data.bean.ConfigBean;
+import cn.m2c.scm.application.config.query.ConfigQueryApplication;
 import cn.m2c.scm.application.goods.GoodsApplication;
 import cn.m2c.scm.application.goods.command.MDViewGoodsCommand;
 import cn.m2c.scm.application.goods.query.GoodsGuaranteeQueryApplication;
@@ -72,6 +74,8 @@ public class AppGoodsAgent {
     ShopQuery shopQuery;
     @Autowired
     GoodsSpecialQueryApplication goodsSpecialQueryApplication;
+    @Autowired
+    ConfigQueryApplication configQueryApplication;
 
     /**
      * 商品猜你喜欢
@@ -226,7 +230,7 @@ public class AppGoodsAgent {
         MPager result = new MPager(MCode.V_1);
         try {
             Map couponMap = null;
-            if (StringUtils.isNotEmpty(couponId)){
+            if (StringUtils.isNotEmpty(couponId)) {
                 couponMap = goodsRestService.getCouponRange(couponId);
             }
             Integer total = goodsQueryApplication.appSearchGoodsTotal(dealerId, goodsClassifyId, condition, rangeType, ids, couponMap);
@@ -349,6 +353,13 @@ public class AppGoodsAgent {
                     if (null != mediaMap && mediaMap.size() > 0) {
                         //商品有无媒体信息,有媒体信息则返回特惠价
                         goodsSpecialBean = goodsSpecialQueryApplication.queryGoodsSpecialByGoodsId(goodsBean.getGoodsId());
+                        if (null != goodsSpecialBean) {
+                            // 特惠价角标
+                            ConfigBean configBean = configQueryApplication.queryConfigBeanByConfigKey("SCM_GOODS_SPECIAL_IMAGE");
+                            if (null != configBean) {
+                                goodsSpecialBean.setSpecialIcon(configBean.getConfigValue());
+                            }
+                        }
                     }
 
                     AppGoodsDetailRepresentation representation = new AppGoodsDetailRepresentation(goodsBean,
