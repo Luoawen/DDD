@@ -2,7 +2,6 @@ package cn.m2c.scm.application.goods.query.data.representation.app;
 
 import cn.m2c.common.JsonUtils;
 import cn.m2c.scm.application.comment.query.data.bean.GoodsCommentBean;
-import cn.m2c.scm.application.config.data.bean.ConfigBean;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsBean;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsGuaranteeBean;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsSkuBean;
@@ -49,7 +48,6 @@ public class AppGoodsDetailRepresentation {
     private String customerTel;
     private Map goodsSpecial;
     private List<Map> coupons;
-    private Map configs;
 
     public AppGoodsDetailRepresentation(GoodsBean bean, List<GoodsGuaranteeBean> goodsGuaranteeBeans,
                                         String goodsUnitName, String mresId, Integer commentTotal, GoodsCommentBean goodsCommentBean,
@@ -339,19 +337,6 @@ public class AppGoodsDetailRepresentation {
 
     public void setCoupons(List<Map> coupons) {
         this.coupons = coupons;
-    }
-    
-    public void setConfigs(List<ConfigBean> configsList) {
-    	if(null != configsList && configsList.size()>0) {
-    		this.configs = new HashMap<>();
-    		for(ConfigBean bean : configsList) {
-    			this.configs.put(bean.getConfigKey(), bean.getConfigValue());
-    		}
-    	}
-    }
-    
-    public Map getConfigs() {
-    	return configs;
     }
 
 	public String getGoodsMainVideo() {

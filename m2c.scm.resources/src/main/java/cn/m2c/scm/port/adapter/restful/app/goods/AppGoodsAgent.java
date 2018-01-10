@@ -8,8 +8,6 @@ import cn.m2c.scm.application.classify.data.bean.GoodsClassifyBean;
 import cn.m2c.scm.application.classify.query.GoodsClassifyQueryApplication;
 import cn.m2c.scm.application.comment.query.GoodsCommentQueryApplication;
 import cn.m2c.scm.application.comment.query.data.bean.GoodsCommentBean;
-import cn.m2c.scm.application.config.data.bean.ConfigBean;
-import cn.m2c.scm.application.config.query.ConfigQueryApplication;
 import cn.m2c.scm.application.goods.GoodsApplication;
 import cn.m2c.scm.application.goods.command.MDViewGoodsCommand;
 import cn.m2c.scm.application.goods.query.GoodsGuaranteeQueryApplication;
@@ -74,8 +72,6 @@ public class AppGoodsAgent {
     ShopQuery shopQuery;
     @Autowired
     GoodsSpecialQueryApplication goodsSpecialQueryApplication;
-    //@Autowired
-    //ConfigQueryApplication configQueryApplication;
     
     /**
      * 商品猜你喜欢
@@ -310,7 +306,6 @@ public class AppGoodsAgent {
             @RequestParam(value = "triggerTime", required = false) long triggerTime,
             @RequestParam(value = "userId", required = false, defaultValue = "") String userId,
             @RequestParam(value = "userName", required = false, defaultValue = "") String userName
-            //@RequestParam(value = "configKeys", required = false) List<String> configKeys
     ) {
         MResult result = new MResult(MCode.V_1);
         Map mediaMap = goodsDubboService.getMediaResourceInfo(barNo);
@@ -351,18 +346,12 @@ public class AppGoodsAgent {
 
                     // 拍获进来，特惠价
                     GoodsSpecialBean goodsSpecialBean = null;
-                    //List<ConfigBean> configBeans = null;
                     if (null != mediaMap && mediaMap.size() > 0) {
                         //商品有无媒体信息,有媒体信息则返回特惠价
                         goodsSpecialBean = goodsSpecialQueryApplication.queryGoodsSpecialByGoodsId(goodsBean.getGoodsId());
-                        //查询配置(特惠价角标等)
-                        //configBeans = configQueryApplication.queryConfigBeanByConfigKeyList(configKeys);
                     }
                     AppGoodsDetailRepresentation representation = new AppGoodsDetailRepresentation(goodsBean,
                             goodsGuarantee, goodsUnitName, mresId, commentTotal, goodsCommentBean, fullCut, coupons, goodsTags, favoriteId, phone, goodsSpecialBean);
-                    /*if (null != configBeans) {
-                    	representation.setConfigs(configBeans);
-                    }*/
                     representations.add(representation);
                 }
                 result.setContent(representations);
