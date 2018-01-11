@@ -616,6 +616,16 @@ public class OrderQuery {
                 payStatus, payWay, goodsNameOrId, shopName, orderStartTime, orderEndTime,
                 userName, mediaOrResId, sql, params);
 
+        // 店铺名称
+        if (StringUtils.isNotEmpty(shopName)) {
+            List<String> dealerIds = dealerQuery.getDealerIdsByShopName(shopName);
+            if (null != dealerIds && dealerIds.size() > 0) {
+                sql.append(" AND d.dealer_id in (" + Utils.listParseString(dealerIds) + ") ");
+            } else {
+                return 0;
+            }
+        }
+
         // 下单用户名或账号，精准匹配
         if (StringUtils.isNotEmpty(userName)) {
             String userId = orderService.getUserIdByUserName(userName);
@@ -645,6 +655,16 @@ public class OrderQuery {
         getAdminOrderListConditionDeal(orderId, dealerOrderId, orderStatus, afterSellStatus, commentStatus,
                 payStatus, payWay, goodsNameOrId, shopName, orderStartTime, orderEndTime,
                 userName, mediaOrResId, sql, params);
+
+        // 店铺名称
+        if (StringUtils.isNotEmpty(shopName)) {
+            List<String> dealerIds = dealerQuery.getDealerIdsByShopName(shopName);
+            if (null != dealerIds && dealerIds.size() > 0) {
+                sql.append(" AND d.dealer_id in (" + Utils.listParseString(dealerIds) + ") ");
+            } else {
+                return null;
+            }
+        }
 
         // 下单用户名或账号，精准匹配
         if (StringUtils.isNotEmpty(userName)) {
@@ -709,23 +729,12 @@ public class OrderQuery {
             params.add(goodsNameOrId);
             params.add("%" + goodsNameOrId + "%");
         }
-
-        // 店铺名称
-        if (StringUtils.isNotEmpty(shopName)) {
-            List<String> dealerIds = dealerQuery.getDealerIdsByShopName(shopName);
-            if (null != dealerIds && dealerIds.size() > 0) {
-                sql.append(" AND d.dealer_id in (" + Utils.listParseString(dealerIds) + ") ");
-            }
-        }
-
         // 订单下单时间
         if (StringUtils.isNotEmpty(orderStartTime) && StringUtils.isNotEmpty(orderEndTime)) {
             sql.append(" AND (d.created_date BETWEEN ? AND ?)");
             params.add(orderStartTime + " 00:00:00");
             params.add(orderEndTime + " 23:59:59");
         }
-
-
         // 媒体ID或广告位ID，精准匹配
         if (StringUtils.isNotEmpty(mediaOrResId)) {
             sql.append(" AND (dtl.media_res_id = ? OR dtl.media_id = ?)");
