@@ -177,7 +177,7 @@ public class SaleAfterOrder extends ConcurrencySafeEntity {
             Map<String, Map> dealerInfo = new HashMap<>();
             Map infoMap = new HashMap<>();
             infoMap.put("num", 1);
-            infoMap.put("money", backMoney);
+            infoMap.put("money", backMoney + returnFreight);
             dealerInfo.put(this.dealerId, infoMap);
             DomainEventPublisher.instance().publish(new DealerReportStatisticsEvent(dealerInfo, DealerReportType.ORDER_REFUND, new Date()));
         }
@@ -216,7 +216,7 @@ public class SaleAfterOrder extends ConcurrencySafeEntity {
      * @param e
      * @return
      */
-    public boolean clientShip(ExpressInfo e, String userId,String com,String nu) {
+    public boolean clientShip(ExpressInfo e, String userId, String com, String nu) {
         if (status != 4)
             return false;
         status = 5;
@@ -237,7 +237,7 @@ public class SaleAfterOrder extends ConcurrencySafeEntity {
      * @param e
      * @return
      */
-    public boolean dealerShip(ExpressInfo e, String userId,String orderId,String shopName,String com,String nu) {
+    public boolean dealerShip(ExpressInfo e, String userId, String orderId, String shopName, String com, String nu) {
         if (status < 5)
             return false;
         sendExpress = e;
@@ -379,10 +379,10 @@ public class SaleAfterOrder extends ConcurrencySafeEntity {
             return 0;
         return backNum;
     }
-    
+
     public String getSaleAfterNo() {
-		return saleAfterNo;
-	}
+        return saleAfterNo;
+    }
 
     /***
      * 订单类型

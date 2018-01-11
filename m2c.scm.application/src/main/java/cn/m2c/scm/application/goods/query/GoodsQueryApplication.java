@@ -464,6 +464,94 @@ public class GoodsQueryApplication {
         return goodsBeans;
     }
 
+    public void updateGoodsHotSellCache(String goodsId, boolean isModify) {
+        String key = "scm.goods.hot.sell";
+        String hotSell = RedisUtil.getString(key); //从缓存中取数据
+        if (StringUtils.isNotEmpty(hotSell)) { // 缓存不为空
+            List<GoodsBean> hotSellInfoList = JsonUtils.toList(hotSell, GoodsBean.class);
+            if (null != hotSellInfoList && hotSellInfoList.size() > 0) {
+                Integer size = hotSellInfoList.size();
+                List<String> goodsIds = new ArrayList<>();
+                Iterator<GoodsBean> it = hotSellInfoList.iterator();
+                if (isModify) {
+                    List<GoodsBean> tempList = new ArrayList<>();
+                    while (it.hasNext()) {
+                        GoodsBean goodsBean = it.next();
+                        if (goodsId.equals(goodsBean.getGoodsId())) {
+                            goodsBean = queryGoodsByGoodsId(goodsId);
+                            tempList.add(goodsBean);
+                        } else {
+                            tempList.add(goodsBean);
+                        }
+                    }
+                    RedisUtil.setString(key, 15 * 24 * 3600, JsonUtils.toStr(tempList));
+                } else {
+                    while (it.hasNext()) {
+                        GoodsBean goodsBean = it.next();
+                        if (goodsId.equals(goodsBean.getGoodsId())) {
+                            it.remove();
+                        } else {
+                            goodsIds.add(goodsBean.getGoodsId());
+                        }
+                    }
+                    Integer removeSize = hotSellInfoList.size();
+                    if (size > removeSize) {
+                        hotSellInfoList.addAll(queryGoodsHotSell((size - removeSize), goodsIds));
+                        RedisUtil.setString(key, 15 * 24 * 3600, JsonUtils.toStr(hotSellInfoList));
+                    }
+                }
+            }
+        }
+    }
+
+    public List<GoodsBean> queryGoodsHotSellCache() {
+        Integer number = 24;
+        List<GoodsBean> goodsBeans = new ArrayList<>();
+        String key = "scm.goods.hot.sell";
+        String hotSell = RedisUtil.getString(key); //从缓存中取数据
+        if (StringUtils.isNotEmpty(hotSell)) { // 缓存不为空
+            List<GoodsBean> hotSellInfoList = JsonUtils.toList(hotSell, GoodsBean.class);
+            if (hotSellInfoList.size() < number) { //随机取剩余部分
+                List<String> goodsIds = new ArrayList<>();
+                for (GoodsBean goodsBean : hotSellInfoList) {
+                    goodsIds.add(goodsBean.getGoodsId());
+                }
+                hotSellInfoList.addAll(queryGoodsHotSell((number - hotSellInfoList.size()), goodsIds));
+                RedisUtil.setString(key, 15 * 24 * 3600, JsonUtils.toStr(hotSellInfoList));
+            }
+            goodsBeans = hotSellInfoList;
+        } else {
+            goodsBeans = queryGoodsHotSell(number, null);
+        }
+        return goodsBeans;
+    }
+
+    private List<GoodsBean> queryGoodsHotSell(Integer number, List<String> goodsIds) {
+        String key = "scm.goods.hot.sell";
+        StringBuilder sql = new StringBuilder();
+        sql.append(" SELECT ");
+        sql.append(" g.* ");
+        sql.append(" FROM ");
+        sql.append(" t_scm_goods_sku s,t_scm_goods g ");
+        sql.append(" where s.goods_id=g.id and g.goods_status <> 1 and g.del_status=1 ");
+        if (null != goodsIds && goodsIds.size() > 0) {
+            sql.append(" and g.goods_id not in (" + Utils.listParseString(goodsIds) + ")");
+        }
+        sql.append(" group by s.goods_id order by count(s.seller_num) desc,s.created_date desc limit 0,?");
+        List<GoodsBean> goodsBeans = this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsBean.class, number);
+        if (null != goodsBeans && goodsBeans.size() > 0) {
+            for (GoodsBean goodsBean : goodsBeans) {
+                goodsBean.setGoodsSkuBeans(queryGoodsSKUsByGoodsId(goodsBean.getId()));
+            }
+        }
+        if (null == goodsIds) {
+            if (null != goodsBeans && goodsBeans.size() > 0) {
+                RedisUtil.setString(key, 15 * 24 * 3600, JsonUtils.toStr(goodsBeans));
+            }
+        }
+        return goodsBeans;
+    }
+
     /**
      * list 分页
      *
