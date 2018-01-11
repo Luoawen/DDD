@@ -788,10 +788,11 @@ public class OrderQuery {
             if (null != dtlList && dtlList.size() > 0) {
                 for (Map<String, Object> dtlMap : dtlList) {
                     String mediaId = null != dtlMap.get("mediaId") ? dtlMap.get("mediaId").toString() : null;
+                    String mediaName = "";
                     if (StringUtils.isNotEmpty(mediaId)) {
-                        String mediaName = orderService.getMediaName(mediaId);
-                        dtlMap.put("mediaName", mediaName);
+                        mediaName = orderService.getMediaName(mediaId);
                     }
+                    dtlMap.put("mediaName", mediaName);
 
                     String goodsIconStr = null != dtlMap.get("goodsIcon") ? String.valueOf(dtlMap.get("goodsIcon")) : null;
                     List<String> goodsIcons = JsonUtils.toList(goodsIconStr, String.class);
