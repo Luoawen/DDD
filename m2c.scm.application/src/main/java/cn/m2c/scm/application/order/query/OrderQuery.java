@@ -615,6 +615,18 @@ public class OrderQuery {
         getAdminOrderListConditionDeal(orderId, dealerOrderId, orderStatus, afterSellStatus, commentStatus,
                 payStatus, payWay, goodsNameOrId, shopName, orderStartTime, orderEndTime,
                 userName, mediaOrResId, sql, params);
+
+        // 下单用户名或账号，精准匹配
+        if (StringUtils.isNotEmpty(userName)) {
+            String userId = orderService.getUserIdByUserName(userName);
+            if (StringUtils.isNotEmpty(userId)) {
+                sql.append(" AND m.user_id = ?");
+                params.add(userId);
+            } else {
+                return 0;
+            }
+        }
+
         sql.append(" group by d.dealer_order_id) a");
         return supportJdbcTemplate.jdbcTemplate().queryForObject(sql.toString(), Integer.class, params.toArray());
     }
@@ -633,6 +645,18 @@ public class OrderQuery {
         getAdminOrderListConditionDeal(orderId, dealerOrderId, orderStatus, afterSellStatus, commentStatus,
                 payStatus, payWay, goodsNameOrId, shopName, orderStartTime, orderEndTime,
                 userName, mediaOrResId, sql, params);
+
+        // 下单用户名或账号，精准匹配
+        if (StringUtils.isNotEmpty(userName)) {
+            String userId = orderService.getUserIdByUserName(userName);
+            if (StringUtils.isNotEmpty(userId)) {
+                sql.append(" AND m.user_id = ?");
+                params.add(userId);
+            } else {
+                return null;
+            }
+        }
+
         sql.append(" group by dealerOrderId ORDER BY m.order_id DESC, m.created_date DESC ");
         sql.append(" LIMIT ?,?");
         params.add(rows * (pageNum - 1));
@@ -701,14 +725,6 @@ public class OrderQuery {
             params.add(orderEndTime + " 23:59:59");
         }
 
-        // 下单用户名或账号，精准匹配
-        if (StringUtils.isNotEmpty(userName)) {
-            String userId = orderService.getUserIdByUserName(userName);
-            if (StringUtils.isNotEmpty(userId)) {
-                sql.append(" AND m.user_id = ?");
-                params.add(userId);
-            }
-        }
 
         // 媒体ID或广告位ID，精准匹配
         if (StringUtils.isNotEmpty(mediaOrResId)) {
