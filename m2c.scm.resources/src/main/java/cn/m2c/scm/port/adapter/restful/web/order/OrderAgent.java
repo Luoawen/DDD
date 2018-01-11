@@ -539,12 +539,10 @@ public class OrderAgent {
     	MPager result = new MPager(MCode.V_1);
         try {
         	if(StringUtils.isEmpty(com)){
-        		result.setContent("物流公司编码不能为空");
-        		 return new ResponseEntity<MPager>(result, HttpStatus.OK);
+        		throw new NegativeException(MCode.V_400,"物流公司编码不能为空");
         	}
         	if(StringUtils.isEmpty(nu)){
-        		result.setContent("物流号不能为空");
-        		 return new ResponseEntity<MPager>(result, HttpStatus.OK);
+        		throw new NegativeException(MCode.V_400,"物流号不能为空");
         	}
         	 ExpressInfoBean queryExpress = orderQueryApp.queryExpress(com, nu);
         	result.setContent(queryExpress);
