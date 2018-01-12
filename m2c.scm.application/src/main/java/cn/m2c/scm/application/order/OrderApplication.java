@@ -453,6 +453,7 @@ public class OrderApplication {
     	    		result.add(new SimpleCoupon(orderId, info));
     	    	}
     	}
+    	cids = null;
     	LOGGER.info("use conponList"+result.toString());
 		return result;
 	}
