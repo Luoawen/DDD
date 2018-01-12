@@ -9,6 +9,7 @@ import cn.m2c.scm.application.order.data.bean.AllOrderBean;
 import cn.m2c.scm.application.order.data.bean.AppInfo;
 import cn.m2c.scm.application.order.data.bean.DealerOrderDetailBean;
 import cn.m2c.scm.application.order.data.bean.GoodsInfoBean;
+import cn.m2c.scm.application.order.data.bean.MainOrderAmountBean;
 import cn.m2c.scm.application.order.data.bean.MainOrderBean;
 import cn.m2c.scm.application.order.data.bean.OrderDealerBean;
 import cn.m2c.scm.application.order.data.bean.OrderGoodsBean;
@@ -817,5 +818,18 @@ public class OrderQuery {
             }
         }
         return map;
+    }
+    
+    public String getMainOrderAmount(String orderId) throws NegativeException {
+    	StringBuilder sql = new StringBuilder();
+    	MainOrderAmountBean bean = new MainOrderAmountBean();
+    	try {
+			sql.append(" SELECT goods_amount,plateform_discount,dealer_discount,coupon_discount FROM t_scm_order_main WHERE order_id = ? ");
+			 bean = this.supportJdbcTemplate.queryForBean(sql.toString(), MainOrderAmountBean.class,orderId);
+		} catch (Exception e) {
+			LOGGER.info("查询主订单金额...",e.getMessage());
+			throw new NegativeException(MCode.V_400,"查询主订单金额出错");
+		}
+    	return bean.getStrAmount();
     }
 }
