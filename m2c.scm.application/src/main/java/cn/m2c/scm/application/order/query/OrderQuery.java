@@ -346,13 +346,12 @@ public class OrderQuery {
             if (StringUtils.isNotEmpty(bean.getAfterSellOrderId())) {
                 for (GoodsInfoBean goodsInfoBean : goodsInfoList) {
                 	if(StringUtils.isNotEmpty(goodsInfoBean.getAfterSellOrderId())) {
-                		if (goodsInfoBean.getAfterSellStatus() == -1 || goodsInfoBean.getAfterSellStatus() == 0 || goodsInfoBean.getAfterSellStatus() == 1
-                				|| goodsInfoBean.getAfterSellStatus() == 2 || goodsInfoBean.getAfterSellStatus() == 3) {
+                		if (goodsInfoBean.getAfterSellStatus() <= 5 && goodsInfoBean.getAfterSellStatus() < 7) {
                 			temp++;
                 		}
                 	}
                 }
-                if (temp == 0) {
+                if (temp != 0) {
                     dealerOrderDetailBean.setIsShowShip(1);
                 }
             }
