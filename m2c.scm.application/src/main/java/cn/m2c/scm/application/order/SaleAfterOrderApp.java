@@ -537,6 +537,12 @@ public class SaleAfterOrderApp {
             saleAfterRepository.save(afterOrder);
         afterSellFlow.add(afterOrder.getSaleAfterNo(), -1, SCM_JOB_USER, null, null, null, null);
         afterSellFlowRepository.save(afterSellFlow);
+
+        // 售后商家未处理推送消息
+        Map extraMap = new HashMap<>();
+        extraMap.put("afterSellOrderId", afterOrder.getSaleAfterNo());
+        extraMap.put("optType", 9);
+        orderService.msgPush(1, afterOrder.userId(), JsonUtils.toStr(extraMap), afterOrder.dealerId());
     }
 
     /**
