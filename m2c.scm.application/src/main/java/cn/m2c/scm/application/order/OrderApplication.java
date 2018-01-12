@@ -435,25 +435,17 @@ public class OrderApplication {
 			String couponUserId, CouponBean couponBean, List<GoodsDto> gdes,
 			List<CouponUseBean> useCouponList) {
     	List<SimpleCoupon> result = null;
-    	 List<String> cids = new ArrayList<>();
     	for (GoodsDto b : gdes) {
     		CouponInfo info = b.toCouponInfo(couponUserId,couponBean);
-    			String cid = b.getCouponId();
-    		if(!StringUtils.isEmpty(cid)){
+    		if(!StringUtils.isEmpty(b.getCouponId())){
     			useCouponList.add(new CouponUseBean(b.getGoodsId(), b.getCouponId(), b.getSkuId(), b.getPurNum()));
+    			if(useCouponList.size()>0){
+    				result = new ArrayList<SimpleCoupon>();
+    				result.add(new SimpleCoupon(orderId, info));
+    				continue;
+    			}
     		}
-    			if(info!=null){
-                    if (cids.contains(cid)) {
-                        info = null;
-                        continue;
-                    }
-                    cids.add(cid);
-                    if (result == null)
-                        result = new ArrayList<SimpleCoupon>();
-    	    		result.add(new SimpleCoupon(orderId, info));
-    	    	}
     	}
-    	cids = null;
     	LOGGER.info("use conponList"+result.toString());
 		return result;
 	}
