@@ -345,10 +345,12 @@ public class OrderQuery {
             Integer temp = 0;
             if (StringUtils.isNotEmpty(bean.getAfterSellOrderId())) {
                 for (GoodsInfoBean goodsInfoBean : goodsInfoList) {
-                    if (goodsInfoBean.getAfterSellStatus() == -1 || goodsInfoBean.getAfterSellStatus() == 0 || goodsInfoBean.getAfterSellStatus() == 1
-                            || goodsInfoBean.getAfterSellStatus() == 2 || goodsInfoBean.getAfterSellStatus() == 3) {
-                        temp++;
-                    }
+                	if(StringUtils.isNotEmpty(goodsInfoBean.getAfterSellOrderId())) {
+                		if (goodsInfoBean.getAfterSellStatus() == -1 || goodsInfoBean.getAfterSellStatus() == 0 || goodsInfoBean.getAfterSellStatus() == 1
+                				|| goodsInfoBean.getAfterSellStatus() == 2 || goodsInfoBean.getAfterSellStatus() == 3) {
+                			temp++;
+                		}
+                	}
                 }
                 if (temp == 0) {
                     dealerOrderDetailBean.setIsShowShip(1);
@@ -393,6 +395,7 @@ public class OrderQuery {
         //.append(" AND dtl.sku_id NOT IN (SELECT a.sku_id FROM t_scm_order_after_sell a WHERE a.dealer_order_id=dtl.dealer_order_id AND a._status >= 4) ");
         params.add(dealerOrderId);
         params.add(dealerOrderId);
+        System.out.println("sql---------------------------->"+sql);
         List<GoodsInfoBean> goodsInfoList = this.supportJdbcTemplate.queryForBeanList(sql.toString(),
                 GoodsInfoBean.class, params.toArray());
         /*for (GoodsInfoBean goodsInfo : goodsInfoList) {
