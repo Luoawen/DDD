@@ -434,13 +434,12 @@ public class OrderApplication {
     private List<SimpleCoupon> getUsedCoupon(String orderId,
 			String couponUserId, CouponBean couponBean, List<GoodsDto> gdes,
 			List<CouponUseBean> useCouponList) {
-    	List<SimpleCoupon> result = null;
+    	List<SimpleCoupon> result = new ArrayList<SimpleCoupon>();
     	for (GoodsDto b : gdes) {
-    		CouponInfo info = b.toCouponInfo(couponUserId,couponBean);
     		if(!StringUtils.isEmpty(b.getCouponId())){
+    			CouponInfo info = b.toCouponInfo(couponUserId,couponBean);
     			useCouponList.add(new CouponUseBean(b.getGoodsId(), b.getCouponId(), b.getSkuId(), b.getPurNum()));
     			if(useCouponList.size()>0){
-    				result = new ArrayList<SimpleCoupon>();
     				result.add(new SimpleCoupon(orderId, info));
     				break;
     			}
