@@ -126,8 +126,8 @@ public class SaleAfterOrderApp {
 					copySku(skuBeanLs,totalSku);
 				}
 				discountMoney = OrderMarketCalc.calcReturnMoney(marketInfo, skuBeanLs, cmd.getSkuId(), _sortNo);
-				if (marketInfo != null && marketInfo.isFull())
-					money = itemDtl.changePrice();
+//				if (marketInfo != null && marketInfo.isFull())
+//					money = itemDtl.changePrice();
 			}
 			if(!StringUtils.isEmpty(couponId)){//计算优惠券的金额
 				SimpleCoupon couponInfo = saleOrderQuery.getCouponById(couponId,cmd.getOrderId());

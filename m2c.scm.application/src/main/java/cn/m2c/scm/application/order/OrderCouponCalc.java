@@ -175,15 +175,42 @@ public class OrderCouponCalc {
 	 */
 	public static long calcReturnMoney(SimpleCoupon couponInfo,
 			List<SkuNumBean> totalSku, String skuId, int _sortNo) {
-		long discount = 0;
-		List<SkuNumBean> couponSkuBean = new ArrayList<SkuNumBean>();
-		for (SkuNumBean bean : totalSku) {
-			if(!StringUtils.isEmpty(couponInfo.getCouponId())){
-				couponSkuBean.add(bean);
-			}
-		}
-		
-		return discount;
+		long rtMoney = 0;
+//		if(couponInfo == null || totalSku==null || totalSku.size()<1)
+//			return rtMoney;
+//		Long coutRest = 0L;//计算去掉退货商品后优惠券的门槛
+//		List<SkuNumBean> couponSkuBean = new ArrayList<SkuNumBean>();
+//		for (SkuNumBean bean : totalSku) {
+//			if(!StringUtils.isEmpty(couponInfo.getCouponId()) && !skuId.equals(bean.getSkuId())){//将所有满足的优惠券信息加入bean中
+//				couponSkuBean.add(bean);//所有的skuId
+//				if(couponInfo.getThresholdType()==1){
+//					//金额
+//					coutRest+= bean.getGoodsAmount()-bean.getDiscountMoney();
+//				}else if(couponInfo.getThresholdType()==2){
+//					//件数
+//					coutRest+= bean.getNum();
+//				}
+//			}
+//		}
+//		boolean isOk = false;
+//		if(couponInfo.getThresholdType()==3){
+//			isOk=true;
+//		}else if(coutRest>=couponInfo.getThreshold()){
+//			isOk=true;
+//		}
+//		//满足门槛
+//		if(isOk){
+//			switch (couponInfo.getCouponForm()) {
+//			case 1:
+//				calMoney(couponSkuBean,);//减钱
+//				break;
+//
+//			case 2:
+//				calDiscount();//打折
+//				break;
+//			}
+//		}
+		return rtMoney;
 	}
 
 }
