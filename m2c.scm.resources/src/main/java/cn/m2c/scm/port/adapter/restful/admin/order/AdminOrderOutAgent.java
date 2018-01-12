@@ -38,7 +38,7 @@ public class AdminOrderOutAgent {
      * 给媒体提供的广告位订单明细
      * @return
      */
-    @RequestMapping(value = "", method = RequestMethod.GET)
+    @RequestMapping(value = "/orderdetail", method = RequestMethod.GET)
     public ResponseEntity<MPager> getMediaResOrderDetail(
     		@RequestParam(value = "userMessage", required = false) String userMessage,                 //下单用户名/账号
     		@RequestParam(value = "orderId", required = false) String orderId,                         //订单号
@@ -55,19 +55,25 @@ public class AdminOrderOutAgent {
             @RequestParam(value = "rows", required = false, defaultValue = "10") Integer rows
     		){
     	MPager result = new MPager(MCode.V_1);
-    	//根据用户名/账号查下单用户id,用户名,手机号(List)
-    	Map<String,String> userMap = orderServiceImpl.getUserMobileOrUserName(userMessage);
-    	List<String> userIds = new ArrayList<String>();
-    	if(null != userMap && userMap.size() > 0) {
-    		Iterator<Entry<String,String>> iter = userMap.entrySet().iterator(); 
-            while(iter.hasNext()){ 
-                Entry<String,String> entry = iter.next(); 
-                String key = entry.getKey(); 
-                userIds.add(key);
-            }
-    	}
     	try {
-    		if(StringUtils.isEmpty(userMessage)) {//无下单用户/账号信息
+			//根据用户名/账号查下单用户id,用户名/手机号(Map)
+			Map<String,String> userMap = orderServiceImpl.getUserMobileOrUserName(userMessage);
+			List<String> userIds = new ArrayList<String>();
+			if(null != userMap && userMap.size() > 0) {//查到用户信息，封装userId用于订单查询
+				Iterator<Entry<String,String>> iter = userMap.entrySet().iterator(); 
+		        while(iter.hasNext()){ 
+		            Entry<String,String> entry = iter.next(); 
+		            String key = entry.getKey(); 
+		            userIds.add(key);
+		        }
+			}else {//没有查到用户信息
+				result.setContent("");
+				result.setPager(userIds.size(), pageNum, rows);
+		        result.setStatus(MCode.V_200);
+		        return new ResponseEntity<MPager>(result,HttpStatus.OK);
+			}
+    	
+    		if(StringUtils.isEmpty(userMessage)) {//无下单用户/账号信息,不限制userIds条件
     			userIds = null;
     		}
     		//查总数

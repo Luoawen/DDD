@@ -829,7 +829,7 @@ public class OrderQuery {
 		sql.append(" count(*) ");
 		sql.append(" From t_scm_order_main tom ");
 		sql.append(" LEFT OUTER JOIN t_scm_order_detail tod ON tom.order_id = tod.order_id ");
-		sql.append(" LEFT OUTER JOIN t_scm_order_after_sell toas ON  tod.dealer_order_id = toas.dealer_order_id ");
+		sql.append(" LEFT OUTER JOIN t_scm_order_after_sell toas ON  tod.dealer_order_id = toas.dealer_order_id AND toas.sku_id = tod.sku_id AND toas.sort_no = tod.sort_no ");
 		sql.append(" LEFT OUTER JOIN t_scm_goods tg  ON tod.goods_id = tg.goods_id ");
 		sql.append(" WHERE 1 = 1 ");
 		if(null != userIds && userIds.size() > 0) {
@@ -865,7 +865,8 @@ public class OrderQuery {
 			sql.append(" AND tod.media_res_id IN ( " + Utils.listParseString(mediaResIds) + " ) ");
 		}
 		if(StringUtils.isNotEmpty(goodsMessage)){ //商品名/商品SKU编号
-			sql.append(" AND ( tg.goods_name LIKE ? OR tod.sku_id LIKE ? ) ");
+			sql.append(" AND ( tod.goods_name LIKE ? OR tod.sku_id LIKE ? ) ");
+			params.add("%"+goodsMessage+"%");
 			params.add("%"+goodsMessage+"%");
 		}
 		if(StringUtils.isNotEmpty(dealerName)){
@@ -894,7 +895,7 @@ public class OrderQuery {
 		sql.append(" tod.plateform_discount plateformDiscount, tod.dealer_discount dealerDiscount, tod.freight freight ");
 		sql.append(" From t_scm_order_main tom ");
 		sql.append(" LEFT OUTER JOIN t_scm_order_detail tod ON tom.order_id = tod.order_id ");
-		sql.append(" LEFT OUTER JOIN t_scm_order_after_sell toas ON  tod.dealer_order_id = toas.dealer_order_id ");
+		sql.append(" LEFT OUTER JOIN t_scm_order_after_sell toas ON  tod.dealer_order_id = toas.dealer_order_id AND toas.sku_id = tod.sku_id AND toas.sort_no = tod.sort_no ");
 		sql.append(" LEFT OUTER JOIN t_scm_goods tg  ON tod.goods_id = tg.goods_id ");
 		sql.append(" WHERE 1 = 1 ");
 		if(null != userIds && userIds.size() > 0) {
@@ -930,7 +931,8 @@ public class OrderQuery {
 			sql.append(" AND tod.media_res_id IN ( " + Utils.listParseString(mediaResIds) + " ) ");
 		}
 		if(StringUtils.isNotEmpty(goodsMessage)){ //商品名/商品SKU编号
-			sql.append(" AND ( tg.goods_name LIKE ? OR tod.sku_id LIKE ? ) ");
+			sql.append(" AND ( tod.goods_name LIKE ? OR tod.sku_id LIKE ? ) ");
+			params.add("%"+goodsMessage+"%");
 			params.add("%"+goodsMessage+"%");
 		}
 		if(StringUtils.isNotEmpty(dealerName)){
