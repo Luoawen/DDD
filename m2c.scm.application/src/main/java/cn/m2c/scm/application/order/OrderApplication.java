@@ -442,7 +442,7 @@ public class OrderApplication {
     			if(useCouponList.size()>0){
     				result = new ArrayList<SimpleCoupon>();
     				result.add(new SimpleCoupon(orderId, info));
-    				continue;
+    				break;
     			}
     		}
     	}
