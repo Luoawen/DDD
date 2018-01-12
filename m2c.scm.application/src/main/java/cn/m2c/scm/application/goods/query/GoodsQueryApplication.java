@@ -1253,5 +1253,23 @@ public class GoodsQueryApplication {
         sql.append(" t_scm_goods_sku WHERE sku_id = ? ");
         return this.getSupportJdbcTemplate().queryForBean(sql.toString(), GoodsSkuBean.class, skuId);
     }
+
+    /**
+     * 根据商品名模糊查询最早十个GoodsBean
+     * @param goodsName
+     * @return
+     */
+	public List<GoodsBean> queryGoodsPioneerTenByGoodsName(String goodsName) {
+		StringBuilder sql = new StringBuilder();
+        sql.append(" SELECT ");
+        sql.append(" * ");
+        sql.append(" FROM ");
+	    sql.append(" t_scm_goods WHERE goods_name LIKE ? AND del_status = 1 ORDER BY created_date ASC LIMIT 0,10 ");
+	    if(StringUtils.isEmpty(goodsName)) {
+	    	goodsName = "";
+	    }
+	    List<GoodsBean> goodsBeans = this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsBean.class, "%"+goodsName+"%");
+		return goodsBeans;
+	}
 }
 
