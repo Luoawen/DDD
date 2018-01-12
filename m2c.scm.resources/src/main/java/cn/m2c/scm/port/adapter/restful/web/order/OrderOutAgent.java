@@ -232,7 +232,29 @@ public class OrderOutAgent {
 		
 	}
     
-    
+    /**
+     * 获取主订单金额
+     * @param orderId
+     * @return
+     */
+    @RequestMapping(value = "/main/order/amount",method = RequestMethod.GET)
+    public ResponseEntity<MResult> getMianOrderAmount(@RequestParam(value = "orderId",required = false) String orderId){
+    	MResult result = new MResult();
+    	
+    	try {
+			if(StringUtils.isEmpty(orderId)) {
+				throw new NegativeException(MCode.V_400,"订单号为空");
+			}
+			String amount = orderQuery.getMainOrderAmount(orderId);
+			result.setContent(amount);
+			result.setStatus(MCode.V_200);
+		} catch (NegativeException e) {
+			LOGGER.info("获取主订单金额出错...,e:",e.getMessage());
+			result = new MResult(MCode.V_400, e.getMessage());
+		}
+    	
+    	return new ResponseEntity<MResult>(result,HttpStatus.OK);
+    }
     
     public static void main(String args[]) {
     	BigDecimal g = new BigDecimal(10);
