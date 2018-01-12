@@ -434,7 +434,7 @@ public class OrderApplication {
     private List<SimpleCoupon> getUsedCoupon(String orderId,
 			String couponUserId, CouponBean couponBean, List<GoodsDto> gdes,
 			List<CouponUseBean> useCouponList) {
-    	List<SimpleCoupon> result = new ArrayList<SimpleCoupon>();
+    	List<SimpleCoupon> result = null;
     	 List<String> cids = new ArrayList<>();
     	for (GoodsDto b : gdes) {
     		CouponInfo info = b.toCouponInfo(couponUserId,couponBean);
@@ -453,7 +453,7 @@ public class OrderApplication {
     	    		result.add(new SimpleCoupon(orderId, info));
     	    	}
     	}
-    	System.out.println("use conponList"+result.toString());
+    	LOGGER.info("use conponList"+result.toString());
 		return result;
 	}
     /***
