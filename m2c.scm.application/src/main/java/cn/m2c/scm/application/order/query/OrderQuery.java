@@ -346,7 +346,7 @@ public class OrderQuery {
             if (StringUtils.isNotEmpty(bean.getAfterSellOrderId())) {
                 for (GoodsInfoBean goodsInfoBean : goodsInfoList) {
                 	if(StringUtils.isNotEmpty(goodsInfoBean.getAfterSellOrderId())) {
-                		if (goodsInfoBean.getAfterSellStatus() <= 5 && goodsInfoBean.getAfterSellStatus() < 7) {
+                		if (goodsInfoBean.getAfterSellStatus() >= 5 && goodsInfoBean.getAfterSellStatus() < 7) {
                 			temp++;
                 		}
                 	}
