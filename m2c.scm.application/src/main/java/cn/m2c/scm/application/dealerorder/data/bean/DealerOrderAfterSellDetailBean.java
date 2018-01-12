@@ -85,12 +85,24 @@ public class DealerOrderAfterSellDetailBean {
 	@ColumnAlias(value = "sku_id")
 	private String skuId;
 	
+	private Integer isShowShip = 0;        //是否展示发货 0 不展示，1 展示
+	
 	private String dealerId;
 	
 	
 	public Integer getDoStatus() {
 		return doStatus;
 	}
+	
+	public Integer getIsShowShip() {
+		return isShowShip;
+	}
+
+	public void setIsShowShip(Integer isShowShip) {
+		this.isShowShip = isShowShip;
+	}
+
+
 
 	public void setDoStatus(Integer doStatus) {
 		this.doStatus = doStatus;

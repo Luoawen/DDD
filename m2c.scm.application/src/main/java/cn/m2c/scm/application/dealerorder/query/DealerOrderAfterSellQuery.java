@@ -313,6 +313,9 @@ public class DealerOrderAfterSellQuery {
 		}
 		bean = this.supportJdbcTemplate.queryForBean(sql.toString(),
 				DealerOrderAfterSellDetailBean.class, param.toArray());
+		if (bean.getStatus() >=5 && bean.getStatus() < 7) {
+			bean.setIsShowShip(1);
+		}
 		if (!StringUtils.isEmpty(dealerId)) {
 			bean.setDealerId(dealerId);
 		}

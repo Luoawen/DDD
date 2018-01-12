@@ -341,20 +341,17 @@ public class OrderQuery {
         }
         List<GoodsInfoBean> goodsInfoList = getGoodsInfoList(dealerOrderId);
         //判断所有订单是否有售后满足发货条件
-        for (GoodsInfoBean bean : goodsInfoList) {
-            Integer temp = 0;
-            if (StringUtils.isNotEmpty(bean.getAfterSellOrderId())) {
-                for (GoodsInfoBean goodsInfoBean : goodsInfoList) {
-                    if (goodsInfoBean.getAfterSellStatus() == -1 || goodsInfoBean.getAfterSellStatus() == 0 || goodsInfoBean.getAfterSellStatus() == 1
-                            || goodsInfoBean.getAfterSellStatus() == 2 || goodsInfoBean.getAfterSellStatus() == 3) {
-                        temp++;
-                    }
-                }
-                if (temp == 0) {
-                    dealerOrderDetailBean.setIsShowShip(1);
-                }
-            }
-        }
+        Integer temp = 0;
+		for (GoodsInfoBean goodsInfoBean : goodsInfoList) {
+			if (StringUtils.isNotEmpty(goodsInfoBean.getAfterSellOrderId())) {
+				if (goodsInfoBean.getAfterSellStatus() >= -1 && goodsInfoBean.getAfterSellStatus() <= 3)  { // 售后状态 大于等于-1小于等于3，表示可以发货
+					temp++;
+				}
+			}
+		}
+		if (temp == 0) {
+			dealerOrderDetailBean.setIsShowShip(0);
+		}
         dealerOrderDetailBean.setGoodsInfoBeans(goodsInfoList);
         /*for (GoodsInfoBean goodsInfo : dealerOrderDetailBean.getGoodsInfoBeans()) {
             totalPrice += goodsInfo.getTotalPrice();
@@ -615,28 +612,6 @@ public class OrderQuery {
         getAdminOrderListConditionDeal(orderId, dealerOrderId, orderStatus, afterSellStatus, commentStatus,
                 payStatus, payWay, goodsNameOrId, shopName, orderStartTime, orderEndTime,
                 userName, mediaOrResId, sql, params);
-
-        // 店铺名称
-        if (StringUtils.isNotEmpty(shopName)) {
-            List<String> dealerIds = dealerQuery.getDealerIdsByShopName(shopName);
-            if (null != dealerIds && dealerIds.size() > 0) {
-                sql.append(" AND d.dealer_id in (" + Utils.listParseString(dealerIds) + ") ");
-            } else {
-                return 0;
-            }
-        }
-
-        // 下单用户名或账号，精准匹配
-        if (StringUtils.isNotEmpty(userName)) {
-            String userId = orderService.getUserIdByUserName(userName);
-            if (StringUtils.isNotEmpty(userId)) {
-                sql.append(" AND m.user_id = ?");
-                params.add(userId);
-            } else {
-                return 0;
-            }
-        }
-
         sql.append(" group by d.dealer_order_id) a");
         return supportJdbcTemplate.jdbcTemplate().queryForObject(sql.toString(), Integer.class, params.toArray());
     }
@@ -655,28 +630,6 @@ public class OrderQuery {
         getAdminOrderListConditionDeal(orderId, dealerOrderId, orderStatus, afterSellStatus, commentStatus,
                 payStatus, payWay, goodsNameOrId, shopName, orderStartTime, orderEndTime,
                 userName, mediaOrResId, sql, params);
-
-        // 店铺名称
-        if (StringUtils.isNotEmpty(shopName)) {
-            List<String> dealerIds = dealerQuery.getDealerIdsByShopName(shopName);
-            if (null != dealerIds && dealerIds.size() > 0) {
-                sql.append(" AND d.dealer_id in (" + Utils.listParseString(dealerIds) + ") ");
-            } else {
-                return null;
-            }
-        }
-
-        // 下单用户名或账号，精准匹配
-        if (StringUtils.isNotEmpty(userName)) {
-            String userId = orderService.getUserIdByUserName(userName);
-            if (StringUtils.isNotEmpty(userId)) {
-                sql.append(" AND m.user_id = ?");
-                params.add(userId);
-            } else {
-                return null;
-            }
-        }
-
         sql.append(" group by dealerOrderId ORDER BY m.order_id DESC, m.created_date DESC ");
         sql.append(" LIMIT ?,?");
         params.add(rows * (pageNum - 1));
@@ -729,12 +682,31 @@ public class OrderQuery {
             params.add(goodsNameOrId);
             params.add("%" + goodsNameOrId + "%");
         }
+
+        // 店铺名称
+        if (StringUtils.isNotEmpty(shopName)) {
+            List<String> dealerIds = dealerQuery.getDealerIdsByShopName(shopName);
+            if (null != dealerIds && dealerIds.size() > 0) {
+                sql.append(" AND d.dealer_id in (" + Utils.listParseString(dealerIds) + ") ");
+            }
+        }
+
         // 订单下单时间
         if (StringUtils.isNotEmpty(orderStartTime) && StringUtils.isNotEmpty(orderEndTime)) {
             sql.append(" AND (d.created_date BETWEEN ? AND ?)");
             params.add(orderStartTime + " 00:00:00");
             params.add(orderEndTime + " 23:59:59");
         }
+
+        // 下单用户名或账号，精准匹配
+        if (StringUtils.isNotEmpty(userName)) {
+            String userId = orderService.getUserIdByUserName(userName);
+            if (StringUtils.isNotEmpty(userId)) {
+                sql.append(" AND m.user_id = ?");
+                params.add(userId);
+            }
+        }
+
         // 媒体ID或广告位ID，精准匹配
         if (StringUtils.isNotEmpty(mediaOrResId)) {
             sql.append(" AND (dtl.media_res_id = ? OR dtl.media_id = ?)");
