@@ -14,7 +14,7 @@ public class CouponInfo extends ValueObject {
 	/**优惠券形式，1 减钱 2 打折*/
 	private Integer couponForm;
 	/**优惠券门槛*/
-	private Integer threshold;
+	private Long threshold;
 	/**优惠券类型，1：代金券，2：折扣券，3：分享券*/
 	private Integer couponType;
 	/**门槛类型，1：金额，2：件数，3：无条件*/
@@ -31,7 +31,7 @@ public class CouponInfo extends ValueObject {
 		super();
 	}
 	
-	public CouponInfo(String couponId, int couponForm, int threshold,
+	public CouponInfo(String couponId, int couponForm, long threshold,
 			int couponType, int thresholdType, String sharePercent, String couponName
 			, long discount,String couponUserId) {
 		super();

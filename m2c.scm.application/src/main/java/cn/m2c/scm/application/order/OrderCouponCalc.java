@@ -175,42 +175,108 @@ public class OrderCouponCalc {
 	 */
 	public static long calcReturnMoney(SimpleCoupon couponInfo,
 			List<SkuNumBean> totalSku, String skuId, int _sortNo) {
-		long rtMoney = 0;
-//		if(couponInfo == null || totalSku==null || totalSku.size()<1)
-//			return rtMoney;
-//		Long coutRest = 0L;//计算去掉退货商品后优惠券的门槛
-//		List<SkuNumBean> couponSkuBean = new ArrayList<SkuNumBean>();
-//		for (SkuNumBean bean : totalSku) {
-//			if(!StringUtils.isEmpty(couponInfo.getCouponId()) && !skuId.equals(bean.getSkuId())){//将所有满足的优惠券信息加入bean中
-//				couponSkuBean.add(bean);//所有的skuId
-//				if(couponInfo.getThresholdType()==1){
-//					//金额
-//					coutRest+= bean.getGoodsAmount()-bean.getDiscountMoney();
-//				}else if(couponInfo.getThresholdType()==2){
-//					//件数
-//					coutRest+= bean.getNum();
-//				}
-//			}
-//		}
-//		boolean isOk = false;
-//		if(couponInfo.getThresholdType()==3){
-//			isOk=true;
-//		}else if(coutRest>=couponInfo.getThreshold()){
-//			isOk=true;
-//		}
-//		//满足门槛
-//		if(isOk){
-//			switch (couponInfo.getCouponForm()) {
-//			case 1:
-//				calMoney(couponSkuBean,);//减钱
-//				break;
-//
-//			case 2:
-//				calDiscount();//打折
-//				break;
-//			}
-//		}
-		return rtMoney;
-	}
+		List<SkuNumBean> couponSku = new ArrayList<SkuNumBean>();
+		for (SkuNumBean couponbean : totalSku) {
+			if(!StringUtils.isEmpty(couponbean.getCouponId())){
+				couponSku.add(couponbean);
+			}
+		}
+        long rtMoney = 0;
+        // 根据marketInfo 来计算
+        if (couponInfo == null || couponSku == null || couponSku.size() < 1)
+            return rtMoney;
+        //营销形式，1：减钱，2：打折
+        Integer a = couponInfo.getCouponForm();
+        //门槛类型：1：金额，2：件数 3 无门槛
+        Integer b = couponInfo.getThresholdType();
+        //门槛
+        long threshold = couponInfo.getThreshold();
+
+        long total = 0;
+        // 优惠金额或折扣
+        Integer discount = couponInfo.getDiscount();
+        for (SkuNumBean bean : couponSku) {
+        	// sortNo == 0是为了兼容之前的数据
+            boolean bFlag = (skuId.equals(bean.getSkuId()));
+            if (b == 1 && !bFlag && bean.getIsChange() == 0) {
+                total += bean.getGoodsAmount()-bean.getDiscountMoney();
+            } else if (b == 2 && !bFlag && bean.getIsChange() == 0) {
+                total += bean.getNum();
+            }
+        }
+        
+        if (discount == null)
+            return rtMoney;
+
+        SkuNumBean tmp = null;
+        if (total >= threshold || b == 3) {// 若还满足, 需要计算满足的值
+            for (SkuNumBean bean : couponSku) {
+
+                boolean bFlag = (skuId.equals(bean.getSkuId()));
+                if (bFlag) {
+                    tmp = bean;//tmp售后的商品
+                    continue;
+                }
+                if (total == 0)
+            		total = 1;
+                switch (a) {
+                    case 1:// 减钱
+//                    	BigDecimal g = new BigDecimal((bean.getGoodsAmount()-bean.getDiscountMoney())* discount);
+//                    	BigDecimal t = new BigDecimal(total);
+//                        bean.setDiscountMoney(g.divide(t, 3, BigDecimal.ROUND_HALF_DOWN).longValue());
+                        break;
+                    case 2://打折
+//                        BigDecimal m = new BigDecimal(bean.getGoodsAmount());
+//        				BigDecimal p = new BigDecimal(1000 - discount);
+//        				p = p.divide(new BigDecimal(1000), 3, BigDecimal.ROUND_HALF_DOWN);
+//        				bean.setDiscountMoney(m.multiply(p).longValue());
+                        break;
+                }
+            }
+
+            if (a == 2) {
+            	BigDecimal g = new BigDecimal(tmp.getGoodsAmount()-tmp.getDiscountMoney());
+            	BigDecimal t = new BigDecimal(discount);
+            	
+            	BigDecimal s = t.divide(new BigDecimal(1000), 3, BigDecimal.ROUND_HALF_DOWN);
+            	BigDecimal m = new BigDecimal(1 - s.floatValue());
+                //rtMoney = (long) (0.5 + tmp.getGoodsAmount() * (1 - discount / 1000.0));
+            	rtMoney = g.multiply(m).longValue();
+            }
+        } else { // 不满足
+//        	couponInfo.setIsFull(false);
+            for (SkuNumBean bean : couponSku) {
+
+                boolean bFlag = (skuId.equals(bean.getSkuId()));
+                if (bFlag) {
+                    tmp = bean;
+                    continue;
+                }
+                switch (a) {
+                    case 1:
+//                        bean.setDiscountMoney(0);
+                        break;
+                    case 2://打折就不用计算
+                    	BigDecimal g = new BigDecimal(bean.getGoodsAmount()-bean.getDiscountMoney());
+                    	BigDecimal t = new BigDecimal(discount);
+                    	t = t.divide(new BigDecimal(1000), 3, BigDecimal.ROUND_HALF_DOWN);
+                    	rtMoney += g.multiply(t.subtract(new BigDecimal(1)).abs()).longValue();
+                        //rtMoney += (bean.getGoodsAmount() * (1 - discount / 1000.0));
+                        break;
+                    case 3:
+                        break;
+                }
+            }
+            if (a == 2) {
+            	BigDecimal g = new BigDecimal(tmp.getGoodsAmount()-tmp.getDiscountMoney());
+            	BigDecimal t = new BigDecimal(discount);
+            	t = t.divide(new BigDecimal(1000), 3, BigDecimal.ROUND_HALF_DOWN);
+            	rtMoney += g.multiply(t.subtract(new BigDecimal(1)).abs()).longValue();
+                // rtMoney += (tmp.getGoodsAmount() * (1 - discount / 1000.0));
+            } else
+                rtMoney = discount;
+        }
+        return rtMoney;
+    }
 
 }
