@@ -415,4 +415,8 @@ public class SaleAfterOrder extends ConcurrencySafeEntity {
     public void invalid() {
         isInvalide = 1;
     }
+
+    public String dealerId() {
+        return dealerId;
+    }
 }

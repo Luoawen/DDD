@@ -1,22 +1,5 @@
 package cn.m2c.scm.port.adapter.restful.web.order;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
 import cn.m2c.common.MCode;
 import cn.m2c.common.MPager;
 import cn.m2c.common.MResult;
@@ -39,6 +22,21 @@ import cn.m2c.scm.application.order.data.representation.OrderExpressDetailRepres
 import cn.m2c.scm.application.order.query.OrderQuery;
 import cn.m2c.scm.application.order.query.OrderQueryApplication;
 import cn.m2c.scm.domain.NegativeException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @RestController
@@ -189,7 +187,7 @@ public class OrderAgent {
 	 * @param rejectReason
 	 * @return
 	 */
-	@RequestMapping(value= {"/dealer/reject-apply-sale", "/web/dealer/reject-apply-sale"}, method=RequestMethod.PUT)
+	@RequestMapping(value= "/web/dealer/reject-apply-sale", method=RequestMethod.PUT)
 	public ResponseEntity<MResult> rejectApplySaleAftet(@RequestParam(value = "userId", required = false) String userId
             ,@RequestParam(value = "saleAfterNo", required = false) String saleAfterNo
             ,@RequestParam(value = "dealerId", required = false) String dealerId
@@ -219,7 +217,7 @@ public class OrderAgent {
      * @param orderId
      * @return
      */
-    @RequestMapping(value = {"/aftersale/dealer/ship", "/web/aftersale/dealer/ship"}, method = RequestMethod.PUT)
+    @RequestMapping(value = "/web/aftersale/dealer/ship", method = RequestMethod.PUT)
     public ResponseEntity<MResult> afterSaleShip(
     		@RequestParam(value = "orderId",required = false) String orderId,
     		@RequestParam(value = "shopName",required = false) String shopName,
@@ -287,7 +285,7 @@ public class OrderAgent {
      * @param orderId
      * @return
      */
-    @RequestMapping(value = {"/aftersale/dealer/agree-rt-money", "/web/aftersale/dealer/agree-rt-money"}, method = RequestMethod.PUT)
+    @RequestMapping(value = "/web/aftersale/dealer/agree-rt-money", method = RequestMethod.PUT)
     public ResponseEntity<MResult> agreeBackMoney(
             @RequestParam(value = "userId", required = false) String userId
             ,@RequestParam(value = "skuId", required = false) String skuId
@@ -362,7 +360,7 @@ public class OrderAgent {
       *2更新状态为已发货
       *3发出已发货事件（先不做，后期需要再做）
      */
-    @RequestMapping(value= {"/dealer/sendOrder", "/web/dealer/sendOrder"}, method = RequestMethod.PUT)
+    @RequestMapping(value= "/web/dealer/sendOrder", method = RequestMethod.PUT)
     public ResponseEntity<MResult> sendOrder(
     		@RequestParam(value = "dealerOrderId", required = false) String dealerOrderId,
     		@RequestParam(value = "expressNo", required = false) String expressNo,
