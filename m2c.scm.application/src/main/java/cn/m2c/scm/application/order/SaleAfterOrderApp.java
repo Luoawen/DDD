@@ -481,6 +481,7 @@ public class SaleAfterOrderApp {
 		if (afterOrder.cancel())
 			saleAfterRepository.save(afterOrder);
 			afterSellFlow.add(afterOrder.getSaleAfterNo(), -1, SCM_JOB_USER, null, null, null, null);
+			afterSellFlowRepository.save(afterSellFlow);
 	}
 	
 	/**
