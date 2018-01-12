@@ -1,5 +1,6 @@
 package cn.m2c.scm.application.order;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -24,6 +25,7 @@ import cn.m2c.scm.application.order.command.SaleAfterCmd;
 import cn.m2c.scm.application.order.command.SaleAfterShipCmd;
 import cn.m2c.scm.application.order.data.bean.DealerOrderMoneyBean;
 import cn.m2c.scm.application.order.data.bean.RefundEvtBean;
+import cn.m2c.scm.application.order.data.bean.SimpleCoupon;
 import cn.m2c.scm.application.order.data.bean.SimpleMarket;
 import cn.m2c.scm.application.order.data.bean.SkuNumBean;
 import cn.m2c.scm.application.order.query.AfterSellOrderQuery;
@@ -111,17 +113,27 @@ public class SaleAfterOrderApp {
 		long money = itemDtl.sumGoodsMoney();
 		if (orderType != 0) {
 			// 生成售后单保存, 计算售后需要退的钱
+			List<SkuNumBean> totalSku = saleOrderQuery.getTotalSku(cmd.getOrderId());//所有的商品详情
 			String mkId = itemDtl.getMarketId(); 
-			long discountMoney = 0;
+			String couponId = itemDtl.getCouponId();//优惠券id
+			long discountMoney = 0;//售后优惠的钱
+			long couponDiscountMoney = 0;//优惠券优惠的钱
 			if (mkId != null) {//计算售后需要退的钱
 				SimpleMarket marketInfo = saleOrderQuery.getMarketById(mkId, cmd.getOrderId());
 				List<SkuNumBean> skuBeanLs = saleOrderQuery.getOrderDtlByMarketId(mkId, cmd.getOrderId());
-				
+				//-----将处理好的优惠平摊金额复制给所有订单的列表里面，用于计算优惠券使用
+				if(skuBeanLs.size()>0){
+					copySku(skuBeanLs,totalSku);
+				}
 				discountMoney = OrderMarketCalc.calcReturnMoney(marketInfo, skuBeanLs, cmd.getSkuId(), _sortNo);
-				if (marketInfo != null && marketInfo.isFull())
-					money = itemDtl.changePrice();
+//				if (marketInfo != null && marketInfo.isFull())
+//					money = itemDtl.changePrice();
 			}
-			money = money - discountMoney;
+			if(!StringUtils.isEmpty(couponId)){//计算优惠券的金额
+				SimpleCoupon couponInfo = saleOrderQuery.getCouponById(couponId,cmd.getOrderId());
+				couponDiscountMoney = OrderCouponCalc.calcReturnMoney(couponInfo,totalSku,cmd.getSkuId(), _sortNo);//计算退款金额
+			}
+			money = money - discountMoney - couponDiscountMoney;
 		}
 		else {
 			money = 0;
@@ -152,6 +164,9 @@ public class SaleAfterOrderApp {
 		afterSellFlowRepository.save(afterSellFlow);
 		LOGGER.info("新增加售后申请成功！");
 	}
+	
+	
+
 	/***
 	 * 申请售后退货或退款提示
 	 * @param cmd
@@ -631,5 +646,19 @@ public class SaleAfterOrderApp {
 	public void scanOrderDtlUpdated(String userId, String saleOrderId) throws NegativeException {
 		saleAfterRepository.scanDtlGoods(saleOrderId);
 		return ;
+	}
+	/**
+	 * 将处理的skubean赋值数据
+	 * @param skuBeanLs
+	 * @param totalSku
+	 */
+	private void copySku(List<SkuNumBean> skuBeanLs, List<SkuNumBean> totalSku) {
+		for (int i = 0; i < skuBeanLs.size(); i++) {
+			for (int j = 0; j < totalSku.size(); j++) {
+				if(skuBeanLs.get(i).getSkuId().equals(totalSku.get(j).getSkuId())){
+					totalSku.get(j).setDiscountMoney(skuBeanLs.get(i).getDiscountMoney());
+				}
+			}
+		}
 	}
 }
