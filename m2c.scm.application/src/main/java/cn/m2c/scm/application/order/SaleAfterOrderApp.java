@@ -183,7 +183,7 @@ public class SaleAfterOrderApp {
 	@EventListener(isListening=true)
 	public void agreeApply(AproveSaleAfterCmd cmd, String attach) throws NegativeException {
 		SaleAfterOrder order = saleAfterRepository.getSaleAfterOrderByNo(cmd.getSaleAfterNo(), cmd.getDealerId());
-		if (order == null) {
+		if (order == null) { 
 			throw new NegativeException(MCode.V_101, "无此售后单！");
 		}
 		long money = 0;
