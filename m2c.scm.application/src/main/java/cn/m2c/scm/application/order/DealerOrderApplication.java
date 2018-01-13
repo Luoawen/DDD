@@ -1,18 +1,6 @@
 package cn.m2c.scm.application.order;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.annotation.Resource;
-
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-
+import cn.m2c.common.JsonUtils;
 import cn.m2c.common.MCode;
 import cn.m2c.ddd.common.event.annotation.EventListener;
 import cn.m2c.ddd.common.logger.OperationLogManager;
@@ -22,6 +10,8 @@ import cn.m2c.scm.application.order.command.UpdateAddrFreightCmd;
 import cn.m2c.scm.application.order.command.UpdateOrderFreightCmd;
 import cn.m2c.scm.application.order.data.bean.SkuNumBean;
 import cn.m2c.scm.application.order.query.AfterSellOrderQuery;
+import cn.m2c.scm.application.shop.data.bean.ShopBean;
+import cn.m2c.scm.application.shop.query.ShopQuery;
 import cn.m2c.scm.domain.NegativeCode;
 import cn.m2c.scm.domain.NegativeException;
 import cn.m2c.scm.domain.model.order.DealerOrder;
@@ -31,7 +21,21 @@ import cn.m2c.scm.domain.model.order.DealerOrderRepository;
 import cn.m2c.scm.domain.model.order.MainOrder;
 import cn.m2c.scm.domain.model.order.OrderRepository;
 import cn.m2c.scm.domain.model.order.ReceiveAddr;
+import cn.m2c.scm.domain.service.order.OrderService;
 import cn.m2c.scm.domain.util.GetDisconfDataGetter;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 @Transactional
@@ -52,7 +56,13 @@ public class DealerOrderApplication {
 	AfterSellOrderQuery afterQuery;
 	
 	@Resource
-    private OperationLogManager operationLogManager; 
+    private OperationLogManager operationLogManager;
+
+	@Autowired
+	OrderService orderService;
+	@Autowired
+	ShopQuery shopQuery;
+
 	/**
 	 * 更新物流信息
 	 * 
@@ -87,6 +97,13 @@ public class DealerOrderApplication {
 				command.getExpressCode(), command.getUserId(), skuIds, sortNos, command.getShopName(),null)) {
 			throw new NegativeException(MCode.V_300, "订单处于不可发货状态");
 		}
+		dealerOrderRepository.save(dealerOrder);
+
+		// 发货消息推送
+		Map extraMap = new HashMap<>();
+		extraMap.put("dealerOrderId", command.getDealerOrderId());
+		extraMap.put("optType", 1);
+		orderService.msgPush(1, command.getUserId(), JsonUtils.toStr(extraMap), dealerOrder.dealerId());
 		dealerOrderRepository.save(dealerOrder);
 	}
 
@@ -151,6 +168,13 @@ public class DealerOrderApplication {
 			throw new NegativeException(MCode.V_1, "此商家订单处于不能修改状态.");
 
 		ReceiveAddr addr = dealerOrder.getAddr();
+
+		// 是否修改运费
+		boolean isModifyFreight = dealerOrder.isModifyFreight(cmd.getFreights());
+		// 是否修改收货地址
+		boolean isModifyAddress = addr.isModifyAddress(cmd.getProvince(), cmd.getProvCode(), cmd.getCity(), cmd.getCityCode(),
+				cmd.getArea(), cmd.getAreaCode(), cmd.getStreet(), cmd.getRevPerson(), cmd.getPhone());
+
 		boolean updatedAddr = addr.updateAddr(cmd.getProvince(), cmd.getProvCode(), cmd.getCity(), cmd.getCityCode(),
 				cmd.getArea(), cmd.getAreaCode(), cmd.getStreet(), cmd.getRevPerson(), cmd.getPhone()
 				, null);
@@ -169,6 +193,23 @@ public class DealerOrderApplication {
 		mOrder = null;
 		if (updatedFreight || updatedAddr) {
 			dealerOrderRepository.updateFreight(dealerOrder);
+		}
+
+		// 修改收货地址或运费推送消息
+		if (isModifyFreight || isModifyAddress) {
+			Map extraMap = new HashMap<>();
+			extraMap.put("dealerOrderId", dealerOrder.dealerId());
+			ShopBean shopBean = shopQuery.getShop(dealerOrder.dealerId());
+			String shopName = null != shopBean ? shopBean.getShopName() : null;
+			extraMap.put("shopName", shopName);
+			if (isModifyAddress) {
+				extraMap.put("optType", 2);
+				orderService.msgPush(1, cmd.getUserId(), JsonUtils.toStr(extraMap), dealerOrder.dealerId());
+			}
+			if (isModifyFreight) {
+				extraMap.put("optType", 3);
+				orderService.msgPush(1, cmd.getUserId(), JsonUtils.toStr(extraMap), dealerOrder.dealerId());
+			}
 		}
 	}
 
