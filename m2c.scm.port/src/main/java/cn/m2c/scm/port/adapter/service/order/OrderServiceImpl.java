@@ -175,6 +175,7 @@ public class OrderServiceImpl implements OrderService {
     		return ;
     	}
     	String couponUserId = couponsIds.get(0);
+    	LOGGER.info("---couponUserId:"+couponUserId);
     	String url = M2C_HOST_URL + "/m2c.market/domain/coupon/cancel/order/return";
     	
     	  HashMap<String, String> params = new HashMap<String, String>();
