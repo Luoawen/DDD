@@ -8,6 +8,7 @@ import cn.m2c.scm.application.goods.query.data.bean.GoodsBean;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsRecognizedBean;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsSkuBean;
 import cn.m2c.scm.application.goods.query.data.representation.GoodsSkuInfoRepresentation;
+import cn.m2c.scm.application.order.data.bean.CouponDealerBean;
 import cn.m2c.scm.application.order.query.dto.GoodsDto;
 import cn.m2c.scm.application.shop.data.bean.ShopBean;
 import cn.m2c.scm.application.shop.query.ShopQuery;
@@ -1270,6 +1271,75 @@ public class GoodsQueryApplication {
 	    }
 	    List<GoodsBean> goodsBeans = this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsBean.class, "%"+goodsName+"%");
 		return goodsBeans;
+	}
+
+	/**
+	 * 根据优惠券详情查询商品或商家信息数目
+	 * @param couponMap
+	 * @param couponRangeType
+	 * @return
+	 */
+	public Integer queryCouponApplyGoodsOrDealerTotal(Map couponMap, Integer couponRangeType) {
+		if (null != couponMap) { // 优惠券信息
+			Integer total = 0;
+            if(couponRangeType == 1) {//查商家总数
+            	total = queryCouponApplyDealerTotal(couponMap);
+            }
+            if(couponRangeType == 0 || couponRangeType == 2 || couponRangeType == 3) {//查商品总数
+            	total = appSearchGoodsTotal(null, null, null, null, null, couponMap);
+            }
+			return total;
+		}
+		return null;
+	}
+	
+	/**
+	 * 根据优惠券信息查询商家信息
+	 * @param couponMap
+	 * @return
+	 */
+	public Integer queryCouponApplyDealerTotal(Map couponMap) {
+		/**
+         * 优惠券作用范围，0：全场，1：商家，2：商品，3：品类
+         * 备注：
+         * 当作用范围为全场时，dealerId、goodsId、categoryId为排除的对象；当作用范围不是全场时，三个id为优惠券实际作用的对象
+         */
+		StringBuilder sql = new StringBuilder();
+		sql.append(" SELECT ");
+		sql.append(" COUNT(DISTINCT g.dealer_id) ");
+		sql.append(" FROM ");
+		sql.append(" t_scm_dealer g , t_scm_dealer_shop s ");
+		sql.append(" WHERE g.dealer_id = s.dealer_id ");
+	    // 优惠券搜索处理
+	    couponChoiceDeal(sql, couponMap);
+	    sql.append(" AND g.dealer_status = 1 ");
+        return supportJdbcTemplate.jdbcTemplate().queryForObject(sql.toString(), Integer.class);
+	}
+	
+	/**
+	 * 根据优惠券信息查询适用商家信息
+	 * @param couponMap
+	 * @param pageNum
+	 * @param rows
+	 * @return
+	 */
+	public List<CouponDealerBean> queryCouponApplyDealer(Map couponMap, Integer pageNum, Integer rows){
+		List<Object> params = new ArrayList<Object>();
+		StringBuilder sql = new StringBuilder();
+		sql.append(" SELECT ");
+		sql.append(" g.dealer_id dealerId , s.shop_id shopId , s.shop_icon shopIcon , s.shop_name shopName , g.dealer_name dealerName ");
+		sql.append(" FROM ");
+		sql.append(" t_scm_dealer g , t_scm_dealer_shop s ");
+		sql.append(" WHERE g.dealer_id = s.dealer_id ");
+		// 优惠券搜索处理
+	    couponChoiceDeal(sql, couponMap);
+	    sql.append(" AND g.dealer_status = 1 GROUP BY g.dealer_id ");
+	    if(null != pageNum && null != rows) {
+	    	sql.append(" LIMIT ?,?");
+	        params.add(rows * (pageNum - 1));
+	        params.add(rows);
+	    }
+	    return this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), CouponDealerBean.class, params.toArray());
 	}
 }
 
