@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import cn.m2c.ddd.common.logger.OperationLogManager;
+import cn.m2c.scm.application.shop.command.ShopBackImgCommand;
 import cn.m2c.scm.application.shop.command.ShopInfoUpdateCommand;
 import cn.m2c.scm.domain.NegativeCode;
 import cn.m2c.scm.domain.NegativeException;
@@ -57,7 +58,22 @@ public class ShopApplication {
 			shop = new Shop(command.getShopId(),command.getDealerId(),command.getShopName(),command.getShopIcon(),command.getShopIntroduce(),command.getShopReceipt(),command.getCustomerServiceTel());
 			shopRepository.save(shop);
 		}
-
+	
+	
+	/**
+	 * 新增店铺门头图
+	 * @param command
+	 * @throws NegativeException
+	 */
+	@Transactional(rollbackFor = {Exception.class,RuntimeException.class,NegativeException.class})
+	public void addShopBackImg(ShopBackImgCommand command) throws NegativeException {
+		log.info("---新增店铺门头图");
+		Shop shop = shopRepository.getShopByShopID(command.getShopId());
+		if(shop==null)
+			throw new NegativeException(NegativeCode.DEALER_SHOP_IS_NOT_EXIST, "此经销商店铺不存在.");
+		shop.addShopBackImg(command.getShopBackImg());
+		shopRepository.save(shop);
+	}
 		
 
 }

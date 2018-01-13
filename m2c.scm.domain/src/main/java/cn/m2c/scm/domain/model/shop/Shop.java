@@ -26,6 +26,7 @@ public class Shop extends ConcurrencySafeEntity{
 	private String customerServiceTel;//客服电话
 	private Date createdDate;
 	private Date lastUpdatedDate;
+	private String shopBackgroundImg;
 
 	public Shop() {
 		super();
@@ -70,6 +71,10 @@ public class Shop extends ConcurrencySafeEntity{
 		this.shopIntroduce = shopIntroduce;
 		this.shopReceipt = shopReceipt;
 		this.customerServiceTel = customerServiceTel;
+	}
+	
+	public void addShopBackImg(String shopBackgroundImg) {
+		this.shopBackgroundImg = shopBackgroundImg;
 	}
 	
 }
