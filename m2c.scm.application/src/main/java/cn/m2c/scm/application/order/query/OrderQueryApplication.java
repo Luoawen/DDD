@@ -127,7 +127,7 @@ public class OrderQueryApplication {
     	LOGGER.info("+++++orderId++++++"+orderId);
     	List<String> rs = null;
     	try {
-    		rs = supportJdbcTemplate.queryForBeanList("select coupon_user_id from t_scm_order_coupon_used where order_id=? and _status=1 ", String.class, orderId);
+    		rs = supportJdbcTemplate.jdbcTemplate().queryForList("select coupon_user_id from t_scm_order_coupon_used where order_id=? and _status=1 ", String.class, orderId);
     		LOGGER.info("+++++数据库读取的优惠券id列表++++++"+JsonUtils.toStr(rs));
     	}
     	catch (Exception e) {
