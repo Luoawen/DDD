@@ -306,4 +306,26 @@ public class ShopAgent {
 			 return new ResponseEntity<MResult>(result,HttpStatus.OK);
 		 }
 		 
+		 
+		 /**
+		  * 查询商品门头图
+		  * @param shopId
+		  * @return
+		  */
+		 @RequestMapping(value = "/web/shopBackImg",method = RequestMethod.GET)
+		 public ResponseEntity<MResult> getShopBackImg(@RequestParam(value = "shopId",required = false) String shopId){
+			 MResult result = new MResult(MCode.V_1);
+			 try {
+				String shopBackImg = query.getShopBackImg(shopId);
+				 result.setContent(shopBackImg);
+				 result.setStatus(MCode.V_200);
+			} catch (NegativeException ne) {
+				log.error("获取店铺门头图出错", ne);
+				result = new MResult(MCode.V_400,ne.getMessage());
+			} catch (Exception e) {
+				log.error("获取店铺门头图失败！",e.getMessage());
+				result = new MResult(MCode.V_400, "服务器开小差了，请稍后再试");
+			}
+			 return new ResponseEntity<MResult>(result,HttpStatus.OK);
+		 }
 }
