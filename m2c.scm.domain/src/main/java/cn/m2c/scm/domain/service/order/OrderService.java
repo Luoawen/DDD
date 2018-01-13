@@ -130,6 +130,13 @@ public interface OrderService {
 	public String getUserIdByUserName(String userName);
 
 	String getMediaName(String mediaId);
+	/**
+     * 根据用户id获取用户信息
+     *
+     * @param userId
+     * @return
+     */
+    public Map getUserInfoByUserId(String userId) throws NegativeException;
 	
 	 /**
      * 消息推送
