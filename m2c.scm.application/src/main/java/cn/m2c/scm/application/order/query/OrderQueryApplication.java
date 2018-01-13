@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import cn.m2c.common.JsonUtils;
 import cn.m2c.common.MCode;
 import cn.m2c.common.RedisUtil;
 import cn.m2c.ddd.common.port.adapter.persistence.springJdbc.SupportJdbcTemplate;
@@ -123,10 +124,11 @@ public class OrderQueryApplication {
     public List<String> getCouponsByOrderId(String orderId) throws NegativeException {
     	if (StringUtils.isEmpty(orderId))
     		return null;
+    	LOGGER.info("+++++orderId++++++"+orderId);
     	List<String> rs = null;
     	try {
     		rs = supportJdbcTemplate.queryForBeanList("select coupon_user_id from t_scm_order_coupon_used where order_id=? and _status=1 ", String.class, orderId);
-    		LOGGER.info("+++++数据库读取的优惠券id列表++++++"+rs.toString());
+    		LOGGER.info("+++++数据库读取的优惠券id列表++++++"+JsonUtils.toStr(rs));
     	}
     	catch (Exception e) {
     		LOGGER.error("===fanjc==获取订单下的优惠券出错",e);
