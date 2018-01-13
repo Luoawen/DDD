@@ -35,7 +35,7 @@ public interface OrderService {
 	 * @param userId
 	 * @return
 	 */
-	public void unlockCoupons(List<String> couponsIds, String userId);
+	public void unlockCoupons(List<String> couponsIds, String userId) throws NegativeException;
 	/***
 	 * 锁定优惠券
 	 * @param couponsIds
