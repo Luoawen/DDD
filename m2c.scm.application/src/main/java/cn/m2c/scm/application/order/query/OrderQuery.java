@@ -342,15 +342,19 @@ public class OrderQuery {
         }
         List<GoodsInfoBean> goodsInfoList = getGoodsInfoList(dealerOrderId);
         //判断所有订单是否有售后满足发货条件
-        Integer temp = 0;
+        Integer temp = 1;
 		for (GoodsInfoBean goodsInfoBean : goodsInfoList) {
 			if (StringUtils.isNotEmpty(goodsInfoBean.getAfterSellOrderId())) {
 				if (goodsInfoBean.getAfterSellStatus() >= -1 && goodsInfoBean.getAfterSellStatus() <= 3)  { // 售后状态 大于等于-1小于等于3，表示可以发货
-					temp++;
+					if (temp == 0) {
+						temp = 0;
+					}else {
+						temp--;
+					}
 				}
 			}
 		}
-		if (temp == 0) {
+		if (temp != 0) {
 			dealerOrderDetailBean.setIsShowShip(0);
 		}
         dealerOrderDetailBean.setGoodsInfoBeans(goodsInfoList);
