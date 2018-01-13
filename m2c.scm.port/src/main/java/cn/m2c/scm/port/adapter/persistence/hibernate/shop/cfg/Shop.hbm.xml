@@ -20,5 +20,6 @@
 	<property name="shopReceipt" column="shop_receipt" type="string"/>
 	<property name="customerServiceTel" column="customer_service_tel" type="string"/>
 	<property name="lastUpdatedDate" column="last_updated_date" type="timestamp" />
+	<property name="shopBackgroundImg" column="shop_background_img" type="string" />
 	</class>
 </hibernate-mapping>

@@ -33,6 +33,7 @@ public class GoodsGuessCacheUpdateListener extends ExchangeListener {
             isModify = true;
         }
         goodsQueryApplication.updateGoodsGuessCache(goodsId, isModify);
+        goodsQueryApplication.updateGoodsHotSellCache(goodsId, isModify);
     }
 
     @Override

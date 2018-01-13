@@ -89,12 +89,12 @@ public class AdminOrderAgent {
             Integer total = orderQuery.getAdminDealerOrderTotal(orderId, dealerOrderId, orderStatus, afterSellStatus, commentStatus,
                     payStatus, payWay, goodsNameOrId, shopName, orderStartTime, orderEndTime,
                     userName, mediaOrResId);
+            List<Map> resultList = new ArrayList<>();
             if (total > 0) {
                 List<Map<String, Object>> list = orderQuery.getAdminDealerOrderList(orderId, dealerOrderId, orderStatus, afterSellStatus, commentStatus,
                         payStatus, payWay, goodsNameOrId, shopName, orderStartTime, orderEndTime,
                         userName, mediaOrResId, pageNum, rows);
                 if (null != list && list.size() > 0) {
-                    List<Map> resultList = new ArrayList<>();
                     for (Map<String, Object> map : list) {
                         Map resultMap = new HashMap<>();
                         // 订单号
@@ -125,9 +125,9 @@ public class AdminOrderAgent {
                         resultMap.put("createTime", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date));
                         resultList.add(resultMap);
                     }
-                    result.setContent(resultList);
                 }
             }
+            result.setContent(resultList);
             result.setPager(total, pageNum, rows);
             result.setStatus(MCode.V_200);
         } catch (Exception e) {
@@ -154,6 +154,9 @@ public class AdminOrderAgent {
                 // 订单状态
                 resultMap.put("orderStatus", map.get("orderStatus"));
                 resultMap.put("orderStatusStr", OrderUtils.getStatusStr(Integer.parseInt(map.get("orderStatus").toString())));
+                // 下单时间
+                Date date = (Date) map.get("createdDate");
+                resultMap.put("createTime", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date));
 
                 // 订单用户信息
                 // 下单用户

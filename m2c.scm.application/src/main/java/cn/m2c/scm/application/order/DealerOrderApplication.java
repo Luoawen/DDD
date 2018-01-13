@@ -84,7 +84,7 @@ public class DealerOrderApplication {
 		
 		if (!dealerOrder.updateExpress(command.getExpressName(), command.getExpressNo(), command.getExpressNote(),
 				command.getExpressPerson(), command.getExpressPhone(), command.getExpressWay(),
-				command.getExpressCode(), command.getUserId(), skuIds, sortNos, command.getShopName())) {
+				command.getExpressCode(), command.getUserId(), skuIds, sortNos, command.getShopName(),null)) {
 			throw new NegativeException(MCode.V_300, "订单处于不可发货状态");
 		}
 		dealerOrderRepository.save(dealerOrder);
@@ -221,8 +221,7 @@ public class DealerOrderApplication {
 		}
 	}
 	
-	@Transactional(rollbackFor = { Exception.class, RuntimeException.class,
-			NegativeException.class }, propagation = Propagation.REQUIRES_NEW)
+	@Transactional(rollbackFor = { Exception.class, RuntimeException.class,NegativeException.class }, propagation = Propagation.REQUIRES_NEW)
 	private void jobOrderDealFinishied(DealerOrderDtl orderDtl) {
 		orderDtl.dealFinished();
 		orderDtlRepository.save(orderDtl);

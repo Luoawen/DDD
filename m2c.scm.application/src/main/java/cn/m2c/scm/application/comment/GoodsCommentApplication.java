@@ -1,5 +1,6 @@
 package cn.m2c.scm.application.comment;
 
+import cn.m2c.common.JsonUtils;
 import cn.m2c.common.MCode;
 import cn.m2c.ddd.common.event.annotation.EventListener;
 import cn.m2c.ddd.common.logger.OperationLogManager;
@@ -9,7 +10,7 @@ import cn.m2c.scm.application.order.DealerOrderApplication;
 import cn.m2c.scm.domain.NegativeException;
 import cn.m2c.scm.domain.model.comment.GoodsComment;
 import cn.m2c.scm.domain.model.comment.GoodsCommentRepository;
-
+import cn.m2c.scm.domain.service.order.OrderService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,9 +18,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 import javax.annotation.Resource;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 商品评价
@@ -36,7 +38,9 @@ public class GoodsCommentApplication {
 
     @Resource
     private OperationLogManager operationLogManager;
-    
+    @Autowired
+    OrderService orderService;
+
     /**
      * 增加评论
      *
@@ -71,8 +75,14 @@ public class GoodsCommentApplication {
             throw new NegativeException(MCode.V_300, "评论信息不存在");
         }
         if (StringUtils.isNotEmpty(_attach))
-        	operationLogManager.operationLog("商品评价回评", _attach, goodsComment, new String[]{"goodsComment"}, null);
+            operationLogManager.operationLog("商品评价回评", _attach, goodsComment, new String[]{"goodsComment"}, null);
         goodsComment.replyComment(command.getReplyContent());
+
+        // 商品回评推送消息
+        Map extraMap = new HashMap<>();
+        extraMap.put("goodsId", goodsComment.goodsId());
+        extraMap.put("optType", 4);
+        orderService.msgPush(2, goodsComment.buyerId(), JsonUtils.toStr(extraMap), goodsComment.dealerId());
     }
 
 
@@ -86,7 +96,7 @@ public class GoodsCommentApplication {
             throw new NegativeException(MCode.V_300, "评论信息不存在");
         }
         if (StringUtils.isNotEmpty(_attach))
-        	operationLogManager.operationLog("删除评论", _attach, goodsComment, new String[]{"goodsComment"}, null);
+            operationLogManager.operationLog("删除评论", _attach, goodsComment, new String[]{"goodsComment"}, null);
         goodsComment.remove();
 
         // 更新订单状态
