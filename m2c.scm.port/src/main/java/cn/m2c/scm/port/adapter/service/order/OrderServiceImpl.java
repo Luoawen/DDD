@@ -171,7 +171,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public void unlockCoupons(List<String> couponsIds, String userId) throws NegativeException {
-    	if(couponsIds != null && couponsIds.size()>0 && !StringUtils.isEmpty(couponsIds.get(0))){
+    	if(couponsIds != null && couponsIds.size()>0 ){
     		LOGGER.info("---couponsIds的size:"+couponsIds.size());
     		String couponUserId = couponsIds.get(0);
         	String url = M2C_HOST_URL + "/m2c.market/domain/coupon/cancel/order/return";
