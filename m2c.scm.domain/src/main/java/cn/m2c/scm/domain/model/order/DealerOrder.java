@@ -370,7 +370,7 @@ public class DealerOrder extends ConcurrencySafeEntity {
         for (DealerOrderDtl d : orderDtls) {
             Float f = freights.get(d.getSkuId());
             if (null != f) {
-                if (!f.equals(d.getFreight())) {
+                if ((long) (f * 100) != d.getFreight()) {
                     return true;
                 }
             }

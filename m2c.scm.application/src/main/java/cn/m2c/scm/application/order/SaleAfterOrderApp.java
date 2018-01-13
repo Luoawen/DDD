@@ -1,21 +1,6 @@
 package cn.m2c.scm.application.order;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import javax.annotation.Resource;
-
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-
-import com.baidu.disconf.client.usertools.DisconfDataGetter;
-
+import cn.m2c.common.JsonUtils;
 import cn.m2c.common.MCode;
 import cn.m2c.ddd.common.event.annotation.EventListener;
 import cn.m2c.ddd.common.logger.OperationLogManager;
@@ -36,7 +21,22 @@ import cn.m2c.scm.domain.model.order.AfterSellFlowRepository;
 import cn.m2c.scm.domain.model.order.DealerOrderDtl;
 import cn.m2c.scm.domain.model.order.SaleAfterOrder;
 import cn.m2c.scm.domain.model.order.SaleAfterOrderRepository;
+import cn.m2c.scm.domain.service.order.OrderService;
 import cn.m2c.scm.domain.util.GetDisconfDataGetter;
+import com.baidu.disconf.client.usertools.DisconfDataGetter;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.Resource;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /***
  * 售后应用层服务
@@ -57,7 +57,10 @@ public class SaleAfterOrderApp {
 	AfterSellFlowRepository afterSellFlowRepository;
 	
 	@Resource
-    private OperationLogManager operationLogManager; 
+    private OperationLogManager operationLogManager;
+
+    @Autowired
+    OrderService orderService;
 	
 	private static final String SCM_JOB_USER = DisconfDataGetter.getByFileItem("constants.properties", "scm.job.user").toString().trim();
 
@@ -236,6 +239,12 @@ public class SaleAfterOrderApp {
 		else {
 			throw new NegativeException(MCode.V_101, "售后单状态不正确或已经同意过了！");
 		}
+
+        // 售后同意推送消息
+        Map extraMap = new HashMap<>();
+        extraMap.put("afterSellOrderId", cmd.getSaleAfterNo());
+        extraMap.put("optType", 5);
+        orderService.msgPush(1, cmd.getUserId(), JsonUtils.toStr(extraMap), cmd.getDealerId());
 	}
 	/**
 	 * 拒绝售后申请
@@ -256,6 +265,12 @@ public class SaleAfterOrderApp {
 		saleAfterRepository.updateSaleAfterOrder(order);
 		afterSellFlow.add(cmd.getSaleAfterNo(), 3, cmd.getUserId(),null,null,cmd.getRejectReason(),cmd.getRejectReasonCode());
 		afterSellFlowRepository.save(afterSellFlow);
+
+        // 售后审核拒绝推送消息
+        Map extraMap = new HashMap<>();
+        extraMap.put("afterSellOrderId", cmd.getSaleAfterNo());
+        extraMap.put("optType", 8);
+        orderService.msgPush(1, cmd.getUserId(), JsonUtils.toStr(extraMap), order.dealerId());
 	}
 	
 	/***
@@ -299,6 +314,12 @@ public class SaleAfterOrderApp {
 		AfterSellFlow afterSellFlow = new AfterSellFlow();
 		afterSellFlow.save(cmd.getSaleAfterNo(), 7, cmd.getUserId(), null, null, null, null, cmd.getExpressNo(), cmd.getExpressName(), null, null);
 		afterSellFlowRepository.save(afterSellFlow);
+
+        // 售后发货推送消息
+        Map extraMap = new HashMap<>();
+        extraMap.put("afterSellOrderId", cmd.getSaleAfterNo());
+        extraMap.put("optType", 6);
+        orderService.msgPush(1, cmd.getUserId(), JsonUtils.toStr(extraMap), order.dealerId());
 	}
 	
 	
@@ -392,6 +413,12 @@ public class SaleAfterOrderApp {
 		afterSellFlow.add(cmd.getSaleAfterNo(), 9, cmd.getUserId(),null,null,null,null);
 		System.out.println(afterSellFlow);
 		afterSellFlowRepository.save(afterSellFlow);
+
+        // 售后确认退款推送消息
+        Map extraMap = new HashMap<>();
+        extraMap.put("afterSellOrderId", cmd.getSaleAfterNo());
+        extraMap.put("optType", 7);
+        orderService.msgPush(1, cmd.getUserId(), JsonUtils.toStr(extraMap), order.dealerId());
 	}
 	
 	/***
@@ -496,6 +523,12 @@ public class SaleAfterOrderApp {
 		if (afterOrder.cancel())
 			saleAfterRepository.save(afterOrder);
 			afterSellFlow.add(afterOrder.getSaleAfterNo(), -1, SCM_JOB_USER, null, null, null, null);
+
+        // 售后商家未处理推送消息
+        Map extraMap = new HashMap<>();
+        extraMap.put("afterSellOrderId", afterOrder.getSaleAfterNo());
+        extraMap.put("optType", 9);
+        orderService.msgPush(1, afterOrder.userId(), JsonUtils.toStr(extraMap), afterOrder.dealerId());
 	}
 	
 	/**

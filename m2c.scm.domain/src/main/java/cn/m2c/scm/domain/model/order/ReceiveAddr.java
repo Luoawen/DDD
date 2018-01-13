@@ -67,14 +67,14 @@ public class ReceiveAddr extends ValueObject {
     public boolean isModifyAddress(String province, String provCode, String city, String cityCode, String area, String areaCode,
                                    String street, String revPerson, String phone) {
         return (StringUtils.isNotEmpty(province) && !province.equals(this.province)) ||
-                (StringUtils.isNotEmpty(provCode) && !province.equals(this.provinceCode)) ||
-                (StringUtils.isNotEmpty(city) && !province.equals(this.city)) ||
-                (StringUtils.isNotEmpty(cityCode) && !province.equals(this.cityCode)) ||
-                (StringUtils.isNotEmpty(area) && !province.equals(this.area)) ||
-                (StringUtils.isNotEmpty(areaCode) && !province.equals(this.areaCode)) ||
-                (StringUtils.isNotEmpty(street) && !province.equals(this.street)) ||
-                (StringUtils.isNotEmpty(revPerson) && !province.equals(this.revPerson)) ||
-                (StringUtils.isNotEmpty(phone) && !province.equals(this.phone));
+                (StringUtils.isNotEmpty(provCode) && !provCode.equals(this.provinceCode)) ||
+                (StringUtils.isNotEmpty(city) && !city.equals(this.city)) ||
+                (StringUtils.isNotEmpty(cityCode) && !cityCode.equals(this.cityCode)) ||
+                (StringUtils.isNotEmpty(area) && !area.equals(this.area)) ||
+                (StringUtils.isNotEmpty(areaCode) && !areaCode.equals(this.areaCode)) ||
+                (StringUtils.isNotEmpty(street) && !street.equals(this.street)) ||
+                (StringUtils.isNotEmpty(revPerson) && !revPerson.equals(this.revPerson)) ||
+                (StringUtils.isNotEmpty(phone) && !phone.equals(this.phone));
     }
 
 
