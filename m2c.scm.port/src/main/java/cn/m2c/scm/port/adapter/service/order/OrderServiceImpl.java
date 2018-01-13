@@ -171,27 +171,26 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public void unlockCoupons(List<String> couponsIds, String userId) throws NegativeException {
-    	if(couponsIds == null || couponsIds.size()<1){
-    		return ;
-    	}
-    	String couponUserId = couponsIds.get(0);
-    	LOGGER.info("---couponUserId:"+couponUserId);
-    	String url = M2C_HOST_URL + "/m2c.market/domain/coupon/cancel/order/return";
-    	
-    	  HashMap<String, String> params = new HashMap<String, String>();
-          params.put("couponUserId", couponUserId);
-          String resp = "";
-          try {
-              resp = new HttpRequest().postData(url, params, "utf-8").toString();
-              JSONObject json = JSONObject.parseObject(resp);
-              if (json.getInteger("status") != 200) {
-                  throw new NegativeException(401, "营销中心取消未支付订单返还优惠券接口出错");
+    	if(couponsIds != null && couponsIds.size()>0){
+    		String couponUserId = couponsIds.get(0);
+        	LOGGER.info("---couponUserId:"+couponUserId);
+        	String url = M2C_HOST_URL + "/m2c.market/domain/coupon/cancel/order/return";
+        	
+        	  HashMap<String, String> params = new HashMap<String, String>();
+              params.put("couponUserId", couponUserId);
+              String resp = "";
+              try {
+                  resp = new HttpRequest().postData(url, params, "utf-8").toString();
+                  JSONObject json = JSONObject.parseObject(resp);
+                  if (json.getInteger("status") != 200) {
+                      throw new NegativeException(401, "营销中心取消未支付订单返还优惠券接口出错");
+                  }
+              } catch (Exception e) {
+                  LOGGER.error("Exception----->>>", e);
+                  throw new NegativeException(400, "取消未支付订单返还优惠券出错");
               }
-          } catch (Exception e) {
-              LOGGER.error("Exception----->>>", e);
-              throw new NegativeException(400, "取消未支付订单返还优惠券出错");
-          }
-          LOGGER.info("返回数据" + resp);
+              LOGGER.info("返回数据" + resp);
+    	}
     }
   
     /***

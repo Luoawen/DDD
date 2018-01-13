@@ -126,7 +126,7 @@ public class OrderQueryApplication {
     	List<String> rs = null;
     	try {
     		rs = supportJdbcTemplate.queryForBeanList("select coupon_user_id from t_scm_order_coupon_used where order_id=? and _status=1 ", String.class, orderId);
-    		LOGGER.info("+++++优惠券id列表++++++"+rs.toString());
+    		LOGGER.info("+++++数据库读取的优惠券id列表++++++"+rs.toString());
     	}
     	catch (Exception e) {
     		LOGGER.error("===fanjc==获取订单下的优惠券出错",e);
