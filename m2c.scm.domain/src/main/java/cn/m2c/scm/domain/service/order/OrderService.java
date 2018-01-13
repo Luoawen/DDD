@@ -130,4 +130,14 @@ public interface OrderService {
 	public String getUserIdByUserName(String userName);
 
 	String getMediaName(String mediaId);
+	
+	 /**
+     * 消息推送
+     *
+     * @param msgType  推送类型 1:物流助手 2:通知消息
+     * @param userId   被推送者ID
+     * @param extra    业务参数
+     * @param senderId 发送者ID
+     */
+    public void msgPush(Integer msgType, String userId, String extra, String senderId);
 }
