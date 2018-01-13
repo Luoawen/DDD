@@ -221,8 +221,7 @@ public class DealerOrderApplication {
 		}
 	}
 	
-	@Transactional(rollbackFor = { Exception.class, RuntimeException.class,
-			NegativeException.class }, propagation = Propagation.REQUIRES_NEW)
+	@Transactional(rollbackFor = { Exception.class, RuntimeException.class,NegativeException.class }, propagation = Propagation.REQUIRES_NEW)
 	private void jobOrderDealFinishied(DealerOrderDtl orderDtl) {
 		orderDtl.dealFinished();
 		orderDtlRepository.save(orderDtl);
