@@ -171,7 +171,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public void unlockCoupons(List<String> couponsIds, String userId) throws NegativeException {
-    	if(couponsIds.size()<1){
+    	if(couponsIds == null || couponsIds.size()<1){
     		return ;
     	}
     	String couponUserId = couponsIds.get(0);
