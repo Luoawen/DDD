@@ -23,6 +23,7 @@ import cn.m2c.common.MResult;
 import cn.m2c.ddd.common.auth.RequirePermissions;
 import cn.m2c.scm.application.goods.query.GoodsQueryApplication;
 import cn.m2c.scm.application.shop.ShopApplication;
+import cn.m2c.scm.application.shop.command.ShopBackImgCommand;
 import cn.m2c.scm.application.shop.command.ShopInfoUpdateCommand;
 import cn.m2c.scm.application.shop.data.bean.ShopBean;
 import cn.m2c.scm.application.shop.data.bean.ShopCreatedDateBean;
@@ -277,4 +278,54 @@ public class ShopAgent {
 			 return new ResponseEntity<MResult>(result,HttpStatus.OK);
 		 }
 		 
+		 /**
+		  * 添加店铺门头图
+		  * @param dealerId
+		  * @param shopId
+		  * @param shopBackImg
+		  * @return
+		  */
+		 @RequestMapping(value = "/web/shopBackImg",method = RequestMethod.POST)
+		 public ResponseEntity<MResult> addShopBackImg(
+				 @RequestParam(value = "dealerId",required = false) String dealerId,
+				 @RequestParam(value = "shopId",required = false) String shopId,
+				 @RequestParam(value = "shopBackImg",required = false) String shopBackImg){
+			 MResult result = new MResult(MCode.V_1);
+			 try {
+				ShopBackImgCommand command = new ShopBackImgCommand(dealerId, shopId, shopBackImg);
+				shopApplication.addShopBackImg(command);
+				result.setContent("添加店铺门头图成功!");
+				result.setStatus(MCode.V_200);
+			} catch (NegativeException ne) {
+				log.error("添加店铺门头图出错", ne);
+				result = new MResult(MCode.V_400,ne.getMessage());
+			} catch (Exception e) {
+				log.error("添加店铺门头图失败！",e.getMessage());
+				result = new MResult(MCode.V_400, "服务器开小差了，请稍后再试");
+			}
+			 return new ResponseEntity<MResult>(result,HttpStatus.OK);
+		 }
+		 
+		 
+		 /**
+		  * 查询商品门头图
+		  * @param shopId
+		  * @return
+		  */
+		 @RequestMapping(value = "/web/shopBackImg",method = RequestMethod.GET)
+		 public ResponseEntity<MResult> getShopBackImg(@RequestParam(value = "shopId",required = false) String shopId){
+			 MResult result = new MResult(MCode.V_1);
+			 try {
+				String shopBackImg = query.getShopBackImg(shopId);
+				 result.setContent(shopBackImg);
+				 result.setStatus(MCode.V_200);
+			} catch (NegativeException ne) {
+				log.error("获取店铺门头图出错", ne);
+				result = new MResult(MCode.V_400,ne.getMessage());
+			} catch (Exception e) {
+				log.error("获取店铺门头图失败！",e.getMessage());
+				result = new MResult(MCode.V_400, "服务器开小差了，请稍后再试");
+			}
+			 return new ResponseEntity<MResult>(result,HttpStatus.OK);
+		 }
 }

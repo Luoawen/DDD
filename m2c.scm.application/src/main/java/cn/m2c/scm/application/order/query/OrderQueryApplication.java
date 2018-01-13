@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import cn.m2c.common.JsonUtils;
 import cn.m2c.common.MCode;
 import cn.m2c.common.RedisUtil;
 import cn.m2c.ddd.common.port.adapter.persistence.springJdbc.SupportJdbcTemplate;
@@ -123,9 +124,11 @@ public class OrderQueryApplication {
     public List<String> getCouponsByOrderId(String orderId) throws NegativeException {
     	if (StringUtils.isEmpty(orderId))
     		return null;
+    	LOGGER.info("+++++orderId++++++"+orderId);
     	List<String> rs = null;
     	try {
-    		rs = supportJdbcTemplate.queryForBeanList("select coupon_id from t_scm_order_coupon_used where order_id=? and _status=1 ", String.class, orderId);
+    		rs = supportJdbcTemplate.queryForBeanList("select coupon_user_id from t_scm_order_coupon_used where order_id=? and _status=1 ", String.class, orderId);
+    		LOGGER.info("+++++数据库读取的优惠券id列表++++++"+JsonUtils.toStr(rs));
     	}
     	catch (Exception e) {
     		LOGGER.error("===fanjc==获取订单下的优惠券出错",e);
@@ -413,7 +416,7 @@ public class OrderQueryApplication {
 			
 			if (StringUtils.isEmpty(cmd.getDealerOrderId())) {
 				
-				sql.append("SELECT a.province_code, a.province, a.city, a.city_code, a.area_code, a.area_county, a.street_addr\r\n")
+				sql.append("SELECT a.province_code, b.coupon_discount, a.province, a.city, a.city_code, a.area_code, a.area_county, a.street_addr\r\n")
 				.append(", a.order_freight, a.order_id, a.goods_amount, a.plateform_discount, a.dealer_discount\r\n")
 				.append(", b.invoice_code, b.invoice_header, b.invoice_name, b.invoice_type, a.created_date, b._status\r\n") 
 				.append(", b.dealer_id, c.dealer_name, b.dealer_order_id, b.rev_phone, b.rev_person, a.pay_way, a.pay_no\r\n") 
@@ -455,7 +458,6 @@ public class OrderQueryApplication {
 					params.add(cmd.getDealerOrderId());
 				}
 			}
-			
 			result = this.supportJdbcTemplate.queryForBean(sql.toString(), AppOrderDtl.class, params.toArray());
 			
 			if (result != null) {
@@ -528,7 +530,7 @@ public class OrderQueryApplication {
 					.append("FROM t_scm_order_dealer b \r\n")
 					.append("LEFT OUTER JOIN t_scm_order_main a ON a.order_id=b.order_id\r\n")
 					.append("LEFT OUTER JOIN t_scm_dealer c ON c.dealer_id = b.dealer_id \r\n")
-					.append("WHERE a.user_id=?  AND b.del_flag=0 AND (b._status IN (1, 2, 3))\r\n")
+					.append("WHERE a.user_id=?  AND b.del_flag=0 AND (b._status IN (1, 2, 3, 4, 5))\r\n")      //添加售后保护期已过的订单
 					.append("AND b.dealer_order_id IN (SELECT cc.dealer_order_id FROM t_scm_order_detail cc \r\n")
 					.append("WHERE (cc.sort_no = 0 AND cc.sort_no NOT IN(SELECT aa.sort_no FROM t_scm_order_detail aa, t_scm_order_after_sell bb \r\n")
 					.append("WHERE aa.dealer_order_id = b.dealer_order_id \r\n")
@@ -554,8 +556,8 @@ public class OrderQueryApplication {
 			params.add((pageIndex - 1) * pageSize);
 			params.add(pageSize);
 			
+			System.out.println("outside SQL--------------------->"+sql);
 			result = this.supportJdbcTemplate.queryForBeanList(sql.toString(), AppOrderBean.class, params.toArray());
-			
 			if (result != null) {
 				int sz = result.size();
 				String tmpOrderId = null; 
@@ -568,6 +570,7 @@ public class OrderQueryApplication {
 					.append(" WHERE a.order_id=? AND a.dealer_order_id=? AND ((a.sort_no=0 AND a.sku_id NOT IN (SELECT b.sku_id FROM t_scm_order_after_sell b WHERE b._status NOT IN(-1, 3) AND b.dealer_order_id=a.dealer_order_id AND b.order_id=a.order_id AND b.sort_no=a.sort_no))")
 					.append(" OR (a.sort_no !=0 AND a.sort_no NOT IN (SELECT b.sort_no FROM t_scm_order_after_sell b WHERE b._status NOT IN(-1, 3) AND b.dealer_order_id=a.dealer_order_id AND b.order_id=a.order_id AND b.sort_no=a.sort_no)))")
 					;
+					System.out.println("Inside SQL----------------------------->"+sql);
 					o.setGoodses(this.supportJdbcTemplate.queryForBeanList(sql.toString(), 
 							OrderDetailBean.class, new Object[] {tmpOrderId, o.getDealerOrderId()}));
 				}

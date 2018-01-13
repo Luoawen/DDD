@@ -1,14 +1,14 @@
 package cn.m2c.scm.application.order.data.bean;
 
-import java.util.Date;
-import java.util.List;
-
 import cn.m2c.ddd.common.persistence.orm.ColumnAlias;
 import cn.m2c.scm.application.utils.Utils;
 
+import java.util.Date;
+import java.util.List;
+
 /**
  * 商家订单详情
- * 
+ *
  * @author lqwen
  *
  */
@@ -68,7 +68,7 @@ public class DealerOrderDetailBean {
 	 */
 	@ColumnAlias(value = "area_county")
 	private String areaCounty;
-	
+
 	/**
 	 * 街道详细地址
 	 */
@@ -120,13 +120,13 @@ public class DealerOrderDetailBean {
 	/**
 	 * 商家优惠券金额
 	 */
-	 @ColumnAlias(value = "dealer_discount")
+	@ColumnAlias(value = "dealer_discount")
 	private long dealerDiscount;
 	/**
 	 * 订单总额(订单商品总额 - 平台优惠券 - 商家优惠券 + 运费)
 	 */
 	private long orderPrice;
-	
+
 	@ColumnAlias(value = "invoice_header")
 	private String invoiceHeader;
 	@ColumnAlias(value = "invoice_name")
@@ -139,18 +139,18 @@ public class DealerOrderDetailBean {
 	/**订单备注*/
 	@ColumnAlias(value = "noted")
 	private String  noted;
-	
+
 	@ColumnAlias(value = "provinceCode")
 	private String  privinceCode;
 	@ColumnAlias(value = "cityCode")
 	private String  cityCode;
 	@ColumnAlias(value = "areaCode")
 	private String  areaCode;
-	
+
 	private String dealerOrderId;
-	
-	private Integer isShowShip = 0;      //是否展示发货 0 不展示，1 展示
-	
+
+	private Integer isShowShip = 1;      //是否展示发货 0 不展示，1 展示
+
 	public Integer getIsShowShip() {
 		return isShowShip;
 	}
@@ -166,7 +166,7 @@ public class DealerOrderDetailBean {
 	public String getOrderId() {
 		return orderId;
 	}
-	
+
 	public String getDealerOrderId() {
 		return dealerOrderId;
 	}
@@ -294,7 +294,7 @@ public class DealerOrderDetailBean {
 	public long getDealerDiscount() {
 		return dealerDiscount/100;
 	}
-	
+
 	public String getStrTotalOrderPrice() {
 		return Utils.moneyFormatCN(totalOrderPrice);
 	}
@@ -440,5 +440,5 @@ public class DealerOrderDetailBean {
 		this.areaCode = areaCode;
 	}
 
-	
+
 }

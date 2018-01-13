@@ -19,6 +19,7 @@ import cn.m2c.scm.application.order.data.bean.AftreSellLogisticsBean;
 import cn.m2c.scm.application.order.data.bean.DealerOrderMoneyBean;
 import cn.m2c.scm.application.order.data.bean.GoodsInfoBean;
 import cn.m2c.scm.application.order.data.bean.OrderDealerBean;
+import cn.m2c.scm.application.order.data.bean.SimpleCoupon;
 import cn.m2c.scm.application.order.data.bean.SimpleMarket;
 import cn.m2c.scm.application.order.data.bean.SkuNumBean;
 import cn.m2c.scm.domain.NegativeException;
@@ -127,7 +128,7 @@ public class AfterSellOrderQuery {
 			params.add(condition);
 		}
 		if (StringUtils.isNotEmpty(endTime) && StringUtils.isNotEmpty(endTime)) {
-			sql.append(" AND dealer.created_date BETWEEN ? AND ? ");
+			sql.append(" AND after.created_date BETWEEN ? AND ? ");
 			params.add(startTime);
 			params.add(endTime);
 		}
@@ -229,7 +230,7 @@ public class AfterSellOrderQuery {
 			params.add(condition);
 		}
 		if (StringUtils.isNotEmpty(endTime) && StringUtils.isNotEmpty(endTime)) {
-			sql.append(" AND dealer.created_date BETWEEN ? AND ? ");
+			sql.append(" AND after.created_date BETWEEN ? AND ? ");
 			params.add(startTime);
 			params.add(endTime);
 		}
@@ -647,5 +648,35 @@ public class AfterSellOrderQuery {
 		
 		return result;
 		
+	}
+
+	/**
+	 * 获取使用的优惠券实体
+	 * @param couponId
+	 * @param orderId
+	 * @return
+	 */
+	public SimpleCoupon getCouponById(String couponId, String orderId) {
+		StringBuilder sql = new StringBuilder();
+		sql.append(" SELECT * \r\n")
+		.append("FROM	t_scm_order_coupon_used\r\n")
+		.append("WHERE	order_id = ? AND coupon_id = ? AND _status=1");
+		return this.supportJdbcTemplate.queryForBean(sql.toString(), SimpleCoupon.class, orderId, couponId);
+	}
+
+	/**
+	 * 获取所有的sku信息
+	 * @param orderId
+	 * @return
+	 */
+	public List<SkuNumBean> getTotalSku(String orderId) {
+		StringBuilder sql = new StringBuilder();
+		sql.append(" SELECT a.coupon_id,a.coupon_discount,a.sku_id, a.sell_num, a.is_change, a.goods_amount, a.marketing_id, a.change_price, a.sort_no\r\n")
+		.append("FROM t_scm_order_detail a\r\n")
+		.append("WHERE a.order_id = ?\r\n")
+		.append("AND ((a.sort_no=0 AND a.sku_id NOT IN(SELECT b.sku_id FROM t_scm_order_after_sell b WHERE b.order_id=a.order_id AND b.dealer_order_id= a.dealer_order_id AND b._status > 3)) ")
+		.append(" OR (a.sort_no NOT IN(SELECT b.sort_no FROM t_scm_order_after_sell b WHERE b.order_id=a.order_id AND b.dealer_order_id= a.dealer_order_id AND b._status > 3)))")
+		;
+		return this.supportJdbcTemplate.queryForBeanList(sql.toString(), SkuNumBean.class, orderId);
 	}
 }

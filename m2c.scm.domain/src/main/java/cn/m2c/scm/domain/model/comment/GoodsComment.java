@@ -215,4 +215,16 @@ public class GoodsComment extends ConcurrencySafeEntity {
     public String skuId() {
         return skuId;
     }
+
+    public String goodsId() {
+        return goodsId;
+    }
+
+    public String dealerId() {
+        return dealerId;
+    }
+
+    public String buyerId() {
+        return buyerId;
+    }
 }

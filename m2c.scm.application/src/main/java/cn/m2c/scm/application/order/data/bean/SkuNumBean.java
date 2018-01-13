@@ -23,6 +23,8 @@ public class SkuNumBean {
 	
 	@ColumnAlias(value = "marketing_id")
 	private String marketId; // 营销活动
+	@ColumnAlias(value = "coupon_id")
+	private String couponId; // 优惠券
 	
 	@ColumnAlias(value = "change_price")
 	private Long changePrice; // 换购价
@@ -95,6 +97,14 @@ public class SkuNumBean {
 
 	public void setMarketId(String marketId) {
 		this.marketId = marketId;
+	}
+
+	public String getCouponId() {
+		return couponId;
+	}
+
+	public void setCouponId(String couponId) {
+		this.couponId = couponId;
 	} 
 	
 }
