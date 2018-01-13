@@ -327,5 +327,24 @@ public class ShopQuery {
 		return shop;
 	}
 	
+	/**
+	 * 查询商品门头图
+	 * @param shopId
+	 * @return
+	 * @throws NegativeException
+	 */
+	public String getShopBackImg(String shopId) throws NegativeException {
+		String shopBackImg = "";
+		try {
+			StringBuilder sql = new StringBuilder("SELECT shop_background_img FROM t_scm_dealer_shop WHERE shop_id = ?");
+			shopBackImg = this.supportJdbcTemplate.jdbcTemplate().queryForObject(sql.toString(), String.class,shopId);
+		} catch (Exception e) {
+			log.error("查询创建店铺门头图出错",e);
+			throw new NegativeException(MCode.V_400,"查询失败");
+		}
+		return shopBackImg;
+		
+	}
+	
 	
 }
