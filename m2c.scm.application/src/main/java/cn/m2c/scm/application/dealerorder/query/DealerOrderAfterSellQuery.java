@@ -299,7 +299,7 @@ public class DealerOrderAfterSellQuery {
 		DealerOrderAfterSellDetailBean bean = null;
 		sql.append(" SELECT af._status, af.sku_id, af.order_type,af.after_sell_order_id,af.back_money,af.reason, af.order_id, ")
 		.append(" af.created_date,af.return_freight,af.reject_reason, dealer.dealer_order_id, dealer._status doStatus");
-		sql.append(" ,af.order_id,dealer.goods_amount,dealer.order_freight,dealer.plateform_discount,dealer.dealer_discount ");
+		sql.append(" ,af.order_id,dtl.goods_amount,dealer.order_freight,dealer.plateform_discount,dealer.dealer_discount ");
 		sql.append("  FROM t_scm_order_after_sell af ");
 		sql.append("  LEFT OUTER JOIN t_scm_order_dealer dealer   ON af.dealer_order_id = dealer.dealer_order_id   ");
 		sql.append("  LEFT OUTER JOIN t_scm_order_detail dtl  ON af.dealer_order_id = dtl.dealer_order_id AND af.sku_id = dtl.sku_id AND af.sort_no=dtl.sort_no ");
