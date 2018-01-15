@@ -146,6 +146,7 @@ public class OrderQuery {
             }
             dealerBean = new OrderDealerBean();
             dealerBean.setOrderId(allOrder.getOrderId());
+            dealerBean.setCouponDiscount(allOrder.getCouponDiscount());
             dealerBean.setDealerName(allOrder.getDealerName());
             dealerBean.setDealerOrderId(allOrder.getDealerOrderId());
             dealerBean.setGoodAmount(allOrder.getStrDealerGoodsAmount());

@@ -55,7 +55,10 @@ public class AllOrderBean extends AssertionConcern implements Serializable {
 	/**主订单中的商家优惠*/
     @ColumnAlias(value = "pDealerDiscount")
 	private long ppDealerDiscount;
-
+    
+    @ColumnAlias(value = "coupon_discount")
+    private long couponDiscount;
+    
 	public long getPpDiscount() {
 		return ppDiscount/100;
 	}
@@ -64,6 +67,14 @@ public class AllOrderBean extends AssertionConcern implements Serializable {
 		return Utils.moneyFormatCN(ppDiscount);
 	}
 	
+	public long getCouponDiscount() {
+		return couponDiscount;
+	}
+
+	public void setCouponDiscount(long couponDiscount) {
+		this.couponDiscount = couponDiscount;
+	}
+
 	public void setPpDiscount(long ppDiscount) {
 		this.ppDiscount = ppDiscount;
 	}
