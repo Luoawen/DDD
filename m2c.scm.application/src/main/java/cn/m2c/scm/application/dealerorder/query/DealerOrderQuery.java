@@ -362,7 +362,8 @@ public class DealerOrderQuery {
                 midBean.setPlateDiscount((long) item.get("plateform_discount"));
                 midBean.setDealerDiscount((long) item.get("dealer_discount"));
                 midBean.setOrderId((String) item.get("order_id"));
-
+                midBean.setCouponDiscount((long) item.get("coupon_discount"));
+                
                 List<DealerGoodsBean> goodses = new ArrayList<>();
                 midBean.setGoodsList(goodses);
                 rs.add(midBean);
