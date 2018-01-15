@@ -218,6 +218,8 @@ public class OrderApplication {
         List<MarketBean> mks = orderDomainService.getMarketingsByIds(marketIds, cmd.getUserId(), MarketBean[].class);
         // 计算营销活动优惠
         OrderMarketCalc.calMarkets(mks, gdes);
+        //校验营销活动分摊后金额为负数的情况
+        checkMarkets(gdes);
         //计算优惠券
         //1.获取满足条件的优惠券id
         String couponId = getCouponId(gdes);
@@ -231,6 +233,8 @@ public class OrderApplication {
 //        	Map<String,GoodsDto> couponGoodDto = getCouponDto(gdes);
         	if(couponBean!=null)
         		OrderCouponCalc.calCoupon(gdes,couponBean);
+        	//校验优惠券优惠金额位负数的情况
+        	checkCoupon(gdes);
         }
         // 获取结算方式
         Map<String, Integer> dealerCount = getDealerWay(idsSet);
@@ -284,6 +288,7 @@ public class OrderApplication {
      * 数据组装，获取此订单里面所有的Sku
      * @param gdes
      * @return
+     * @throws NegativeException 
      */
 //    private Map<String, GoodsDto> getCouponDto(List<GoodsDto> gdes) {
 //    	Map<String, GoodsDto> resMap = new HashMap<String, GoodsDto>();
@@ -297,6 +302,36 @@ public class OrderApplication {
 
 
 	
+    /**
+     * 校验优惠券分摊后金额为负数的情况
+     * @param gdes
+   * @throws NegativeException 
+     */
+	  private void checkCoupon(List<GoodsDto> gdes) throws NegativeException {
+			  for (GoodsDto goodsDto : gdes) {
+				  if((goodsDto.getThePrice() * goodsDto.getPurNum() - goodsDto.getPlateformDiscount() -goodsDto.getCouponDiscount())<=0){
+					  LOGGER.info("优惠券减的钱超过了商品原价");
+					  throw new NegativeException(MCode.V_300, "下单失败");
+					 }
+			}
+			
+		}
+
+
+/**
+   * 校验营销活动分摊后金额为负数的情况
+   * @param gdes
+ * @throws NegativeException 
+   */
+	private void checkMarkets(List<GoodsDto> gdes) throws NegativeException {
+		for (GoodsDto goodsDto : gdes) {
+			if((goodsDto.getThePrice() * goodsDto.getPurNum() - goodsDto.getPlateformDiscount())<=0){
+				 LOGGER.info("满减活动减的钱超过了商品原价");
+				 throw new NegativeException(MCode.V_300, "下单失败");
+			}
+		}
+		
+	}
 
 
 	/**
