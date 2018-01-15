@@ -64,7 +64,7 @@ public class AfterSellOrderQuery {
 		StringBuilder sql = new StringBuilder();
 		sql.append(" SELECT ");
 		sql.append(" after.after_sell_order_id,after.order_id,after.order_type,after.back_money, after.return_freight,after._status,dealer.dealer_name,after.created_date, ");
-		sql.append(" detail.is_special,detail.special_price, after.sort_no, dealer.coupon_discount ");
+		sql.append(" detail.is_special,detail.special_price, after.sort_no, detail.coupon_discount ");
 		sql.append(" FROM t_scm_order_after_sell after ");
 		sql.append(" LEFT JOIN t_scm_dealer dealer ON after.dealer_id = dealer.dealer_id");
 		sql.append(" LEFT JOIN t_scm_order_main main ON after.order_id = main.order_id ");
