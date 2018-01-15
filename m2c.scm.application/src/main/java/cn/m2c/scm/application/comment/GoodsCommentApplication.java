@@ -10,6 +10,8 @@ import cn.m2c.scm.application.order.DealerOrderApplication;
 import cn.m2c.scm.domain.NegativeException;
 import cn.m2c.scm.domain.model.comment.GoodsComment;
 import cn.m2c.scm.domain.model.comment.GoodsCommentRepository;
+import cn.m2c.scm.domain.model.goods.Goods;
+import cn.m2c.scm.domain.model.goods.GoodsRepository;
 import cn.m2c.scm.domain.service.order.OrderService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -40,6 +42,8 @@ public class GoodsCommentApplication {
     private OperationLogManager operationLogManager;
     @Autowired
     OrderService orderService;
+    @Autowired
+    GoodsRepository goodsRepository;
 
     /**
      * 增加评论
@@ -80,7 +84,12 @@ public class GoodsCommentApplication {
 
         // 商品回评推送消息
         Map extraMap = new HashMap<>();
+        Goods goods = goodsRepository.queryGoodsByGoodsId(goodsComment.goodsId());
+        extraMap.put("goodsImage", null != goods.goodsMainImages() ? goods.goodsMainImages().get(0) : null);
         extraMap.put("goodsId", goodsComment.goodsId());
+        extraMap.put("goodsName", goodsComment.goodsName());
+        extraMap.put("commentContent", goodsComment.commentContent());
+        extraMap.put("replyContent", command.getReplyContent());
         extraMap.put("optType", 4);
         orderService.msgPush(2, goodsComment.buyerId(), JsonUtils.toStr(extraMap), goodsComment.dealerId());
     }

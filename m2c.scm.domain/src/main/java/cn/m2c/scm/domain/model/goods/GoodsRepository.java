@@ -45,4 +45,6 @@ public interface GoodsRepository {
      * @return
      */
 	List<Goods> queryGoodsByDealerIdAndGuaranteeId(String dealerId, String guaranteeId);
+
+    Goods queryGoodsByGoodsId(String goodsId);
 }

@@ -78,6 +78,8 @@ public class DealerOrderQB {
 	 */
 	private Integer afterStatus;
 	
+	private long couponDiscount;
+	
 	public Integer getAfterStatus() {
 		return afterStatus;
 	}
@@ -88,6 +90,19 @@ public class DealerOrderQB {
 
 	public String getOrderId() {
 		return orderId;
+	}
+
+	
+	public long getCouponDiscount() {
+		return couponDiscount/10000;
+	}
+
+	public void setCouponDiscount(long couponDiscount) {
+		this.couponDiscount = couponDiscount;
+	}
+	
+	public String getStrCouponDiscount() {
+		return Utils.moneyFormatCN(couponDiscount);
 	}
 
 	public void setOrderId(String orderId) {

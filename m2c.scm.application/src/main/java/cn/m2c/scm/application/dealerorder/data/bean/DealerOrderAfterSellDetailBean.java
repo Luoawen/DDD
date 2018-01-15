@@ -82,6 +82,9 @@ public class DealerOrderAfterSellDetailBean {
 	@ColumnAlias(value = "dealer_discount")
 	private long dealerDiscount;
 	
+	@ColumnAlias(value = "coupon_discount")
+	private long couponDiscount;
+	
 	@ColumnAlias(value = "sku_id")
 	private String skuId;
 	
@@ -94,6 +97,19 @@ public class DealerOrderAfterSellDetailBean {
 		return doStatus;
 	}
 	
+	public String getStrcouponDiscount() {
+		return Utils.moneyFormatCN(couponDiscount);
+	}
+	
+	public long getCouponDiscount() {
+		return couponDiscount/10000;
+	}
+
+	public void setCouponDiscount(long couponDiscount) {
+		this.couponDiscount = couponDiscount;
+	}
+
+
 	public Integer getIsShowShip() {
 		return isShowShip;
 	}

@@ -48,7 +48,7 @@ public class DealerOrderAfterSellQuery {
 			Integer rows) {
 		List<Object> params = new ArrayList<Object>();
 		StringBuilder sql = new StringBuilder();
-		sql.append(" SELECT af.sku_id,af.order_id,");
+		sql.append(" SELECT af.sku_id,af.order_id, dtl.coupon_discount,");
 		sql.append(" af.after_sell_order_id,af.order_type,af.back_money,af._status,dealer.dealer_name,af.created_date, af.return_freight,dtl.is_special,dtl.special_price ");
 		sql.append(" FROM t_scm_order_after_sell af");
 		sql.append(" LEFT JOIN t_scm_dealer dealer ON af.dealer_id = dealer.dealer_id \r\n");
@@ -297,7 +297,7 @@ public class DealerOrderAfterSellQuery {
 		StringBuilder sql = new StringBuilder();
 		List<Object> param = new ArrayList<Object>();
 		DealerOrderAfterSellDetailBean bean = null;
-		sql.append(" SELECT af._status, af.sku_id, af.order_type,af.after_sell_order_id,af.back_money,af.reason, af.order_id, ")
+		sql.append(" SELECT af._status, dtl.coupon_discount, af.sku_id, af.order_type,af.after_sell_order_id,af.back_money,af.reason, af.order_id, ")
 		.append(" af.created_date,af.return_freight,af.reject_reason, dealer.dealer_order_id, dealer._status doStatus");
 		sql.append(" ,af.order_id,dtl.goods_amount,dealer.order_freight,dealer.plateform_discount,dealer.dealer_discount ");
 		sql.append("  FROM t_scm_order_after_sell af ");
