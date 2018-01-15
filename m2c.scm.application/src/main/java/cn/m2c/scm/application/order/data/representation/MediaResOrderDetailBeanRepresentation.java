@@ -1,11 +1,13 @@
 package cn.m2c.scm.application.order.data.representation;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import cn.m2c.scm.application.order.data.bean.MediaResOrderDetailBean;
 import cn.m2c.scm.application.utils.Utils;
 
+/**
+ * 媒体广告位订单明细表述对象 
+ */
 public class MediaResOrderDetailBeanRepresentation {
 	private String orderId;            //订单号
 	private String userMessage;        //用户名/手机号

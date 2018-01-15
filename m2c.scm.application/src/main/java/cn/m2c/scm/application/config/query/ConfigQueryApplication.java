@@ -38,19 +38,4 @@ public class ConfigQueryApplication {
 		return configBean;
 	}
 
-	/**
-	 * 根据configKeys串查出ConfigBean
-	 * @param configKeys
-	 * @return
-	 */
-	public List<ConfigBean> queryConfigBeanByConfigKeyList(List<String> configKeys) {
-		StringBuilder sql = new StringBuilder();
-		sql.append(" SELECT ");
-        sql.append(" * ");
-        sql.append(" FROM ");
-        sql.append(" t_scm_config ");
-		sql.append(" WHERE config_key IN ( " + Utils.listParseString(configKeys) + " ) AND config_status = 1 ");
-		return this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), ConfigBean.class);
-	}
-
 }
