@@ -926,6 +926,7 @@ public class OrderQuery {
 			params.add(orderTime + " 23:59:59");
 		}
 		sql.append(" AND tod.del_flag = 0 AND tom.del_flag = 0 ");
+		sql.append(" AND tod.media_id IS NOT NULL AND tod.media_res_id IS NOT NULL ");
 		sql.append(" ORDER BY  tom.created_date DESC , tod.sort_no ASC ");
 		Integer total = this.supportJdbcTemplate.jdbcTemplate().queryForObject(sql.toString(), params.toArray(), Integer.class);
 		return total;
@@ -992,6 +993,7 @@ public class OrderQuery {
 			params.add(orderTime + " 23:59:59");
 		}
 		sql.append(" AND tod.del_flag = 0 AND tom.del_flag = 0 ");
+		sql.append(" AND tod.media_id IS NOT NULL AND tod.media_res_id IS NOT NULL ");
 		sql.append(" ORDER BY  tom.created_date DESC , tod.sort_no ASC ");
 		if(null != pageOrNot && pageOrNot == 1){ //分页
 			sql.append(" LIMIT ?,?");

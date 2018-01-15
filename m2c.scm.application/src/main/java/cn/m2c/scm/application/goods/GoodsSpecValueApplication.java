@@ -26,7 +26,10 @@ public class GoodsSpecValueApplication {
         LOGGER.info("addGoodsSpecValue command >>{}", command);
         GoodsSpecValue goodsSpecValue = goodsSpecValueRepository.queryGoodsSpecValueById(command.getSpecId());
         if (null == goodsSpecValue) {
-            goodsSpecValue = new GoodsSpecValue(command.getSpecId(), command.getDealerId(),command.getStandardId(), command.getSpecValue());
+            if (goodsSpecValueRepository.isRepeatGoodsSpecValueName(command.getDealerId(), command.getStandardId(), command.getSpecValue())) {
+                throw new NegativeException("规格值已存在");
+            }
+            goodsSpecValue = new GoodsSpecValue(command.getSpecId(), command.getDealerId(), command.getStandardId(), command.getSpecValue());
             goodsSpecValueRepository.save(goodsSpecValue);
         }
     }
