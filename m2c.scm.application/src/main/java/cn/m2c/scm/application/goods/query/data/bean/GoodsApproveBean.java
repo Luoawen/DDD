@@ -104,6 +104,12 @@ public class GoodsApproveBean {
     private String goodsMainImages;
 
     /**
+     * 商品主图视频
+     */
+    @ColumnAlias(value = "goods_main_video")
+    private String goodsMainVideo;
+    
+    /**
      * 商品描述
      */
     @ColumnAlias(value = "goods_desc")
@@ -342,4 +348,13 @@ public class GoodsApproveBean {
     public void setSkuFlag(Integer skuFlag) {
         this.skuFlag = skuFlag;
     }
+
+	public String getGoodsMainVideo() {
+		return goodsMainVideo;
+	}
+
+	public void setGoodsMainVideo(String goodsMainVideo) {
+		this.goodsMainVideo = goodsMainVideo;
+	}
+    
 }

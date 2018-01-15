@@ -130,6 +130,8 @@ public interface OrderService {
 	public String getUserIdByUserName(String userName);
 
 	String getMediaName(String mediaId);
+	
+	Map getUserMobileOrUserName(String userMessage);
 	/**
      * 根据用户id获取用户信息
      *

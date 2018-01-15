@@ -424,6 +424,26 @@ public class OrderServiceImpl implements OrderService {
         return null;
     }
 
+	@Override
+	public Map getUserMobileOrUserName(String userMessage) {
+		String url = M2C_HOST_URL + "/m2c.users/user/fuzzyQueryUserByMobileOrUserName?mobileOrName={0}";
+		try {
+			String result = restTemplate.getForObject(url, String.class, userMessage);
+			JSONObject json = JSONObject.parseObject(result);
+			if(json.getInteger("status") == 200) {
+				JSONObject content = json.getJSONObject("content");
+				if (null != content) {
+                    return content;
+                }
+			}
+		}catch(Exception e) {
+			LOGGER.error("根据下单用户名或账号查询用户名和手机号信息异常");
+            LOGGER.error("getUserMobileOrUserName exception.url=>" + url);
+            LOGGER.error("getUserMobileOrUserName exception.error=>" + e.getMessage());
+            LOGGER.error("getUserMobileOrUserName exception.param=>userMessage=" + userMessage);
+		}
+		return null;
+	}
     @Override
     public Map getUserInfoByUserId(String userId) throws NegativeException {
         try {

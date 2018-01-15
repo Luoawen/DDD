@@ -73,7 +73,7 @@ public class GoodsApproveApplication {
                     command.getGoodsName(), command.getGoodsSubTitle(), command.getGoodsClassifyId(),
                     command.getGoodsBrandId(), command.getGoodsBrandName(), command.getGoodsUnitId(), command.getGoodsMinQuantity(),
                     command.getGoodsPostageId(), command.getGoodsBarCode(), JsonUtils.toStr(command.getGoodsKeyWord()),
-                    JsonUtils.toStr(command.getGoodsGuarantee()), JsonUtils.toStr(command.getGoodsMainImages()),
+                    JsonUtils.toStr(command.getGoodsGuarantee()), JsonUtils.toStr(command.getGoodsMainImages()), command.getGoodsMainVideo(),
                     command.getGoodsDesc(), command.getGoodsShelves(), command.getGoodsSpecifications(), command.getGoodsSkuApproves(), command.getSkuFlag());
             goodsApproveRepository.save(goodsApprove);
         }
@@ -98,13 +98,13 @@ public class GoodsApproveApplication {
                     command.getGoodsName(), command.getGoodsSubTitle(), command.getGoodsClassifyId(),
                     command.getGoodsBrandId(), command.getGoodsBrandName(), command.getGoodsUnitId(), command.getGoodsMinQuantity(),
                     command.getGoodsPostageId(), command.getGoodsBarCode(), JsonUtils.toStr(command.getGoodsKeyWord()),
-                    JsonUtils.toStr(command.getGoodsGuarantee()), JsonUtils.toStr(command.getGoodsMainImages()),
+                    JsonUtils.toStr(command.getGoodsGuarantee()), JsonUtils.toStr(command.getGoodsMainImages()), command.getGoodsMainVideo(),
                     command.getGoodsDesc(), null, command.getGoodsSpecifications(), command.getGoodsSkuApproves(),command.getSkuFlag());
         } else {
             goodsApprove.modifyGoodsApprove(command.getGoodsName(), command.getGoodsSubTitle(),
                     command.getGoodsClassifyId(), command.getGoodsBrandId(), command.getGoodsBrandName(), command.getGoodsUnitId(), command.getGoodsMinQuantity(),
                     command.getGoodsPostageId(), command.getGoodsBarCode(), JsonUtils.toStr(command.getGoodsKeyWord()), JsonUtils.toStr(command.getGoodsGuarantee()),
-                    JsonUtils.toStr(command.getGoodsMainImages()), command.getGoodsDesc(), command.getGoodsSpecifications(), command.getGoodsSkuApproves());
+                    JsonUtils.toStr(command.getGoodsMainImages()), command.getGoodsMainVideo(), command.getGoodsDesc(), command.getGoodsSpecifications(), command.getGoodsSkuApproves());
         }
         goodsApproveRepository.save(goodsApprove);
     }
@@ -157,7 +157,7 @@ public class GoodsApproveApplication {
         goodsApprove.modifyGoodsApprove(command.getGoodsName(), command.getGoodsSubTitle(),
                 command.getGoodsClassifyId(), command.getGoodsBrandId(), command.getGoodsBrandName(), command.getGoodsUnitId(), command.getGoodsMinQuantity(),
                 command.getGoodsPostageId(), command.getGoodsBarCode(), JsonUtils.toStr(command.getGoodsKeyWord()), JsonUtils.toStr(command.getGoodsGuarantee()),
-                JsonUtils.toStr(command.getGoodsMainImages()), command.getGoodsDesc(), command.getGoodsSpecifications(), command.getGoodsSkuApproves());
+                JsonUtils.toStr(command.getGoodsMainImages()), command.getGoodsMainVideo(), command.getGoodsDesc(), command.getGoodsSpecifications(), command.getGoodsSkuApproves());
     }
 
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})

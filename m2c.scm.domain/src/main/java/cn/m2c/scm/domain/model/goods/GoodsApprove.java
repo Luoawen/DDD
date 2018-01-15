@@ -143,7 +143,7 @@ public class GoodsApprove extends ConcurrencySafeEntity {
     public GoodsApprove(String goodsId, String dealerId, String dealerName, String goodsName, String goodsSubTitle,
                         String goodsClassifyId, String goodsBrandId, String goodsBrandName, String goodsUnitId, Integer goodsMinQuantity,
                         String goodsPostageId, String goodsBarCode, String goodsKeyWord, String goodsGuarantee,
-                        String goodsMainImages, String goodsDesc, Integer goodsShelves, String goodsSpecifications, String goodsSkuApproves,
+                        String goodsMainImages, String goodsMainVideo, String goodsDesc, Integer goodsShelves, String goodsSpecifications, String goodsSkuApproves,
                         Integer skuFlag) {
         this.goodsId = goodsId;
         this.dealerId = dealerId;
@@ -160,6 +160,7 @@ public class GoodsApprove extends ConcurrencySafeEntity {
         this.goodsKeyWord = goodsKeyWord;
         this.goodsGuarantee = goodsGuarantee;
         this.goodsMainImages = goodsMainImages;
+        this.goodsMainVideo = goodsMainVideo;//主图视频
         this.goodsDesc = goodsDesc;
         if (null != goodsShelves) {
             this.goodsShelves = goodsShelves;
@@ -238,7 +239,7 @@ public class GoodsApprove extends ConcurrencySafeEntity {
     public void modifyGoodsApprove(String goodsName, String goodsSubTitle,
                                    String goodsClassifyId, String goodsBrandId, String goodsBrandName, String goodsUnitId, Integer goodsMinQuantity,
                                    String goodsPostageId, String goodsBarCode, String goodsKeyWord, String goodsGuarantee,
-                                   String goodsMainImages, String goodsDesc, String goodsSpecifications, String goodsSkuApproves) {
+                                   String goodsMainImages, String goodsMainVideo, String goodsDesc, String goodsSpecifications, String goodsSkuApproves) {
         this.goodsName = goodsName;
         this.goodsSubTitle = goodsSubTitle;
         this.goodsClassifyId = goodsClassifyId;
@@ -251,6 +252,7 @@ public class GoodsApprove extends ConcurrencySafeEntity {
         this.goodsKeyWord = goodsKeyWord;
         this.goodsGuarantee = goodsGuarantee;
         this.goodsMainImages = goodsMainImages;
+        this.goodsMainVideo = goodsMainVideo;
         this.goodsDesc = goodsDesc;
         this.approveStatus = 1;
         this.rejectReason = null;
