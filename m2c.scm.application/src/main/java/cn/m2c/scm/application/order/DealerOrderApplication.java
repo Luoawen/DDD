@@ -100,10 +100,11 @@ public class DealerOrderApplication {
 		dealerOrderRepository.save(dealerOrder);
 
 		// 发货消息推送
+		MainOrder mOrder = orderRepository.getOrderById(dealerOrder.getOrderNo());
 		Map extraMap = new HashMap<>();
 		extraMap.put("dealerOrderId", command.getDealerOrderId());
 		extraMap.put("optType", 1);
-		orderService.msgPush(1, command.getUserId(), JsonUtils.toStr(extraMap), dealerOrder.dealerId());
+		orderService.msgPush(1, mOrder.userId(), JsonUtils.toStr(extraMap), dealerOrder.dealerId());
 		dealerOrderRepository.save(dealerOrder);
 	}
 
@@ -204,11 +205,11 @@ public class DealerOrderApplication {
 			extraMap.put("shopName", shopName);
 			if (isModifyAddress) {
 				extraMap.put("optType", 2);
-				orderService.msgPush(1, cmd.getUserId(), JsonUtils.toStr(extraMap), dealerOrder.dealerId());
+				orderService.msgPush(1, mOrder.userId(), JsonUtils.toStr(extraMap), dealerOrder.dealerId());
 			}
 			if (isModifyFreight) {
 				extraMap.put("optType", 3);
-				orderService.msgPush(1, cmd.getUserId(), JsonUtils.toStr(extraMap), dealerOrder.dealerId());
+				orderService.msgPush(1, mOrder.userId(), JsonUtils.toStr(extraMap), dealerOrder.dealerId());
 			}
 		}
 	}

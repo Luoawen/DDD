@@ -19,6 +19,8 @@ import cn.m2c.scm.domain.NegativeException;
 import cn.m2c.scm.domain.model.order.AfterSellFlow;
 import cn.m2c.scm.domain.model.order.AfterSellFlowRepository;
 import cn.m2c.scm.domain.model.order.DealerOrderDtl;
+import cn.m2c.scm.domain.model.order.MainOrder;
+import cn.m2c.scm.domain.model.order.OrderRepository;
 import cn.m2c.scm.domain.model.order.SaleAfterOrder;
 import cn.m2c.scm.domain.model.order.SaleAfterOrderRepository;
 import cn.m2c.scm.domain.service.order.OrderService;
@@ -40,658 +42,682 @@ import java.util.Map;
 
 /***
  * 售后应用层服务
+ *
  * @author 89776
- * created date 2017年10月21日
- * copyrighted@m2c
+ *         created date 2017年10月21日
+ *         copyrighted@m2c
  */
 @Service
 public class SaleAfterOrderApp {
-	private final static Logger LOGGER = LoggerFactory.getLogger(SaleAfterOrderApp.class);
-	@Autowired
-	SaleAfterOrderRepository saleAfterRepository;
-	
-	@Autowired
-	AfterSellOrderQuery saleOrderQuery;
-	
-	@Autowired
-	AfterSellFlowRepository afterSellFlowRepository;
-	
-	@Resource
+    private final static Logger LOGGER = LoggerFactory.getLogger(SaleAfterOrderApp.class);
+    @Autowired
+    SaleAfterOrderRepository saleAfterRepository;
+
+    @Autowired
+    AfterSellOrderQuery saleOrderQuery;
+
+    @Autowired
+    AfterSellFlowRepository afterSellFlowRepository;
+
+    @Resource
     private OperationLogManager operationLogManager;
 
     @Autowired
     OrderService orderService;
-	
-	private static final String SCM_JOB_USER = DisconfDataGetter.getByFileItem("constants.properties", "scm.job.user").toString().trim();
 
-	
-	/***
-	 * 创建售后单
-	 * @param cmd
-	 */
-	@Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
-	@EventListener(isListening=true)
-	public void createSaleAfterOrder(AddSaleAfterCmd cmd) throws NegativeException {
-		// 获取订单SKU详情看是否满足售后申请
-		DealerOrderDtl itemDtl = saleAfterRepository.getDealerOrderDtlBySku(cmd.getDealerOrderId(), 
-				cmd.getSkuId(), cmd.getSortNo());
-		
-		if (itemDtl == null) {
-			throw new NegativeException(MCode.V_1, "申请售后的商品不存在！");
-		}
-		
-		int _sortNo = itemDtl.getSortNo();
-		int ij = saleAfterRepository.getSaleAfterOrderBySkuId(cmd.getDealerOrderId(), 
-				cmd.getSkuId(), _sortNo);
-		if (ij > 0) {
-			throw new NegativeException(MCode.V_100, "此商品已有售后还在处理中！");
-		}
-		
-		if (!itemDtl.canApplySaleAfter()) {
-			throw new NegativeException(MCode.V_100, "商品处于不可申请售后状态！");
-		}
-		
-		int orderType = cmd.getType() == 3 ? 0 : cmd.getType(); //0换货， 1退货，2仅退款                  app传 1退货，2退款，3换货
-		
-		// 增加售后限制, 换货除外
-		if (orderType != 0) {
-			int count = saleAfterRepository.checkCanApply(itemDtl.getOrderId(), itemDtl.getMarketId(), itemDtl.getCouponId());
-			if (count > 0) {
-				throw new NegativeException(MCode.V_100, "商品处于不可申请售后状态，因参与活动的其他商品正在申请中！");
-			}
-		}
-		
-		int status = 2; //0申请退货,1申请换货,2申请退款          订单类型，0换货， 1退货，2仅退款
-		switch (orderType) {
-			case 0:
-				status = 1;
-				break;
-			case 1:
-				status = 0;
-				break;
-			case 2:
-				status = 2;
-				break;
-		}
-		long money = itemDtl.sumGoodsMoney();
-		if (orderType != 0) {
-			// 生成售后单保存, 计算售后需要退的钱
-			List<SkuNumBean> totalSku = saleOrderQuery.getTotalSku(cmd.getOrderId());//所有的商品详情
-			String mkId = itemDtl.getMarketId(); 
-			String couponId = itemDtl.getCouponId();//优惠券id
-			long discountMoney = 0;//售后优惠的钱
-			long couponDiscountMoney = 0;//优惠券优惠的钱
-			if (mkId != null) {//计算售后需要退的钱
-				SimpleMarket marketInfo = saleOrderQuery.getMarketById(mkId, cmd.getOrderId());
-				List<SkuNumBean> skuBeanLs = saleOrderQuery.getOrderDtlByMarketId(mkId, cmd.getOrderId());
-				//-----将处理好的优惠平摊金额复制给所有订单的列表里面，用于计算优惠券使用
-				if(skuBeanLs.size()>0){
-					copySku(skuBeanLs,totalSku);
-				}
-				discountMoney = OrderMarketCalc.calcReturnMoney(marketInfo, skuBeanLs, cmd.getSkuId(), _sortNo);
+    @Autowired
+    OrderRepository orderRepository;
+
+    private static final String SCM_JOB_USER = DisconfDataGetter.getByFileItem("constants.properties", "scm.job.user").toString().trim();
+
+
+    /***
+     * 创建售后单
+     *
+     * @param cmd
+     */
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+    @EventListener(isListening = true)
+    public void createSaleAfterOrder(AddSaleAfterCmd cmd) throws NegativeException {
+        // 获取订单SKU详情看是否满足售后申请
+        DealerOrderDtl itemDtl = saleAfterRepository.getDealerOrderDtlBySku(cmd.getDealerOrderId(),
+                cmd.getSkuId(), cmd.getSortNo());
+
+        if (itemDtl == null) {
+            throw new NegativeException(MCode.V_1, "申请售后的商品不存在！");
+        }
+
+        int _sortNo = itemDtl.getSortNo();
+        int ij = saleAfterRepository.getSaleAfterOrderBySkuId(cmd.getDealerOrderId(),
+                cmd.getSkuId(), _sortNo);
+        if (ij > 0) {
+            throw new NegativeException(MCode.V_100, "此商品已有售后还在处理中！");
+        }
+
+        if (!itemDtl.canApplySaleAfter()) {
+            throw new NegativeException(MCode.V_100, "商品处于不可申请售后状态！");
+        }
+
+        int orderType = cmd.getType() == 3 ? 0 : cmd.getType(); //0换货， 1退货，2仅退款                  app传 1退货，2退款，3换货
+
+        // 增加售后限制, 换货除外
+        if (orderType != 0) {
+            int count = saleAfterRepository.checkCanApply(itemDtl.getOrderId(), itemDtl.getMarketId(), itemDtl.getCouponId());
+            if (count > 0) {
+                throw new NegativeException(MCode.V_100, "商品处于不可申请售后状态，因参与活动的其他商品正在申请中！");
+            }
+        }
+
+        int status = 2; //0申请退货,1申请换货,2申请退款          订单类型，0换货， 1退货，2仅退款
+        switch (orderType) {
+            case 0:
+                status = 1;
+                break;
+            case 1:
+                status = 0;
+                break;
+            case 2:
+                status = 2;
+                break;
+        }
+        long money = itemDtl.sumGoodsMoney();
+        if (orderType != 0) {
+            // 生成售后单保存, 计算售后需要退的钱
+            List<SkuNumBean> totalSku = saleOrderQuery.getTotalSku(cmd.getOrderId());//所有的商品详情
+            String mkId = itemDtl.getMarketId();
+            String couponId = itemDtl.getCouponId();//优惠券id
+            long discountMoney = 0;//售后优惠的钱
+            long couponDiscountMoney = 0;//优惠券优惠的钱
+            if (mkId != null) {//计算售后需要退的钱
+                SimpleMarket marketInfo = saleOrderQuery.getMarketById(mkId, cmd.getOrderId());
+                List<SkuNumBean> skuBeanLs = saleOrderQuery.getOrderDtlByMarketId(mkId, cmd.getOrderId());
+                //-----将处理好的优惠平摊金额复制给所有订单的列表里面，用于计算优惠券使用
+                if (skuBeanLs.size() > 0) {
+                    copySku(skuBeanLs, totalSku);
+                }
+                discountMoney = OrderMarketCalc.calcReturnMoney(marketInfo, skuBeanLs, cmd.getSkuId(), _sortNo);
 //				if (marketInfo != null && marketInfo.isFull())
 //					money = itemDtl.changePrice();
-			}
-			if(!StringUtils.isEmpty(couponId)){//计算优惠券的金额
-				SimpleCoupon couponInfo = saleOrderQuery.getCouponById(couponId,cmd.getOrderId());
-				couponDiscountMoney = OrderCouponCalc.calcReturnMoney(couponInfo,totalSku,cmd.getSkuId(), _sortNo);//计算退款金额
-			}
-			money = money - discountMoney - couponDiscountMoney;
-		}
-		else {
-			money = 0;
-		}
-		//long ft = itemDtl.isDeliver() ? 0 : itemDtl.getFreight();
-		long ft = 0;
-		
-		if (money<0) {			
-			throw new NegativeException(MCode.V_103, "不符合发起售后条件，建议联系商家");
-			// money = 0;
-		}
-		
-		int num = cmd.getBackNum();
-		if (num > itemDtl.sellNum())
-			num = itemDtl.sellNum();
-		
-		AfterSellFlow afterSellFlow = new AfterSellFlow();
-		// 使之前申请的失效 20171218添加		
-		saleAfterRepository.invalideBefore(cmd.getSkuId(), cmd.getDealerOrderId(), _sortNo);
-		
-		SaleAfterOrder afterOrder = new SaleAfterOrder(cmd.getSaleAfterNo(), cmd.getUserId(), cmd.getOrderId(),
-				cmd.getDealerOrderId(), cmd.getDealerId(), cmd.getGoodsId(), cmd.getSkuId(), cmd.getReason()
-				, num, status, orderType, money, cmd.getReasonCode(), ft
-				, _sortNo);
-		afterOrder.addApply();
-		saleAfterRepository.save(afterOrder);
-		afterSellFlow.add(cmd.getSaleAfterNo(), 0, cmd.getUserId(),cmd.getReason(),cmd.getReasonCode(),null,null);
-		afterSellFlowRepository.save(afterSellFlow);
-		LOGGER.info("新增加售后申请成功！");
-	}
-	
-	
+            }
+            if (!StringUtils.isEmpty(couponId)) {//计算优惠券的金额
+                SimpleCoupon couponInfo = saleOrderQuery.getCouponById(couponId, cmd.getOrderId());
+                couponDiscountMoney = OrderCouponCalc.calcReturnMoney(couponInfo, totalSku, cmd.getSkuId(), _sortNo);//计算退款金额
+            }
+            money = money - discountMoney - couponDiscountMoney;
+        } else {
+            money = 0;
+        }
+        //long ft = itemDtl.isDeliver() ? 0 : itemDtl.getFreight();
+        long ft = 0;
 
-	/***
-	 * 申请售后退货或退款提示
-	 * @param cmd
-	 */
-	public void applySaleAfter(AddSaleAfterCmd cmd) {
-		// 获取订单SKU详情看是否满足售后申请
-		// 计算需要退的金额
-	}
-	/***
-	 * 同意售后申请
-	 * @param cmd
-	 */
-	@Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
-	@EventListener(isListening=true)
-	public void agreeApply(AproveSaleAfterCmd cmd, String attach) throws NegativeException {
-		SaleAfterOrder order = saleAfterRepository.getSaleAfterOrderByNo(cmd.getSaleAfterNo(), cmd.getDealerId());
-		if (order == null) { 
-			throw new NegativeException(MCode.V_101, "无此售后单！");
-		}
-		long money = 0;
-		DealerOrderDtl itemDtl = saleAfterRepository.getDealerOrderDtlBySku(order.dealerOrderId(), 
-				order.skuId(), order.sortNo());
-		if (order.orderType() != 0) {
-			
-			SimpleMarket marketInfo = saleOrderQuery.getMarketBySkuIdAndOrderId(order.skuId(), order.orderId(), order.sortNo());
-			long discountMoney = 0;
-			money = itemDtl.sumGoodsMoney();
-			if (marketInfo != null) {//计算售后需要退的钱
-				List<SkuNumBean> skuBeanLs = saleOrderQuery.getOrderDtlByMarketId(marketInfo.getMarketingId(), order.orderId());
-				discountMoney = OrderMarketCalc.calcReturnMoney(marketInfo, skuBeanLs, order.skuId(), order.sortNo());
-				if (marketInfo != null && marketInfo.isFull())
-					money = itemDtl.changePrice();
-			}
-			
-			if (marketInfo != null && !marketInfo.isFull()) {
-				// 更新已使用营销 为不可用状态
-				saleAfterRepository.disabledOrderMarket(order.orderId(), marketInfo.getMarketingId());
-			}
-			money = money - discountMoney;
-			if (money<0) {
-				throw new NegativeException(MCode.V_103, "不符合发起售后条件，建议联系商家");
-				//money = 0;
-			}
-		}
-		if (StringUtils.isNotEmpty(attach))
-			operationLogManager.operationLog("同意售后申请", attach, order);
-		order.updateBackMoney(money);
-		double frt = cmd.getRtFreight();
-		if (order.isOnlyRtMoney()) {
-			DealerOrderMoneyBean odb = saleOrderQuery.getDealerOrderById(order.dealerOrderId());
-			if (odb != null && odb.getStatus() == 1) {
-				if(frt * (long)Utils.DIVIDE > odb.getOrderFreight())
-					frt = odb.getOrderFreight();
-				else
-					frt = (frt * (long)Utils.DIVIDE);
-			}
-			else
-				frt = 0;
-		}
-		if (order.agreeApply(cmd.getUserId(), (long)frt)) {
-			itemDtl.returnInventory(cmd.getSaleAfterNo(), order.getBackNum(), order.orderType());
-			AfterSellFlow afterSellFlow = new AfterSellFlow();
-			saleAfterRepository.updateSaleAfterOrder(order);
-			afterSellFlow.add(cmd.getSaleAfterNo(), 4, cmd.getUserId(),null,null,null,null);
-			afterSellFlowRepository.save(afterSellFlow);
-		}
-		else {
-			throw new NegativeException(MCode.V_101, "售后单状态不正确或已经同意过了！");
-		}
+        if (money < 0) {
+            throw new NegativeException(MCode.V_103, "不符合发起售后条件，建议联系商家");
+            // money = 0;
+        }
+
+        int num = cmd.getBackNum();
+        if (num > itemDtl.sellNum())
+            num = itemDtl.sellNum();
+
+        AfterSellFlow afterSellFlow = new AfterSellFlow();
+        // 使之前申请的失效 20171218添加
+        saleAfterRepository.invalideBefore(cmd.getSkuId(), cmd.getDealerOrderId(), _sortNo);
+
+        SaleAfterOrder afterOrder = new SaleAfterOrder(cmd.getSaleAfterNo(), cmd.getUserId(), cmd.getOrderId(),
+                cmd.getDealerOrderId(), cmd.getDealerId(), cmd.getGoodsId(), cmd.getSkuId(), cmd.getReason()
+                , num, status, orderType, money, cmd.getReasonCode(), ft
+                , _sortNo);
+        afterOrder.addApply();
+        saleAfterRepository.save(afterOrder);
+        afterSellFlow.add(cmd.getSaleAfterNo(), 0, cmd.getUserId(), cmd.getReason(), cmd.getReasonCode(), null, null);
+        afterSellFlowRepository.save(afterSellFlow);
+        LOGGER.info("新增加售后申请成功！");
+    }
+
+
+    /***
+     * 申请售后退货或退款提示
+     *
+     * @param cmd
+     */
+    public void applySaleAfter(AddSaleAfterCmd cmd) {
+        // 获取订单SKU详情看是否满足售后申请
+        // 计算需要退的金额
+    }
+
+    /***
+     * 同意售后申请
+     *
+     * @param cmd
+     */
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+    @EventListener(isListening = true)
+    public void agreeApply(AproveSaleAfterCmd cmd, String attach) throws NegativeException {
+        SaleAfterOrder order = saleAfterRepository.getSaleAfterOrderByNo(cmd.getSaleAfterNo(), cmd.getDealerId());
+        if (order == null) {
+            throw new NegativeException(MCode.V_101, "无此售后单！");
+        }
+        long money = 0;
+        DealerOrderDtl itemDtl = saleAfterRepository.getDealerOrderDtlBySku(order.dealerOrderId(),
+                order.skuId(), order.sortNo());
+        if (order.orderType() != 0) {
+
+            SimpleMarket marketInfo = saleOrderQuery.getMarketBySkuIdAndOrderId(order.skuId(), order.orderId(), order.sortNo());
+            long discountMoney = 0;
+            money = itemDtl.sumGoodsMoney();
+            if (marketInfo != null) {//计算售后需要退的钱
+                List<SkuNumBean> skuBeanLs = saleOrderQuery.getOrderDtlByMarketId(marketInfo.getMarketingId(), order.orderId());
+                discountMoney = OrderMarketCalc.calcReturnMoney(marketInfo, skuBeanLs, order.skuId(), order.sortNo());
+                if (marketInfo != null && marketInfo.isFull())
+                    money = itemDtl.changePrice();
+            }
+
+            if (marketInfo != null && !marketInfo.isFull()) {
+                // 更新已使用营销 为不可用状态
+                saleAfterRepository.disabledOrderMarket(order.orderId(), marketInfo.getMarketingId());
+            }
+            money = money - discountMoney;
+            if (money < 0) {
+                throw new NegativeException(MCode.V_103, "不符合发起售后条件，建议联系商家");
+                //money = 0;
+            }
+        }
+        if (StringUtils.isNotEmpty(attach))
+            operationLogManager.operationLog("同意售后申请", attach, order);
+        order.updateBackMoney(money);
+        double frt = cmd.getRtFreight();
+        if (order.isOnlyRtMoney()) {
+            DealerOrderMoneyBean odb = saleOrderQuery.getDealerOrderById(order.dealerOrderId());
+            if (odb != null && odb.getStatus() == 1) {
+                if (frt * (long) Utils.DIVIDE > odb.getOrderFreight())
+                    frt = odb.getOrderFreight();
+                else
+                    frt = (frt * (long) Utils.DIVIDE);
+            } else
+                frt = 0;
+        }
+        if (order.agreeApply(cmd.getUserId(), (long) frt)) {
+            itemDtl.returnInventory(cmd.getSaleAfterNo(), order.getBackNum(), order.orderType());
+            AfterSellFlow afterSellFlow = new AfterSellFlow();
+            saleAfterRepository.updateSaleAfterOrder(order);
+            afterSellFlow.add(cmd.getSaleAfterNo(), 4, cmd.getUserId(), null, null, null, null);
+            afterSellFlowRepository.save(afterSellFlow);
+        } else {
+            throw new NegativeException(MCode.V_101, "售后单状态不正确或已经同意过了！");
+        }
 
         // 售后同意推送消息
+        MainOrder mOrder = orderRepository.getOrderById(order.orderId());
         Map extraMap = new HashMap<>();
         extraMap.put("afterSellOrderId", cmd.getSaleAfterNo());
         extraMap.put("optType", 5);
-        orderService.msgPush(1, cmd.getUserId(), JsonUtils.toStr(extraMap), cmd.getDealerId());
-	}
-	/**
-	 * 拒绝售后申请
-	 * @param cmd
-	 * @throws NegativeException
-	 */
-	@Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
-	@EventListener(isListening=true)
-	public void rejectApply(AproveSaleAfterCmd cmd, String attach) throws NegativeException {
-		SaleAfterOrder order = saleAfterRepository.getSaleAfterOrderByNo(cmd.getSaleAfterNo(), cmd.getDealerId());
-		if (order == null) {
-			throw new NegativeException(MCode.V_101, "无此售后单！");
-		}
-		if (StringUtils.isNotEmpty(attach))
-			operationLogManager.operationLog("拒绝售后申请", attach, order);
-		AfterSellFlow afterSellFlow = new AfterSellFlow();
-		order.rejectSute(cmd.getRejectReason(), cmd.getRejectReasonCode(), cmd.getUserId());
-		saleAfterRepository.updateSaleAfterOrder(order);
-		afterSellFlow.add(cmd.getSaleAfterNo(), 3, cmd.getUserId(),null,null,cmd.getRejectReason(),cmd.getRejectReasonCode());
-		afterSellFlowRepository.save(afterSellFlow);
+        orderService.msgPush(1, mOrder.userId(), JsonUtils.toStr(extraMap), cmd.getDealerId());
+    }
+
+    /**
+     * 拒绝售后申请
+     *
+     * @param cmd
+     * @throws NegativeException
+     */
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+    @EventListener(isListening = true)
+    public void rejectApply(AproveSaleAfterCmd cmd, String attach) throws NegativeException {
+        SaleAfterOrder order = saleAfterRepository.getSaleAfterOrderByNo(cmd.getSaleAfterNo(), cmd.getDealerId());
+        if (order == null) {
+            throw new NegativeException(MCode.V_101, "无此售后单！");
+        }
+        if (StringUtils.isNotEmpty(attach))
+            operationLogManager.operationLog("拒绝售后申请", attach, order);
+        AfterSellFlow afterSellFlow = new AfterSellFlow();
+        order.rejectSute(cmd.getRejectReason(), cmd.getRejectReasonCode(), cmd.getUserId());
+        saleAfterRepository.updateSaleAfterOrder(order);
+        afterSellFlow.add(cmd.getSaleAfterNo(), 3, cmd.getUserId(), null, null, cmd.getRejectReason(), cmd.getRejectReasonCode());
+        afterSellFlowRepository.save(afterSellFlow);
 
         // 售后审核拒绝推送消息
+        MainOrder mOrder = orderRepository.getOrderById(order.orderId());
         Map extraMap = new HashMap<>();
         extraMap.put("afterSellOrderId", cmd.getSaleAfterNo());
         extraMap.put("optType", 8);
-        orderService.msgPush(1, cmd.getUserId(), JsonUtils.toStr(extraMap), order.dealerId());
-	}
-	
-	/***
-	 * 客户退货发货
-	 * @param cmd
-	 */
-	@Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
-	@EventListener(isListening=true)
-	public void userShipGoods(SaleAfterShipCmd cmd) throws NegativeException {
-		SaleAfterOrder order = saleAfterRepository.getSaleAfterOrderByNo(cmd.getSaleAfterNo());
-		if (order == null || !order.isSame(cmd.getSkuId())) {
-			throw new NegativeException(MCode.V_101, "无此售后单！");
-		}
-		if (!order.clientShip(cmd.getExpressInfo(), cmd.getUserId(),cmd.getExpressCode(),cmd.getExpressNo())) {
-			throw new NegativeException(MCode.V_103, "状态不正确，不能进行发货操作！");
-		}
-		saleAfterRepository.updateSaleAfterOrder(order);
-		AfterSellFlow afterSellFlow = new AfterSellFlow();
-		afterSellFlow.save(cmd.getSaleAfterNo(), 5, cmd.getUserId(), null, null, null, null, null, null, cmd.getExpressNo(), cmd.getExpressName());
-		afterSellFlowRepository.save(afterSellFlow);
-	}
-	
-	/***
-	 * 商家换货发货
-	 * @param cmd
-	 */
-	@Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
-	@EventListener(isListening=true)
-	public void dealerShipGoods(SaleAfterShipCmd cmd, String attach) throws NegativeException {
-		SaleAfterOrder order = saleAfterRepository.getSaleAfterOrderByNo(cmd.getSaleAfterNo());
-		if (order == null || !order.isSame(cmd.getSkuId())) {
-			throw new NegativeException(MCode.V_101, "无此售后单！");
-		}
-		if (StringUtils.isNotEmpty(attach))
-			operationLogManager.operationLog("商家换货发货", attach, order);
-		
-		if (!order.dealerShip(cmd.getSdExpressInfo(), cmd.getUserId(),cmd.getOrderId(),cmd.getShopName(),cmd.getExpressCode(),cmd.getExpressNo())) {
-			throw new NegativeException(MCode.V_103, "状态不正确，不能进行发货操作！");
-		}
-		saleAfterRepository.updateSaleAfterOrder(order);
-		AfterSellFlow afterSellFlow = new AfterSellFlow();
-		afterSellFlow.save(cmd.getSaleAfterNo(), 7, cmd.getUserId(), null, null, null, null, cmd.getExpressNo(), cmd.getExpressName(), null, null);
-		afterSellFlowRepository.save(afterSellFlow);
+        orderService.msgPush(1, mOrder.userId(), JsonUtils.toStr(extraMap), order.dealerId());
+    }
+
+    /***
+     * 客户退货发货
+     *
+     * @param cmd
+     */
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+    @EventListener(isListening = true)
+    public void userShipGoods(SaleAfterShipCmd cmd) throws NegativeException {
+        SaleAfterOrder order = saleAfterRepository.getSaleAfterOrderByNo(cmd.getSaleAfterNo());
+        if (order == null || !order.isSame(cmd.getSkuId())) {
+            throw new NegativeException(MCode.V_101, "无此售后单！");
+        }
+        if (!order.clientShip(cmd.getExpressInfo(), cmd.getUserId(), cmd.getExpressCode(), cmd.getExpressNo())) {
+            throw new NegativeException(MCode.V_103, "状态不正确，不能进行发货操作！");
+        }
+        saleAfterRepository.updateSaleAfterOrder(order);
+        AfterSellFlow afterSellFlow = new AfterSellFlow();
+        afterSellFlow.save(cmd.getSaleAfterNo(), 5, cmd.getUserId(), null, null, null, null, null, null, cmd.getExpressNo(), cmd.getExpressName());
+        afterSellFlowRepository.save(afterSellFlow);
+    }
+
+    /***
+     * 商家换货发货
+     *
+     * @param cmd
+     */
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+    @EventListener(isListening = true)
+    public void dealerShipGoods(SaleAfterShipCmd cmd, String attach) throws NegativeException {
+        SaleAfterOrder order = saleAfterRepository.getSaleAfterOrderByNo(cmd.getSaleAfterNo());
+        if (order == null || !order.isSame(cmd.getSkuId())) {
+            throw new NegativeException(MCode.V_101, "无此售后单！");
+        }
+        if (StringUtils.isNotEmpty(attach))
+            operationLogManager.operationLog("商家换货发货", attach, order);
+
+        if (!order.dealerShip(cmd.getSdExpressInfo(), cmd.getUserId(), cmd.getOrderId(), cmd.getShopName(), cmd.getExpressCode(), cmd.getExpressNo())) {
+            throw new NegativeException(MCode.V_103, "状态不正确，不能进行发货操作！");
+        }
+        saleAfterRepository.updateSaleAfterOrder(order);
+        AfterSellFlow afterSellFlow = new AfterSellFlow();
+        afterSellFlow.save(cmd.getSaleAfterNo(), 7, cmd.getUserId(), null, null, null, null, cmd.getExpressNo(), cmd.getExpressName(), null, null);
+        afterSellFlowRepository.save(afterSellFlow);
 
         // 售后发货推送消息
+        MainOrder mOrder = orderRepository.getOrderById(order.orderId());
         Map extraMap = new HashMap<>();
         extraMap.put("afterSellOrderId", cmd.getSaleAfterNo());
         extraMap.put("optType", 6);
-        orderService.msgPush(1, cmd.getUserId(), JsonUtils.toStr(extraMap), order.dealerId());
-	}
-	
-	
-	/***
-	 * 确认退款
-	 * @param cmd
-	 */
-	@Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
-	@EventListener(isListening=true)
-	public void approveReturnMoney(SaleAfterCmd cmd) throws NegativeException {
-		SaleAfterOrder order = saleAfterRepository.getSaleAfterOrderByNo(cmd.getSaleAfterNo());
-		if (order == null || !order.isSame(cmd.getSkuId())) {
-			throw new NegativeException(MCode.V_101, "无此售后单！");
-		}
-		//operationLogManager.operationLog("商家换货发货", attach, order);
-		if (!order.confirmBackMoney(cmd.getUserId())) {
-			throw new NegativeException(MCode.V_103, "状态不正确，不能进行发货操作！");
-		}
-		saleAfterRepository.updateSaleAfterOrder(order);
-		AfterSellFlow afterSellFlow = new AfterSellFlow();
-		afterSellFlow.add(cmd.getSaleAfterNo(), 10, cmd.getUserId(),null,null,null,null);
-		afterSellFlowRepository.save(afterSellFlow);
-	}
-	
-	/***
-	 * 退款成功
-	 * @param cmd
-	 */
-	@Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
-	@EventListener(isListening=true)
-	public void refundSuccess(RefundEvtBean bean) throws NegativeException {
-		LOGGER.info("===fanjc==afterSellOrderId==" + bean.getAfterSellOrderId());
-		SaleAfterOrder order = saleAfterRepository.getSaleAfterOrderByNo(bean.getAfterSellOrderId());
-		if (order == null) {
-			throw new NegativeException(MCode.V_101, "无此售后单！");
-		}
-		Date d = new Date(bean.getRefundTime());
-		if (!order.updateRefound(bean.getOrderRefundId(), d)) {
-			throw new NegativeException(MCode.V_103, "状态不正确，不能进行退款操作！");
-		}
-		saleAfterRepository.updateSaleAfterOrder(order);		
-	}
-	/***
-	 * 退款失败
-	 * @param cmd
-	 */
-	@Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
-	@EventListener(isListening=true)
-	public void refundFailed(String afterSaleNo, String userId) throws NegativeException {
-		LOGGER.info("===fanjc==afterSellOrderId==" + afterSaleNo);
-		SaleAfterOrder order = saleAfterRepository.getSaleAfterOrderByNo(afterSaleNo);
-		
-		if (order == null) {
-			throw new NegativeException(MCode.V_101, "无此售后单！");
-		}
-		
-		if (!order.refundFailed(afterSaleNo, userId)) {
-			throw new NegativeException(MCode.V_103, "状态不正确，不能进行此操作！");
-		}
-		saleAfterRepository.updateSaleAfterOrder(order);		
-	}
-	
-	public void scanDtlGoods(RefundEvtBean bean) throws NegativeException {
-		LOGGER.info("===fanjc==afterSellOrderId==" + bean.getAfterSellOrderId());
-		//检查本单的完成状态
-		saleAfterRepository.scanDtlGoods(bean.getAfterSellOrderId());
-	}
-	
-	/***
-	 * 同意退款
-	 * @param cmd
-	 */
-	@Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
-	@EventListener(isListening=true)
-	public void agreeBackMoney(SaleAfterCmd cmd, String attach) throws NegativeException {
-		SaleAfterOrder order = saleAfterRepository.getSaleAfterOrderByNo(cmd.getSaleAfterNo());
-		if (order == null || !order.isSame(cmd.getSkuId())) {
-			throw new NegativeException(MCode.V_101, "无此售后单！");
-		}
-		String payNo = saleOrderQuery.getMainOrderPayNo(order.orderId());
-		if (StringUtils.isEmpty(payNo)) {
-			throw new NegativeException(MCode.V_101, "售后单状态不正确！");
-		}
-		if (StringUtils.isNotEmpty(attach))
-			operationLogManager.operationLog("商家同意退款", attach, order);
-		if (!order.agreeBackMoney(cmd.getUserId(), payNo)) {
-			throw new NegativeException(MCode.V_103, "状态不正确，不能进行此操作！");
-		}
-		saleAfterRepository.updateSaleAfterOrder(order);
-		AfterSellFlow afterSellFlow = new AfterSellFlow();
-		afterSellFlow.add(cmd.getSaleAfterNo(), 9, cmd.getUserId(),null,null,null,null);
-		System.out.println(afterSellFlow);
-		afterSellFlowRepository.save(afterSellFlow);
+        orderService.msgPush(1, mOrder.userId(), JsonUtils.toStr(extraMap), order.dealerId());
+    }
+
+
+    /***
+     * 确认退款
+     *
+     * @param cmd
+     */
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+    @EventListener(isListening = true)
+    public void approveReturnMoney(SaleAfterCmd cmd) throws NegativeException {
+        SaleAfterOrder order = saleAfterRepository.getSaleAfterOrderByNo(cmd.getSaleAfterNo());
+        if (order == null || !order.isSame(cmd.getSkuId())) {
+            throw new NegativeException(MCode.V_101, "无此售后单！");
+        }
+        //operationLogManager.operationLog("商家换货发货", attach, order);
+        if (!order.confirmBackMoney(cmd.getUserId())) {
+            throw new NegativeException(MCode.V_103, "状态不正确，不能进行发货操作！");
+        }
+        saleAfterRepository.updateSaleAfterOrder(order);
+        AfterSellFlow afterSellFlow = new AfterSellFlow();
+        afterSellFlow.add(cmd.getSaleAfterNo(), 10, cmd.getUserId(), null, null, null, null);
+        afterSellFlowRepository.save(afterSellFlow);
+    }
+
+    /***
+     * 退款成功
+     *
+     * @param cmd
+     */
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+    @EventListener(isListening = true)
+    public void refundSuccess(RefundEvtBean bean) throws NegativeException {
+        LOGGER.info("===fanjc==afterSellOrderId==" + bean.getAfterSellOrderId());
+        SaleAfterOrder order = saleAfterRepository.getSaleAfterOrderByNo(bean.getAfterSellOrderId());
+        if (order == null) {
+            throw new NegativeException(MCode.V_101, "无此售后单！");
+        }
+        Date d = new Date(bean.getRefundTime());
+        if (!order.updateRefound(bean.getOrderRefundId(), d)) {
+            throw new NegativeException(MCode.V_103, "状态不正确，不能进行退款操作！");
+        }
+        saleAfterRepository.updateSaleAfterOrder(order);
+    }
+
+    /***
+     * 退款失败
+     *
+     * @param cmd
+     */
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+    @EventListener(isListening = true)
+    public void refundFailed(String afterSaleNo, String userId) throws NegativeException {
+        LOGGER.info("===fanjc==afterSellOrderId==" + afterSaleNo);
+        SaleAfterOrder order = saleAfterRepository.getSaleAfterOrderByNo(afterSaleNo);
+
+        if (order == null) {
+            throw new NegativeException(MCode.V_101, "无此售后单！");
+        }
+
+        if (!order.refundFailed(afterSaleNo, userId)) {
+            throw new NegativeException(MCode.V_103, "状态不正确，不能进行此操作！");
+        }
+        saleAfterRepository.updateSaleAfterOrder(order);
+    }
+
+    public void scanDtlGoods(RefundEvtBean bean) throws NegativeException {
+        LOGGER.info("===fanjc==afterSellOrderId==" + bean.getAfterSellOrderId());
+        //检查本单的完成状态
+        saleAfterRepository.scanDtlGoods(bean.getAfterSellOrderId());
+    }
+
+    /***
+     * 同意退款
+     *
+     * @param cmd
+     */
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+    @EventListener(isListening = true)
+    public void agreeBackMoney(SaleAfterCmd cmd, String attach) throws NegativeException {
+        SaleAfterOrder order = saleAfterRepository.getSaleAfterOrderByNo(cmd.getSaleAfterNo());
+        if (order == null || !order.isSame(cmd.getSkuId())) {
+            throw new NegativeException(MCode.V_101, "无此售后单！");
+        }
+        String payNo = saleOrderQuery.getMainOrderPayNo(order.orderId());
+        if (StringUtils.isEmpty(payNo)) {
+            throw new NegativeException(MCode.V_101, "售后单状态不正确！");
+        }
+        if (StringUtils.isNotEmpty(attach))
+            operationLogManager.operationLog("商家同意退款", attach, order);
+        if (!order.agreeBackMoney(cmd.getUserId(), payNo)) {
+            throw new NegativeException(MCode.V_103, "状态不正确，不能进行此操作！");
+        }
+        saleAfterRepository.updateSaleAfterOrder(order);
+        AfterSellFlow afterSellFlow = new AfterSellFlow();
+        afterSellFlow.add(cmd.getSaleAfterNo(), 9, cmd.getUserId(), null, null, null, null);
+        System.out.println(afterSellFlow);
+        afterSellFlowRepository.save(afterSellFlow);
 
         // 售后确认退款推送消息
         Map extraMap = new HashMap<>();
+        MainOrder mOrder = orderRepository.getOrderById(order.orderId());
         extraMap.put("afterSellOrderId", cmd.getSaleAfterNo());
         extraMap.put("optType", 7);
-        orderService.msgPush(1, cmd.getUserId(), JsonUtils.toStr(extraMap), order.dealerId());
-	}
-	
-	/***
-	 * 用户确认收货
-	 * @param cmd
-	 */
-	@Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
-	@EventListener(isListening=true)
-	public void userConfirmRev(SaleAfterCmd cmd) throws NegativeException {
-		SaleAfterOrder order = saleAfterRepository.getSaleAfterOrderByNo(cmd.getSaleAfterNo());
-		if (order == null || !order.isSame(cmd.getSkuId())) {
-			throw new NegativeException(MCode.V_101, "无此售后单！");
-		}
-		if (!order.userConfirmRev(cmd.getUserId())) {
-			throw new NegativeException(MCode.V_103, "状态不正确，不能进行收货操作！");
-		}
-		saleAfterRepository.updateSaleAfterOrder(order);
-		AfterSellFlow afterSellFlow = new AfterSellFlow();
-		afterSellFlow.add(cmd.getSaleAfterNo(), 8, cmd.getUserId(),null,null,null,null);
-		afterSellFlowRepository.save(afterSellFlow);
-	}
-	
-	/***
-	 * 商家确认收货
-	 * @param cmd
-	 */
-	@Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
-	@EventListener(isListening=true)
-	public void dealerConfirmRev(SaleAfterCmd cmd, String attach) throws NegativeException {
-		SaleAfterOrder order = saleAfterRepository.getSaleAfterOrderByNo(cmd.getSaleAfterNo());
-		if (order == null || !order.isSame(cmd.getSkuId())) {
-			throw new NegativeException(MCode.V_101, "无此售后单！");
-		}
-		if (StringUtils.isNotEmpty(attach))
-			operationLogManager.operationLog("商家确认收货", attach, order);
-		if (!order.dealerConfirmRev(cmd.getUserId())) {
-			throw new NegativeException(MCode.V_103, "状态不正确，不能进行收货操作！");
-		}
-		saleAfterRepository.updateSaleAfterOrder(order);
-	}
-	
-	/**
-	 * 商家同意退款或是换货商家已发出态下7天变更为交易完成
-	 * @throws NegativeException 
-	 */
-	@Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
-	public void updataStatusAgreeAfterSale() throws NegativeException {
-		int hour = 168;
-		try {
-			hour = Integer.parseInt(GetDisconfDataGetter.getDisconfProperty("sale.after.dealer.agree"));
-			if (hour < 1)
-				hour = 1;
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		List<SaleAfterOrder> saleAfterOrders = saleAfterRepository.getSaleAfterOrderStatusAgree(hour);
-		AfterSellFlow afterSellFlow = new AfterSellFlow();
-		if (saleAfterOrders.size() == 0)
-			throw new NegativeException(MCode.V_1, "没有满足条件的商家订单.");
-		
-		for (SaleAfterOrder afterOrder : saleAfterOrders) {
-			jobUpdateSaleAfter(afterOrder,afterSellFlow);
-		}
-	}
-	@Transactional(rollbackFor = { Exception.class, RuntimeException.class,NegativeException.class }, propagation = Propagation.REQUIRES_NEW)
-	private void jobUpdateSaleAfter(SaleAfterOrder afterOrder,AfterSellFlow afterSellFlow) {
-		afterOrder.updateStatusAgreeAfterSale();
-		saleAfterRepository.save(afterOrder);
-		afterSellFlow.add(afterOrder.getSaleAfterNo(), 11, SCM_JOB_USER, null, null, null, null);
-		afterSellFlowRepository.save(afterSellFlow);
-	}
-	
-	/**
-	 * 申请的售后3天未来同意，则需要取消
-	 * @throws NegativeException 
-	 */
-	@Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
-	public void cancelApply(String userId) throws NegativeException {
-		int hour = 72;
-		try {
-			hour = Integer.parseInt(GetDisconfDataGetter.getDisconfProperty("sale.after.cancel.apply"));
-			if (hour < 1)
-				hour = 1;
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-		}
-		List<SaleAfterOrder> saleAfterOrders= saleAfterRepository.getSaleAfterApplyed(hour);
-		AfterSellFlow afterSellFlow = new AfterSellFlow();
-		if (saleAfterOrders.size() == 0)
-			return ;
-		
-		for (SaleAfterOrder afterOrder : saleAfterOrders) {
-			jobCancelAfterOrder(afterOrder,afterSellFlow);
-		}
-	}
-	
-	@Transactional(rollbackFor = { Exception.class, RuntimeException.class,NegativeException.class }, propagation = Propagation.REQUIRES_NEW)
-	private void jobCancelAfterOrder(SaleAfterOrder afterOrder,AfterSellFlow afterSellFlow) {
-		if (afterOrder.cancel())
-			saleAfterRepository.save(afterOrder);
-			afterSellFlow.add(afterOrder.getSaleAfterNo(), -1, SCM_JOB_USER, null, null, null, null);
+        orderService.msgPush(1, mOrder.userId(), JsonUtils.toStr(extraMap), order.dealerId());
+    }
+
+    /***
+     * 用户确认收货
+     *
+     * @param cmd
+     */
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+    @EventListener(isListening = true)
+    public void userConfirmRev(SaleAfterCmd cmd) throws NegativeException {
+        SaleAfterOrder order = saleAfterRepository.getSaleAfterOrderByNo(cmd.getSaleAfterNo());
+        if (order == null || !order.isSame(cmd.getSkuId())) {
+            throw new NegativeException(MCode.V_101, "无此售后单！");
+        }
+        if (!order.userConfirmRev(cmd.getUserId())) {
+            throw new NegativeException(MCode.V_103, "状态不正确，不能进行收货操作！");
+        }
+        saleAfterRepository.updateSaleAfterOrder(order);
+        AfterSellFlow afterSellFlow = new AfterSellFlow();
+        afterSellFlow.add(cmd.getSaleAfterNo(), 8, cmd.getUserId(), null, null, null, null);
+        afterSellFlowRepository.save(afterSellFlow);
+    }
+
+    /***
+     * 商家确认收货
+     *
+     * @param cmd
+     */
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+    @EventListener(isListening = true)
+    public void dealerConfirmRev(SaleAfterCmd cmd, String attach) throws NegativeException {
+        SaleAfterOrder order = saleAfterRepository.getSaleAfterOrderByNo(cmd.getSaleAfterNo());
+        if (order == null || !order.isSame(cmd.getSkuId())) {
+            throw new NegativeException(MCode.V_101, "无此售后单！");
+        }
+        if (StringUtils.isNotEmpty(attach))
+            operationLogManager.operationLog("商家确认收货", attach, order);
+        if (!order.dealerConfirmRev(cmd.getUserId())) {
+            throw new NegativeException(MCode.V_103, "状态不正确，不能进行收货操作！");
+        }
+        saleAfterRepository.updateSaleAfterOrder(order);
+    }
+
+    /**
+     * 商家同意退款或是换货商家已发出态下7天变更为交易完成
+     *
+     * @throws NegativeException
+     */
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+    public void updataStatusAgreeAfterSale() throws NegativeException {
+        int hour = 168;
+        try {
+            hour = Integer.parseInt(GetDisconfDataGetter.getDisconfProperty("sale.after.dealer.agree"));
+            if (hour < 1)
+                hour = 1;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        List<SaleAfterOrder> saleAfterOrders = saleAfterRepository.getSaleAfterOrderStatusAgree(hour);
+        AfterSellFlow afterSellFlow = new AfterSellFlow();
+        if (saleAfterOrders.size() == 0)
+            throw new NegativeException(MCode.V_1, "没有满足条件的商家订单.");
+
+        for (SaleAfterOrder afterOrder : saleAfterOrders) {
+            jobUpdateSaleAfter(afterOrder, afterSellFlow);
+        }
+    }
+
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class}, propagation = Propagation.REQUIRES_NEW)
+    private void jobUpdateSaleAfter(SaleAfterOrder afterOrder, AfterSellFlow afterSellFlow) {
+        afterOrder.updateStatusAgreeAfterSale();
+        saleAfterRepository.save(afterOrder);
+        afterSellFlow.add(afterOrder.getSaleAfterNo(), 11, SCM_JOB_USER, null, null, null, null);
+        afterSellFlowRepository.save(afterSellFlow);
+    }
+
+    /**
+     * 申请的售后3天未来同意，则需要取消
+     *
+     * @throws NegativeException
+     */
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+    public void cancelApply(String userId) throws NegativeException {
+        int hour = 72;
+        try {
+            hour = Integer.parseInt(GetDisconfDataGetter.getDisconfProperty("sale.after.cancel.apply"));
+            if (hour < 1)
+                hour = 1;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        List<SaleAfterOrder> saleAfterOrders = saleAfterRepository.getSaleAfterApplyed(hour);
+        AfterSellFlow afterSellFlow = new AfterSellFlow();
+        if (saleAfterOrders.size() == 0)
+            return;
+
+        for (SaleAfterOrder afterOrder : saleAfterOrders) {
+            jobCancelAfterOrder(afterOrder, afterSellFlow);
+        }
+    }
+
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class}, propagation = Propagation.REQUIRES_NEW)
+    private void jobCancelAfterOrder(SaleAfterOrder afterOrder, AfterSellFlow afterSellFlow) {
+        if (afterOrder.cancel())
+            saleAfterRepository.save(afterOrder);
+        afterSellFlow.add(afterOrder.getSaleAfterNo(), -1, SCM_JOB_USER, null, null, null, null);
 
         // 售后商家未处理推送消息
+        MainOrder mOrder = orderRepository.getOrderById(afterOrder.orderId());
         Map extraMap = new HashMap<>();
         extraMap.put("afterSellOrderId", afterOrder.getSaleAfterNo());
         extraMap.put("optType", 9);
-        orderService.msgPush(1, afterOrder.userId(), JsonUtils.toStr(extraMap), afterOrder.dealerId());
-	}
-	
-	/**
-	 * 售后申请同意后，七天没有确认退款的则直接退款
-	 * @throws NegativeException 
-	 */
-	@Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
-	public void afterAgreed(String userId) throws NegativeException {
-		int hour = 168;
-		try {
-			hour = Integer.parseInt(GetDisconfDataGetter.getDisconfProperty("sale.after.apply.agreed"));
-			if (hour < 1)
-				hour = 1;
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-		}
-		List<SaleAfterOrder> saleAfterOrders = saleAfterRepository.getAgreeRtMoney(hour);
-		AfterSellFlow afterSellFlow = new AfterSellFlow();
-		if (saleAfterOrders.size() == 0)
-			return ;
-		try {
-			for (SaleAfterOrder afterOrder : saleAfterOrders) {
-				jobAfterAgreed(afterOrder, userId,afterSellFlow);
-			}
-		} catch (NegativeException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	@Transactional(rollbackFor = { Exception.class, RuntimeException.class,NegativeException.class }, propagation = Propagation.REQUIRES_NEW)
-	private void jobAfterAgreed(SaleAfterOrder afterOrder, String userId,AfterSellFlow afterSellFlow) throws NegativeException {
-		String payNo = saleOrderQuery.getMainOrderPayNo(afterOrder.orderId());
-		if (StringUtils.isEmpty(payNo)) {
-			throw new NegativeException(MCode.V_101, "售后单状态不正确！");
-		}
-		if (!afterOrder.agreeBackMoney(userId, payNo)) {
-			throw new NegativeException(MCode.V_103, "状态不正确，不能进行此操作！");
-		}
-		
-		saleAfterRepository.save(afterOrder);
-		afterSellFlow.add(afterOrder.getSaleAfterNo(), 10, SCM_JOB_USER, null, null, null, null);
-		afterSellFlowRepository.save(afterSellFlow);
-	}
-	
-	/**
-	 * 当商家同意售后， 退货类型且用户发货， 过七天需要自动收货商家
-	 * @throws NegativeException 
-	 */
-	@Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
-	public void dealerAutoRec(String userId) throws NegativeException {
-		int hour = 168;
-		try {
-			hour = Integer.parseInt(GetDisconfDataGetter.getDisconfProperty("sale.after.dealer.autoRec"));
-			if (hour < 1)
-				hour = 1;
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-		}
-		List<SaleAfterOrder> saleAfterOrders = saleAfterRepository.getUserSend(hour);
-		if (saleAfterOrders.size() == 0)
-			return ;
-		try {
-			for (SaleAfterOrder afterOrder : saleAfterOrders) {
-				jobDealerAutoRec(afterOrder, userId);
-			}
-		} catch (NegativeException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	@Transactional(rollbackFor = { Exception.class, RuntimeException.class,NegativeException.class }, propagation = Propagation.REQUIRES_NEW)
-	private void jobDealerAutoRec(SaleAfterOrder afterOrder, String userId) throws NegativeException {
-		
-		if (!afterOrder.dealerConfirmRev(userId)) {
-			throw new NegativeException(MCode.V_103, "状态不正确，不能进行此操作！");
-		}
-		
-		saleAfterRepository.save(afterOrder);
-	}
-	
-	/**
-	 * 当商家同意售后， 换货类型且商家发货， 过七天需要用户自动收货
-	 * @throws NegativeException 
-	 */
-	@Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
-	public void userAutoRec(String userId) throws NegativeException {
-		int hour = 168;
-		try {
-			hour = Integer.parseInt(GetDisconfDataGetter.getDisconfProperty("sale.after.user.autoRec"));
-			if (hour < 1)
-				hour = 1;
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-		}
-		List<SaleAfterOrder> saleAfterOrders = saleAfterRepository.getDealerSend(hour);
-		AfterSellFlow afterSellFlow = new AfterSellFlow();
-		if (saleAfterOrders.size() == 0)
-			return ;
-		try {
-			for (SaleAfterOrder afterOrder : saleAfterOrders) {
-				jobUserAutoRec(afterOrder, userId,afterSellFlow);
-			}
-		} catch (NegativeException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	@Transactional(rollbackFor = { Exception.class, RuntimeException.class,NegativeException.class }, propagation = Propagation.REQUIRES_NEW)
-	private void jobUserAutoRec(SaleAfterOrder afterOrder, String userId,AfterSellFlow afterSellFlow) throws NegativeException {
-		
-		if (!afterOrder.userConfirmRev(userId)) {
-			throw new NegativeException(MCode.V_103, "状态不正确，不能进行此操作！");
-		}		
-		// 查询出订单详情中的对应记录 标记为完成状态
-		// adfsaf;
-		saleAfterRepository.save(afterOrder);
-		afterSellFlow.add(afterOrder.getSaleAfterNo(), 8, SCM_JOB_USER, null, null, null, null);
-	}
-	
-	/**
-	 * 当售后单完成其对应的商品也应该是完成状态。
-	 * @throws NegativeException 
-	 */
-	@Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
-	public void afterSaleCompleteUpdated(String userId) throws NegativeException {
-		int hour = 168;
-		try {
-			hour = Integer.parseInt(GetDisconfDataGetter.getDisconfProperty("sale.after.complete.upstream"));
-			if (hour < 1)
-				hour = 1;
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-		}
-		List<Long> list = saleAfterRepository.getSpecifiedDtlGoods(hour);
-		LOGGER.info("=fanjc=处于完成售后的条数为==" + (list == null? 0 : list.size()));
-		return ;
-	}
-	
-	/**
-	 * 当售后单完成其对应的商品也应该是完成状态。
-	 * @throws NegativeException 
-	 */
-	@Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
-	public void scanOrderDtlUpdated(String userId, String saleOrderId) throws NegativeException {
-		saleAfterRepository.scanDtlGoods(saleOrderId);
-		return ;
-	}
-	/**
-	 * 将处理的skubean赋值数据
-	 * @param skuBeanLs
-	 * @param totalSku
-	 */
-	private void copySku(List<SkuNumBean> skuBeanLs, List<SkuNumBean> totalSku) {
-		for (int i = 0; i < skuBeanLs.size(); i++) {
-			for (int j = 0; j < totalSku.size(); j++) {
-				if(skuBeanLs.get(i).getSkuId().equals(totalSku.get(j).getSkuId())){
-					totalSku.get(j).setDiscountMoney(skuBeanLs.get(i).getDiscountMoney());
-				}
-			}
-		}
-	}
+        orderService.msgPush(1, mOrder.userId(), JsonUtils.toStr(extraMap), afterOrder.dealerId());
+    }
+
+    /**
+     * 售后申请同意后，七天没有确认退款的则直接退款
+     *
+     * @throws NegativeException
+     */
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+    public void afterAgreed(String userId) throws NegativeException {
+        int hour = 168;
+        try {
+            hour = Integer.parseInt(GetDisconfDataGetter.getDisconfProperty("sale.after.apply.agreed"));
+            if (hour < 1)
+                hour = 1;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        List<SaleAfterOrder> saleAfterOrders = saleAfterRepository.getAgreeRtMoney(hour);
+        AfterSellFlow afterSellFlow = new AfterSellFlow();
+        if (saleAfterOrders.size() == 0)
+            return;
+        try {
+            for (SaleAfterOrder afterOrder : saleAfterOrders) {
+                jobAfterAgreed(afterOrder, userId, afterSellFlow);
+            }
+        } catch (NegativeException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class}, propagation = Propagation.REQUIRES_NEW)
+    private void jobAfterAgreed(SaleAfterOrder afterOrder, String userId, AfterSellFlow afterSellFlow) throws NegativeException {
+        String payNo = saleOrderQuery.getMainOrderPayNo(afterOrder.orderId());
+        if (StringUtils.isEmpty(payNo)) {
+            throw new NegativeException(MCode.V_101, "售后单状态不正确！");
+        }
+        if (!afterOrder.agreeBackMoney(userId, payNo)) {
+            throw new NegativeException(MCode.V_103, "状态不正确，不能进行此操作！");
+        }
+
+        saleAfterRepository.save(afterOrder);
+        afterSellFlow.add(afterOrder.getSaleAfterNo(), 10, SCM_JOB_USER, null, null, null, null);
+        afterSellFlowRepository.save(afterSellFlow);
+    }
+
+    /**
+     * 当商家同意售后， 退货类型且用户发货， 过七天需要自动收货商家
+     *
+     * @throws NegativeException
+     */
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+    public void dealerAutoRec(String userId) throws NegativeException {
+        int hour = 168;
+        try {
+            hour = Integer.parseInt(GetDisconfDataGetter.getDisconfProperty("sale.after.dealer.autoRec"));
+            if (hour < 1)
+                hour = 1;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        List<SaleAfterOrder> saleAfterOrders = saleAfterRepository.getUserSend(hour);
+        if (saleAfterOrders.size() == 0)
+            return;
+        try {
+            for (SaleAfterOrder afterOrder : saleAfterOrders) {
+                jobDealerAutoRec(afterOrder, userId);
+            }
+        } catch (NegativeException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class}, propagation = Propagation.REQUIRES_NEW)
+    private void jobDealerAutoRec(SaleAfterOrder afterOrder, String userId) throws NegativeException {
+
+        if (!afterOrder.dealerConfirmRev(userId)) {
+            throw new NegativeException(MCode.V_103, "状态不正确，不能进行此操作！");
+        }
+
+        saleAfterRepository.save(afterOrder);
+    }
+
+    /**
+     * 当商家同意售后， 换货类型且商家发货， 过七天需要用户自动收货
+     *
+     * @throws NegativeException
+     */
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+    public void userAutoRec(String userId) throws NegativeException {
+        int hour = 168;
+        try {
+            hour = Integer.parseInt(GetDisconfDataGetter.getDisconfProperty("sale.after.user.autoRec"));
+            if (hour < 1)
+                hour = 1;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        List<SaleAfterOrder> saleAfterOrders = saleAfterRepository.getDealerSend(hour);
+        AfterSellFlow afterSellFlow = new AfterSellFlow();
+        if (saleAfterOrders.size() == 0)
+            return;
+        try {
+            for (SaleAfterOrder afterOrder : saleAfterOrders) {
+                jobUserAutoRec(afterOrder, userId, afterSellFlow);
+            }
+        } catch (NegativeException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class}, propagation = Propagation.REQUIRES_NEW)
+    private void jobUserAutoRec(SaleAfterOrder afterOrder, String userId, AfterSellFlow afterSellFlow) throws NegativeException {
+
+        if (!afterOrder.userConfirmRev(userId)) {
+            throw new NegativeException(MCode.V_103, "状态不正确，不能进行此操作！");
+        }
+        // 查询出订单详情中的对应记录 标记为完成状态
+        // adfsaf;
+        saleAfterRepository.save(afterOrder);
+        afterSellFlow.add(afterOrder.getSaleAfterNo(), 8, SCM_JOB_USER, null, null, null, null);
+    }
+
+    /**
+     * 当售后单完成其对应的商品也应该是完成状态。
+     *
+     * @throws NegativeException
+     */
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+    public void afterSaleCompleteUpdated(String userId) throws NegativeException {
+        int hour = 168;
+        try {
+            hour = Integer.parseInt(GetDisconfDataGetter.getDisconfProperty("sale.after.complete.upstream"));
+            if (hour < 1)
+                hour = 1;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        List<Long> list = saleAfterRepository.getSpecifiedDtlGoods(hour);
+        LOGGER.info("=fanjc=处于完成售后的条数为==" + (list == null ? 0 : list.size()));
+        return;
+    }
+
+    /**
+     * 当售后单完成其对应的商品也应该是完成状态。
+     *
+     * @throws NegativeException
+     */
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+    public void scanOrderDtlUpdated(String userId, String saleOrderId) throws NegativeException {
+        saleAfterRepository.scanDtlGoods(saleOrderId);
+        return;
+    }
+
+    /**
+     * 将处理的skubean赋值数据
+     *
+     * @param skuBeanLs
+     * @param totalSku
+     */
+    private void copySku(List<SkuNumBean> skuBeanLs, List<SkuNumBean> totalSku) {
+        for (int i = 0; i < skuBeanLs.size(); i++) {
+            for (int j = 0; j < totalSku.size(); j++) {
+                if (skuBeanLs.get(i).getSkuId().equals(totalSku.get(j).getSkuId())) {
+                    totalSku.get(j).setDiscountMoney(skuBeanLs.get(i).getDiscountMoney());
+                }
+            }
+        }
+    }
 }
