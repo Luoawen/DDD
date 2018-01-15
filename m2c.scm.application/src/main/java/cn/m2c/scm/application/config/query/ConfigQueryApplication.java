@@ -1,5 +1,7 @@
 package cn.m2c.scm.application.config.query;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.slf4j.Logger;
@@ -8,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import cn.m2c.ddd.common.port.adapter.persistence.springJdbc.SupportJdbcTemplate;
 import cn.m2c.scm.application.config.data.bean.ConfigBean;
+import cn.m2c.scm.application.utils.Utils;
 
 /**
  * 配置 
@@ -33,6 +36,21 @@ public class ConfigQueryApplication {
         sql.append(" SELECT * FROM t_scm_config WHERE config_key = ? AND config_status = 1 ");
         ConfigBean configBean = this.getSupportJdbcTemplate().queryForBean(sql.toString(), ConfigBean.class, configKey);
 		return configBean;
+	}
+
+	/**
+	 * 根据configKeys串查出ConfigBean
+	 * @param configKeys
+	 * @return
+	 */
+	public List<ConfigBean> queryConfigBeanByConfigKeyList(List<String> configKeys) {
+		StringBuilder sql = new StringBuilder();
+		sql.append(" SELECT ");
+        sql.append(" * ");
+        sql.append(" FROM ");
+        sql.append(" t_scm_config ");
+		sql.append(" WHERE config_key IN ( " + Utils.listParseString(configKeys) + " ) AND config_status = 1 ");
+		return this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), ConfigBean.class);
 	}
 
 }

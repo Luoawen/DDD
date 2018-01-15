@@ -74,6 +74,7 @@ public class AppGoodsAgent {
     ShopQuery shopQuery;
     @Autowired
     GoodsSpecialQueryApplication goodsSpecialQueryApplication;
+
     @Autowired
     ConfigQueryApplication configQueryApplication;
 
@@ -361,7 +362,6 @@ public class AppGoodsAgent {
                             }
                         }
                     }
-
                     AppGoodsDetailRepresentation representation = new AppGoodsDetailRepresentation(goodsBean,
                             goodsGuarantee, goodsUnitName, mresId, commentTotal, goodsCommentBean, fullCut, coupons, goodsTags, favoriteId, phone, goodsSpecialBean);
                     representations.add(representation);

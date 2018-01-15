@@ -107,6 +107,7 @@ public class GoodsAgent {
             @RequestParam(value = "goodsKeyWord", required = false) List goodsKeyWord,
             @RequestParam(value = "goodsGuarantee", required = false) List goodsGuarantee,
             @RequestParam(value = "goodsMainImages", required = false) List goodsMainImages,
+            @RequestParam(value = "goodsMainVideo", required = false) String goodsMainVideo,
             @RequestParam(value = "goodsDesc", required = false) String goodsDesc,
             @RequestParam(value = "goodsSpecifications", required = false) String goodsSpecifications,
             @RequestParam(value = "goodsSKUs", required = false) String goodsSKUs) {
@@ -148,7 +149,7 @@ public class GoodsAgent {
             GoodsCommand command = new GoodsCommand(goodsId, dealerId, goodsName, goodsSubTitle,
                     goodsClassifyId, goodsBrandId, goodsBrandName, goodsUnitId, goodsMinQuantity,
                     goodsPostageId, goodsBarCode, JsonUtils.toStr(goodsKeyWord), JsonUtils.toStr(goodsGuarantee),
-                    JsonUtils.toStr(goodsMainImages), goodsDesc, goodsSpecifications, goodsSKUs);
+                    JsonUtils.toStr(goodsMainImages), goodsMainVideo, goodsDesc, goodsSpecifications, goodsSKUs);
             String _attach = request.getHeader("attach");
             goodsApplication.modifyGoods(command, _attach);
             result.setStatus(MCode.V_200);

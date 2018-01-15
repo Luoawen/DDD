@@ -26,6 +26,7 @@
         <property name="goodsGuarantee" column="goods_guarantee" type="string"/>
         <property name="recognizedFlag" column="recognized_flag" type="int"/>
         <property name="goodsMainImages" column="goods_main_images" type="text"/>
+        <property name="goodsMainVideo" column="goods_main_video" type="string"/>
         <property name="goodsDesc" column="goods_desc" type="text"/>
         <property name="goodsShelves" column="goods_shelves" type="int"/>
         <property name="goodsStatus" column="goods_status" type="int"/>

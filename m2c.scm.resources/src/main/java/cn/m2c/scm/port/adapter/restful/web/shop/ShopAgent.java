@@ -7,6 +7,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -316,7 +317,10 @@ public class ShopAgent {
 		 public ResponseEntity<MResult> getShopBackImg(@RequestParam(value = "shopId",required = false) String shopId){
 			 MResult result = new MResult(MCode.V_1);
 			 try {
-				String shopBackImg = query.getShopBackImg(shopId);
+				 if (StringUtils.isEmpty(shopId)) {
+						throw new NegativeException(MCode.V_400,"店铺ID为空");
+					}
+				 String shopBackImg = query.getShopBackImg(shopId);
 				 result.setContent(shopBackImg);
 				 result.setStatus(MCode.V_200);
 			} catch (NegativeException ne) {

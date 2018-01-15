@@ -203,6 +203,8 @@ public class SaleAfterOrderApp {
         if (order.orderType() != 0) {
 
             SimpleMarket marketInfo = saleOrderQuery.getMarketBySkuIdAndOrderId(order.skuId(), order.orderId(), order.sortNo());
+            SimpleCoupon couponInfo = saleOrderQuery.getCouponBySkuIdAndOrderId(order.skuId(), order.orderId(), order.sortNo());
+            List<SkuNumBean> totalSku = saleOrderQuery.getTotalSku(order.orderId());//所有的商品详情
             long discountMoney = 0;
             money = itemDtl.sumGoodsMoney();
             if (marketInfo != null) {//计算售后需要退的钱
@@ -216,7 +218,11 @@ public class SaleAfterOrderApp {
                 // 更新已使用营销 为不可用状态
                 saleAfterRepository.disabledOrderMarket(order.orderId(), marketInfo.getMarketingId());
             }
-            money = money - discountMoney;
+            long couponDiscountMoney = 0;
+            if (!StringUtils.isEmpty(couponInfo.getCouponId())) {//计算优惠券的金额
+                couponDiscountMoney = OrderCouponCalc.calcReturnMoney(couponInfo, totalSku, order.skuId(), order.sortNo());//计算退款金额
+            }
+            money = money - discountMoney - couponDiscountMoney;
             if (money < 0) {
                 throw new NegativeException(MCode.V_103, "不符合发起售后条件，建议联系商家");
                 //money = 0;
@@ -245,7 +251,6 @@ public class SaleAfterOrderApp {
         } else {
             throw new NegativeException(MCode.V_101, "售后单状态不正确或已经同意过了！");
         }
-
         // 售后同意推送消息
         MainOrder mOrder = orderRepository.getOrderById(order.orderId());
         Map extraMap = new HashMap<>();
