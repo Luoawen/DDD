@@ -175,7 +175,7 @@ public class Goods extends ConcurrencySafeEntity {
     public Goods(String goodsId, String dealerId, String dealerName, String goodsName, String goodsSubTitle,
                  String goodsClassifyId, String goodsBrandId, String goodsBrandName, String goodsUnitId, Integer goodsMinQuantity,
                  String goodsPostageId, String goodsBarCode, String goodsKeyWord, String goodsGuarantee,
-                 String goodsMainImages, String goodsDesc, Integer goodsShelves, String goodsSpecifications, String goodsSKUs, Integer skuFlag) {
+                 String goodsMainImages, String goodsMainVideo, String goodsDesc, Integer goodsShelves, String goodsSpecifications, String goodsSKUs, Integer skuFlag) {
         this.goodsId = goodsId;
         this.dealerId = dealerId;
         this.dealerName = dealerName;
@@ -191,6 +191,7 @@ public class Goods extends ConcurrencySafeEntity {
         this.goodsKeyWord = goodsKeyWord;
         this.goodsGuarantee = goodsGuarantee;
         this.goodsMainImages = goodsMainImages;
+        this.goodsMainVideo = goodsMainVideo;
         this.goodsDesc = goodsDesc;
         this.goodsShelves = goodsShelves;
         this.skuFlag = skuFlag;
@@ -330,7 +331,7 @@ public class Goods extends ConcurrencySafeEntity {
     public void modifyGoods(String goodsName, String goodsSubTitle,
                             String goodsClassifyId, String goodsBrandId, String goodsBrandName, String goodsUnitId, Integer goodsMinQuantity,
                             String goodsPostageId, String goodsBarCode, String goodsKeyWord, String goodsGuarantee,
-                            String goodsMainImages, String goodsDesc, String goodsSpecifications, String goodsSKUs) {
+                            String goodsMainImages, String goodsMainVideo, String goodsDesc, String goodsSpecifications, String goodsSKUs) {
         this.lastUpdateTime = new Date();
         String oldGoodsUnitId = this.goodsUnitId;
         String newGoodsUnitId = goodsUnitId;
@@ -346,6 +347,7 @@ public class Goods extends ConcurrencySafeEntity {
         this.goodsKeyWord = goodsKeyWord;
         this.goodsGuarantee = goodsGuarantee;
         this.goodsMainImages = goodsMainImages;
+        this.goodsMainVideo = goodsMainVideo;
         this.goodsDesc = goodsDesc;
 
         //修改分类，供货价、拍获价、规格需要审批
@@ -413,7 +415,7 @@ public class Goods extends ConcurrencySafeEntity {
                     .publish(new GoodsApproveAddEvent(this.goodsId, this.dealerId, this.dealerName, this.goodsName,
                             this.goodsSubTitle, goodsClassifyId, this.goodsBrandId, this.goodsBrandName, this.goodsUnitId,
                             this.goodsMinQuantity, this.goodsPostageId, this.goodsBarCode,
-                            this.goodsKeyWord, this.goodsGuarantee, this.goodsMainImages, this.goodsDesc, spec,
+                            this.goodsKeyWord, this.goodsGuarantee, this.goodsMainImages, this.goodsMainVideo, this.goodsDesc, spec,
                             goodsSKUs, this.skuFlag));
         }
 

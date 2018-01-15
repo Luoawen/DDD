@@ -93,6 +93,11 @@ public class GoodsCommand extends AssertionConcern implements Serializable {
      * 商品主图  存储类型是[“url1”,"url2"]
      */
     private String goodsMainImages;
+    
+    /**
+     * 商品主图视频
+     */
+    private String goodsMainVideo;
 
     /**
      * 商品描述
@@ -120,7 +125,7 @@ public class GoodsCommand extends AssertionConcern implements Serializable {
     public GoodsCommand(String goodsId, String dealerId, String dealerName, String goodsName, String goodsSubTitle,
                         String goodsClassifyId, String goodsBrandId, String goodsBrandName, String goodsUnitId, Integer goodsMinQuantity,
                         String goodsPostageId, String goodsBarCode, String goodsKeyWord, String goodsGuarantee,
-                        String goodsMainImages, String goodsDesc, Integer goodsShelves, String goodsSpecifications, String goodsSKUs, Integer skuFlag) {
+                        String goodsMainImages, String goodsMainVideo, String goodsDesc, Integer goodsShelves, String goodsSpecifications, String goodsSKUs, Integer skuFlag) {
         this.goodsId = goodsId;
         this.dealerId = dealerId;
         this.dealerName = dealerName;
@@ -136,6 +141,7 @@ public class GoodsCommand extends AssertionConcern implements Serializable {
         this.goodsKeyWord = goodsKeyWord;
         this.goodsGuarantee = goodsGuarantee;
         this.goodsMainImages = goodsMainImages;
+        this.goodsMainVideo = goodsMainVideo;
         this.goodsDesc = goodsDesc;
         this.goodsShelves = goodsShelves;
         this.goodsSpecifications = goodsSpecifications;
@@ -146,7 +152,7 @@ public class GoodsCommand extends AssertionConcern implements Serializable {
     public GoodsCommand(String goodsId, String dealerId, String goodsName, String goodsSubTitle,
                         String goodsClassifyId, String goodsBrandId, String goodsBrandName, String goodsUnitId, Integer goodsMinQuantity,
                         String goodsPostageId, String goodsBarCode, String goodsKeyWord, String goodsGuarantee,
-                        String goodsMainImages, String goodsDesc, String goodsSpecifications, String goodsSKUs) throws NegativeException {
+                        String goodsMainImages, String goodsMainVideo, String goodsDesc, String goodsSpecifications, String goodsSKUs) throws NegativeException {
         this.goodsId = goodsId;
         this.dealerId = dealerId;
         this.goodsName = goodsName;
@@ -161,6 +167,7 @@ public class GoodsCommand extends AssertionConcern implements Serializable {
         this.goodsKeyWord = goodsKeyWord;
         this.goodsGuarantee = goodsGuarantee;
         this.goodsMainImages = goodsMainImages;
+        this.goodsMainVideo = goodsMainVideo;//商品主图
         this.goodsDesc = goodsDesc;
         this.goodsSpecifications = goodsSpecifications;
         this.goodsSKUs = goodsSKUs;
@@ -271,5 +278,9 @@ public class GoodsCommand extends AssertionConcern implements Serializable {
 
     public Integer getSkuFlag() {
         return skuFlag;
+    }
+    
+    public String getGoodsMainVideo() {
+    	return goodsMainVideo;
     }
 }

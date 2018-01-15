@@ -72,7 +72,7 @@ public class GoodsApplication {
             goods = new Goods(command.getGoodsId(), command.getDealerId(), command.getDealerName(), command.getGoodsName(), command.getGoodsSubTitle(),
                     command.getGoodsClassifyId(), command.getGoodsBrandId(), command.getGoodsBrandName(), command.getGoodsUnitId(), command.getGoodsMinQuantity(),
                     command.getGoodsPostageId(), command.getGoodsBarCode(), command.getGoodsKeyWord(), command.getGoodsGuarantee(),
-                    command.getGoodsMainImages(), command.getGoodsDesc(), command.getGoodsShelves(), command.getGoodsSpecifications(), command.getGoodsSKUs(), command.getSkuFlag());
+                    command.getGoodsMainImages(), command.getGoodsMainVideo(), command.getGoodsDesc(), command.getGoodsShelves(), command.getGoodsSpecifications(), command.getGoodsSKUs(), command.getSkuFlag());
         } else {//修改商品审核：修改商品的分类，拍获价，供货价，规格
             goods.modifyApproveGoodsSku(command.getGoodsClassifyId(),command.getGoodsSpecifications(), command.getGoodsSKUs());
         }
@@ -115,7 +115,7 @@ public class GoodsApplication {
         goods.modifyGoods(command.getGoodsName(), command.getGoodsSubTitle(),
                 command.getGoodsClassifyId(), command.getGoodsBrandId(), command.getGoodsBrandName(), command.getGoodsUnitId(), command.getGoodsMinQuantity(),
                 command.getGoodsPostageId(), command.getGoodsBarCode(), command.getGoodsKeyWord(), command.getGoodsGuarantee(),
-                command.getGoodsMainImages(), command.getGoodsDesc(), command.getGoodsSpecifications(), command.getGoodsSKUs());
+                command.getGoodsMainImages(), command.getGoodsMainVideo(), command.getGoodsDesc(), command.getGoodsSpecifications(), command.getGoodsSKUs());
     }
 
     /**

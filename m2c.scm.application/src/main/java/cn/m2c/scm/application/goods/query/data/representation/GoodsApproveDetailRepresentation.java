@@ -32,6 +32,7 @@ public class GoodsApproveDetailRepresentation {
     private List<Map> goodsSpecifications;
     private List<Map> goodsSKUs;
     private List<String> goodsMainImages;
+    private String goodsMainVideo;//商品主图
     private String goodsDesc;
     private Integer approveStatus;//审核状态，1：审核中，2：审核不通过
     private String rejectReason;
@@ -95,6 +96,7 @@ public class GoodsApproveDetailRepresentation {
         }
         this.goodsSKUs = list;
         this.goodsMainImages = JsonUtils.toList(bean.getGoodsMainImages(), String.class);
+        this.goodsMainVideo = bean.getGoodsMainVideo();
         this.goodsDesc = bean.getGoodsDesc();
         this.approveStatus = bean.getApproveStatus();
         this.rejectReason = bean.getRejectReason();
@@ -307,4 +309,13 @@ public class GoodsApproveDetailRepresentation {
     public void setGoodsShelves(Integer goodsShelves) {
         this.goodsShelves = goodsShelves;
     }
+
+	public String getGoodsMainVideo() {
+		return goodsMainVideo;
+	}
+
+	public void setGoodsMainVideo(String goodsMainVideo) {
+		this.goodsMainVideo = goodsMainVideo;
+	}
+    
 }
