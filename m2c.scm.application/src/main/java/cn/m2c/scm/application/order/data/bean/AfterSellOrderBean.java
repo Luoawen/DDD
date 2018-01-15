@@ -58,6 +58,9 @@ public class AfterSellOrderBean {
 	@ColumnAlias(value="sort_no")
 	private Integer sortNo;
 	
+	@ColumnAlias(value = "coupon_discount")
+	private long couponDiscount;
+	
 	public Integer getSortNo() {
 		return sortNo;
 	}
@@ -72,6 +75,19 @@ public class AfterSellOrderBean {
 		if (null == rtFreight)
 			rtFreight = 0l;
 		return rtFreight/100;
+	}
+	
+	
+	public long getCouponDiscount() {
+		return couponDiscount/10000;
+	}
+
+	public void setCouponDiscount(long couponDiscount) {
+		this.couponDiscount = couponDiscount;
+	}
+
+	public String getStrcouponDiscount() {
+		return Utils.moneyFormatCN(couponDiscount);
 	}
 	
 	public String getStrRtFreight() {
