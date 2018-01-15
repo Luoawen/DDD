@@ -56,8 +56,6 @@ public class MainOrderBean extends AssertionConcern implements Serializable {
 	/**下单人*/
 	private String userId;
 	
-	private long couponDiscount;
-	
 	/**
 	 * 商家订单列表
 	 */
@@ -83,18 +81,6 @@ public class MainOrderBean extends AssertionConcern implements Serializable {
 		return markets;
 	}
 	
-	public long getCouponDiscount() {
-		return couponDiscount/10000;
-	}
-
-	public void setCouponDiscount(long couponDiscount) {
-		this.couponDiscount = couponDiscount;
-	}
-	
-	public String getStrCouponDiscount() {
-		return Utils.moneyFormatCN(couponDiscount);
-	}
-
 	public void setMarkets(List<SimpleMarket> ges) {
 		markets = ges;
 	}

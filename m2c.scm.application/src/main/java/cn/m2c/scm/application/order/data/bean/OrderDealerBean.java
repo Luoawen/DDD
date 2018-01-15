@@ -1,5 +1,7 @@
 package cn.m2c.scm.application.order.data.bean;
 
+import cn.m2c.scm.application.utils.Utils;
+
 public class OrderDealerBean {
 
 	/**
@@ -47,6 +49,8 @@ public class OrderDealerBean {
 	/**结算方式*/
 	private Integer termOfPayment;
 	
+	private long couponDiscount;
+	
 	public Integer getTermOfPayment() {
 		return termOfPayment;
 	}
@@ -61,6 +65,18 @@ public class OrderDealerBean {
 
 	public String getDealerId() {
 		return dealerId;
+	}
+	
+	public long getCouponDiscount() {
+		return couponDiscount/10000;
+	}
+
+	public void setCouponDiscount(long couponDiscount) {
+		this.couponDiscount = couponDiscount;
+	}
+	
+	public String getStrCouponDiscount() {
+		return Utils.moneyFormatCN(couponDiscount);
 	}
 
 	public String getDealerOrderId() {
