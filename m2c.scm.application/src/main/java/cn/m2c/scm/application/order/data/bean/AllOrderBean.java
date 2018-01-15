@@ -56,6 +56,9 @@ public class AllOrderBean extends AssertionConcern implements Serializable {
     @ColumnAlias(value = "pDealerDiscount")
 	private long ppDealerDiscount;
     
+    @ColumnAlias(value = "dCouponDiscount")
+    private long ddCouponDiscount;
+    
     @ColumnAlias(value = "coupon_discount")
     private long couponDiscount;
     
@@ -66,13 +69,21 @@ public class AllOrderBean extends AssertionConcern implements Serializable {
 	public String getStrPpDiscount() {
 		return Utils.moneyFormatCN(ppDiscount);
 	}
-	
+
 	public long getCouponDiscount() {
 		return couponDiscount;
 	}
 
 	public void setCouponDiscount(long couponDiscount) {
 		this.couponDiscount = couponDiscount;
+	}
+
+	public long getDdCouponDiscount() {
+		return ddCouponDiscount;
+	}
+
+	public void setDdCouponDiscount(long ddCouponDiscount) {
+		this.ddCouponDiscount = ddCouponDiscount;
 	}
 
 	public void setPpDiscount(long ppDiscount) {

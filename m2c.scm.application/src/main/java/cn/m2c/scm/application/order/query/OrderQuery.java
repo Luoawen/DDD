@@ -65,7 +65,7 @@ public class OrderQuery {
                                                   String endTime, String condition, Integer payWay, Integer commentStatus, Integer mediaInfo, String dealerClassify, Integer pageNum, Integer rows) {
         List<Object> params = new ArrayList<Object>();
         StringBuilder sql = new StringBuilder();
-        sql.append(" SELECT d.dealer_order_id, d.coupon_discount, m.order_id,m.pay_no,m.pay_way,m.created_date,m.goods_amount,m.order_freight,m.plateform_discount pDiscount,m.dealer_discount pDealerDiscount, ");
+        sql.append(" SELECT d.dealer_order_id, d.coupon_discount dCouponDiscount, m.coupon_discount, m.order_id,m.pay_no,m.pay_way,m.created_date,m.goods_amount,m.order_freight,m.plateform_discount pDiscount,m.dealer_discount pDealerDiscount, ");
         sql.append(" d.goods_amount AS dealerAmount, d.plateform_discount, d.dealer_discount, d.order_freight AS orderFreight,d._status,dealer.dealer_name ");
         sql.append("  FROM t_scm_order_dealer d ");
         sql.append(" LEFT OUTER JOIN t_scm_order_main m ON d.order_id = m.order_id ");
@@ -134,6 +134,7 @@ public class OrderQuery {
                 tmpOrderId = id;
                 mainOrder = new MainOrderBean();
                 mainOrderList.add(mainOrder);
+                mainOrder.setCouponDiscount(allOrder.getCouponDiscount());
                 mainOrder.setOrderId(allOrder.getOrderId());
                 mainOrder.setPayNo(allOrder.getPayNo());
                 mainOrder.setCreateDate(allOrder.getCreatedDate());
@@ -146,7 +147,7 @@ public class OrderQuery {
             }
             dealerBean = new OrderDealerBean();
             dealerBean.setOrderId(allOrder.getOrderId());
-            dealerBean.setCouponDiscount(allOrder.getCouponDiscount());
+            dealerBean.setCouponDiscount(allOrder.getDdCouponDiscount());
             dealerBean.setDealerName(allOrder.getDealerName());
             dealerBean.setDealerOrderId(allOrder.getDealerOrderId());
             dealerBean.setGoodAmount(allOrder.getStrDealerGoodsAmount());
