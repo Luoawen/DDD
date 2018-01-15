@@ -595,4 +595,12 @@ public class Goods extends ConcurrencySafeEntity {
     public String goodsName() {
         return goodsName;
     }
+
+    public List<String> goodsMainImages() {
+        if (StringUtils.isNotEmpty(this.goodsMainImages)) {
+            List<String> list = JsonUtils.toList(this.goodsMainImages, String.class);
+            return list;
+        }
+        return null;
+    }
 }
