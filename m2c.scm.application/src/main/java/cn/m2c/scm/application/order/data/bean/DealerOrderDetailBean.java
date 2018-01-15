@@ -150,6 +150,9 @@ public class DealerOrderDetailBean {
 	private String dealerOrderId;
 
 	private Integer isShowShip = 1;      //是否展示发货 0 不展示，1 展示
+	
+	@ColumnAlias(value = "coupon_discount")
+	private long couponDiscount;
 
 	public Integer getIsShowShip() {
 		return isShowShip;
@@ -173,6 +176,19 @@ public class DealerOrderDetailBean {
 
 	public void setDealerOrderId(String dealerOrderId) {
 		this.dealerOrderId = dealerOrderId;
+	}
+	
+
+	public long getCouponDiscount() {
+		return couponDiscount/10000;
+	}
+
+	public void setOrderPrice(long orderPrice) {
+		this.orderPrice = orderPrice;
+	}
+
+	public void setCouponDiscount(long couponDiscount) {
+		this.couponDiscount = couponDiscount;
 	}
 
 	public String getInvoiceHeader() {
@@ -295,6 +311,10 @@ public class DealerOrderDetailBean {
 		return dealerDiscount/100;
 	}
 
+	public String getStrCouponDiscount() {
+		return Utils.moneyFormatCN(couponDiscount);
+	}
+	
 	public String getStrTotalOrderPrice() {
 		return Utils.moneyFormatCN(totalOrderPrice);
 	}
