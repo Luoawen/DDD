@@ -412,4 +412,8 @@ public class MainOrder extends ConcurrencySafeEntity {
         }
         updateTime = new Date();
     }
+
+    public String userId() {
+        return userId;
+    }
 }
