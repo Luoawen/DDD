@@ -21,6 +21,16 @@ public class HibernateGoodsSpecValueRepository extends HibernateSupperRepository
     }
 
     @Override
+    public boolean isRepeatGoodsSpecValueName(String dealerId, String standardId, String name) {
+        StringBuilder sql = new StringBuilder("select * from t_scm_goods_spec_value where dealer_id =:dealer_id and standard_id =:standard_id and spec_value =:spec_value");
+        Query query = this.session().createSQLQuery(sql.toString()).addEntity(GoodsSpecValue.class);
+        query.setParameter("dealer_id", dealerId);
+        query.setParameter("standard_id", standardId);
+        query.setParameter("spec_value", name);
+        return null != query.list() && query.list().size() > 0;
+    }
+
+    @Override
     public void save(GoodsSpecValue goodsSpecValue) {
         this.session().save(goodsSpecValue);
     }

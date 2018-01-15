@@ -6,5 +6,7 @@ package cn.m2c.scm.domain.model.goods;
 public interface GoodsSpecValueRepository {
     GoodsSpecValue queryGoodsSpecValueById(String specId);
 
+    boolean isRepeatGoodsSpecValueName(String dealerId, String standardId, String name);
+
     void save(GoodsSpecValue goodsSpecValue);
 }
