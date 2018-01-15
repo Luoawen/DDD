@@ -332,7 +332,7 @@ public class DealerOrderDetailBean {
 	}
 
 	public String getOrderPrice() {
-		orderPrice = totalOrderPrice + totalFreight - plateformDiscount - dealerDiscount;
+		orderPrice = totalOrderPrice + totalFreight - plateformDiscount - dealerDiscount - couponDiscount;
 		return Utils.moneyFormatCN(orderPrice);
 	}
 
