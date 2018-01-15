@@ -191,7 +191,6 @@ public class DealerOrderApplication {
 		}
 		if (StringUtils.isNotEmpty(attach))
 			operationLogManager.operationLog("修改运费及收货地址", attach, mOrder);
-		mOrder = null;
 		if (updatedFreight || updatedAddr) {
 			dealerOrderRepository.updateFreight(dealerOrder);
 		}
