@@ -79,6 +79,9 @@ public class OrderGoodsBean {
 	@ColumnAlias(value="market_level")
 	private Integer level;
 	
+	@ColumnAlias(value="coupon_id")
+	private String couponId;
+
 	@ColumnAlias(value="is_special")
 	private Integer isSpecial;
 	@ColumnAlias(value="special_price")
@@ -127,6 +130,12 @@ public class OrderGoodsBean {
 		this.marketId = marketId;
 	}
 
+	public String getCouponId() {
+		return couponId;
+	}
+	public void setCouponId(String couponId) {
+		this.couponId = couponId;
+	}
 	public Float getResRate() {
 		return resRate;
 	}
