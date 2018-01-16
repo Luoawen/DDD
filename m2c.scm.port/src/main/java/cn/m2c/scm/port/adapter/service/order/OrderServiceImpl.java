@@ -171,28 +171,28 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public void unlockCoupons(List<String> couponsIds, String userId) throws NegativeException {
-    	if(couponsIds != null && couponsIds.size()>0 ){
-    		LOGGER.info("---couponsIds的size:"+couponsIds.size());
-    		String couponUserId = couponsIds.get(0);
-        	String url = M2C_HOST_URL + "/m2c.market/domain/coupon/cancel/order/return";
-        	
-        	  HashMap<String, String> params = new HashMap<String, String>();
-              params.put("couponUserId", couponUserId);
-              String resp = "";
-              try {
-                  resp = new HttpRequest().postData(url, params, "utf-8").toString();
-                  JSONObject json = JSONObject.parseObject(resp);
-                  if (json.getInteger("status") != 200) {
-                      throw new NegativeException(401, "营销中心取消未支付订单返还优惠券接口出错");
-                  }
-              } catch (Exception e) {
-                  LOGGER.error("Exception----->>>", e);
-                  throw new NegativeException(400, "取消未支付订单返还优惠券出错");
-              }
-              LOGGER.info("返回数据" + resp);
-    	}
+        if (couponsIds != null && couponsIds.size() > 0) {
+            LOGGER.info("---couponsIds的size:" + couponsIds.size());
+            String couponUserId = couponsIds.get(0);
+            String url = M2C_HOST_URL + "/m2c.market/domain/coupon/cancel/order/return";
+
+            HashMap<String, String> params = new HashMap<String, String>();
+            params.put("couponUserId", couponUserId);
+            String resp = "";
+            try {
+                resp = new HttpRequest().postData(url, params, "utf-8").toString();
+                JSONObject json = JSONObject.parseObject(resp);
+                if (json.getInteger("status") != 200) {
+                    throw new NegativeException(401, "营销中心取消未支付订单返还优惠券接口出错");
+                }
+            } catch (Exception e) {
+                LOGGER.error("Exception----->>>", e);
+                throw new NegativeException(400, "取消未支付订单返还优惠券出错");
+            }
+            LOGGER.info("返回数据" + resp);
+        }
     }
-  
+
     /***
      * 获取营销活动
      */
@@ -424,26 +424,27 @@ public class OrderServiceImpl implements OrderService {
         return null;
     }
 
-	@Override
-	public Map getUserMobileOrUserName(String userMessage) {
-		String url = M2C_HOST_URL + "/m2c.users/user/fuzzyQueryUserByMobileOrUserName?mobileOrName={0}";
-		try {
-			String result = restTemplate.getForObject(url, String.class, userMessage);
-			JSONObject json = JSONObject.parseObject(result);
-			if(json.getInteger("status") == 200) {
-				JSONObject content = json.getJSONObject("content");
-				if (null != content) {
+    @Override
+    public Map getUserMobileOrUserName(String userMessage) {
+        String url = M2C_HOST_URL + "/m2c.users/user/fuzzyQueryUserByMobileOrUserName?mobileOrName={0}";
+        try {
+            String result = restTemplate.getForObject(url, String.class, userMessage);
+            JSONObject json = JSONObject.parseObject(result);
+            if (json.getInteger("status") == 200) {
+                JSONObject content = json.getJSONObject("content");
+                if (null != content) {
                     return content;
                 }
-			}
-		}catch(Exception e) {
-			LOGGER.error("根据下单用户名或账号查询用户名和手机号信息异常");
+            }
+        } catch (Exception e) {
+            LOGGER.error("根据下单用户名或账号查询用户名和手机号信息异常");
             LOGGER.error("getUserMobileOrUserName exception.url=>" + url);
             LOGGER.error("getUserMobileOrUserName exception.error=>" + e.getMessage());
             LOGGER.error("getUserMobileOrUserName exception.param=>userMessage=" + userMessage);
-		}
-		return null;
-	}
+        }
+        return null;
+    }
+
     @Override
     public Map getUserInfoByUserId(String userId) throws NegativeException {
         try {
@@ -489,6 +490,8 @@ public class OrderServiceImpl implements OrderService {
         String title = "";
         String alert = "";
         Map extraMap = JsonUtils.toMap(extra);
+        extraMap.put("msgType", msgType);
+        extra = JsonUtils.toStr(extraMap);
         Integer optType = Integer.parseInt(extraMap.get("optType").toString());
         if (optType == 1) { // 发货
             title = "发货提醒";
