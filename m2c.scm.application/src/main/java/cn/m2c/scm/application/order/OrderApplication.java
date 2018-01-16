@@ -311,7 +311,7 @@ public class OrderApplication {
 			  for (GoodsDto goodsDto : gdes) {
 				  if((goodsDto.getThePrice() * goodsDto.getPurNum() - goodsDto.getPlateformDiscount() -goodsDto.getCouponDiscount())<=0){
 					  LOGGER.info("优惠券减的钱超过了商品原价");
-					  throw new NegativeException(MCode.V_300, "下单失败");
+					  throw new NegativeException(MCode.V_301, "下单失败");
 					 }
 			}
 			
@@ -327,7 +327,7 @@ public class OrderApplication {
 		for (GoodsDto goodsDto : gdes) {
 			if((goodsDto.getThePrice() * goodsDto.getPurNum() - goodsDto.getPlateformDiscount())<=0){
 				 LOGGER.info("满减活动减的钱超过了商品原价");
-				 throw new NegativeException(MCode.V_300, "下单失败");
+				 throw new NegativeException(MCode.V_301, "下单失败");
 			}
 		}
 		
