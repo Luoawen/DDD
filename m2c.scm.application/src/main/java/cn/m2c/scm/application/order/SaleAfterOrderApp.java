@@ -219,7 +219,7 @@ public class SaleAfterOrderApp {
                 saleAfterRepository.disabledOrderMarket(order.orderId(), marketInfo.getMarketingId());
             }
             long couponDiscountMoney = 0;
-            if (!StringUtils.isEmpty(couponInfo.getCouponId())) {//计算优惠券的金额
+            if (couponInfo!=null && !StringUtils.isEmpty(couponInfo.getCouponId())) {//计算优惠券的金额
                 couponDiscountMoney = OrderCouponCalc.calcReturnMoney(couponInfo, totalSku, order.skuId(), order.sortNo());//计算退款金额
             }
             money = money - discountMoney - couponDiscountMoney;

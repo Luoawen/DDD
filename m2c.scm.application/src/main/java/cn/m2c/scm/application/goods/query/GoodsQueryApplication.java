@@ -26,9 +26,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -485,7 +487,7 @@ public class GoodsQueryApplication {
                             tempList.add(goodsBean);
                         }
                     }
-                    RedisUtil.setString(key, 15 * 24 * 3600, JsonUtils.toStr(tempList));
+                    RedisUtil.setString(key, 24 * 3600, JsonUtils.toStr(tempList));
                 } else {
                     while (it.hasNext()) {
                         GoodsBean goodsBean = it.next();
@@ -498,7 +500,7 @@ public class GoodsQueryApplication {
                     Integer removeSize = hotSellInfoList.size();
                     if (size > removeSize) {
                         hotSellInfoList.addAll(queryGoodsHotSell((size - removeSize), goodsIds));
-                        RedisUtil.setString(key, 15 * 24 * 3600, JsonUtils.toStr(hotSellInfoList));
+                        RedisUtil.setString(key, 24 * 3600, JsonUtils.toStr(hotSellInfoList));
                     }
                 }
             }
@@ -512,13 +514,13 @@ public class GoodsQueryApplication {
         String hotSell = RedisUtil.getString(key); //从缓存中取数据
         if (StringUtils.isNotEmpty(hotSell)) { // 缓存不为空
             List<GoodsBean> hotSellInfoList = JsonUtils.toList(hotSell, GoodsBean.class);
-            if (hotSellInfoList.size() < number) { //随机取剩余部分
+            if (hotSellInfoList.size() < number) { //取剩余部分
                 List<String> goodsIds = new ArrayList<>();
                 for (GoodsBean goodsBean : hotSellInfoList) {
                     goodsIds.add(goodsBean.getGoodsId());
                 }
                 hotSellInfoList.addAll(queryGoodsHotSell((number - hotSellInfoList.size()), goodsIds));
-                RedisUtil.setString(key, 15 * 24 * 3600, JsonUtils.toStr(hotSellInfoList));
+                RedisUtil.setString(key, 24 * 3600, JsonUtils.toStr(hotSellInfoList));
             }
             goodsBeans = hotSellInfoList;
         } else {
@@ -527,27 +529,52 @@ public class GoodsQueryApplication {
         return goodsBeans;
     }
 
-    private List<GoodsBean> queryGoodsHotSell(Integer number, List<String> goodsIds) {
+    private List<GoodsBean> queryGoodsHotSell(Integer number, List<String> filterGoodsIds) {
         String key = "scm.goods.hot.sell";
+        List<GoodsBean> sellingGoods = null;
+        List<Object> params = new ArrayList<>();
+        // 查询商品数据
         StringBuilder sql = new StringBuilder();
         sql.append(" SELECT ");
         sql.append(" g.* ");
         sql.append(" FROM ");
-        sql.append(" t_scm_goods_sku s,t_scm_goods g ");
-        sql.append(" where s.goods_id=g.id and g.goods_status <> 1 and g.del_status=1 ");
-        if (null != goodsIds && goodsIds.size() > 0) {
-            sql.append(" and g.goods_id not in (" + Utils.listParseString(goodsIds) + ")");
+        sql.append(" t_scm_goods g ");
+        sql.append(" where g.goods_status <> 1 and g.del_status=1 ");
+
+        if (null != filterGoodsIds && filterGoodsIds.size() > 0) {
+            sql.append(" and g.goods_id not in (" + Utils.listParseString(filterGoodsIds) + ")");
+            sql.append(" order by g.created_date desc limit 0,?");
+            params.add(number);
+        } else {
+            // 查询当月月榜数据
+            String topSql = "select t.goods_id from t_scm_goods_sales_list t,t_scm_goods g where t.goods_id=g.goods_id and t.month=? and g.goods_status <> 1 and g.del_status=1 limit 0,?";
+            Date date = new Date();
+            Integer month = Integer.parseInt(new SimpleDateFormat("yyyyMM").format(date));
+            List<String> topGoodsList = this.getSupportJdbcTemplate().jdbcTemplate().queryForList(topSql, String.class, month, number);
+            if (null != topGoodsList && topGoodsList.size() > 0) {
+                if (topGoodsList.size() == number) { // 月榜数据够了
+                    sql.append(" and g.goods_id in (" + Utils.listParseString(topGoodsList) + ")");
+                } else { // 月榜数据不够，则按时间查剩余数据
+                    sellingGoods = querySellingGoodsByGoodsIds(topGoodsList); // 排行榜的商品
+                    sql.append(" and g.goods_id not in (" + Utils.listParseString(topGoodsList) + ")");
+                    sql.append(" order by g.created_date desc limit 0,?");
+                    params.add(number - topGoodsList.size());
+                }
+            }
         }
-        sql.append(" group by s.goods_id order by count(s.seller_num) desc,s.created_date desc limit 0,?");
-        List<GoodsBean> goodsBeans = this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsBean.class, number);
+
+        List<GoodsBean> goodsBeans = this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsBean.class, params.toArray());
         if (null != goodsBeans && goodsBeans.size() > 0) {
             for (GoodsBean goodsBean : goodsBeans) {
                 goodsBean.setGoodsSkuBeans(queryGoodsSKUsByGoodsId(goodsBean.getId()));
             }
+            if (null != sellingGoods) {
+                goodsBeans.addAll(sellingGoods);
+            }
         }
-        if (null == goodsIds) {
+        if (null == filterGoodsIds) {
             if (null != goodsBeans && goodsBeans.size() > 0) {
-                RedisUtil.setString(key, 15 * 24 * 3600, JsonUtils.toStr(goodsBeans));
+                RedisUtil.setString(key, 24 * 3600, JsonUtils.toStr(goodsBeans));
             }
         }
         return goodsBeans;
@@ -1345,89 +1372,109 @@ public class GoodsQueryApplication {
 
     /**
      * 根据商品名模糊查询最早十个GoodsBean
+     *
      * @param goodsName
      * @return
      */
-	public List<GoodsBean> queryGoodsPioneerTenByGoodsName(String goodsName) {
-		StringBuilder sql = new StringBuilder();
+    public List<GoodsBean> queryGoodsPioneerTenByGoodsName(String goodsName) {
+        StringBuilder sql = new StringBuilder();
         sql.append(" SELECT ");
         sql.append(" * ");
         sql.append(" FROM ");
-	    sql.append(" t_scm_goods WHERE goods_name LIKE ? AND del_status = 1 ORDER BY created_date ASC LIMIT 0,10 ");
-	    if(StringUtils.isEmpty(goodsName)) {
-	    	goodsName = "";
-	    }
-	    List<GoodsBean> goodsBeans = this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsBean.class, "%"+goodsName+"%");
-		return goodsBeans;
-	}
+        sql.append(" t_scm_goods WHERE goods_name LIKE ? AND del_status = 1 ORDER BY created_date ASC LIMIT 0,10 ");
+        if (StringUtils.isEmpty(goodsName)) {
+            goodsName = "";
+        }
+        List<GoodsBean> goodsBeans = this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsBean.class, "%" + goodsName + "%");
+        return goodsBeans;
+    }
 
-	/**
-	 * 根据优惠券详情查询商品或商家信息数目
-	 * @param couponMap
-	 * @param couponRangeType
-	 * @return
-	 */
-	public Integer queryCouponApplyGoodsOrDealerTotal(Map couponMap, Integer couponRangeType) {
-		if (null != couponMap) { // 优惠券信息
-			Integer total = 0;
-            if(couponRangeType == 1) {//查商家总数
-            	total = queryCouponApplyDealerTotal(couponMap);
+    /**
+     * 根据优惠券详情查询商品或商家信息数目
+     *
+     * @param couponMap
+     * @param couponRangeType
+     * @return
+     */
+    public Integer queryCouponApplyGoodsOrDealerTotal(Map couponMap, Integer couponRangeType) {
+        if (null != couponMap) { // 优惠券信息
+            Integer total = 0;
+            if (couponRangeType == 1) {//查商家总数
+                total = queryCouponApplyDealerTotal(couponMap);
             }
-            if(couponRangeType == 0 || couponRangeType == 2 || couponRangeType == 3) {//查商品总数
-            	total = appSearchGoodsTotal(null, null, null, null, null, couponMap);
+            if (couponRangeType == 0 || couponRangeType == 2 || couponRangeType == 3) {//查商品总数
+                total = appSearchGoodsTotal(null, null, null, null, null, couponMap);
             }
-			return total;
-		}
-		return null;
-	}
-	
-	/**
-	 * 根据优惠券信息查询商家信息
-	 * @param couponMap
-	 * @return
-	 */
-	public Integer queryCouponApplyDealerTotal(Map couponMap) {
-		/**
+            return total;
+        }
+        return null;
+    }
+
+    /**
+     * 根据优惠券信息查询商家信息
+     *
+     * @param couponMap
+     * @return
+     */
+    public Integer queryCouponApplyDealerTotal(Map couponMap) {
+        /**
          * 优惠券作用范围，0：全场，1：商家，2：商品，3：品类
          * 备注：
          * 当作用范围为全场时，dealerId、goodsId、categoryId为排除的对象；当作用范围不是全场时，三个id为优惠券实际作用的对象
          */
-		StringBuilder sql = new StringBuilder();
-		sql.append(" SELECT ");
-		sql.append(" COUNT(DISTINCT g.dealer_id) ");
-		sql.append(" FROM ");
-		sql.append(" t_scm_dealer g , t_scm_dealer_shop s ");
-		sql.append(" WHERE g.dealer_id = s.dealer_id ");
-	    // 优惠券搜索处理
-	    couponChoiceDeal(sql, couponMap);
-	    sql.append(" AND g.dealer_status = 1 ");
+        StringBuilder sql = new StringBuilder();
+        sql.append(" SELECT ");
+        sql.append(" COUNT(DISTINCT g.dealer_id) ");
+        sql.append(" FROM ");
+        sql.append(" t_scm_dealer g , t_scm_dealer_shop s ");
+        sql.append(" WHERE g.dealer_id = s.dealer_id ");
+        // 优惠券搜索处理
+        couponChoiceDeal(sql, couponMap);
+        sql.append(" AND g.dealer_status = 1 ");
         return supportJdbcTemplate.jdbcTemplate().queryForObject(sql.toString(), Integer.class);
-	}
-	
-	/**
-	 * 根据优惠券信息查询适用商家信息
-	 * @param couponMap
-	 * @param pageNum
-	 * @param rows
-	 * @return
-	 */
-	public List<CouponDealerBean> queryCouponApplyDealer(Map couponMap, Integer pageNum, Integer rows){
-		List<Object> params = new ArrayList<Object>();
-		StringBuilder sql = new StringBuilder();
-		sql.append(" SELECT ");
-		sql.append(" g.dealer_id dealerId , s.shop_id shopId , s.shop_icon shopIcon , s.shop_name shopName , g.dealer_name dealerName ");
-		sql.append(" FROM ");
-		sql.append(" t_scm_dealer g , t_scm_dealer_shop s ");
-		sql.append(" WHERE g.dealer_id = s.dealer_id ");
-		// 优惠券搜索处理
-	    couponChoiceDeal(sql, couponMap);
-	    sql.append(" AND g.dealer_status = 1 GROUP BY g.dealer_id ");
-	    if(null != pageNum && null != rows) {
-	    	sql.append(" LIMIT ?,?");
-	        params.add(rows * (pageNum - 1));
-	        params.add(rows);
-	    }
-	    return this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), CouponDealerBean.class, params.toArray());
-	}
+    }
+
+    /**
+     * 根据优惠券信息查询适用商家信息
+     *
+     * @param couponMap
+     * @param pageNum
+     * @param rows
+     * @return
+     */
+    public List<CouponDealerBean> queryCouponApplyDealer(Map couponMap, Integer pageNum, Integer rows) {
+        List<Object> params = new ArrayList<Object>();
+        StringBuilder sql = new StringBuilder();
+        sql.append(" SELECT ");
+        sql.append(" g.dealer_id dealerId , s.shop_id shopId , s.shop_icon shopIcon , s.shop_name shopName , g.dealer_name dealerName ");
+        sql.append(" FROM ");
+        sql.append(" t_scm_dealer g , t_scm_dealer_shop s ");
+        sql.append(" WHERE g.dealer_id = s.dealer_id ");
+        // 优惠券搜索处理
+        couponChoiceDeal(sql, couponMap);
+        sql.append(" AND g.dealer_status = 1 GROUP BY g.dealer_id ");
+        if (null != pageNum && null != rows) {
+            sql.append(" LIMIT ?,?");
+            params.add(rows * (pageNum - 1));
+            params.add(rows);
+        }
+        return this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), CouponDealerBean.class, params.toArray());
+    }
+
+    public List<GoodsBean> querySellingGoodsByGoodsIds(List<String> goodsIds) {
+        StringBuilder sql = new StringBuilder();
+        sql.append(" SELECT ");
+        sql.append(" * ");
+        sql.append(" FROM ");
+        sql.append(" t_scm_goods where goods_id in (" + Utils.listParseString(goodsIds) + ") and goods_status <> 1 AND del_status = 1");
+        List<GoodsBean> goodsBeans = this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsBean.class);
+        if (null != goodsBeans && goodsBeans.size() > 0) {
+            for (GoodsBean goodsBean : goodsBeans) {
+                goodsBean.setGoodsSkuBeans(queryGoodsSKUsByGoodsId(goodsBean.getId()));
+            }
+        }
+        return goodsBeans;
+    }
+
 }
 

@@ -370,7 +370,7 @@ public class DealerOrder extends ConcurrencySafeEntity {
         for (DealerOrderDtl d : orderDtls) {
             Float f = freights.get(d.getSkuId());
             if (null != f) {
-                if ((long) (f * 100) != d.getFreight()) {
+                if ((long) (f * 10000) != d.getFreight()) {
                     return true;
                 }
             }
@@ -390,8 +390,8 @@ public class DealerOrder extends ConcurrencySafeEntity {
         for (DealerOrderDtl d : orderDtls) {
             Float f = freights.get(d.getSkuId());
             if (f != null) {
-                d.updateFreight((long) (f * 100));
-                frg += f * 100;
+                d.updateFreight((long) (f * 10000));
+                frg += f * 10000;
             } else
                 frg += d.getFreight();
         }
