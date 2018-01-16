@@ -368,7 +368,7 @@ public class DealerOrderAfterSellQuery {
 		List<Object> params = new ArrayList<Object>();
 		StringBuilder sql = new StringBuilder();
 		sql.append(
-				" SELECT dtl.is_special isSpecial, dtl.special_price specialPrice, dtl.discount_price saleAfterGoodsPrice, a.dealer_order_id dealerOrderId, a.sell_num sellNum, a.return_freight returnFreight, a.sku_id skuId, dtl.sku_name skuName, dtl.goods_name goodsName, dtl.goods_title goodsTitle,")
+				" SELECT dtl.is_special isSpecial, dtl.special_price specialPrice,dtl.coupon_discount, dtl.discount_price saleAfterGoodsPrice, a.dealer_order_id dealerOrderId, a.sell_num sellNum, a.return_freight returnFreight, a.sku_id skuId, dtl.sku_name skuName, dtl.goods_name goodsName, dtl.goods_title goodsTitle,")
 				.append(" a.after_sell_order_id saleAfterNo, a.order_type orderType, a.back_money backMoney, a._status status, dealer.dealer_name dealerName, a.created_date createTime")
 				.append(" FROM t_scm_order_after_sell a")
 				.append(" LEFT OUTER JOIN t_scm_dealer dealer ON a.dealer_id = dealer.dealer_id ")

@@ -81,8 +81,8 @@ public class MngOrderExpModel {
         }
         this.goodsNum = dtl.getSellNum();
         this.postage = Utils.moneyFormatCN(dtl.getOrderFreight());//*
-        this.discountAmount = Utils.moneyFormatCN(dtl.getPlateDiscount() + dtl.getDealerDiscount());
-        this.orderMoney = Utils.moneyFormatCN((dtl.getGoodsMoney() + dtl.getOrderFreight() - dtl.getDealerDiscount() - dtl.getPlateDiscount()));
+        this.discountAmount = Utils.moneyFormatCN(dtl.getPlateDiscount() + dtl.getDealerDiscount() + dtl.getDdCouponDiscount());
+        this.orderMoney = Utils.moneyFormatCN((dtl.getGoodsMoney() + dtl.getOrderFreight() - dtl.getDealerDiscount() - dtl.getPlateDiscount() - dtl.getDdCouponDiscount()));
         this.revPerson = dtl.getRevPerson();
         this.revPhone = dtl.getRevPhone();
         this.revAddress = dtl.getProvince() + dtl.getCity() + dtl.getAreaCounty() + dtl.getRevAddress();
@@ -91,7 +91,7 @@ public class MngOrderExpModel {
         this.saleAfterStatus = OrderUtils.getAfterStatusStr(dtl.getAfterOrderType(),dtl.getAfterStatus());
         this.saleAfterNum = null == dtl.getAfterNum() ? "" : String.valueOf(dtl.getAfterNum());
         
-        this.saleAfterMoney = Utils.moneyFormatCN(dtl.getAfterMoney());
+        this.saleAfterMoney = Utils.moneyFormatCN(dtl.getAfterMoney() - dtl.getCouponDiscount());
         
         skuId = dtl.getSkuId();
         dealerName = dtl.getDealerName();

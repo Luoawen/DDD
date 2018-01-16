@@ -124,6 +124,20 @@ public class OrderDtlBean {
 	/**三级类名*/
 	private String thirdType;
 	
+	@ColumnAlias(value = "coupon_discount")
+	private Long couponDiscount;
+	
+	@ColumnAlias(value = "ddCouponDiscount")
+	private Long ddCouponDiscount;
+	
+	public Long getDdCouponDiscount() {
+		return ddCouponDiscount;
+	}
+
+	public void setDdCouponDiscount(Long ddCouponDiscount) {
+		this.ddCouponDiscount = ddCouponDiscount;
+	}
+
 	public String getProvince() {
 		if (null == province)
 			return "";
@@ -132,6 +146,14 @@ public class OrderDtlBean {
 
 	public void setProvince(String province) {
 		this.province = province;
+	}
+
+	public Long getCouponDiscount() {
+		return couponDiscount;
+	}
+
+	public void setCouponDiscount(Long couponDiscount) {
+		this.couponDiscount = couponDiscount;
 	}
 
 	public String getCity() {

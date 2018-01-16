@@ -627,7 +627,7 @@ public class DealerOrderQuery {
         List<Object> params = new ArrayList<Object>();
         StringBuilder sql = new StringBuilder();
         sql.append(" SELECT dtl.is_special, dtl.special_price, dtl.sku_id, dtl.sku_name, dtl.goods_name, dtl.goods_title, a.dealer_id, a.created_date, dtl.discount_price, \r\n")
-                .append("dtl.sell_num, af._status afStatus, a._status, om.pay_no, a.dealer_order_id, dtl.goods_icon, a.rev_person, \r\n")
+                .append("dtl.sell_num, af._status afStatus,dtl.coupon_discount, a.coupon_discount ddCouponDiscount, a._status, om.pay_no, a.dealer_order_id, dtl.goods_icon, a.rev_person, \r\n")
                 .append(" a.rev_phone, a.goods_amount, a.order_freight, a.plateform_discount, a.dealer_discount, a.order_id,\r\n")
                 .append(" om.pay_time,dtl.freight,a.province,a.city,a.area_county,a.street_addr,af.after_sell_order_id,af.order_type,af.sell_num as after_num,af.back_money\r\n")
                 .append(" FROM t_scm_order_detail dtl \r\n")
@@ -738,6 +738,8 @@ public class DealerOrderQuery {
                 midBean.setCreatedDate(a == null ? null : a.getTime());
                 midBean.setOrderStatus((Integer) item.get("_status"));
                 midBean.setPayNo((String) item.get("pay_no"));
+                midBean.setCouponDiscount((long) item.get("coupon_discount"));
+                midBean.setDdCouponDiscount((long) item.get("ddCouponDiscount"));
                 midBean.setRevPerson((String) item.get("rev_person"));
                 midBean.setRevPhone((String) item.get("rev_phone"));
                 midBean.setGoodsMoney((long) item.get("goods_amount"));
@@ -852,9 +854,9 @@ public class DealerOrderQuery {
 		List<Object> params = new ArrayList<Object>();
 		StringBuilder sql = new StringBuilder();
 		
-		sql.append("SELECT a.goods_name, e.goods_brand_name, a.goods_type_id, a.dealer_order_id, c._status, b.pay_no, b.created_date, b.pay_time, f.dealer_name\r\n")
+		sql.append("SELECT a.goods_name,a.coupon_discount, e.goods_brand_name, a.goods_type_id, a.dealer_order_id, c._status, b.pay_no, b.created_date, b.pay_time, f.dealer_name\r\n")
 		.append(",a.sku_id, a.sku_name, a.discount_price, a.special_price, a.is_special, a.sell_num, c.order_freight, c.goods_amount, c.plateform_discount, c.dealer_discount\r\n")
-		.append(", c.rev_person, c.rev_phone, c.street_addr, c.province, c.city, c.area_county, d.after_sell_order_id, d.back_money, d.return_freight, d.order_type, d.sell_num afNum, d._status afStatus\r\n")
+		.append(", c.rev_person, c.rev_phone, c.street_addr, c.coupon_discount ddCouponDiscount, c.province, c.city, c.area_county, d.after_sell_order_id, d.back_money, d.return_freight, d.order_type, d.sell_num afNum, d._status afStatus\r\n")
 		.append("FROM t_scm_order_detail a\r\n")
 		.append("LEFT OUTER JOIN t_scm_order_main b ON a.order_id=b.order_id\r\n")
 		.append("LEFT OUTER JOIN t_scm_order_after_sell d ON a.sku_id=d.sku_id AND a.sort_no=d.sort_no AND a.dealer_order_id=d.dealer_order_id ");

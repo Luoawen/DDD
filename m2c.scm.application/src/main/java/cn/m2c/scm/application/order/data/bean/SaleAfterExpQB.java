@@ -27,6 +27,8 @@ public class SaleAfterExpQB {
 	 */
 	private Integer isSpecial;
 	
+	private Long couponDiscount;
+	
 	/**
 	 * 特惠价
 	 */
@@ -92,6 +94,14 @@ public class SaleAfterExpQB {
 
 	public String getSaleAfterNo() {
 		return saleAfterNo;
+	}
+
+	public Long getCouponDiscount() {
+		return couponDiscount;
+	}
+
+	public void setCouponDiscount(Long couponDiscount) {
+		this.couponDiscount = couponDiscount;
 	}
 
 	public void setSaleAfterNo(String saleAfterNo) {

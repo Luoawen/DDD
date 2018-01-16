@@ -80,6 +80,16 @@ public class DealerOrderQB {
 	
 	private long couponDiscount;
 	
+	private Long ddCouponDiscount;
+	
+	public Long getDdCouponDiscount() {
+		return ddCouponDiscount;
+	}
+
+	public void setDdCouponDiscount(Long ddCouponDiscount) {
+		this.ddCouponDiscount = ddCouponDiscount;
+	}
+
 	public Integer getAfterStatus() {
 		return afterStatus;
 	}

@@ -120,7 +120,7 @@ public class SaleAfterExpModel {
         //售后总价    售后单价   运费   ordertypestr   statusstr
         this.saleAfterNo = saleAfterExpQB.getSaleAfterNo();
         //this.backMoney = df1.format((saleAfterExpQB.getBackMoney().floatValue()+saleAfterExpQB.getReturnFreight().floatValue())/(double)100);
-        this.backMoney = Utils.moneyFormatCN(saleAfterExpQB.getBackMoney() + saleAfterExpQB.getReturnFreight());
+        this.backMoney = Utils.moneyFormatCN(saleAfterExpQB.getBackMoney() + saleAfterExpQB.getReturnFreight() - saleAfterExpQB.getCouponDiscount());
         this.dealerOrderId = saleAfterExpQB.getDealerOrderId();
         if (saleAfterExpQB.getIsSpecial() == 0) {//不是特惠价,售后单价展示“拍获价”
             this.saleAfterGoodsPrice = Utils.moneyFormatCN(saleAfterExpQB.getSaleAfterGoodsPrice());
