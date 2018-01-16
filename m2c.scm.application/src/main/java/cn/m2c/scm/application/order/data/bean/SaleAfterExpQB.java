@@ -97,6 +97,9 @@ public class SaleAfterExpQB {
 	}
 
 	public Long getCouponDiscount() {
+		if(couponDiscount == null) {
+			couponDiscount = 0l;
+		}
 		return couponDiscount;
 	}
 

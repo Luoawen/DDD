@@ -78,12 +78,15 @@ public class DealerOrderQB {
 	 */
 	private Integer afterStatus;
 	
-	private long couponDiscount;
+	private Long couponDiscount;
 	
 	private Long ddCouponDiscount;
 	
 	public Long getDdCouponDiscount() {
-		return ddCouponDiscount;
+		if (ddCouponDiscount == null) {
+			ddCouponDiscount = 0l;
+		}
+		return ddCouponDiscount/10000;
 	}
 
 	public void setDdCouponDiscount(Long ddCouponDiscount) {
@@ -103,11 +106,14 @@ public class DealerOrderQB {
 	}
 
 	
-	public long getCouponDiscount() {
+	public Long getCouponDiscount() {
+		if (couponDiscount == null) {
+			couponDiscount = 0l;
+		}
 		return couponDiscount/10000;
 	}
 
-	public void setCouponDiscount(long couponDiscount) {
+	public void setCouponDiscount(Long couponDiscount) {
 		this.couponDiscount = couponDiscount;
 	}
 	

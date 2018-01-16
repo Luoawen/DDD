@@ -531,7 +531,7 @@ public class GoodsQueryApplication {
 
     private List<GoodsBean> queryGoodsHotSell(Integer number, List<String> filterGoodsIds) {
         String key = "scm.goods.hot.sell";
-
+        List<GoodsBean> sellingGoods = null;
         List<Object> params = new ArrayList<>();
         // 查询商品数据
         StringBuilder sql = new StringBuilder();
@@ -547,7 +547,7 @@ public class GoodsQueryApplication {
             params.add(number);
         } else {
             // 查询当月月榜数据
-            String topSql = "select t.goods_id from t_scm_goods_sales_list t where t.month=? limit 0,?";
+            String topSql = "select t.goods_id from t_scm_goods_sales_list t,t_scm_goods g where t.goods_id=g.goods_id and t.month=? and g.goods_status <> 1 and g.del_status=1 limit 0,?";
             Date date = new Date();
             Integer month = Integer.parseInt(new SimpleDateFormat("yyyyMM").format(date));
             List<String> topGoodsList = this.getSupportJdbcTemplate().jdbcTemplate().queryForList(topSql, String.class, month, number);
@@ -555,6 +555,7 @@ public class GoodsQueryApplication {
                 if (topGoodsList.size() == number) { // 月榜数据够了
                     sql.append(" and g.goods_id in (" + Utils.listParseString(topGoodsList) + ")");
                 } else { // 月榜数据不够，则按时间查剩余数据
+                    sellingGoods = querySellingGoodsByGoodsIds(topGoodsList); // 排行榜的商品
                     sql.append(" and g.goods_id not in (" + Utils.listParseString(topGoodsList) + ")");
                     sql.append(" order by g.created_date desc limit 0,?");
                     params.add(number - topGoodsList.size());
@@ -567,8 +568,11 @@ public class GoodsQueryApplication {
             for (GoodsBean goodsBean : goodsBeans) {
                 goodsBean.setGoodsSkuBeans(queryGoodsSKUsByGoodsId(goodsBean.getId()));
             }
+            if (null != sellingGoods) {
+                goodsBeans.addAll(sellingGoods);
+            }
         }
-        if (null == filterGoodsIds){
+        if (null == filterGoodsIds) {
             if (null != goodsBeans && goodsBeans.size() > 0) {
                 RedisUtil.setString(key, 24 * 3600, JsonUtils.toStr(goodsBeans));
             }
@@ -1456,5 +1460,21 @@ public class GoodsQueryApplication {
         }
         return this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), CouponDealerBean.class, params.toArray());
     }
+
+    public List<GoodsBean> querySellingGoodsByGoodsIds(List<String> goodsIds) {
+        StringBuilder sql = new StringBuilder();
+        sql.append(" SELECT ");
+        sql.append(" * ");
+        sql.append(" FROM ");
+        sql.append(" t_scm_goods where goods_id in (" + Utils.listParseString(goodsIds) + ") and goods_status <> 1 AND del_status = 1");
+        List<GoodsBean> goodsBeans = this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsBean.class);
+        if (null != goodsBeans && goodsBeans.size() > 0) {
+            for (GoodsBean goodsBean : goodsBeans) {
+                goodsBean.setGoodsSkuBeans(queryGoodsSKUsByGoodsId(goodsBean.getId()));
+            }
+        }
+        return goodsBeans;
+    }
+
 }
 

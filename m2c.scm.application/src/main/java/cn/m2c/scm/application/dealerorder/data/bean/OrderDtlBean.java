@@ -131,7 +131,10 @@ public class OrderDtlBean {
 	private Long ddCouponDiscount;
 	
 	public Long getDdCouponDiscount() {
-		return ddCouponDiscount;
+		if (ddCouponDiscount == null) {
+			ddCouponDiscount = 0l;
+		}
+		return ddCouponDiscount/10000;
 	}
 
 	public void setDdCouponDiscount(Long ddCouponDiscount) {
@@ -149,7 +152,10 @@ public class OrderDtlBean {
 	}
 
 	public Long getCouponDiscount() {
-		return couponDiscount;
+		if (couponDiscount == null) {
+			couponDiscount = 0l;
+		}
+		return couponDiscount/10000;
 	}
 
 	public void setCouponDiscount(Long couponDiscount) {
