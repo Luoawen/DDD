@@ -1,6 +1,7 @@
 package cn.m2c.scm.port.adapter.restful.admin.order;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import cn.m2c.common.EncryptUtils;
+import cn.m2c.common.JsonUtils;
 import cn.m2c.common.MCode;
 import cn.m2c.common.MPager;
 import cn.m2c.scm.application.order.data.bean.MediaResOrderDetailBean;
@@ -45,8 +48,8 @@ public class AdminOrderOutAgent {
     		@RequestParam(value = "payStatus", required = false) Integer payStatus,                    //支付状态(-1已取消,0待付款,1已付款)
     		@RequestParam(value = "payWay", required = false) Integer payWay,                          //支付方式(1支付宝,2微信)
     		@RequestParam(value = "afterSellOrderType", required = false) Integer afterSellOrderType,  //售后方式(0换货,1退货退款,2仅退款)
-    		@RequestParam(value = "mediaIds", required = false) List mediaIds,                         //媒体编号
-    		@RequestParam(value = "mediaResIds", required = false) List mediaResIds,                   //广告位条码
+    		@RequestParam(value = "mediaIds", required = false) String mediaIds,                         //媒体编号
+    		@RequestParam(value = "mediaResIds", required = false) String mediaResIds,                   //广告位条码
     		@RequestParam(value = "goodsMessage", required = false) String goodsMessage,               //商品名/平台SKU
     		@RequestParam(value = "dealerName", required = false) String dealerName,                   //商家名
     		@RequestParam(value = "orderTime", required = false) String orderTime,                     //下单时间
@@ -56,6 +59,9 @@ public class AdminOrderOutAgent {
     		){
     	MPager result = new MPager(MCode.V_1);
     	try {
+    		//base64解密
+    		List<String> mediaIdsList = Arrays.asList(EncryptUtils.decrypt(mediaIds).split(","));
+        	List<String> mediaResIdsList = Arrays.asList(EncryptUtils.decrypt(mediaResIds).split(","));
 			//根据用户名/账号查下单用户id,用户名/手机号(Map)
 			Map<String,String> userMap = orderServiceImpl.getUserMobileOrUserName(userMessage);
 			List<String> userIds = new ArrayList<String>();
@@ -77,9 +83,9 @@ public class AdminOrderOutAgent {
     			userIds = null;
     		}
     		//查总数
-    		Integer total = orderQuery.getMediaResOrderDetailTotal(userIds, orderId, payStatus, payWay, afterSellOrderType, mediaIds, mediaResIds, goodsMessage, dealerName, orderTime);
+    		Integer total = orderQuery.getMediaResOrderDetailTotal(userIds, orderId, payStatus, payWay, afterSellOrderType, mediaIdsList, mediaResIdsList, goodsMessage, dealerName, orderTime);
     		if(total > 0){
-    			List<MediaResOrderDetailBean> mediaResOrderDetailBeans = orderQuery.getMediaResOrderDetail(userIds, orderId, payStatus, payWay, afterSellOrderType, mediaIds, mediaResIds, goodsMessage, dealerName, orderTime, pageOrNot, pageNum, rows);
+    			List<MediaResOrderDetailBean> mediaResOrderDetailBeans = orderQuery.getMediaResOrderDetail(userIds, orderId, payStatus, payWay, afterSellOrderType, mediaIdsList, mediaResIdsList, goodsMessage, dealerName, orderTime, pageOrNot, pageNum, rows);
     			if(null != mediaResOrderDetailBeans && mediaResOrderDetailBeans.size() > 0){
     				List<MediaResOrderDetailBeanRepresentation> representations = new ArrayList<>();
     				for(MediaResOrderDetailBean adOrderDetailBean : mediaResOrderDetailBeans){
