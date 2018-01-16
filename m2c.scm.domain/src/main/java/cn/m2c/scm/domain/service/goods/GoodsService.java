@@ -54,9 +54,10 @@ public interface GoodsService {
 
     /**
      * 更新识别图状态
+     *
      * @param recognizedId
      * @param recognizedUrl
-     * @param status 0 下架 1 上架
+     * @param status        0 下架 1 上架
      * @return
      */
     boolean updateRecognizedImgStatus(String recognizedId, String recognizedUrl, Integer status);
@@ -71,6 +72,7 @@ public interface GoodsService {
 
     /**
      * 根据userId获取用户信息
+     *
      * @param userId
      * @return
      */
@@ -78,6 +80,7 @@ public interface GoodsService {
 
     /**
      * 获取购物车内有效商品总件数
+     *
      * @param userId
      * @return
      */
@@ -95,8 +98,14 @@ public interface GoodsService {
 
     /**
      * 优惠券适用范围
+     *
      * @param couponId 优惠券id
      * @return
      */
     Map getCouponRange(String couponId);
+
+    /**
+     * 新人礼包专区商品范围展示
+     */
+    Map packetZoneGoods();
 }

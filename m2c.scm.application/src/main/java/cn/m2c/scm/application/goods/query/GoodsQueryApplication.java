@@ -1476,5 +1476,26 @@ public class GoodsQueryApplication {
         return goodsBeans;
     }
 
+    /**
+     * 新人礼包专区商品
+     *
+     * @return
+     */
+    public List<GoodsBean> queryPacketZoneGoods(Map couponMap) {
+        StringBuilder sql = new StringBuilder();
+        sql.append(" SELECT ");
+        sql.append(" g.* ");
+        sql.append(" FROM ");
+        sql.append(" t_scm_goods g WHERE 1=1");
+        couponChoiceDeal(sql, couponMap);
+        sql.append(" LIMIT 0,4");
+        List<GoodsBean> goodsBeanList = this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsBean.class);
+        if (null != goodsBeanList && goodsBeanList.size() > 0) {
+            for (GoodsBean goodsBean : goodsBeanList) {
+                goodsBean.setGoodsSkuBeans(queryGoodsSKUsByGoodsId(goodsBean.getId()));
+            }
+        }
+        return goodsBeanList;
+    }
 }
 
