@@ -86,7 +86,20 @@ public class SellerApplication {
 		seller.updateSellerInfo(command.getSellerName(), command.getSellerPhone(), command.getSellerRemark());
 		sellerRepository.save(seller);
 	}
-
+	
+	/**
+	 * 禁用业务员
+	 * @param sellerId
+	 */
+	@Transactional(rollbackFor = { Exception.class, RuntimeException.class, NegativeException.class })
+	@EventListener(isListening = true)
+	public void sellerDisable(String sellerId) throws NegativeException{
+		Seller seller = sellerRepository.getSeller(sellerId);
+		if (seller == null)
+			throw new NegativeException(NegativeCode.SELLER_IS_NOT_EXIST, "此业务员不存在.");
+		seller.sellerDisable();
+		sellerRepository.save(seller);
+	}
 	
 //	/**
 //	 * 业务员添加或者更新事件

@@ -258,6 +258,7 @@ public class SellerAgent {
 			result = new MPager(MCode.V_400, "服务器开小差了");
 		}
 		return new ResponseEntity<MPager>(result, HttpStatus.OK);
-
 	}
+	
+	
 }

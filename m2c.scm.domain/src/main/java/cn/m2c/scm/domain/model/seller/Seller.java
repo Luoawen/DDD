@@ -4,9 +4,12 @@ import java.util.Date;
 
 import org.apache.commons.lang3.StringUtils;
 
+import cn.m2c.common.MCode;
 import cn.m2c.ddd.common.domain.model.ConcurrencySafeEntity;
 import cn.m2c.ddd.common.domain.model.DomainEventPublisher;
+import cn.m2c.scm.domain.NegativeException;
 import cn.m2c.scm.domain.model.seller.event.SellerAddOrUpdateEvent;
+import cn.m2c.scm.domain.model.seller.event.SellerDisableEvent;
 
 public class Seller extends ConcurrencySafeEntity {
 
@@ -157,6 +160,17 @@ public class Seller extends ConcurrencySafeEntity {
 		return sellerPhone;
 	}
 	
+	/**
+	 * 禁用业务员
+	 * @throws NegativeException
+	 */
+	public void sellerDisable() throws NegativeException {
+		if (sellerStatus == 3) {
+			throw new NegativeException(MCode.V_400,"该业务员已被禁用");
+		}
+		this.sellerStatus = 3;
+		DomainEventPublisher.instance().publish(new SellerDisableEvent(this.sellerId));
+	}
 	
 
 //	/**
