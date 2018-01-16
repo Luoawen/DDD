@@ -38,7 +38,7 @@ public class AdminOrderOutAgent {
      * 给媒体提供的广告位订单明细
      * @return
      */
-    @RequestMapping(value = "/orderdetail", method = RequestMethod.GET)
+    @RequestMapping(value = "/orderdetail", method = RequestMethod.POST)
     public ResponseEntity<MPager> getMediaResOrderDetail(
     		@RequestParam(value = "userMessage", required = false) String userMessage,                 //下单用户名/账号
     		@RequestParam(value = "orderId", required = false) String orderId,                         //订单号
