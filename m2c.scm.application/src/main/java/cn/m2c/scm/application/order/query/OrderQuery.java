@@ -870,7 +870,7 @@ public class OrderQuery {
      * @return
      */
 	public Integer getMediaResOrderDetailTotal(List userIds, String orderId, Integer payStatus, Integer payWay,
-			Integer afterSellOrderType, List mediaIds, List mediaResIds, String goodsMessage, String dealerName,
+			Integer afterSellOrderType, List mediaResIds, String goodsMessage, String dealerName,
 			String orderTime) {
 		List<Object> params = new ArrayList<Object>();
 		StringBuilder sql = new StringBuilder();
@@ -907,9 +907,9 @@ public class OrderQuery {
 			sql.append(" AND toas.order_type = ? ");
 			params.add(afterSellOrderType);
 		}
-		if(null != mediaIds && mediaIds.size() > 0) {//媒体id
+		/*if(null != mediaIds && mediaIds.size() > 0) {//媒体id
 			sql.append(" AND tod.media_id IN ( " + Utils.listParseString(mediaIds) + " ) ");
-		}
+		}*/
 		if(null != mediaResIds && mediaResIds.size() > 0) {//广告位id
 			sql.append(" AND tod.media_res_id IN ( " + Utils.listParseString(mediaResIds) + " ) ");
 		}
@@ -935,7 +935,7 @@ public class OrderQuery {
 	}
 
 	public List<MediaResOrderDetailBean> getMediaResOrderDetail(List<String> userIds, String orderId, Integer payStatus,
-			Integer payWay, Integer afterSellOrderType, List mediaIds, List mediaResIds, String goodsMessage,
+			Integer payWay, Integer afterSellOrderType, List mediaResIds, String goodsMessage,
 			String dealerName, String orderTime, Integer pageOrNot, Integer pageNum, Integer rows) {
 		List<Object> params = new ArrayList<Object>();
 		StringBuilder sql = new StringBuilder();
@@ -974,9 +974,9 @@ public class OrderQuery {
 			sql.append(" AND toas.order_type = ? ");
 			params.add(afterSellOrderType);
 		}
-		if(null != mediaIds && mediaIds.size() > 0) {//媒体id
+		/*if(null != mediaIds && mediaIds.size() > 0) {//媒体id
 			sql.append(" AND tod.media_id IN ( " + Utils.listParseString(mediaIds) + " ) ");
-		}
+		}*/
 		if(null != mediaResIds && mediaResIds.size() > 0) {//广告位id
 			sql.append(" AND tod.media_res_id IN ( " + Utils.listParseString(mediaResIds) + " ) ");
 		}
