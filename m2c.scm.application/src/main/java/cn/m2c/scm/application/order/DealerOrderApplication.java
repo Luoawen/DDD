@@ -103,6 +103,7 @@ public class DealerOrderApplication {
 		MainOrder mOrder = orderRepository.getOrderById(dealerOrder.getOrderNo());
 		Map extraMap = new HashMap<>();
 		extraMap.put("dealerOrderId", command.getDealerOrderId());
+		extraMap.put("orderId", dealerOrder.getOrderNo());
 		extraMap.put("optType", 1);
 		orderService.msgPush(1, mOrder.userId(), JsonUtils.toStr(extraMap), dealerOrder.dealerId());
 		dealerOrderRepository.save(dealerOrder);
@@ -199,6 +200,7 @@ public class DealerOrderApplication {
 		if (isModifyFreight || isModifyAddress) {
 			Map extraMap = new HashMap<>();
 			extraMap.put("dealerOrderId", dealerOrder.dealerId());
+			extraMap.put("orderId", dealerOrder.getOrderNo());
 			ShopBean shopBean = shopQuery.getShop(dealerOrder.dealerId());
 			String shopName = null != shopBean ? shopBean.getShopName() : null;
 			extraMap.put("shopName", shopName);
