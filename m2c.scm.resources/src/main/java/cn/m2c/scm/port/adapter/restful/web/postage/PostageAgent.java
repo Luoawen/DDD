@@ -71,7 +71,7 @@ public class PostageAgent {
      * @param dealerId          经销商ID
      * @param modelId           模板ID
      * @param modelName         模板名称
-     * @param chargeType        计费方式,0:按重量,1:按件数
+     * @param chargeType        计费方式,0:按重量,1:按件数,2:全国包邮
      * @param postageModelRules 模板规则,list的json字符串，格式：[{"address":"全国（默认运费）","cityCode":"123,456","continuedPiece":1,"continuedPostage":5000,"continuedWeight":1.0,"defaultFlag":1,"firstPiece":1,"firstPostage":10000,"firstWeight":2.0}]
      * @param modelDescription  模板说明
      * @return
@@ -216,5 +216,33 @@ public class PostageAgent {
             result = new MResult(MCode.V_400, "查询运费模板规则失败");
         }
         return new ResponseEntity<MResult>(result, HttpStatus.OK);
+    }
+    
+    /**
+     * 查询商家是否已经创建全国包邮模板
+     * @param dealerId 商家id
+     * @return
+     */
+    @RequestMapping(value = "/web/postage/nationwide", method = RequestMethod.GET)
+    public ResponseEntity<MResult> queryDealerPostageNationwide(
+    		@RequestParam(value = "dealerId", required = false) String dealerId){
+    	MResult result = new MResult(MCode.V_1);
+    	if (StringUtils.isEmpty(dealerId)) {
+            result = new MResult(MCode.V_1, "商家ID为空");
+            return new ResponseEntity<MResult>(result, HttpStatus.OK);
+        }
+    	try {
+            Boolean flag = postageModelQueryApplication.queryDealerPostageNationwide(dealerId);
+            //true商家可创建包邮模板
+            result.setContent(flag);
+            result.setStatus(MCode.V_200);
+        } catch(NegativeException ne) {
+        	LOGGER.error("queryDealerPostageNationwide NegativeException ne:", ne);
+        	result = new MResult(ne.getStatus(), ne.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("queryDealerPostageNationwide Exception e:", e);
+            result = new MResult(MCode.V_400, "查询商家是否已经创建全国包邮模板失败");
+        }
+    	return new ResponseEntity<MResult>(result, HttpStatus.OK);
     }
 }
