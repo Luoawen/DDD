@@ -61,6 +61,8 @@ public class GoodsApproveAddListener extends ExchangeListener {
                 goodsClassifyId, goodsBrandId, goodsBrandName, goodsUnitId, goodsMinQuantity,
                 goodsPostageId, goodsBarCode, goodsKeyWords, goodsGuarantees,
                 goodsMainImageList, goodsMainVideo, goodsDesc, goodsSpecifications, goodsSkuApproves, skuFlag);
+
+        
         goodsApproveApplication.addGoodsApproveForModifyGoods(command);
     }
 

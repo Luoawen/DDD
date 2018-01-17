@@ -3,6 +3,7 @@ package cn.m2c.scm.domain.model.goods.event;
 import cn.m2c.ddd.common.domain.model.DomainEvent;
 
 import java.util.Date;
+import java.util.Map;
 
 /**
  * 增加商品审核记录
@@ -83,7 +84,7 @@ public class GoodsApproveAddEvent implements DomainEvent {
      * 商品主图  存储类型是[“url1”,"url2"]
      */
     private String goodsMainImages;
-    
+
     /**
      * 商品主图视频
      */
@@ -103,6 +104,8 @@ public class GoodsApproveAddEvent implements DomainEvent {
 
     private Integer skuFlag;
 
+    private Map changeGoodsInfo;
+
     private Date occurredOn;
     private int eventVersion;
 
@@ -110,7 +113,7 @@ public class GoodsApproveAddEvent implements DomainEvent {
                                 String goodsSubTitle, String goodsClassifyId, String goodsBrandId, String goodsBrandName, String goodsUnitId,
                                 Integer goodsMinQuantity, String goodsPostageId, String goodsBarCode,
                                 String goodsKeyWord, String goodsGuarantee, String goodsMainImages, String goodsMainVideo, String goodsDesc,
-                                String goodsSpecifications, String goodsSkuApproves, Integer skuFlag) {
+                                String goodsSpecifications, String goodsSkuApproves, Integer skuFlag, Map changeGoodsInfo) {
         this.goodsId = goodsId;
         this.dealerId = dealerId;
         this.dealerName = dealerName;
@@ -131,6 +134,7 @@ public class GoodsApproveAddEvent implements DomainEvent {
         this.goodsSpecifications = goodsSpecifications;
         this.goodsSkuApproves = goodsSkuApproves;
         this.skuFlag = skuFlag;
+        this.changeGoodsInfo = changeGoodsInfo;
         this.occurredOn = new Date();
         this.eventVersion = 1;
     }

@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping default-access="field" default-cascade="all">
+    <class name="cn.m2c.scm.domain.model.goods.GoodsHistory" table="t_scm_goods_history" lazy="true"
+           optimistic-lock="version" dynamic-insert="true" dynamic-update="true">
+
+        <id name="id" column="id" type="long" unsaved-value="-1">
+            <generator class="native"/>
+        </id>
+
+        <property name="historyId" column="history_id" type="string"/>
+        <property name="historyNo" column="history_no" type="string"/>
+        <property name="goodsId" column="goods_id" type="string"/>
+        <property name="changeType" column="change_type" type="java.lang.Integer"/>
+        <property name="beforeContent" column="before_content" type="string"/>
+        <property name="afterContent" column="after_content" type="string"/>
+        <property name="createTime" column="create_time" type="timestamp"/>
+    </class>
+</hibernate-mapping>
