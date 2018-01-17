@@ -559,6 +559,7 @@ public class AppGoodsAgent {
                                         shoMap.put("shopName", shopBean.getShopName());
                                         shoMap.put("shopIcon", shopBean.getShopIcon());
                                         shoMap.put("dealerId", shopBean.getDealerId());
+                                        shoMap.put("dataType", 1);
                                         shopMapList.add(shoMap);
                                     }
                                 }
@@ -587,6 +588,7 @@ public class AppGoodsAgent {
                                         if (null != mainImages && mainImages.size() > 0) {
                                             goodsMap.put("goodsImageUrl", mainImages.get(0));
                                         }
+                                        goodsMap.put("dataType", 1);
                                         goodsMapList.add(goodsMap);
                                     }
                                 }
