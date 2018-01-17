@@ -23,6 +23,8 @@ import cn.m2c.scm.application.goods.query.data.representation.app.AppGoodsSearch
 import cn.m2c.scm.application.shop.query.ShopQuery;
 import cn.m2c.scm.application.special.data.bean.GoodsSpecialBean;
 import cn.m2c.scm.application.special.query.GoodsSpecialQueryApplication;
+import cn.m2c.scm.application.standstard.bean.StantardBean;
+import cn.m2c.scm.application.standstard.query.StantardQuery;
 import cn.m2c.scm.application.unit.query.UnitQuery;
 import cn.m2c.scm.domain.service.goods.GoodsService;
 import org.apache.commons.lang3.StringUtils;
@@ -77,6 +79,8 @@ public class AppGoodsAgent {
 
     @Autowired
     ConfigQueryApplication configQueryApplication;
+    @Autowired
+    StantardQuery stantardQuery;
 
     /**
      * 商品猜你喜欢
@@ -162,6 +166,18 @@ public class AppGoodsAgent {
                     favoriteId = goodsRestService.getUserIsFavoriteGoods(userId, goodsId, token);
                 }
                 String phone = shopQuery.getDealerShopCustmerTel(goodsBean.getDealerId());
+
+                List<Map> goodsSpecifications = JsonUtils.toList(goodsBean.getGoodsSpecifications(), Map.class);
+                if (null != goodsSpecifications && goodsSpecifications.size() > 0) {
+                    for (Map tempMap : goodsSpecifications) {
+                        String standardId = tempMap.get("standardId").toString();
+                        StantardBean standard = stantardQuery.getStantardByStantardId(standardId);
+                        String standardName = null != standard ? standard.getStantardName() : tempMap.get("itemName").toString();
+                        tempMap.put("itemName", standardName);
+                    }
+                    goodsBean.setGoodsSpecifications(JsonUtils.toStr(goodsSpecifications));
+                }
+
                 AppGoodsDetailRepresentation representation = new AppGoodsDetailRepresentation(goodsBean,
                         goodsGuarantee, goodsUnitName, null, commentTotal, goodsCommentBean, fullCut, coupons, goodsTags, favoriteId, phone, null);
                 result.setContent(representation);
