@@ -358,4 +358,12 @@ public class GoodsApproveCommand extends AssertionConcern implements Serializabl
     public String getGoodsMainVideo() {
         return goodsMainVideo;
     }
+
+    public String getChangeGoodsInfo() {
+        return changeGoodsInfo;
+    }
+
+    public void setChangeGoodsInfo(String changeGoodsInfo) {
+        this.changeGoodsInfo = changeGoodsInfo;
+    }
 }

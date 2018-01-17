@@ -14,7 +14,6 @@ import cn.m2c.scm.domain.model.goods.GoodsRepository;
 import cn.m2c.scm.domain.model.goods.GoodsSkuRepository;
 import cn.m2c.scm.domain.model.shop.Shop;
 import cn.m2c.scm.domain.model.shop.ShopRepository;
-
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,9 +21,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * 商品审核
@@ -45,7 +43,7 @@ public class GoodsApproveApplication {
 
     @Resource
     private OperationLogManager operationLogManager;
-    
+
     /**
      * 商家添加商品需审核
      *
@@ -74,7 +72,7 @@ public class GoodsApproveApplication {
                     command.getGoodsBrandId(), command.getGoodsBrandName(), command.getGoodsUnitId(), command.getGoodsMinQuantity(),
                     command.getGoodsPostageId(), command.getGoodsBarCode(), JsonUtils.toStr(command.getGoodsKeyWord()),
                     JsonUtils.toStr(command.getGoodsGuarantee()), JsonUtils.toStr(command.getGoodsMainImages()), command.getGoodsMainVideo(),
-                    command.getGoodsDesc(), command.getGoodsShelves(), command.getGoodsSpecifications(), command.getGoodsSkuApproves(), command.getSkuFlag());
+                    command.getGoodsDesc(), command.getGoodsShelves(), command.getGoodsSpecifications(), command.getGoodsSkuApproves(), command.getSkuFlag(), null);
             goodsApproveRepository.save(goodsApprove);
         }
     }
@@ -99,12 +97,12 @@ public class GoodsApproveApplication {
                     command.getGoodsBrandId(), command.getGoodsBrandName(), command.getGoodsUnitId(), command.getGoodsMinQuantity(),
                     command.getGoodsPostageId(), command.getGoodsBarCode(), JsonUtils.toStr(command.getGoodsKeyWord()),
                     JsonUtils.toStr(command.getGoodsGuarantee()), JsonUtils.toStr(command.getGoodsMainImages()), command.getGoodsMainVideo(),
-                    command.getGoodsDesc(), null, command.getGoodsSpecifications(), command.getGoodsSkuApproves(),command.getSkuFlag());
+                    command.getGoodsDesc(), null, command.getGoodsSpecifications(), command.getGoodsSkuApproves(), command.getSkuFlag(), command.getChangeGoodsInfo());
         } else {
             goodsApprove.modifyGoodsApprove(command.getGoodsName(), command.getGoodsSubTitle(),
                     command.getGoodsClassifyId(), command.getGoodsBrandId(), command.getGoodsBrandName(), command.getGoodsUnitId(), command.getGoodsMinQuantity(),
                     command.getGoodsPostageId(), command.getGoodsBarCode(), JsonUtils.toStr(command.getGoodsKeyWord()), JsonUtils.toStr(command.getGoodsGuarantee()),
-                    JsonUtils.toStr(command.getGoodsMainImages()), command.getGoodsMainVideo(), command.getGoodsDesc(), command.getGoodsSpecifications(), command.getGoodsSkuApproves());
+                    JsonUtils.toStr(command.getGoodsMainImages()), command.getGoodsMainVideo(), command.getGoodsDesc(), command.getGoodsSpecifications(), command.getGoodsSkuApproves(), true, command.getChangeGoodsInfo());
         }
         goodsApproveRepository.save(goodsApprove);
     }
@@ -123,7 +121,7 @@ public class GoodsApproveApplication {
             throw new NegativeException(MCode.V_300, "商品审核信息不存在");
         }
         if (StringUtils.isNotEmpty(_attach))
-        	operationLogManager.operationLog("同意商品审核", _attach, goodsApprove, new String[]{"goodsApprove"}, null);
+            operationLogManager.operationLog("同意商品审核", _attach, goodsApprove, new String[]{"goodsApprove"}, null);
         goodsApprove.agree();
         goodsApproveRepository.remove(goodsApprove);
     }
@@ -141,7 +139,7 @@ public class GoodsApproveApplication {
             throw new NegativeException(MCode.V_300, "商品审核信息不存在");
         }
         if (StringUtils.isNotEmpty(_attach))
-        	operationLogManager.operationLog("拒绝商品审核", _attach, goodsApprove, new String[]{"goodsApprove"}, null);
+            operationLogManager.operationLog("拒绝商品审核", _attach, goodsApprove, new String[]{"goodsApprove"}, null);
         goodsApprove.reject(command.getRejectReason());
     }
 
@@ -153,11 +151,11 @@ public class GoodsApproveApplication {
             throw new NegativeException(MCode.V_300, "商品审核信息不存在");
         }
         if (StringUtils.isNotEmpty(_attach))
-        	operationLogManager.operationLog("修改商品审核信息", _attach, goodsApprove, new String[]{"goodsApprove"}, null);
+            operationLogManager.operationLog("修改商品审核信息", _attach, goodsApprove, new String[]{"goodsApprove"}, null);
         goodsApprove.modifyGoodsApprove(command.getGoodsName(), command.getGoodsSubTitle(),
                 command.getGoodsClassifyId(), command.getGoodsBrandId(), command.getGoodsBrandName(), command.getGoodsUnitId(), command.getGoodsMinQuantity(),
                 command.getGoodsPostageId(), command.getGoodsBarCode(), JsonUtils.toStr(command.getGoodsKeyWord()), JsonUtils.toStr(command.getGoodsGuarantee()),
-                JsonUtils.toStr(command.getGoodsMainImages()), command.getGoodsMainVideo(), command.getGoodsDesc(), command.getGoodsSpecifications(), command.getGoodsSkuApproves());
+                JsonUtils.toStr(command.getGoodsMainImages()), command.getGoodsMainVideo(), command.getGoodsDesc(), command.getGoodsSpecifications(), command.getGoodsSkuApproves(), false, null);
     }
 
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
@@ -168,7 +166,7 @@ public class GoodsApproveApplication {
             throw new NegativeException(MCode.V_300, "商品审核信息不存在");
         }
         if (StringUtils.isNotEmpty(_attach))
-        	operationLogManager.operationLog("删除商品审核信息", _attach, goodsApprove, new String[]{"goodsApprove"}, null);
+            operationLogManager.operationLog("删除商品审核信息", _attach, goodsApprove, new String[]{"goodsApprove"}, null);
         goodsApprove.remove();
     }
 
@@ -219,59 +217,62 @@ public class GoodsApproveApplication {
 
     /**
      * 批量同意商品审核
+     *
      * @param goodsIds
-     * @throws NegativeException 
+     * @throws NegativeException
      */
     @EventListener(isListening = true)
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
-	public void agreeGoodsApproveBatch(List goodsIds, String _attach) throws NegativeException {
-    	LOGGER.info("agreeGoodsApproveBatch goodsIds >>{}", goodsIds);
-    	List<GoodsApprove> goodsApproveList = goodsApproveRepository.queryGoodsApproveByIdList(goodsIds);
-    	if(null != goodsApproveList && goodsApproveList.size()>0) {
-    		for(GoodsApprove goodsApprove : goodsApproveList) {
-    			if (StringUtils.isNotEmpty(_attach))
-    				operationLogManager.operationLog("批量同意商品审核", _attach, goodsApprove, new String[]{"goodsApprove"}, null);
-    			goodsApprove.agree();
-    	        goodsApproveRepository.remove(goodsApprove);
-    		}
-    	}else {
-    		throw new NegativeException(MCode.V_300, "所选商品的审核信息不存在");
-    	}
-	}
-    
+    public void agreeGoodsApproveBatch(List goodsIds, String _attach) throws NegativeException {
+        LOGGER.info("agreeGoodsApproveBatch goodsIds >>{}", goodsIds);
+        List<GoodsApprove> goodsApproveList = goodsApproveRepository.queryGoodsApproveByIdList(goodsIds);
+        if (null != goodsApproveList && goodsApproveList.size() > 0) {
+            for (GoodsApprove goodsApprove : goodsApproveList) {
+                if (StringUtils.isNotEmpty(_attach))
+                    operationLogManager.operationLog("批量同意商品审核", _attach, goodsApprove, new String[]{"goodsApprove"}, null);
+                goodsApprove.agree();
+                goodsApproveRepository.remove(goodsApprove);
+            }
+        } else {
+            throw new NegativeException(MCode.V_300, "所选商品的审核信息不存在");
+        }
+    }
+
     /**
      * 批量拒绝商品审核
+     *
      * @param command
-     * @throws NegativeException 
+     * @throws NegativeException
      */
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
-	public void rejectGoodsApproveBatch(GoodsApproveRejectBatchCommand command, String _attach) throws NegativeException {
-    	LOGGER.info("rejectGoodsApproveBatch command >>{}",command);
-    	List<GoodsApprove> goodsApproveList = goodsApproveRepository.queryGoodsApproveByIdList(command.getGoodsIds());
-    	if(goodsApproveList != null && goodsApproveList.size() > 0) {
-    		for(GoodsApprove goodsApprove : goodsApproveList) {
-    			if (StringUtils.isNotEmpty(_attach))
-    				operationLogManager.operationLog("批量拒绝商品审核", _attach, goodsApprove, new String[]{"goodsApprove"}, null);
-    			goodsApprove.reject(command.getRejectReason());
-    		}
-    	}else {
-    		throw new NegativeException(MCode.V_300, "所选商品的审核信息不存在");
-    	}
-	}
+    public void rejectGoodsApproveBatch(GoodsApproveRejectBatchCommand command, String _attach) throws NegativeException {
+        LOGGER.info("rejectGoodsApproveBatch command >>{}", command);
+        List<GoodsApprove> goodsApproveList = goodsApproveRepository.queryGoodsApproveByIdList(command.getGoodsIds());
+        if (goodsApproveList != null && goodsApproveList.size() > 0) {
+            for (GoodsApprove goodsApprove : goodsApproveList) {
+                if (StringUtils.isNotEmpty(_attach))
+                    operationLogManager.operationLog("批量拒绝商品审核", _attach, goodsApprove, new String[]{"goodsApprove"}, null);
+                goodsApprove.reject(command.getRejectReason());
+            }
+        } else {
+            throw new NegativeException(MCode.V_300, "所选商品的审核信息不存在");
+        }
+    }
 
     /**
      * 修改审核中商品的商品保障(保障删除后需删除审核中商品的对应保障)
+     *
      * @param dealerId
      * @param guaranteeId
      */
-	public void modifyGoodsApproveGuarantee(String dealerId, String guaranteeId) {
-		LOGGER.info("modifyGoodsApproveGuarantee dealerId >>{}", dealerId);
-		LOGGER.info("modifyGoodsApproveGuarantee guaranteeId >>{}", guaranteeId);
-		List<GoodsApprove> goodsApproveList = goodsApproveRepository.queryGoodsByDealerIdAndGuaranteeId(dealerId, guaranteeId);
-		if(null != goodsApproveList && goodsApproveList.size() > 0) {
-			for(GoodsApprove goodsApprove : goodsApproveList) {
-				goodsApprove.delGoodsApproveGuarantee(guaranteeId);
-			}
-		}
-	}
+    public void modifyGoodsApproveGuarantee(String dealerId, String guaranteeId) {
+        LOGGER.info("modifyGoodsApproveGuarantee dealerId >>{}", dealerId);
+        LOGGER.info("modifyGoodsApproveGuarantee guaranteeId >>{}", guaranteeId);
+        List<GoodsApprove> goodsApproveList = goodsApproveRepository.queryGoodsByDealerIdAndGuaranteeId(dealerId, guaranteeId);
+        if (null != goodsApproveList && goodsApproveList.size() > 0) {
+            for (GoodsApprove goodsApprove : goodsApproveList) {
+                goodsApprove.delGoodsApproveGuarantee(guaranteeId);
+            }
+        }
+    }
 }
