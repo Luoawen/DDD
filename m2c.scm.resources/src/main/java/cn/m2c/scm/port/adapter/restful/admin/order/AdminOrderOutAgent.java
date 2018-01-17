@@ -1,7 +1,6 @@
 package cn.m2c.scm.port.adapter.restful.admin.order;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -57,6 +56,7 @@ public class AdminOrderOutAgent {
     		){
     	MPager result = new MPager(MCode.V_1);
     	try {
+    		LOGGER.info("查询广告位订单明细是否分页:" + (pageOrNot==0?"0不分页":"1分页"));
 			//根据用户名/账号查下单用户id,用户名/手机号(Map)
 			Map<String,String> userMap = orderServiceImpl.getUserMobileOrUserName(userMessage);
 			List<String> userIds = new ArrayList<String>();

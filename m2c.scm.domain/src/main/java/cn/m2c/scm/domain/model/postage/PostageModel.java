@@ -69,15 +69,16 @@ public class PostageModel extends ConcurrencySafeEntity {
         this.chargeType = chargeType;
         this.modelStatus = 1;
         this.modelDescription = modelDescription;
-
-        //  模板规则
-        List<Map> ruleList = JsonUtils.toList(postageModelRule, Map.class);
-        if (null != ruleList && ruleList.size() > 0) {
-            for (Map map : ruleList) {
-                if (null == this.postageModelRules) {
-                    this.postageModelRules = new ArrayList<>();
+        if(chargeType == 0 || chargeType == 1) {//0按重量，1按件数
+        	//  模板规则
+            List<Map> ruleList = JsonUtils.toList(postageModelRule, Map.class);
+            if (null != ruleList && ruleList.size() > 0) {
+                for (Map map : ruleList) {
+                    if (null == this.postageModelRules) {
+                        this.postageModelRules = new ArrayList<>();
+                    }
+                    this.postageModelRules.add(createPostageModelRule(map));
                 }
-                this.postageModelRules.add(createPostageModelRule(map));
             }
         }
     }

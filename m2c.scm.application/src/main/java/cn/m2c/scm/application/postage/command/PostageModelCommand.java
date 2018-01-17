@@ -73,42 +73,44 @@ public class PostageModelCommand extends AssertionConcern implements Serializabl
         if (null == chargeType) {
             throw new NegativeException(MCode.V_1, "运费模板计费方式为空");
         }
-        if (StringUtils.isEmpty(postageModelRule)) {
-            throw new NegativeException(MCode.V_1, "请输入完整的运费模板规则");
-        }
+        if(chargeType == 0 || chargeType == 1) {//0按重量，1按件数
+        	if (StringUtils.isEmpty(postageModelRule)) {
+                throw new NegativeException(MCode.V_1, "请输入完整的运费模板规则");
+            }
 
-        List<Map> ruleList = JsonUtils.toList(postageModelRule, Map.class);
-        if (null != ruleList && ruleList.size() > 0) {
-            Set set = new HashSet<>();
-            Integer size = 0;
-            for (Map map : ruleList) {
-                Integer defaultFlag = GetMapValueUtils.getIntFromMapKey(map, "defaultFlag");
-                if (null != defaultFlag && defaultFlag == 1) {
-                    String cityCode = GetMapValueUtils.getStringFromMapKey(map, "cityCode");
-                    if (StringUtils.isEmpty(cityCode)) {
-                        throw new NegativeException(MCode.V_1, "配送城市编码为空");
+            List<Map> ruleList = JsonUtils.toList(postageModelRule, Map.class);
+            if (null != ruleList && ruleList.size() > 0) {
+                Set set = new HashSet<>();
+                Integer size = 0;
+                for (Map map : ruleList) {
+                    Integer defaultFlag = GetMapValueUtils.getIntFromMapKey(map, "defaultFlag");
+                    if (null != defaultFlag && defaultFlag == 1) {
+                        String cityCode = GetMapValueUtils.getStringFromMapKey(map, "cityCode");
+                        if (StringUtils.isEmpty(cityCode)) {
+                            throw new NegativeException(MCode.V_1, "配送城市编码为空");
+                        }
+                        String[] cityCodeArr = cityCode.split(",");
+                        Set<String> cityCodeSet = new HashSet<>(Arrays.asList(cityCodeArr));
+                        size = size + cityCodeSet.size();
+                        set.addAll(cityCodeSet);
                     }
-                    String[] cityCodeArr = cityCode.split(",");
-                    Set<String> cityCodeSet = new HashSet<>(Arrays.asList(cityCodeArr));
-                    size = size + cityCodeSet.size();
-                    set.addAll(cityCodeSet);
-                }
 
-                Long firstPostage = new BigDecimal(GetMapValueUtils.getFloatFromMapKey(map, "firstPostage") * 10000).longValue();
-                Long continuedPostage = new BigDecimal(GetMapValueUtils.getFloatFromMapKey(map, "continuedPostage") * 10000).longValue();
-                map.put("firstPostage", firstPostage);
-                map.put("continuedPostage", continuedPostage);
+                    Long firstPostage = new BigDecimal(GetMapValueUtils.getFloatFromMapKey(map, "firstPostage") * 10000).longValue();
+                    Long continuedPostage = new BigDecimal(GetMapValueUtils.getFloatFromMapKey(map, "continuedPostage") * 10000).longValue();
+                    map.put("firstPostage", firstPostage);
+                    map.put("continuedPostage", continuedPostage);
+                }
+                if (!size.equals(set.size())) { //城市编码冲突
+                    throw new NegativeException(MCode.V_1, "运费模板指定地区规则冲突");
+                }
             }
-            if (!size.equals(set.size())) { //城市编码冲突
-                throw new NegativeException(MCode.V_1, "运费模板指定地区规则冲突");
-            }
+            this.postageModelRule = JsonUtils.toStr(ruleList);
         }
         this.dealerId = dealerId;
         this.modelId = modelId;
         this.modelName = modelName;
         this.chargeType = chargeType;
         this.modelDescription = modelDescription;
-        this.postageModelRule = JsonUtils.toStr(ruleList);
     }
 
     public String getDealerId() {

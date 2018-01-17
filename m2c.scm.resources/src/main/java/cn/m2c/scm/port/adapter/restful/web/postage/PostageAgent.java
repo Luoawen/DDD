@@ -237,7 +237,7 @@ public class PostageAgent {
             	result.setContent(flag);
                 result.setStatus(MCode.V_200);
             } else {
-            	result = new MResult(MCode.V_400, "全国包邮模板已存在");
+            	result = new MResult(MCode.V_300, "全国包邮模板已存在");
             }
         } catch (Exception e) {
             LOGGER.error("queryDealerPostageNationwide Exception e:", e);
