@@ -20,6 +20,8 @@ import cn.m2c.scm.application.goods.query.data.representation.GoodsApproveDetail
 import cn.m2c.scm.application.goods.query.data.representation.GoodsApproveSearchRepresentation;
 import cn.m2c.scm.application.postage.data.bean.PostageModelBean;
 import cn.m2c.scm.application.postage.query.PostageModelQueryApplication;
+import cn.m2c.scm.application.standstard.bean.StantardBean;
+import cn.m2c.scm.application.standstard.query.StantardQuery;
 import cn.m2c.scm.application.unit.query.UnitQuery;
 import cn.m2c.scm.domain.IDGenerator;
 import cn.m2c.scm.domain.NegativeException;
@@ -71,6 +73,8 @@ public class GoodsApproveAgent {
 
     @Autowired
     private HttpServletRequest request;
+    @Autowired
+    StantardQuery stantardQuery;
 
     /**
      * 获取ID
@@ -427,6 +431,17 @@ public class GoodsApproveAgent {
                     serviceRate = goodsClassifyQueryApplication.queryServiceRateByClassifyId(goodsBean.getGoodsClassifyId());
                 }
                 PostageModelBean postageModelBean = postageModelQueryApplication.queryPostageModelsByModelId(goodsBean.getGoodsPostageId());
+
+                List<Map> goodsSpecifications = JsonUtils.toList(goodsBean.getGoodsSpecifications(), Map.class);
+                if (null != goodsSpecifications && goodsSpecifications.size() > 0) {
+                    for (Map tempMap : goodsSpecifications) {
+                        String standardId = tempMap.get("standardId").toString();
+                        StantardBean standard = stantardQuery.getStantardByStantardId(standardId);
+                        String standardName = null != standard ? standard.getStantardName() : tempMap.get("itemName").toString();
+                        tempMap.put("itemName", standardName);
+                    }
+                    goodsBean.setGoodsSpecifications(JsonUtils.toStr(goodsSpecifications));
+                }
 
                 GoodsApproveDetailRepresentation representation = new GoodsApproveDetailRepresentation(goodsBean,
                         goodsClassifyMap, goodsGuarantee, goodsUnitName, settlementMode, serviceRate, postageModelBean);

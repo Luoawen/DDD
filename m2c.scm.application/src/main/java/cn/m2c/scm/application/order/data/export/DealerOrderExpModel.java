@@ -73,7 +73,7 @@ public class DealerOrderExpModel {
         }
         this.goodsNum = goodsBean.getSellNum();
         this.postage = df1.format(dealerOrderQB.getOrderFreight().floatValue() / (double) 100);//*
-        this.discountAmount = df1.format((dealerOrderQB.getPlateDiscount().floatValue() + dealerOrderQB.getDealerDiscount().floatValue() - dealerOrderQB.getDdCouponDiscount()) / (double) 100);
+        this.discountAmount = df1.format((dealerOrderQB.getPlateDiscount().floatValue() + dealerOrderQB.getDealerDiscount().floatValue() + dealerOrderQB.getDdCouponDiscount().floatValue()) / (double) 100);
         this.orderMoney = df1.format((dealerOrderQB.getGoodsMoney().floatValue() + dealerOrderQB.getOrderFreight().floatValue() - dealerOrderQB.getDealerDiscount().floatValue() - dealerOrderQB.getPlateDiscount().floatValue() - dealerOrderQB.getDdCouponDiscount().floatValue()) / (double) 100);
         this.revPerson = dealerOrderQB.getRevPerson();
         this.revPhone = dealerOrderQB.getRevPhone();
@@ -82,6 +82,10 @@ public class DealerOrderExpModel {
         this.saleAfterType = OrderUtils.getAfterType(dealerOrderQB.getAfterOrderType());
         this.saleAfterStatus = OrderUtils.getAfterStatusStr(dealerOrderQB.getAfterOrderType(), dealerOrderQB.getAfterStatus());
         this.saleAfterNum = null == dealerOrderQB.getAfterNum() ? "" : String.valueOf(dealerOrderQB.getAfterNum());
-        this.saleAfterMoney = df1.format((dealerOrderQB.getAfterMoney().floatValue() - dealerOrderQB.getCouponDiscount().floatValue())/ (double) 100);
+        if (this.saleAfterType.equals("1") || this.saleAfterType.equals("2")) {
+        	this.saleAfterMoney = df1.format((dealerOrderQB.getAfterMoney().floatValue() - dealerOrderQB.getCouponDiscount().floatValue())/ (double) 100);
+		}else {
+			this.saleAfterMoney = df1.format((dealerOrderQB.getAfterMoney().floatValue())/ (double) 100);
+		}
     }
 }

@@ -90,8 +90,11 @@ public class MngOrderExpModel {
         this.saleAfterType = OrderUtils.getAfterType(dtl.getAfterOrderType());
         this.saleAfterStatus = OrderUtils.getAfterStatusStr(dtl.getAfterOrderType(),dtl.getAfterStatus());
         this.saleAfterNum = null == dtl.getAfterNum() ? "" : String.valueOf(dtl.getAfterNum());
-        
-        this.saleAfterMoney = Utils.moneyFormatCN(dtl.getAfterMoney() - dtl.getCouponDiscount());
+        if (this.saleAfterType.equals("1") || this.saleAfterType.equals("2")) {
+        	this.saleAfterMoney = Utils.moneyFormatCN(dtl.getAfterMoney() - dtl.getCouponDiscount());
+		}else {
+			this.saleAfterMoney = Utils.moneyFormatCN(dtl.getAfterMoney());
+		}
         
         skuId = dtl.getSkuId();
         dealerName = dtl.getDealerName();
