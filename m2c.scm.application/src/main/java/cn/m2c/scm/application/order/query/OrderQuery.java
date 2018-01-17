@@ -941,7 +941,7 @@ public class OrderQuery {
 
 	public List<MediaResOrderDetailBean> getMediaResOrderDetail(List<String> userIds, String orderId, Integer payStatus,
 			Integer payWay, Integer afterSellOrderType, List mediaResIds, String goodsMessage,
-			String dealerName, String orderTime) throws NegativeException {
+			String dealerName, String orderTime,Integer pageOrNot,Integer pageNum,Integer rows) throws NegativeException {
 		try {
 			List<Object> params = new ArrayList<Object>();
 			StringBuilder sql = new StringBuilder();
@@ -1003,6 +1003,11 @@ public class OrderQuery {
 			sql.append(" AND tod.del_flag = 0 AND tom.del_flag = 0 ");
 			sql.append(" AND tod.media_id IS NOT NULL AND tod.media_res_id IS NOT NULL ");
 			sql.append(" ORDER BY  tom.created_date DESC , tod.sort_no ASC ");
+			if(null != pageOrNot && pageOrNot == 1) {//分页
+				sql.append(" LIMIT ?,? ");
+				params.add(rows * (pageNum - 1));
+				params.add(rows);
+			}
 			List<MediaResOrderDetailBean> list = this.supportJdbcTemplate.queryForBeanList(sql.toString(), MediaResOrderDetailBean.class, params.toArray());
 			return list;
 		}catch(Exception e) {
