@@ -3,6 +3,7 @@ package cn.m2c.scm.application.postage;
 import cn.m2c.common.MCode;
 import cn.m2c.ddd.common.logger.OperationLogManager;
 import cn.m2c.scm.application.postage.command.PostageModelCommand;
+import cn.m2c.scm.application.postage.query.PostageModelQueryApplication;
 import cn.m2c.scm.domain.NegativeException;
 import cn.m2c.scm.domain.model.goods.GoodsApproveRepository;
 import cn.m2c.scm.domain.model.goods.GoodsRepository;
@@ -34,6 +35,9 @@ public class PostageModelApplication {
     @Autowired
     GoodsApproveRepository goodsApproveRepository;
 
+    @Autowired
+    PostageModelQueryApplication postageModelQueryApplication;
+    
     @Resource
     private OperationLogManager operationLogManager;
     
@@ -50,6 +54,11 @@ public class PostageModelApplication {
         if (null == postageModel) {
             if (postageModelRepository.postageNameIsRepeat(null, command.getDealerId(), command.getModelName())) {
                 throw new NegativeException(MCode.V_300, "运费模板名称已存在");
+            }
+            if(command.getChargeType() == 2) {//2全国包邮模板
+            	if(!postageModelQueryApplication.queryDealerPostageNationwide(command.getDealerId())) {//true商家可创建包邮模板,false商家已创建过包邮模板
+                	throw new NegativeException(MCode.V_300, "全国包邮模板已存在");
+                }
             }
             postageModel = new PostageModel(command.getDealerId(), command.getModelId(), command.getModelName(), command.getChargeType(),
                     command.getModelDescription(), command.getPostageModelRule());

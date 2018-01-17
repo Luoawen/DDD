@@ -131,7 +131,14 @@ public interface OrderService {
 
 	String getMediaName(String mediaId);
 	
-	Map getUserMobileOrUserName(String userMessage);
+	/**
+	 * 调用用户中心查询用户信息
+	 * @param userMessage
+	 * @return
+	 * @throws NegativeException
+	 */
+	Map getUserMobileOrUserName(String userMessage) throws NegativeException;
+	
 	/**
      * 根据用户id获取用户信息
      *
