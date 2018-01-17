@@ -110,4 +110,9 @@ public class GoodsServiceDubboImpl implements GoodsService {
     public Map getCouponRange(String couponId) {
         return null;
     }
+
+    @Override
+    public Map packetZoneGoods() {
+        return null;
+    }
 }

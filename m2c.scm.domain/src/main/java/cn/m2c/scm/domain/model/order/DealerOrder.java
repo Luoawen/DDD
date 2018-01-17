@@ -425,7 +425,7 @@ public class DealerOrder extends ConcurrencySafeEntity {
         return orderId;
     }
 
-    String getId() {
+    public String getId() {
         return dealerOrderId;
     }
 

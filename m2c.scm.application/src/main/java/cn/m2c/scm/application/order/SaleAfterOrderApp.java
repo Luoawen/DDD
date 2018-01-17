@@ -255,6 +255,8 @@ public class SaleAfterOrderApp {
         MainOrder mOrder = orderRepository.getOrderById(order.orderId());
         Map extraMap = new HashMap<>();
         extraMap.put("afterSellOrderId", cmd.getSaleAfterNo());
+        extraMap.put("dealerOrderId", order.dealerOrderId());
+        extraMap.put("orderId", order.orderId());
         extraMap.put("optType", 5);
         orderService.msgPush(1, mOrder.userId(), JsonUtils.toStr(extraMap), cmd.getDealerId());
     }
@@ -284,6 +286,8 @@ public class SaleAfterOrderApp {
         MainOrder mOrder = orderRepository.getOrderById(order.orderId());
         Map extraMap = new HashMap<>();
         extraMap.put("afterSellOrderId", cmd.getSaleAfterNo());
+        extraMap.put("dealerOrderId", order.dealerOrderId());
+        extraMap.put("orderId", order.orderId());
         extraMap.put("optType", 8);
         orderService.msgPush(1, mOrder.userId(), JsonUtils.toStr(extraMap), order.dealerId());
     }
@@ -336,6 +340,8 @@ public class SaleAfterOrderApp {
         MainOrder mOrder = orderRepository.getOrderById(order.orderId());
         Map extraMap = new HashMap<>();
         extraMap.put("afterSellOrderId", cmd.getSaleAfterNo());
+        extraMap.put("dealerOrderId", order.dealerOrderId());
+        extraMap.put("orderId", order.orderId());
         extraMap.put("optType", 6);
         orderService.msgPush(1, mOrder.userId(), JsonUtils.toStr(extraMap), order.dealerId());
     }
@@ -441,6 +447,8 @@ public class SaleAfterOrderApp {
         Map extraMap = new HashMap<>();
         MainOrder mOrder = orderRepository.getOrderById(order.orderId());
         extraMap.put("afterSellOrderId", cmd.getSaleAfterNo());
+        extraMap.put("dealerOrderId", order.dealerOrderId());
+        extraMap.put("orderId", order.orderId());
         extraMap.put("optType", 7);
         orderService.msgPush(1, mOrder.userId(), JsonUtils.toStr(extraMap), order.dealerId());
     }
@@ -555,6 +563,8 @@ public class SaleAfterOrderApp {
         MainOrder mOrder = orderRepository.getOrderById(afterOrder.orderId());
         Map extraMap = new HashMap<>();
         extraMap.put("afterSellOrderId", afterOrder.getSaleAfterNo());
+        extraMap.put("dealerOrderId", afterOrder.dealerOrderId());
+        extraMap.put("orderId", afterOrder.orderId());
         extraMap.put("optType", 9);
         orderService.msgPush(1, mOrder.userId(), JsonUtils.toStr(extraMap), afterOrder.dealerId());
     }

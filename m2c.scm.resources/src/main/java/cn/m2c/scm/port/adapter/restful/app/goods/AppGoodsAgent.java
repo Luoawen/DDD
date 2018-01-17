@@ -506,4 +506,67 @@ public class AppGoodsAgent {
         }
         return new ResponseEntity<MPager>(result, HttpStatus.OK);
     }
+
+    /**
+     * 新人礼包专区
+     *
+     * @return
+     */
+    @RequestMapping(value = "packet/zone", method = RequestMethod.GET)
+    public ResponseEntity<MResult> packetZoneGoods() {
+        MResult result = new MResult(MCode.V_1);
+        try {
+            Map resultMap = new HashMap<>();
+            Map map = goodsRestService.packetZoneGoods();
+            resultMap.put("packetName", map.get("packetName"));
+            resultMap.put("packetId", map.get("packetId"));
+            resultMap.put("tip", map.get("tip"));
+            resultMap.put("bannerUrl", map.get("bannerUrl"));
+            resultMap.put("bgPicUrl", map.get("bgPicUrl"));
+
+            if (null != map && !map.isEmpty()) {
+                List<Map> tempZoneList = new ArrayList<>();
+                List<Map> zoneList = null == map.get("zoneList") ? null : (List<Map>) map.get("zoneList");
+                if (null != zoneList && zoneList.size() > 0) {
+                    for (Map zoneMap : zoneList) {
+                        Map tempZone = new HashMap<>();
+                        Map couponMap = null != zoneMap.get("couponRange") ? (Map) zoneMap.get("couponRange") : null;
+                        if (null != couponMap) {
+                            List<GoodsBean> goodsList = goodsQueryApplication.queryPacketZoneGoods(couponMap);
+                            List<Map> goodsMapList = new ArrayList<>();
+                            if (null != goodsList && goodsList.size() > 0) {
+                                for (GoodsBean bean : goodsList) {
+                                    Map goodsMap = new HashMap<>();
+                                    Integer status = bean.getGoodsStatus(); //商品状态，1：仓库中，2：出售中，3：已售罄
+                                    Integer delStatus = bean.getDelStatus(); //是否删除，1:正常，2：已删除
+                                    if (delStatus == 2) {
+                                        status = 4;
+                                    }
+                                    goodsMap.put("goodsStatus", status);
+                                    goodsMap.put("goodsName", bean.getGoodsName());
+                                    goodsMap.put("goodsPrice", bean.getGoodsSkuBeans().get(0).getPhotographPrice());
+                                    List<String> mainImages = JsonUtils.toList(bean.getGoodsMainImages(), String.class);
+                                    if (null != mainImages && mainImages.size() > 0) {
+                                        goodsMap.put("goodsImageUrl", mainImages.get(0));
+                                    }
+                                    goodsMapList.add(goodsMap);
+                                }
+                            }
+                            tempZone.put("goodsList", goodsMapList);
+                            tempZone.put("zoneId", zoneMap.get("zoneId"));
+                            tempZone.put("zoneName", zoneMap.get("zoneName"));
+                            tempZoneList.add(tempZone);
+                        }
+                    }
+                }
+                resultMap.put("zoneList", tempZoneList);
+            }
+            result.setContent(resultMap);
+            result.setStatus(MCode.V_200);
+        } catch (Exception e) {
+            LOGGER.error("packetZoneGoods Exception e:", e);
+            result = new MResult(MCode.V_400, "查询新人礼包专区商品失败");
+        }
+        return new ResponseEntity<MResult>(result, HttpStatus.OK);
+    }
 }
