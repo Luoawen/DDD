@@ -20,6 +20,8 @@ import cn.m2c.scm.application.goods.query.data.representation.GoodsDetailReprese
 import cn.m2c.scm.application.goods.query.data.representation.GoodsSearchRepresentation;
 import cn.m2c.scm.application.postage.data.bean.PostageModelBean;
 import cn.m2c.scm.application.postage.query.PostageModelQueryApplication;
+import cn.m2c.scm.application.standstard.bean.StantardBean;
+import cn.m2c.scm.application.standstard.query.StantardQuery;
 import cn.m2c.scm.application.unit.query.UnitQuery;
 import cn.m2c.scm.domain.NegativeException;
 import cn.m2c.scm.domain.util.GetMapValueUtils;
@@ -70,6 +72,8 @@ public class GoodsAgent {
 
     @Autowired
     private HttpServletRequest request;
+    @Autowired
+    StantardQuery stantardQuery;
 
     /**
      * 修改商品
@@ -130,7 +134,7 @@ public class GoodsAgent {
                         }
                         map.put("skuId", skuId);
                     }
-                    Long marketPrice = null != map.get("marketPrice") && !"NaN".equals( map.get("marketPrice")) ? new BigDecimal((GetMapValueUtils.getFloatFromMapKey(map, "marketPrice") * 10000)).longValue() : null;
+                    Long marketPrice = null != map.get("marketPrice") && !"NaN".equals(map.get("marketPrice")) ? new BigDecimal((GetMapValueUtils.getFloatFromMapKey(map, "marketPrice") * 10000)).longValue() : null;
                     Long photographPrice = new BigDecimal((GetMapValueUtils.getFloatFromMapKey(map, "photographPrice") * 10000)).longValue();
                     if (null != GetMapValueUtils.getFloatFromMapKey(map, "supplyPrice")) {
                         Long supplyPrice = new BigDecimal((GetMapValueUtils.getFloatFromMapKey(map, "supplyPrice") * 10000)).longValue();
@@ -333,6 +337,18 @@ public class GoodsAgent {
                     serviceRate = goodsClassifyQueryApplication.queryServiceRateByClassifyId(goodsBean.getGoodsClassifyId());
                 }
                 PostageModelBean postageModelBean = postageModelQueryApplication.queryPostageModelsByModelId(goodsBean.getGoodsPostageId());
+
+                List<Map> goodsSpecifications = JsonUtils.toList(goodsBean.getGoodsSpecifications(), Map.class);
+                if (null != goodsSpecifications && goodsSpecifications.size() > 0) {
+                    for (Map tempMap : goodsSpecifications) {
+                        String standardId = tempMap.get("standardId").toString();
+                        StantardBean standard = stantardQuery.getStantardByStantardId(standardId);
+                        String standardName = null != standard ? standard.getStantardName() : tempMap.get("itemName").toString();
+                        tempMap.put("itemName", standardName);
+                    }
+                    goodsBean.setGoodsSpecifications(JsonUtils.toStr(goodsSpecifications));
+                }
+
                 GoodsDetailRepresentation representation = new GoodsDetailRepresentation(goodsBean, goodsClassifyMap,
                         goodsGuarantee, goodsUnitName, settlementMode, serviceRate, postageModelBean);
                 result.setContent(representation);
