@@ -1,4 +1,4 @@
-package cn.m2c.scm.port.adapter.restful.admin;
+package cn.m2c.scm.port.adapter.restful.admin.seller;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;

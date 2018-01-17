@@ -561,8 +561,9 @@ public class AppGoodsAgent {
                                         shoMap.put("dealerId", shopBean.getDealerId());
                                         shopMapList.add(shoMap);
                                     }
-                                    tempZone.put("shopList", shopMapList);
                                 }
+                                tempZone.put("dataList", shopMapList);
+                                tempZone.put("dataType", 1);
                             } else {
                                 List<GoodsBean> goodsList = (List<GoodsBean>) goodsQueryApplication.queryPacketZoneGoods(couponMap);
                                 List<Map> goodsMapList = new ArrayList<>();
@@ -589,7 +590,8 @@ public class AppGoodsAgent {
                                         goodsMapList.add(goodsMap);
                                     }
                                 }
-                                tempZone.put("goodsList", goodsMapList);
+                                tempZone.put("dataList", goodsMapList);
+                                tempZone.put("dataType", 2);
                             }
                             tempZone.put("zoneId", zoneMap.get("zoneId"));
                             tempZone.put("zoneName", zoneMap.get("zoneName"));
