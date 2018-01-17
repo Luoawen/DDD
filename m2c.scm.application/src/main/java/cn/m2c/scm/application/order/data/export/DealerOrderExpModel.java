@@ -73,7 +73,7 @@ public class DealerOrderExpModel {
         }
         this.goodsNum = goodsBean.getSellNum();
         this.postage = df1.format(dealerOrderQB.getOrderFreight().floatValue() / (double) 100);//*
-        this.discountAmount = df1.format((dealerOrderQB.getPlateDiscount().floatValue() + dealerOrderQB.getDealerDiscount().floatValue() - dealerOrderQB.getDdCouponDiscount()) / (double) 100);
+        this.discountAmount = df1.format((dealerOrderQB.getPlateDiscount().floatValue() + dealerOrderQB.getDealerDiscount().floatValue() + dealerOrderQB.getDdCouponDiscount().floatValue()) / (double) 100);
         this.orderMoney = df1.format((dealerOrderQB.getGoodsMoney().floatValue() + dealerOrderQB.getOrderFreight().floatValue() - dealerOrderQB.getDealerDiscount().floatValue() - dealerOrderQB.getPlateDiscount().floatValue() - dealerOrderQB.getDdCouponDiscount().floatValue()) / (double) 100);
         this.revPerson = dealerOrderQB.getRevPerson();
         this.revPhone = dealerOrderQB.getRevPhone();

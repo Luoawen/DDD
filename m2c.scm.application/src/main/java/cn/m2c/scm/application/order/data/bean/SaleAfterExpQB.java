@@ -2,6 +2,8 @@ package cn.m2c.scm.application.order.data.bean;
 
 import java.util.Date;
 
+import cn.m2c.ddd.common.persistence.orm.ColumnAlias;
+
 /**
  * 售后单导出bean
  */
@@ -27,6 +29,7 @@ public class SaleAfterExpQB {
 	 */
 	private Integer isSpecial;
 	
+	@ColumnAlias(value = "coupon_discount")
 	private Long couponDiscount;
 	
 	/**
