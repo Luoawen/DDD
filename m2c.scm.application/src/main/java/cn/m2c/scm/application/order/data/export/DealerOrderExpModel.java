@@ -82,6 +82,10 @@ public class DealerOrderExpModel {
         this.saleAfterType = OrderUtils.getAfterType(dealerOrderQB.getAfterOrderType());
         this.saleAfterStatus = OrderUtils.getAfterStatusStr(dealerOrderQB.getAfterOrderType(), dealerOrderQB.getAfterStatus());
         this.saleAfterNum = null == dealerOrderQB.getAfterNum() ? "" : String.valueOf(dealerOrderQB.getAfterNum());
-        this.saleAfterMoney = df1.format((dealerOrderQB.getAfterMoney().floatValue() - dealerOrderQB.getCouponDiscount().floatValue())/ (double) 100);
+        if (this.saleAfterType.equals("1") || this.saleAfterType.equals("2")) {
+        	this.saleAfterMoney = df1.format((dealerOrderQB.getAfterMoney().floatValue() - dealerOrderQB.getCouponDiscount().floatValue())/ (double) 100);
+		}else {
+			this.saleAfterMoney = df1.format((dealerOrderQB.getAfterMoney().floatValue())/ (double) 100);
+		}
     }
 }
