@@ -9,14 +9,15 @@ public class SellerDisableEvent implements DomainEvent {
 	private String sellerId;
 	private Date currentDate;
 	
-	
-
 	public SellerDisableEvent() {
+		super();
 	}
 
 	public SellerDisableEvent(String sellerId) {
-		this.sellerId = sellerId;
-		this.currentDate = new Date();
+		super();
+		
+		this.setCurrentDate(new Date());
+		this.setSellerId(sellerId);
 	}
 	
 
@@ -35,7 +36,6 @@ public class SellerDisableEvent implements DomainEvent {
 	public void setCurrentDate(Date currentDate) {
 		this.currentDate = currentDate;
 	}
-
 	@Override
 	public int eventVersion() {
 		return 0;
@@ -43,7 +43,7 @@ public class SellerDisableEvent implements DomainEvent {
 
 	@Override
 	public Date occurredOn() {
-		return this.currentDate;
+		return this.getCurrentDate();
 	}
 
 }

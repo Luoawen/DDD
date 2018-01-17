@@ -70,7 +70,19 @@ public class SellerBean {
 	
 	@ColumnAlias(value = "created_date")
 	private Date createdDate;
-
+	
+	/**
+	 *  1:在职 2：离职  
+	 */
+	@ColumnAlias(value = "seller_condition")
+	private Integer sellerCondition;
+	
+	/**
+	 *  离职时间              
+	 */
+	@ColumnAlias(value = "seller_dimission_time")
+	private Date sellerDimissionTime;
+	
 	public String getSellerId() {
 		return sellerId;
 	}
@@ -81,6 +93,22 @@ public class SellerBean {
 
 	public String getSellerName() {
 		return sellerName;
+	}
+	
+	public Integer getSellerCondition() {
+		return sellerCondition;
+	}
+
+	public Date getSellerDimissionTime() {
+		return sellerDimissionTime;
+	}
+
+	public void setSellerCondition(Integer sellerCondition) {
+		this.sellerCondition = sellerCondition;
+	}
+
+	public void setSellerDimissionTime(Date sellerDimissionTime) {
+		this.sellerDimissionTime = sellerDimissionTime;
 	}
 
 	public void setSellerName(String sellerName) {

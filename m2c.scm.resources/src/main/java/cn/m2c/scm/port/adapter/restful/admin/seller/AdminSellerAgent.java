@@ -34,7 +34,7 @@ public class AdminSellerAgent {
 	 * @param sellerId
 	 * @return
 	 */
-	@RequestMapping(value = "/disable",method = RequestMethod.GET)
+	@RequestMapping(value = "/disable",method = RequestMethod.PUT)
 	public ResponseEntity<MResult> sellerDisable(@RequestParam(value = "sellerId",required = false) String sellerId){
 		MResult result = new MResult(MCode.V_1);
 		
@@ -47,7 +47,7 @@ public class AdminSellerAgent {
 			result.setStatus(MCode.V_200);
 		} catch (NegativeException e) {
 			log.info("禁用业务员出错",e.getMessage());
-			result = new MResult(MCode.V_400,"禁用业务员出错");
+			result = new MResult(MCode.V_400,e.getMessage());
 		}
 		return new ResponseEntity<MResult>(result, HttpStatus.OK);
 		
