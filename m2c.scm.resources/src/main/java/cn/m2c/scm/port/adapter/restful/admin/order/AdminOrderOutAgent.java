@@ -96,10 +96,10 @@ public class AdminOrderOutAgent {
     		result.setPager(total, pageNum, rows);
             result.setStatus(MCode.V_200);
     	}catch (NegativeException ne) {
-    		LOGGER.info("获取广告位订单明细失败,ne:" + ne.getMessage());
+    		LOGGER.error("获取广告位订单明细失败,ne:" + ne.getMessage());
     		result = new MPager(ne.getStatus(), ne.getMessage());
     	} catch (Exception e) {
-    		LOGGER.info("获取广告位订单明细失败,e:" + e.getMessage());
+    		LOGGER.error("获取广告位订单明细失败,e:" + e.getMessage());
     		result = new MPager(MCode.V_400, "获取广告位订单明细失败");
     	}
     	return new ResponseEntity<MPager>(result,HttpStatus.OK);
