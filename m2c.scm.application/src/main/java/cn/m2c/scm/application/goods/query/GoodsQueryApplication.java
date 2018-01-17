@@ -1481,21 +1481,84 @@ public class GoodsQueryApplication {
      *
      * @return
      */
-    public List<GoodsBean> queryPacketZoneGoods(Map couponMap) {
-        StringBuilder sql = new StringBuilder();
-        sql.append(" SELECT ");
-        sql.append(" g.* ");
-        sql.append(" FROM ");
-        sql.append(" t_scm_goods g WHERE 1=1");
-        couponChoiceDeal(sql, couponMap);
-        sql.append(" LIMIT 0,4");
-        List<GoodsBean> goodsBeanList = this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsBean.class);
-        if (null != goodsBeanList && goodsBeanList.size() > 0) {
-            for (GoodsBean goodsBean : goodsBeanList) {
-                goodsBean.setGoodsSkuBeans(queryGoodsSKUsByGoodsId(goodsBean.getId()));
+    public Object queryPacketZoneGoods(Map couponMap) {
+        if (null != couponMap) { // 优惠券信息
+            /**
+             * 优惠券作用范围，0：全场，1：商家，2：商品，3：品类
+             * 备注：
+             * 当作用范围为全场时，dealerId、goodsId、categoryId为排除的对象；当作用范围不是全场时，三个id为优惠券实际作用的对象
+             */
+            Integer couponRangeType = (Integer) couponMap.get("rangeType");
+            List<String> dealerIdList = null == couponMap.get("dealerIdList") ? null : (List) couponMap.get("dealerIdList");
+            List<String> goodsIdsList = null == couponMap.get("goodsIdsList") ? null : (List) couponMap.get("goodsIdsList");
+            List<String> categoryList = null == couponMap.get("categoryList") ? null : (List) couponMap.get("categoryList");
+            if (couponRangeType == 1) { //优惠券商家,返回商家
+                StringBuilder shopSql = new StringBuilder();
+                shopSql.append("select * from t_scm_dealer_shop t where 1=1");
+                if (null != dealerIdList && dealerIdList.size() > 0) {
+                    shopSql.append(" AND dealer_id in (" + Utils.listParseString(dealerIdList) + ") ");
+                    shopSql.append(" LIMIT 0,4");
+                    List<ShopBean> shopBeanList = this.getSupportJdbcTemplate().queryForBeanList(shopSql.toString(), ShopBean.class);
+                    return shopBeanList;
+                } else {
+                    return null;
+                }
+            } else {
+                StringBuilder sql = new StringBuilder();
+                sql.append(" SELECT ");
+                sql.append(" g.* ");
+                sql.append(" FROM ");
+                sql.append(" t_scm_goods g WHERE 1=1");
+                if (couponRangeType == 0) { //优惠券全场
+                    if (null != dealerIdList && dealerIdList.size() > 0) {
+                        sql.append(" AND g.dealer_id not in (" + Utils.listParseString(dealerIdList) + ") ");
+                    }
+                    if (null != goodsIdsList && goodsIdsList.size() > 0) {
+                        sql.append(" AND g.goods_id not in (" + Utils.listParseString(goodsIdsList) + ") ");
+                    }
+                    if (null != categoryList && categoryList.size() > 0) {
+                        List<String> classifyIds = new ArrayList<>();
+                        for (String id : categoryList) {
+                            List<String> goodsClassifyIds = goodsClassifyQueryApplication.recursionQueryGoodsSubClassifyId(id, new ArrayList<String>());
+                            if (null != goodsClassifyIds && goodsClassifyIds.size() > 0) {
+                                classifyIds.addAll(goodsClassifyIds);
+                            }
+                        }
+                        if (null != classifyIds && classifyIds.size() > 0) {
+                            sql.append(" AND g.goods_classify_id not in (" + Utils.listParseString(classifyIds) + ") ");
+                        }
+                    }
+                }
+                if (couponRangeType == 2) { //优惠券商品
+                    if (null != goodsIdsList && goodsIdsList.size() > 0) {
+                        sql.append(" AND g.goods_id in (" + Utils.listParseString(goodsIdsList) + ") ");
+                    }
+                }
+                if (couponRangeType == 3) { //优惠券品类
+                    if (null != categoryList && categoryList.size() > 0) {
+                        List<String> classifyIds = new ArrayList<>();
+                        for (String id : categoryList) {
+                            List<String> goodsClassifyIds = goodsClassifyQueryApplication.recursionQueryGoodsSubClassifyId(id, new ArrayList<String>());
+                            if (null != goodsClassifyIds && goodsClassifyIds.size() > 0) {
+                                classifyIds.addAll(goodsClassifyIds);
+                            }
+                        }
+                        if (null != classifyIds && classifyIds.size() > 0) {
+                            sql.append(" AND g.goods_classify_id in (" + Utils.listParseString(classifyIds) + ") ");
+                        }
+                    }
+                }
+                sql.append(" LIMIT 0,4");
+                List<GoodsBean> goodsBeanList = this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsBean.class);
+                if (null != goodsBeanList && goodsBeanList.size() > 0) {
+                    for (GoodsBean goodsBean : goodsBeanList) {
+                        goodsBean.setGoodsSkuBeans(queryGoodsSKUsByGoodsId(goodsBean.getId()));
+                    }
+                }
+                return goodsBeanList;
             }
         }
-        return goodsBeanList;
+        return null;
     }
 }
 
