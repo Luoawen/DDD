@@ -23,6 +23,7 @@ import cn.m2c.common.MResult;
 import cn.m2c.scm.application.order.data.bean.MediaResOrderDetailBean;
 import cn.m2c.scm.application.order.data.representation.MediaResOrderDetailBeanRepresentation;
 import cn.m2c.scm.application.order.query.OrderQuery;
+import cn.m2c.scm.domain.NegativeException;
 import cn.m2c.scm.port.adapter.service.order.OrderServiceImpl;
 
 @RestController
@@ -90,6 +91,9 @@ public class AdminOrderOutAgent {
     			}
     		}
             result.setStatus(MCode.V_200);
+    	}catch (NegativeException ne) {
+    		LOGGER.info("获取广告位订单明细失败,ne:" + ne.getMessage());
+    		result = new MResult(ne.getStatus(), ne.getMessage());
     	} catch (Exception e) {
     		LOGGER.info("获取广告位订单明细失败,e:" + e.getMessage());
     		result = new MResult(MCode.V_400, "获取广告位订单明细失败");
