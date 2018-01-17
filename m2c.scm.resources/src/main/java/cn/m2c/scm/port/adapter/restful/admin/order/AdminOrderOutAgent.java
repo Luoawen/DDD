@@ -49,8 +49,8 @@ public class AdminOrderOutAgent {
     		@RequestParam(value = "mediaResIds", required = false) List mediaResIds,                   //广告位条码
     		@RequestParam(value = "goodsMessage", required = false) String goodsMessage,               //商品名/平台SKU
     		@RequestParam(value = "dealerName", required = false) String dealerName,                   //商家名
-    		@RequestParam(value = "startTime", required = false) String startTime,                     //起始时间（下单）
-    		@RequestParam(value = "endTime", required = false) String endTime, 					       //截至时间（下单）
+    		@RequestParam(value = "orderTime", required = false) String orderTime,                     //起始时间（下单）
+    		@RequestParam(value = "orderEndTime", required = false) String orderEndTime, 			   //截至时间（下单）
     		@RequestParam(value = "pageOrNot", required = false, defaultValue = "1") Integer pageOrNot,//是否分页(0不分页，1分页)
     		@RequestParam(value = "pageNum", required = false, defaultValue = "1") Integer pageNum,
     		@RequestParam(value = "rows", required = false, defaultValue = "10") Integer rows
@@ -80,10 +80,10 @@ public class AdminOrderOutAgent {
     		}
     		//查总数
     		//Integer total = orderQuery.getMediaResOrderDetailTotal(userIds, orderId, payStatus, payWay, afterSellOrderType, mediaIds, mediaResIds, goodsMessage, dealerName, orderTime);
-    		Integer total = orderQuery.getMediaResOrderDetailTotal(userIds, orderId, payStatus, payWay, afterSellOrderType, mediaResIds, goodsMessage, dealerName, startTime, endTime);
+    		Integer total = orderQuery.getMediaResOrderDetailTotal(userIds, orderId, payStatus, payWay, afterSellOrderType, mediaResIds, goodsMessage, dealerName, orderTime, orderEndTime);
     		if(total > 0){
     			//List<MediaResOrderDetailBean> mediaResOrderDetailBeans = orderQuery.getMediaResOrderDetail(userIds, orderId, payStatus, payWay, afterSellOrderType, mediaIds, mediaResIds, goodsMessage, dealerName, orderTime, pageOrNot, pageNum, rows);
-    			List<MediaResOrderDetailBean> mediaResOrderDetailBeans = orderQuery.getMediaResOrderDetail(userIds, orderId, payStatus, payWay, afterSellOrderType, mediaResIds, goodsMessage, dealerName, startTime, endTime, pageOrNot, pageNum, rows);
+    			List<MediaResOrderDetailBean> mediaResOrderDetailBeans = orderQuery.getMediaResOrderDetail(userIds, orderId, payStatus, payWay, afterSellOrderType, mediaResIds, goodsMessage, dealerName, orderTime, orderEndTime, pageOrNot, pageNum, rows);
     			if(null != mediaResOrderDetailBeans && mediaResOrderDetailBeans.size() > 0){
     				List<MediaResOrderDetailBeanRepresentation> representations = new ArrayList<>();
     				for(MediaResOrderDetailBean adOrderDetailBean : mediaResOrderDetailBeans){
