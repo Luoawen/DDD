@@ -356,7 +356,7 @@ public class GoodsApprove extends ConcurrencySafeEntity {
             this.goodsSpecifications = goodsSpecifications;
         }
 
-        if (null == this.goodsApproveHistories || this.goodsApproveHistories.size() == 0) {
+        if (null == this.goodsApproveHistories) {
             this.goodsApproveHistories = new ArrayList<>();
         }
 

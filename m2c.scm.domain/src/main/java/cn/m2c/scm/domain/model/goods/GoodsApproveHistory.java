@@ -47,6 +47,10 @@ public class GoodsApproveHistory extends IdentifiedValueObject {
      */
     private Date createTime;
 
+    public GoodsApproveHistory() {
+        super();
+    }
+
     public GoodsApproveHistory(String historyId, String historyNo, GoodsApprove goodsApprove, String goodsId,
                                Integer changeType, String beforeContent,
                                String afterContent, Date createTime) {
