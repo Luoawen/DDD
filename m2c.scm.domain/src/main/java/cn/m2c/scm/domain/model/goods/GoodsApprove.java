@@ -136,6 +136,8 @@ public class GoodsApprove extends ConcurrencySafeEntity {
      */
     private Integer skuFlag;
 
+    private List<GoodsApproveHistory> goodsApproveHistories;
+
     public GoodsApprove() {
         super();
     }

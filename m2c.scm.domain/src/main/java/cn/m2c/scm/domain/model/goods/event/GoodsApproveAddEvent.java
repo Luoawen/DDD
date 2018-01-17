@@ -1,5 +1,6 @@
 package cn.m2c.scm.domain.model.goods.event;
 
+import cn.m2c.common.JsonUtils;
 import cn.m2c.ddd.common.domain.model.DomainEvent;
 
 import java.util.Date;
@@ -104,7 +105,7 @@ public class GoodsApproveAddEvent implements DomainEvent {
 
     private Integer skuFlag;
 
-    private Map changeGoodsInfo;
+    private String changeGoodsInfo;
 
     private Date occurredOn;
     private int eventVersion;
@@ -134,7 +135,7 @@ public class GoodsApproveAddEvent implements DomainEvent {
         this.goodsSpecifications = goodsSpecifications;
         this.goodsSkuApproves = goodsSkuApproves;
         this.skuFlag = skuFlag;
-        this.changeGoodsInfo = changeGoodsInfo;
+        this.changeGoodsInfo = JsonUtils.toStr(changeGoodsInfo);
         this.occurredOn = new Date();
         this.eventVersion = 1;
     }

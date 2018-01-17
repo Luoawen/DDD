@@ -1,13 +1,13 @@
 package cn.m2c.scm.domain.model.goods;
 
-import cn.m2c.ddd.common.domain.model.Entity;
+import cn.m2c.ddd.common.domain.model.IdentifiedValueObject;
 
 import java.util.Date;
 
 /**
  * 商品审核记录变更历史(商品审核库，修改需审核字段记录)
  */
-public class GoodsApproveHistory extends Entity {
+public class GoodsApproveHistory extends IdentifiedValueObject {
     /**
      * 记录编号
      */
@@ -18,9 +18,9 @@ public class GoodsApproveHistory extends Entity {
     private String historyNo;
 
     /**
-     * 商品审核id
+     * 商品审核
      */
-    private Integer approveId;
+    private GoodsApprove goodsApprove;
 
     /**
      * 商品id
@@ -47,12 +47,12 @@ public class GoodsApproveHistory extends Entity {
      */
     private Date createTime;
 
-    public GoodsApproveHistory(String historyId, String historyNo, Integer approveId, String goodsId,
+    public GoodsApproveHistory(String historyId, String historyNo, GoodsApprove goodsApprove, String goodsId,
                                Integer changeType, String beforeContent,
                                String afterContent, Date createTime) {
         this.historyId = historyId;
         this.historyNo = historyNo;
-        this.approveId = approveId;
+        this.goodsApprove = goodsApprove;
         this.goodsId = goodsId;
         this.changeType = changeType;
         this.beforeContent = beforeContent;

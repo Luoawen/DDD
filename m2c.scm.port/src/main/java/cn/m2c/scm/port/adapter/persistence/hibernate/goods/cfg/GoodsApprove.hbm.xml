@@ -37,5 +37,9 @@
             <key column="goods_id"/>
             <one-to-many class="cn.m2c.scm.domain.model.goods.GoodsSkuApprove"/>
         </bag>
+        <bag name="goodsApproveHistories" lazy="false" cascade="all-delete-orphan" inverse="true">
+            <key column="approve_id"/>
+            <one-to-many class="cn.m2c.scm.domain.model.goods.GoodsApproveHistory"/>
+        </bag>
     </class>
 </hibernate-mapping>
