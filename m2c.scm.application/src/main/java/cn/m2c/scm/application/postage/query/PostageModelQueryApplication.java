@@ -1,5 +1,6 @@
 package cn.m2c.scm.application.postage.query;
 
+import cn.m2c.common.MCode;
 import cn.m2c.ddd.common.port.adapter.persistence.springJdbc.SupportJdbcTemplate;
 import cn.m2c.scm.application.dealer.data.bean.DealerBean;
 import cn.m2c.scm.application.dealer.query.DealerQuery;
@@ -180,4 +181,20 @@ public class PostageModelQueryApplication {
         }
         return map;
     }
+
+    /**
+     * 根据商家id查询商家是否已经创建全国包邮模板
+     * @param dealerId
+     * @return
+     * @throws NegativeException 
+     */
+	public Boolean queryDealerPostageNationwide(String dealerId){
+		String sql = "SELECT * FROM t_scm_postage_model WHERE 1 = 1 AND dealer_id = ? AND model_status = 1 AND charge_type = 2";
+		PostageModelBean postageModelBean = this.getSupportJdbcTemplate().queryForBean(sql.toString(), PostageModelBean.class,dealerId);
+		if(null == postageModelBean) {//商家未创建过全国包邮模板
+			return true;
+		}else {//商家已创建过全国包邮模板
+			return false;
+		}
+	}
 }

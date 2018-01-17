@@ -425,7 +425,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Map getUserMobileOrUserName(String userMessage) {
+    public Map getUserMobileOrUserName(String userMessage) throws NegativeException {
         String url = M2C_HOST_URL + "/m2c.users/user/fuzzyQueryUserByMobileOrUserName?mobileOrName={0}";
         try {
             String result = restTemplate.getForObject(url, String.class, userMessage);
@@ -441,6 +441,7 @@ public class OrderServiceImpl implements OrderService {
             LOGGER.error("getUserMobileOrUserName exception.url=>" + url);
             LOGGER.error("getUserMobileOrUserName exception.error=>" + e.getMessage());
             LOGGER.error("getUserMobileOrUserName exception.param=>userMessage=" + userMessage);
+            throw new NegativeException(400, "根据用户信息查询用户昵称/手机失败");
         }
         return null;
     }
