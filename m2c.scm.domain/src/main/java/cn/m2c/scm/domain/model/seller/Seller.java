@@ -168,6 +168,7 @@ public class Seller extends ConcurrencySafeEntity {
 		if (sellerStatus == 3) {
 			throw new NegativeException(MCode.V_400,"该业务员已被禁用");
 		}
+		this.lastUpdatedDate = new Date();
 		this.sellerStatus = 3;
 		DomainEventPublisher.instance().publish(new SellerDisableEvent(this.sellerId));
 	}

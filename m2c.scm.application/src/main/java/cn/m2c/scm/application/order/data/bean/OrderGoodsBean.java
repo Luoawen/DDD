@@ -81,7 +81,9 @@ public class OrderGoodsBean {
 	
 	@ColumnAlias(value="coupon_id")
 	private String couponId;
-
+	@ColumnAlias(value="coupon_discount")
+	private long couponDiscount;
+	
 	@ColumnAlias(value="is_special")
 	private Integer isSpecial;
 	@ColumnAlias(value="special_price")
@@ -294,6 +296,15 @@ public class OrderGoodsBean {
 
 	public void setDealerOrderId(String dealerOrderId) {
 		this.dealerOrderId = dealerOrderId;
+	}
+
+	
+	public long getCouponDiscount() {
+		return couponDiscount;
+	}
+
+	public void setCouponDiscount(long couponDiscount) {
+		this.couponDiscount = couponDiscount;
 	}
 
 	@Override
