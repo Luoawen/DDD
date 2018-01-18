@@ -638,4 +638,15 @@ public class Goods extends ConcurrencySafeEntity {
         }
         return null;
     }
+
+    public Map goodsNeedApproveInfo() {
+        Map map = new HashMap<>();
+        map.put("goodsClassifyId", this.goodsClassifyId);
+        List<Map> skuMaps = new ArrayList<>();
+        for (GoodsSku goodsSku : this.goodsSKUs) {
+            skuMaps.add(goodsSku.convertToMap());
+        }
+        map.put("goodsSKUs", skuMaps);
+        return map;
+    }
 }
