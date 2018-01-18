@@ -103,7 +103,8 @@ public class GoodsApproveApplication {
             goodsApprove.modifyGoodsApprove(command.getGoodsName(), command.getGoodsSubTitle(),
                     command.getGoodsClassifyId(), command.getGoodsBrandId(), command.getGoodsBrandName(), command.getGoodsUnitId(), command.getGoodsMinQuantity(),
                     command.getGoodsPostageId(), command.getGoodsBarCode(), JsonUtils.toStr(command.getGoodsKeyWord()), JsonUtils.toStr(command.getGoodsGuarantee()),
-                    JsonUtils.toStr(command.getGoodsMainImages()), command.getGoodsMainVideo(), command.getGoodsDesc(), command.getGoodsSpecifications(), command.getGoodsSkuApproves(), true, command.getChangeGoodsInfo(), false);
+                    JsonUtils.toStr(command.getGoodsMainImages()), command.getGoodsMainVideo(), command.getGoodsDesc(),
+                    command.getGoodsSpecifications(), command.getGoodsSkuApproves(), true, command.getChangeGoodsInfo(), false);
         }
         goodsApproveRepository.save(goodsApprove);
     }
@@ -156,6 +157,7 @@ public class GoodsApproveApplication {
 
         boolean isModifyApprove = false; // true:是修改商品审核 false:是新增商品审核
         Goods goods = goodsRepository.queryGoodsById(command.getGoodsId());
+        String beforeContent = "";
         if (null != goods) {
             isModifyApprove = true;
         }

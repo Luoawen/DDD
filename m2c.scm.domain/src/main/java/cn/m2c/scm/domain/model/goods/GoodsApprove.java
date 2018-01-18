@@ -321,7 +321,7 @@ public class GoodsApprove extends ConcurrencySafeEntity {
                         this.goodsUnitId, this.goodsMinQuantity, this.goodsPostageId,
                         this.goodsBarCode, this.goodsKeyWord, this.goodsGuarantee,
                         this.goodsMainImages, this.goodsMainVideo, this.goodsDesc,
-                        this.goodsShelves, this.goodsSpecifications, goodsSKUs, this.skuFlag));
+                        this.goodsShelves, this.goodsSpecifications, goodsSKUs, this.skuFlag, this.changeReason));
     }
 
     /**
@@ -529,4 +529,9 @@ public class GoodsApprove extends ConcurrencySafeEntity {
         }
         this.goodsGuarantee = JsonUtils.toStr(list);
     }
+
+    public Integer getId(){
+        return Integer.parseInt(String.valueOf(this.id()));
+    }
+
 }
