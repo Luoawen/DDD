@@ -30,5 +30,7 @@
 		<property name="sellerRemark" column="seller_remark" type="string" />
 		<property name="sellerStatus" column="seller_status" type="int" />
 		<property name="lastUpdatedDate" column="last_updated_date" type="timestamp" />
+		<property name="sellerCondition" column="seller_condition" type="int" />
+		<property name="sellerDimissionTime" column="seller_dimission_time" type="timestamp" />
 	</class>
 </hibernate-mapping>

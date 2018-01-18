@@ -84,6 +84,16 @@ public class Seller extends ConcurrencySafeEntity {
 	private Date lastUpdatedDate;
 
 	private Integer sellerStatus = 1;
+	
+	/**
+	 *  1:在职 2：离职    
+	 */
+	private Integer sellerCondition = 1;
+	
+	/**
+	 *  离职时间    
+	 */
+	private Date sellerDimissionTime;
 
 	public Seller() {
 		super();
@@ -165,11 +175,11 @@ public class Seller extends ConcurrencySafeEntity {
 	 * @throws NegativeException
 	 */
 	public void sellerDisable() throws NegativeException {
-		if (sellerStatus == 3) {
-			throw new NegativeException(MCode.V_400,"该业务员已被禁用");
+		if (this.sellerCondition == 2) {
+			throw new NegativeException(MCode.V_400,"业务员已离职");
 		}
-		this.lastUpdatedDate = new Date();
-		this.sellerStatus = 3;
+		this.sellerDimissionTime = new Date();
+		this.sellerCondition = 2;
 		DomainEventPublisher.instance().publish(new SellerDisableEvent(this.sellerId));
 	}
 	
