@@ -43,9 +43,9 @@ public class SellerQuery {
 	            sql.append(" WHERE ");
 	            sql.append(" sds.seller_status = 1 ");
 	            if(filter!=null && !"".equals(filter)){
-	            	sql.append(" AND (sds.seller_name LIKE ? or sds.seller_phone = ?)");
+	            	sql.append(" AND (sds.seller_name LIKE ? or sds.seller_phone LIKE ?)");
 	            	params.add("%" + filter + "%");
-	            	params.add(filter);
+	            	params.add("%" + filter + "%");
 	            }
 	        	if(startTime !=null&&!"".equals(startTime)){
 					
