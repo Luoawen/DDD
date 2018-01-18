@@ -27,6 +27,7 @@ import cn.m2c.scm.application.special.query.GoodsSpecialQueryApplication;
 import cn.m2c.scm.application.standstard.bean.StantardBean;
 import cn.m2c.scm.application.standstard.query.StantardQuery;
 import cn.m2c.scm.application.unit.query.UnitQuery;
+import cn.m2c.scm.application.utils.Utils;
 import cn.m2c.scm.domain.service.goods.GoodsService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -583,6 +584,7 @@ public class AppGoodsAgent {
                                         goodsMap.put("goodsStatus", status);
                                         goodsMap.put("goodsName", bean.getGoodsName());
                                         goodsMap.put("goodsPrice", bean.getGoodsSkuBeans().get(0).getPhotographPrice());
+                                        goodsMap.put("strGoodsPrice", Utils.moneyFormatCN(bean.getGoodsSkuBeans().get(0).getPhotographPrice()));
                                         goodsMap.put("skuId", bean.getGoodsSkuBeans().get(0).getSkuId());
                                         List<String> mainImages = JsonUtils.toList(bean.getGoodsMainImages(), String.class);
                                         if (null != mainImages && mainImages.size() > 0) {
