@@ -175,4 +175,18 @@ public class GoodsSku extends ConcurrencySafeEntity {
         this.realNum = this.realNum + num;
         this.sellerNum = this.sellerNum - num;
     }
+
+    public Map convertToMap() {
+        Map map = new HashMap<>();
+        map.put("skuId", skuId);
+        map.put("skuName", skuName);
+        map.put("availableNum", availableNum);
+        map.put("weight", weight);
+        map.put("photographPrice", photographPrice);
+        map.put("marketPrice", marketPrice);
+        map.put("supplyPrice", supplyPrice);
+        map.put("goodsCode", goodsCode);
+        map.put("showStatus", showStatus);
+        return map;
+    }
 }

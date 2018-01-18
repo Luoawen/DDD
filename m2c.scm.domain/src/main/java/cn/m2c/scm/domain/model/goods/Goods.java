@@ -363,7 +363,7 @@ public class Goods extends ConcurrencySafeEntity {
         if (null != skuList && skuList.size() > 0) {
             boolean goodsNumThanZero = false;
             // 增加的sku
-            List<GoodsSku> addGoodsSkuList = new ArrayList<>();
+            List<Map> addGoodsSkuList = new ArrayList<>();
             // 变更的拍获价
             List<Map> photographPriceChangeList = new ArrayList<>();
             // 变更的供货价
@@ -374,7 +374,7 @@ public class Goods extends ConcurrencySafeEntity {
                 GoodsSku goodsSku = getGoodsSKU(skuId);
                 if (null == goodsSku) {// 增加了规格
                     isNeedApprove = true;
-                    addGoodsSkuList.add(goodsSku);
+                    addGoodsSkuList.add(goodsSku.convertToMap());
                 } else {
                     Integer availableNum = GetMapValueUtils.getIntFromMapKey(map, "availableNum");
                     if (availableNum > 0) {

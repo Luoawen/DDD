@@ -3,6 +3,8 @@ package cn.m2c.scm.domain.model.goods;
 import cn.m2c.ddd.common.domain.model.IdentifiedValueObject;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 商品审核记录变更历史(商品审核库，修改需审核字段记录)
@@ -68,5 +70,18 @@ public class GoodsApproveHistory extends IdentifiedValueObject {
         this.afterContent = afterContent;
         this.changeReason = changeReason;
         this.createTime = createTime;
+    }
+
+    public Map convertToMap() {
+        Map map = new HashMap<>();
+        map.put("historyId", this.historyId);
+        map.put("historyNo", this.historyNo);
+        map.put("goodsId", this.goodsId);
+        map.put("changeType", this.changeType);
+        map.put("beforeContent", this.beforeContent);
+        map.put("afterContent", this.afterContent);
+        map.put("changeReason", this.changeReason);
+        map.put("modifyTime", this.createTime);
+        return map;
     }
 }

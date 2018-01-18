@@ -8,6 +8,7 @@ import cn.m2c.scm.application.goods.command.GoodsApproveCommand;
 import cn.m2c.scm.application.goods.command.GoodsApproveRejectBatchCommand;
 import cn.m2c.scm.application.goods.command.GoodsApproveRejectCommand;
 import cn.m2c.scm.domain.NegativeException;
+import cn.m2c.scm.domain.model.goods.Goods;
 import cn.m2c.scm.domain.model.goods.GoodsApprove;
 import cn.m2c.scm.domain.model.goods.GoodsApproveRepository;
 import cn.m2c.scm.domain.model.goods.GoodsRepository;
@@ -102,7 +103,7 @@ public class GoodsApproveApplication {
             goodsApprove.modifyGoodsApprove(command.getGoodsName(), command.getGoodsSubTitle(),
                     command.getGoodsClassifyId(), command.getGoodsBrandId(), command.getGoodsBrandName(), command.getGoodsUnitId(), command.getGoodsMinQuantity(),
                     command.getGoodsPostageId(), command.getGoodsBarCode(), JsonUtils.toStr(command.getGoodsKeyWord()), JsonUtils.toStr(command.getGoodsGuarantee()),
-                    JsonUtils.toStr(command.getGoodsMainImages()), command.getGoodsMainVideo(), command.getGoodsDesc(), command.getGoodsSpecifications(), command.getGoodsSkuApproves(), true, command.getChangeGoodsInfo());
+                    JsonUtils.toStr(command.getGoodsMainImages()), command.getGoodsMainVideo(), command.getGoodsDesc(), command.getGoodsSpecifications(), command.getGoodsSkuApproves(), true, command.getChangeGoodsInfo(), false);
         }
         goodsApproveRepository.save(goodsApprove);
     }
@@ -152,10 +153,17 @@ public class GoodsApproveApplication {
         }
         if (StringUtils.isNotEmpty(_attach))
             operationLogManager.operationLog("修改商品审核信息", _attach, goodsApprove, new String[]{"goodsApprove"}, null);
+
+        boolean isModifyApprove = false; // true:是修改商品审核 false:是新增商品审核
+        Goods goods = goodsRepository.queryGoodsById(command.getGoodsId());
+        if (null != goods) {
+            isModifyApprove = true;
+        }
+
         goodsApprove.modifyGoodsApprove(command.getGoodsName(), command.getGoodsSubTitle(),
                 command.getGoodsClassifyId(), command.getGoodsBrandId(), command.getGoodsBrandName(), command.getGoodsUnitId(), command.getGoodsMinQuantity(),
                 command.getGoodsPostageId(), command.getGoodsBarCode(), JsonUtils.toStr(command.getGoodsKeyWord()), JsonUtils.toStr(command.getGoodsGuarantee()),
-                JsonUtils.toStr(command.getGoodsMainImages()), command.getGoodsMainVideo(), command.getGoodsDesc(), command.getGoodsSpecifications(), command.getGoodsSkuApproves(), false, null);
+                JsonUtils.toStr(command.getGoodsMainImages()), command.getGoodsMainVideo(), command.getGoodsDesc(), command.getGoodsSpecifications(), command.getGoodsSkuApproves(), false, null, isModifyApprove);
     }
 
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
