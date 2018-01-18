@@ -33,7 +33,7 @@ public class PostageModelBean {
     private String modelName;
 
     /**
-     * 计费方式,0:按重量,1:按件数
+     * 计费方式,0:按重量,1:按件数,2全国包邮(无模板规则)
      */
     @ColumnAlias(value = "charge_type")
     private Integer chargeType;
