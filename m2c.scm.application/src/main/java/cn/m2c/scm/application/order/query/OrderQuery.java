@@ -871,8 +871,8 @@ public class OrderQuery {
      * @throws NegativeException 
      */
 	public Integer getMediaResOrderDetailTotal(List userIds, String orderId, Integer payStatus, Integer payWay,
-			Integer afterSellOrderType, List mediaResIds, String goodsMessage, String dealerName,
-			String orderTime) throws NegativeException {
+			Integer afterSellOrderType, List mediaIds, List mediaResIds, String goodsMessage, String dealerName,
+			String orderTime, String orderEndTime) throws NegativeException {
 		try {
 			List<Object> params = new ArrayList<Object>();
 			StringBuilder sql = new StringBuilder();
@@ -909,9 +909,9 @@ public class OrderQuery {
 				sql.append(" AND toas.order_type = ? ");
 				params.add(afterSellOrderType);
 			}
-			/*if(null != mediaIds && mediaIds.size() > 0) {//媒体id
+			if(null != mediaIds && mediaIds.size() > 0) {//媒体id
 				sql.append(" AND tod.media_id IN ( " + Utils.listParseString(mediaIds) + " ) ");
-			}*/
+			}
 			if(null != mediaResIds && mediaResIds.size() > 0) {//广告位id
 				sql.append(" AND tod.media_res_id IN ( " + Utils.listParseString(mediaResIds) + " ) ");
 			}
@@ -924,10 +924,10 @@ public class OrderQuery {
 				sql.append(" AND tg.dealer_name LIKE ? ");
 				params.add("%"+dealerName+"%");
 			}
-			if(StringUtils.isNotEmpty(orderTime)){
+			if(StringUtils.isNotEmpty(orderTime) && StringUtils.isNotEmpty(orderEndTime)){
 				sql.append(" AND tom.created_date BETWEEN ? AND ? ");
 				params.add(orderTime + " 00:00:00");
-				params.add(orderTime + " 23:59:59");
+				params.add(orderEndTime + " 23:59:59");
 			}
 			sql.append(" AND tod.del_flag = 0 AND tom.del_flag = 0 ");
 			sql.append(" AND tod.media_id IS NOT NULL AND tod.media_res_id IS NOT NULL ");
@@ -940,8 +940,8 @@ public class OrderQuery {
 	}
 
 	public List<MediaResOrderDetailBean> getMediaResOrderDetail(List<String> userIds, String orderId, Integer payStatus,
-			Integer payWay, Integer afterSellOrderType, List mediaResIds, String goodsMessage,
-			String dealerName, String orderTime,Integer pageOrNot,Integer pageNum,Integer rows) throws NegativeException {
+			Integer payWay, Integer afterSellOrderType, List mediaIds, List mediaResIds, String goodsMessage,
+			String dealerName, String orderTime, String orderEndTime, Integer pageOrNot,Integer pageNum,Integer rows) throws NegativeException {
 		try {
 			List<Object> params = new ArrayList<Object>();
 			StringBuilder sql = new StringBuilder();
@@ -980,9 +980,9 @@ public class OrderQuery {
 				sql.append(" AND toas.order_type = ? ");
 				params.add(afterSellOrderType);
 			}
-			/*if(null != mediaIds && mediaIds.size() > 0) {//媒体id
+			if(null != mediaIds && mediaIds.size() > 0) {//媒体id
 				sql.append(" AND tod.media_id IN ( " + Utils.listParseString(mediaIds) + " ) ");
-			}*/
+			}
 			if(null != mediaResIds && mediaResIds.size() > 0) {//广告位id
 				sql.append(" AND tod.media_res_id IN ( " + Utils.listParseString(mediaResIds) + " ) ");
 			}
@@ -995,10 +995,10 @@ public class OrderQuery {
 				sql.append(" AND tg.dealer_name LIKE ? ");
 				params.add("%"+dealerName+"%");
 			}
-			if(StringUtils.isNotEmpty(orderTime)){
+			if(StringUtils.isNotEmpty(orderTime) && StringUtils.isNotEmpty(orderEndTime)){
 				sql.append(" AND tom.created_date BETWEEN ? AND ? ");
 				params.add(orderTime + " 00:00:00");
-				params.add(orderTime + " 23:59:59");
+				params.add(orderEndTime + " 23:59:59");
 			}
 			sql.append(" AND tod.del_flag = 0 AND tom.del_flag = 0 ");
 			sql.append(" AND tod.media_id IS NOT NULL AND tod.media_res_id IS NOT NULL ");

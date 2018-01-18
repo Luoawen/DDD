@@ -559,10 +559,12 @@ public class AppGoodsAgent {
                                         shoMap.put("shopName", shopBean.getShopName());
                                         shoMap.put("shopIcon", shopBean.getShopIcon());
                                         shoMap.put("dealerId", shopBean.getDealerId());
+                                        shoMap.put("dataType", 1);
                                         shopMapList.add(shoMap);
                                     }
-                                    tempZone.put("shopList", shopMapList);
                                 }
+                                tempZone.put("dataList", shopMapList);
+                                tempZone.put("dataType", 1);
                             } else {
                                 List<GoodsBean> goodsList = (List<GoodsBean>) goodsQueryApplication.queryPacketZoneGoods(couponMap);
                                 List<Map> goodsMapList = new ArrayList<>();
@@ -586,10 +588,12 @@ public class AppGoodsAgent {
                                         if (null != mainImages && mainImages.size() > 0) {
                                             goodsMap.put("goodsImageUrl", mainImages.get(0));
                                         }
+                                        goodsMap.put("dataType", 1);
                                         goodsMapList.add(goodsMap);
                                     }
                                 }
-                                tempZone.put("goodsList", goodsMapList);
+                                tempZone.put("dataList", goodsMapList);
+                                tempZone.put("dataType", 2);
                             }
                             tempZone.put("zoneId", zoneMap.get("zoneId"));
                             tempZone.put("zoneName", zoneMap.get("zoneName"));
