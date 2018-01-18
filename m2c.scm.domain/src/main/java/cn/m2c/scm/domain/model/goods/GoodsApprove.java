@@ -219,9 +219,15 @@ public class GoodsApprove extends ConcurrencySafeEntity {
                 // 分类
                 if (StringUtils.isNotEmpty(oldGoodsClassifyId) && StringUtils.isNotEmpty(newGoodsClassifyId)) {
                     String historyId = UUID.randomUUID().toString().replaceAll("-", "").toUpperCase();
+
+                    Map before = new HashMap<>();
+                    before.put("goodsClassifyId", oldGoodsClassifyId);
+                    Map after = new HashMap<>();
+                    after.put("goodsClassifyId", newGoodsClassifyId);
+
                     GoodsApproveHistory history = new GoodsApproveHistory(historyId, historyNo, this, this.goodsId,
-                            1, oldGoodsClassifyId,
-                            newGoodsClassifyId, this.changeReason, nowDate);
+                            1, JsonUtils.toStr(before),
+                            JsonUtils.toStr(after), this.changeReason, nowDate);
                     this.goodsApproveHistories.add(history);
                 }
 
@@ -247,8 +253,6 @@ public class GoodsApprove extends ConcurrencySafeEntity {
 
                         Map after = new HashMap<>();
                         after.put("photographPrice", photographPriceMap.get("newPhotographPrice"));
-                        after.put("skuId", photographPriceMap.get("skuId"));
-                        after.put("skuName", photographPriceMap.get("skuName"));
 
 
                         GoodsApproveHistory history = new GoodsApproveHistory(historyId, historyNo, this, this.goodsId,
@@ -269,8 +273,6 @@ public class GoodsApprove extends ConcurrencySafeEntity {
 
                         Map after = new HashMap<>();
                         after.put("supplyPrice", supplyPriceMap.get("newSupplyPrice"));
-                        after.put("skuId", supplyPriceMap.get("skuId"));
-                        after.put("skuName", supplyPriceMap.get("skuName"));
 
                         GoodsApproveHistory history = new GoodsApproveHistory(historyId, historyNo, this, this.goodsId,
                                 3, JsonUtils.toStr(before),
@@ -375,11 +377,15 @@ public class GoodsApprove extends ConcurrencySafeEntity {
             if (null != goodsInfoMap) {
                 oldGoodsClassifyId = goodsInfoMap.get("goodsClassifyId").toString();
             }
+            Map before = new HashMap<>();
+            before.put("goodsClassifyId", oldGoodsClassifyId);
+            Map after = new HashMap<>();
+            after.put("goodsClassifyId", goodsClassifyId);
             // 商品审核库修改分类
             String historyId = UUID.randomUUID().toString().replaceAll("-", "").toUpperCase();
             GoodsApproveHistory history = new GoodsApproveHistory(historyId, historyNo, this, this.goodsId,
-                    1, oldGoodsClassifyId,
-                    goodsClassifyId, this.changeReason, nowDate);
+                    1, JsonUtils.toStr(before),
+                    JsonUtils.toStr(after), this.changeReason, nowDate);
             this.goodsApproveHistories.add(history);
         }
         this.goodsClassifyId = goodsClassifyId;
@@ -435,8 +441,6 @@ public class GoodsApprove extends ConcurrencySafeEntity {
 
                         Map after = new HashMap<>();
                         after.put("photographPrice", photographPriceMap.get("newPhotographPrice"));
-                        after.put("skuId", photographPriceMap.get("skuId"));
-                        after.put("skuName", photographPriceMap.get("skuName"));
                         GoodsApproveHistory history = new GoodsApproveHistory(historyId, historyNo, this, this.goodsId,
                                 2, JsonUtils.toStr(before),
                                 JsonUtils.toStr(after), this.changeReason, nowDate);
@@ -456,8 +460,6 @@ public class GoodsApprove extends ConcurrencySafeEntity {
 
                         Map after = new HashMap<>();
                         after.put("supplyPrice", supplyPriceMap.get("newSupplyPrice"));
-                        after.put("skuId", supplyPriceMap.get("skuId"));
-                        after.put("skuName", supplyPriceMap.get("skuName"));
 
                         GoodsApproveHistory history = new GoodsApproveHistory(historyId, historyNo, this, this.goodsId,
                                 3, JsonUtils.toStr(before),

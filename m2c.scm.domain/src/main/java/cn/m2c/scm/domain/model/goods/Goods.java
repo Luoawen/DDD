@@ -314,10 +314,14 @@ public class Goods extends ConcurrencySafeEntity {
         Date nowDate = new Date();
         if (!this.goodsClassifyId.equals(goodsClassifyId)) {
             // 商品审核库修改分类
+            Map before = new HashMap<>();
+            before.put("goodsClassifyId", this.goodsClassifyId);
+            Map after = new HashMap<>();
+            after.put("goodsClassifyId", goodsClassifyId);
             String historyId = UUID.randomUUID().toString().replaceAll("-", "").toUpperCase();
             GoodsHistory history = new GoodsHistory(historyId, historyNo, this.goodsId,
-                    1, this.goodsClassifyId,
-                    goodsClassifyId, changeReason, nowDate);
+                    1, JsonUtils.toStr(before),
+                    JsonUtils.toStr(after), changeReason, nowDate);
             histories.add(history);
         }
 
@@ -348,8 +352,6 @@ public class Goods extends ConcurrencySafeEntity {
 
                         Map after = new HashMap<>();
                         after.put("photographPrice", photographPriceMap.get("newPhotographPrice"));
-                        after.put("skuId", photographPriceMap.get("skuId"));
-                        after.put("skuName", photographPriceMap.get("skuName"));
                         GoodsHistory history = new GoodsHistory(historyId, historyNo, this.goodsId,
                                 2, JsonUtils.toStr(before),
                                 JsonUtils.toStr(after), changeReason, nowDate);
@@ -366,8 +368,6 @@ public class Goods extends ConcurrencySafeEntity {
 
                         Map after = new HashMap<>();
                         after.put("photographPrice", supplyPriceMap.get("newSupplyPrice"));
-                        after.put("skuId", supplyPriceMap.get("skuId"));
-                        after.put("skuName", supplyPriceMap.get("skuName"));
                         GoodsHistory history = new GoodsHistory(historyId, historyNo, this.goodsId,
                                 3, JsonUtils.toStr(before),
                                 JsonUtils.toStr(after), changeReason, nowDate);
