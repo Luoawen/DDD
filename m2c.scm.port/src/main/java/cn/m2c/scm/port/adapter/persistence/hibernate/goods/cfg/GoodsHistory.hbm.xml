@@ -16,6 +16,7 @@
         <property name="changeType" column="change_type" type="java.lang.Integer"/>
         <property name="beforeContent" column="before_content" type="string"/>
         <property name="afterContent" column="after_content" type="string"/>
+        <property name="changeReason" column="change_reason" type="string"/>
         <property name="createTime" column="create_time" type="timestamp"/>
     </class>
 </hibernate-mapping>

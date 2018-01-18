@@ -140,6 +140,11 @@ public class GoodsApprove extends ConcurrencySafeEntity {
      */
     private Integer skuFlag;
 
+    /**
+     * 变更原因
+     */
+    private String changeReason;
+
     private List<GoodsApproveHistory> goodsApproveHistories;
 
     public GoodsApprove() {
@@ -199,6 +204,7 @@ public class GoodsApprove extends ConcurrencySafeEntity {
         if (StringUtils.isNotEmpty(changeGoodsInfo)) {
             Map map = JsonUtils.toMap(changeGoodsInfo);
             if (null != map) {
+                this.changeReason = null != map.get("changeReason") ? map.get("changeReason").toString() : null;
                 String oldGoodsClassifyId = null != map.get("oldGoodsClassifyId") ? map.get("oldGoodsClassifyId").toString() : null;
                 String newGoodsClassifyId = null != map.get("newGoodsClassifyId") ? map.get("newGoodsClassifyId").toString() : null;
                 // 增加的sku
@@ -214,7 +220,7 @@ public class GoodsApprove extends ConcurrencySafeEntity {
                     String historyId = UUID.randomUUID().toString().replaceAll("-", "").toUpperCase();
                     GoodsApproveHistory history = new GoodsApproveHistory(historyId, historyNo, this, this.goodsId,
                             1, oldGoodsClassifyId,
-                            newGoodsClassifyId, new Date());
+                            newGoodsClassifyId, this.changeReason, new Date());
                     this.goodsApproveHistories.add(history);
                 }
 
@@ -224,7 +230,7 @@ public class GoodsApprove extends ConcurrencySafeEntity {
                         String historyId = UUID.randomUUID().toString().replaceAll("-", "").toUpperCase();
                         GoodsApproveHistory history = new GoodsApproveHistory(historyId, historyNo, this, this.goodsId,
                                 4, "",
-                                JsonUtils.toStr(skuMap), new Date());
+                                JsonUtils.toStr(skuMap), this.changeReason, new Date());
                         this.goodsApproveHistories.add(history);
                     }
                 }
@@ -246,7 +252,7 @@ public class GoodsApprove extends ConcurrencySafeEntity {
 
                         GoodsApproveHistory history = new GoodsApproveHistory(historyId, historyNo, this, this.goodsId,
                                 2, JsonUtils.toStr(before),
-                                JsonUtils.toStr(after), new Date());
+                                JsonUtils.toStr(after), this.changeReason, new Date());
                         this.goodsApproveHistories.add(history);
                     }
                 }
@@ -267,7 +273,7 @@ public class GoodsApprove extends ConcurrencySafeEntity {
 
                         GoodsApproveHistory history = new GoodsApproveHistory(historyId, historyNo, this, this.goodsId,
                                 3, JsonUtils.toStr(before),
-                                JsonUtils.toStr(after), new Date());
+                                JsonUtils.toStr(after), this.changeReason, new Date());
                         this.goodsApproveHistories.add(history);
                     }
                 }
@@ -367,7 +373,7 @@ public class GoodsApprove extends ConcurrencySafeEntity {
             String historyId = UUID.randomUUID().toString().replaceAll("-", "").toUpperCase();
             GoodsApproveHistory history = new GoodsApproveHistory(historyId, historyNo, this, this.goodsId,
                     1, this.goodsClassifyId,
-                    goodsClassifyId, new Date());
+                    goodsClassifyId, this.changeReason, new Date());
             this.goodsApproveHistories.add(history);
         }
         this.goodsClassifyId = goodsClassifyId;
@@ -392,7 +398,7 @@ public class GoodsApprove extends ConcurrencySafeEntity {
                         String historyId = UUID.randomUUID().toString().replaceAll("-", "").toUpperCase();
                         GoodsApproveHistory history = new GoodsApproveHistory(historyId, historyNo, this, this.goodsId,
                                 4, "",
-                                JsonUtils.toStr(skuApprove), new Date());
+                                JsonUtils.toStr(skuApprove), this.changeReason, new Date());
                         this.goodsApproveHistories.add(history);
                     }
                 } else { //修改
@@ -426,7 +432,7 @@ public class GoodsApprove extends ConcurrencySafeEntity {
                         after.put("skuName", photographPriceMap.get("skuName"));
                         GoodsApproveHistory history = new GoodsApproveHistory(historyId, historyNo, this, this.goodsId,
                                 2, JsonUtils.toStr(before),
-                                JsonUtils.toStr(after), new Date());
+                                JsonUtils.toStr(after), this.changeReason, new Date());
                         this.goodsApproveHistories.add(history);
 
                     }
@@ -446,7 +452,7 @@ public class GoodsApprove extends ConcurrencySafeEntity {
 
                         GoodsApproveHistory history = new GoodsApproveHistory(historyId, historyNo, this, this.goodsId,
                                 3, JsonUtils.toStr(before),
-                                JsonUtils.toStr(after), new Date());
+                                JsonUtils.toStr(after), this.changeReason, new Date());
                         this.goodsApproveHistories.add(history);
                     }
 

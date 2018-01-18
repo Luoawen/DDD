@@ -43,6 +43,11 @@ public class GoodsApproveHistory extends IdentifiedValueObject {
     private String afterContent;
 
     /**
+     * 变更原因
+     */
+    private String changeReason;
+
+    /**
      * 创建时间
      */
     private Date createTime;
@@ -53,7 +58,7 @@ public class GoodsApproveHistory extends IdentifiedValueObject {
 
     public GoodsApproveHistory(String historyId, String historyNo, GoodsApprove goodsApprove, String goodsId,
                                Integer changeType, String beforeContent,
-                               String afterContent, Date createTime) {
+                               String afterContent, String changeReason, Date createTime) {
         this.historyId = historyId;
         this.historyNo = historyNo;
         this.goodsApprove = goodsApprove;
@@ -61,6 +66,7 @@ public class GoodsApproveHistory extends IdentifiedValueObject {
         this.changeType = changeType;
         this.beforeContent = beforeContent;
         this.afterContent = afterContent;
+        this.changeReason = changeReason;
         this.createTime = createTime;
     }
 }

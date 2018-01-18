@@ -331,7 +331,7 @@ public class Goods extends ConcurrencySafeEntity {
     public void modifyGoods(String goodsName, String goodsSubTitle,
                             String goodsClassifyId, String goodsBrandId, String goodsBrandName, String goodsUnitId, Integer goodsMinQuantity,
                             String goodsPostageId, String goodsBarCode, String goodsKeyWord, String goodsGuarantee,
-                            String goodsMainImages, String goodsMainVideo, String goodsDesc, String goodsSpecifications, String goodsSKUs) {
+                            String goodsMainImages, String goodsMainVideo, String goodsDesc, String goodsSpecifications, String goodsSKUs, String changeReason) {
         this.lastUpdateTime = new Date();
         String oldGoodsUnitId = this.goodsUnitId;
         String newGoodsUnitId = goodsUnitId;
@@ -444,6 +444,7 @@ public class Goods extends ConcurrencySafeEntity {
             if (null != this.skuFlag && this.skuFlag == 1) {//是否是多规格：0：单规格，1：多规格
                 spec = goodsSpecifications;
             }
+            changeGoodsInfo.put("changeReason", changeReason);
             DomainEventPublisher
                     .instance()
                     .publish(new GoodsApproveAddEvent(this.goodsId, this.dealerId, this.dealerName, this.goodsName,

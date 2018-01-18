@@ -93,7 +93,7 @@ public class GoodsCommand extends AssertionConcern implements Serializable {
      * 商品主图  存储类型是[“url1”,"url2"]
      */
     private String goodsMainImages;
-    
+
     /**
      * 商品主图视频
      */
@@ -121,7 +121,12 @@ public class GoodsCommand extends AssertionConcern implements Serializable {
     private Map<String, String> codeMap;
 
     private Integer skuFlag;
-    
+
+    /**
+     * 变更原因
+     */
+    private String changeReason;
+
     public GoodsCommand(String goodsId, String dealerId, String dealerName, String goodsName, String goodsSubTitle,
                         String goodsClassifyId, String goodsBrandId, String goodsBrandName, String goodsUnitId, Integer goodsMinQuantity,
                         String goodsPostageId, String goodsBarCode, String goodsKeyWord, String goodsGuarantee,
@@ -152,7 +157,7 @@ public class GoodsCommand extends AssertionConcern implements Serializable {
     public GoodsCommand(String goodsId, String dealerId, String goodsName, String goodsSubTitle,
                         String goodsClassifyId, String goodsBrandId, String goodsBrandName, String goodsUnitId, Integer goodsMinQuantity,
                         String goodsPostageId, String goodsBarCode, String goodsKeyWord, String goodsGuarantee,
-                        String goodsMainImages, String goodsMainVideo, String goodsDesc, String goodsSpecifications, String goodsSKUs) throws NegativeException {
+                        String goodsMainImages, String goodsMainVideo, String goodsDesc, String goodsSpecifications, String goodsSKUs, String changeReason) throws NegativeException {
         this.goodsId = goodsId;
         this.dealerId = dealerId;
         this.goodsName = goodsName;
@@ -172,6 +177,7 @@ public class GoodsCommand extends AssertionConcern implements Serializable {
         this.goodsSpecifications = goodsSpecifications;
         this.goodsSKUs = goodsSKUs;
         this.skuFlag = skuFlag;
+        this.changeReason = changeReason;
 
         List<Map> skuList = JsonUtils.toList(goodsSKUs, Map.class);
         List<String> goodsCodes = new ArrayList<>();
@@ -279,8 +285,12 @@ public class GoodsCommand extends AssertionConcern implements Serializable {
     public Integer getSkuFlag() {
         return skuFlag;
     }
-    
+
     public String getGoodsMainVideo() {
-    	return goodsMainVideo;
+        return goodsMainVideo;
+    }
+
+    public String getChangeReason() {
+        return changeReason;
     }
 }
