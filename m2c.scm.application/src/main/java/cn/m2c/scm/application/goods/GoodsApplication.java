@@ -78,13 +78,13 @@ public class GoodsApplication {
                     command.getGoodsPostageId(), command.getGoodsBarCode(), command.getGoodsKeyWord(), command.getGoodsGuarantee(),
                     command.getGoodsMainImages(), command.getGoodsMainVideo(), command.getGoodsDesc(), command.getGoodsShelves(), command.getGoodsSpecifications(), command.getGoodsSKUs(), command.getSkuFlag());
         } else {//修改商品审核：修改商品的分类，拍获价，供货价，规格
-            goods.modifyApproveGoodsSku(command.getGoodsClassifyId(), command.getGoodsSpecifications(), command.getGoodsSKUs());
             List<GoodsHistory> histories = goods.getGoodsHistory(command.getGoodsClassifyId(), command.getGoodsSKUs(), command.getChangeReason());
             if (null != histories && histories.size() > 0) {
                 for (GoodsHistory goodsHistory : histories) {
                     goodsHistoryRepository.save(goodsHistory);
                 }
             }
+            goods.modifyApproveGoodsSku(command.getGoodsClassifyId(), command.getGoodsSpecifications(), command.getGoodsSKUs());
         }
         goodsRepository.save(goods);
     }
