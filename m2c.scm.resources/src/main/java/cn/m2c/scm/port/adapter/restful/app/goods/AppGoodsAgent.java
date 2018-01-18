@@ -588,7 +588,7 @@ public class AppGoodsAgent {
                                         if (null != mainImages && mainImages.size() > 0) {
                                             goodsMap.put("goodsImageUrl", mainImages.get(0));
                                         }
-                                        goodsMap.put("dataType", 1);
+                                        goodsMap.put("dataType", 2);
                                         goodsMapList.add(goodsMap);
                                     }
                                 }
