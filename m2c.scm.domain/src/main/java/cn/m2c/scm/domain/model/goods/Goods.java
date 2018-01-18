@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * 商品
@@ -275,7 +276,7 @@ public class Goods extends ConcurrencySafeEntity {
      *
      * @param goodsSKUs
      */
-    public void modifyApproveGoodsSku(String goodsClassifyId, String goodsSpecifications, String goodsSKUs, String changeReason) {
+    public void modifyApproveGoodsSku(String goodsClassifyId, String goodsSpecifications, String goodsSKUs) {
         this.goodsClassifyId = goodsClassifyId;
         this.goodsSpecifications = goodsSpecifications;
         List<Map> skuList = ObjectSerializer.instance().deserialize(goodsSKUs, List.class);
@@ -305,6 +306,77 @@ public class Goods extends ConcurrencySafeEntity {
                     .instance()
                     .publish(new GoodsModifyApproveSkuEvent(this.goodsId, addSkuList));
         }
+    }
+
+    public List<GoodsHistory> getGoodsHistory(String goodsClassifyId, String goodsSKUs, String changeReason) {
+        List<GoodsHistory> histories = new ArrayList<>();
+        String historyNo = UUID.randomUUID().toString().replaceAll("-", "").toUpperCase();
+        Date nowDate = new Date();
+        if (!this.goodsClassifyId.equals(goodsClassifyId)) {
+            // 商品审核库修改分类
+            String historyId = UUID.randomUUID().toString().replaceAll("-", "").toUpperCase();
+            GoodsHistory history = new GoodsHistory(historyId, historyNo, this.goodsId,
+                    1, this.goodsClassifyId,
+                    goodsClassifyId, changeReason, nowDate);
+            histories.add(history);
+        }
+
+        List<Map> skuList = ObjectSerializer.instance().deserialize(goodsSKUs, List.class);
+        if (null != skuList && skuList.size() > 0) {
+            List<Map> addSkuList = new ArrayList<>();
+            for (Map map : skuList) {
+                String skuId = GetMapValueUtils.getStringFromMapKey(map, "skuId");
+                // 判断商品规格sku是否存在,存在就修改供货价和拍获价，不存在就增加商品sku
+                GoodsSku goodsSku = getGoodsSKU(skuId);
+                if (null == goodsSku) {// 增加规格
+                    String historyId = UUID.randomUUID().toString().replaceAll("-", "").toUpperCase();
+                    GoodsHistory history = new GoodsHistory(historyId, historyNo, this.goodsId,
+                            4, "",
+                            JsonUtils.toStr(map), changeReason, nowDate);
+                    histories.add(history);
+                } else { // 修改供货价和拍获价
+                    Long photographPrice = GetMapValueUtils.getLongFromMapKey(map, "photographPrice");
+                    Long supplyPrice = GetMapValueUtils.getLongFromMapKey(map, "supplyPrice");
+                    if (goodsSku.isModifyPhotographPrice(photographPrice)) {
+                        String historyId = UUID.randomUUID().toString().replaceAll("-", "").toUpperCase();
+                        Map before = new HashMap<>();
+                        // 取商品库价格
+                        Map photographPriceMap = goodsSku.getChangePhotographPrice(photographPrice);
+                        before.put("photographPrice", photographPriceMap.get("oldPhotographPrice"));
+                        before.put("skuId", photographPriceMap.get("skuId"));
+                        before.put("skuName", photographPriceMap.get("skuName"));
+
+                        Map after = new HashMap<>();
+                        after.put("photographPrice", photographPriceMap.get("newPhotographPrice"));
+                        after.put("skuId", photographPriceMap.get("skuId"));
+                        after.put("skuName", photographPriceMap.get("skuName"));
+                        GoodsHistory history = new GoodsHistory(historyId, historyNo, this.goodsId,
+                                2, JsonUtils.toStr(before),
+                                JsonUtils.toStr(after), changeReason, nowDate);
+                        histories.add(history);
+                    }
+                    if (goodsSku.isModifySupplyPrice(supplyPrice)) {
+                        String historyId = UUID.randomUUID().toString().replaceAll("-", "").toUpperCase();
+                        Map before = new HashMap<>();
+                        // 取商品库价格
+                        Map supplyPriceMap = goodsSku.getChangeSupplyPrice(photographPrice);
+                        before.put("photographPrice", supplyPriceMap.get("oldSupplyPrice"));
+                        before.put("skuId", supplyPriceMap.get("skuId"));
+                        before.put("skuName", supplyPriceMap.get("skuName"));
+
+                        Map after = new HashMap<>();
+                        after.put("photographPrice", supplyPriceMap.get("newSupplyPrice"));
+                        after.put("skuId", supplyPriceMap.get("skuId"));
+                        after.put("skuName", supplyPriceMap.get("skuName"));
+                        GoodsHistory history = new GoodsHistory(historyId, historyNo, this.goodsId,
+                                3, JsonUtils.toStr(before),
+                                JsonUtils.toStr(after), changeReason, nowDate);
+                        histories.add(history);
+                    }
+                }
+            }
+        }
+        return histories;
     }
 
     /**

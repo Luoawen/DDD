@@ -189,4 +189,12 @@ public class GoodsSku extends ConcurrencySafeEntity {
         map.put("showStatus", showStatus);
         return map;
     }
+
+    public boolean isModifyPhotographPrice(Long photographPrice) {
+        return !this.photographPrice.equals(photographPrice);
+    }
+
+    public boolean isModifySupplyPrice(Long supplyPrice) {
+        return null != this.supplyPrice && !this.supplyPrice.equals(supplyPrice);
+    }
 }

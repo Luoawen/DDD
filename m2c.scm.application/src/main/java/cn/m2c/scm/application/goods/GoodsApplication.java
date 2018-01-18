@@ -14,6 +14,8 @@ import cn.m2c.scm.application.goods.command.MDViewGoodsCommand;
 import cn.m2c.scm.domain.NegativeException;
 import cn.m2c.scm.domain.model.goods.Goods;
 import cn.m2c.scm.domain.model.goods.GoodsApproveRepository;
+import cn.m2c.scm.domain.model.goods.GoodsHistory;
+import cn.m2c.scm.domain.model.goods.GoodsHistoryRepository;
 import cn.m2c.scm.domain.model.goods.GoodsRecognized;
 import cn.m2c.scm.domain.model.goods.GoodsRepository;
 import cn.m2c.scm.domain.model.goods.GoodsSku;
@@ -54,6 +56,8 @@ public class GoodsApplication {
     GoodsService goodsDubboService;
     @Resource(name = "goodsRestService")
     GoodsService goodsRestService;
+    @Autowired
+    GoodsHistoryRepository goodsHistoryRepository;
 
     @Resource
     private OperationLogManager operationLogManager;
@@ -74,7 +78,13 @@ public class GoodsApplication {
                     command.getGoodsPostageId(), command.getGoodsBarCode(), command.getGoodsKeyWord(), command.getGoodsGuarantee(),
                     command.getGoodsMainImages(), command.getGoodsMainVideo(), command.getGoodsDesc(), command.getGoodsShelves(), command.getGoodsSpecifications(), command.getGoodsSKUs(), command.getSkuFlag());
         } else {//修改商品审核：修改商品的分类，拍获价，供货价，规格
-            goods.modifyApproveGoodsSku(command.getGoodsClassifyId(), command.getGoodsSpecifications(), command.getGoodsSKUs(), command.getChangeReason());
+            goods.modifyApproveGoodsSku(command.getGoodsClassifyId(), command.getGoodsSpecifications(), command.getGoodsSKUs());
+            List<GoodsHistory> histories = goods.getGoodsHistory(command.getGoodsClassifyId(), command.getGoodsSKUs(), command.getChangeReason());
+            if (null != histories && histories.size() > 0) {
+                for (GoodsHistory goodsHistory : histories) {
+                    goodsHistoryRepository.save(goodsHistory);
+                }
+            }
         }
         goodsRepository.save(goods);
     }
