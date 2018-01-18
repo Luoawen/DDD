@@ -152,30 +152,33 @@ public class PostageModelQueryApplication {
                     dealerName = dealerBeanList.get(0).getDealerName();
                 }
                 if (null != postageModelBean) {
-                    List<PostageModelRuleBean> ruleBeans = postageModelBean.getPostageModelRuleBeans();
-                    if (null != ruleBeans && ruleBeans.size() > 0) {
-                        boolean specialFlag = false;
-                        PostageModelRuleBean defaultBean = null;
-                        for (PostageModelRuleBean bean : ruleBeans) {
-                            Integer defaultFlag = bean.getDefaultFlag();//全国（默认运费），0：是，1：不是
-                            if (defaultFlag == 1) { // 不是全国默认
-                                if (StringUtils.isNotEmpty(bean.getCityCode())) {
-                                    List<String> codes = Arrays.asList(bean.getCityCode().split(","));
-                                    if (codes.contains(cityCode)) {
-                                        map.put(info.getGoodsId(), new PostageModelRuleRepresentation(bean, postageModelBean, dealerName));
-                                        specialFlag = true;
-                                        break;
+                	if(postageModelBean.getChargeType() == 0 || postageModelBean.getChargeType() == 1) {//0按重量，1按件数
+                		List<PostageModelRuleBean> ruleBeans = postageModelBean.getPostageModelRuleBeans();
+                        if (null != ruleBeans && ruleBeans.size() > 0) {
+                            boolean specialFlag = false;
+                            PostageModelRuleBean defaultBean = null;
+                            for (PostageModelRuleBean bean : ruleBeans) {
+                                Integer defaultFlag = bean.getDefaultFlag();//全国（默认运费），0：是，1：不是
+                                if (defaultFlag == 1) { // 不是全国默认
+                                    if (StringUtils.isNotEmpty(bean.getCityCode())) {
+                                        List<String> codes = Arrays.asList(bean.getCityCode().split(","));
+                                        if (codes.contains(cityCode)) {
+                                            map.put(info.getGoodsId(), new PostageModelRuleRepresentation(bean, postageModelBean, dealerName));
+                                            specialFlag = true;
+                                            break;
+                                        }
                                     }
+                                } else {
+                                    defaultBean = bean;
                                 }
-                            } else {
-                                defaultBean = bean;
+                            }
+                            if (!specialFlag && null != defaultBean) {
+                                map.put(info.getGoodsId(), new PostageModelRuleRepresentation(defaultBean, postageModelBean, dealerName));
                             }
                         }
-                        if (!specialFlag && null != defaultBean) {
-                            map.put(info.getGoodsId(), new PostageModelRuleRepresentation(defaultBean, postageModelBean, dealerName));
-                        }
-                    }
-
+                	}else if(postageModelBean.getChargeType() == 2) {//2全国包邮
+                		map.put(info.getGoodsId(), null);
+                	}
                 }
             }
         }
