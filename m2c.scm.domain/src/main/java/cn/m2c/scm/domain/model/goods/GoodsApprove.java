@@ -311,6 +311,10 @@ public class GoodsApprove extends ConcurrencySafeEntity {
      * 同意审核
      */
     public void agree() {
+
+        this.delStatus = 3;
+        this.goodsId = new StringBuffer("AGREE_").append(this.id()).append("_").append(this.goodsId).toString();
+
         List<Map> goodsSkuMaps = new ArrayList<>();
         for (GoodsSkuApprove goodsSkuApprove : this.goodsSkuApproves) {
             goodsSkuMaps.add(goodsSkuApprove.convertToMap());

@@ -126,7 +126,6 @@ public class GoodsApproveApplication {
         if (StringUtils.isNotEmpty(_attach))
             operationLogManager.operationLog("同意商品审核", _attach, goodsApprove, new String[]{"goodsApprove"}, null);
         goodsApprove.agree();
-        goodsApproveRepository.remove(goodsApprove);
     }
 
     /**
