@@ -3,6 +3,7 @@ package cn.m2c.scm.application.order.data.representation;
 import java.text.SimpleDateFormat;
 
 import cn.m2c.scm.application.order.data.bean.MediaResOrderDetailBean;
+import cn.m2c.scm.application.utils.OrderUtils;
 import cn.m2c.scm.application.utils.Utils;
 
 /**
@@ -60,7 +61,7 @@ public class MediaResOrderDetailBeanRepresentation {
 			}
 		}
 		if(null != bean.getAfterSellOrderType()) {
-			if(bean.getAfterSellOrderType() == 0) {
+			/*if(bean.getAfterSellOrderType() == 0) {
 				this.afterSellOrderType = "换货";
 			}
 			if(bean.getAfterSellOrderType() == 1) {
@@ -68,7 +69,8 @@ public class MediaResOrderDetailBeanRepresentation {
 			}
 			if(bean.getAfterSellOrderType() == 2) {
 				this.afterSellOrderType = "仅退款";
-			}
+			}*/
+			this.afterSellOrderType = OrderUtils.getAfterType(bean.getAfterSellOrderType());
 		}else {
 			this.afterSellOrderType = "无售后";
 		}
