@@ -408,7 +408,7 @@ public class GoodsApproveAgent {
                         //结算模式 1：按供货价 2：按服务费率
                         Integer settlementMode = null != dealerBean ? dealerBean.getCountMode() : null;
                         Float newServiceRate = null;
-                        if (settlementMode == 2) {
+                        if (null != settlementMode && settlementMode == 2) {
                             newServiceRate = goodsClassifyQueryApplication.queryServiceRateByClassifyId(bean.getGoodsClassifyId());
                         }
 
