@@ -438,7 +438,7 @@ public class Goods extends ConcurrencySafeEntity {
             changeGoodsInfo.put("oldServiceRate",oldServiceRate);
             changeGoodsInfo.put("newServiceRate",newServiceRate);
             changeGoodsInfo.put("oldClassifyName",oldClassifyName);
-            changeGoodsInfo.put("oldClassifyName",newClassifyName);
+            changeGoodsInfo.put("newClassifyName",newClassifyName);
             changeGoodsInfo.put("settlementMode",settlementMode);
         }
 
