@@ -200,7 +200,7 @@ public class SellerAgent {
 			// Integer count =
 			// dealerQuery.getDealerCount(dealerClassify,cooperationMode,countMode,isPayDeposit,dealerName,dealerId,userPhone,sellerPhone,startTime,endTime,pageNum,rows);
 			List<SellerBean> sellerList = sellerQuery.getSellerList(filter, sellerCondition, startTime, endTime, pageNum, rows);
-			Integer count = sellerQuery.getCount(filter, startTime, endTime);
+			Integer count = sellerQuery.getCount(filter,sellerCondition,startTime, endTime);
 				result.setPager(count, pageNum, rows);
 			result.setContent(sellerList);
 			result.setStatus(MCode.V_200);

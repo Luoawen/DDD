@@ -264,7 +264,7 @@ public class OrderApplication {
                 , getUsedMarket(cmd.getOrderId(), gdes, useList), cmd.getLatitude(), cmd.getLongitude()
                 , couponDiscount);
         // 组织保存(重新设置计算好的价格)
-        order.add(skus, cmd.getFrom());
+        order.add(skus, cmd.getFrom(),dealerOrders);
         orderRepository.save(order);
         // 锁定营销 , orderNo, 营销ID, userId -----
         if (!orderDomainService.lockMarketIds(useList, cmd.getCouponUserId(),cmd.getOrderId(), cmd.getUserId(),orderAmount,orderTime,JSONObject.toJSONString(useCouponList))) {
@@ -301,8 +301,20 @@ public class OrderApplication {
 //	}
 
 
-	
-    /**
+	/**
+	 * 过滤掉有媒体的商品信息
+	 * @param dealerOrders
+	 * @return
+	 */
+    private List<Map<String, String>> filterHasMediaGoods(List<DealerOrder> dealerOrders) {
+    	List<Map<String, String>> resultList = new ArrayList<Map<String,String>>();
+    	Map<String, String> perMedia = new HashMap<String, String>();
+    	
+		return null;
+	}
+
+
+	/**
      * 校验优惠券分摊后金额为负数的情况
      * @param gdes
    * @throws NegativeException 
