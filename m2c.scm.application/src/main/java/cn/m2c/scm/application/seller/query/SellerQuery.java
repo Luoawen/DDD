@@ -131,7 +131,7 @@ public class SellerQuery {
 	 * @return
 	 * @throws NegativeException
 	 */
-	public Integer getCount(String filter,
+	public Integer getCount(String filter,Integer sellerCondition,
 			String startTime, String endTime) throws NegativeException {
 		Integer result = 0;
 		try {
@@ -148,6 +148,10 @@ public class SellerQuery {
 	            	params.add(filter);
 	            	params.add(filter);
 	            }
+	            if (sellerCondition != null) {
+					sql.append(" AND sds.seller_condition = ?");
+					params.add(sellerCondition);
+				}
 	        	if(startTime !=null&&!"".equals(startTime)){
 					
 					sql.append(" AND sds.created_date>=?");
