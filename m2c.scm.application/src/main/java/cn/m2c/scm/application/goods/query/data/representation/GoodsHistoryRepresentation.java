@@ -58,7 +58,7 @@ public class GoodsHistoryRepresentation {
             // 变更后 {"photographPrice":9980000}
             StringBuffer afterSb = new StringBuffer();
             String afterPrice = Utils.moneyFormatCN(Long.parseLong(String.valueOf(afterMap.get("photographPrice"))));
-            beforeSb.append(afterPrice).append("元（规格值：").append(beforeMap.get("skuName")).append(")");
+            afterSb.append(afterPrice).append("元（规格值：").append(beforeMap.get("skuName")).append(")");
             this.afterContent = afterSb.toString();
         } else if (history.getChangeType() == 3) {
             this.changeContent = "修改供货价";
@@ -71,10 +71,18 @@ public class GoodsHistoryRepresentation {
             // 变更后 {"supplyPrice":9960000}
             StringBuffer afterSb = new StringBuffer();
             String afterPrice = Utils.moneyFormatCN(Long.parseLong(String.valueOf(afterMap.get("supplyPrice"))));
-            beforeSb.append(afterPrice).append("元（规格值：").append(beforeMap.get("skuName")).append(")");
+            afterSb.append(afterPrice).append("元（规格值：").append(beforeMap.get("skuName")).append(")");
             this.afterContent = afterSb.toString();
         } else {
             this.changeContent = "增加sku";
+            // 变更后 {"skuName":"3寸,白色","marketPrice":null,"supplyPrice":9960000.0,"weight":0.2,"photographPrice":9990000.0,"showStatus":2.0,"availableNum":222.0,"goodsCode":"87","skuId":"20180119173349110091"}
+            String supplyPrice = null != afterMap.get("supplyPrice") ? Utils.moneyFormatCN(Long.parseLong(String.valueOf(afterMap.get("supplyPrice")))) : null;
+            String marketPrice = null != afterMap.get("marketPrice") ? Utils.moneyFormatCN(Long.parseLong(String.valueOf(afterMap.get("marketPrice")))) : null;
+            String photographPrice = null != afterMap.get("photographPrice") ? Utils.moneyFormatCN(Long.parseLong(String.valueOf(afterMap.get("photographPrice")))) : null;
+            afterMap.put("photographPrice", photographPrice);
+            afterMap.put("supplyPrice", supplyPrice);
+            afterMap.put("marketPrice", marketPrice);
+            this.afterContent = JsonUtils.toStr(afterMap);
         }
     }
 
