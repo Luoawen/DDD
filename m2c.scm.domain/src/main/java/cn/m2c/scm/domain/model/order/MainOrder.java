@@ -3,6 +3,7 @@ package cn.m2c.scm.domain.model.order;
 import cn.m2c.ddd.common.domain.model.ConcurrencySafeEntity;
 import cn.m2c.ddd.common.domain.model.DomainEventPublisher;
 import cn.m2c.scm.domain.model.dealer.event.DealerReportStatisticsEvent;
+import cn.m2c.scm.domain.model.order.event.MediaOrderCreateEvent;
 import cn.m2c.scm.domain.model.order.event.OrderAddedEvent;
 import cn.m2c.scm.domain.model.order.event.OrderCancelEvent;
 import cn.m2c.scm.domain.model.order.event.OrderDealCompleteEvt;
@@ -16,6 +17,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
 
 /***
  * 主订单实体
@@ -127,11 +130,24 @@ public class MainOrder extends ConcurrencySafeEntity {
 
     /**
      * 增加订单
+     * @param dealerOrders 
+     * @param gdes 
+     * @param gdes 
+     * @param gdes 
      */
-    public void add(Map<String, Integer> skus, Integer from) {
+    public void add(Map<String, Integer> skus, Integer from, List<DealerOrder> dealerOrders) {
         updateTime = new Date();
         DomainEventPublisher.instance().publish(new OrderAddedEvent(userId, skus, orderId, from));
         DomainEventPublisher.instance().publish(new OrderOptLogEvent(orderId, null, "订单提交成功", userId));
+        for (DealerOrder dealerOrder : dealerOrders) {//商家订单
+        	if(dealerOrder.getOrderDtls()!=null && dealerOrder.getOrderDtls().size()>0){
+        		for (DealerOrderDtl dealerOrderDtl : dealerOrder.getOrderDtls()) {//获取每一个订单详情将有广告位的事件
+        			if(!StringUtils.isEmpty(dealerOrderDtl.getMediaId()) && !StringUtils.isEmpty(dealerOrderDtl.getMediaResId())){
+        				DomainEventPublisher.instance().publish(new MediaOrderCreateEvent(orderId,dealerOrder.getId(), dealerOrderDtl.getMediaId(), dealerOrderDtl.getMediaResId()));
+        			}
+        		}
+        	}
+		}
     }
 
     /***

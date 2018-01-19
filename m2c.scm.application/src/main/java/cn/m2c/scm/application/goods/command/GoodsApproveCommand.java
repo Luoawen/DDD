@@ -127,6 +127,12 @@ public class GoodsApproveCommand extends AssertionConcern implements Serializabl
      */
     private String changeGoodsInfo;
 
+    private String oldServiceRate;
+    private String newServiceRate;
+    private String oldClassifyName;
+    private String newClassifyName;
+    private String settlementMode;
+
     public GoodsApproveCommand(String goodsId, String dealerId, String dealerName, String goodsName, String goodsSubTitle,
                                String goodsClassifyId, String goodsBrandId, String goodsBrandName, String goodsUnitId, Integer goodsMinQuantity,
                                String goodsPostageId, String goodsBarCode, List goodsKeyWord, List goodsGuarantee,
@@ -250,7 +256,8 @@ public class GoodsApproveCommand extends AssertionConcern implements Serializabl
     public GoodsApproveCommand(String goodsId, String dealerId, String goodsName, String goodsSubTitle,
                                String goodsClassifyId, String goodsBrandId, String goodsBrandName, String goodsUnitId, Integer goodsMinQuantity,
                                String goodsPostageId, String goodsBarCode, List goodsKeyWord, List goodsGuarantee,
-                               List goodsMainImages, String goodsMainVideo, String goodsDesc, String goodsSpecifications, String goodsSkuApproves) {
+                               List goodsMainImages, String goodsMainVideo, String goodsDesc, String goodsSpecifications, String goodsSkuApproves,
+                               String oldServiceRate, String newServiceRate, String oldClassifyName, String newClassifyName, String settlementMode) {
         this.goodsId = goodsId;
         this.dealerId = dealerId;
         this.goodsName = goodsName;
@@ -269,6 +276,11 @@ public class GoodsApproveCommand extends AssertionConcern implements Serializabl
         this.goodsDesc = goodsDesc;
         this.goodsSpecifications = goodsSpecifications;
         this.goodsSkuApproves = goodsSkuApproves;
+        this.oldServiceRate = oldServiceRate;
+        this.newServiceRate = newServiceRate;
+        this.oldClassifyName = oldClassifyName;
+        this.newClassifyName = StringUtils.isNotEmpty(newClassifyName) ? newClassifyName.replaceAll(" / ", ",") : "";
+        this.settlementMode = settlementMode;
     }
 
     public String getGoodsId() {
@@ -365,5 +377,25 @@ public class GoodsApproveCommand extends AssertionConcern implements Serializabl
 
     public void setChangeGoodsInfo(String changeGoodsInfo) {
         this.changeGoodsInfo = changeGoodsInfo;
+    }
+
+    public String getOldServiceRate() {
+        return oldServiceRate;
+    }
+
+    public String getNewServiceRate() {
+        return newServiceRate;
+    }
+
+    public String getOldClassifyName() {
+        return oldClassifyName;
+    }
+
+    public String getNewClassifyName() {
+        return newClassifyName;
+    }
+
+    public String getSettlementMode() {
+        return settlementMode;
     }
 }

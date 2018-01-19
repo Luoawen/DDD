@@ -46,12 +46,12 @@ public class MediaOrderCreateListener extends ExchangeListener {
 		Map map = orderServiceImpl.getMediaMessageInfo(mediaId, mediaResId);
 		if(null != map && map.size() > 0) {
 			String mediaCate = map.get("mediaCate") == null ? null : (String) map.get("mediaCate");
-			Integer mediaNo = map.get("mediaNo") == null ? null : (Integer) map.get("mediaNo"); 
+			Integer mediaNo = map.get("mediaNo") == null ? null : Integer.parseInt((String) map.get("mediaNo")); 
 			String mediaName = map.get("mediaName") == null ? null : (String) map.get("mediaName");
-			Integer mresCate = map.get("mresCate") == null ? null : (Integer) map.get("mresCate");
-			Integer formId = map.get("formId") == null ? null : (Integer) map.get("formId");
-			Long mresNo = map.get("mresNo") == null ? null : (Long) map.get("mresNo");
-			Integer level = map.get("level") == null ? null : (Integer) map.get("level");
+			Integer mresCate = map.get("mresCate") == null ? null : Integer.parseInt((String) map.get("mresCate"));
+			Integer formId = map.get("formId") == null ? null : Integer.parseInt((String) map.get("formId"));
+			Long mresNo = map.get("mresNo") == null ? null : Long.parseLong((String) map.get("mresNo"));
+			Integer level = map.get("level") == null ? null : Integer.parseInt((String) map.get("level"));
 			//封装，保存
 			OrderMediaCommand command = new OrderMediaCommand(orderId, dealerOrderId, mediaCate, mediaNo, mediaName, mresCate, formId, mresNo, level);
 			orderMediaApplication.addOrderMedia(command);

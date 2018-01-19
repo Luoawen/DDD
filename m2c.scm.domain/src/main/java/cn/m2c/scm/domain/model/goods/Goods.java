@@ -397,13 +397,19 @@ public class Goods extends ConcurrencySafeEntity {
         return goodsSku;
     }
 
+    public static void main(String [] args){
+        String name ="衣服 / 童装 / 哇唔哇唔";
+        System.out.print(name.replaceAll(" / ",","));
+    }
+
     /**
      * 修改商品
      */
     public void modifyGoods(String goodsName, String goodsSubTitle,
                             String goodsClassifyId, String goodsBrandId, String goodsBrandName, String goodsUnitId, Integer goodsMinQuantity,
                             String goodsPostageId, String goodsBarCode, String goodsKeyWord, String goodsGuarantee,
-                            String goodsMainImages, String goodsMainVideo, String goodsDesc, String goodsSpecifications, String goodsSKUs, String changeReason) {
+                            String goodsMainImages, String goodsMainVideo, String goodsDesc, String goodsSpecifications, String goodsSKUs, String changeReason,
+                            String oldServiceRate, String newServiceRate, String oldClassifyName, String newClassifyName, String settlementMode) {
         this.lastUpdateTime = new Date();
         String oldGoodsUnitId = this.goodsUnitId;
         String newGoodsUnitId = goodsUnitId;
@@ -429,6 +435,11 @@ public class Goods extends ConcurrencySafeEntity {
             isNeedApprove = true;
             changeGoodsInfo.put("oldGoodsClassifyId", this.goodsClassifyId);
             changeGoodsInfo.put("newGoodsClassifyId", goodsClassifyId);
+            changeGoodsInfo.put("oldServiceRate",oldServiceRate);
+            changeGoodsInfo.put("newServiceRate",newServiceRate);
+            changeGoodsInfo.put("oldClassifyName",oldClassifyName);
+            changeGoodsInfo.put("newClassifyName",newClassifyName);
+            changeGoodsInfo.put("settlementMode",settlementMode);
         }
 
         List<Map> skuList = ObjectSerializer.instance().deserialize(goodsSKUs, List.class);

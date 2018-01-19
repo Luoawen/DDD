@@ -45,6 +45,9 @@ public class GoodsDetailRepresentation {
      */
     List<Map> goodsRecognized;
 
+    private Float oldServiceRate;
+    private String oldClassifyName;
+
     public GoodsDetailRepresentation(GoodsBean bean, Map goodsClassifyMap, List<GoodsGuaranteeBean> goodsGuaranteeBeans,
                                      String goodsUnitName, Integer settlementMode, Float serviceRate, PostageModelBean postageModelBean) {
         this.goodsName = bean.getGoodsName();
@@ -74,15 +77,15 @@ public class GoodsDetailRepresentation {
         this.goodsSpecifications = JsonUtils.toList(bean.getGoodsSpecifications(), Map.class);
         List<Map> list = new ArrayList<>();
 
-        for(GoodsSkuBean goodsSkuBean: bean.getGoodsSkuBeans()) {
-        	Map map = new HashMap<>();
-        	map.put("goodsId", goodsSkuBean.getGoodsId());
-        	map.put("skuId", goodsSkuBean.getSkuId());
-        	map.put("skuName", goodsSkuBean.getSkuName());
-        	map.put("availableNum", goodsSkuBean.getAvailableNum());
-        	map.put("realNum", goodsSkuBean.getRealNum());
-        	map.put("weight", goodsSkuBean.getWeight());
-        	map.put("photographPrice", Utils.moneyFormatCN(goodsSkuBean.getPhotographPrice()));//拍获价
+        for (GoodsSkuBean goodsSkuBean : bean.getGoodsSkuBeans()) {
+            Map map = new HashMap<>();
+            map.put("goodsId", goodsSkuBean.getGoodsId());
+            map.put("skuId", goodsSkuBean.getSkuId());
+            map.put("skuName", goodsSkuBean.getSkuName());
+            map.put("availableNum", goodsSkuBean.getAvailableNum());
+            map.put("realNum", goodsSkuBean.getRealNum());
+            map.put("weight", goodsSkuBean.getWeight());
+            map.put("photographPrice", Utils.moneyFormatCN(goodsSkuBean.getPhotographPrice()));//拍获价
             if (null != goodsSkuBean.getMarketPrice()) {
                 map.put("marketPrice", Utils.moneyFormatCN(goodsSkuBean.getMarketPrice()));//市场价
             } else {
@@ -119,6 +122,9 @@ public class GoodsDetailRepresentation {
                 this.goodsRecognized.add(map);
             }
         }
+
+        this.oldClassifyName = this.goodsClassify;
+        this.oldServiceRate = serviceRate;
     }
 
     public String getGoodsPostageName() {
@@ -305,12 +311,27 @@ public class GoodsDetailRepresentation {
         this.goodsRecognized = goodsRecognized;
     }
 
-	public String getGoodsMainVideo() {
-		return goodsMainVideo;
-	}
+    public String getGoodsMainVideo() {
+        return goodsMainVideo;
+    }
 
-	public void setGoodsMainVideo(String goodsMainVideo) {
-		this.goodsMainVideo = goodsMainVideo;
-	}
-    
+    public void setGoodsMainVideo(String goodsMainVideo) {
+        this.goodsMainVideo = goodsMainVideo;
+    }
+
+    public Float getOldServiceRate() {
+        return oldServiceRate;
+    }
+
+    public void setOldServiceRate(Float oldServiceRate) {
+        this.oldServiceRate = oldServiceRate;
+    }
+
+    public String getOldClassifyName() {
+        return oldClassifyName;
+    }
+
+    public void setOldClassifyName(String oldClassifyName) {
+        this.oldClassifyName = oldClassifyName;
+    }
 }

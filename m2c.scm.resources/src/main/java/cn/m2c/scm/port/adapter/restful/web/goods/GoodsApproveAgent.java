@@ -288,7 +288,12 @@ public class GoodsApproveAgent {
             @RequestParam(value = "goodsMainVideo", required = false) String goodsMainVideo,
             @RequestParam(value = "goodsDesc", required = false) String goodsDesc,
             @RequestParam(value = "goodsSpecifications", required = false) String goodsSpecifications,
-            @RequestParam(value = "goodsSKUs", required = false) String goodsSKUs) {
+            @RequestParam(value = "goodsSKUs", required = false) String goodsSKUs,
+            @RequestParam(value = "oldServiceRate", required = false) String oldServiceRate,
+            @RequestParam(value = "newServiceRate", required = false) String newServiceRate,
+            @RequestParam(value = "oldClassifyName", required = false) String oldClassifyName,
+            @RequestParam(value = "newClassifyName", required = false) String newClassifyName,
+            @RequestParam(value = "settlementMode", required = false) String settlementMode) {
         MResult result = new MResult(MCode.V_1);
         try {
             List<Map> skuList = JsonUtils.toList(goodsSKUs, Map.class);
@@ -325,7 +330,8 @@ public class GoodsApproveAgent {
             GoodsApproveCommand command = new GoodsApproveCommand(goodsId, dealerId, goodsName, goodsSubTitle,
                     goodsClassifyId, goodsBrandId, goodsBrandName, goodsUnitId, goodsMinQuantity,
                     goodsPostageId, goodsBarCode, goodsKeyWord, goodsGuarantee,
-                    goodsMainImages, goodsMainVideo, goodsDesc, goodsSpecifications, goodsSKUs);
+                    goodsMainImages, goodsMainVideo, goodsDesc, goodsSpecifications, goodsSKUs,
+                    oldServiceRate, newServiceRate, oldClassifyName, newClassifyName, settlementMode);
             String _attach = request.getHeader("attach");
             goodsApproveApplication.modifyGoodsApprove(command, _attach);
             result.setStatus(MCode.V_200);

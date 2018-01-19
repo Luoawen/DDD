@@ -155,9 +155,16 @@ public class DealerOrder extends ConcurrencySafeEntity {
     public ReceiveAddr getAddr() {
         return addr;
     }
+    
+    public List<DealerOrderDtl> getOrderDtls() {
+		return orderDtls;
+	}
 
+	public void setOrderDtls(List<DealerOrderDtl> orderDtls) {
+		this.orderDtls = orderDtls;
+	}
 
-    void cancel() {
+	void cancel() {
         status = -1;
         updateTime = new Date();
         for (DealerOrderDtl d : orderDtls) {

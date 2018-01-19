@@ -93,5 +93,12 @@ public class OrderMediaCommand extends AssertionConcern implements Serializable{
 	public Integer getLevel() {
 		return level;
 	}
+
+	@Override
+	public String toString() {
+		return "OrderMediaCommand [orderId=" + orderId + ", dealerOrderId=" + dealerOrderId + ", mediaCate=" + mediaCate
+				+ ", mediaNo=" + mediaNo + ", mediaName=" + mediaName + ", mresCate=" + mresCate + ", formId=" + formId
+				+ ", mresNo=" + mresNo + ", level=" + level + "]";
+	}
 	
 }
