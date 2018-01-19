@@ -30,7 +30,7 @@ public class SellerQuery {
 	 * @return
 	 * @throws NegativeException
 	 */
-	public List<SellerBean> getSellerList(String filter, String startTime, String endTime,
+	public List<SellerBean> getSellerList(String filter, Integer sellerCondition, String startTime, String endTime,
 			Integer pageNum, Integer rows) throws NegativeException {
 		List<SellerBean> sellerList = null;
 		try {
@@ -47,6 +47,10 @@ public class SellerQuery {
 	            	params.add("%" + filter + "%");
 	            	params.add("%" + filter + "%");
 	            }
+	            if (sellerCondition != null) {
+					sql.append(" AND sds.seller_condition = ?");
+					params.add(sellerCondition);
+				}
 	        	if(startTime !=null&&!"".equals(startTime)){
 					
 					sql.append(" AND sds.created_date>=?");

@@ -388,15 +388,16 @@ public class OrderQuery {
     public List<GoodsInfoBean> getGoodsInfoList(String dealerOrderId) {
         StringBuilder sql = new StringBuilder();
         List<Object> params = new ArrayList<Object>();
-        sql.append(" SELECT  dtl.goods_icon, dtl.goods_name,dtl.sku_name, dtl.sku_id,a.after_sell_order_id, a._status AS afterSellStatus, a.order_type AS afterOrderType, a.sell_num afNum, dtl.sort_no, dtl.goods_amount, \r\n")
+        sql.append(" SELECT  dtl.goods_icon, dtl.goods_name, a.created_date, dtl.sku_name, dtl.sku_id,a.after_sell_order_id, a._status AS afterSellStatus, a.order_type AS afterOrderType, a.sell_num afNum, dtl.sort_no, dtl.goods_amount, \r\n")
                 .append(" dtl.media_res_id,dtl.sell_num,dtl.goods_unit, dtl.discount_price,dtl.freight, dtl.is_change, dtl.change_price,dtl.is_special,dtl.special_price \r\n")
                 .append(" FROM  t_scm_order_dealer dealer \r\n")
                 .append(" ,t_scm_order_detail dtl \r\n")
-                .append(" LEFT OUTER JOIN (SELECT * FROM t_scm_order_after_sell  WHERE dealer_order_id = ?  ORDER BY created_date DESC) a ")
+                .append(" LEFT OUTER JOIN (SELECT * FROM t_scm_order_after_sell  WHERE dealer_order_id = ?  ORDER BY created_date ) a ")
                 .append(" ON a.dealer_order_id=dtl.dealer_order_id AND a.sku_id = dtl.sku_id AND a.sort_no=dtl.sort_no \r\n")
                 .append(" WHERE dealer.dealer_order_id = ? ")
-                .append(" AND dealer.dealer_order_id = dtl.dealer_order_id ");
+                .append(" AND dealer.dealer_order_id = dtl.dealer_order_id ORDER BY a.created_date DESC");
         //.append(" AND dtl.sku_id NOT IN (SELECT a.sku_id FROM t_scm_order_after_sell a WHERE a.dealer_order_id=dtl.dealer_order_id AND a._status >= 4) ");
+        System.out.println("sql________________>>>>>"+sql);
         params.add(dealerOrderId);
         params.add(dealerOrderId);
         List<GoodsInfoBean> goodsInfoList = this.supportJdbcTemplate.queryForBeanList(sql.toString(),
