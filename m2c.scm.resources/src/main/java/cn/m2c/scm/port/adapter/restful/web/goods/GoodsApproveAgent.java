@@ -406,7 +406,7 @@ public class GoodsApproveAgent {
 
 
                         //结算模式 1：按供货价 2：按服务费率
-                        Integer settlementMode = dealerBean.getCountMode();
+                        Integer settlementMode = null != dealerBean ? dealerBean.getCountMode() : null;
                         Float newServiceRate = null;
                         if (settlementMode == 2) {
                             newServiceRate = goodsClassifyQueryApplication.queryServiceRateByClassifyId(bean.getGoodsClassifyId());
@@ -430,7 +430,7 @@ public class GoodsApproveAgent {
                         }
 
                         representations.add(new GoodsApproveSearchRepresentation(bean, goodsClassifyMap, dealerType,
-                                settlementMode,newServiceRate,oldServiceRate,oldClassifyName));
+                                settlementMode, newServiceRate, oldServiceRate, oldClassifyName));
                     }
                     result.setContent(representations);
                 }
@@ -498,7 +498,7 @@ public class GoodsApproveAgent {
                 }
 
                 GoodsApproveDetailRepresentation representation = new GoodsApproveDetailRepresentation(goodsBean,
-                        goodsClassifyMap, goodsGuarantee, goodsUnitName, settlementMode, serviceRate, postageModelBean,oldServiceRate,oldClassifyName);
+                        goodsClassifyMap, goodsGuarantee, goodsUnitName, settlementMode, serviceRate, postageModelBean, oldServiceRate, oldClassifyName);
                 result.setContent(representation);
             }
             result.setStatus(MCode.V_200);
