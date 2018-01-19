@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * 商品
@@ -307,6 +308,77 @@ public class Goods extends ConcurrencySafeEntity {
         }
     }
 
+    public List<GoodsHistory> getGoodsHistory(String goodsClassifyId, String goodsSKUs, String changeReason) {
+        List<GoodsHistory> histories = new ArrayList<>();
+        String historyNo = UUID.randomUUID().toString().replaceAll("-", "").toUpperCase();
+        Date nowDate = new Date();
+        if (!this.goodsClassifyId.equals(goodsClassifyId)) {
+            // 商品审核库修改分类
+            Map before = new HashMap<>();
+            before.put("goodsClassifyId", this.goodsClassifyId);
+            Map after = new HashMap<>();
+            after.put("goodsClassifyId", goodsClassifyId);
+            String historyId = UUID.randomUUID().toString().replaceAll("-", "").toUpperCase();
+            GoodsHistory history = new GoodsHistory(historyId, historyNo, this.goodsId,
+                    1, JsonUtils.toStr(before),
+                    JsonUtils.toStr(after), changeReason, nowDate);
+            histories.add(history);
+        }
+
+        List<Map> skuList = ObjectSerializer.instance().deserialize(goodsSKUs, List.class);
+        if (null != skuList && skuList.size() > 0) {
+            List<Map> addSkuList = new ArrayList<>();
+            for (Map map : skuList) {
+                String skuId = GetMapValueUtils.getStringFromMapKey(map, "skuId");
+                // 判断商品规格sku是否存在,存在就修改供货价和拍获价，不存在就增加商品sku
+                GoodsSku goodsSku = getGoodsSKU(skuId);
+                if (null == goodsSku) {// 增加规格
+                    String historyId = UUID.randomUUID().toString().replaceAll("-", "").toUpperCase();
+                    GoodsHistory history = new GoodsHistory(historyId, historyNo, this.goodsId,
+                            4, "",
+                            JsonUtils.toStr(map), changeReason, nowDate);
+                    histories.add(history);
+                } else { // 修改供货价和拍获价
+                    Long photographPrice = GetMapValueUtils.getLongFromMapKey(map, "photographPrice");
+                    Long supplyPrice = GetMapValueUtils.getLongFromMapKey(map, "supplyPrice");
+                    if (goodsSku.isModifyPhotographPrice(photographPrice)) {
+                        String historyId = UUID.randomUUID().toString().replaceAll("-", "").toUpperCase();
+                        Map before = new HashMap<>();
+                        // 取商品库价格
+                        Map photographPriceMap = goodsSku.getChangePhotographPrice(photographPrice);
+                        before.put("photographPrice", photographPriceMap.get("oldPhotographPrice"));
+                        before.put("skuId", photographPriceMap.get("skuId"));
+                        before.put("skuName", photographPriceMap.get("skuName"));
+
+                        Map after = new HashMap<>();
+                        after.put("photographPrice", photographPriceMap.get("newPhotographPrice"));
+                        GoodsHistory history = new GoodsHistory(historyId, historyNo, this.goodsId,
+                                2, JsonUtils.toStr(before),
+                                JsonUtils.toStr(after), changeReason, nowDate);
+                        histories.add(history);
+                    }
+                    if (goodsSku.isModifySupplyPrice(supplyPrice)) {
+                        String historyId = UUID.randomUUID().toString().replaceAll("-", "").toUpperCase();
+                        Map before = new HashMap<>();
+                        // 取商品库价格
+                        Map supplyPriceMap = goodsSku.getChangeSupplyPrice(photographPrice);
+                        before.put("photographPrice", supplyPriceMap.get("oldSupplyPrice"));
+                        before.put("skuId", supplyPriceMap.get("skuId"));
+                        before.put("skuName", supplyPriceMap.get("skuName"));
+
+                        Map after = new HashMap<>();
+                        after.put("photographPrice", supplyPriceMap.get("newSupplyPrice"));
+                        GoodsHistory history = new GoodsHistory(historyId, historyNo, this.goodsId,
+                                3, JsonUtils.toStr(before),
+                                JsonUtils.toStr(after), changeReason, nowDate);
+                        histories.add(history);
+                    }
+                }
+            }
+        }
+        return histories;
+    }
+
     /**
      * 根据skuId获取商品规格
      *
@@ -331,7 +403,7 @@ public class Goods extends ConcurrencySafeEntity {
     public void modifyGoods(String goodsName, String goodsSubTitle,
                             String goodsClassifyId, String goodsBrandId, String goodsBrandName, String goodsUnitId, Integer goodsMinQuantity,
                             String goodsPostageId, String goodsBarCode, String goodsKeyWord, String goodsGuarantee,
-                            String goodsMainImages, String goodsMainVideo, String goodsDesc, String goodsSpecifications, String goodsSKUs) {
+                            String goodsMainImages, String goodsMainVideo, String goodsDesc, String goodsSpecifications, String goodsSKUs, String changeReason) {
         this.lastUpdateTime = new Date();
         String oldGoodsUnitId = this.goodsUnitId;
         String newGoodsUnitId = goodsUnitId;
@@ -352,19 +424,29 @@ public class Goods extends ConcurrencySafeEntity {
 
         //修改分类，供货价、拍获价、规格需要审批
         boolean isNeedApprove = false;
+        Map changeGoodsInfo = new HashMap<>(); // 审核字段变更记录历史
         if (!goodsClassifyId.equals(this.goodsClassifyId)) { // 修改分类需要审核
             isNeedApprove = true;
+            changeGoodsInfo.put("oldGoodsClassifyId", this.goodsClassifyId);
+            changeGoodsInfo.put("newGoodsClassifyId", goodsClassifyId);
         }
 
         List<Map> skuList = ObjectSerializer.instance().deserialize(goodsSKUs, List.class);
         if (null != skuList && skuList.size() > 0) {
             boolean goodsNumThanZero = false;
+            // 增加的sku
+            List<Map> addGoodsSkuList = new ArrayList<>();
+            // 变更的拍获价
+            List<Map> photographPriceChangeList = new ArrayList<>();
+            // 变更的供货价
+            List<Map> supplyPriceChangeList = new ArrayList<>();
             for (Map map : skuList) {
                 String skuId = GetMapValueUtils.getStringFromMapKey(map, "skuId");
                 // 判断商品规格sku是否存在,存在就修改供货价和拍获价，不存在就增加商品sku
                 GoodsSku goodsSku = getGoodsSKU(skuId);
                 if (null == goodsSku) {// 增加了规格
                     isNeedApprove = true;
+                    addGoodsSkuList.add(goodsSku.convertToMap());
                 } else {
                     Integer availableNum = GetMapValueUtils.getIntFromMapKey(map, "availableNum");
                     if (availableNum > 0) {
@@ -391,9 +473,33 @@ public class Goods extends ConcurrencySafeEntity {
                     Long supplyPrice = GetMapValueUtils.getLongFromMapKey(map, "supplyPrice");
                     if (goodsSku.isModifyNeedApprovePrice(photographPrice, supplyPrice)) { //修改了供货价和拍获价
                         isNeedApprove = true;
+
+                        // 获取变更的拍获价和供货价信息
+                        Map photographPriceMap = goodsSku.getChangePhotographPrice(photographPrice);
+                        if (null != photographPriceMap) {
+                            photographPriceChangeList.add(photographPriceMap);
+                        }
+                        Map supplyPriceMap = goodsSku.getChangeSupplyPrice(supplyPrice);
+                        if (null != supplyPriceMap) {
+                            supplyPriceChangeList.add(supplyPriceMap);
+                        }
                     }
                 }
             }
+
+            // 增加的sku
+            if (null != addGoodsSkuList && addGoodsSkuList.size() > 0) {
+                changeGoodsInfo.put("addGoodsSkuList", addGoodsSkuList);
+            }
+            // 变更的拍获价
+            if (null != photographPriceChangeList && photographPriceChangeList.size() > 0) {
+                changeGoodsInfo.put("photographPriceChangeList", photographPriceChangeList);
+            }
+            // 变更的供货价
+            if (null != supplyPriceChangeList && supplyPriceChangeList.size() > 0) {
+                changeGoodsInfo.put("supplyPriceChangeList", supplyPriceChangeList);
+            }
+
             if (goodsNumThanZero) {  // 库存不为0
                 if (this.goodsStatus == 3) { // 若商品为已售罄则改为在售中
                     this.goodsStatus = 2;
@@ -410,13 +516,14 @@ public class Goods extends ConcurrencySafeEntity {
             if (null != this.skuFlag && this.skuFlag == 1) {//是否是多规格：0：单规格，1：多规格
                 spec = goodsSpecifications;
             }
+            changeGoodsInfo.put("changeReason", changeReason);
             DomainEventPublisher
                     .instance()
                     .publish(new GoodsApproveAddEvent(this.goodsId, this.dealerId, this.dealerName, this.goodsName,
                             this.goodsSubTitle, goodsClassifyId, this.goodsBrandId, this.goodsBrandName, this.goodsUnitId,
                             this.goodsMinQuantity, this.goodsPostageId, this.goodsBarCode,
                             this.goodsKeyWord, this.goodsGuarantee, this.goodsMainImages, this.goodsMainVideo, this.goodsDesc, spec,
-                            goodsSKUs, this.skuFlag));
+                            goodsSKUs, this.skuFlag, changeGoodsInfo));
         }
 
         DomainEventPublisher.instance().publish(new GoodsChangedEvent(this.goodsId, this.goodsName, this.dealerId, this.dealerName,
@@ -602,5 +709,16 @@ public class Goods extends ConcurrencySafeEntity {
             return list;
         }
         return null;
+    }
+
+    public Map goodsNeedApproveInfo() {
+        Map map = new HashMap<>();
+        map.put("goodsClassifyId", this.goodsClassifyId);
+        List<Map> skuMaps = new ArrayList<>();
+        for (GoodsSku goodsSku : this.goodsSKUs) {
+            skuMaps.add(goodsSku.convertToMap());
+        }
+        map.put("goodsSKUs", skuMaps);
+        return map;
     }
 }

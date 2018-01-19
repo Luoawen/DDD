@@ -97,7 +97,7 @@ public class GoodsApproveCommand extends AssertionConcern implements Serializabl
      * 商品主图视频
      */
     private String goodsMainVideo;
-    
+
     /**
      * 商品描述
      */
@@ -122,10 +122,15 @@ public class GoodsApproveCommand extends AssertionConcern implements Serializabl
      */
     private Integer skuFlag;
 
+    /**
+     * 变更信息
+     */
+    private String changeGoodsInfo;
+
     public GoodsApproveCommand(String goodsId, String dealerId, String dealerName, String goodsName, String goodsSubTitle,
                                String goodsClassifyId, String goodsBrandId, String goodsBrandName, String goodsUnitId, Integer goodsMinQuantity,
                                String goodsPostageId, String goodsBarCode, List goodsKeyWord, List goodsGuarantee,
-                               List goodsMainImages, String goodsMainVideo, String goodsDesc, Integer goodsShelves, String goodsSpecifications, String goodsSkuApproves ,Integer skuFlag) throws NegativeException {
+                               List goodsMainImages, String goodsMainVideo, String goodsDesc, Integer goodsShelves, String goodsSpecifications, String goodsSkuApproves, Integer skuFlag) throws NegativeException {
         if (StringUtils.isEmpty(goodsId)) {
             throw new NegativeException(MCode.V_1, "商品ID为空");
         }
@@ -180,8 +185,8 @@ public class GoodsApproveCommand extends AssertionConcern implements Serializabl
                 }
                 Integer availableNum = GetMapValueUtils.getIntFromMapKey(map, "availableNum");
                 if (availableNum < 0) {
-                	throw new NegativeException(MCode.V_1, "商品库存不能小于0");
-				}
+                    throw new NegativeException(MCode.V_1, "商品库存不能小于0");
+                }
             }
         }
         if (null != goodsCodes && goodsCodes.size() > 0) {
@@ -212,13 +217,13 @@ public class GoodsApproveCommand extends AssertionConcern implements Serializabl
         this.goodsSpecifications = goodsSpecifications;
         this.goodsSkuApproves = goodsSkuApproves;
         this.goodsCodes = goodsCodes;
-        this.skuFlag=skuFlag;
+        this.skuFlag = skuFlag;
     }
 
     public GoodsApproveCommand(String goodsId, String dealerId, String dealerName, String goodsName, String goodsSubTitle,
                                String goodsClassifyId, String goodsBrandId, String goodsBrandName, String goodsUnitId, Integer goodsMinQuantity,
                                String goodsPostageId, String goodsBarCode, List goodsKeyWord, List goodsGuarantee,
-                               List goodsMainImages, String goodsMainVideo, String goodsDesc, String goodsSpecifications, String goodsSkuApproves,Integer skuFlag) {
+                               List goodsMainImages, String goodsMainVideo, String goodsDesc, String goodsSpecifications, String goodsSkuApproves, Integer skuFlag, String changeGoodsInfo) {
         this.goodsId = goodsId;
         this.dealerId = dealerId;
         this.dealerName = dealerName;
@@ -238,7 +243,8 @@ public class GoodsApproveCommand extends AssertionConcern implements Serializabl
         this.goodsDesc = goodsDesc;
         this.goodsSpecifications = goodsSpecifications;
         this.goodsSkuApproves = goodsSkuApproves;
-        this.skuFlag=skuFlag;
+        this.skuFlag = skuFlag;
+        this.changeGoodsInfo = changeGoodsInfo;
     }
 
     public GoodsApproveCommand(String goodsId, String dealerId, String goodsName, String goodsSubTitle,
@@ -348,8 +354,16 @@ public class GoodsApproveCommand extends AssertionConcern implements Serializabl
     public Integer getSkuFlag() {
         return skuFlag;
     }
-    
+
     public String getGoodsMainVideo() {
-    	return goodsMainVideo;
+        return goodsMainVideo;
+    }
+
+    public String getChangeGoodsInfo() {
+        return changeGoodsInfo;
+    }
+
+    public void setChangeGoodsInfo(String changeGoodsInfo) {
+        this.changeGoodsInfo = changeGoodsInfo;
     }
 }

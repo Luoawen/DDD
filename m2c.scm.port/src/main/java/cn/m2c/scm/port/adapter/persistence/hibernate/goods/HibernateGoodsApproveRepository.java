@@ -80,23 +80,23 @@ public class HibernateGoodsApproveRepository extends HibernateSupperRepository i
         return null != query.list() && query.list().size() > 0;
     }
 
-	@Override
-	public List<GoodsApprove> queryGoodsApproveByIdList(List goodsIds) {
-		StringBuilder sql = new StringBuilder("select * from t_scm_goods_approve where del_status = 1");
-		sql.append(" and goods_id in ("+Utils.listParseString(goodsIds)+")");
-		Query query = this.session().createSQLQuery(sql.toString()).addEntity(GoodsApprove.class);
-		return query.list();
-	}
+    @Override
+    public List<GoodsApprove> queryGoodsApproveByIdList(List goodsIds) {
+        StringBuilder sql = new StringBuilder("select * from t_scm_goods_approve where del_status = 1");
+        sql.append(" and goods_id in (" + Utils.listParseString(goodsIds) + ")");
+        Query query = this.session().createSQLQuery(sql.toString()).addEntity(GoodsApprove.class);
+        return query.list();
+    }
 
-	/**
-	 * 查询指定商家审核中含有对应保障的商品
-	 */
-	@Override
-	public List<GoodsApprove> queryGoodsByDealerIdAndGuaranteeId(String dealerId, String guaranteeId) {
-		StringBuilder sql = new StringBuilder(" SELECT * FROM t_scm_goods_approve WHERE del_status = 1 AND dealer_id=:dealerId AND goods_guarantee LIKE :guaranteeId ");
-		Query query = this.session().createSQLQuery(sql.toString()).addEntity(GoodsApprove.class);
-		query.setParameter("dealerId", dealerId);
-		query.setParameter("guaranteeId", "%"+guaranteeId+"%");
-		return query.list();
-	}
+    /**
+     * 查询指定商家审核中含有对应保障的商品
+     */
+    @Override
+    public List<GoodsApprove> queryGoodsByDealerIdAndGuaranteeId(String dealerId, String guaranteeId) {
+        StringBuilder sql = new StringBuilder(" SELECT * FROM t_scm_goods_approve WHERE del_status = 1 AND dealer_id=:dealerId AND goods_guarantee LIKE :guaranteeId ");
+        Query query = this.session().createSQLQuery(sql.toString()).addEntity(GoodsApprove.class);
+        query.setParameter("dealerId", dealerId);
+        query.setParameter("guaranteeId", "%" + guaranteeId + "%");
+        return query.list();
+    }
 }

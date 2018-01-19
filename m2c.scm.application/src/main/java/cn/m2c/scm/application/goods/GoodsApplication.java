@@ -14,6 +14,8 @@ import cn.m2c.scm.application.goods.command.MDViewGoodsCommand;
 import cn.m2c.scm.domain.NegativeException;
 import cn.m2c.scm.domain.model.goods.Goods;
 import cn.m2c.scm.domain.model.goods.GoodsApproveRepository;
+import cn.m2c.scm.domain.model.goods.GoodsHistory;
+import cn.m2c.scm.domain.model.goods.GoodsHistoryRepository;
 import cn.m2c.scm.domain.model.goods.GoodsRecognized;
 import cn.m2c.scm.domain.model.goods.GoodsRepository;
 import cn.m2c.scm.domain.model.goods.GoodsSku;
@@ -54,6 +56,8 @@ public class GoodsApplication {
     GoodsService goodsDubboService;
     @Resource(name = "goodsRestService")
     GoodsService goodsRestService;
+    @Autowired
+    GoodsHistoryRepository goodsHistoryRepository;
 
     @Resource
     private OperationLogManager operationLogManager;
@@ -74,7 +78,13 @@ public class GoodsApplication {
                     command.getGoodsPostageId(), command.getGoodsBarCode(), command.getGoodsKeyWord(), command.getGoodsGuarantee(),
                     command.getGoodsMainImages(), command.getGoodsMainVideo(), command.getGoodsDesc(), command.getGoodsShelves(), command.getGoodsSpecifications(), command.getGoodsSKUs(), command.getSkuFlag());
         } else {//修改商品审核：修改商品的分类，拍获价，供货价，规格
-            goods.modifyApproveGoodsSku(command.getGoodsClassifyId(),command.getGoodsSpecifications(), command.getGoodsSKUs());
+            List<GoodsHistory> histories = goods.getGoodsHistory(command.getGoodsClassifyId(), command.getGoodsSKUs(), command.getChangeReason());
+            if (null != histories && histories.size() > 0) {
+                for (GoodsHistory goodsHistory : histories) {
+                    goodsHistoryRepository.save(goodsHistory);
+                }
+            }
+            goods.modifyApproveGoodsSku(command.getGoodsClassifyId(), command.getGoodsSpecifications(), command.getGoodsSKUs());
         }
         goodsRepository.save(goods);
     }
@@ -110,12 +120,12 @@ public class GoodsApplication {
             }
         }
         if (StringUtils.isNotEmpty(_attach))
-        	operationLogManager.operationLog("修改商品", _attach, goods, new String[]{"goods"}, null);
+            operationLogManager.operationLog("修改商品", _attach, goods, new String[]{"goods"}, null);
 
         goods.modifyGoods(command.getGoodsName(), command.getGoodsSubTitle(),
                 command.getGoodsClassifyId(), command.getGoodsBrandId(), command.getGoodsBrandName(), command.getGoodsUnitId(), command.getGoodsMinQuantity(),
                 command.getGoodsPostageId(), command.getGoodsBarCode(), command.getGoodsKeyWord(), command.getGoodsGuarantee(),
-                command.getGoodsMainImages(), command.getGoodsMainVideo(), command.getGoodsDesc(), command.getGoodsSpecifications(), command.getGoodsSKUs());
+                command.getGoodsMainImages(), command.getGoodsMainVideo(), command.getGoodsDesc(), command.getGoodsSpecifications(), command.getGoodsSKUs(), command.getChangeReason());
     }
 
     /**
@@ -133,7 +143,7 @@ public class GoodsApplication {
             throw new NegativeException(MCode.V_300, "商品不存在");
         }
         if (StringUtils.isNotEmpty(_attach))
-        	operationLogManager.operationLog("删除商品", _attach, goods, new String[]{"goods"}, null);
+            operationLogManager.operationLog("删除商品", _attach, goods, new String[]{"goods"}, null);
         goods.remove();
     }
 
@@ -152,7 +162,7 @@ public class GoodsApplication {
             throw new NegativeException(MCode.V_300, "商品不存在");
         }
         if (StringUtils.isNotEmpty(_attach))
-        	operationLogManager.operationLog("商品上架", _attach, goods, new String[]{"goods"}, null);
+            operationLogManager.operationLog("商品上架", _attach, goods, new String[]{"goods"}, null);
         goods.upShelf();
         //updateRecognizedImgStatus(goods.goodsRecognizeds(), 1);
     }
@@ -172,7 +182,7 @@ public class GoodsApplication {
             throw new NegativeException(MCode.V_300, "商品不存在");
         }
         if (StringUtils.isNotEmpty(_attach))
-        	operationLogManager.operationLog("商品下架", _attach, goods, new String[]{"goods"}, null);
+            operationLogManager.operationLog("商品下架", _attach, goods, new String[]{"goods"}, null);
         goods.offShelf();
         //updateRecognizedImgStatus(goods.goodsRecognizeds(), 0);
     }
@@ -191,7 +201,7 @@ public class GoodsApplication {
             throw new NegativeException(MCode.V_300, "商品不存在");
         }
         if (StringUtils.isNotEmpty(_attach))
-        	operationLogManager.operationLog("修改商品识别图", _attach, goods, new String[]{"goods"}, null);
+            operationLogManager.operationLog("修改商品识别图", _attach, goods, new String[]{"goods"}, null);
         goods.modifyRecognized(command.getRecognizedNo(), command.getRecognizedId(), command.getRecognizedUrl());
         Integer status = goods.goodsStatus() == 1 ? 0 : 1;
         if (StringUtils.isEmpty(command.getRecognizedId())) {
@@ -243,7 +253,7 @@ public class GoodsApplication {
             throw new NegativeException(MCode.V_300, "商品不存在");
         }
         if (StringUtils.isNotEmpty(_attach))
-        	operationLogManager.operationLog("删除商品识别图", _attach, goods, new String[]{"goods"}, null);
+            operationLogManager.operationLog("删除商品识别图", _attach, goods, new String[]{"goods"}, null);
         goods.delRecognized(command.getRecognizedNo());
         boolean result = goodsDubboService.updateRecognizedImgStatus(command.getRecognizedId(), command.getRecognizedUrl(), 0);
         if (!result) {
@@ -536,7 +546,7 @@ public class GoodsApplication {
             throw new NegativeException(MCode.V_300, "商品不存在");
         }
         if (StringUtils.isNotEmpty(_attach))
-        	operationLogManager.operationLog("修改商品主图", _attach, goods, new String[]{"goods"}, null);
+            operationLogManager.operationLog("修改商品主图", _attach, goods, new String[]{"goods"}, null);
         goods.modifyGoodsMainImages(images);
     }
 
@@ -551,17 +561,17 @@ public class GoodsApplication {
     public void upShelfGoodsBatch(List goodsIds, String _attach) throws NegativeException {
         LOGGER.info("upShelfGoodsBatch goodsIds >>{}", goodsIds);
         List<Goods> goodsList = goodsRepository.queryGoodsByIdList(goodsIds);
-        
-        if(StringUtils.isNotEmpty(_attach)) {
-        	operationLogManager.operationLog("商品批量上架", _attach, goodsList, new String[]{"goods"}, null);
+
+        if (StringUtils.isNotEmpty(_attach)) {
+            operationLogManager.operationLog("商品批量上架", _attach, goodsList, new String[]{"goods"}, null);
         }
-        
+
         if (null != goodsList && goodsList.size() > 0) {
             for (Goods goods : goodsList) {
-            	if(goods.goodsStatus() == 1) {//仓库中,未上架
-            		goods.upShelf();
+                if (goods.goodsStatus() == 1) {//仓库中,未上架
+                    goods.upShelf();
                     //updateRecognizedImgStatus(goods.goodsRecognizeds(), 1);
-            	}
+                }
             }
         } else {
             throw new NegativeException(MCode.V_300, "所选商品不存在");
@@ -579,15 +589,15 @@ public class GoodsApplication {
     public void offShelfGoodsBatch(List goodsIds, String _attach) throws NegativeException {
         LOGGER.info("offShelfGoodsBatch goodsIds >>{}", goodsIds);
         List<Goods> goodsList = goodsRepository.queryGoodsByIdList(goodsIds);
-        if(StringUtils.isNotEmpty(_attach)) {
+        if (StringUtils.isNotEmpty(_attach)) {
             operationLogManager.operationLog("商品批量下架", _attach, goodsList, new String[]{"goods"}, null);
         }
         if (null != goodsList && goodsList.size() > 0) {
             for (Goods goods : goodsList) {
-            	if(goods.goodsStatus() != 1) {//未下架
-            		goods.offShelf();
+                if (goods.goodsStatus() != 1) {//未下架
+                    goods.offShelf();
                     //updateRecognizedImgStatus(goods.goodsRecognizeds(), 0);	
-            	}
+                }
             }
         } else {
             throw new NegativeException(MCode.V_300, "所选商品不存在");

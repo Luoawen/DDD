@@ -32,10 +32,15 @@
         <property name="rejectReason" column="reject_reason" type="string"/>
         <property name="goodsSpecifications" column="goods_specifications" type="text"/>
         <property name="skuFlag" column="sku_flag" type="int"/>
+        <property name="changeReason" column="change_reason" type="string"/>
         <property name="delStatus" column="del_status" type="int"/>
         <bag name="goodsSkuApproves" lazy="false" cascade="all-delete-orphan" inverse="true">
             <key column="goods_id"/>
             <one-to-many class="cn.m2c.scm.domain.model.goods.GoodsSkuApprove"/>
+        </bag>
+        <bag name="goodsApproveHistories" lazy="false" cascade="all-delete-orphan" inverse="true">
+            <key column="approve_id"/>
+            <one-to-many class="cn.m2c.scm.domain.model.goods.GoodsApproveHistory"/>
         </bag>
     </class>
 </hibernate-mapping>

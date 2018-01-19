@@ -93,6 +93,7 @@ public class GoodsAgent {
      * @param goodsMainImages  商品主图  存储类型是[“url1”,"url2"]
      * @param goodsDesc        商品描述
      * @param goodsSKUs        商品sku规格列表,格式：[{"availableNum":200,"goodsCode":"111111","marketPrice":6000,"photographPrice":5000,"showStatus":2,"skuId":"SPSHA5BDED943A1D42CC9111B3723B0987BF","skuName":"L,红","supplyPrice":4000,"weight":20.5}]
+     * @param changeReason     变更原因
      * @return
      */
     @RequestMapping(value = "/web/goods", method = RequestMethod.PUT)
@@ -114,7 +115,8 @@ public class GoodsAgent {
             @RequestParam(value = "goodsMainVideo", required = false) String goodsMainVideo,
             @RequestParam(value = "goodsDesc", required = false) String goodsDesc,
             @RequestParam(value = "goodsSpecifications", required = false) String goodsSpecifications,
-            @RequestParam(value = "goodsSKUs", required = false) String goodsSKUs) {
+            @RequestParam(value = "goodsSKUs", required = false) String goodsSKUs,
+            @RequestParam(value = "changeReason", required = false) String changeReason) {
         MResult result = new MResult(MCode.V_1);
         try {
             List<Map> skuList = JsonUtils.toList(goodsSKUs, Map.class);
@@ -153,7 +155,7 @@ public class GoodsAgent {
             GoodsCommand command = new GoodsCommand(goodsId, dealerId, goodsName, goodsSubTitle,
                     goodsClassifyId, goodsBrandId, goodsBrandName, goodsUnitId, goodsMinQuantity,
                     goodsPostageId, goodsBarCode, JsonUtils.toStr(goodsKeyWord), JsonUtils.toStr(goodsGuarantee),
-                    JsonUtils.toStr(goodsMainImages), goodsMainVideo, goodsDesc, goodsSpecifications, goodsSKUs);
+                    JsonUtils.toStr(goodsMainImages), goodsMainVideo, goodsDesc, goodsSpecifications, goodsSKUs, changeReason);
             String _attach = request.getHeader("attach");
             goodsApplication.modifyGoods(command, _attach);
             result.setStatus(MCode.V_200);
