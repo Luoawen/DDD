@@ -98,8 +98,11 @@ public class AdminOrderOutAgent {
     		    		Map map = orderServiceImpl.getMediaCateAndFormMessage(adOrderDetailBean.getMediaCate(),adOrderDetailBean.getFormId());
     		    		//广告位位置map
     		    		Map advCateMap =  (Map) map.get("advCate");
-    		    		Map advCateInfoMap = (Map) advCateMap.get(adOrderDetailBean.getMresCate());
-    		    		representation.setMediaCate(advCateInfoMap == null ? "" :(String)advCateInfoMap.get("dicName"));
+    		    		Map advCateInfoMap = null;
+    		    		if(adOrderDetailBean.getMresCate() != null) {
+    		    			advCateInfoMap = (Map) advCateMap.get(adOrderDetailBean.getMresCate().toString());
+    		    		}
+    		    		representation.setMresCate(advCateInfoMap == null ? "" :(String)advCateInfoMap.get("dicName"));
     		    		//媒体分类
     		    		Map mediaCateMap = (Map)map.get("mediaCate");
     		    		representation.setMediaCate(mediaCateMap == null ? "" : (String)mediaCateMap.get("parCateName")+">"+(String)mediaCateMap.get("chdCateName"));
