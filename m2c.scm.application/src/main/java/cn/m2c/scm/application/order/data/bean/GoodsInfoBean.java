@@ -1,5 +1,7 @@
 package cn.m2c.scm.application.order.data.bean;
 
+import java.util.Date;
+
 import cn.m2c.ddd.common.persistence.orm.ColumnAlias;
 import cn.m2c.scm.application.utils.Utils;
 
@@ -87,6 +89,17 @@ public class GoodsInfoBean {
 	@ColumnAlias(value = "afterOrderType")
 	private Integer afterOrderType;
 	
+	@ColumnAlias(value = "created_date")
+	private Date createdDate;
+	
+	public Date getCreatedDate() {
+		return createdDate;
+	}
+
+	public void setCreatedDate(Date createdDate) {
+		this.createdDate = createdDate;
+	}
+
 	public Integer getSortNo() {
 		return sortNo;
 	}

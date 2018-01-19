@@ -2,6 +2,9 @@ package cn.m2c.scm.domain.model.goods;
 
 import cn.m2c.ddd.common.domain.model.ConcurrencySafeEntity;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * 商品规格
  */
@@ -113,6 +116,30 @@ public class GoodsSku extends ConcurrencySafeEntity {
         return !this.photographPrice.equals(photographPrice) || (null != this.supplyPrice && !this.supplyPrice.equals(supplyPrice));
     }
 
+    public Map getChangePhotographPrice(Long photographPrice) {
+        if (!this.photographPrice.equals(photographPrice)) {
+            Map temp = new HashMap<>();
+            temp.put("oldPhotographPrice", this.photographPrice);
+            temp.put("newPhotographPrice", photographPrice);
+            temp.put("skuId", this.skuId);
+            temp.put("skuName", this.skuName);
+            return temp;
+        }
+        return null;
+    }
+
+    public Map getChangeSupplyPrice(Long supplyPrice) {
+        if (null != this.supplyPrice && !this.supplyPrice.equals(supplyPrice)) {
+            Map temp = new HashMap<>();
+            temp.put("oldSupplyPrice", this.supplyPrice);
+            temp.put("newSupplyPrice", supplyPrice);
+            temp.put("skuId", this.skuId);
+            temp.put("skuName", this.skuName);
+            return temp;
+        }
+        return null;
+    }
+
     public Integer availableNum() {
         return availableNum;
     }
@@ -147,5 +174,27 @@ public class GoodsSku extends ConcurrencySafeEntity {
         this.availableNum = this.availableNum + num;
         this.realNum = this.realNum + num;
         this.sellerNum = this.sellerNum - num;
+    }
+
+    public Map convertToMap() {
+        Map map = new HashMap<>();
+        map.put("skuId", skuId);
+        map.put("skuName", skuName);
+        map.put("availableNum", availableNum);
+        map.put("weight", weight);
+        map.put("photographPrice", photographPrice);
+        map.put("marketPrice", marketPrice);
+        map.put("supplyPrice", supplyPrice);
+        map.put("goodsCode", goodsCode);
+        map.put("showStatus", showStatus);
+        return map;
+    }
+
+    public boolean isModifyPhotographPrice(Long photographPrice) {
+        return !this.photographPrice.equals(photographPrice);
+    }
+
+    public boolean isModifySupplyPrice(Long supplyPrice) {
+        return null != this.supplyPrice && !this.supplyPrice.equals(supplyPrice);
     }
 }

@@ -6,11 +6,15 @@ import cn.m2c.ddd.common.domain.model.DomainEventPublisher;
 import cn.m2c.ddd.common.serializer.ObjectSerializer;
 import cn.m2c.scm.domain.model.goods.event.GoodsApproveAgreeEvent;
 import cn.m2c.scm.domain.util.GetMapValueUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * 商品审核
@@ -136,6 +140,13 @@ public class GoodsApprove extends ConcurrencySafeEntity {
      */
     private Integer skuFlag;
 
+    /**
+     * 变更原因
+     */
+    private String changeReason;
+
+    private List<GoodsApproveHistory> goodsApproveHistories;
+
     public GoodsApprove() {
         super();
     }
@@ -144,7 +155,7 @@ public class GoodsApprove extends ConcurrencySafeEntity {
                         String goodsClassifyId, String goodsBrandId, String goodsBrandName, String goodsUnitId, Integer goodsMinQuantity,
                         String goodsPostageId, String goodsBarCode, String goodsKeyWord, String goodsGuarantee,
                         String goodsMainImages, String goodsMainVideo, String goodsDesc, Integer goodsShelves, String goodsSpecifications, String goodsSkuApproves,
-                        Integer skuFlag) {
+                        Integer skuFlag, String changeGoodsInfo) {
         this.goodsId = goodsId;
         this.dealerId = dealerId;
         this.dealerName = dealerName;
@@ -181,6 +192,95 @@ public class GoodsApprove extends ConcurrencySafeEntity {
         if (null != skuList && skuList.size() > 0) {
             for (int i = 0; i < skuList.size(); i++) {
                 this.goodsSkuApproves.add(createGoodsSkuApprove(skuList.get(i)));
+            }
+        }
+
+        // 变更历史
+        this.goodsApproveHistories = new ArrayList<>();
+        dealGoodsApproveHistory(changeGoodsInfo);
+    }
+
+    private void dealGoodsApproveHistory(String changeGoodsInfo) {
+        if (StringUtils.isNotEmpty(changeGoodsInfo)) {
+            Map map = JsonUtils.toMap(changeGoodsInfo);
+            if (null != map) {
+                Date nowDate = new Date();
+                this.changeReason = null != map.get("changeReason") ? map.get("changeReason").toString() : null;
+                String oldGoodsClassifyId = null != map.get("oldGoodsClassifyId") ? map.get("oldGoodsClassifyId").toString() : null;
+                String newGoodsClassifyId = null != map.get("newGoodsClassifyId") ? map.get("newGoodsClassifyId").toString() : null;
+                // 增加的sku
+                List<Map> addGoodsSkuList = null != map.get("addGoodsSkuList") ? (List<Map>) map.get("addGoodsSkuList") : null;
+                // 变更的拍获价
+                List<Map> photographPriceChangeList = null != map.get("photographPriceChangeList") ? (List<Map>) map.get("photographPriceChangeList") : null;
+                // 变更的供货价
+                List<Map> supplyPriceChangeList = null != map.get("supplyPriceChangeList") ? (List<Map>) map.get("supplyPriceChangeList") : null;
+
+                String historyNo = UUID.randomUUID().toString().replaceAll("-", "").toUpperCase();
+                // 分类
+                if (StringUtils.isNotEmpty(oldGoodsClassifyId) && StringUtils.isNotEmpty(newGoodsClassifyId)) {
+                    String historyId = UUID.randomUUID().toString().replaceAll("-", "").toUpperCase();
+
+                    Map before = new HashMap<>();
+                    before.put("goodsClassifyId", oldGoodsClassifyId);
+                    Map after = new HashMap<>();
+                    after.put("goodsClassifyId", newGoodsClassifyId);
+
+                    GoodsApproveHistory history = new GoodsApproveHistory(historyId, historyNo, this, this.goodsId,
+                            1, JsonUtils.toStr(before),
+                            JsonUtils.toStr(after), this.changeReason, nowDate);
+                    this.goodsApproveHistories.add(history);
+                }
+
+                // 增加sku
+                if (null != addGoodsSkuList && addGoodsSkuList.size() > 0) {
+                    for (Map skuMap : addGoodsSkuList) {
+                        String historyId = UUID.randomUUID().toString().replaceAll("-", "").toUpperCase();
+                        GoodsApproveHistory history = new GoodsApproveHistory(historyId, historyNo, this, this.goodsId,
+                                4, "",
+                                JsonUtils.toStr(skuMap), this.changeReason, nowDate);
+                        this.goodsApproveHistories.add(history);
+                    }
+                }
+
+                // 拍获价
+                if (null != photographPriceChangeList && photographPriceChangeList.size() > 0) {
+                    for (Map photographPriceMap : photographPriceChangeList) {
+                        String historyId = UUID.randomUUID().toString().replaceAll("-", "").toUpperCase();
+                        Map before = new HashMap<>();
+                        before.put("photographPrice", photographPriceMap.get("oldPhotographPrice"));
+                        before.put("skuId", photographPriceMap.get("skuId"));
+                        before.put("skuName", photographPriceMap.get("skuName"));
+
+                        Map after = new HashMap<>();
+                        after.put("photographPrice", photographPriceMap.get("newPhotographPrice"));
+
+
+                        GoodsApproveHistory history = new GoodsApproveHistory(historyId, historyNo, this, this.goodsId,
+                                2, JsonUtils.toStr(before),
+                                JsonUtils.toStr(after), this.changeReason, nowDate);
+                        this.goodsApproveHistories.add(history);
+                    }
+                }
+
+                // 供货价
+                if (null != supplyPriceChangeList && supplyPriceChangeList.size() > 0) {
+                    for (Map supplyPriceMap : supplyPriceChangeList) {
+                        String historyId = UUID.randomUUID().toString().replaceAll("-", "").toUpperCase();
+                        Map before = new HashMap<>();
+                        before.put("supplyPrice", supplyPriceMap.get("oldSupplyPrice"));
+                        before.put("skuId", supplyPriceMap.get("skuId"));
+                        before.put("skuName", supplyPriceMap.get("skuName"));
+
+                        Map after = new HashMap<>();
+                        after.put("supplyPrice", supplyPriceMap.get("newSupplyPrice"));
+
+                        GoodsApproveHistory history = new GoodsApproveHistory(historyId, historyNo, this, this.goodsId,
+                                3, JsonUtils.toStr(before),
+                                JsonUtils.toStr(after), this.changeReason, nowDate);
+                        this.goodsApproveHistories.add(history);
+                    }
+                }
+
             }
         }
     }
@@ -223,7 +323,7 @@ public class GoodsApprove extends ConcurrencySafeEntity {
                         this.goodsUnitId, this.goodsMinQuantity, this.goodsPostageId,
                         this.goodsBarCode, this.goodsKeyWord, this.goodsGuarantee,
                         this.goodsMainImages, this.goodsMainVideo, this.goodsDesc,
-                        this.goodsShelves, this.goodsSpecifications, goodsSKUs, this.skuFlag));
+                        this.goodsShelves, this.goodsSpecifications, goodsSKUs, this.skuFlag, this.changeReason));
     }
 
     /**
@@ -236,13 +336,18 @@ public class GoodsApprove extends ConcurrencySafeEntity {
         this.rejectReason = rejectReason;
     }
 
+    /**
+     * 修改审核记录
+     *
+     * @param isCover true:修改商品库，存在审核记录，覆盖之前审核记录 false:直接修改商品审核库
+     */
     public void modifyGoodsApprove(String goodsName, String goodsSubTitle,
                                    String goodsClassifyId, String goodsBrandId, String goodsBrandName, String goodsUnitId, Integer goodsMinQuantity,
                                    String goodsPostageId, String goodsBarCode, String goodsKeyWord, String goodsGuarantee,
-                                   String goodsMainImages, String goodsMainVideo, String goodsDesc, String goodsSpecifications, String goodsSkuApproves) {
+                                   String goodsMainImages, String goodsMainVideo, String goodsDesc, String goodsSpecifications,
+                                   String goodsSkuApproves, boolean isCover, String changeGoodsInfo, boolean isModifyApprove, Map goodsInfoMap) {
         this.goodsName = goodsName;
         this.goodsSubTitle = goodsSubTitle;
-        this.goodsClassifyId = goodsClassifyId;
         this.goodsBrandId = goodsBrandId;
         this.goodsBrandName = goodsBrandName;
         this.goodsUnitId = goodsUnitId;
@@ -259,6 +364,32 @@ public class GoodsApprove extends ConcurrencySafeEntity {
         if (null != this.skuFlag && this.skuFlag == 1) {//是否是多规格：0：单规格，1：多规格
             this.goodsSpecifications = goodsSpecifications;
         }
+
+        if (null == this.goodsApproveHistories) {
+            this.goodsApproveHistories = new ArrayList<>();
+        }
+
+        // 分类
+        String historyNo = UUID.randomUUID().toString().replaceAll("-", "").toUpperCase();
+        Date nowDate = new Date();
+        if (isModifyApprove && !this.goodsClassifyId.equals(goodsClassifyId)) {
+            String oldGoodsClassifyId = "";
+            if (null != goodsInfoMap) {
+                oldGoodsClassifyId = goodsInfoMap.get("goodsClassifyId").toString();
+            }
+            Map before = new HashMap<>();
+            before.put("goodsClassifyId", oldGoodsClassifyId);
+            Map after = new HashMap<>();
+            after.put("goodsClassifyId", goodsClassifyId);
+            // 商品审核库修改分类
+            String historyId = UUID.randomUUID().toString().replaceAll("-", "").toUpperCase();
+            GoodsApproveHistory history = new GoodsApproveHistory(historyId, historyNo, this, this.goodsId,
+                    1, JsonUtils.toStr(before),
+                    JsonUtils.toStr(after), this.changeReason, nowDate);
+            this.goodsApproveHistories.add(history);
+        }
+        this.goodsClassifyId = goodsClassifyId;
+
         //商品规格格式：[{"skuId":20171014125226158648","skuName":"L,红","supplyPrice":4000,
         // "weight":20.5,"availableNum":200,"goodsCode":"111111","marketPrice":6000,"photographPrice":5000,"showStatus":2}]
         if (null == this.goodsSkuApproves) {
@@ -271,7 +402,16 @@ public class GoodsApprove extends ConcurrencySafeEntity {
                 // 判断商品规格sku是否存在,存在就修改供货价和拍获价，不存在就增加商品sku
                 GoodsSkuApprove goodsSkuApprove = getGoodsSkuApprove(skuId);
                 if (null == goodsSkuApprove) {// 增加规格
-                    this.goodsSkuApproves.add(createGoodsSkuApprove(map));
+                    GoodsSkuApprove skuApprove = createGoodsSkuApprove(map);
+                    this.goodsSkuApproves.add(skuApprove);
+                    if (isModifyApprove) {
+                        // 商品审核库增加规格
+                        String historyId = UUID.randomUUID().toString().replaceAll("-", "").toUpperCase();
+                        GoodsApproveHistory history = new GoodsApproveHistory(historyId, historyNo, this, this.goodsId,
+                                4, "",
+                                JsonUtils.toStr(skuApprove), this.changeReason, nowDate);
+                        this.goodsApproveHistories.add(history);
+                    }
                 } else { //修改
                     String skuName = GetMapValueUtils.getStringFromMapKey(map, "skuName");
                     Integer availableNum = GetMapValueUtils.getIntFromMapKey(map, "availableNum");
@@ -287,11 +427,85 @@ public class GoodsApprove extends ConcurrencySafeEntity {
                             showStatus = 1;
                         }
                     }
+
+                    // 商品审核库修改拍获价
+                    if (isModifyApprove && goodsSkuApprove.isModifyPhotographPrice(photographPrice)) {
+                        String historyId = UUID.randomUUID().toString().replaceAll("-", "").toUpperCase();
+                        Map photographPriceMap = goodsSkuApprove.getChangePhotographPrice(photographPrice);
+                        Map before = new HashMap<>();
+                        // 取商品库价格
+                        Long oldPhotographPrice = getOldPhotographPrice(goodsInfoMap, skuId);
+                        before.put("photographPrice", null == oldPhotographPrice ? photographPriceMap.get("oldPhotographPrice") : oldPhotographPrice);
+                        before.put("skuId", photographPriceMap.get("skuId"));
+                        before.put("skuName", photographPriceMap.get("skuName"));
+
+                        Map after = new HashMap<>();
+                        after.put("photographPrice", photographPriceMap.get("newPhotographPrice"));
+                        GoodsApproveHistory history = new GoodsApproveHistory(historyId, historyNo, this, this.goodsId,
+                                2, JsonUtils.toStr(before),
+                                JsonUtils.toStr(after), this.changeReason, nowDate);
+                        this.goodsApproveHistories.add(history);
+
+                    }
+                    // 商品审核库修改供货价
+                    if (isModifyApprove && goodsSkuApprove.isModifySupplyPrice(supplyPrice)) {
+                        String historyId = UUID.randomUUID().toString().replaceAll("-", "").toUpperCase();
+                        Map supplyPriceMap = goodsSkuApprove.getChangeSupplyPrice(supplyPrice);
+                        Map before = new HashMap<>();
+                        Long oldSupplyPrice = getOldSupplyPrice(goodsInfoMap, skuId);
+
+                        before.put("supplyPrice", null == oldSupplyPrice ? supplyPriceMap.get("oldSupplyPrice") : oldSupplyPrice);
+                        before.put("skuId", supplyPriceMap.get("skuId"));
+                        before.put("skuName", supplyPriceMap.get("skuName"));
+
+                        Map after = new HashMap<>();
+                        after.put("supplyPrice", supplyPriceMap.get("newSupplyPrice"));
+
+                        GoodsApproveHistory history = new GoodsApproveHistory(historyId, historyNo, this, this.goodsId,
+                                3, JsonUtils.toStr(before),
+                                JsonUtils.toStr(after), this.changeReason, nowDate);
+                        this.goodsApproveHistories.add(history);
+                    }
+
                     goodsSkuApprove.modifyGoodsSkuApprove(skuName, availableNum, weight, photographPrice,
                             marketPrice, supplyPrice, goodsCode, showStatus);
                 }
             }
         }
+
+        // 商品库修改变更历史
+        if (isCover && StringUtils.isNotEmpty(changeGoodsInfo)) {
+            if (null != this.goodsApproveHistories && this.goodsApproveHistories.size() > 0) {
+                this.goodsApproveHistories.clear();
+            }
+            dealGoodsApproveHistory(changeGoodsInfo);
+        }
+    }
+
+    private Long getOldPhotographPrice(Map goodsInfoMap, String skuId) {
+        List<Map> skuMaps = (List<Map>) goodsInfoMap.get("goodsSKUs");
+        if (null != skuMaps && skuMaps.size() > 0) {
+            for (Map map : skuMaps) {
+                String sku = map.get("skuId").toString();
+                if (sku.equals(skuId)) {
+                    return Long.parseLong(String.valueOf(map.get("photographPrice")));
+                }
+            }
+        }
+        return null;
+    }
+
+    private Long getOldSupplyPrice(Map goodsInfoMap, String skuId) {
+        List<Map> skuMaps = (List<Map>) goodsInfoMap.get("goodsSKUs");
+        if (null != skuMaps && skuMaps.size() > 0) {
+            for (Map map : skuMaps) {
+                String sku = map.get("skuId").toString();
+                if (sku.equals(skuId) && null != map.get("supplyPrice")) {
+                    return Long.parseLong(String.valueOf(map.get("supplyPrice")));
+                }
+            }
+        }
+        return null;
     }
 
     /**
@@ -336,17 +550,23 @@ public class GoodsApprove extends ConcurrencySafeEntity {
 
     /**
      * 删除审核中商品指定保障
+     *
      * @param guaranteeId
      */
-	public void delGoodsApproveGuarantee(String guaranteeId) {
-		List list = ObjectSerializer.instance().deserialize(this.goodsGuarantee, List.class);
-		Iterator<String> it = list.iterator();
-		while(it.hasNext()) {
-			String goodsApproveGuarantee = it.next();
-			if(goodsApproveGuarantee.equals(guaranteeId)) {
-				it.remove();
-			}
-		}
-		this.goodsGuarantee = JsonUtils.toStr(list);
-	}
+    public void delGoodsApproveGuarantee(String guaranteeId) {
+        List list = ObjectSerializer.instance().deserialize(this.goodsGuarantee, List.class);
+        Iterator<String> it = list.iterator();
+        while (it.hasNext()) {
+            String goodsApproveGuarantee = it.next();
+            if (goodsApproveGuarantee.equals(guaranteeId)) {
+                it.remove();
+            }
+        }
+        this.goodsGuarantee = JsonUtils.toStr(list);
+    }
+
+    public Integer getId() {
+        return Integer.parseInt(String.valueOf(this.id()));
+    }
+
 }
