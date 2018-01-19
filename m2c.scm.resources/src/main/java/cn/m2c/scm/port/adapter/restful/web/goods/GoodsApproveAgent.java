@@ -403,7 +403,34 @@ public class GoodsApproveAgent {
                             dealerType = null != dealerBean.getDealerClassifyBean() ? dealerBean.getDealerClassifyBean().getDealerSecondClassifyName() : "";
                         }
                         Map goodsClassifyMap = goodsClassifyQueryApplication.getClassifyMap(bean.getGoodsClassifyId());
-                        representations.add(new GoodsApproveSearchRepresentation(bean, goodsClassifyMap, dealerType));
+
+
+                        //结算模式 1：按供货价 2：按服务费率
+                        Integer settlementMode = dealerBean.getCountMode();
+                        Float newServiceRate = null;
+                        if (settlementMode == 2) {
+                            newServiceRate = goodsClassifyQueryApplication.queryServiceRateByClassifyId(bean.getGoodsClassifyId());
+                        }
+
+                        // 查询商品库信息,获取商品变更前的服务费率和分类名称
+                        Float oldServiceRate = null;
+                        String oldClassifyName = "";
+                        GoodsBean goodsBean = goodsQueryApplication.queryGoodsByGoodsId(bean.getGoodsId());
+                        if (null != goodsBean) {
+                            if (!bean.getGoodsClassifyId().equals(goodsBean.getGoodsClassifyId())) { // 修改了分类
+                                Map oldClassifyMap = goodsClassifyQueryApplication.getClassifyMap(goodsBean.getGoodsClassifyId());
+                                oldClassifyName = null == oldClassifyMap.get("name") ? "" : (String) oldClassifyMap.get("name");
+                                if (settlementMode == 2) {
+                                    oldServiceRate = goodsClassifyQueryApplication.queryServiceRateByClassifyId(goodsBean.getGoodsClassifyId());
+                                }
+                            } else {
+                                oldServiceRate = newServiceRate;
+                                oldClassifyName = null == goodsClassifyMap.get("name") ? "" : (String) goodsClassifyMap.get("name");
+                            }
+                        }
+
+                        representations.add(new GoodsApproveSearchRepresentation(bean, goodsClassifyMap, dealerType,
+                                settlementMode,newServiceRate,oldServiceRate,oldClassifyName));
                     }
                     result.setContent(representations);
                 }
