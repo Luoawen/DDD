@@ -14,7 +14,9 @@ import cn.m2c.scm.application.goods.command.GoodsApproveCommand;
 import cn.m2c.scm.application.goods.command.GoodsApproveRejectCommand;
 import cn.m2c.scm.application.goods.query.GoodsApproveQueryApplication;
 import cn.m2c.scm.application.goods.query.GoodsGuaranteeQueryApplication;
+import cn.m2c.scm.application.goods.query.GoodsQueryApplication;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsApproveBean;
+import cn.m2c.scm.application.goods.query.data.bean.GoodsBean;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsGuaranteeBean;
 import cn.m2c.scm.application.goods.query.data.representation.GoodsApproveDetailRepresentation;
 import cn.m2c.scm.application.goods.query.data.representation.GoodsApproveSearchRepresentation;
@@ -75,6 +77,8 @@ public class GoodsApproveAgent {
     private HttpServletRequest request;
     @Autowired
     StantardQuery stantardQuery;
+    @Autowired
+    GoodsQueryApplication goodsQueryApplication;
 
     /**
      * 获取ID
@@ -158,15 +162,15 @@ public class GoodsApproveAgent {
                         return new ResponseEntity<MResult>(result, HttpStatus.OK);
                     }
                     map.put("skuId", skuId);
-                    Long marketPrice = null != map.get("marketPrice") && !"NaN".equals( map.get("marketPrice")) ? new BigDecimal((GetMapValueUtils.getFloatFromMapKey(map, "marketPrice") * 10000)).longValue() : null;
+                    Long marketPrice = null != map.get("marketPrice") && !"NaN".equals(map.get("marketPrice")) ? new BigDecimal((GetMapValueUtils.getFloatFromMapKey(map, "marketPrice") * 10000)).longValue() : null;
                     Long photographPrice = new BigDecimal((GetMapValueUtils.getFloatFromMapKey(map, "photographPrice") * 10000)).longValue();
-                    if(null != GetMapValueUtils.getFloatFromMapKey(map, "supplyPrice")) {
-                    	Long supplyPrice = new BigDecimal((GetMapValueUtils.getFloatFromMapKey(map, "supplyPrice") * 10000)).longValue();
+                    if (null != GetMapValueUtils.getFloatFromMapKey(map, "supplyPrice")) {
+                        Long supplyPrice = new BigDecimal((GetMapValueUtils.getFloatFromMapKey(map, "supplyPrice") * 10000)).longValue();
                         map.put("supplyPrice", supplyPrice);
-                    }else {
+                    } else {
                         map.put("supplyPrice", GetMapValueUtils.getFloatFromMapKey(map, "supplyPrice"));
                     }
-                    
+
                     map.put("marketPrice", marketPrice);
                     map.put("photographPrice", photographPrice);
                 }
@@ -300,18 +304,18 @@ public class GoodsApproveAgent {
                         }
                         map.put("skuId", skuId);
                     }
-                    Long marketPrice = null != map.get("marketPrice") && !"NaN".equals( map.get("marketPrice")) ? new BigDecimal((GetMapValueUtils.getFloatFromMapKey(map, "marketPrice") * 10000)).longValue() : null;
+                    Long marketPrice = null != map.get("marketPrice") && !"NaN".equals(map.get("marketPrice")) ? new BigDecimal((GetMapValueUtils.getFloatFromMapKey(map, "marketPrice") * 10000)).longValue() : null;
                     Long photographPrice = new BigDecimal((GetMapValueUtils.getFloatFromMapKey(map, "photographPrice") * 10000)).longValue();
-                    if(null != GetMapValueUtils.getFloatFromMapKey(map, "supplyPrice")) {
-                    	Long supplyPrice = new BigDecimal((GetMapValueUtils.getFloatFromMapKey(map, "supplyPrice") * 10000)).longValue();
-                    	map.put("supplyPrice", supplyPrice);
-                    }else {
-                    	map.put("supplyPrice", GetMapValueUtils.getFloatFromMapKey(map, "supplyPrice"));
+                    if (null != GetMapValueUtils.getFloatFromMapKey(map, "supplyPrice")) {
+                        Long supplyPrice = new BigDecimal((GetMapValueUtils.getFloatFromMapKey(map, "supplyPrice") * 10000)).longValue();
+                        map.put("supplyPrice", supplyPrice);
+                    } else {
+                        map.put("supplyPrice", GetMapValueUtils.getFloatFromMapKey(map, "supplyPrice"));
                     }
-                    
+
                     map.put("marketPrice", marketPrice);
                     map.put("photographPrice", photographPrice);
-                    
+
                 }
                 goodsSKUs = JsonUtils.toStr(skuList);
             } else {
@@ -432,6 +436,23 @@ public class GoodsApproveAgent {
                 }
                 PostageModelBean postageModelBean = postageModelQueryApplication.queryPostageModelsByModelId(goodsBean.getGoodsPostageId());
 
+                // 查询商品库信息,获取商品变更前的服务费率和分类名称
+                Float oldServiceRate = null;
+                String oldClassifyName = "";
+                GoodsBean bean = goodsQueryApplication.queryGoodsByGoodsId(goodsId);
+                if (null != bean) {
+                    if (!bean.getGoodsClassifyId().equals(goodsBean.getGoodsClassifyId())) { //
+                        Map oldClassifyMap = goodsClassifyQueryApplication.getClassifyMap(bean.getGoodsClassifyId());
+                        oldClassifyName = null == oldClassifyMap.get("name") ? "" : (String) oldClassifyMap.get("name");
+                        if (settlementMode == 2) {
+                            oldServiceRate = goodsClassifyQueryApplication.queryServiceRateByClassifyId(goodsBean.getGoodsClassifyId());
+                        }
+                    } else {
+                        oldServiceRate = serviceRate;
+                        oldClassifyName = null == goodsClassifyMap.get("name") ? "" : (String) goodsClassifyMap.get("name");
+                    }
+                }
+
                 List<Map> goodsSpecifications = JsonUtils.toList(goodsBean.getGoodsSpecifications(), Map.class);
                 if (null != goodsSpecifications && goodsSpecifications.size() > 0) {
                     for (Map tempMap : goodsSpecifications) {
@@ -444,7 +465,7 @@ public class GoodsApproveAgent {
                 }
 
                 GoodsApproveDetailRepresentation representation = new GoodsApproveDetailRepresentation(goodsBean,
-                        goodsClassifyMap, goodsGuarantee, goodsUnitName, settlementMode, serviceRate, postageModelBean);
+                        goodsClassifyMap, goodsGuarantee, goodsUnitName, settlementMode, serviceRate, postageModelBean,oldServiceRate,oldClassifyName);
                 result.setContent(representation);
             }
             result.setStatus(MCode.V_200);
