@@ -219,11 +219,21 @@ public class GoodsApprove extends ConcurrencySafeEntity {
                 // 分类
                 if (StringUtils.isNotEmpty(oldGoodsClassifyId) && StringUtils.isNotEmpty(newGoodsClassifyId)) {
                     String historyId = UUID.randomUUID().toString().replaceAll("-", "").toUpperCase();
+                    String oldServiceRate = null != map.get("oldServiceRate") ? map.get("oldServiceRate").toString() : null;
+                    String newServiceRate = null != map.get("newServiceRate") ? map.get("newServiceRate").toString() : null;
+                    String oldClassifyName = null != map.get("oldClassifyName") ? map.get("oldClassifyName").toString() : null;
+                    String newClassifyName = null != map.get("newClassifyName") ? map.get("newClassifyName").toString() : null;
+                    String settlementMode = null != map.get("settlementMode") ? map.get("settlementMode").toString() : null;
 
                     Map before = new HashMap<>();
                     before.put("goodsClassifyId", oldGoodsClassifyId);
+                    before.put("goodsClassifyName", oldClassifyName);
+                    before.put("serviceRate", oldServiceRate);
+                    before.put("settlementMode", settlementMode);
                     Map after = new HashMap<>();
                     after.put("goodsClassifyId", newGoodsClassifyId);
+                    before.put("goodsClassifyName", newClassifyName);
+                    before.put("serviceRate", newServiceRate);
 
                     GoodsApproveHistory history = new GoodsApproveHistory(historyId, historyNo, this, this.goodsId,
                             1, JsonUtils.toStr(before),
@@ -374,13 +384,30 @@ public class GoodsApprove extends ConcurrencySafeEntity {
         Date nowDate = new Date();
         if (isModifyApprove && !this.goodsClassifyId.equals(goodsClassifyId)) {
             String oldGoodsClassifyId = "";
+            String oldServiceRate = "";
+            String newServiceRate = "";
+            String oldClassifyName = "";
+            String newClassifyName = "";
+            String settlementMode = "";
             if (null != goodsInfoMap) {
                 oldGoodsClassifyId = goodsInfoMap.get("goodsClassifyId").toString();
+                oldServiceRate = null != goodsInfoMap.get("oldServiceRate") ? goodsInfoMap.get("oldServiceRate").toString() : null;
+                newServiceRate = null != goodsInfoMap.get("newServiceRate") ? goodsInfoMap.get("newServiceRate").toString() : null;
+                oldClassifyName = null != goodsInfoMap.get("oldClassifyName") ? goodsInfoMap.get("oldClassifyName").toString() : null;
+                newClassifyName = null != goodsInfoMap.get("newClassifyName") ? goodsInfoMap.get("newClassifyName").toString() : null;
+                settlementMode = null != goodsInfoMap.get("settlementMode") ? goodsInfoMap.get("settlementMode").toString() : null;
             }
             Map before = new HashMap<>();
             before.put("goodsClassifyId", oldGoodsClassifyId);
+            before.put("goodsClassifyName", oldClassifyName);
+            before.put("serviceRate", oldServiceRate);
+            before.put("settlementMode", settlementMode);
             Map after = new HashMap<>();
             after.put("goodsClassifyId", goodsClassifyId);
+            before.put("goodsClassifyName", newClassifyName);
+            before.put("serviceRate", newServiceRate);
+
+
             // 商品审核库修改分类
             String historyId = UUID.randomUUID().toString().replaceAll("-", "").toUpperCase();
             GoodsApproveHistory history = new GoodsApproveHistory(historyId, historyNo, this, this.goodsId,

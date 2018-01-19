@@ -162,12 +162,18 @@ public class GoodsApproveApplication {
         if (null != goods) {
             isModifyApprove = true;
             goodsInfoMap = goods.goodsNeedApproveInfo();  // 商品库商品信息
+            goodsInfoMap.put("oldServiceRate", command.getOldServiceRate());
+            goodsInfoMap.put("newServiceRate", command.getNewServiceRate());
+            goodsInfoMap.put("oldClassifyName", command.getOldClassifyName());
+            goodsInfoMap.put("newClassifyName", command.getNewClassifyName());
+            goodsInfoMap.put("settlementMode", command.getSettlementMode());
         }
 
         goodsApprove.modifyGoodsApprove(command.getGoodsName(), command.getGoodsSubTitle(),
                 command.getGoodsClassifyId(), command.getGoodsBrandId(), command.getGoodsBrandName(), command.getGoodsUnitId(), command.getGoodsMinQuantity(),
                 command.getGoodsPostageId(), command.getGoodsBarCode(), JsonUtils.toStr(command.getGoodsKeyWord()), JsonUtils.toStr(command.getGoodsGuarantee()),
-                JsonUtils.toStr(command.getGoodsMainImages()), command.getGoodsMainVideo(), command.getGoodsDesc(), command.getGoodsSpecifications(), command.getGoodsSkuApproves(), false, null, isModifyApprove, goodsInfoMap);
+                JsonUtils.toStr(command.getGoodsMainImages()), command.getGoodsMainVideo(), command.getGoodsDesc(),
+                command.getGoodsSpecifications(), command.getGoodsSkuApproves(), false, null, isModifyApprove, goodsInfoMap);
     }
 
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
