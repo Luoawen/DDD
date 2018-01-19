@@ -172,10 +172,7 @@ public class AdminOrderOutAgent {
     		@RequestParam(value = "goodsMessage", required = false) String goodsMessage,               //商品名/平台SKU
     		@RequestParam(value = "dealerName", required = false) String dealerName,                   //商家名
     		@RequestParam(value = "orderTime", required = false) String orderTime,                     //起始时间（下单）
-    		@RequestParam(value = "orderEndTime", required = false) String orderEndTime, 			   //截至时间（下单）
-    		@RequestParam(value = "pageOrNot", required = false, defaultValue = "1") Integer pageOrNot,//是否分页(0不分页，1分页)
-    		@RequestParam(value = "pageNum", required = false, defaultValue = "1") Integer pageNum,
-    		@RequestParam(value = "rows", required = false, defaultValue = "5000") Integer rows
+    		@RequestParam(value = "orderEndTime", required = false) String orderEndTime 			   //截至时间（下单）
     		) {
     	try {
     		SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd");//设置日期格式
@@ -194,8 +191,8 @@ public class AdminOrderOutAgent {
 		        if(StringUtils.isEmpty(userMessage)) {//无下单用户/账号信息,不限制userIds条件
 	    			userIds = null;
 	    		}
-		        
-    			List<MediaResOrderDetailBean> mediaResOrderDetailBeans = orderQuery.getMediaResOrderDetail(userIds, orderId, payStatus, payWay, afterSellOrderType, mediaCate, mediaNo, mediaName, mresCate, formId, mresNo,  goodsMessage, dealerName, orderTime, orderEndTime, pageOrNot, pageNum, rows);
+		        //做了限制,查5000条
+    			List<MediaResOrderDetailBean> mediaResOrderDetailBeans = orderQuery.getMediaResOrderDetail(userIds, orderId, payStatus, payWay, afterSellOrderType, mediaCate, mediaNo, mediaName, mresCate, formId, mresNo,  goodsMessage, dealerName, orderTime, orderEndTime, 1, 1, 5000);
 
     			if(null != mediaResOrderDetailBeans && mediaResOrderDetailBeans.size() > 0){
     				List<OrderMediaExpModel> orderMediaList = new ArrayList<>();
