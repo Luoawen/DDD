@@ -232,8 +232,8 @@ public class GoodsApprove extends ConcurrencySafeEntity {
                     before.put("settlementMode", settlementMode);
                     Map after = new HashMap<>();
                     after.put("goodsClassifyId", newGoodsClassifyId);
-                    before.put("goodsClassifyName", newClassifyName);
-                    before.put("serviceRate", newServiceRate);
+                    after.put("goodsClassifyName", newClassifyName);
+                    after.put("serviceRate", newServiceRate);
 
                     GoodsApproveHistory history = new GoodsApproveHistory(historyId, historyNo, this, this.goodsId,
                             1, JsonUtils.toStr(before),
@@ -404,8 +404,8 @@ public class GoodsApprove extends ConcurrencySafeEntity {
             before.put("settlementMode", settlementMode);
             Map after = new HashMap<>();
             after.put("goodsClassifyId", goodsClassifyId);
-            before.put("goodsClassifyName", newClassifyName);
-            before.put("serviceRate", newServiceRate);
+            after.put("goodsClassifyName", newClassifyName);
+            after.put("serviceRate", newServiceRate);
 
 
             // 商品审核库修改分类
