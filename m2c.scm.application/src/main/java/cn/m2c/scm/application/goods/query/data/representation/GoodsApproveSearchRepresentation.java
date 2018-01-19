@@ -176,4 +176,36 @@ public class GoodsApproveSearchRepresentation {
     public void setRejectReason(String rejectReason) {
         this.rejectReason = rejectReason;
     }
+
+    public Integer getSettlementMode() {
+        return settlementMode;
+    }
+
+    public void setSettlementMode(Integer settlementMode) {
+        this.settlementMode = settlementMode;
+    }
+
+    public Float getNewServiceRate() {
+        return newServiceRate;
+    }
+
+    public void setNewServiceRate(Float newServiceRate) {
+        this.newServiceRate = newServiceRate;
+    }
+
+    public Float getOldServiceRate() {
+        return oldServiceRate;
+    }
+
+    public void setOldServiceRate(Float oldServiceRate) {
+        this.oldServiceRate = oldServiceRate;
+    }
+
+    public String getOldClassifyName() {
+        return oldClassifyName;
+    }
+
+    public void setOldClassifyName(String oldClassifyName) {
+        this.oldClassifyName = oldClassifyName;
+    }
 }
