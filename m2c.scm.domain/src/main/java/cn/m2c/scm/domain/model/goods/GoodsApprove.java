@@ -324,9 +324,6 @@ public class GoodsApprove extends ConcurrencySafeEntity {
                         this.goodsBarCode, this.goodsKeyWord, this.goodsGuarantee,
                         this.goodsMainImages, this.goodsMainVideo, this.goodsDesc,
                         this.goodsShelves, this.goodsSpecifications, goodsSKUs, this.skuFlag, this.changeReason));
-
-        this.delStatus = 3;
-        this.goodsId = new StringBuffer("AGREE_").append(this.id()).append("_").append(this.goodsId).toString();
     }
 
     /**
