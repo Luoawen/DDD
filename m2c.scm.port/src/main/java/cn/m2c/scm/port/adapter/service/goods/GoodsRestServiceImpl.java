@@ -374,13 +374,14 @@ public class GoodsRestServiceImpl implements GoodsService {
     @Override
     public Map packetZoneGoods() {
         String url = M2C_HOST_URL + "/m2c.market/domain/packet/zone/goods";
+        Map resultMap = new HashMap<>();
         try {
             String result = restTemplate.getForObject(url, String.class);
             JSONObject json = JSONObject.parseObject(result);
+            resultMap.put("statusCode", json.getInteger("status"));
             if (json.getInteger("status") == 200) {
                 JSONObject content = json.getJSONObject("content");
                 if (null != content) {
-                    Map resultMap = new HashMap<>();
                     String packetName = content.getString("packetName");
                     String packetId = content.getString("packetId");
                     String tip = content.getString("tip");
@@ -445,10 +446,11 @@ public class GoodsRestServiceImpl implements GoodsService {
                 LOGGER.error("packetZoneGoods failed.error=>" + json.getString("errorMessage"));
             }
         } catch (Exception e) {
+            resultMap.put("statusCode", 400);
             LOGGER.error("查询新人礼包专区信息异常");
             LOGGER.error("packetZoneGoods exception.url=>" + url);
             LOGGER.error("packetZoneGoods exception.error=>" + e.getMessage());
         }
-        return null;
+        return resultMap;
     }
 }
