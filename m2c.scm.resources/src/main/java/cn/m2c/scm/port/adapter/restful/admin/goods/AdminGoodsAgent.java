@@ -1,12 +1,16 @@
 package cn.m2c.scm.port.adapter.restful.admin.goods;
 
 import cn.m2c.common.MCode;
+import cn.m2c.common.MPager;
 import cn.m2c.common.MResult;
 import cn.m2c.ddd.common.auth.RequirePermissions;
 import cn.m2c.scm.application.goods.GoodsApplication;
 import cn.m2c.scm.application.goods.command.GoodsRecognizedAddCommand;
 import cn.m2c.scm.application.goods.command.GoodsRecognizedDelCommand;
 import cn.m2c.scm.application.goods.command.GoodsRecognizedModifyCommand;
+import cn.m2c.scm.application.goods.query.GoodsHistoryQueryApplication;
+import cn.m2c.scm.application.goods.query.data.bean.GoodsHistoryBean;
+import cn.m2c.scm.application.goods.query.data.representation.GoodsHistoryRepresentation;
 import cn.m2c.scm.domain.NegativeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,8 +38,11 @@ public class AdminGoodsAgent {
     GoodsApplication goodsApplication;
 
     @Autowired
-	private  HttpServletRequest request;
-    
+    private HttpServletRequest request;
+
+    @Autowired
+    GoodsHistoryQueryApplication goodsHistoryQueryApplication;
+
     /**
      * 商品批量上架
      */
@@ -46,7 +53,7 @@ public class AdminGoodsAgent {
     ) {
         MResult result = new MResult(MCode.V_1);
         try {
-        	String _attach= request.getHeader("attach");
+            String _attach = request.getHeader("attach");
             goodsApplication.upShelfGoodsBatch(goodsIds, _attach);
             result.setStatus(MCode.V_200);
         } catch (NegativeException ne) {
@@ -72,7 +79,7 @@ public class AdminGoodsAgent {
     ) {
         MResult result = new MResult(MCode.V_1);
         try {
-        	String _attach= request.getHeader("attach");
+            String _attach = request.getHeader("attach");
             goodsApplication.offShelfGoodsBatch(goodsIds, _attach);
             result.setStatus(MCode.V_200);
         } catch (NegativeException ne) {
@@ -102,7 +109,7 @@ public class AdminGoodsAgent {
         MResult result = new MResult(MCode.V_1);
         try {
             GoodsRecognizedModifyCommand command = new GoodsRecognizedModifyCommand(goodsId, recognizedNo, recognizedId, recognizedUrl);
-            String _attach= request.getHeader("attach");
+            String _attach = request.getHeader("attach");
             goodsApplication.modifyRecognized(command, _attach);
             result.setStatus(MCode.V_200);
         } catch (NegativeException ne) {
@@ -160,7 +167,7 @@ public class AdminGoodsAgent {
         MResult result = new MResult(MCode.V_1);
         try {
             GoodsRecognizedDelCommand command = new GoodsRecognizedDelCommand(goodsId, recognizedNo, recognizedId, recognizedUrl);
-            String _attach= request.getHeader("attach");
+            String _attach = request.getHeader("attach");
             goodsApplication.delRecognized(command, _attach);
             result.setStatus(MCode.V_200);
         } catch (NegativeException ne) {
@@ -171,5 +178,25 @@ public class AdminGoodsAgent {
             result = new MResult(MCode.V_400, "删除商品识别图失败");
         }
         return new ResponseEntity<MResult>(result, HttpStatus.OK);
+    }
+
+
+    @RequestMapping(value = {"/admin/goods/history"}, method = RequestMethod.GET)
+    public ResponseEntity<MPager> queryGoodsHistory(
+            @RequestParam(value = "goodsId", required = false) String goodsId,
+            @RequestParam(value = "pageNum", required = false, defaultValue = "1") Integer pageNum,
+            @RequestParam(value = "rows", required = false, defaultValue = "10") Integer rows) {
+        MPager result = new MPager(MCode.V_1);
+        Integer total = goodsHistoryQueryApplication.queryGoodsHistoryTotal(goodsId);
+        if (total > 0) {
+            List<GoodsHistoryBean> historyBeanList = goodsHistoryQueryApplication.queryGoodsHistory(goodsId, pageNum, rows);
+            if (null != historyBeanList && historyBeanList.size() > 0) {
+                for (GoodsHistoryBean history : historyBeanList) {
+                    GoodsHistoryRepresentation representation = new GoodsHistoryRepresentation(history);
+                    
+                }
+            }
+        }
+        return new ResponseEntity<MPager>(result, HttpStatus.OK);
     }
 }

@@ -457,7 +457,7 @@ public class Goods extends ConcurrencySafeEntity {
                 GoodsSku goodsSku = getGoodsSKU(skuId);
                 if (null == goodsSku) {// 增加了规格
                     isNeedApprove = true;
-                    addGoodsSkuList.add(goodsSku.convertToMap());
+                    addGoodsSkuList.add(map);
                 } else {
                     Integer availableNum = GetMapValueUtils.getIntFromMapKey(map, "availableNum");
                     if (availableNum > 0) {
