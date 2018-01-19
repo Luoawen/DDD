@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping default-access="field" default-cascade="all">
+    <class name="cn.m2c.scm.domain.model.order.OrderMedia" table="t_scm_order_media" lazy="true"
+           dynamic-insert="true" dynamic-update="true">
+
+        <id name="id" column="id" type="long" unsaved-value="-1">
+            <generator class="native"/>
+        </id>
+        <property name="orderId" column="order_id" type="string"/>
+        <property name="dealerOrderId" column="dealer_order_id" type="string"/>
+        <property name="mediaCate" column="media_cate" type="string"/>
+        <property name="mediaNo" column="media_no" type="int"/>
+        <property name="mediaName" column="media_name" type="string"/>
+        <property name="mresCate" column="mres_cate" type="int"/>
+        <property name="formId" column="form_id" type="int"/>
+        <property name="mresNo" column="mres_no" type="long"/>
+        <property name="level" column="level" type="int"/>
+    </class>
+</hibernate-mapping>

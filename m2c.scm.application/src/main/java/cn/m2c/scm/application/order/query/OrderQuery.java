@@ -871,7 +871,7 @@ public class OrderQuery {
      * @throws NegativeException 
      */
 	public Integer getMediaResOrderDetailTotal(List userIds, String orderId, Integer payStatus, Integer payWay,
-			Integer afterSellOrderType, List mediaIds, List mediaResIds, String goodsMessage, String dealerName,
+			Integer afterSellOrderType, String mediaCate, Integer mediaNo, String mediaName, Integer mresCate, Integer formId, Long mresNo, String goodsMessage, String dealerName,
 			String orderTime, String orderEndTime) throws NegativeException {
 		try {
 			List<Object> params = new ArrayList<Object>();
@@ -882,6 +882,7 @@ public class OrderQuery {
 			sql.append(" LEFT OUTER JOIN t_scm_order_detail tod ON tom.order_id = tod.order_id ");
 			sql.append(" LEFT OUTER JOIN t_scm_order_after_sell toas ON  tod.dealer_order_id = toas.dealer_order_id AND toas.sku_id = tod.sku_id AND toas.sort_no = tod.sort_no ");
 			sql.append(" LEFT OUTER JOIN t_scm_goods tg  ON tod.goods_id = tg.goods_id ");
+			sql.append(" LEFT OUTER JOIN t_scm_order_media tm ON tod.order_id = tm.order_id AND tod.dealer_order_id = tm.dealer_order_id ");
 			sql.append(" WHERE 1 = 1 ");
 			if(null != userIds && userIds.size() > 0) {
 				sql.append(" AND tom.user_id IN ( " + Utils.listParseString(userIds) +") ");
@@ -909,11 +910,36 @@ public class OrderQuery {
 				sql.append(" AND toas.order_type = ? ");
 				params.add(afterSellOrderType);
 			}
-			if(null != mediaIds && mediaIds.size() > 0) {//媒体id
+			/*if(null != mediaIds && mediaIds.size() > 0) {//媒体id
 				sql.append(" AND tod.media_id IN ( " + Utils.listParseString(mediaIds) + " ) ");
 			}
 			if(null != mediaResIds && mediaResIds.size() > 0) {//广告位id
 				sql.append(" AND tod.media_res_id IN ( " + Utils.listParseString(mediaResIds) + " ) ");
+			}*/
+			//String mediaCate, Integer mediaNo, String mediaName, Integer mresCate, Integer formId, Long mresNo
+			if(StringUtils.isNotEmpty(mediaCate)) {
+				sql.append(" AND tm.media_cate = ? ");
+				params.add(mediaCate);
+			}
+			if(null != mediaNo) {
+				sql.append(" AND tm.media_no = ? ");
+				params.add(mediaNo);
+			}
+			if(StringUtils.isNotEmpty(mediaName)) {
+				sql.append(" AND tm.media_name LIKE ? ");
+				params.add("%"+mediaName+"%");
+			}
+			if(null != mresCate) {
+				sql.append(" AND tm.mres_cate = ? ");
+				params.add(mresCate);
+			}
+			if(null != formId) {
+				sql.append(" AND tm.form_id = ? ");
+				params.add(formId);
+			}
+			if(null != mresNo) {
+				sql.append(" AND tm.mres_no LIKE ? ");
+				params.add("%"+mresNo+"%");
 			}
 			if(StringUtils.isNotEmpty(goodsMessage)){ //商品名/商品SKU编号
 				sql.append(" AND ( tod.goods_name LIKE ? OR tod.sku_id LIKE ? ) ");
@@ -940,7 +966,7 @@ public class OrderQuery {
 	}
 
 	public List<MediaResOrderDetailBean> getMediaResOrderDetail(List<String> userIds, String orderId, Integer payStatus,
-			Integer payWay, Integer afterSellOrderType, List mediaIds, List mediaResIds, String goodsMessage,
+			Integer payWay, Integer afterSellOrderType, String mediaCate, Integer mediaNo, String mediaName, Integer mresCate, Integer formId, Long mresNo, String goodsMessage,
 			String dealerName, String orderTime, String orderEndTime, Integer pageOrNot,Integer pageNum,Integer rows) throws NegativeException {
 		try {
 			List<Object> params = new ArrayList<Object>();
@@ -948,11 +974,13 @@ public class OrderQuery {
 			sql.append(" SELECT ");
 			sql.append(" tom.order_id orderId, tom.user_id userId, tom._status payStatus, tom.pay_way payWay, toas.order_type afterSellOrderType, tod.media_id mediaId, tod.media_res_id mediaResId, tod.goods_name goodsName, tod.sku_id skuid, ");
 			sql.append(" tg.dealer_name dealerName, tod.sell_num sellNum, tom.created_date createTime, tod.discount_price discountPrice, tod.goods_amount goodsAmount, tod.is_special isSpecial, tod.special_price specialPrice, tod.coupon_discount couponDiscount, "); 
-			sql.append(" tod.plateform_discount plateformDiscount, tod.dealer_discount dealerDiscount, tod.freight freight ");
+			sql.append(" tod.plateform_discount plateformDiscount, tod.dealer_discount dealerDiscount, tod.freight freight , ");
+			sql.append(" tm.media_cate mediaCate, tm.media_no mediaNo, tm.media_name mediaName, tm.mres_cate mresCate ,tm.form_id formId, tm.mres_no mresNo, tm.level level ");
 			sql.append(" From t_scm_order_main tom ");
 			sql.append(" LEFT OUTER JOIN t_scm_order_detail tod ON tom.order_id = tod.order_id ");
 			sql.append(" LEFT OUTER JOIN t_scm_order_after_sell toas ON  tod.dealer_order_id = toas.dealer_order_id AND toas.sku_id = tod.sku_id AND toas.sort_no = tod.sort_no ");
 			sql.append(" LEFT OUTER JOIN t_scm_goods tg  ON tod.goods_id = tg.goods_id ");
+			sql.append(" LEFT OUTER JOIN t_scm_order_media tm ON tod.order_id = tm.order_id AND tod.dealer_order_id = tm.dealer_order_id ");
 			sql.append(" WHERE 1 = 1 ");
 			if(null != userIds && userIds.size() > 0) {
 				sql.append(" AND tom.user_id IN ( " + Utils.listParseString(userIds) +") ");
@@ -980,11 +1008,35 @@ public class OrderQuery {
 				sql.append(" AND toas.order_type = ? ");
 				params.add(afterSellOrderType);
 			}
-			if(null != mediaIds && mediaIds.size() > 0) {//媒体id
+			/*if(null != mediaIds && mediaIds.size() > 0) {//媒体id
 				sql.append(" AND tod.media_id IN ( " + Utils.listParseString(mediaIds) + " ) ");
 			}
 			if(null != mediaResIds && mediaResIds.size() > 0) {//广告位id
 				sql.append(" AND tod.media_res_id IN ( " + Utils.listParseString(mediaResIds) + " ) ");
+			}*/
+			if(StringUtils.isNotEmpty(mediaCate)) {
+				sql.append(" AND tm.media_cate = ? ");
+				params.add(mediaCate);
+			}
+			if(null != mediaNo) {
+				sql.append(" AND tm.media_no = ? ");
+				params.add(mediaNo);
+			}
+			if(StringUtils.isNotEmpty(mediaName)) {
+				sql.append(" AND tm.media_name LIKE ? ");
+				params.add("%"+mediaName+"%");
+			}
+			if(null != mresCate) {
+				sql.append(" AND tm.mres_cate = ? ");
+				params.add(mresCate);
+			}
+			if(null != formId) {
+				sql.append(" AND tm.form_id = ? ");
+				params.add(formId);
+			}
+			if(null != mresNo) {
+				sql.append(" AND tm.mres_no LIKE ? ");
+				params.add("%"+mresNo+"%");
 			}
 			if(StringUtils.isNotEmpty(goodsMessage)){ //商品名/商品SKU编号
 				sql.append(" AND ( tod.goods_name LIKE ? OR tod.sku_id LIKE ? ) ");

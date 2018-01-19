@@ -23,6 +23,15 @@ public class MediaResOrderDetailBeanRepresentation {
 	private String orderMoney;         //支付金额
 	private String goodsAmount;        //销售金额
 	private String createTime;         //下单日期
+	private String mediaName;          //来源媒体(媒体名称)
+	private String mediaNo;            //媒体编号
+	private String mediaCate;          //媒体分类
+	private String level;             //媒体等级
+	private String mresNo;             //来源广告位条码
+	private String mresCate;           //广告位位置
+	private String formId;             //广告位形式
+	
+	
 	
 	public MediaResOrderDetailBeanRepresentation (MediaResOrderDetailBean bean) {
 		this.orderId = bean.getOrderId();
@@ -75,6 +84,10 @@ public class MediaResOrderDetailBeanRepresentation {
 		
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		this.createTime = null != bean.getCreateTime() ? df.format(bean.getCreateTime()) : "";
+		this.mediaNo = null != bean.getMediaNo() ? bean.getMediaNo().toString() : "";
+		this.mediaName = null != bean.getMediaName() ? bean.getMediaName() : "";
+		this.mresNo = null != bean.getMresNo() ? bean.getMresNo().toString() : "";
+		this.level = null != bean.getLevel() ? (bean.getLevel() == 1 ? "A级" : bean.getLevel() == 2 ? "B级" : bean.getLevel() == 3 ? "C级" : "") : "";
 	}
 
 	public String getOrderId() {
@@ -187,6 +200,62 @@ public class MediaResOrderDetailBeanRepresentation {
 
 	public void setCreateTime(String createTime) {
 		this.createTime = createTime;
+	}
+
+	public String getMediaName() {
+		return mediaName;
+	}
+
+	public void setMediaName(String mediaName) {
+		this.mediaName = mediaName;
+	}
+
+	public String getMediaNo() {
+		return mediaNo;
+	}
+
+	public void setMediaNo(String mediaNo) {
+		this.mediaNo = mediaNo;
+	}
+
+	public String getMediaCate() {
+		return mediaCate;
+	}
+
+	public void setMediaCate(String mediaCate) {
+		this.mediaCate = mediaCate;
+	}
+
+	public String getLevel() {
+		return level;
+	}
+
+	public void setLevel(String level) {
+		this.level = level;
+	}
+
+	public String getMresNo() {
+		return mresNo;
+	}
+
+	public void setMresNo(String mresNo) {
+		this.mresNo = mresNo;
+	}
+
+	public String getMresCate() {
+		return mresCate;
+	}
+
+	public void setMresCate(String mresCate) {
+		this.mresCate = mresCate;
+	}
+
+	public String getFormId() {
+		return formId;
+	}
+
+	public void setFormId(String formId) {
+		this.formId = formId;
 	}
 	
 }

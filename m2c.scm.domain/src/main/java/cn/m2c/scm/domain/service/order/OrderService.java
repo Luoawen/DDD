@@ -156,4 +156,20 @@ public interface OrderService {
      * @param senderId 发送者ID
      */
     public void msgPush(Integer msgType, String userId, String extra, String senderId);
+    
+    /**
+     * 调用媒体接口根据媒体id和广告位id查询媒体信息
+     * @param mediaId
+     * @param mediaResId
+     * @return
+     */
+    public Map getMediaMessageInfo(String mediaId, String mediaResId) throws NegativeException;
+    
+    /**
+     * 调用媒体接口根据媒体分类编号广告位形式id查询媒体分类广告位位置和形式
+     * @param mediaId
+     * @param formId
+     * @return
+     */
+    public Map getMediaCateAndFormMessage(String mediaCate, Integer formId);
 }

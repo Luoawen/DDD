@@ -536,4 +536,72 @@ public class OrderServiceImpl implements OrderService {
                     title, alert, extra, senderId, new Date().getTime()));
         }
     }
+    
+    /**
+     * 查询媒体广告位信息
+     * @return
+     * @throws NegativeException 
+     */
+    @Override
+    public Map getMediaMessageInfo(String mediaId, String mediaResId) throws NegativeException {
+    	String url = M2C_HOST_URL + "/m2c.media/domain/adv/order?mediaId={0}&advId={1}";
+    	 try {
+             String rtResult = restTemplate.getForObject(url, String.class, mediaId, mediaResId);
+             JSONObject json = JSONObject.parseObject(rtResult);
+             if (json.getInteger("status") == 200) {
+                 JSONObject contentObject = json.getJSONObject("content");
+                 if (null != contentObject) {
+                	 Map map = new HashMap<>();
+                	 map.put("mresCate", contentObject.getString("advCateName"));
+                     map.put("formId", contentObject.getString("formName"));
+                     map.put("mediaCate", contentObject.getString("mediaCate"));
+                     map.put("level", contentObject.getString("mediaLevel"));
+                     map.put("mediaName", contentObject.getString("mediaName"));
+                     map.put("mediaNo", contentObject.getString("mediaNo"));
+                     map.put("mresNo", contentObject.getString("mresNo"));
+                     return map;
+                 }
+             }
+    	 }catch(Exception e) {
+    		 LOGGER.error("根据媒体id和广告位id查询媒体广告位信息失败");
+             LOGGER.error("getMediaMessageInfo exception.url=>" + url);
+             LOGGER.error("getMediaMessageInfo exception.error=>" + e.getMessage());
+             throw new NegativeException(400, "调用媒体接口查询媒体广告位信息失败");
+    	 }
+    	return null;
+    }
+    
+    /**
+     * 根据媒体编号,广告位形式id查询媒体分类,广告位位置,广告位形式
+     * @param mediaId
+     * @param formId
+     * @return
+     */
+    @Override
+    public Map getMediaCateAndFormMessage(String mediaCate, Integer formId) {
+    	String url = M2C_HOST_URL + "/m2c.media/domain/adv/order/value?mediaCate={0}&formId={1}";
+    	//String url = "http://10.0.40.12:8080/m2c.media/domain/adv/order/value?mediaCate={0}&formId={1}";
+    	try {
+    		String rtResult = restTemplate.getForObject(url, String.class, mediaCate, formId);
+            JSONObject json = JSONObject.parseObject(rtResult);
+            if (json.getInteger("status") == 200) {
+                JSONObject contentObject = json.getJSONObject("content");
+                if (null != contentObject) {
+                	Map map = new HashMap<>();
+                	Map advCate = JSONObject.parseObject(contentObject.getString("advCate"));
+                	map.put("advCate", advCate);
+                	String advFormName = contentObject.getString("advFormName");
+                	map.put("formId", advFormName);
+                	Map mediaCateMap = JSONObject.parseObject(contentObject.getString("mediaCate"));
+                	map.put("mediaCate", mediaCateMap);
+                	return map;
+                }
+            }
+    	}catch(Exception e) {
+    		LOGGER.error("根据媒体id广告位形式id查询媒体分类广告位位置和形式失败");
+            LOGGER.error("getMediaMessageInfo exception.url=>" + url);
+            LOGGER.error("getMediaMessageInfo exception.error=>" + e.getMessage());
+    	}
+    	return null;
+    }
 }

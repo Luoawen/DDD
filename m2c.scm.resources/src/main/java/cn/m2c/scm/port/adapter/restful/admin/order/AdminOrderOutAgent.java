@@ -45,8 +45,14 @@ public class AdminOrderOutAgent {
     		@RequestParam(value = "payStatus", required = false) Integer payStatus,                    //支付状态(-1已取消,0待付款,1已付款)
     		@RequestParam(value = "payWay", required = false) Integer payWay,                          //支付方式(1支付宝,2微信)
     		@RequestParam(value = "afterSellOrderType", required = false) Integer afterSellOrderType,  //售后方式(0换货,1退货退款,2仅退款)
-    		@RequestParam(value = "mediaIds", required = false) List mediaIds,                         //媒体编号
-    		@RequestParam(value = "mediaResIds", required = false) List mediaResIds,                   //广告位条码
+    		//@RequestParam(value = "mediaIds", required = false) List mediaIds,                         //媒体编号
+    		//@RequestParam(value = "mediaResIds", required = false) List mediaResIds,                   //广告位条码
+    		@RequestParam(value = "mediaCate", required = false) String mediaCate,                     //媒体分类
+    		@RequestParam(value = "mediaNo", required = false) Integer mediaNo,                        //媒体编号
+    		@RequestParam(value = "mediaName", required = false) String mediaName,                     //媒体名
+    		@RequestParam(value = "mresCate", required = false) Integer mresCate,                      //广告位位置
+    		@RequestParam(value = "formId", required = false) Integer formId,                          //广告位形式
+    		@RequestParam(value = "mresNo", required = false) Long mresNo,                             //广告位条码
     		@RequestParam(value = "goodsMessage", required = false) String goodsMessage,               //商品名/平台SKU
     		@RequestParam(value = "dealerName", required = false) String dealerName,                   //商家名
     		@RequestParam(value = "orderTime", required = false) String orderTime,                     //起始时间（下单）
@@ -57,7 +63,6 @@ public class AdminOrderOutAgent {
     		){
     	MPager result = new MPager(MCode.V_1);
     	try {
-    		LOGGER.info("查询广告位订单明细是否分页:" + (pageOrNot==0?"0不分页":"1分页"));
 			//根据用户名/账号查下单用户id,用户名/手机号(Map)
 			Map<String,String> userMap = orderServiceImpl.getUserMobileOrUserName(userMessage);
 			List<String> userIds = new ArrayList<String>();
@@ -79,16 +84,32 @@ public class AdminOrderOutAgent {
     			userIds = null;
     		}
     		//查总数
-    		Integer total = orderQuery.getMediaResOrderDetailTotal(userIds, orderId, payStatus, payWay, afterSellOrderType, mediaIds, mediaResIds, goodsMessage, dealerName, orderTime, orderEndTime);
+    		Integer total = orderQuery.getMediaResOrderDetailTotal(userIds, orderId, payStatus, payWay, afterSellOrderType, mediaCate, mediaNo, mediaName, mresCate, formId, mresNo, goodsMessage, dealerName, orderTime, orderEndTime);
     		//Integer total = orderQuery.getMediaResOrderDetailTotal(userIds, orderId, payStatus, payWay, afterSellOrderType, mediaResIds, goodsMessage, dealerName, orderTime, orderEndTime);
     		if(total > 0){
-    			List<MediaResOrderDetailBean> mediaResOrderDetailBeans = orderQuery.getMediaResOrderDetail(userIds, orderId, payStatus, payWay, afterSellOrderType, mediaIds, mediaResIds, goodsMessage, dealerName, orderTime, orderEndTime, pageOrNot, pageNum, rows);
+    			List<MediaResOrderDetailBean> mediaResOrderDetailBeans = orderQuery.getMediaResOrderDetail(userIds, orderId, payStatus, payWay, afterSellOrderType, mediaCate, mediaNo, mediaName, mresCate, formId, mresNo,  goodsMessage, dealerName, orderTime, orderEndTime, pageOrNot, pageNum, rows);
     			//List<MediaResOrderDetailBean> mediaResOrderDetailBeans = orderQuery.getMediaResOrderDetail(userIds, orderId, payStatus, payWay, afterSellOrderType, mediaResIds, goodsMessage, dealerName, orderTime, orderEndTime, pageOrNot, pageNum, rows);
     			if(null != mediaResOrderDetailBeans && mediaResOrderDetailBeans.size() > 0){
     				List<MediaResOrderDetailBeanRepresentation> representations = new ArrayList<>();
     				for(MediaResOrderDetailBean adOrderDetailBean : mediaResOrderDetailBeans){
     					MediaResOrderDetailBeanRepresentation representation = new MediaResOrderDetailBeanRepresentation(adOrderDetailBean);
     					representation.setUserMessage(userMap.get(adOrderDetailBean.getUserId()));
+    					//调用媒体接口,根据媒体编号,广告位形式id 获取 媒体分类,广告位位置,广告位形式
+    		    		Map map = orderServiceImpl.getMediaCateAndFormMessage(adOrderDetailBean.getMediaCate(),adOrderDetailBean.getFormId());
+    		    		//广告位位置map
+    		    		Map advCateMap =  (Map) map.get("advCate");
+    		    		Map advCateInfoMap = (Map) advCateMap.get(adOrderDetailBean.getMresCate());
+    		    		representation.setMediaCate(advCateInfoMap == null ? "" :(String)advCateInfoMap.get("dicName"));
+    		    		//媒体分类
+    		    		Map mediaCateMap = (Map)map.get("mediaCate");
+    		    		representation.setMediaCate(mediaCateMap == null ? "" : (String)mediaCateMap.get("parCateName")+">"+(String)mediaCateMap.get("chdCateName"));
+    		    		//广告位形式
+    		    		representation.setFormId((String)map.get("formId"));
+    		    		/*representation.setMediaNo(adOrderDetailBean.getMediaNo().toString());
+    		    		representation.setMediaName(adOrderDetailBean.getMediaName());
+    		    		representation.setMresNo(adOrderDetailBean.getMresNo().toString());
+    		    		representation.setLevel(adOrderDetailBean.getLevel());*/
+    		    		//封装媒体相关信息
     					representations.add(representation);
     				}
     				result.setContent(representations);

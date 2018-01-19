@@ -30,6 +30,13 @@ public class MediaResOrderDetailBean {
 	private Long plateformDiscount;//平台优惠金额
 	private Long dealerDiscount;//商家优惠金额
 	private Long freight;//订单运费
+	private String mediaCate;//媒体分类
+	private Integer mediaNo;//媒体编号
+	private String mediaName;//媒体名
+	private Integer mresCate;//广告位位置
+	private Integer formId;//广告位形式
+	private Long mresNo;//广告位条码
+	private Integer level;//媒体等级
 	
 	public Long getDiscountPrice() {
 		return discountPrice;
@@ -151,4 +158,47 @@ public class MediaResOrderDetailBean {
 	public void setFreight(Long freight) {
 		this.freight = freight;
 	}
+	public String getMediaCate() {
+		return mediaCate;
+	}
+	public void setMediaCate(String mediaCate) {
+		this.mediaCate = mediaCate;
+	}
+	public Integer getMediaNo() {
+		return mediaNo;
+	}
+	public void setMediaNo(Integer mediaNo) {
+		this.mediaNo = mediaNo;
+	}
+	public String getMediaName() {
+		return mediaName;
+	}
+	public void setMediaName(String mediaName) {
+		this.mediaName = mediaName;
+	}
+	public Integer getMresCate() {
+		return mresCate;
+	}
+	public void setMresCate(Integer mresCate) {
+		this.mresCate = mresCate;
+	}
+	public Integer getFormId() {
+		return formId;
+	}
+	public void setFormId(Integer formId) {
+		this.formId = formId;
+	}
+	public Long getMresNo() {
+		return mresNo;
+	}
+	public void setMresNo(Long mresNo) {
+		this.mresNo = mresNo;
+	}
+	public Integer getLevel() {
+		return level;
+	}
+	public void setLevel(Integer level) {
+		this.level = level;
+	}
+	
 }
