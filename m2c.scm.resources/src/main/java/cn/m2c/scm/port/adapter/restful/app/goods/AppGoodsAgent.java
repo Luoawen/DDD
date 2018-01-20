@@ -271,19 +271,7 @@ public class AppGoodsAgent {
                     resultMap.put("goods", representations);
 
                     // 获取商品分类的一级大类
-                    List<GoodsClassifyBean> goodsClassifyBeanList = goodsClassifyQueryApplication.getFirstClassifyByClassifyIds(goodsClassifyIds);
-                    List<Map> classifyMap = new ArrayList<>();
-                    List<String> classifyIds = new ArrayList<>();
-                    for (GoodsClassifyBean bean : goodsClassifyBeanList) {
-                        if (!classifyIds.contains(bean.getClassifyId())) {
-                            classifyIds.add(bean.getClassifyId());
-                            Map map = new HashMap<>();
-                            map.put("classifyId", bean.getClassifyId());
-                            map.put("classifyName", bean.getClassifyName());
-                            classifyMap.add(map);
-                        }
-                    }
-                    resultMap.put("goodsClassify", classifyMap);
+                    resultMap.put("goodsClassify", getGoodsClassify(goodsClassifyIds));
 
                     result.setContent(resultMap);
                 }
@@ -554,7 +542,7 @@ public class AppGoodsAgent {
                             if (null != couponMap) {
                                 Integer couponRangeType = (Integer) couponMap.get("rangeType");
                                 if (couponRangeType == 1) { //优惠券商家,返回商家
-                                    List<ShopBean> shopBeanList = (List<ShopBean>) goodsQueryApplication.queryPacketZoneGoods(couponMap);
+                                    List<ShopBean> shopBeanList = (List<ShopBean>) goodsQueryApplication.queryPacketZoneGoods(couponMap, null, 0, 4, false, null, null);
                                     List<Map> shopMapList = new ArrayList<>();
                                     if (null != shopBeanList && shopBeanList.size() > 0) {
                                         for (ShopBean shopBean : shopBeanList) {
@@ -569,7 +557,7 @@ public class AppGoodsAgent {
                                     tempZone.put("dataList", shopMapList);
                                     tempZone.put("dataType", 1);
                                 } else {
-                                    List<GoodsBean> goodsList = (List<GoodsBean>) goodsQueryApplication.queryPacketZoneGoods(couponMap);
+                                    List<GoodsBean> goodsList = (List<GoodsBean>) goodsQueryApplication.queryPacketZoneGoods(couponMap, null, 0, 4, false, null, null);
                                     List<Map> goodsMapList = new ArrayList<>();
                                     if (null != goodsList && goodsList.size() > 0) {
                                         for (GoodsBean bean : goodsList) {
@@ -621,5 +609,119 @@ public class AppGoodsAgent {
             result = new MResult(MCode.V_400, "查询新人礼包专区商品失败");
         }
         return new ResponseEntity<MResult>(result, HttpStatus.OK);
+    }
+
+    /**
+     * 新人礼包专区更多信息
+     *
+     * @return
+     */
+    @RequestMapping(value = "packet/zone/more", method = RequestMethod.GET)
+    public ResponseEntity<MPager> packetZoneGoodsByZoneId(
+            @RequestParam(value = "zoneId", required = false) String zoneId,
+            @RequestParam(value = "goodsClassifyId", required = false) String goodsClassifyId,
+            @RequestParam(value = "sortType", required = false) Integer sortType,
+            @RequestParam(value = "sort", required = false) Integer sort,
+            @RequestParam(value = "pageNum", required = false, defaultValue = "1") Integer pageNum,
+            @RequestParam(value = "rows", required = false, defaultValue = "10") Integer rows) {
+        MPager result = new MPager(MCode.V_200);
+        try {
+            Map resultMap = new HashMap<>();
+            Map couponMap = goodsRestService.packetZoneGoodsByZoneId(zoneId);
+            Integer total = 0;
+            if (null != couponMap) {
+                resultMap.put("zoneName", couponMap.get("zoneName"));
+                Integer startNum = rows * (pageNum - 1);
+                Integer limit = rows;
+                Integer couponRangeType = (Integer) couponMap.get("rangeType");
+                if (couponRangeType == 1) { //优惠券商家,返回商家
+                    total = (Integer) goodsQueryApplication.queryPacketZoneGoods(couponMap, goodsClassifyId, startNum, limit, true, sortType, sort);
+                    if (null != total && total > 0) {
+                        List<ShopBean> shopBeanList = (List<ShopBean>) goodsQueryApplication.queryPacketZoneGoods(couponMap, goodsClassifyId, startNum, limit, false, sortType, sort);
+                        List<Map> shopMapList = new ArrayList<>();
+                        if (null != shopBeanList && shopBeanList.size() > 0) {
+                            for (ShopBean shopBean : shopBeanList) {
+                                Map shoMap = new HashMap<>();
+                                shoMap.put("shopName", shopBean.getShopName());
+                                shoMap.put("shopIcon", shopBean.getShopIcon());
+                                shoMap.put("dealerId", shopBean.getDealerId());
+                                shoMap.put("dataType", 1);
+                                shopMapList.add(shoMap);
+                            }
+                        }
+                        resultMap.put("dataList", shopMapList);
+                        resultMap.put("dataType", 1);
+                    }
+                } else {
+                    total = (Integer) goodsQueryApplication.queryPacketZoneGoods(couponMap, goodsClassifyId, startNum, limit, true, sortType, sort);
+                    if (null != total && total > 0) {
+                        List<GoodsBean> goodsList = (List<GoodsBean>) goodsQueryApplication.queryPacketZoneGoods(couponMap, goodsClassifyId, startNum, limit, false, sortType, sort);
+                        List<Map> goodsMapList = new ArrayList<>();
+                        if (null != goodsList && goodsList.size() > 0) {
+                            List<String> goodsClassifyIds = new ArrayList<>();
+                            for (GoodsBean bean : goodsList) {
+                                Map goodsMap = new HashMap<>();
+                                Integer status = bean.getGoodsStatus(); //商品状态，1：仓库中，2：出售中，3：已售罄
+                                Integer delStatus = bean.getDelStatus(); //是否删除，1:正常，2：已删除
+                                if (delStatus == 2) {
+                                    status = 4;
+                                }
+                                goodsMap.put("goodsId", bean.getGoodsId());
+                                goodsMap.put("dealerId", bean.getDealerId());
+                                goodsMap.put("classifyId", bean.getGoodsClassifyId());
+                                goodsMap.put("quantity", bean.getGoodsMinQuantity());
+                                goodsMap.put("goodsStatus", status);
+                                goodsMap.put("goodsName", bean.getGoodsName());
+                                goodsMap.put("goodsPrice", bean.getGoodsSkuBeans().get(0).getPhotographPrice());
+                                goodsMap.put("strGoodsPrice", Utils.moneyFormatCN(bean.getGoodsSkuBeans().get(0).getPhotographPrice()));
+                                goodsMap.put("skuId", bean.getGoodsSkuBeans().get(0).getSkuId());
+                                List<String> mainImages = JsonUtils.toList(bean.getGoodsMainImages(), String.class);
+                                if (null != mainImages && mainImages.size() > 0) {
+                                    goodsMap.put("goodsImageUrl", mainImages.get(0));
+                                }
+                                goodsMap.put("dataType", 2);
+                                goodsMapList.add(goodsMap);
+
+                                // 获取商品分类的一级大类
+                                if (!goodsClassifyIds.contains(bean.getGoodsClassifyId())) {
+                                    goodsClassifyIds.add(bean.getGoodsClassifyId());
+                                }
+
+                            }
+
+                            // 获取商品分类的一级大类
+                            resultMap.put("goodsClassify", getGoodsClassify(goodsClassifyIds));
+
+                        }
+                        resultMap.put("dataList", goodsMapList);
+                        resultMap.put("dataType", 2);
+                    }
+                }
+            }
+            result.setContent(resultMap);
+            result.setPager(total, pageNum, rows);
+            result.setStatus(MCode.V_200);
+        } catch (Exception e) {
+            LOGGER.error("packetZoneGoodsByZoneId Exception e:", e);
+            result = new MPager(MCode.V_400, "查询新人礼包专区更多信息失败");
+        }
+        return new ResponseEntity<MPager>(result, HttpStatus.OK);
+    }
+
+    private List<Map> getGoodsClassify(List<String> goodsClassifyIds) {
+        // 获取商品分类的一级大类
+        List<GoodsClassifyBean> goodsClassifyBeanList = goodsClassifyQueryApplication.getFirstClassifyByClassifyIds(goodsClassifyIds);
+        List<Map> classifyMap = new ArrayList<>();
+        List<String> classifyIds = new ArrayList<>();
+        for (GoodsClassifyBean bean : goodsClassifyBeanList) {
+            if (!classifyIds.contains(bean.getClassifyId())) {
+                classifyIds.add(bean.getClassifyId());
+                Map map = new HashMap<>();
+                map.put("classifyId", bean.getClassifyId());
+                map.put("classifyName", bean.getClassifyName());
+                classifyMap.add(map);
+            }
+        }
+        return classifyMap;
     }
 }
