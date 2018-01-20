@@ -320,7 +320,7 @@ public class GoodsApprove extends ConcurrencySafeEntity {
     /**
      * 同意审核
      */
-    public void agree() {
+    public void agree(Map changeInfo) {
         List<Map> goodsSkuMaps = new ArrayList<>();
         for (GoodsSkuApprove goodsSkuApprove : this.goodsSkuApproves) {
             goodsSkuMaps.add(goodsSkuApprove.convertToMap());
@@ -333,7 +333,8 @@ public class GoodsApprove extends ConcurrencySafeEntity {
                         this.goodsUnitId, this.goodsMinQuantity, this.goodsPostageId,
                         this.goodsBarCode, this.goodsKeyWord, this.goodsGuarantee,
                         this.goodsMainImages, this.goodsMainVideo, this.goodsDesc,
-                        this.goodsShelves, this.goodsSpecifications, goodsSKUs, this.skuFlag, this.changeReason));
+                        this.goodsShelves, this.goodsSpecifications, goodsSKUs, this.skuFlag,
+                        this.changeReason, JsonUtils.toStr(changeInfo)));
     }
 
     /**
@@ -596,4 +597,7 @@ public class GoodsApprove extends ConcurrencySafeEntity {
         return Integer.parseInt(String.valueOf(this.id()));
     }
 
+    public String goodsId() {
+        return goodsId;
+    }
 }
