@@ -158,7 +158,7 @@ public class AdminOrderOutAgent {
      * @param rows
      */
     @RequestMapping(value = "/orderdetail/export", method = RequestMethod.GET)
-    @RequirePermissions(value = {"media:order:export"})
+    @RequirePermissions(value = {"scm:ordermedia:export"})
     public void exportExcel(HttpServletResponse response,
     		@RequestParam(value = "userMessage", required = false) String userMessage,                 //下单用户名/账号
     		@RequestParam(value = "orderId", required = false) String orderId,                         //订单号
