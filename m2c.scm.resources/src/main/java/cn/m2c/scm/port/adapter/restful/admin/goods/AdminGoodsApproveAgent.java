@@ -94,7 +94,7 @@ public class AdminGoodsApproveAgent {
         return new ResponseEntity<MResult>(result, HttpStatus.OK);
     }
 
-    @RequestMapping(value = {"/admin/goods/approve/history"}, method = RequestMethod.GET)
+    @RequestMapping(value = {"/history"}, method = RequestMethod.GET)
     public ResponseEntity<MPager> queryGoodsHistory(
             @RequestParam(value = "goodsId", required = false) String goodsId,
             @RequestParam(value = "pageNum", required = false, defaultValue = "1") Integer pageNum,
