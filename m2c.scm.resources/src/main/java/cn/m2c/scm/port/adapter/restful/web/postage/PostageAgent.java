@@ -233,12 +233,8 @@ public class PostageAgent {
         }
     	try {
             Boolean flag = postageModelQueryApplication.queryDealerPostageNationwide(dealerId);
-            if(flag == true) {//true商家可创建包邮模板
-            	result.setContent(flag);
-                result.setStatus(MCode.V_200);
-            } else {
-            	result = new MResult(MCode.V_300, "全国包邮模板已存在");
-            }
+        	result.setContent(flag);
+            result.setStatus(MCode.V_200);
         } catch (Exception e) {
             LOGGER.error("queryDealerPostageNationwide Exception e:", e);
             result = new MResult(MCode.V_400, "查询商家是否已经创建全国包邮模板失败");
