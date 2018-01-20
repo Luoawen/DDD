@@ -308,16 +308,28 @@ public class Goods extends ConcurrencySafeEntity {
         }
     }
 
-    public List<GoodsHistory> getGoodsHistory(String goodsClassifyId, String goodsSKUs, String changeReason) {
+    public List<GoodsHistory> getGoodsHistory(String goodsClassifyId, String goodsSKUs, String changeReason, String changeInfo) {
         List<GoodsHistory> histories = new ArrayList<>();
         String historyNo = UUID.randomUUID().toString().replaceAll("-", "").toUpperCase();
         Date nowDate = new Date();
         if (!this.goodsClassifyId.equals(goodsClassifyId)) {
-            // 商品审核库修改分类
+            // {"newClassifyName":"手机,iOS系统","oldServiceRate":"0","oldClassifyName":"手机,墨迹","newServiceRate":"0","settlementMode":1}
+            Map changeMap = JsonUtils.toMap(changeInfo);
+            String oldServiceRate = null != changeMap.get("oldServiceRate") ? changeMap.get("oldServiceRate").toString() : null;
+            String newServiceRate = null != changeMap.get("newServiceRate") ? changeMap.get("newServiceRate").toString() : null;
+            String oldClassifyName = null != changeMap.get("oldClassifyName") ? changeMap.get("oldClassifyName").toString() : null;
+            String newClassifyName = null != changeMap.get("newClassifyName") ? changeMap.get("newClassifyName").toString() : null;
+            String settlementMode = null != changeMap.get("settlementMode") ? changeMap.get("settlementMode").toString() : null;
             Map before = new HashMap<>();
             before.put("goodsClassifyId", this.goodsClassifyId);
+            before.put("goodsClassifyName", oldClassifyName);
+            before.put("serviceRate", oldServiceRate);
+            before.put("settlementMode", settlementMode);
             Map after = new HashMap<>();
             after.put("goodsClassifyId", goodsClassifyId);
+            after.put("goodsClassifyName", newClassifyName);
+            after.put("serviceRate", newServiceRate);
+
             String historyId = UUID.randomUUID().toString().replaceAll("-", "").toUpperCase();
             GoodsHistory history = new GoodsHistory(historyId, historyNo, this.goodsId,
                     1, JsonUtils.toStr(before),

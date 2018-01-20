@@ -132,11 +132,13 @@ public class GoodsCommand extends AssertionConcern implements Serializable {
     private String newClassifyName;
     private String settlementMode;
 
+    private String changeInfo;
+
     public GoodsCommand(String goodsId, String dealerId, String dealerName, String goodsName, String goodsSubTitle,
                         String goodsClassifyId, String goodsBrandId, String goodsBrandName, String goodsUnitId, Integer goodsMinQuantity,
                         String goodsPostageId, String goodsBarCode, String goodsKeyWord, String goodsGuarantee,
                         String goodsMainImages, String goodsMainVideo, String goodsDesc, Integer goodsShelves,
-                        String goodsSpecifications, String goodsSKUs, Integer skuFlag, String changeReason) {
+                        String goodsSpecifications, String goodsSKUs, Integer skuFlag, String changeReason, String changeInfo) {
         this.goodsId = goodsId;
         this.dealerId = dealerId;
         this.dealerName = dealerName;
@@ -159,6 +161,7 @@ public class GoodsCommand extends AssertionConcern implements Serializable {
         this.goodsSKUs = goodsSKUs;
         this.skuFlag = skuFlag;
         this.changeReason = changeReason;
+        this.changeInfo = changeInfo;
     }
 
     public GoodsCommand(String goodsId, String dealerId, String goodsName, String goodsSubTitle,
@@ -326,5 +329,9 @@ public class GoodsCommand extends AssertionConcern implements Serializable {
 
     public String getSettlementMode() {
         return settlementMode;
+    }
+
+    public String getChangeInfo() {
+        return changeInfo;
     }
 }
