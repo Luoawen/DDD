@@ -52,26 +52,38 @@ public class GoodsHistoryRepresentation {
             // 变更前 {"skuName":"5寸,红色","photographPrice":9970000,"skuId":"20171205155603147254"}
             StringBuffer beforeSb = new StringBuffer();
             String beforePrice = Utils.moneyFormatCN(Long.parseLong(String.valueOf(beforeMap.get("photographPrice"))));
-            beforeSb.append(beforePrice).append("元（规格值：").append(beforeMap.get("skuName")).append(")");
+            beforeSb.append(beforePrice).append("元");
+            if (null != beforeMap.get("skuName") && !"".equals(beforeMap.get("skuName"))) {
+                beforeSb.append("（规格值：").append(beforeMap.get("skuName")).append(")");
+            }
             this.beforeContent = beforeSb.toString();
 
             // 变更后 {"photographPrice":9980000}
             StringBuffer afterSb = new StringBuffer();
             String afterPrice = Utils.moneyFormatCN(Long.parseLong(String.valueOf(afterMap.get("photographPrice"))));
-            afterSb.append(afterPrice).append("元（规格值：").append(beforeMap.get("skuName")).append(")");
+            afterSb.append(afterPrice).append("元");
+            if (null != beforeMap.get("skuName") && !"".equals(beforeMap.get("skuName"))) {
+                afterSb.append("（规格值：").append(beforeMap.get("skuName")).append(")");
+            }
             this.afterContent = afterSb.toString();
         } else if (history.getChangeType() == 3) {
             this.changeContent = "修改供货价";
             // 变更前 {"skuName":"5寸,白色","supplyPrice":9950000,"skuId":"20171205160651663483"}
             StringBuffer beforeSb = new StringBuffer();
             String beforePrice = Utils.moneyFormatCN(Long.parseLong(String.valueOf(beforeMap.get("supplyPrice"))));
-            beforeSb.append(beforePrice).append("元（规格值：").append(beforeMap.get("skuName")).append(")");
+            beforeSb.append(beforePrice).append("元");
+            if (null != beforeMap.get("skuName") && !"".equals(beforeMap.get("skuName"))) {
+                beforeSb.append("（规格值：").append(beforeMap.get("skuName")).append(")");
+            }
             this.beforeContent = beforeSb.toString();
 
             // 变更后 {"supplyPrice":9960000}
             StringBuffer afterSb = new StringBuffer();
             String afterPrice = Utils.moneyFormatCN(Long.parseLong(String.valueOf(afterMap.get("supplyPrice"))));
-            afterSb.append(afterPrice).append("元（规格值：").append(beforeMap.get("skuName")).append(")");
+            afterSb.append(afterPrice).append("元");
+            if (null != beforeMap.get("skuName") && !"".equals(beforeMap.get("skuName"))) {
+                afterSb.append("（规格值：").append(beforeMap.get("skuName")).append(")");
+            }
             this.afterContent = afterSb.toString();
         } else {
             this.changeContent = "增加sku";
