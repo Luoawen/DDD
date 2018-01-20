@@ -397,9 +397,9 @@ public class Goods extends ConcurrencySafeEntity {
         return goodsSku;
     }
 
-    public static void main(String [] args){
-        String name ="衣服 / 童装 / 哇唔哇唔";
-        System.out.print(name.replaceAll(" / ",","));
+    public static void main(String[] args) {
+        String name = "衣服 / 童装 / 哇唔哇唔";
+        System.out.print(name.replaceAll(" / ", ","));
     }
 
     /**
@@ -435,11 +435,11 @@ public class Goods extends ConcurrencySafeEntity {
             isNeedApprove = true;
             changeGoodsInfo.put("oldGoodsClassifyId", this.goodsClassifyId);
             changeGoodsInfo.put("newGoodsClassifyId", goodsClassifyId);
-            changeGoodsInfo.put("oldServiceRate",oldServiceRate);
-            changeGoodsInfo.put("newServiceRate",newServiceRate);
-            changeGoodsInfo.put("oldClassifyName",oldClassifyName);
-            changeGoodsInfo.put("newClassifyName",newClassifyName);
-            changeGoodsInfo.put("settlementMode",settlementMode);
+            changeGoodsInfo.put("oldServiceRate", oldServiceRate);
+            changeGoodsInfo.put("newServiceRate", newServiceRate);
+            changeGoodsInfo.put("oldClassifyName", oldClassifyName);
+            changeGoodsInfo.put("newClassifyName", newClassifyName);
+            changeGoodsInfo.put("settlementMode", settlementMode);
         }
 
         List<Map> skuList = ObjectSerializer.instance().deserialize(goodsSKUs, List.class);
@@ -455,8 +455,17 @@ public class Goods extends ConcurrencySafeEntity {
                 String skuId = GetMapValueUtils.getStringFromMapKey(map, "skuId");
                 // 判断商品规格sku是否存在,存在就修改供货价和拍获价，不存在就增加商品sku
                 GoodsSku goodsSku = getGoodsSKU(skuId);
+
+                Integer showStatus = 2; //是否对外展示，1：不展示，2：展示
+                if (null != this.skuFlag && this.skuFlag == 1) {
+                    Boolean isShow = GetMapValueUtils.getBooleanFromMapKey(map, "showStatus");
+                    if (!isShow) {
+                        showStatus = 1;
+                    }
+                }
                 if (null == goodsSku) {// 增加了规格
                     isNeedApprove = true;
+                    map.put("showStatus", showStatus);
                     addGoodsSkuList.add(map);
                 } else {
                     Integer availableNum = GetMapValueUtils.getIntFromMapKey(map, "availableNum");
@@ -466,15 +475,6 @@ public class Goods extends ConcurrencySafeEntity {
                     Float weight = GetMapValueUtils.getFloatFromMapKey(map, "weight");
                     Long marketPrice = GetMapValueUtils.getLongFromMapKey(map, "marketPrice");
                     String goodsCode = GetMapValueUtils.getStringFromMapKey(map, "goodsCode");
-
-                    Integer showStatus = 2; //是否对外展示，1：不展示，2：展示
-                    //Integer showStatus = GetMapValueUtils.getIntFromMapKey(map, "showStatus");
-                    if (null != this.skuFlag && this.skuFlag == 1) {
-                        Boolean isShow = GetMapValueUtils.getBooleanFromMapKey(map, "showStatus");
-                        if (!isShow) {
-                            showStatus = 1;
-                        }
-                    }
 
                     // 修改商品规格不需要审批的信息
                     goodsSku.modifyNotApproveGoodsSku(availableNum, weight, marketPrice, goodsCode, showStatus);

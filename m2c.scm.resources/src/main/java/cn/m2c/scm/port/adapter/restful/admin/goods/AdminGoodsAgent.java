@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -187,15 +188,24 @@ public class AdminGoodsAgent {
             @RequestParam(value = "pageNum", required = false, defaultValue = "1") Integer pageNum,
             @RequestParam(value = "rows", required = false, defaultValue = "10") Integer rows) {
         MPager result = new MPager(MCode.V_1);
-        Integer total = goodsHistoryQueryApplication.queryGoodsHistoryTotal(goodsId);
-        if (total > 0) {
-            List<GoodsHistoryBean> historyBeanList = goodsHistoryQueryApplication.queryGoodsHistory(goodsId, pageNum, rows);
-            if (null != historyBeanList && historyBeanList.size() > 0) {
-                for (GoodsHistoryBean history : historyBeanList) {
-                    GoodsHistoryRepresentation representation = new GoodsHistoryRepresentation(history);
-                    
+        try {
+            Integer total = goodsHistoryQueryApplication.queryGoodsHistoryTotal(goodsId,false);
+            if (total > 0) {
+                List<GoodsHistoryBean> historyBeanList = goodsHistoryQueryApplication.queryGoodsHistory(goodsId, pageNum, rows,false);
+                if (null != historyBeanList && historyBeanList.size() > 0) {
+                    List<GoodsHistoryRepresentation> representations = new ArrayList<>();
+                    for (GoodsHistoryBean history : historyBeanList) {
+                        GoodsHistoryRepresentation representation = new GoodsHistoryRepresentation(history);
+                        representations.add(representation);
+                    }
+                    result.setContent(representations);
                 }
             }
+            result.setPager(total, pageNum, rows);
+            result.setStatus(MCode.V_200);
+        } catch (Exception e) {
+            LOGGER.error("queryGoodsHistory Exception e:", e);
+            result = new MPager(MCode.V_400, "查询商品历史变更记录失败");
         }
         return new ResponseEntity<MPager>(result, HttpStatus.OK);
     }
