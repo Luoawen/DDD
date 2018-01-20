@@ -189,9 +189,9 @@ public class AdminGoodsAgent {
             @RequestParam(value = "rows", required = false, defaultValue = "10") Integer rows) {
         MPager result = new MPager(MCode.V_1);
         try {
-            Integer total = goodsHistoryQueryApplication.queryGoodsHistoryTotal(goodsId);
+            Integer total = goodsHistoryQueryApplication.queryGoodsHistoryTotal(goodsId,false);
             if (total > 0) {
-                List<GoodsHistoryBean> historyBeanList = goodsHistoryQueryApplication.queryGoodsHistory(goodsId, pageNum, rows);
+                List<GoodsHistoryBean> historyBeanList = goodsHistoryQueryApplication.queryGoodsHistory(goodsId, pageNum, rows,false);
                 if (null != historyBeanList && historyBeanList.size() > 0) {
                     List<GoodsHistoryRepresentation> representations = new ArrayList<>();
                     for (GoodsHistoryBean history : historyBeanList) {

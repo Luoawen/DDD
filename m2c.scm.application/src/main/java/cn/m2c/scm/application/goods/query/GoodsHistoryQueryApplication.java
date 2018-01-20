@@ -24,22 +24,30 @@ public class GoodsHistoryQueryApplication {
         return supportJdbcTemplate;
     }
 
-    public Integer queryGoodsHistoryTotal(String goodsId) {
+    public Integer queryGoodsHistoryTotal(String goodsId, Boolean isApprove) {
         StringBuilder sql = new StringBuilder();
         sql.append(" SELECT ");
         sql.append(" count(1) ");
         sql.append(" FROM ");
-        sql.append(" t_scm_goods_history where goods_id = ?");
+        if (isApprove) {
+            sql.append(" t_scm_goods_approve_history where goods_id = ?");
+        } else {
+            sql.append(" t_scm_goods_history where goods_id = ?");
+        }
         return supportJdbcTemplate.jdbcTemplate().queryForObject(sql.toString(), Integer.class, goodsId);
     }
 
-    public List<GoodsHistoryBean> queryGoodsHistory(String goodsId, Integer pageNum, Integer rows) {
+    public List<GoodsHistoryBean> queryGoodsHistory(String goodsId, Integer pageNum, Integer rows, Boolean isApprove) {
         List<Object> params = new ArrayList<Object>();
         StringBuilder sql = new StringBuilder();
         sql.append(" SELECT ");
         sql.append(" * ");
         sql.append(" FROM ");
-        sql.append(" t_scm_goods_history where goods_id = ? order by create_time desc");
+        if (isApprove) {
+            sql.append(" t_scm_goods_approve_history where goods_id = ?");
+        } else {
+            sql.append(" t_scm_goods_history where goods_id = ? order by create_time desc");
+        }
         sql.append(" LIMIT ?,?");
         params.add(goodsId);
         params.add(rows * (pageNum - 1));
