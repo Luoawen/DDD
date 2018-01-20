@@ -889,8 +889,8 @@ public class OrderQuery {
 				sql.append(" AND tom.user_id IN ( " + Utils.listParseString(userIds) +") ");
 			}
 			if(StringUtils.isNotEmpty(orderId)){
-				sql.append(" AND tom.order_id = ? ");
-				params.add(orderId);
+				sql.append(" AND tom.order_id LIKE ? ");
+				params.add("%"+orderId+"%");
 			}
 			if(null != payStatus){ //支付状态
 				if(payStatus == -1) {//-1已取消
@@ -923,8 +923,8 @@ public class OrderQuery {
 				params.add(mediaCate);
 			}
 			if(null != mediaNo) {
-				sql.append(" AND tm.media_no = ? ");
-				params.add(mediaNo);
+				sql.append(" AND tm.media_no LIKE ? ");
+				params.add("%"+mediaNo+"%");
 			}
 			if(StringUtils.isNotEmpty(mediaName)) {
 				sql.append(" AND tm.media_name LIKE ? ");
@@ -987,8 +987,8 @@ public class OrderQuery {
 				sql.append(" AND tom.user_id IN ( " + Utils.listParseString(userIds) +") ");
 			}
 			if(StringUtils.isNotEmpty(orderId)){
-				sql.append(" AND tom.order_id = ? ");
-				params.add(orderId);
+				sql.append(" AND tom.order_id LIKE ? ");
+				params.add("%"+orderId+"%");
 			}
 			if(null != payStatus){ //支付状态
 				if(payStatus == -1) {//-1已取消
@@ -1020,8 +1020,8 @@ public class OrderQuery {
 				params.add(mediaCate);
 			}
 			if(null != mediaNo) {
-				sql.append(" AND tm.media_no = ? ");
-				params.add(mediaNo);
+				sql.append(" AND tm.media_no LIKE ? ");
+				params.add("%"+mediaNo+"%");
 			}
 			if(StringUtils.isNotEmpty(mediaName)) {
 				sql.append(" AND tm.media_name LIKE ? ");

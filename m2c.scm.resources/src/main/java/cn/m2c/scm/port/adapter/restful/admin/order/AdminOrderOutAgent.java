@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import cn.m2c.common.MCode;
 import cn.m2c.common.MPager;
+import cn.m2c.ddd.common.auth.RequirePermissions;
 import cn.m2c.scm.application.order.data.bean.MediaResOrderDetailBean;
 import cn.m2c.scm.application.order.data.export.OrderMediaExpModel;
 import cn.m2c.scm.application.order.data.export.SaleAfterExpModel;
@@ -157,6 +158,7 @@ public class AdminOrderOutAgent {
      * @param rows
      */
     @RequestMapping(value = "/orderdetail/export", method = RequestMethod.GET)
+    @RequirePermissions(value = {"media:order:export"})
     public void exportExcel(HttpServletResponse response,
     		@RequestParam(value = "userMessage", required = false) String userMessage,                 //下单用户名/账号
     		@RequestParam(value = "orderId", required = false) String orderId,                         //订单号
