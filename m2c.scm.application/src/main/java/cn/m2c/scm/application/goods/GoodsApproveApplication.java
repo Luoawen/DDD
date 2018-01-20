@@ -260,10 +260,9 @@ public class GoodsApproveApplication {
                     temp.put(map.get("goodsId"), map);
                 }
             }
-
+            if (StringUtils.isNotEmpty(_attach))
+                operationLogManager.operationLog("批量同意商品审核", _attach, goodsApproveList, new String[]{"goodsApprove"}, null);
             for (GoodsApprove goodsApprove : goodsApproveList) {
-                if (StringUtils.isNotEmpty(_attach))
-                    operationLogManager.operationLog("批量同意商品审核", _attach, goodsApprove, new String[]{"goodsApprove"}, null);
                 goodsApprove.agree((Map) temp.get(goodsApprove.goodsId()));
                 goodsApproveRepository.remove(goodsApprove);
             }
@@ -283,9 +282,9 @@ public class GoodsApproveApplication {
         LOGGER.info("rejectGoodsApproveBatch command >>{}", command);
         List<GoodsApprove> goodsApproveList = goodsApproveRepository.queryGoodsApproveByIdList(command.getGoodsIds());
         if (goodsApproveList != null && goodsApproveList.size() > 0) {
+        	if (StringUtils.isNotEmpty(_attach))
+                operationLogManager.operationLog("批量拒绝商品审核", _attach, goodsApproveList, new String[]{"goodsApprove"}, null);
             for (GoodsApprove goodsApprove : goodsApproveList) {
-                if (StringUtils.isNotEmpty(_attach))
-                    operationLogManager.operationLog("批量拒绝商品审核", _attach, goodsApprove, new String[]{"goodsApprove"}, null);
                 goodsApprove.reject(command.getRejectReason());
             }
         } else {
