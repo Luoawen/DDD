@@ -92,6 +92,7 @@ public class SellerApplication {
 	 * @param sellerId
 	 */
 	@Transactional(rollbackFor = { Exception.class, RuntimeException.class, NegativeException.class })
+	@EventListener(isListening = true)
 	public void sellerDisable(String sellerId) throws NegativeException{
 		Seller seller = sellerRepository.getSeller(sellerId);
 		if (seller == null)
