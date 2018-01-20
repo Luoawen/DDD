@@ -56,7 +56,7 @@ public class PostageModelApplication {
                 throw new NegativeException(MCode.V_300, "运费模板名称已存在");
             }
             if(command.getChargeType() == 2) {//2全国包邮模板
-            	if(!postageModelQueryApplication.queryDealerPostageNationwide(command.getDealerId())) {//true商家可创建包邮模板,false商家已创建过包邮模板
+            	if(postageModelQueryApplication.queryDealerPostageNationwide(command.getDealerId())) {//true已存在，false不存在（全国包邮模板）
                 	throw new NegativeException(MCode.V_300, "全国包邮模板已存在");
                 }
             }
@@ -82,7 +82,7 @@ public class PostageModelApplication {
             throw new NegativeException(MCode.V_300, "运费模板名称已存在");
         }
         if(command.getChargeType()==2) {//全国包邮模板
-        	if(!postageModelQueryApplication.queryDealerPostageNationwide(command.getDealerId())) {//true商家可创建包邮模板,false商家已创建过包邮模板
+        	if(postageModelQueryApplication.queryDealerPostageNationwide(command.getDealerId())) {////true已存在，false不存在（全国包邮模板）
         		throw new NegativeException(MCode.V_300, "全国包邮模板已存在");
         	}
         }
