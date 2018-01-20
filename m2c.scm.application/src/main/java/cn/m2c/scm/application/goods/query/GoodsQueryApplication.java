@@ -1481,7 +1481,8 @@ public class GoodsQueryApplication {
      *
      * @return
      */
-    public Object queryPacketZoneGoods(Map couponMap) {
+    public Object queryPacketZoneGoods(Map couponMap, String goodsClassifyId, Integer startNum, Integer limit, boolean isQueryTotal,
+                                       Integer sortType, Integer sort) {
         if (null != couponMap) { // 优惠券信息
             /**
              * 优惠券作用范围，0：全场，1：商家，2：商品，3：品类
@@ -1494,21 +1495,36 @@ public class GoodsQueryApplication {
             List<String> categoryList = null == couponMap.get("categoryList") ? null : (List) couponMap.get("categoryList");
             if (couponRangeType == 1) { //优惠券商家,返回商家
                 StringBuilder shopSql = new StringBuilder();
-                shopSql.append("select * from t_scm_dealer_shop t where 1=1");
-                if (null != dealerIdList && dealerIdList.size() > 0) {
-                    shopSql.append(" AND dealer_id in (" + Utils.listParseString(dealerIdList) + ") ");
-                    shopSql.append(" LIMIT 0,4");
-                    List<ShopBean> shopBeanList = this.getSupportJdbcTemplate().queryForBeanList(shopSql.toString(), ShopBean.class);
-                    return shopBeanList;
+                if (isQueryTotal) {
+                    shopSql.append("select count(1) from t_scm_dealer_shop t where 1=1");
+                    if (null != dealerIdList && dealerIdList.size() > 0) {
+                        shopSql.append(" AND dealer_id in (" + Utils.listParseString(dealerIdList) + ") ");
+                        Integer shopNum = supportJdbcTemplate.jdbcTemplate().queryForObject(shopSql.toString(), Integer.class);
+                        return shopNum;
+                    } else {
+                        return 0;
+                    }
                 } else {
-                    return null;
+                    shopSql.append("select * from t_scm_dealer_shop t where 1=1");
+                    if (null != dealerIdList && dealerIdList.size() > 0) {
+                        shopSql.append(" AND dealer_id in (" + Utils.listParseString(dealerIdList) + ") ");
+                        shopSql.append(" LIMIT ?,?");
+                        List<ShopBean> shopBeanList = this.getSupportJdbcTemplate().queryForBeanList(shopSql.toString(), ShopBean.class, startNum, limit);
+                        return shopBeanList;
+                    } else {
+                        return null;
+                    }
                 }
             } else {
                 StringBuilder sql = new StringBuilder();
+
+                if (isQueryTotal) {
+                    sql.append("  select count(1) from ( ");
+                }
                 sql.append(" SELECT ");
                 sql.append(" g.* ");
                 sql.append(" FROM ");
-                sql.append(" t_scm_goods g WHERE 1=1");
+                sql.append(" t_scm_goods g,t_scm_goods_sku s WHERE g.id=s.goods_id");
                 if (couponRangeType == 0) { //优惠券全场
                     if (null != dealerIdList && dealerIdList.size() > 0) {
                         sql.append(" AND g.dealer_id not in (" + Utils.listParseString(dealerIdList) + ") ");
@@ -1548,14 +1564,39 @@ public class GoodsQueryApplication {
                         }
                     }
                 }
-                sql.append(" LIMIT 0,4");
-                List<GoodsBean> goodsBeanList = this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsBean.class);
-                if (null != goodsBeanList && goodsBeanList.size() > 0) {
-                    for (GoodsBean goodsBean : goodsBeanList) {
-                        goodsBean.setGoodsSkuBeans(queryGoodsSKUsByGoodsId(goodsBean.getId()));
-                    }
+                if (StringUtils.isNotEmpty(goodsClassifyId)) {
+                    // 查询所有一级分类的下级分类
+                    List<String> goodsClassifyIds = goodsClassifyQueryApplication.recursionQueryGoodsSubClassifyId(goodsClassifyId, new ArrayList<String>());
+                    goodsClassifyIds.add(goodsClassifyId);
+                    sql.append(" AND g.goods_classify_id in (" + Utils.listParseString(goodsClassifyIds) + ") ");
                 }
-                return goodsBeanList;
+                sql.append(" group by g.goods_id");
+                if (!isQueryTotal) {
+                    //sortType 排序类型：1：综合，2：价格
+                    //sort 1：降序，2：升序
+                    if (null != sortType && sortType == 1) {//综合-以商品标题为第一优先级进行搜索结果展示；非该优先级的商品按创建时间降序排列，创建时间相同情况下按价格降序排序（默认综合）
+                        sql.append(" ORDER BY g.created_date desc,s.photograph_price desc ");
+                    } else if (null != sortType && sortType == 2) {//价格-首次点击价格降序排列，价格相同创建时间早的优先；再次点击价格升序排列
+                        if (null != sort && sort == 1) {
+                            sql.append(" ORDER BY s.photograph_price desc,g.created_date desc");
+                        } else if (null != sort && sort == 2) {
+                            sql.append(" ORDER BY s.photograph_price asc,g.created_date asc");
+                        }
+                    }
+                    sql.append(" LIMIT ?,?");
+                }
+                if (isQueryTotal) {
+                    sql.append("  ) x");
+                    return supportJdbcTemplate.jdbcTemplate().queryForObject(sql.toString(), Integer.class);
+                } else {
+                    List<GoodsBean> goodsBeanList = this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsBean.class, startNum, limit);
+                    if (null != goodsBeanList && goodsBeanList.size() > 0) {
+                        for (GoodsBean goodsBean : goodsBeanList) {
+                            goodsBean.setGoodsSkuBeans(queryGoodsSKUsByGoodsId(goodsBean.getId()));
+                        }
+                    }
+                    return goodsBeanList;
+                }
             }
         }
         return null;

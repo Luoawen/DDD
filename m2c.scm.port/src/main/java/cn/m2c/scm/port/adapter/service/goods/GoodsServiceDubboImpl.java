@@ -115,4 +115,9 @@ public class GoodsServiceDubboImpl implements GoodsService {
     public Map packetZoneGoods() {
         return null;
     }
+
+    @Override
+    public Map packetZoneGoodsByZoneId(String zoneId) {
+        return null;
+    }
 }

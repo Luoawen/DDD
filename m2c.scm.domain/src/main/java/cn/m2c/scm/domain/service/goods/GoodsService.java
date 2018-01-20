@@ -108,4 +108,9 @@ public interface GoodsService {
      * 新人礼包专区商品范围展示
      */
     Map packetZoneGoods();
+
+    /**
+     * 新人礼包专区商品更多
+     */
+    Map packetZoneGoodsByZoneId(String zoneId);
 }
