@@ -22,6 +22,8 @@ public class GoodsHistoryRepresentation {
     private String beforeContent;
     // 变更后
     private String afterContent;
+    // 增加sku
+    private Map addSku;
     // 变更理由
     private String changeReason;
 
@@ -104,7 +106,7 @@ public class GoodsHistoryRepresentation {
             afterMap.put("photographPrice", photographPrice);
             afterMap.put("supplyPrice", supplyPrice);
             afterMap.put("marketPrice", marketPrice);
-            this.afterContent = JsonUtils.toStr(afterMap);
+            this.addSku = afterMap;
         }
     }
 
@@ -154,5 +156,13 @@ public class GoodsHistoryRepresentation {
 
     public void setChangeReason(String changeReason) {
         this.changeReason = changeReason;
+    }
+
+    public Map getAddSku() {
+        return addSku;
+    }
+
+    public void setAddSku(Map addSku) {
+        this.addSku = addSku;
     }
 }
