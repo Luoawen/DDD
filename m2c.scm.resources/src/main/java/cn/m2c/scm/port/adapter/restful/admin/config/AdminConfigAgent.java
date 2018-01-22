@@ -16,7 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 import cn.m2c.common.MCode;
 import cn.m2c.common.MResult;
 import cn.m2c.scm.application.config.ConfigApplication;
-import cn.m2c.scm.application.config.command.ConfigCommand;
+import cn.m2c.scm.application.config.command.ConfigAddCommand;
+import cn.m2c.scm.application.config.command.ConfigModifyCommand;
 import cn.m2c.scm.application.config.data.bean.ConfigBean;
 import cn.m2c.scm.application.config.data.representation.ConfigBeanRepresentation;
 import cn.m2c.scm.application.config.query.ConfigQueryApplication;
@@ -51,7 +52,7 @@ public class AdminConfigAgent {
 			@RequestParam(value = "configDescribe", required = false) String configDescribe){
     	MResult result = new MResult(MCode.V_1);
     	try {
-    		ConfigCommand configCommand = new ConfigCommand(configKey, configValue, configDescribe);
+    		ConfigAddCommand configCommand = new ConfigAddCommand(configKey, configValue, configDescribe);
     		configApplication.saveConfig(configCommand);
     		result.setStatus(MCode.V_200);
     	} catch (NegativeException ne) {
@@ -73,11 +74,12 @@ public class AdminConfigAgent {
     public ResponseEntity<MResult> modifyConfig(
     		@PathVariable(value = "configKey") String configKey,
     		@RequestParam(value = "configValue", required = false) String configValue,
+    		@RequestParam(value = "configOldValue", required = false) String configOldValue,
 			@RequestParam(value = "configDescribe", required = false) String configDescribe
     		){
     	MResult result = new MResult(MCode.V_1);
     	try {
-    		ConfigCommand configCommand = new ConfigCommand(configKey, configValue, configDescribe);
+    		ConfigModifyCommand configCommand = new ConfigModifyCommand(configKey, configValue, configOldValue, configDescribe);
     		String _attach = request.getHeader("attach");
     		configApplication.modifyConfig(configCommand, _attach);
     		result.setStatus(MCode.V_200);

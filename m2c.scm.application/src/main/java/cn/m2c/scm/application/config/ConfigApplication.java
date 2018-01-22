@@ -13,7 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import cn.m2c.common.MCode;
 import cn.m2c.ddd.common.logger.OperationLogManager;
-import cn.m2c.scm.application.config.command.ConfigCommand;
+import cn.m2c.scm.application.config.command.ConfigAddCommand;
+import cn.m2c.scm.application.config.command.ConfigModifyCommand;
 import cn.m2c.scm.domain.NegativeException;
 import cn.m2c.scm.domain.model.config.Config;
 import cn.m2c.scm.domain.model.config.ConfigRepository;
@@ -38,7 +39,7 @@ public class ConfigApplication {
 	 * @throws NegativeException 
 	 */
 	@Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
-	public void saveConfig(ConfigCommand command) throws NegativeException {
+	public void saveConfig(ConfigAddCommand command) throws NegativeException {
 		LOGGER.info("saveConfig command >>{}", command);
 		Config config = configRepository.queryConfigByKey(command.getConfigKey());
 		if(config != null) {
@@ -50,11 +51,11 @@ public class ConfigApplication {
 
 	/**
 	 * 修改配置
-	 * @param ConfigCommand
+	 * @param ConfigAddCommand
 	 * @throws NegativeException 
 	 */
 	@Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
-	public void modifyConfig(ConfigCommand command, String _attach) throws NegativeException {
+	public void modifyConfig(ConfigModifyCommand command, String _attach) throws NegativeException {
 		LOGGER.info("modifyConfig command >>{}", command);
 		Config config = configRepository.queryConfigByKey(command.getConfigKey());
 		if(null == config) {
@@ -62,7 +63,13 @@ public class ConfigApplication {
 		}
 		if (StringUtils.isNotEmpty(_attach))
         	operationLogManager.operationLog("修改配置", _attach, config);
-		config.modifyConfig(command.getConfigValue(), command.getConfigDescribe());
+		if(StringUtils.isEmpty(command.getConfigValue()) && StringUtils.isNotEmpty(command.getConfigOldValue())) {
+			//新配置url为空，即用户未作操作直接点击保存
+			config.modifyConfig(command.getConfigOldValue(), command.getConfigDescribe());
+		}else {
+			//用户新增特惠价角标并保存
+			config.modifyConfig(command.getConfigValue(), command.getConfigDescribe());
+		}
 	}
 	
 	
