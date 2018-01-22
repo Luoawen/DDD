@@ -4,6 +4,7 @@ import cn.m2c.common.JsonUtils;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsHistoryBean;
 import cn.m2c.scm.application.utils.Utils;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Map;
 
@@ -91,9 +92,15 @@ public class GoodsHistoryRepresentation {
         } else {
             this.changeContent = "增加sku";
             // 变更后 {"skuName":"3寸,白色","marketPrice":null,"supplyPrice":9960000.0,"weight":0.2,"photographPrice":9990000.0,"showStatus":2.0,"availableNum":222.0,"goodsCode":"87","skuId":"20180119173349110091"}
-            String supplyPrice = null != afterMap.get("supplyPrice") ? Utils.moneyFormatCN(Long.parseLong(String.valueOf(afterMap.get("supplyPrice")))) : null;
-            String marketPrice = null != afterMap.get("marketPrice") ? Utils.moneyFormatCN(Long.parseLong(String.valueOf(afterMap.get("marketPrice")))) : null;
-            String photographPrice = null != afterMap.get("photographPrice") ? Utils.moneyFormatCN(Long.parseLong(String.valueOf(afterMap.get("photographPrice")))) : null;
+            Long supplyPriceLong = null != afterMap.get("supplyPrice") ? new BigDecimal(String.valueOf(afterMap.get("supplyPrice"))).longValue() : null;
+            String supplyPrice = null != supplyPriceLong ? Utils.moneyFormatCN(supplyPriceLong) : null;
+
+            Long marketPriceLong = null != afterMap.get("marketPrice") ? new BigDecimal(String.valueOf(afterMap.get("marketPrice"))).longValue() : null;
+            String marketPrice = null != marketPriceLong ? Utils.moneyFormatCN(marketPriceLong) : null;
+
+            Long photographPriceLong = null != afterMap.get("photographPrice") ? new BigDecimal(String.valueOf(afterMap.get("photographPrice"))).longValue() : null;
+            String photographPrice = null != photographPriceLong ? Utils.moneyFormatCN(photographPriceLong) : null;
+
             afterMap.put("photographPrice", photographPrice);
             afterMap.put("supplyPrice", supplyPrice);
             afterMap.put("marketPrice", marketPrice);
