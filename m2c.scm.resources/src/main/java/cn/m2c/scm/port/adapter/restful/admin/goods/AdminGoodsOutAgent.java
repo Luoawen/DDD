@@ -39,7 +39,12 @@ public class AdminGoodsOutAgent {
 	@Resource(name = "goodsRestService")
 	GoodsService goodsService;
 	
-	@RequestMapping(value = "/pioneerten", method = RequestMethod.GET)
+	/**
+	 * 运营平台根据商品名模糊查询最早十个商品
+	 * @param goodsName
+	 * @return
+	 */
+	@RequestMapping(value = "/pioneer/ten", method = RequestMethod.GET)
 	public ResponseEntity<MResult> queryGoodsPioneerTenByGoodsName(
 		@RequestParam(value = "goodsName", required = false) String goodsName
 		){
@@ -68,7 +73,7 @@ public class AdminGoodsOutAgent {
 	 * @param rows      每页多少行
 	 * @return
 	 */
-	@RequestMapping(value = "/couponapply", method = RequestMethod.GET)
+	@RequestMapping(value = "/coupon/apply", method = RequestMethod.GET)
 	public ResponseEntity<MPager> queryCouponApplyGoodsOrDealer(
 		@RequestParam(value = "couponId", required = false) String couponId, 
 		@RequestParam(value = "pageNum", required = false, defaultValue = "1") Integer pageNum,
