@@ -4,6 +4,7 @@ import cn.m2c.common.JsonUtils;
 import cn.m2c.common.MCode;
 import cn.m2c.ddd.common.event.annotation.EventListener;
 import cn.m2c.ddd.common.logger.OperationLogManager;
+import cn.m2c.scm.application.goods.command.GoodsApproveAgreeCommand;
 import cn.m2c.scm.application.goods.command.GoodsApproveCommand;
 import cn.m2c.scm.application.goods.command.GoodsApproveRejectBatchCommand;
 import cn.m2c.scm.application.goods.command.GoodsApproveRejectCommand;
@@ -23,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -113,19 +115,25 @@ public class GoodsApproveApplication {
     /**
      * 同意商品审核
      *
-     * @param goodsId
+     * @param command
      */
     @EventListener(isListening = true)
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
-    public void agreeGoodsApprove(String goodsId, String _attach) throws NegativeException {
-        LOGGER.info("agreeGoodsApprove goodsId >>{}", goodsId);
-        GoodsApprove goodsApprove = goodsApproveRepository.queryGoodsApproveById(goodsId);
+    public void agreeGoodsApprove(GoodsApproveAgreeCommand command, String _attach) throws NegativeException {
+        LOGGER.info("agreeGoodsApprove command >>{}", command);
+        GoodsApprove goodsApprove = goodsApproveRepository.queryGoodsApproveById(command.getGoodsId());
         if (null == goodsApprove) {
             throw new NegativeException(MCode.V_300, "商品审核信息不存在");
         }
         if (StringUtils.isNotEmpty(_attach))
             operationLogManager.operationLog("同意商品审核", _attach, goodsApprove, new String[]{"goodsApprove"}, null);
-        goodsApprove.agree();
+        Map changeInfo = new HashMap<>();
+        changeInfo.put("newServiceRate", command.getNewServiceRate());
+        changeInfo.put("oldServiceRate", command.getOldServiceRate());
+        changeInfo.put("oldClassifyName", command.getOldClassifyName());
+        changeInfo.put("newClassifyName", command.getNewClassifyName());
+        changeInfo.put("settlementMode", command.getSettlementMode());
+        goodsApprove.agree(changeInfo);
         goodsApproveRepository.remove(goodsApprove);
     }
 
@@ -241,14 +249,21 @@ public class GoodsApproveApplication {
      */
     @EventListener(isListening = true)
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
-    public void agreeGoodsApproveBatch(List goodsIds, String _attach) throws NegativeException {
-        LOGGER.info("agreeGoodsApproveBatch goodsIds >>{}", goodsIds);
+    public void agreeGoodsApproveBatch(List goodsIds, String goodsClassifyChanges, String _attach) throws NegativeException {
+        LOGGER.info("agreeGoodsApproveBatch goodsIds >>{},goodsClassifyChanges >> {}", goodsIds, goodsClassifyChanges);
         List<GoodsApprove> goodsApproveList = goodsApproveRepository.queryGoodsApproveByIdList(goodsIds);
         if (null != goodsApproveList && goodsApproveList.size() > 0) {
+            List<Map> changes = JsonUtils.toList(goodsClassifyChanges, Map.class);
+            Map temp = new HashMap<>();
+            if (null != changes && changes.size() > 0) {
+                for (Map map : changes) {
+                    temp.put(map.get("goodsId"), map);
+                }
+            }
+            if (StringUtils.isNotEmpty(_attach))
+                operationLogManager.operationLog("批量同意商品审核", _attach, goodsApproveList, new String[]{"goodsApprove"}, null);
             for (GoodsApprove goodsApprove : goodsApproveList) {
-                if (StringUtils.isNotEmpty(_attach))
-                    operationLogManager.operationLog("批量同意商品审核", _attach, goodsApprove, new String[]{"goodsApprove"}, null);
-                goodsApprove.agree();
+                goodsApprove.agree((Map) temp.get(goodsApprove.goodsId()));
                 goodsApproveRepository.remove(goodsApprove);
             }
         } else {
@@ -267,9 +282,9 @@ public class GoodsApproveApplication {
         LOGGER.info("rejectGoodsApproveBatch command >>{}", command);
         List<GoodsApprove> goodsApproveList = goodsApproveRepository.queryGoodsApproveByIdList(command.getGoodsIds());
         if (goodsApproveList != null && goodsApproveList.size() > 0) {
+        	if (StringUtils.isNotEmpty(_attach))
+                operationLogManager.operationLog("批量拒绝商品审核", _attach, goodsApproveList, new String[]{"goodsApprove"}, null);
             for (GoodsApprove goodsApprove : goodsApproveList) {
-                if (StringUtils.isNotEmpty(_attach))
-                    operationLogManager.operationLog("批量拒绝商品审核", _attach, goodsApprove, new String[]{"goodsApprove"}, null);
                 goodsApprove.reject(command.getRejectReason());
             }
         } else {

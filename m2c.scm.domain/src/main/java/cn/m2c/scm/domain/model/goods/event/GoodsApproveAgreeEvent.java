@@ -112,6 +112,8 @@ public class GoodsApproveAgreeEvent implements DomainEvent {
      */
     private String changeReason;
 
+    private String changeInfo;
+
     private Date occurredOn;
     private int eventVersion;
 
@@ -120,7 +122,8 @@ public class GoodsApproveAgreeEvent implements DomainEvent {
                                   String goodsUnitId, Integer goodsMinQuantity, String goodsPostageId,
                                   String goodsBarCode, String goodsKeyWord, String goodsGuarantee,
                                   String goodsMainImages, String goodsMainVideo, String goodsDesc,
-                                  Integer goodsShelves, String goodsSpecifications, String goodsSkuApproves, Integer skuFlag, String changeReason) {
+                                  Integer goodsShelves, String goodsSpecifications, String goodsSkuApproves,
+                                  Integer skuFlag, String changeReason, String changeInfo) {
         this.goodsId = goodsId;
         this.dealerId = dealerId;
         this.dealerName = dealerName;
@@ -143,6 +146,7 @@ public class GoodsApproveAgreeEvent implements DomainEvent {
         this.goodsSkuApproves = goodsSkuApproves;
         this.skuFlag = skuFlag;
         this.changeReason = changeReason;
+        this.changeInfo = changeInfo;
         this.occurredOn = new Date();
         this.eventVersion = 1;
     }

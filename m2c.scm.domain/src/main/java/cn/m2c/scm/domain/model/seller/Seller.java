@@ -180,7 +180,7 @@ public class Seller extends ConcurrencySafeEntity {
 		}
 		this.sellerDimissionTime = new Date();
 		this.sellerCondition = 2;
-		DomainEventPublisher.instance().publish(new SellerDisableEvent(this.sellerId));
+		DomainEventPublisher.instance().publish(new SellerDisableEvent(sellerId));
 	}
 	
 

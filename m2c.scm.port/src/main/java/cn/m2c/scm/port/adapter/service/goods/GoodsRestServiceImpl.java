@@ -374,13 +374,14 @@ public class GoodsRestServiceImpl implements GoodsService {
     @Override
     public Map packetZoneGoods() {
         String url = M2C_HOST_URL + "/m2c.market/domain/packet/zone/goods";
+        Map resultMap = new HashMap<>();
         try {
             String result = restTemplate.getForObject(url, String.class);
             JSONObject json = JSONObject.parseObject(result);
+            resultMap.put("statusCode", json.getInteger("status"));
             if (json.getInteger("status") == 200) {
                 JSONObject content = json.getJSONObject("content");
                 if (null != content) {
-                    Map resultMap = new HashMap<>();
                     String packetName = content.getString("packetName");
                     String packetId = content.getString("packetId");
                     String tip = content.getString("tip");
@@ -445,10 +446,68 @@ public class GoodsRestServiceImpl implements GoodsService {
                 LOGGER.error("packetZoneGoods failed.error=>" + json.getString("errorMessage"));
             }
         } catch (Exception e) {
+            resultMap.put("statusCode", 400);
             LOGGER.error("查询新人礼包专区信息异常");
             LOGGER.error("packetZoneGoods exception.url=>" + url);
             LOGGER.error("packetZoneGoods exception.error=>" + e.getMessage());
         }
-        return null;
+        return resultMap;
+    }
+
+    @Override
+    public Map packetZoneGoodsByZoneId(String zoneId) {
+        String url = M2C_HOST_URL + "/m2c.market/domain/packet/zone/goods/detail?zoneId=" + zoneId;
+        Map resultMap = new HashMap<>();
+        try {
+            String result = restTemplate.getForObject(url, String.class);
+            JSONObject json = JSONObject.parseObject(result);
+            resultMap.put("statusCode", json.getInteger("status"));
+            if (json.getInteger("status") == 200) {
+                JSONObject content = json.getJSONObject("content");
+                if (null != content) {
+                    String zoneName = content.getString("zoneName");
+                    JSONObject couponRange = content.getJSONObject("couponRange");
+                    /**
+                     * 优惠券作用范围，0：全场，1：商家，2：商品，3：品类
+                     * 备注：
+                     * 当作用范围为全场时，dealerId、goodsId、categoryId为排除的对象；当作用范围不是全场时，三个id为优惠券实际作用的对象
+                     */
+                    Integer rangeType = couponRange.getInteger("rangeType");
+                    List dealerIdList = null;
+                    List goodsIdsList = null;
+                    List categoryList = null;
+                    JSONArray dealerIds = couponRange.getJSONArray("dealerList");
+                    if (null != dealerIds && dealerIds.size() > 0) {
+                        dealerIdList = dealerIds.toJavaList(String.class);
+                    }
+                    JSONArray goodsIds = couponRange.getJSONArray("goodsList");
+                    if (null != goodsIds && goodsIds.size() > 0) {
+                        goodsIdsList = goodsIds.toJavaList(String.class);
+                    }
+                    JSONArray categoryIds = couponRange.getJSONArray("categoryList");
+                    if (null != categoryIds && categoryIds.size() > 0) {
+                        categoryList = categoryIds.toJavaList(String.class);
+                    }
+
+                    Map couponMap = new HashMap<>();
+                    couponMap.put("rangeType", rangeType);
+                    couponMap.put("dealerIdList", dealerIdList);
+                    couponMap.put("goodsIdsList", goodsIdsList);
+                    couponMap.put("categoryList", categoryList);
+                    couponMap.put("zoneName", zoneName);
+                    return couponMap;
+                }
+            } else {
+                LOGGER.error("查询新人礼包专区更多信息失败");
+                LOGGER.error("packetZoneGoods failed.url=>" + url);
+                LOGGER.error("packetZoneGoods failed.error=>" + json.getString("errorMessage"));
+            }
+        } catch (Exception e) {
+            resultMap.put("statusCode", 400);
+            LOGGER.error("查询新人礼包专区更多信息异常");
+            LOGGER.error("packetZoneGoodsByZoneId exception.url=>" + url);
+            LOGGER.error("packetZoneGoodsByZoneId exception.error=>" + e.getMessage());
+        }
+        return resultMap;
     }
 }

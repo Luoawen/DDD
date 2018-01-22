@@ -54,7 +54,7 @@ public class AppOrderBean extends AssertionConcern implements Serializable {
 	@ColumnAlias(value = "dealer_id")
 	private String dealerId;
 	
-	@ColumnAlias(value = "dealer_name")
+	@ColumnAlias(value = "shop_name")
 	private String dealerName;
 	
 	@ColumnAlias(value = "_status")

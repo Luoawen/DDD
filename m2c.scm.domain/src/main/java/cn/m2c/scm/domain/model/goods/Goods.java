@@ -308,16 +308,28 @@ public class Goods extends ConcurrencySafeEntity {
         }
     }
 
-    public List<GoodsHistory> getGoodsHistory(String goodsClassifyId, String goodsSKUs, String changeReason) {
+    public List<GoodsHistory> getGoodsHistory(String goodsClassifyId, String goodsSKUs, String changeReason, String changeInfo) {
         List<GoodsHistory> histories = new ArrayList<>();
         String historyNo = UUID.randomUUID().toString().replaceAll("-", "").toUpperCase();
         Date nowDate = new Date();
         if (!this.goodsClassifyId.equals(goodsClassifyId)) {
-            // 商品审核库修改分类
+            // {"newClassifyName":"手机,iOS系统","oldServiceRate":"0","oldClassifyName":"手机,墨迹","newServiceRate":"0","settlementMode":1}
+            Map changeMap = JsonUtils.toMap(changeInfo);
+            String oldServiceRate = null != changeMap.get("oldServiceRate") ? changeMap.get("oldServiceRate").toString() : null;
+            String newServiceRate = null != changeMap.get("newServiceRate") ? changeMap.get("newServiceRate").toString() : null;
+            String oldClassifyName = null != changeMap.get("oldClassifyName") ? changeMap.get("oldClassifyName").toString() : null;
+            String newClassifyName = null != changeMap.get("newClassifyName") ? changeMap.get("newClassifyName").toString() : null;
+            String settlementMode = null != changeMap.get("settlementMode") ? changeMap.get("settlementMode").toString() : null;
             Map before = new HashMap<>();
             before.put("goodsClassifyId", this.goodsClassifyId);
+            before.put("goodsClassifyName", oldClassifyName);
+            before.put("serviceRate", oldServiceRate);
+            before.put("settlementMode", settlementMode);
             Map after = new HashMap<>();
             after.put("goodsClassifyId", goodsClassifyId);
+            after.put("goodsClassifyName", newClassifyName);
+            after.put("serviceRate", newServiceRate);
+
             String historyId = UUID.randomUUID().toString().replaceAll("-", "").toUpperCase();
             GoodsHistory history = new GoodsHistory(historyId, historyNo, this.goodsId,
                     1, JsonUtils.toStr(before),
@@ -397,9 +409,9 @@ public class Goods extends ConcurrencySafeEntity {
         return goodsSku;
     }
 
-    public static void main(String [] args){
-        String name ="衣服 / 童装 / 哇唔哇唔";
-        System.out.print(name.replaceAll(" / ",","));
+    public static void main(String[] args) {
+        String name = "衣服 / 童装 / 哇唔哇唔";
+        System.out.print(name.replaceAll(" / ", ","));
     }
 
     /**
@@ -435,11 +447,11 @@ public class Goods extends ConcurrencySafeEntity {
             isNeedApprove = true;
             changeGoodsInfo.put("oldGoodsClassifyId", this.goodsClassifyId);
             changeGoodsInfo.put("newGoodsClassifyId", goodsClassifyId);
-            changeGoodsInfo.put("oldServiceRate",oldServiceRate);
-            changeGoodsInfo.put("newServiceRate",newServiceRate);
-            changeGoodsInfo.put("oldClassifyName",oldClassifyName);
-            changeGoodsInfo.put("newClassifyName",newClassifyName);
-            changeGoodsInfo.put("settlementMode",settlementMode);
+            changeGoodsInfo.put("oldServiceRate", oldServiceRate);
+            changeGoodsInfo.put("newServiceRate", newServiceRate);
+            changeGoodsInfo.put("oldClassifyName", oldClassifyName);
+            changeGoodsInfo.put("newClassifyName", newClassifyName);
+            changeGoodsInfo.put("settlementMode", settlementMode);
         }
 
         List<Map> skuList = ObjectSerializer.instance().deserialize(goodsSKUs, List.class);
@@ -455,9 +467,18 @@ public class Goods extends ConcurrencySafeEntity {
                 String skuId = GetMapValueUtils.getStringFromMapKey(map, "skuId");
                 // 判断商品规格sku是否存在,存在就修改供货价和拍获价，不存在就增加商品sku
                 GoodsSku goodsSku = getGoodsSKU(skuId);
+
+                Integer showStatus = 2; //是否对外展示，1：不展示，2：展示
+                if (null != this.skuFlag && this.skuFlag == 1) {
+                    Boolean isShow = GetMapValueUtils.getBooleanFromMapKey(map, "showStatus");
+                    if (!isShow) {
+                        showStatus = 1;
+                    }
+                }
                 if (null == goodsSku) {// 增加了规格
                     isNeedApprove = true;
-                    addGoodsSkuList.add(goodsSku.convertToMap());
+                    map.put("showStatus", showStatus);
+                    addGoodsSkuList.add(map);
                 } else {
                     Integer availableNum = GetMapValueUtils.getIntFromMapKey(map, "availableNum");
                     if (availableNum > 0) {
@@ -466,15 +487,6 @@ public class Goods extends ConcurrencySafeEntity {
                     Float weight = GetMapValueUtils.getFloatFromMapKey(map, "weight");
                     Long marketPrice = GetMapValueUtils.getLongFromMapKey(map, "marketPrice");
                     String goodsCode = GetMapValueUtils.getStringFromMapKey(map, "goodsCode");
-
-                    Integer showStatus = 2; //是否对外展示，1：不展示，2：展示
-                    //Integer showStatus = GetMapValueUtils.getIntFromMapKey(map, "showStatus");
-                    if (null != this.skuFlag && this.skuFlag == 1) {
-                        Boolean isShow = GetMapValueUtils.getBooleanFromMapKey(map, "showStatus");
-                        if (!isShow) {
-                            showStatus = 1;
-                        }
-                    }
 
                     // 修改商品规格不需要审批的信息
                     goodsSku.modifyNotApproveGoodsSku(availableNum, weight, marketPrice, goodsCode, showStatus);

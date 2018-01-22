@@ -152,4 +152,36 @@ public class OrderUtils {
         }
         return payStatusStr;
     }
+    
+    public static String getPayStatusStr2(Integer orderStatus) {
+    	String payStatusStr = "";
+        if (null != orderStatus) {
+            if(orderStatus == -1) {
+            	payStatusStr = "已取消";
+            }
+            if(orderStatus == 0) {
+                payStatusStr = "待支付";
+            }
+            if (orderStatus >= 1 && orderStatus <= 5) {
+                payStatusStr = "已付款";
+            }
+        }
+        return payStatusStr;
+    }
+    
+    public static String getPayWayStr(Integer payWay) {
+    	String payWayStr = "";
+    	if(null != payWay) {
+    		if(payWay == 1) {
+    			payWayStr = "支付宝";
+			}
+			if(payWay == 2) {
+				payWayStr = "微信";
+			}
+			if(payWay == 3) {
+				payWayStr = "其他";
+			}
+    	}
+    	return payWayStr;
+    }
 }

@@ -1,43 +1,60 @@
-package cn.m2c.scm.application.order.data.representation;
+package cn.m2c.scm.application.order.data.export;
 
 import java.text.SimpleDateFormat;
 
 import cn.m2c.scm.application.order.data.bean.MediaResOrderDetailBean;
+import cn.m2c.scm.application.utils.ExcelField;
 import cn.m2c.scm.application.utils.OrderUtils;
 import cn.m2c.scm.application.utils.Utils;
 
 /**
- * 媒体广告位订单明细表述对象 
+ * 广告位订单明细导出
  */
-public class MediaResOrderDetailBeanRepresentation {
-	private String orderId;            //订单号
-	private String userMessage;        //用户名/手机号
-	private String payStatus;          //支付状态
-	private String payWay;             //支付方式
-	private String afterSellOrderType; //售后方式
-	private String mediaId;            //媒体id
-	private String mediaResId;         //广告位id
-	private String goodsName;          //商品名
-	private String skuId;              //商家平台sku编号
-	private String dealerName;         //商家名
-	private Integer sellNum;           //下单数量
-	private String orderMoney;         //支付金额
-	private String goodsAmount;        //销售金额
-	private String createTime;         //下单日期
-	private String mediaName;          //来源媒体(媒体名称)
-	private String mediaNo;            //媒体编号
-	private String mediaCate;          //媒体分类
-	private String level;             //媒体等级
-	private String mresNo;             //来源广告位条码
-	private String mresCate;           //广告位位置
-	private String formId;             //广告位形式
+public class OrderMediaExpModel {
+	@ExcelField(title = "订单号")
+	private String orderId;
+	@ExcelField(title = "下单用户")
+	private String userMessage;
+	@ExcelField(title = "支付状态")
+	private String payStatus;
+	@ExcelField(title = "支付方式")
+	private String payWay;
+	@ExcelField(title = "售后")
+	private String afterSellOrderType;
+	@ExcelField(title = "来源媒体")
+	private String mediaName;
+	@ExcelField(title = "媒体编号")
+	private String mediaNo;
+	@ExcelField(title = "媒体分类")
+	private String mediaCate;
+	@ExcelField(title = "媒体等级")
+	private String level; 
+	@ExcelField(title = "来源广告位条码")
+	private String mresNo;
+	@ExcelField(title = "广告位位置")
+	private String mresCate;
+	@ExcelField(title = "广告位形式")
+	private String formId;
+	@ExcelField(title = "购买商品")
+	private String goodsName;
+	@ExcelField(title = "商品平台SKU编号")
+	private String skuId;
+	@ExcelField(title = "来源商家")
+	private String dealerName;
+	@ExcelField(title = "下单数量")
+	private Integer sellNum; 
+	@ExcelField(title = "支付金额")
+	private String orderMoney;
+	@ExcelField(title = "销售金额")
+	private String goodsAmount;
+	@ExcelField(title = "下单日期")
+	private String createTime;
 	
-	
-	
-	public MediaResOrderDetailBeanRepresentation (MediaResOrderDetailBean bean) {
+	public OrderMediaExpModel(MediaResOrderDetailBean bean) {
 		this.orderId = bean.getOrderId();
 		
 		this.payStatus = OrderUtils.getPayStatusStr2(bean.getPayStatus());
+		
 		this.payWay = OrderUtils.getPayWayStr(bean.getPayWay());
 		
 		if(null != bean.getAfterSellOrderType()) {
@@ -45,8 +62,6 @@ public class MediaResOrderDetailBeanRepresentation {
 		}else {
 			this.afterSellOrderType = "无售后";
 		}
-		this.mediaId = null != bean.getMediaId() ? bean.getMediaId() : "";
-		this.mediaResId = null != bean.getMediaResId() ? bean.getMediaResId() : "";
 		this.goodsName = bean.getGoodsName();
 		this.skuId = bean.getSkuId();
 		this.dealerName = bean.getDealerName();
@@ -101,78 +116,6 @@ public class MediaResOrderDetailBeanRepresentation {
 
 	public void setAfterSellOrderType(String afterSellOrderType) {
 		this.afterSellOrderType = afterSellOrderType;
-	}
-
-	public String getMediaId() {
-		return mediaId;
-	}
-
-	public void setMediaId(String mediaId) {
-		this.mediaId = mediaId;
-	}
-
-	public String getMediaResId() {
-		return mediaResId;
-	}
-
-	public void setMediaResId(String mediaResId) {
-		this.mediaResId = mediaResId;
-	}
-
-	public String getGoodsName() {
-		return goodsName;
-	}
-
-	public void setGoodsName(String goodsName) {
-		this.goodsName = goodsName;
-	}
-
-	public String getSkuId() {
-		return skuId;
-	}
-
-	public void setSkuId(String skuId) {
-		this.skuId = skuId;
-	}
-
-	public String getDealerName() {
-		return dealerName;
-	}
-
-	public void setDealerName(String dealerName) {
-		this.dealerName = dealerName;
-	}
-
-	public Integer getSellNum() {
-		return sellNum;
-	}
-
-	public void setSellNum(Integer sellNum) {
-		this.sellNum = sellNum;
-	}
-
-	public String getOrderMoney() {
-		return orderMoney;
-	}
-
-	public void setOrderMoney(String orderMoney) {
-		this.orderMoney = orderMoney;
-	}
-
-	public String getGoodsAmount() {
-		return goodsAmount;
-	}
-
-	public void setGoodsAmount(String goodsAmount) {
-		this.goodsAmount = goodsAmount;
-	}
-
-	public String getCreateTime() {
-		return createTime;
-	}
-
-	public void setCreateTime(String createTime) {
-		this.createTime = createTime;
 	}
 
 	public String getMediaName() {
@@ -230,5 +173,60 @@ public class MediaResOrderDetailBeanRepresentation {
 	public void setFormId(String formId) {
 		this.formId = formId;
 	}
-	
+
+	public String getGoodsName() {
+		return goodsName;
+	}
+
+	public void setGoodsName(String goodsName) {
+		this.goodsName = goodsName;
+	}
+
+	public String getSkuId() {
+		return skuId;
+	}
+
+	public void setSkuId(String skuId) {
+		this.skuId = skuId;
+	}
+
+	public String getDealerName() {
+		return dealerName;
+	}
+
+	public void setDealerName(String dealerName) {
+		this.dealerName = dealerName;
+	}
+
+	public Integer getSellNum() {
+		return sellNum;
+	}
+
+	public void setSellNum(Integer sellNum) {
+		this.sellNum = sellNum;
+	}
+
+	public String getOrderMoney() {
+		return orderMoney;
+	}
+
+	public void setOrderMoney(String orderMoney) {
+		this.orderMoney = orderMoney;
+	}
+
+	public String getGoodsAmount() {
+		return goodsAmount;
+	}
+
+	public void setGoodsAmount(String goodsAmount) {
+		this.goodsAmount = goodsAmount;
+	}
+
+	public String getCreateTime() {
+		return createTime;
+	}
+
+	public void setCreateTime(String createTime) {
+		this.createTime = createTime;
+	}
 }
