@@ -349,6 +349,22 @@ public class GoodsRestServiceImpl implements GoodsService {
                         categoryList = categoryIds.toJavaList(String.class);
                     }
 
+                    // 生成者类型，1.平台，2.商家
+                    Integer creatorType = content.getInteger("creatorType");
+                    // 生成者
+                    String creator = content.getString("creator");
+
+                    if (null != creatorType && creatorType == 2 && rangeType == 0) {
+                        rangeType = 4;// 商家全店
+                        if (null != dealerIdList && dealerIdList.size() > 0) {
+                            dealerIdList.add(creator);
+                        } else {
+                            dealerIdList = new ArrayList<>();
+                            dealerIdList.add(creator);
+                        }
+                    }
+
+
                     Map resultMap = new HashMap<>();
                     resultMap.put("rangeType", rangeType);
                     resultMap.put("dealerIdList", dealerIdList);
