@@ -122,7 +122,7 @@ public class GoodsServiceDubboImpl implements GoodsService {
     }
 
     @Override
-    public Map photographGetCoupon() {
+    public Map photographGetCoupon(String userId, String mediaResourceId) {
         return null;
     }
 }
