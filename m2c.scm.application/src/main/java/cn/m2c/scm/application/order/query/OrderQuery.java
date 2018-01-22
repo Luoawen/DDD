@@ -397,7 +397,7 @@ public class OrderQuery {
                 .append(" WHERE dealer.dealer_order_id = ? ")
                 .append(" AND dealer.dealer_order_id = dtl.dealer_order_id ORDER BY a.created_date DESC");
         //.append(" AND dtl.sku_id NOT IN (SELECT a.sku_id FROM t_scm_order_after_sell a WHERE a.dealer_order_id=dtl.dealer_order_id AND a._status >= 4) ");
-        System.out.println("sql________________>>>>>"+sql);
+        System.out.println("sql________________>>>>>" + sql);
         params.add(dealerOrderId);
         params.add(dealerOrderId);
         List<GoodsInfoBean> goodsInfoList = this.supportJdbcTemplate.queryForBeanList(sql.toString(),
@@ -662,7 +662,8 @@ public class OrderQuery {
         List<Object> params = new ArrayList<Object>();
         StringBuilder sql = new StringBuilder();
         sql.append(" SELECT d.order_id as orderId,d.dealer_order_id as dealerOrderId,d._status as orderStatus,");
-        sql.append(" d.goods_amount as goodsAmount, d.plateform_discount as platformDiscount, d.dealer_discount as dealerDiscount, d.order_freight as orderFreight,d.coupon_discount as couponDiscount,");
+        sql.append(" d.goods_amount as goodsAmount, d.plateform_discount as platformDiscount, d.dealer_discount as dealerDiscount,");
+        sql.append(" d.order_freight as orderFreight,d.coupon_discount as couponDiscount,");
         sql.append(" m.user_id as userId,d.dealer_id as dealerId,m.created_date as createdDate");
         sql.append(" FROM t_scm_order_dealer d,t_scm_order_main m,t_scm_order_detail dtl");
         sql.append(" WHERE d.order_id = m.order_id and d.dealer_order_id = dtl.dealer_order_id");
@@ -825,7 +826,8 @@ public class OrderQuery {
         if (null != map) {
             StringBuilder dtlSql = new StringBuilder();
             dtlSql.append(" select dtl.goods_name as goodsName,dtl.goods_icon as goodsIcon,dtl.sku_name as skuName,dtl.media_id as mediaId,dtl.media_res_id as mediaResId,dtl.sell_num as sellNum,");
-            dtlSql.append(" dtl.goods_unit as goodsUnit,dtl.discount_price as price,dtl.goods_amount as goodsAmount,dtl.freight as freight");
+            dtlSql.append(" dtl.goods_unit as goodsUnit,dtl.discount_price as price,dtl.goods_amount as goodsAmount,dtl.freight as freight,");
+            dtlSql.append(" dtl.is_special as isSpecial,dtl.special_price as specialPrice");
             dtlSql.append(" from t_scm_order_detail dtl where dtl.dealer_order_id=?");
             List<Map<String, Object>> dtlList = supportJdbcTemplate.jdbcTemplate().queryForList(dtlSql.toString(), dealerOrderId);
             if (null != dtlList && dtlList.size() > 0) {
@@ -846,6 +848,11 @@ public class OrderQuery {
                     Long goodsAmount = null == dtlMap.get("goodsAmount") ? 0 : Long.parseLong(dtlMap.get("goodsAmount").toString());
                     Long freight = null == dtlMap.get("freight") ? 0 : Long.parseLong(dtlMap.get("freight").toString());
                     Long price = null == dtlMap.get("price") ? 0 : Long.parseLong(dtlMap.get("price").toString());
+                    Long specialPrice = null == dtlMap.get("specialPrice") ? 0 : Long.parseLong(dtlMap.get("specialPrice").toString());
+                    Integer isSpecial = null == dtlMap.get("isSpecial") ? 0 : Integer.parseInt(dtlMap.get("isSpecial").toString());
+                    dtlMap.put("specialPrice", Utils.moneyFormatCN(specialPrice));
+                    dtlMap.put("isSpecial", isSpecial);
+
                     dtlMap.put("goodsAmount", Utils.moneyFormatCN(goodsAmount));
                     dtlMap.put("freight", Utils.moneyFormatCN(freight));
                     dtlMap.put("price", Utils.moneyFormatCN(price));
@@ -858,215 +865,217 @@ public class OrderQuery {
 
     /**
      * 查询媒体广告位订单明细数目
-     * @param userMessage          下单用户id
-     * @param orderId              订单id
-     * @param payStatus            支付状态
-     * @param payWay               支付方式
-     * @param afterSellOrderType   售后方式
-     * @param mediaIds             媒体id
-     * @param mediaResIds          广告位id
-     * @param goodsMessage         商品名/sku编码
-     * @param dealerName           商家名
-     * @param orderTime            下单时间
+     *
+     * @param userMessage        下单用户id
+     * @param orderId            订单id
+     * @param payStatus          支付状态
+     * @param payWay             支付方式
+     * @param afterSellOrderType 售后方式
+     * @param mediaIds           媒体id
+     * @param mediaResIds        广告位id
+     * @param goodsMessage       商品名/sku编码
+     * @param dealerName         商家名
+     * @param orderTime          下单时间
      * @return
-     * @throws NegativeException 
+     * @throws NegativeException
      */
-	public Integer getMediaResOrderDetailTotal(List userIds, String orderId, Integer payStatus, Integer payWay,
-			Integer afterSellOrderType, String mediaCate, Integer mediaNo, String mediaName, Integer mresCate, Integer formId, Long mresNo, String goodsMessage, String dealerName,
-			String orderTime, String orderEndTime) throws NegativeException {
-		try {
-			List<Object> params = new ArrayList<Object>();
-			StringBuilder sql = new StringBuilder();
-			sql.append(" SELECT ");
-			sql.append(" count(*) ");
-			sql.append(" From t_scm_order_main tom ");
-			sql.append(" LEFT OUTER JOIN t_scm_order_detail tod ON tom.order_id = tod.order_id ");
-			sql.append(" LEFT OUTER JOIN t_scm_order_after_sell toas ON  tod.dealer_order_id = toas.dealer_order_id AND toas.sku_id = tod.sku_id AND toas.sort_no = tod.sort_no ");
-			sql.append(" LEFT OUTER JOIN t_scm_goods tg  ON tod.goods_id = tg.goods_id ");
-			sql.append(" LEFT OUTER JOIN t_scm_order_media tm ON tod.order_id = tm.order_id AND tod.dealer_order_id = tm.dealer_order_id ");
-			sql.append(" WHERE 1 = 1 ");
-			if(null != userIds && userIds.size() > 0) {
-				sql.append(" AND tom.user_id IN ( " + Utils.listParseString(userIds) +") ");
-			}
-			if(StringUtils.isNotEmpty(orderId)){
-				sql.append(" AND tom.order_id LIKE ? ");
-				params.add("%"+orderId+"%");
-			}
-			if(null != payStatus){ //支付状态
-				if(payStatus == -1) {//-1已取消
-					sql.append(" AND tom._status = -1 ");
-				}
-				if(payStatus == 0) { //0待支付
-					sql.append(" AND tom._status = 0 ");
-				}
-				if(payStatus == 1) { //1已支付
-					sql.append(" AND tom._status IN (1,2,3,4,5) ");
-				}
-			}
-			if(null != payWay){ //支付方式  (1支付宝,2微信)
-				sql.append(" AND tom.pay_way = ? ");
-				params.add(payWay);
-			}
-			if(null != afterSellOrderType){ //售后方式 (0换货,1退货退款,2仅退款)
-				sql.append(" AND toas.order_type = ? ");
-				params.add(afterSellOrderType);
-			}
-			/*if(null != mediaIds && mediaIds.size() > 0) {//媒体id
+    public Integer getMediaResOrderDetailTotal(List userIds, String orderId, Integer payStatus, Integer payWay,
+                                               Integer afterSellOrderType, String mediaCate, Integer mediaNo, String mediaName, Integer mresCate, Integer formId, Long mresNo, String goodsMessage, String dealerName,
+                                               String orderTime, String orderEndTime) throws NegativeException {
+        try {
+            List<Object> params = new ArrayList<Object>();
+            StringBuilder sql = new StringBuilder();
+            sql.append(" SELECT ");
+            sql.append(" count(*) ");
+            sql.append(" From t_scm_order_main tom ");
+            sql.append(" LEFT OUTER JOIN t_scm_order_detail tod ON tom.order_id = tod.order_id ");
+            sql.append(" LEFT OUTER JOIN t_scm_order_after_sell toas ON  tod.dealer_order_id = toas.dealer_order_id AND toas.sku_id = tod.sku_id AND toas.sort_no = tod.sort_no ");
+            sql.append(" LEFT OUTER JOIN t_scm_goods tg  ON tod.goods_id = tg.goods_id ");
+            sql.append(" LEFT OUTER JOIN t_scm_order_media tm ON tod.order_id = tm.order_id AND tod.dealer_order_id = tm.dealer_order_id ");
+            sql.append(" WHERE 1 = 1 ");
+            if (null != userIds && userIds.size() > 0) {
+                sql.append(" AND tom.user_id IN ( " + Utils.listParseString(userIds) + ") ");
+            }
+            if (StringUtils.isNotEmpty(orderId)) {
+                sql.append(" AND tom.order_id LIKE ? ");
+                params.add("%" + orderId + "%");
+            }
+            if (null != payStatus) { //支付状态
+                if (payStatus == -1) {//-1已取消
+                    sql.append(" AND tom._status = -1 ");
+                }
+                if (payStatus == 0) { //0待支付
+                    sql.append(" AND tom._status = 0 ");
+                }
+                if (payStatus == 1) { //1已支付
+                    sql.append(" AND tom._status IN (1,2,3,4,5) ");
+                }
+            }
+            if (null != payWay) { //支付方式  (1支付宝,2微信)
+                sql.append(" AND tom.pay_way = ? ");
+                params.add(payWay);
+            }
+            if (null != afterSellOrderType) { //售后方式 (0换货,1退货退款,2仅退款)
+                sql.append(" AND toas.order_type = ? ");
+                params.add(afterSellOrderType);
+            }
+            /*if(null != mediaIds && mediaIds.size() > 0) {//媒体id
 				sql.append(" AND tod.media_id IN ( " + Utils.listParseString(mediaIds) + " ) ");
 			}
 			if(null != mediaResIds && mediaResIds.size() > 0) {//广告位id
 				sql.append(" AND tod.media_res_id IN ( " + Utils.listParseString(mediaResIds) + " ) ");
 			}*/
-			//String mediaCate, Integer mediaNo, String mediaName, Integer mresCate, Integer formId, Long mresNo
-			if(StringUtils.isNotEmpty(mediaCate)) {
-				sql.append(" AND tm.media_cate = ? ");
-				params.add(mediaCate);
-			}
-			if(null != mediaNo) {
-				sql.append(" AND tm.media_no LIKE ? ");
-				params.add("%"+mediaNo+"%");
-			}
-			if(StringUtils.isNotEmpty(mediaName)) {
-				sql.append(" AND tm.media_name LIKE ? ");
-				params.add("%"+mediaName+"%");
-			}
-			if(null != mresCate) {
-				sql.append(" AND tm.mres_cate = ? ");
-				params.add(mresCate);
-			}
-			if(null != formId) {
-				sql.append(" AND tm.form_id = ? ");
-				params.add(formId);
-			}
-			if(null != mresNo) {
-				sql.append(" AND tm.mres_no LIKE ? ");
-				params.add("%"+mresNo+"%");
-			}
-			if(StringUtils.isNotEmpty(goodsMessage)){ //商品名/商品SKU编号
-				sql.append(" AND ( tod.goods_name LIKE ? OR tod.sku_id LIKE ? ) ");
-				params.add("%"+goodsMessage+"%");
-				params.add("%"+goodsMessage+"%");
-			}
-			if(StringUtils.isNotEmpty(dealerName)){
-				sql.append(" AND tg.dealer_name LIKE ? ");
-				params.add("%"+dealerName+"%");
-			}
-			if(StringUtils.isNotEmpty(orderTime) && StringUtils.isNotEmpty(orderEndTime)){
-				sql.append(" AND tom.created_date BETWEEN ? AND ? ");
-				params.add(orderTime + " 00:00:00");
-				params.add(orderEndTime + " 23:59:59");
-			}
-			sql.append(" AND tod.del_flag = 0 AND tom.del_flag = 0 ");
-			sql.append(" AND tod.media_id IS NOT NULL AND tod.media_res_id IS NOT NULL ");
-			sql.append(" ORDER BY  tom.created_date DESC , tod.sort_no ASC ");
-			Integer total = this.supportJdbcTemplate.jdbcTemplate().queryForObject(sql.toString(), params.toArray(), Integer.class);
-			return total;
-		}catch(Exception e) {
-			throw new NegativeException(MCode.V_1, "查询媒体广告位订单明细数目失败");
-		}
-	}
+            //String mediaCate, Integer mediaNo, String mediaName, Integer mresCate, Integer formId, Long mresNo
+            if (StringUtils.isNotEmpty(mediaCate)) {
+                sql.append(" AND tm.media_cate = ? ");
+                params.add(mediaCate);
+            }
+            if (null != mediaNo) {
+                sql.append(" AND tm.media_no LIKE ? ");
+                params.add("%" + mediaNo + "%");
+            }
+            if (StringUtils.isNotEmpty(mediaName)) {
+                sql.append(" AND tm.media_name LIKE ? ");
+                params.add("%" + mediaName + "%");
+            }
+            if (null != mresCate) {
+                sql.append(" AND tm.mres_cate = ? ");
+                params.add(mresCate);
+            }
+            if (null != formId) {
+                sql.append(" AND tm.form_id = ? ");
+                params.add(formId);
+            }
+            if (null != mresNo) {
+                sql.append(" AND tm.mres_no LIKE ? ");
+                params.add("%" + mresNo + "%");
+            }
+            if (StringUtils.isNotEmpty(goodsMessage)) { //商品名/商品SKU编号
+                sql.append(" AND ( tod.goods_name LIKE ? OR tod.sku_id LIKE ? ) ");
+                params.add("%" + goodsMessage + "%");
+                params.add("%" + goodsMessage + "%");
+            }
+            if (StringUtils.isNotEmpty(dealerName)) {
+                sql.append(" AND tg.dealer_name LIKE ? ");
+                params.add("%" + dealerName + "%");
+            }
+            if (StringUtils.isNotEmpty(orderTime) && StringUtils.isNotEmpty(orderEndTime)) {
+                sql.append(" AND tom.created_date BETWEEN ? AND ? ");
+                params.add(orderTime + " 00:00:00");
+                params.add(orderEndTime + " 23:59:59");
+            }
+            sql.append(" AND tod.del_flag = 0 AND tom.del_flag = 0 ");
+            sql.append(" AND tod.media_id IS NOT NULL AND tod.media_res_id IS NOT NULL ");
+            sql.append(" ORDER BY  tom.created_date DESC , tod.sort_no ASC ");
+            Integer total = this.supportJdbcTemplate.jdbcTemplate().queryForObject(sql.toString(), params.toArray(), Integer.class);
+            return total;
+        } catch (Exception e) {
+            throw new NegativeException(MCode.V_1, "查询媒体广告位订单明细数目失败");
+        }
+    }
 
-	public List<MediaResOrderDetailBean> getMediaResOrderDetail(List<String> userIds, String orderId, Integer payStatus,
-			Integer payWay, Integer afterSellOrderType, String mediaCate, Integer mediaNo, String mediaName, Integer mresCate, Integer formId, Long mresNo, String goodsMessage,
-			String dealerName, String orderTime, String orderEndTime, Integer pageOrNot,Integer pageNum,Integer rows) throws NegativeException {
-		try {
-			List<Object> params = new ArrayList<Object>();
-			StringBuilder sql = new StringBuilder();
-			sql.append(" SELECT ");
-			sql.append(" tom.order_id orderId, tom.user_id userId, tom._status payStatus, tom.pay_way payWay, toas.order_type afterSellOrderType, tod.media_id mediaId, tod.media_res_id mediaResId, tod.goods_name goodsName, tod.sku_id skuid, ");
-			sql.append(" tg.dealer_name dealerName, tod.sell_num sellNum, tom.created_date createTime, tod.discount_price discountPrice, tod.goods_amount goodsAmount, tod.is_special isSpecial, tod.special_price specialPrice, tod.coupon_discount couponDiscount, "); 
-			sql.append(" tod.plateform_discount plateformDiscount, tod.dealer_discount dealerDiscount, tod.freight freight , ");
-			sql.append(" tm.media_cate mediaCate, tm.media_no mediaNo, tm.media_name mediaName, tm.mres_cate mresCate ,tm.form_id formId, tm.mres_no mresNo, tm.level level ");
-			sql.append(" From t_scm_order_main tom ");
-			sql.append(" LEFT OUTER JOIN t_scm_order_detail tod ON tom.order_id = tod.order_id ");
-			sql.append(" LEFT OUTER JOIN t_scm_order_after_sell toas ON  tod.dealer_order_id = toas.dealer_order_id AND toas.sku_id = tod.sku_id AND toas.sort_no = tod.sort_no ");
-			sql.append(" LEFT OUTER JOIN t_scm_goods tg  ON tod.goods_id = tg.goods_id ");
-			sql.append(" LEFT OUTER JOIN t_scm_order_media tm ON tod.order_id = tm.order_id AND tod.dealer_order_id = tm.dealer_order_id ");
-			sql.append(" WHERE 1 = 1 ");
-			if(null != userIds && userIds.size() > 0) {
-				sql.append(" AND tom.user_id IN ( " + Utils.listParseString(userIds) +") ");
-			}
-			if(StringUtils.isNotEmpty(orderId)){
-				sql.append(" AND tom.order_id LIKE ? ");
-				params.add("%"+orderId+"%");
-			}
-			if(null != payStatus){ //支付状态
-				if(payStatus == -1) {//-1已取消
-					sql.append(" AND tom._status = -1 ");
-				}
-				if(payStatus == 0) { //0待支付
-					sql.append(" AND tom._status = 0 ");
-				}
-				if(payStatus == 1) { //1已支付
-					sql.append(" AND tom._status IN (1,2,3,4,5) ");
-				}
-			}
-			if(null != payWay){ //支付方式  (1支付宝,2微信)
-				sql.append(" AND tom.pay_way = ? ");
-				params.add(payWay);
-			}
-			if(null != afterSellOrderType){ //售后方式 (0换货,1退货退款,2仅退款)
-				sql.append(" AND toas.order_type = ? ");
-				params.add(afterSellOrderType);
-			}
+    public List<MediaResOrderDetailBean> getMediaResOrderDetail(List<String> userIds, String orderId, Integer payStatus,
+                                                                Integer payWay, Integer afterSellOrderType, String mediaCate, Integer mediaNo, String mediaName, Integer mresCate, Integer formId, Long mresNo, String goodsMessage,
+                                                                String dealerName, String orderTime, String orderEndTime, Integer pageOrNot, Integer pageNum, Integer rows) throws NegativeException {
+        try {
+            List<Object> params = new ArrayList<Object>();
+            StringBuilder sql = new StringBuilder();
+            sql.append(" SELECT ");
+            sql.append(" tom.order_id orderId, tom.user_id userId, tom._status payStatus, tom.pay_way payWay, toas.order_type afterSellOrderType, tod.media_id mediaId, tod.media_res_id mediaResId, tod.goods_name goodsName, tod.sku_id skuid, ");
+            sql.append(" tg.dealer_name dealerName, tod.sell_num sellNum, tom.created_date createTime, tod.discount_price discountPrice, tod.goods_amount goodsAmount, tod.is_special isSpecial, tod.special_price specialPrice, tod.coupon_discount couponDiscount, ");
+            sql.append(" tod.plateform_discount plateformDiscount, tod.dealer_discount dealerDiscount, tod.freight freight , ");
+            sql.append(" tm.media_cate mediaCate, tm.media_no mediaNo, tm.media_name mediaName, tm.mres_cate mresCate ,tm.form_id formId, tm.mres_no mresNo, tm.level level ");
+            sql.append(" From t_scm_order_main tom ");
+            sql.append(" LEFT OUTER JOIN t_scm_order_detail tod ON tom.order_id = tod.order_id ");
+            sql.append(" LEFT OUTER JOIN t_scm_order_after_sell toas ON  tod.dealer_order_id = toas.dealer_order_id AND toas.sku_id = tod.sku_id AND toas.sort_no = tod.sort_no ");
+            sql.append(" LEFT OUTER JOIN t_scm_goods tg  ON tod.goods_id = tg.goods_id ");
+            sql.append(" LEFT OUTER JOIN t_scm_order_media tm ON tod.order_id = tm.order_id AND tod.dealer_order_id = tm.dealer_order_id ");
+            sql.append(" WHERE 1 = 1 ");
+            if (null != userIds && userIds.size() > 0) {
+                sql.append(" AND tom.user_id IN ( " + Utils.listParseString(userIds) + ") ");
+            }
+            if (StringUtils.isNotEmpty(orderId)) {
+                sql.append(" AND tom.order_id LIKE ? ");
+                params.add("%" + orderId + "%");
+            }
+            if (null != payStatus) { //支付状态
+                if (payStatus == -1) {//-1已取消
+                    sql.append(" AND tom._status = -1 ");
+                }
+                if (payStatus == 0) { //0待支付
+                    sql.append(" AND tom._status = 0 ");
+                }
+                if (payStatus == 1) { //1已支付
+                    sql.append(" AND tom._status IN (1,2,3,4,5) ");
+                }
+            }
+            if (null != payWay) { //支付方式  (1支付宝,2微信)
+                sql.append(" AND tom.pay_way = ? ");
+                params.add(payWay);
+            }
+            if (null != afterSellOrderType) { //售后方式 (0换货,1退货退款,2仅退款)
+                sql.append(" AND toas.order_type = ? ");
+                params.add(afterSellOrderType);
+            }
 			/*if(null != mediaIds && mediaIds.size() > 0) {//媒体id
 				sql.append(" AND tod.media_id IN ( " + Utils.listParseString(mediaIds) + " ) ");
 			}
 			if(null != mediaResIds && mediaResIds.size() > 0) {//广告位id
 				sql.append(" AND tod.media_res_id IN ( " + Utils.listParseString(mediaResIds) + " ) ");
 			}*/
-			if(StringUtils.isNotEmpty(mediaCate)) {
-				sql.append(" AND tm.media_cate = ? ");
-				params.add(mediaCate);
-			}
-			if(null != mediaNo) {
-				sql.append(" AND tm.media_no LIKE ? ");
-				params.add("%"+mediaNo+"%");
-			}
-			if(StringUtils.isNotEmpty(mediaName)) {
-				sql.append(" AND tm.media_name LIKE ? ");
-				params.add("%"+mediaName+"%");
-			}
-			if(null != mresCate) {
-				sql.append(" AND tm.mres_cate = ? ");
-				params.add(mresCate);
-			}
-			if(null != formId) {
-				sql.append(" AND tm.form_id = ? ");
-				params.add(formId);
-			}
-			if(null != mresNo) {
-				sql.append(" AND tm.mres_no LIKE ? ");
-				params.add("%"+mresNo+"%");
-			}
-			if(StringUtils.isNotEmpty(goodsMessage)){ //商品名/商品SKU编号
-				sql.append(" AND ( tod.goods_name LIKE ? OR tod.sku_id LIKE ? ) ");
-				params.add("%"+goodsMessage+"%");
-				params.add("%"+goodsMessage+"%");
-			}
-			if(StringUtils.isNotEmpty(dealerName)){
-				sql.append(" AND tg.dealer_name LIKE ? ");
-				params.add("%"+dealerName+"%");
-			}
-			if(StringUtils.isNotEmpty(orderTime) && StringUtils.isNotEmpty(orderEndTime)){
-				sql.append(" AND tom.created_date BETWEEN ? AND ? ");
-				params.add(orderTime + " 00:00:00");
-				params.add(orderEndTime + " 23:59:59");
-			}
-			sql.append(" AND tod.del_flag = 0 AND tom.del_flag = 0 ");
-			sql.append(" AND tod.media_id IS NOT NULL AND tod.media_res_id IS NOT NULL ");
-			sql.append(" ORDER BY  tom.created_date DESC , tod.sort_no ASC ");
-			if(null != pageOrNot && pageOrNot == 1) {//分页
-				sql.append(" LIMIT ?,? ");
-				params.add(rows * (pageNum - 1));
-				params.add(rows);
-			}
-			List<MediaResOrderDetailBean> list = this.supportJdbcTemplate.queryForBeanList(sql.toString(), MediaResOrderDetailBean.class, params.toArray());
-			return list;
-		}catch(Exception e) {
-			throw new NegativeException(MCode.V_1, "查询媒体广告位订单明细失败");
-		}
-	}
+            if (StringUtils.isNotEmpty(mediaCate)) {
+                sql.append(" AND tm.media_cate = ? ");
+                params.add(mediaCate);
+            }
+            if (null != mediaNo) {
+                sql.append(" AND tm.media_no LIKE ? ");
+                params.add("%" + mediaNo + "%");
+            }
+            if (StringUtils.isNotEmpty(mediaName)) {
+                sql.append(" AND tm.media_name LIKE ? ");
+                params.add("%" + mediaName + "%");
+            }
+            if (null != mresCate) {
+                sql.append(" AND tm.mres_cate = ? ");
+                params.add(mresCate);
+            }
+            if (null != formId) {
+                sql.append(" AND tm.form_id = ? ");
+                params.add(formId);
+            }
+            if (null != mresNo) {
+                sql.append(" AND tm.mres_no LIKE ? ");
+                params.add("%" + mresNo + "%");
+            }
+            if (StringUtils.isNotEmpty(goodsMessage)) { //商品名/商品SKU编号
+                sql.append(" AND ( tod.goods_name LIKE ? OR tod.sku_id LIKE ? ) ");
+                params.add("%" + goodsMessage + "%");
+                params.add("%" + goodsMessage + "%");
+            }
+            if (StringUtils.isNotEmpty(dealerName)) {
+                sql.append(" AND tg.dealer_name LIKE ? ");
+                params.add("%" + dealerName + "%");
+            }
+            if (StringUtils.isNotEmpty(orderTime) && StringUtils.isNotEmpty(orderEndTime)) {
+                sql.append(" AND tom.created_date BETWEEN ? AND ? ");
+                params.add(orderTime + " 00:00:00");
+                params.add(orderEndTime + " 23:59:59");
+            }
+            sql.append(" AND tod.del_flag = 0 AND tom.del_flag = 0 ");
+            sql.append(" AND tod.media_id IS NOT NULL AND tod.media_res_id IS NOT NULL ");
+            sql.append(" ORDER BY  tom.created_date DESC , tod.sort_no ASC ");
+            if (null != pageOrNot && pageOrNot == 1) {//分页
+                sql.append(" LIMIT ?,? ");
+                params.add(rows * (pageNum - 1));
+                params.add(rows);
+            }
+            List<MediaResOrderDetailBean> list = this.supportJdbcTemplate.queryForBeanList(sql.toString(), MediaResOrderDetailBean.class, params.toArray());
+            return list;
+        } catch (Exception e) {
+            throw new NegativeException(MCode.V_1, "查询媒体广告位订单明细失败");
+        }
+    }
+
     public String getMainOrderAmount(String orderId) throws NegativeException {
         StringBuilder sql = new StringBuilder();
         MainOrderAmountBean bean = new MainOrderAmountBean();
