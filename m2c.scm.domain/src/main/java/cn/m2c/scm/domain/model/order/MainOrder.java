@@ -297,7 +297,7 @@ public class MainOrder extends ConcurrencySafeEntity {
      * @return
      */
     public long getActual() {
-        return (goodsAmount + orderFreight - plateformDiscount - dealerDiscount);
+        return (goodsAmount + orderFreight - plateformDiscount - dealerDiscount - couponDiscount);
     }
 
     /**
