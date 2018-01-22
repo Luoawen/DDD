@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import cn.m2c.common.MCode;
 import cn.m2c.common.MResult;
+import cn.m2c.ddd.common.auth.RequirePermissions;
 import cn.m2c.scm.application.config.ConfigApplication;
 import cn.m2c.scm.application.config.command.ConfigAddCommand;
 import cn.m2c.scm.application.config.command.ConfigModifyCommand;
@@ -46,6 +47,7 @@ public class AdminConfigAgent {
      * @return
      */
     @RequestMapping(value = "", method = RequestMethod.POST)
+    @RequirePermissions(value = {"scm:config:save"})
 	public ResponseEntity<MResult> saveConfig(
 	    	@RequestParam(value = "configKey",required = false) String configKey,
 			@RequestParam(value = "configValue", required = false) String configValue,
@@ -71,6 +73,7 @@ public class AdminConfigAgent {
      * @return
      */
     @RequestMapping(value = "/{configKey}", method = RequestMethod.PUT)
+    @RequirePermissions(value = {"scm:config:save"})
     public ResponseEntity<MResult> modifyConfig(
     		@PathVariable(value = "configKey") String configKey,
     		@RequestParam(value = "configValue", required = false) String configValue,
