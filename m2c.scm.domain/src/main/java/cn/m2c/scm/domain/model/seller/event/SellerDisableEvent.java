@@ -8,7 +8,6 @@ public class SellerDisableEvent implements DomainEvent {
 	
 	private String sellerId;
 	private Date currentDate;
-	private Integer eventVersion;
 	
 
 	public SellerDisableEvent(String sellerId) {
@@ -24,9 +23,6 @@ public class SellerDisableEvent implements DomainEvent {
 		return currentDate;
 	}
 
-	public Integer getEventVersion() {
-		return eventVersion;
-	}
 
 	public void setSellerId(String sellerId) {
 		this.sellerId = sellerId;
@@ -36,13 +32,10 @@ public class SellerDisableEvent implements DomainEvent {
 		this.currentDate = currentDate;
 	}
 
-	public void setEventVersion(Integer eventVersion) {
-		this.eventVersion = eventVersion;
-	}
 
 	@Override
 	public int eventVersion() {
-		return this.eventVersion;
+		return 0;
 	}
 
 	@Override
