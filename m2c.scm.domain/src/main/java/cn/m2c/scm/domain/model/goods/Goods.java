@@ -504,6 +504,8 @@ public class Goods extends ConcurrencySafeEntity {
                 if (null == goodsSku) {// 增加了规格
                     isNeedApprove = true;
                     map.put("showStatus", showStatus);
+                    map.put("serviceRate", newServiceRate);
+                    map.put("settlementMode", settlementMode);
                     addGoodsSkuList.add(map);
                 } else {
                     Integer availableNum = GetMapValueUtils.getIntFromMapKey(map, "availableNum");
