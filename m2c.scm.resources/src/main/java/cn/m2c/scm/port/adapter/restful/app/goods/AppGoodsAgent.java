@@ -181,7 +181,7 @@ public class AppGoodsAgent {
                 }
 
                 AppGoodsDetailRepresentation representation = new AppGoodsDetailRepresentation(goodsBean,
-                        goodsGuarantee, goodsUnitName, null, commentTotal, goodsCommentBean, fullCut, coupons, goodsTags, favoriteId, phone, null);
+                        goodsGuarantee, goodsUnitName, null, commentTotal, goodsCommentBean, fullCut, coupons, goodsTags, favoriteId, phone, null, null);
                 result.setContent(representation);
             }
             result.setStatus(MCode.V_200);
@@ -355,8 +355,9 @@ public class AppGoodsAgent {
                     // 商家客服电话
                     String phone = shopQuery.getDealerShopCustmerTel(goodsBean.getDealerId());
 
-                    // 拍获进来，特惠价
+                    // 拍获进来，特惠价/优惠券
                     GoodsSpecialBean goodsSpecialBean = null;
+                    Map photographGetCoupon = null;
                     if (null != mediaMap && mediaMap.size() > 0) {
                         //商品有无媒体信息,有媒体信息则返回特惠价
                         goodsSpecialBean = goodsSpecialQueryApplication.queryGoodsSpecialByGoodsId(goodsBean.getGoodsId());
@@ -366,10 +367,13 @@ public class AppGoodsAgent {
                             if (null != configBean) {
                                 goodsSpecialBean.setSpecialIcon(configBean.getConfigValue());
                             }
+                        } else {
+                            // 拍照领券
+                            photographGetCoupon = goodsRestService.photographGetCoupon(userId, mresId);
                         }
                     }
                     AppGoodsDetailRepresentation representation = new AppGoodsDetailRepresentation(goodsBean,
-                            goodsGuarantee, goodsUnitName, mresId, commentTotal, goodsCommentBean, fullCut, coupons, goodsTags, favoriteId, phone, goodsSpecialBean);
+                            goodsGuarantee, goodsUnitName, mresId, commentTotal, goodsCommentBean, fullCut, coupons, goodsTags, favoriteId, phone, goodsSpecialBean, photographGetCoupon);
                     representations.add(representation);
                 }
                 result.setContent(representations);

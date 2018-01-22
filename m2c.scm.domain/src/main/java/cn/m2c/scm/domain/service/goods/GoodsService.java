@@ -113,4 +113,9 @@ public interface GoodsService {
      * 新人礼包专区商品更多
      */
     Map packetZoneGoodsByZoneId(String zoneId);
+
+    /**
+     * 拍获-广告位对应的优惠券
+     */
+    Map photographGetCoupon(String userId, String mediaResourceId);
 }

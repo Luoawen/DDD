@@ -48,10 +48,13 @@ public class AppGoodsDetailRepresentation {
     private String customerTel;
     private Map goodsSpecial;
     private List<Map> coupons;
+    private Map photographGetCoupon;
 
     public AppGoodsDetailRepresentation(GoodsBean bean, List<GoodsGuaranteeBean> goodsGuaranteeBeans,
                                         String goodsUnitName, String mresId, Integer commentTotal, GoodsCommentBean goodsCommentBean,
-                                        List<Map> fullCuts, List<Map> coupons, List<Map> goodsTags, String favoriteId, String phone, GoodsSpecialBean goodsSpecialBean) {
+                                        List<Map> fullCuts, List<Map> coupons, List<Map> goodsTags, String favoriteId, String phone, GoodsSpecialBean goodsSpecialBean,
+                                        Map photographGetCoupon) {
+        this.photographGetCoupon = photographGetCoupon;
         this.skuFlag = bean.getSkuFlag();
         this.dealerId = bean.getDealerId();
         this.dealerName = bean.getDealerName();
