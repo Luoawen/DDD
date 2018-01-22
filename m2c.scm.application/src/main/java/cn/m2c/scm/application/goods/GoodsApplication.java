@@ -78,7 +78,7 @@ public class GoodsApplication {
                     command.getGoodsPostageId(), command.getGoodsBarCode(), command.getGoodsKeyWord(), command.getGoodsGuarantee(),
                     command.getGoodsMainImages(), command.getGoodsMainVideo(), command.getGoodsDesc(), command.getGoodsShelves(), command.getGoodsSpecifications(), command.getGoodsSKUs(), command.getSkuFlag());
         } else {//修改商品审核：修改商品的分类，拍获价，供货价，规格
-            List<GoodsHistory> histories = goods.getGoodsHistory(command.getGoodsClassifyId(), command.getGoodsSKUs(), command.getChangeReason(),command.getChangeInfo());
+            List<GoodsHistory> histories = goods.getGoodsHistory(command.getGoodsClassifyId(), command.getGoodsSKUs(), command.getChangeReason(), command.getChangeInfo());
             if (null != histories && histories.size() > 0) {
                 for (GoodsHistory goodsHistory : histories) {
                     goodsHistoryRepository.save(goodsHistory);
@@ -119,6 +119,12 @@ public class GoodsApplication {
                 }
             }
         }
+
+        boolean isNeedApprove = goods.isNeedApprove(command.getGoodsClassifyId(), command.getGoodsSKUs());
+        if (isNeedApprove) {
+            throw new NegativeException(MCode.V_505, "该商品有待审核信息，若再次编辑提交，之前待审核的信息将被清除");
+        }
+
         if (StringUtils.isNotEmpty(_attach))
             operationLogManager.operationLog("修改商品", _attach, goods, new String[]{"goods"}, null);
 

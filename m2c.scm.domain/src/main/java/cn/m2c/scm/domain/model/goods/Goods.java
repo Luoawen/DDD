@@ -409,10 +409,32 @@ public class Goods extends ConcurrencySafeEntity {
         return goodsSku;
     }
 
-    public static void main(String[] args) {
-        String name = "衣服 / 童装 / 哇唔哇唔";
-        System.out.print(name.replaceAll(" / ", ","));
+    public boolean isNeedApprove(String goodsClassifyId, String goodsSKUs) {
+        //修改分类，供货价、拍获价、规格需要审批
+        boolean isNeedApprove = false;
+        if (!goodsClassifyId.equals(this.goodsClassifyId)) { // 修改分类需要审核
+            isNeedApprove = true;
+        }
+        List<Map> skuList = ObjectSerializer.instance().deserialize(goodsSKUs, List.class);
+        if (null != skuList && skuList.size() > 0) {
+            for (Map map : skuList) {
+                String skuId = GetMapValueUtils.getStringFromMapKey(map, "skuId");
+                // 判断商品规格sku是否存在,存在就修改供货价和拍获价，不存在就增加商品sku
+                GoodsSku goodsSku = getGoodsSKU(skuId);
+                if (null == goodsSku) {// 增加了规格
+                    isNeedApprove = true;
+                }
+                // 判断供货价和拍获价是否修改
+                Long photographPrice = GetMapValueUtils.getLongFromMapKey(map, "photographPrice");
+                Long supplyPrice = GetMapValueUtils.getLongFromMapKey(map, "supplyPrice");
+                if (goodsSku.isModifyNeedApprovePrice(photographPrice, supplyPrice)) { //修改了供货价和拍获价
+                    isNeedApprove = true;
+                }
+            }
+        }
+        return isNeedApprove;
     }
+
 
     /**
      * 修改商品
