@@ -120,9 +120,16 @@ public class GoodsApplication {
             }
         }
 
-       /* boolean isNeedApprove = goods.isNeedApprove(command.getGoodsClassifyId(), command.getGoodsSKUs());
-        if (isNeedApprove) {
-            throw new NegativeException(MCode.V_505, "该商品有待审核信息，若再次编辑提交，之前待审核的信息将被清除");
+    /*    if (StringUtils.isEmpty(command.getChangeReason())) { //没有变更原因
+            boolean isNeedApprove = goods.isNeedApprove(command.getGoodsClassifyId(), command.getGoodsSKUs());
+            if (isNeedApprove) {
+                GoodsApprove goodsApprove = goodsApproveRepository.queryGoodsApproveById(command.getGoodsId());
+                if (null != goodsApprove) {
+                    throw new NegativeException(MCode.V_503, "该商品有待审核信息");
+                } else {
+                    throw new NegativeException(MCode.V_505, "该商品需审核");
+                }
+            }
         }*/
 
         if (StringUtils.isNotEmpty(_attach))
