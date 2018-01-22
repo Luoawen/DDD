@@ -143,11 +143,11 @@ public class GoodsAgent {
                     }
                     Long marketPrice = null != map.get("marketPrice") && !"NaN".equals(map.get("marketPrice")) ? new BigDecimal((GetMapValueUtils.getFloatFromMapKey(map, "marketPrice") * 10000)).longValue() : null;
                     Long photographPrice = new BigDecimal((GetMapValueUtils.getFloatFromMapKey(map, "photographPrice") * 10000)).longValue();
-                    if (null != GetMapValueUtils.getFloatFromMapKey(map, "supplyPrice")) {
+                    if (!"NaN".equals(map.get("supplyPrice")) && null != GetMapValueUtils.getFloatFromMapKey(map, "supplyPrice")) {
                         Long supplyPrice = new BigDecimal((GetMapValueUtils.getFloatFromMapKey(map, "supplyPrice") * 10000)).longValue();
                         map.put("supplyPrice", supplyPrice);
                     } else {
-                        map.put("supplyPrice", GetMapValueUtils.getFloatFromMapKey(map, "supplyPrice"));
+                        map.put("supplyPrice", null);
                     }
                     map.put("marketPrice", marketPrice);
                     map.put("photographPrice", photographPrice);

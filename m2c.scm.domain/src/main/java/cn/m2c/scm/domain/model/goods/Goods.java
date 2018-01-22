@@ -426,12 +426,13 @@ public class Goods extends ConcurrencySafeEntity {
                 GoodsSku goodsSku = getGoodsSKU(skuId);
                 if (null == goodsSku) {// 增加了规格
                     isNeedApprove = true;
-                }
-                // 判断供货价和拍获价是否修改
-                Long photographPrice = GetMapValueUtils.getLongFromMapKey(map, "photographPrice");
-                Long supplyPrice = GetMapValueUtils.getLongFromMapKey(map, "supplyPrice");
-                if (goodsSku.isModifyNeedApprovePrice(photographPrice, supplyPrice)) { //修改了供货价和拍获价
-                    isNeedApprove = true;
+                }else{
+                    // 判断供货价和拍获价是否修改
+                    Long photographPrice = GetMapValueUtils.getLongFromMapKey(map, "photographPrice");
+                    Long supplyPrice = GetMapValueUtils.getLongFromMapKey(map, "supplyPrice");
+                    if (goodsSku.isModifyNeedApprovePrice(photographPrice, supplyPrice)) { //修改了供货价和拍获价
+                        isNeedApprove = true;
+                    }
                 }
             }
         }
