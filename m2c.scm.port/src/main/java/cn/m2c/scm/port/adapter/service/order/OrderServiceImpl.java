@@ -576,9 +576,10 @@ public class OrderServiceImpl implements OrderService {
      * @param mediaId
      * @param formId
      * @return
+     * @throws NegativeException 
      */
     @Override
-    public Map getMediaCateAndFormMessage(String mediaCate, Integer formId) {
+    public Map getMediaCateAndFormMessage(String mediaCate, Integer formId) throws NegativeException {
     	String url = M2C_HOST_URL + "/m2c.media/domain/adv/order/value?mediaCate={0}&formId={1}";
     	//String url = "http://10.0.40.12:8080/m2c.media/domain/adv/order/value?mediaCate={0}&formId={1}";
     	try {
@@ -601,6 +602,7 @@ public class OrderServiceImpl implements OrderService {
     		LOGGER.error("根据媒体id广告位形式id查询媒体分类广告位位置和形式失败");
             LOGGER.error("getMediaMessageInfo exception.url=>" + url);
             LOGGER.error("getMediaMessageInfo exception.error=>" + e.getMessage());
+            throw new NegativeException(400, "调用媒体接口查询媒体分类广告位位置及形式失败");
     	}
     	return null;
     }

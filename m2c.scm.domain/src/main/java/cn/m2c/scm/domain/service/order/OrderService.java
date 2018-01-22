@@ -171,5 +171,5 @@ public interface OrderService {
      * @param formId
      * @return
      */
-    public Map getMediaCateAndFormMessage(String mediaCate, Integer formId);
+    public Map getMediaCateAndFormMessage(String mediaCate, Integer formId) throws NegativeException;
 }
