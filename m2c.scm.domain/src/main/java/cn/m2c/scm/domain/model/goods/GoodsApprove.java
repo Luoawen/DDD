@@ -217,14 +217,13 @@ public class GoodsApprove extends ConcurrencySafeEntity {
 
                 String historyNo = UUID.randomUUID().toString().replaceAll("-", "").toUpperCase();
                 // 分类
+                String newServiceRate = null != map.get("newServiceRate") ? map.get("newServiceRate").toString() : null;
+                String settlementMode = null != map.get("settlementMode") ? map.get("settlementMode").toString() : null;
                 if (StringUtils.isNotEmpty(oldGoodsClassifyId) && StringUtils.isNotEmpty(newGoodsClassifyId)) {
                     String historyId = UUID.randomUUID().toString().replaceAll("-", "").toUpperCase();
                     String oldServiceRate = null != map.get("oldServiceRate") ? map.get("oldServiceRate").toString() : null;
-                    String newServiceRate = null != map.get("newServiceRate") ? map.get("newServiceRate").toString() : null;
                     String oldClassifyName = null != map.get("oldClassifyName") ? map.get("oldClassifyName").toString() : null;
                     String newClassifyName = null != map.get("newClassifyName") ? map.get("newClassifyName").toString() : null;
-                    String settlementMode = null != map.get("settlementMode") ? map.get("settlementMode").toString() : null;
-
                     Map before = new HashMap<>();
                     before.put("goodsClassifyId", oldGoodsClassifyId);
                     before.put("goodsClassifyName", oldClassifyName);
@@ -245,6 +244,8 @@ public class GoodsApprove extends ConcurrencySafeEntity {
                 if (null != addGoodsSkuList && addGoodsSkuList.size() > 0) {
                     for (Map skuMap : addGoodsSkuList) {
                         String historyId = UUID.randomUUID().toString().replaceAll("-", "").toUpperCase();
+                        skuMap.put("serviceRate", newServiceRate);
+                        skuMap.put("settlementMode", settlementMode);
                         GoodsApproveHistory history = new GoodsApproveHistory(historyId, historyNo, this, this.goodsId,
                                 4, "",
                                 JsonUtils.toStr(skuMap), this.changeReason, nowDate);
@@ -383,20 +384,20 @@ public class GoodsApprove extends ConcurrencySafeEntity {
         // 分类
         String historyNo = UUID.randomUUID().toString().replaceAll("-", "").toUpperCase();
         Date nowDate = new Date();
+        String newServiceRate = null != goodsInfoMap.get("newServiceRate") ? goodsInfoMap.get("newServiceRate").toString() : null;
+        Integer settlementMode = null != goodsInfoMap.get("settlementMode") ? Integer.parseInt(goodsInfoMap.get("settlementMode").toString()) : null;
         if (isModifyApprove && !this.goodsClassifyId.equals(goodsClassifyId)) {
             String oldGoodsClassifyId = "";
             String oldServiceRate = "";
-            String newServiceRate = "";
             String oldClassifyName = "";
             String newClassifyName = "";
-            String settlementMode = "";
             if (null != goodsInfoMap) {
                 oldGoodsClassifyId = goodsInfoMap.get("goodsClassifyId").toString();
                 oldServiceRate = null != goodsInfoMap.get("oldServiceRate") ? goodsInfoMap.get("oldServiceRate").toString() : null;
                 newServiceRate = null != goodsInfoMap.get("newServiceRate") ? goodsInfoMap.get("newServiceRate").toString() : null;
                 oldClassifyName = null != goodsInfoMap.get("oldClassifyName") ? goodsInfoMap.get("oldClassifyName").toString() : null;
                 newClassifyName = null != goodsInfoMap.get("newClassifyName") ? goodsInfoMap.get("newClassifyName").toString() : null;
-                settlementMode = null != goodsInfoMap.get("settlementMode") ? goodsInfoMap.get("settlementMode").toString() : null;
+
             }
             Map before = new HashMap<>();
             before.put("goodsClassifyId", oldGoodsClassifyId);
@@ -435,9 +436,12 @@ public class GoodsApprove extends ConcurrencySafeEntity {
                     if (isModifyApprove) {
                         // 商品审核库增加规格
                         String historyId = UUID.randomUUID().toString().replaceAll("-", "").toUpperCase();
+                        Map skuMap = skuApprove.convertToMap();
+                        skuMap.put("serviceRate", newServiceRate);
+                        skuMap.put("settlementMode", settlementMode);
                         GoodsApproveHistory history = new GoodsApproveHistory(historyId, historyNo, this, this.goodsId,
                                 4, "",
-                                JsonUtils.toStr(skuApprove), this.changeReason, nowDate);
+                                JsonUtils.toStr(skuMap), this.changeReason, nowDate);
                         this.goodsApproveHistories.add(history);
                     }
                 } else { //修改
