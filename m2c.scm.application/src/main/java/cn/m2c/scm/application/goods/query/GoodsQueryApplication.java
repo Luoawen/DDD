@@ -934,7 +934,7 @@ public class GoodsQueryApplication {
     private void couponChoiceDeal(StringBuilder sql, Map couponMap) {
         if (null != couponMap) { // 优惠券信息
             /**
-             * 优惠券作用范围，0：全场，1：商家，2：商品，3：品类
+             * 优惠券作用范围，0：平台全场，1：商家，2：商品，3：品类,4:商家全店
              * 备注：
              * 当作用范围为全场时，dealerId、goodsId、categoryId为排除的对象；当作用范围不是全场时，三个id为优惠券实际作用的对象
              */
@@ -942,7 +942,7 @@ public class GoodsQueryApplication {
             List<String> dealerIdList = null == couponMap.get("dealerIdList") ? null : (List) couponMap.get("dealerIdList");
             List<String> goodsIdsList = null == couponMap.get("goodsIdsList") ? null : (List) couponMap.get("goodsIdsList");
             List<String> categoryList = null == couponMap.get("categoryList") ? null : (List) couponMap.get("categoryList");
-            if (couponRangeType == 0) { //优惠券全场
+            if (couponRangeType == 0) { //优惠券平台全场
                 if (null != dealerIdList && dealerIdList.size() > 0) {
                     sql.append(" AND g.dealer_id not in (" + Utils.listParseString(dealerIdList) + ") ");
                 }
@@ -962,7 +962,7 @@ public class GoodsQueryApplication {
                     }
                 }
             }
-            if (couponRangeType == 1) { //优惠券商家
+            if (couponRangeType == 1 || couponRangeType == 4) { //优惠券商家，商家全店
                 if (null != dealerIdList && dealerIdList.size() > 0) {
                     sql.append(" AND g.dealer_id in (" + Utils.listParseString(dealerIdList) + ") ");
                 }

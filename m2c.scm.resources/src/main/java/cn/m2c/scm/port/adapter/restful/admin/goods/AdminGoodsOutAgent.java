@@ -1,11 +1,15 @@
 package cn.m2c.scm.port.adapter.restful.admin.goods;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Resource;
-
+import cn.m2c.common.MCode;
+import cn.m2c.common.MPager;
+import cn.m2c.common.MResult;
+import cn.m2c.scm.application.goods.query.GoodsQueryApplication;
+import cn.m2c.scm.application.goods.query.data.bean.GoodsBean;
+import cn.m2c.scm.application.goods.query.data.representation.GoodsDetailMultipleRepresentation;
+import cn.m2c.scm.application.goods.query.data.representation.GoodsRandomRepresentation;
+import cn.m2c.scm.application.order.data.bean.CouponDealerBean;
+import cn.m2c.scm.application.order.data.representation.CouponDealerBeanRepresentation;
+import cn.m2c.scm.domain.service.goods.GoodsService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,16 +21,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import cn.m2c.common.MCode;
-import cn.m2c.common.MPager;
-import cn.m2c.common.MResult;
-import cn.m2c.scm.application.goods.query.GoodsQueryApplication;
-import cn.m2c.scm.application.goods.query.data.bean.GoodsBean;
-import cn.m2c.scm.application.goods.query.data.representation.GoodsDetailMultipleRepresentation;
-import cn.m2c.scm.application.goods.query.data.representation.GoodsRandomRepresentation;
-import cn.m2c.scm.application.order.data.bean.CouponDealerBean;
-import cn.m2c.scm.application.order.data.representation.CouponDealerBeanRepresentation;
-import cn.m2c.scm.domain.service.goods.GoodsService;
+import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 商品对运营后台提供的接口
@@ -98,7 +96,7 @@ public class AdminGoodsOutAgent {
 							result.setContent(representations);
 						}
 					}
-					if(couponRangeType == 0 || couponRangeType == 2 || couponRangeType == 3) {//查商品
+					if(couponRangeType == 0 || couponRangeType == 2 || couponRangeType == 3 || couponRangeType == 4) {//查商品
 						List<GoodsBean> goodsBeans = goodsQueryApplication.appSearchGoods(null, null, null, null, null, null, null, couponMap, pageNum, rows);
 						if(null != goodsBeans && goodsBeans.size() > 0) {
 							List<GoodsDetailMultipleRepresentation> representations = new ArrayList<>();
