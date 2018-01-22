@@ -510,4 +510,71 @@ public class GoodsRestServiceImpl implements GoodsService {
         }
         return resultMap;
     }
+
+    @Override
+    public Map photographGetCoupon(String userId, String mediaResourceId) {
+        String url = M2C_HOST_URL + "/m2c.market/domain/seek/coupon/scan/query?userId=" + userId + "&mediaResourceId=" + mediaResourceId;
+
+        try {
+            String result = restTemplate.getForObject(url, String.class);
+            JSONObject json = JSONObject.parseObject(result);
+            if (json.getInteger("status") == 200) {
+                JSONObject contentObject = json.getJSONObject("content");
+                if (null != contentObject) {
+                    // 优惠券ID
+                    String couponId = contentObject.getString("couponId");
+                    // 优惠券优惠形式：1 减钱 2 打折
+                    Integer couponForm = contentObject.getInteger("couponForm");
+                    // 优惠券类型：1：代金券，2：打折券，3：分享券
+                    Integer couponType = contentObject.getInteger("couponType");
+                    // 门槛文案
+                    String thresholdContent = contentObject.getString("thresholdContent");
+                    // 面值
+                    String value = contentObject.getString("value");
+                    // 优惠券名称
+                    String couponName = contentObject.getString("couponName");
+                    // 作用范围页面内容
+                    String rangeContent = contentObject.getString("rangeContent");
+                    // 有效期 ,返回格式:XXXX.XX.XX - XXXX.XX.XX
+                    String expirationTime = contentObject.getString("expirationTime");
+                    // 有效期开始时间
+                    String expirationTimeStart = contentObject.getString("expirationTimeStart");
+                    // 有效期截止时间
+                    String expirationTimeEnd = contentObject.getString("expirationTimeEnd");
+                    // 生成者类型，1.平台，2.商家
+                    Integer creatorType = contentObject.getInteger("creatorType");
+                    // 活动id
+                    String activityId = contentObject.getString("activityId");
+
+                    Map resultMap = new HashMap<>();
+                    resultMap.put("couponId", couponId);
+                    resultMap.put("couponForm", couponForm);
+                    resultMap.put("couponType", couponType);
+                    resultMap.put("content", thresholdContent);
+                    if (couponForm == 1) { // 减钱
+                        resultMap.put("faceValue", Long.parseLong(value) / 10000);
+                    } else { // 打折
+                        resultMap.put("faceValue", value);
+                    }
+                    resultMap.put("couponName", couponName);
+                    resultMap.put("rangeContent", rangeContent);
+                    resultMap.put("expirationTime", expirationTime);
+                    resultMap.put("expirationTimeStart", expirationTimeStart);
+                    resultMap.put("expirationTimeEnd", expirationTimeEnd);
+                    resultMap.put("activityId", activityId);
+                    resultMap.put("creatorType", creatorType);
+                    return resultMap;
+                }
+            } else {
+                LOGGER.error("拍照领券查询优惠券信息失败");
+                LOGGER.error("photographGetCoupon failed.url=>" + url);
+                LOGGER.error("photographGetCoupon failed.error=>" + json.getString("errorMessage"));
+            }
+        } catch (Exception e) {
+            LOGGER.error("拍照领券查询优惠券信息异常");
+            LOGGER.error("photographGetCoupon exception.url=>" + url);
+            LOGGER.error("photographGetCoupon exception.error=>" + e.getMessage());
+        }
+        return null;
+    }
 }
