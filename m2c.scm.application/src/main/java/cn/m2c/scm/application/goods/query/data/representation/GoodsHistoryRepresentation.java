@@ -21,10 +21,13 @@ public class GoodsHistoryRepresentation {
     private String beforeContent;
     // 变更后
     private String afterContent;
+    // 变更理由
+    private String changeReason;
 
     public GoodsHistoryRepresentation(GoodsHistoryBean history) {
         this.changeTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(history.getCreateTime());
         this.changeType = history.getChangeType();
+        this.changeReason = history.getChangeReason();
         Map beforeMap = JsonUtils.toMap(history.getBeforeContent());
         Map afterMap = JsonUtils.toMap(history.getAfterContent());
         if (history.getChangeType() == 1) {
@@ -136,5 +139,13 @@ public class GoodsHistoryRepresentation {
 
     public void setAfterContent(String afterContent) {
         this.afterContent = afterContent;
+    }
+
+    public String getChangeReason() {
+        return changeReason;
+    }
+
+    public void setChangeReason(String changeReason) {
+        this.changeReason = changeReason;
     }
 }
