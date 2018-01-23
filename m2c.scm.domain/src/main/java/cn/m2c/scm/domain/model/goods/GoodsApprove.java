@@ -384,8 +384,12 @@ public class GoodsApprove extends ConcurrencySafeEntity {
         // 分类
         String historyNo = UUID.randomUUID().toString().replaceAll("-", "").toUpperCase();
         Date nowDate = new Date();
-        String newServiceRate = null != goodsInfoMap.get("newServiceRate") ? goodsInfoMap.get("newServiceRate").toString() : null;
-        Integer settlementMode = null != goodsInfoMap.get("settlementMode") ? Integer.parseInt(goodsInfoMap.get("settlementMode").toString()) : null;
+        String newServiceRate = "";
+        Integer settlementMode = null;
+        if (null != goodsInfoMap) {
+            newServiceRate = null != goodsInfoMap.get("newServiceRate") ? goodsInfoMap.get("newServiceRate").toString() : null;
+            settlementMode = null != goodsInfoMap.get("settlementMode") ? Integer.parseInt(goodsInfoMap.get("settlementMode").toString()) : null;
+        }
         if (isModifyApprove && !this.goodsClassifyId.equals(goodsClassifyId)) {
             String oldGoodsClassifyId = "";
             String oldServiceRate = "";
@@ -394,7 +398,6 @@ public class GoodsApprove extends ConcurrencySafeEntity {
             if (null != goodsInfoMap) {
                 oldGoodsClassifyId = goodsInfoMap.get("goodsClassifyId").toString();
                 oldServiceRate = null != goodsInfoMap.get("oldServiceRate") ? goodsInfoMap.get("oldServiceRate").toString() : null;
-                newServiceRate = null != goodsInfoMap.get("newServiceRate") ? goodsInfoMap.get("newServiceRate").toString() : null;
                 oldClassifyName = null != goodsInfoMap.get("oldClassifyName") ? goodsInfoMap.get("oldClassifyName").toString() : null;
                 newClassifyName = null != goodsInfoMap.get("newClassifyName") ? goodsInfoMap.get("newClassifyName").toString() : null;
 

@@ -546,48 +546,56 @@ public class AppGoodsAgent {
                             if (null != couponMap) {
                                 Integer couponRangeType = (Integer) couponMap.get("rangeType");
                                 if (couponRangeType == 1) { //优惠券商家,返回商家
-                                    List<ShopBean> shopBeanList = (List<ShopBean>) goodsQueryApplication.queryPacketZoneGoods(couponMap, null, 0, 4, false, null, null);
                                     List<Map> shopMapList = new ArrayList<>();
-                                    if (null != shopBeanList && shopBeanList.size() > 0) {
-                                        for (ShopBean shopBean : shopBeanList) {
-                                            Map shoMap = new HashMap<>();
-                                            shoMap.put("shopName", shopBean.getShopName());
-                                            shoMap.put("shopIcon", shopBean.getShopIcon());
-                                            shoMap.put("dealerId", shopBean.getDealerId());
-                                            shoMap.put("dataType", 1);
-                                            shopMapList.add(shoMap);
+                                    Integer total = (Integer) goodsQueryApplication.queryPacketZoneGoods(couponMap, null, null, null, true, null, null);
+                                    if (null != total && total > 0) {
+                                        List<ShopBean> shopBeanList = (List<ShopBean>) goodsQueryApplication.queryPacketZoneGoods(couponMap, null, 0, 4, false, null, null);
+                                        if (null != shopBeanList && shopBeanList.size() > 0) {
+                                            for (ShopBean shopBean : shopBeanList) {
+                                                Map shoMap = new HashMap<>();
+                                                shoMap.put("shopName", shopBean.getShopName());
+                                                shoMap.put("shopIcon", shopBean.getShopIcon());
+                                                shoMap.put("dealerId", shopBean.getDealerId());
+                                                shoMap.put("dataType", 1);
+                                                shopMapList.add(shoMap);
+                                            }
                                         }
                                     }
+                                    tempZone.put("dataTotal", total);
                                     tempZone.put("dataList", shopMapList);
                                     tempZone.put("dataType", 1);
                                 } else {
-                                    List<GoodsBean> goodsList = (List<GoodsBean>) goodsQueryApplication.queryPacketZoneGoods(couponMap, null, 0, 4, false, null, null);
                                     List<Map> goodsMapList = new ArrayList<>();
-                                    if (null != goodsList && goodsList.size() > 0) {
-                                        for (GoodsBean bean : goodsList) {
-                                            Map goodsMap = new HashMap<>();
-                                            Integer status = bean.getGoodsStatus(); //商品状态，1：仓库中，2：出售中，3：已售罄
-                                            Integer delStatus = bean.getDelStatus(); //是否删除，1:正常，2：已删除
-                                            if (delStatus == 2) {
-                                                status = 4;
+                                    Integer total = (Integer) goodsQueryApplication.queryPacketZoneGoods(couponMap, null, null, null, true, null, null);
+                                    if (null != total && total > 0) {
+                                        List<GoodsBean> goodsList = (List<GoodsBean>) goodsQueryApplication.queryPacketZoneGoods(couponMap, null, 0, 4, false, null, null);
+                                        if (null != goodsList && goodsList.size() > 0) {
+                                            for (GoodsBean bean : goodsList) {
+                                                Map goodsMap = new HashMap<>();
+                                                Integer status = bean.getGoodsStatus(); //商品状态，1：仓库中，2：出售中，3：已售罄
+                                                Integer delStatus = bean.getDelStatus(); //是否删除，1:正常，2：已删除
+                                                if (delStatus == 2) {
+                                                    status = 4;
+                                                }
+                                                goodsMap.put("goodsId", bean.getGoodsId());
+                                                goodsMap.put("dealerId", bean.getDealerId());
+                                                goodsMap.put("classifyId", bean.getGoodsClassifyId());
+                                                goodsMap.put("quantity", bean.getGoodsMinQuantity());
+                                                goodsMap.put("goodsStatus", status);
+                                                goodsMap.put("goodsName", bean.getGoodsName());
+                                                goodsMap.put("goodsPrice", bean.getGoodsSkuBeans().get(0).getPhotographPrice());
+                                                goodsMap.put("strGoodsPrice", Utils.moneyFormatCN(bean.getGoodsSkuBeans().get(0).getPhotographPrice()));
+                                                goodsMap.put("skuId", bean.getGoodsSkuBeans().get(0).getSkuId());
+                                                List<String> mainImages = JsonUtils.toList(bean.getGoodsMainImages(), String.class);
+                                                if (null != mainImages && mainImages.size() > 0) {
+                                                    goodsMap.put("goodsImageUrl", mainImages.get(0));
+                                                }
+                                                goodsMap.put("dataType", 2);
+                                                goodsMapList.add(goodsMap);
                                             }
-                                            goodsMap.put("goodsId", bean.getGoodsId());
-                                            goodsMap.put("dealerId", bean.getDealerId());
-                                            goodsMap.put("classifyId", bean.getGoodsClassifyId());
-                                            goodsMap.put("quantity", bean.getGoodsMinQuantity());
-                                            goodsMap.put("goodsStatus", status);
-                                            goodsMap.put("goodsName", bean.getGoodsName());
-                                            goodsMap.put("goodsPrice", bean.getGoodsSkuBeans().get(0).getPhotographPrice());
-                                            goodsMap.put("strGoodsPrice", Utils.moneyFormatCN(bean.getGoodsSkuBeans().get(0).getPhotographPrice()));
-                                            goodsMap.put("skuId", bean.getGoodsSkuBeans().get(0).getSkuId());
-                                            List<String> mainImages = JsonUtils.toList(bean.getGoodsMainImages(), String.class);
-                                            if (null != mainImages && mainImages.size() > 0) {
-                                                goodsMap.put("goodsImageUrl", mainImages.get(0));
-                                            }
-                                            goodsMap.put("dataType", 2);
-                                            goodsMapList.add(goodsMap);
                                         }
                                     }
+                                    tempZone.put("dataTotal", total);
                                     tempZone.put("dataList", goodsMapList);
                                     tempZone.put("dataType", 2);
                                 }
