@@ -66,6 +66,9 @@ public class AppOrderDtl extends AssertionConcern implements Serializable {
 	@ColumnAlias(value = "street_addr")
 	private String streetAddr;
 	
+	@ColumnAlias(value = "post_code")
+	private String postCode;
+	
 	@ColumnAlias(value = "invoice_code")
 	private String invoiceCode;
 	@ColumnAlias(value = "invoice_header")
@@ -383,6 +386,12 @@ public class AppOrderDtl extends AssertionConcern implements Serializable {
 		this.status = status;
 	}
 
+	public String getPostCode() {
+		return postCode;
+	}
+	public void setPostCode(String postCode) {
+		this.postCode = postCode;
+	}
 	@Override
 	public String toString() {
 		return " AppOrderDtl [orderId=" + orderId + ", payNo=" + payNo + ", createDate=" + createDate + ", goodAmount="

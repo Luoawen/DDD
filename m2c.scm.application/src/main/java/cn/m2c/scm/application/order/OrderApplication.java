@@ -230,7 +230,6 @@ public class OrderApplication {
         	LOGGER.info("获取到营销模块的优惠券的信息-----"+couponBean==null?"":couponBean.toString());
         	//3.计算优惠券优惠后最后的金额
         	//3.1首先将满足此优惠券的sku放入列表中<sku,GoodsDto>
-//        	Map<String,GoodsDto> couponGoodDto = getCouponDto(gdes);
         	if(couponBean!=null)
         		OrderCouponCalc.calCoupon(gdes,couponBean);
         	//校验优惠券优惠金额位负数的情况
@@ -260,7 +259,7 @@ public class OrderApplication {
         List<CouponUseBean> useCouponList = new ArrayList<>();
         MainOrder order = new MainOrder(cmd.getOrderId(), cmd.getAddr(), goodsAmounts, freight
                 , plateDiscount, dealerDiscount, cmd.getUserId(), cmd.getNoted(), dealerOrders
-                , getUsedCoupon(cmd.getOrderId(),cmd.getCouponUserId(),couponBean, gdes, useCouponList)
+                , getUsedCoupon(cmd.getOrderId(), cmd.getCouponUserId(), couponBean, gdes, useCouponList)
                 , getUsedMarket(cmd.getOrderId(), gdes, useList), cmd.getLatitude(), cmd.getLongitude()
                 , couponDiscount);
         // 组织保存(重新设置计算好的价格)
