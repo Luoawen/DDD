@@ -132,6 +132,8 @@ public class OrderServiceImpl implements OrderService {
 
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
+        LOGGER.info("获取广告位的信息入参广告位id"+JSONObject.toJSONString(resIds));
+        LOGGER.info("获取广告位的日期"+formatter.format(new Date(time)));
         String rtResult = restTemplate.getForObject(url, String.class, JSONObject.toJSONString(resIds),
                 formatter.format(new Date(time)));
         formatter = null;

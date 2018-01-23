@@ -312,14 +312,15 @@ public class Goods extends ConcurrencySafeEntity {
         List<GoodsHistory> histories = new ArrayList<>();
         String historyNo = UUID.randomUUID().toString().replaceAll("-", "").toUpperCase();
         Date nowDate = new Date();
+
+        Map changeMap = JsonUtils.toMap(changeInfo);
+        String newServiceRate = null != changeMap.get("newServiceRate") ? changeMap.get("newServiceRate").toString() : null;
+        String settlementMode = null != changeMap.get("settlementMode") ? changeMap.get("settlementMode").toString() : null;
         if (!this.goodsClassifyId.equals(goodsClassifyId)) {
             // {"newClassifyName":"手机,iOS系统","oldServiceRate":"0","oldClassifyName":"手机,墨迹","newServiceRate":"0","settlementMode":1}
-            Map changeMap = JsonUtils.toMap(changeInfo);
             String oldServiceRate = null != changeMap.get("oldServiceRate") ? changeMap.get("oldServiceRate").toString() : null;
-            String newServiceRate = null != changeMap.get("newServiceRate") ? changeMap.get("newServiceRate").toString() : null;
             String oldClassifyName = null != changeMap.get("oldClassifyName") ? changeMap.get("oldClassifyName").toString() : null;
             String newClassifyName = null != changeMap.get("newClassifyName") ? changeMap.get("newClassifyName").toString() : null;
-            String settlementMode = null != changeMap.get("settlementMode") ? changeMap.get("settlementMode").toString() : null;
             Map before = new HashMap<>();
             before.put("goodsClassifyId", this.goodsClassifyId);
             before.put("goodsClassifyName", oldClassifyName);
@@ -346,6 +347,8 @@ public class Goods extends ConcurrencySafeEntity {
                 GoodsSku goodsSku = getGoodsSKU(skuId);
                 if (null == goodsSku) {// 增加规格
                     String historyId = UUID.randomUUID().toString().replaceAll("-", "").toUpperCase();
+                    map.put("serviceRate", newServiceRate);
+                    map.put("settlementMode", settlementMode);
                     GoodsHistory history = new GoodsHistory(historyId, historyNo, this.goodsId,
                             4, "",
                             JsonUtils.toStr(map), changeReason, nowDate);
@@ -423,12 +426,13 @@ public class Goods extends ConcurrencySafeEntity {
                 GoodsSku goodsSku = getGoodsSKU(skuId);
                 if (null == goodsSku) {// 增加了规格
                     isNeedApprove = true;
-                }
-                // 判断供货价和拍获价是否修改
-                Long photographPrice = GetMapValueUtils.getLongFromMapKey(map, "photographPrice");
-                Long supplyPrice = GetMapValueUtils.getLongFromMapKey(map, "supplyPrice");
-                if (goodsSku.isModifyNeedApprovePrice(photographPrice, supplyPrice)) { //修改了供货价和拍获价
-                    isNeedApprove = true;
+                }else{
+                    // 判断供货价和拍获价是否修改
+                    Long photographPrice = GetMapValueUtils.getLongFromMapKey(map, "photographPrice");
+                    Long supplyPrice = GetMapValueUtils.getLongFromMapKey(map, "supplyPrice");
+                    if (goodsSku.isModifyNeedApprovePrice(photographPrice, supplyPrice)) { //修改了供货价和拍获价
+                        isNeedApprove = true;
+                    }
                 }
             }
         }
@@ -500,6 +504,8 @@ public class Goods extends ConcurrencySafeEntity {
                 if (null == goodsSku) {// 增加了规格
                     isNeedApprove = true;
                     map.put("showStatus", showStatus);
+                    map.put("serviceRate", newServiceRate);
+                    map.put("settlementMode", settlementMode);
                     addGoodsSkuList.add(map);
                 } else {
                     Integer availableNum = GetMapValueUtils.getIntFromMapKey(map, "availableNum");
