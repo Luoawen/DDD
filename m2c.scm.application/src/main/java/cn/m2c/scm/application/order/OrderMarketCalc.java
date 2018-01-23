@@ -449,6 +449,7 @@ public class OrderMarketCalc {
             	BigDecimal m = new BigDecimal(1 - s.floatValue());
                 //rtMoney = (long) (0.5 + tmp.getGoodsAmount() * (1 - discount / 1000.0));
             	rtMoney = g.multiply(m).longValue();
+            	tmp.setDiscountMoney(rtMoney);
             }
             else if (a == 3 && tmp != null && tmp.getIsChange() == 1) {
             	rtMoney = tmp.getGoodsAmount() - (tmp.getChangePrice() * tmp.getNum());
@@ -486,6 +487,7 @@ public class OrderMarketCalc {
             	t = t.divide(new BigDecimal(1000), 3, BigDecimal.ROUND_HALF_DOWN);
             	rtMoney += g.multiply(t.subtract(new BigDecimal(1)).abs()).longValue();
                 // rtMoney += (tmp.getGoodsAmount() * (1 - discount / 1000.0));
+            	tmp.setDiscountMoney(rtMoney);
             } else
                 rtMoney = discount;
         }
