@@ -259,7 +259,7 @@ public class OrderApplication {
         List<CouponUseBean> useCouponList = new ArrayList<>();
         MainOrder order = new MainOrder(cmd.getOrderId(), cmd.getAddr(), goodsAmounts, freight
                 , plateDiscount, dealerDiscount, cmd.getUserId(), cmd.getNoted(), dealerOrders
-                , getUsedCoupon(cmd.getOrderId(),cmd.getCouponUserId(),couponBean, gdes, useCouponList)
+                , getUsedCoupon(cmd.getOrderId(), cmd.getCouponUserId(), couponBean, gdes, useCouponList)
                 , getUsedMarket(cmd.getOrderId(), gdes, useList), cmd.getLatitude(), cmd.getLongitude()
                 , couponDiscount);
         // 组织保存(重新设置计算好的价格)

@@ -418,7 +418,7 @@ public class OrderQueryApplication {
 			if (StringUtils.isEmpty(cmd.getDealerOrderId())) {
 				
 				sql.append("SELECT a.province_code, b.coupon_discount, a.province, a.city, a.city_code, a.area_code, a.area_county, a.street_addr\r\n")
-				.append(", a.order_freight, a.order_id, a.goods_amount, a.plateform_discount, a.dealer_discount\r\n")
+				.append(",a.post_code, a.order_freight, a.order_id, a.goods_amount, a.plateform_discount, a.dealer_discount\r\n")
 				.append(", b.invoice_code, b.invoice_header, b.invoice_name, b.invoice_type, a.created_date, b._status\r\n") 
 				.append(", b.dealer_id, d.shop_name, b.dealer_order_id, b.rev_phone, b.rev_person, a.pay_way, a.pay_no\r\n") 
 				.append("FROM t_scm_order_dealer b \r\n")
@@ -440,7 +440,7 @@ public class OrderQueryApplication {
 			}
 			else {
 				sql.append("SELECT b.province_code, b.coupon_discount, b.province, b.city, b.city_code, b.area_code, b.area_county, b.street_addr\r\n")
-				.append(", a.order_freight, a.order_id, a.goods_amount, a.plateform_discount, a.dealer_discount, d.customer_service_tel\r\n")
+				.append(", b.post_code, a.order_freight, a.order_id, a.goods_amount, a.plateform_discount, a.dealer_discount, d.customer_service_tel\r\n")
 				.append(", b.invoice_code, b.invoice_header, b.invoice_name, b.invoice_type, a.created_date, b._status\r\n") 
 				.append(", b.order_freight dOrderFreight, b.goods_amount dGoodsAmount, b.plateform_discount dPlateformDiscount, b.dealer_discount dDealerDiscount\r\n")
 				.append(", b.dealer_id, d.shop_name, b.dealer_order_id,b.rev_phone, b.rev_person, a.pay_way, a.pay_no\r\n") 
