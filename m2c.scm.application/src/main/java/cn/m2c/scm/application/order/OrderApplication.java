@@ -264,7 +264,7 @@ public class OrderApplication {
                 , couponDiscount);
         // 组织保存(重新设置计算好的价格)
         AppOrdInfo appInfo = cmd.getInfo().toAppInfo();
-        order.add(skus, cmd.getFrom(),dealerOrders,appInfo.getSn(),orderAmount);
+        order.add(skus, cmd.getFrom(),dealerOrders,appInfo==null?"":appInfo.getSn(),orderAmount);
         orderRepository.save(order);
         // 锁定营销 , orderNo, 营销ID, userId -----
         if (!orderDomainService.lockMarketIds(useList, cmd.getCouponUserId(),cmd.getOrderId(), cmd.getUserId(),orderAmount,orderTime,JSONObject.toJSONString(useCouponList))) {
