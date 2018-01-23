@@ -13,6 +13,7 @@ import cn.m2c.scm.application.goods.command.GoodsSalesListCommand;
 import cn.m2c.scm.application.goods.command.MDViewGoodsCommand;
 import cn.m2c.scm.domain.NegativeException;
 import cn.m2c.scm.domain.model.goods.Goods;
+import cn.m2c.scm.domain.model.goods.GoodsApprove;
 import cn.m2c.scm.domain.model.goods.GoodsApproveRepository;
 import cn.m2c.scm.domain.model.goods.GoodsHistory;
 import cn.m2c.scm.domain.model.goods.GoodsHistoryRepository;
@@ -120,7 +121,7 @@ public class GoodsApplication {
             }
         }
 
-    /*    if (StringUtils.isEmpty(command.getChangeReason())) { //没有变更原因
+        if (StringUtils.isEmpty(command.getChangeReason())) { //没有变更原因
             boolean isNeedApprove = goods.isNeedApprove(command.getGoodsClassifyId(), command.getGoodsSKUs());
             if (isNeedApprove) {
                 GoodsApprove goodsApprove = goodsApproveRepository.queryGoodsApproveById(command.getGoodsId());
@@ -130,7 +131,7 @@ public class GoodsApplication {
                     throw new NegativeException(MCode.V_505, "该商品需审核");
                 }
             }
-        }*/
+        }
 
         if (StringUtils.isNotEmpty(_attach))
             operationLogManager.operationLog("修改商品", _attach, goods, new String[]{"goods"}, null);
