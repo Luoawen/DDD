@@ -131,13 +131,15 @@ public class MainOrder extends ConcurrencySafeEntity {
     /**
      * 增加订单
      * @param dealerOrders 
+     * @param sn 
+     * @param orderAmount 
      * @param gdes 
      * @param gdes 
      * @param gdes 
      */
-    public void add(Map<String, Integer> skus, Integer from, List<DealerOrder> dealerOrders) {
+    public void add(Map<String, Integer> skus, Integer from, List<DealerOrder> dealerOrders, String sn, long orderAmount) {
         updateTime = new Date();
-        DomainEventPublisher.instance().publish(new OrderAddedEvent(userId, skus, orderId, from));
+        DomainEventPublisher.instance().publish(new OrderAddedEvent(userId, skus, orderId, from,sn,orderAmount));
         DomainEventPublisher.instance().publish(new OrderOptLogEvent(orderId, null, "订单提交成功", userId));
         for (DealerOrder dealerOrder : dealerOrders) {//商家订单
         	if(dealerOrder.getOrderDtls()!=null && dealerOrder.getOrderDtls().size()>0){

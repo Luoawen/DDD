@@ -32,5 +32,10 @@ public class AppOrdInfo extends IdentifiedDomainObject {
 		this.osVer = osVer;
 		this.sn = sn;
 	}
+
+	public String getSn() {
+		return sn;
+	}
+	
 	
 }

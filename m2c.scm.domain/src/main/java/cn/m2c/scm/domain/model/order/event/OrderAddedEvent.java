@@ -27,6 +27,10 @@ public class OrderAddedEvent implements DomainEvent {
     
     private Integer from;
     
+    private String sn;
+    
+    private long orderAmount;
+    
 	@Override
 	public int eventVersion() {
 		// TODO Auto-generated method stub
@@ -44,14 +48,33 @@ public class OrderAddedEvent implements DomainEvent {
 		occurredOn = new Date();
 		eventVersion = 1;
 	}
-	public OrderAddedEvent(String userId, Map<String, Integer> skus, String orderNo, Integer from) {
+	public OrderAddedEvent(String userId, Map<String, Integer> skus, String orderNo, Integer from,String sn,long orderAmount) {
 		this();
 		this.userId = userId;
 		this.skus = skus;
 		this.orderNo = orderNo;
 		this.from = from;
+		this.setSn(sn);
+		this.setOrderAmount(orderAmount);
 	}
 	
+	
+	public String getSn() {
+		return sn;
+	}
+
+	public void setSn(String sn) {
+		this.sn = sn;
+	}
+
+	public long getOrderAmount() {
+		return orderAmount;
+	}
+
+	public void setOrderAmount(long orderAmount) {
+		this.orderAmount = orderAmount;
+	}
+
 	public Map<String, Integer> getSkus() {
 		return skus;
 	}
@@ -64,11 +87,11 @@ public class OrderAddedEvent implements DomainEvent {
 		return orderNo;
 	}
 
-	public static void main(String[] args) {
-		Gson gson = new Gson();
-		Map<String, Integer> s = new HashMap<String, Integer>();
-		s.put("2222", 2);
-		OrderAddedEvent a = new OrderAddedEvent("123456",  s, "114", 0);
-		System.out.print(gson.toJson(a));
-	}
+//	public static void main(String[] args) {
+//		Gson gson = new Gson();
+//		Map<String, Integer> s = new HashMap<String, Integer>();
+//		s.put("2222", 2);
+//		OrderAddedEvent a = new OrderAddedEvent("123456",  s, "114", 0);
+//		System.out.print(gson.toJson(a));
+//	}
 }

@@ -263,7 +263,8 @@ public class OrderApplication {
                 , getUsedMarket(cmd.getOrderId(), gdes, useList), cmd.getLatitude(), cmd.getLongitude()
                 , couponDiscount);
         // 组织保存(重新设置计算好的价格)
-        order.add(skus, cmd.getFrom(),dealerOrders);
+        AppOrdInfo appInfo = cmd.getInfo().toAppInfo();
+        order.add(skus, cmd.getFrom(),dealerOrders,appInfo.getSn(),orderAmount);
         orderRepository.save(order);
         // 锁定营销 , orderNo, 营销ID, userId -----
         if (!orderDomainService.lockMarketIds(useList, cmd.getCouponUserId(),cmd.getOrderId(), cmd.getUserId(),orderAmount,orderTime,JSONObject.toJSONString(useCouponList))) {
@@ -271,7 +272,6 @@ public class OrderApplication {
         }
         
         try {
-        	AppOrdInfo appInfo = cmd.getInfo().toAppInfo();
         	if (appInfo != null)
         		orderRepository.saveAppInfo(appInfo);
         }
