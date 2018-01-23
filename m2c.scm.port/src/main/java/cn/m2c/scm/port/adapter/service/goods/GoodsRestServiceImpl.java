@@ -561,6 +561,10 @@ public class GoodsRestServiceImpl implements GoodsService {
                     Integer creatorType = contentObject.getInteger("creatorType");
                     // 活动id
                     String activityId = contentObject.getString("activityId");
+                    // 活动标题
+                    String activityName = contentObject.getString("activityName");
+                    // 广告位id
+                    String adsId = contentObject.getString("adsId");
 
                     Map resultMap = new HashMap<>();
                     resultMap.put("couponId", couponId);
@@ -578,7 +582,9 @@ public class GoodsRestServiceImpl implements GoodsService {
                     resultMap.put("expirationTimeStart", expirationTimeStart);
                     resultMap.put("expirationTimeEnd", expirationTimeEnd);
                     resultMap.put("activityId", activityId);
+                    resultMap.put("activityName", activityName);
                     resultMap.put("creatorType", creatorType);
+                    resultMap.put("adsId", adsId);
                     return resultMap;
                 }
             } else {
