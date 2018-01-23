@@ -72,4 +72,11 @@ public class ExpressInfo extends ValueObject {
 	String getExpressNo() {
 		return expressNo;
 	}
+	/***
+	 * 是否自有物流
+	 * @return
+	 */
+	boolean isSelfExpressWay() {
+		return expressWay != null && expressWay == 1;
+	}
 }

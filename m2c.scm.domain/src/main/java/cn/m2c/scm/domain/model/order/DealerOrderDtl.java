@@ -271,9 +271,20 @@ public class DealerOrderDtl extends ConcurrencySafeEntity {
         status = 4;
         updateTime = new Date();
     }
-
+    /***
+     * 返回是否订单完成
+     * @return
+     */
     public boolean isFinished() {
         return status >= 3;
+    }
+    
+    /***
+     * 返回是否为自有物流
+     * @return
+     */
+    public boolean isSelfExpressWay() {
+        return expressInfo != null && expressInfo.isSelfExpressWay();
     }
 
     /***

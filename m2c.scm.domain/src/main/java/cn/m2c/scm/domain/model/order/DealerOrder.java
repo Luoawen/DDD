@@ -233,7 +233,7 @@ public class DealerOrder extends ConcurrencySafeEntity {
             if (StringUtils.isEmpty(epNo))
                 epNo = dtl.getExpressNo();
             if (dtl.isEqualSku(sku) || (!StringUtils.isEmpty(epNo) && dtl.isSameExpressNo(epNo))
-                    || dtl.isFinished()) {
+            		|| dtl.isSelfExpressWay() || dtl.isFinished()) {
                 dtl.confirmRev();
                 continue;
             }
