@@ -230,7 +230,6 @@ public class OrderApplication {
         	LOGGER.info("获取到营销模块的优惠券的信息-----"+couponBean==null?"":couponBean.toString());
         	//3.计算优惠券优惠后最后的金额
         	//3.1首先将满足此优惠券的sku放入列表中<sku,GoodsDto>
-//        	Map<String,GoodsDto> couponGoodDto = getCouponDto(gdes);
         	if(couponBean!=null)
         		OrderCouponCalc.calCoupon(gdes,couponBean);
         	//校验优惠券优惠金额位负数的情况
