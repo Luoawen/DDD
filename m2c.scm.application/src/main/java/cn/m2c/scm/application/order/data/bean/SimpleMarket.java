@@ -32,6 +32,12 @@ public class SimpleMarket {
 	
 	@ColumnAlias(value = "market_name")
 	private String marketName;
+	
+	
+	@ColumnAlias(value = "_status")
+	private Integer useStatus;
+	
+	
 	/**用于退货后是否还处于满足状态*/
 	private boolean isFull = true;
 	
@@ -94,6 +100,14 @@ public class SimpleMarket {
 	}
 	public void setThresholdType(Integer thresholdType) {
 		this.thresholdType = thresholdType;
+	}
+
+	public Integer getUseStatus() {
+		return useStatus;
+	}
+
+	public void setUseStatus(Integer useStatus) {
+		this.useStatus = useStatus;
 	}
 	
 }

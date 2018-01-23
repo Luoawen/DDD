@@ -469,8 +469,8 @@ public class OrderQuery {
 
 
         sql.delete(0, sql.length());
-        sql.append("SELECT marketing_id, market_level, market_type, threshold, threshold_type, discount, share_percent, market_name \r\n")
-                .append(" FROM t_scm_order_marketing_used WHERE order_id=? AND _status=1 ");
+        sql.append("SELECT marketing_id, market_level, market_type, threshold, threshold_type, discount, share_percent, market_name ,_status\r\n")
+                .append(" FROM t_scm_order_marketing_used WHERE order_id=?  ");
         order.setMarkets(supportJdbcTemplate.queryForBeanList(sql.toString(), SimpleMarket.class, orderNo));
 
         sql.delete(0, sql.length());
