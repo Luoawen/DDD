@@ -4,6 +4,7 @@ import cn.m2c.scm.application.dealerorder.data.bean.DealerGoodsBean;
 import cn.m2c.scm.application.dealerorder.data.bean.DealerOrderQB;
 import cn.m2c.scm.application.utils.ExcelField;
 import cn.m2c.scm.application.utils.OrderUtils;
+import cn.m2c.scm.application.utils.Utils;
 
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -33,8 +34,10 @@ public class DealerOrderExpModel {
     private Integer goodsNum;
     @ExcelField(title = "运费/元")
     private String postage;
-    @ExcelField(title = "优惠金额/元")
-    private String discountAmount;
+    @ExcelField(title = "满减抵扣金额/元")
+    private String fullCutDiscountAmount;
+    @ExcelField(title = "优惠券抵扣金额/元")
+    private String couponDiscountAmount;
     @ExcelField(title = "订单总额/元")
     private String orderMoney;
     @ExcelField(title = "收货人姓名")
@@ -73,8 +76,13 @@ public class DealerOrderExpModel {
         }
         this.goodsNum = goodsBean.getSellNum();
         this.postage = df1.format(dealerOrderQB.getOrderFreight().floatValue() / (double) 100);//*
-        this.discountAmount = df1.format((dealerOrderQB.getPlateDiscount().floatValue() + dealerOrderQB.getDealerDiscount().floatValue() + dealerOrderQB.getDdCouponDiscount().floatValue()) / (double) 100);
+        
+        this.fullCutDiscountAmount = df1.format((dealerOrderQB.getPlateDiscount().floatValue() + dealerOrderQB.getDealerDiscount().floatValue()) / (double) 100);
+        //this.fullCutDiscountAmount = Utils.moneyFormatCN(dealerOrderQB.getPlateDiscount() + dealerOrderQB.getDealerDiscount());
+        this.couponDiscountAmount = Utils.moneyFormatCN(dealerOrderQB.getDdCouponDiscount()/100.0);
+        
         this.orderMoney = df1.format((dealerOrderQB.getGoodsMoney().floatValue() + dealerOrderQB.getOrderFreight().floatValue() - dealerOrderQB.getDealerDiscount().floatValue() - dealerOrderQB.getPlateDiscount().floatValue() - dealerOrderQB.getDdCouponDiscount().floatValue()) / (double) 100);
+        //this.orderMoney = Utils.moneyFormatCN(dealerOrderQB.getGoodsMoney() + dealerOrderQB.getOrderFreight() - dealerOrderQB.getDealerDiscount() - dealerOrderQB.getPlateDiscount() - dealerOrderQB.getDdCouponDiscount());
         this.revPerson = dealerOrderQB.getRevPerson();
         this.revPhone = dealerOrderQB.getRevPhone();
         this.revAddress = dealerOrderQB.getRevAddress();

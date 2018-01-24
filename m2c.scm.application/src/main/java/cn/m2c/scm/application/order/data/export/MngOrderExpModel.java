@@ -43,8 +43,10 @@ public class MngOrderExpModel {
     private Integer goodsNum;
     @ExcelField(title = "运费/元")
     private String postage;
-    @ExcelField(title = "优惠金额/元")
-    private String discountAmount;
+    @ExcelField(title = "满减抵扣金额/元")
+    private String fullCutDiscountAmount;
+    @ExcelField(title = "优惠券抵扣金额/元")
+    private String couponDiscountAmount;
     @ExcelField(title = "订单总额/元")
     private String orderMoney;
     @ExcelField(title = "收货人姓名")
@@ -81,7 +83,8 @@ public class MngOrderExpModel {
         }
         this.goodsNum = dtl.getSellNum();
         this.postage = Utils.moneyFormatCN(dtl.getOrderFreight());//*
-        this.discountAmount = Utils.moneyFormatCN(dtl.getPlateDiscount() + dtl.getDealerDiscount() + dtl.getDdCouponDiscount());
+        this.fullCutDiscountAmount = Utils.moneyFormatCN(dtl.getPlateDiscount() + dtl.getDealerDiscount());
+        this.couponDiscountAmount = Utils.moneyFormatCN(dtl.getDdCouponDiscount());
         this.orderMoney = Utils.moneyFormatCN((dtl.getGoodsMoney() + dtl.getOrderFreight() - dtl.getDealerDiscount() - dtl.getPlateDiscount() - dtl.getDdCouponDiscount()));
         this.revPerson = dtl.getRevPerson();
         this.revPhone = dtl.getRevPhone();
