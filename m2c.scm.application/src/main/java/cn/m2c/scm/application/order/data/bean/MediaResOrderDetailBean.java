@@ -37,6 +37,7 @@ public class MediaResOrderDetailBean {
 	private Integer formId;//广告位形式
 	private Long mresNo;//广告位条码
 	private Integer level;//媒体等级
+	private String skuName;//商品规格名
 	
 	public Long getDiscountPrice() {
 		return discountPrice;
@@ -199,6 +200,12 @@ public class MediaResOrderDetailBean {
 	}
 	public void setLevel(Integer level) {
 		this.level = level;
+	}
+	public String getSkuName() {
+		return skuName;
+	}
+	public void setSkuName(String skuName) {
+		this.skuName = skuName;
 	}
 	
 }

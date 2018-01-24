@@ -2,6 +2,8 @@ package cn.m2c.scm.application.order.data.export;
 
 import java.text.SimpleDateFormat;
 
+import org.apache.commons.lang3.StringUtils;
+
 import cn.m2c.scm.application.order.data.bean.MediaResOrderDetailBean;
 import cn.m2c.scm.application.utils.ExcelField;
 import cn.m2c.scm.application.utils.OrderUtils;
@@ -62,7 +64,12 @@ public class OrderMediaExpModel {
 		}else {
 			this.afterSellOrderType = "无售后";
 		}
-		this.goodsName = bean.getGoodsName();
+		if(StringUtils.isEmpty(bean.getSkuName())) {
+			this.goodsName = bean.getGoodsName();
+		}else {
+			this.goodsName = bean.getGoodsName() + "(" + bean.getSkuName() + ")";
+		}
+		
 		this.skuId = bean.getSkuId();
 		this.dealerName = bean.getDealerName();
 		this.sellNum = bean.getSellNum();

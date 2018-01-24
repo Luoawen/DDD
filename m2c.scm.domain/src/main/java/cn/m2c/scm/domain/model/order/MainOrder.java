@@ -145,7 +145,8 @@ public class MainOrder extends ConcurrencySafeEntity {
         	if(dealerOrder.getOrderDtls()!=null && dealerOrder.getOrderDtls().size()>0){
         		for (DealerOrderDtl dealerOrderDtl : dealerOrder.getOrderDtls()) {//获取每一个订单详情将有广告位的事件
         			if(!StringUtils.isEmpty(dealerOrderDtl.getMediaId()) && !StringUtils.isEmpty(dealerOrderDtl.getMediaResId())){
-        				DomainEventPublisher.instance().publish(new MediaOrderCreateEvent(orderId,dealerOrder.getId(), dealerOrderDtl.getMediaId(), dealerOrderDtl.getMediaResId()));
+        				DomainEventPublisher.instance().publish(new MediaOrderCreateEvent(orderId, dealerOrder.getId(), dealerOrderDtl.getMediaId(), 
+        						dealerOrderDtl.getMediaResId(), dealerOrderDtl.getSortNo()));
         			}
         		}
         	}
