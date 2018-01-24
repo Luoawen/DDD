@@ -18,9 +18,11 @@ import cn.m2c.common.MPager;
 import cn.m2c.common.MResult;
 import cn.m2c.scm.application.dealer.data.representation.DealerClassifyTreeRepresentation;
 import cn.m2c.scm.application.dealerclassify.data.bean.DealerClassifyBean;
+import cn.m2c.scm.application.dealerclassify.data.bean.DealerClassifyedBean;
 import cn.m2c.scm.application.dealerclassify.data.representation.DealerFirstClassifyRepresentation;
 import cn.m2c.scm.application.dealerclassify.data.representation.DealerSecondClassifyRepresentation;
 import cn.m2c.scm.application.dealerclassify.query.DealerClassifyQuery;
+import cn.m2c.scm.domain.NegativeException;
 
 @RestController
 @RequestMapping("/dealerclassify/sys")
@@ -89,6 +91,26 @@ public class DealerClassifyAgent {
 	        }
 	        return new ResponseEntity<MResult>(result, HttpStatus.OK);
 	    }
+	 
+	 
+	 /**
+	  * 获取商家所有二级分类
+	  * @return
+	  */
+	 @RequestMapping(value = "/dealer/all/second/classify",method = RequestMethod.GET)
+	 public ResponseEntity<MResult> classifyLevelTwo(){
+		 MResult result = new MResult(MCode.V_1);
+		 try {
+			List<DealerClassifyedBean> list = dealerClassifyQuery.getDealerClassify();
+			 result.setContent(list);
+			 result.setStatus(MCode.V_400);
+		} catch (NegativeException e) {
+			log.error("获取所有商家二级分类",e.getMessage());
+			result = new MResult(MCode.V_400,"查询失败");
+		}
+		 
+		 return new ResponseEntity<MResult>(result, HttpStatus.OK);
+	 }
 	 
 	 
 }
