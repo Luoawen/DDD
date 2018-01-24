@@ -24,17 +24,21 @@ public class MediaOrderCreateEvent implements DomainEvent {
 	 * 广告位id
 	 */
 	private String mediaResId;
+	/**sort no商家在订单中的插入位置*/
+	private int sortNo;
 	
 	private Date occurredOn;
     private int eventVersion;
 	
-    public MediaOrderCreateEvent(String orderId, String dealerOrderId, String mediaId, String mediaResId) {
+    public MediaOrderCreateEvent(String orderId, String dealerOrderId, String mediaId, String mediaResId
+    		, int sortNo) {
     	this.orderId = orderId;
     	this.dealerOrderId = dealerOrderId;
     	this.mediaId = mediaId;
     	this.mediaResId = mediaResId;
     	this.occurredOn = new Date();
         this.eventVersion = 1;
+        this.sortNo = sortNo;
     }
     
 	@Override
