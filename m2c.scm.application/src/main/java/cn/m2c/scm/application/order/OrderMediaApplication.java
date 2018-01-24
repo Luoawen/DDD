@@ -29,7 +29,7 @@ public class OrderMediaApplication {
 	 @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
 	 public void addOrderMedia(OrderMediaCommand command) {
 		 LOGGER.info("addOrderMedia command >>{}", command);
-		 OrderMedia orderMedia = new OrderMedia(command.getOrderId(), command.getDealerOrderId(), command.getMediaCate(), command.getMediaNo(), command.getMediaName(), command.getMresCate(), command.getFormId(), command.getMresNo(), command.getLevel());
+		 OrderMedia orderMedia = new OrderMedia(command.getOrderId(), command.getDealerOrderId(), command.getMediaCate(), command.getMediaNo(), command.getMediaName(), command.getMresCate(), command.getFormId(), command.getMresNo(), command.getLevel(), command.getSortNo());
 		 orderMediaRepository.save(orderMedia);
 	 }
 	 

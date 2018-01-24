@@ -43,8 +43,13 @@ public class OrderMedia extends Entity{
 	 */
 	private Integer level;
 	
+	/**
+	 * sort no商家在订单中的插入位置
+	 */
+	private Integer sortNo;
+	
 	public OrderMedia(String orderId, String dealerOrderId, String mediaCate, Integer mediaNo, String mediaName, 
-			Integer mresCate, Integer formId, Long mresNo, Integer level) {
+			Integer mresCate, Integer formId, Long mresNo, Integer level, Integer sortNo) {
 		this.orderId = orderId;
 		this.dealerOrderId = dealerOrderId;
 		this.mediaCate = mediaCate;
@@ -54,6 +59,7 @@ public class OrderMedia extends Entity{
 		this.formId = formId;
 		this.mresNo = mresNo;
 		this.level = level;
+		this.sortNo = sortNo;
 	}
 	
 }
