@@ -529,7 +529,7 @@ public class GoodsRestServiceImpl implements GoodsService {
 
     @Override
     public Map photographGetCoupon(String userId, String mediaResourceId) {
-        String url = M2C_HOST_URL + "/m2c.market/domain/seek/coupon/scan/query?userId=" + userId + "&mediaResourceId=" + mediaResourceId;
+        String url = M2C_HOST_URL + "/m2c.market/domain/seek/coupon/scan/query?userId=" + userId + "&adsId=" + mediaResourceId;
 
         try {
             String result = restTemplate.getForObject(url, String.class);

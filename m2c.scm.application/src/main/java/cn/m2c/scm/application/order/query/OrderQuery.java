@@ -889,7 +889,7 @@ public class OrderQuery {
             sql.append(" count(*) ");
             sql.append(" From t_scm_order_main tom ");
             sql.append(" LEFT OUTER JOIN t_scm_order_detail tod ON tom.order_id = tod.order_id ");
-            sql.append(" LEFT OUTER JOIN t_scm_order_after_sell toas ON  tod.dealer_order_id = toas.dealer_order_id AND toas.sku_id = tod.sku_id AND toas.sort_no = tod.sort_no ");
+            sql.append(" LEFT OUTER JOIN t_scm_order_after_sell toas ON  tod.dealer_order_id = toas.dealer_order_id AND toas.sku_id = tod.sku_id AND toas.sort_no = tod.sort_no AND toas.is_invalide = 0 ");
             sql.append(" LEFT OUTER JOIN t_scm_goods tg  ON tod.goods_id = tg.goods_id ");
             sql.append(" LEFT OUTER JOIN t_scm_order_media tm ON tod.order_id = tm.order_id AND tod.dealer_order_id = tm.dealer_order_id ");
             sql.append(" WHERE 1 = 1 ");
@@ -987,7 +987,7 @@ public class OrderQuery {
             sql.append(" tm.media_cate mediaCate, tm.media_no mediaNo, tm.media_name mediaName, tm.mres_cate mresCate ,tm.form_id formId, tm.mres_no mresNo, tm.level level ");
             sql.append(" From t_scm_order_main tom ");
             sql.append(" LEFT OUTER JOIN t_scm_order_detail tod ON tom.order_id = tod.order_id ");
-            sql.append(" LEFT OUTER JOIN t_scm_order_after_sell toas ON  tod.dealer_order_id = toas.dealer_order_id AND toas.sku_id = tod.sku_id AND toas.sort_no = tod.sort_no ");
+            sql.append(" LEFT OUTER JOIN t_scm_order_after_sell toas ON  tod.dealer_order_id = toas.dealer_order_id AND toas.sku_id = tod.sku_id AND toas.sort_no = tod.sort_no AND toas.is_invalide = 0 ");
             sql.append(" LEFT OUTER JOIN t_scm_goods tg  ON tod.goods_id = tg.goods_id ");
             sql.append(" LEFT OUTER JOIN t_scm_order_media tm ON tod.order_id = tm.order_id AND tod.dealer_order_id = tm.dealer_order_id ");
             sql.append(" WHERE 1 = 1 ");
