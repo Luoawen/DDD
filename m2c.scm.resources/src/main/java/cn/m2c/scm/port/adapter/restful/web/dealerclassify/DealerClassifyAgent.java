@@ -103,7 +103,7 @@ public class DealerClassifyAgent {
 		 try {
 			List<DealerClassifyedBean> list = dealerClassifyQuery.getDealerClassify();
 			 result.setContent(list);
-			 result.setStatus(MCode.V_400);
+			 result.setStatus(MCode.V_200);
 		} catch (NegativeException e) {
 			log.error("获取所有商家二级分类",e.getMessage());
 			result = new MResult(MCode.V_400,"查询失败");
