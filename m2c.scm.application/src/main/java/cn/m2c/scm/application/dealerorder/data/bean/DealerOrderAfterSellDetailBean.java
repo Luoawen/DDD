@@ -82,12 +82,29 @@ public class DealerOrderAfterSellDetailBean {
 	@ColumnAlias(value = "dealer_discount")
 	private long dealerDiscount;
 	
+	/**
+	 * 商品优惠券金额
+	 */
 	@ColumnAlias(value = "coupon_discount")
 	private long couponDiscount;
+	
+	/**
+	 * 商家订单优惠券金额
+	 */
+	@ColumnAlias(value = "ddCouponDiscount")
+	private long ddCouponDiscount;
 	
 	@ColumnAlias(value = "sku_id")
 	private String skuId;
 	
+	public long getDdCouponDiscount() {
+		return ddCouponDiscount;
+	}
+
+	public void setDdCouponDiscount(long ddCouponDiscount) {
+		this.ddCouponDiscount = ddCouponDiscount;
+	}
+
 	private Integer isShowShip = 0;        //是否展示发货 0 不展示，1 展示
 	
 	private String dealerId;
@@ -171,7 +188,7 @@ public class DealerOrderAfterSellDetailBean {
 	}
 	
 	public String getStrBackMoney() {
-		return Utils.moneyFormatCN(backMoney);
+		return Utils.moneyFormatCN(backMoney - couponDiscount);
 	}
 
 	public String getReason() {
@@ -188,7 +205,7 @@ public class DealerOrderAfterSellDetailBean {
 	}
 	
 	public String getStrOrderTotalMoney() {
-		return Utils.moneyFormatCN((orderTotalMoney + orderFreight - plateformDiscount - dealerDiscount));
+		return Utils.moneyFormatCN((orderTotalMoney + orderFreight - plateformDiscount - dealerDiscount - ddCouponDiscount));
 	}
 
 	public void setStatus(Integer status) {

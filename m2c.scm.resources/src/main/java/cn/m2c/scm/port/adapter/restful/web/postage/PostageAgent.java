@@ -225,14 +225,20 @@ public class PostageAgent {
      */
     @RequestMapping(value = "/web/postage/nationwide", method = RequestMethod.GET)
     public ResponseEntity<MResult> queryDealerPostageNationwide(
-    		@RequestParam(value = "dealerId", required = false) String dealerId){
+    		@RequestParam(value = "dealerId", required = false) String dealerId,
+    		@RequestParam(value = "modelId", required = false) String modelId
+    		){
     	MResult result = new MResult(MCode.V_1);
     	if (StringUtils.isEmpty(dealerId)) {
             result = new MResult(MCode.V_1, "商家ID为空");
             return new ResponseEntity<MResult>(result, HttpStatus.OK);
         }
+    	if(StringUtils.isEmpty(modelId)) {
+    		result = new MResult(MCode.V_1, "运费模板ID为空");
+            return new ResponseEntity<MResult>(result, HttpStatus.OK);
+    	}
     	try {
-            Boolean flag = postageModelQueryApplication.queryDealerPostageNationwide(dealerId);
+            Boolean flag = postageModelQueryApplication.queryDealerPostageNationwide(dealerId, modelId);
         	result.setContent(flag);
             result.setStatus(MCode.V_200);
         } catch (Exception e) {

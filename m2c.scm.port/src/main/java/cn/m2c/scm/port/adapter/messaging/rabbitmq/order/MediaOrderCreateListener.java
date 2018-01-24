@@ -42,6 +42,7 @@ public class MediaOrderCreateListener extends ExchangeListener {
 		String dealerOrderId = reader.eventStringValue("dealerOrderId");
 		String mediaId = reader.eventStringValue("mediaId");
 		String mediaResId = reader.eventStringValue("mediaResId");
+		Integer sortNo = reader.eventIntegerValue("sortNo");
 		//调用媒体接口查询广告位信息
 		Map map = orderServiceImpl.getMediaMessageInfo(mediaId, mediaResId);
 		if(null != map && map.size() > 0) {
@@ -53,7 +54,7 @@ public class MediaOrderCreateListener extends ExchangeListener {
 			Long mresNo = map.get("mresNo") == null ? null : Long.parseLong((String) map.get("mresNo"));
 			Integer level = map.get("level") == null ? null : Integer.parseInt((String) map.get("level"));
 			//封装，保存
-			OrderMediaCommand command = new OrderMediaCommand(orderId, dealerOrderId, mediaCate, mediaNo, mediaName, mresCate, formId, mresNo, level);
+			OrderMediaCommand command = new OrderMediaCommand(orderId, dealerOrderId, mediaCate, mediaNo, mediaName, mresCate, formId, mresNo, level, sortNo);
 			orderMediaApplication.addOrderMedia(command);
 		}
 		

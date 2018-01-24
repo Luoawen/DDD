@@ -194,13 +194,14 @@ public class PostageModelQueryApplication {
      * @return
      * @throws NegativeException 
      */
-	public Boolean queryDealerPostageNationwide(String dealerId){
-		String sql = "SELECT * FROM t_scm_postage_model WHERE 1 = 1 AND dealer_id = ? AND model_status = 1 AND charge_type = 2";
-		PostageModelBean postageModelBean = this.getSupportJdbcTemplate().queryForBean(sql.toString(), PostageModelBean.class,dealerId);
+	public Boolean queryDealerPostageNationwide(String dealerId, String modelId){
+		String sql = "SELECT * FROM t_scm_postage_model WHERE 1 = 1 AND dealer_id = ? AND model_status = 1 AND charge_type = 2 AND model_id <> ? ";
+		PostageModelBean postageModelBean = this.getSupportJdbcTemplate().queryForBean(sql.toString(), PostageModelBean.class, dealerId, modelId);
 		if(null == postageModelBean) {//商家未创建过全国包邮模板
 			return false;
 		}else {//商家已创建过全国包邮模板
 			return true;
 		}
 	}
+	
 }

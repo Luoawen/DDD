@@ -886,12 +886,13 @@ public class OrderQuery {
             List<Object> params = new ArrayList<Object>();
             StringBuilder sql = new StringBuilder();
             sql.append(" SELECT ");
-            sql.append(" count(*) ");
-            sql.append(" From t_scm_order_main tom ");
-            sql.append(" LEFT OUTER JOIN t_scm_order_detail tod ON tom.order_id = tod.order_id ");
+            sql.append(" count(1) ");
+            sql.append(" FROM t_scm_order_detail tod ");
+            sql.append(" LEFT OUTER JOIN t_scm_order_main tom ON tod.order_id = tom.order_id ");
             sql.append(" LEFT OUTER JOIN t_scm_order_after_sell toas ON  tod.dealer_order_id = toas.dealer_order_id AND toas.sku_id = tod.sku_id AND toas.sort_no = tod.sort_no AND toas.is_invalide = 0 ");
             sql.append(" LEFT OUTER JOIN t_scm_goods tg  ON tod.goods_id = tg.goods_id ");
-            sql.append(" LEFT OUTER JOIN t_scm_order_media tm ON tod.order_id = tm.order_id AND tod.dealer_order_id = tm.dealer_order_id ");
+            sql.append(" LEFT OUTER JOIN t_scm_order_media tm ON tod.order_id = tm.order_id AND tod.dealer_order_id = tm.dealer_order_id AND tod.sort_no = tm.sort_no ");
+            sql.append(" LEFT OUTER JOIN t_scm_goods_sku tgs ON tod.sku_id = tgs.sku_id ");
             sql.append(" WHERE 1 = 1 ");
             if (null != userIds && userIds.size() > 0) {
                 sql.append(" AND tom.user_id IN ( " + Utils.listParseString(userIds) + ") ");
@@ -984,12 +985,13 @@ public class OrderQuery {
             sql.append(" tom.order_id orderId, tom.user_id userId, tom._status payStatus, tom.pay_way payWay, toas.order_type afterSellOrderType, tod.media_id mediaId, tod.media_res_id mediaResId, tod.goods_name goodsName, tod.sku_id skuid, ");
             sql.append(" tg.dealer_name dealerName, tod.sell_num sellNum, tom.created_date createTime, tod.discount_price discountPrice, tod.goods_amount goodsAmount, tod.is_special isSpecial, tod.special_price specialPrice, tod.coupon_discount couponDiscount, ");
             sql.append(" tod.plateform_discount plateformDiscount, tod.dealer_discount dealerDiscount, tod.freight freight , ");
-            sql.append(" tm.media_cate mediaCate, tm.media_no mediaNo, tm.media_name mediaName, tm.mres_cate mresCate ,tm.form_id formId, tm.mres_no mresNo, tm.level level ");
-            sql.append(" From t_scm_order_main tom ");
-            sql.append(" LEFT OUTER JOIN t_scm_order_detail tod ON tom.order_id = tod.order_id ");
+            sql.append(" tm.media_cate mediaCate, tm.media_no mediaNo, tm.media_name mediaName, tm.mres_cate mresCate ,tm.form_id formId, tm.mres_no mresNo, tm.level level , tgs.sku_name skuName ");
+            sql.append(" FROM t_scm_order_detail tod ");
+            sql.append(" LEFT OUTER JOIN t_scm_order_main tom ON tod.order_id = tom.order_id ");
             sql.append(" LEFT OUTER JOIN t_scm_order_after_sell toas ON  tod.dealer_order_id = toas.dealer_order_id AND toas.sku_id = tod.sku_id AND toas.sort_no = tod.sort_no AND toas.is_invalide = 0 ");
             sql.append(" LEFT OUTER JOIN t_scm_goods tg  ON tod.goods_id = tg.goods_id ");
-            sql.append(" LEFT OUTER JOIN t_scm_order_media tm ON tod.order_id = tm.order_id AND tod.dealer_order_id = tm.dealer_order_id ");
+            sql.append(" LEFT OUTER JOIN t_scm_order_media tm ON tod.order_id = tm.order_id AND tod.dealer_order_id = tm.dealer_order_id AND tod.sort_no = tm.sort_no ");
+            sql.append(" LEFT OUTER JOIN t_scm_goods_sku tgs ON tod.sku_id = tgs.sku_id ");
             sql.append(" WHERE 1 = 1 ");
             if (null != userIds && userIds.size() > 0) {
                 sql.append(" AND tom.user_id IN ( " + Utils.listParseString(userIds) + ") ");

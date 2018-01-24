@@ -2,6 +2,8 @@ package cn.m2c.scm.application.order.data.representation;
 
 import java.text.SimpleDateFormat;
 
+import org.apache.commons.lang3.StringUtils;
+
 import cn.m2c.scm.application.order.data.bean.MediaResOrderDetailBean;
 import cn.m2c.scm.application.utils.OrderUtils;
 import cn.m2c.scm.application.utils.Utils;
@@ -47,7 +49,11 @@ public class MediaResOrderDetailBeanRepresentation {
 		}
 		this.mediaId = null != bean.getMediaId() ? bean.getMediaId() : "";
 		this.mediaResId = null != bean.getMediaResId() ? bean.getMediaResId() : "";
-		this.goodsName = bean.getGoodsName();
+		if(StringUtils.isEmpty(bean.getSkuName())) {
+			this.goodsName = bean.getGoodsName();
+		}else {
+			this.goodsName = bean.getGoodsName() + "(" + bean.getSkuName() + ")";
+		}
 		this.skuId = bean.getSkuId();
 		this.dealerName = bean.getDealerName();
 		this.sellNum = bean.getSellNum();

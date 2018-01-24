@@ -45,8 +45,13 @@ public class OrderMediaCommand extends AssertionConcern implements Serializable{
 	 */
 	private Integer level;
 	
+	/**
+	 * sort no商家在订单中的插入位置
+	 */
+	private Integer sortNo;
+	
 	public OrderMediaCommand (String orderId, String dealerOrderId, String mediaCate, Integer mediaNo, String mediaName, 
-			Integer mresCate, Integer formId, Long mresNo, Integer level) {
+			Integer mresCate, Integer formId, Long mresNo, Integer level, Integer sortNo) {
 		this.orderId = orderId;
 		this.dealerOrderId = dealerOrderId;
 		this.mediaCate = mediaCate;
@@ -56,6 +61,7 @@ public class OrderMediaCommand extends AssertionConcern implements Serializable{
 		this.formId = formId;
 		this.mresNo = mresNo;
 		this.level = level;
+		this.sortNo = sortNo;
 	}
 
 	public String getOrderId() {
@@ -94,11 +100,15 @@ public class OrderMediaCommand extends AssertionConcern implements Serializable{
 		return level;
 	}
 
+	public Integer getSortNo() {
+		return sortNo;
+	}
+
 	@Override
 	public String toString() {
 		return "OrderMediaCommand [orderId=" + orderId + ", dealerOrderId=" + dealerOrderId + ", mediaCate=" + mediaCate
 				+ ", mediaNo=" + mediaNo + ", mediaName=" + mediaName + ", mresCate=" + mresCate + ", formId=" + formId
-				+ ", mresNo=" + mresNo + ", level=" + level + "]";
+				+ ", mresNo=" + mresNo + ", level=" + level + ", sortNo=" + sortNo + "]";
 	}
-	
+
 }

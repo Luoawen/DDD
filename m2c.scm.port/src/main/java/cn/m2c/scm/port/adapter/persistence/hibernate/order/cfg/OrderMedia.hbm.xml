@@ -18,5 +18,6 @@
         <property name="formId" column="form_id" type="int"/>
         <property name="mresNo" column="mres_no" type="long"/>
         <property name="level" column="level" type="int"/>
+        <property name="sortNo" column="sort_no" type="int"/>
     </class>
 </hibernate-mapping>
