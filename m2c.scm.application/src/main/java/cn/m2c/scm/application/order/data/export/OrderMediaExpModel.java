@@ -75,7 +75,7 @@ public class OrderMediaExpModel {
 		this.sellNum = bean.getSellNum();
 		
 		this.goodsAmount = Utils.moneyFormatCN(bean.getGoodsAmount());//销售金额(/10000)
-		this.orderMoney = Utils.moneyFormatCN(bean.getGoodsAmount() - bean.getPlateformDiscount() - bean.getDealerDiscount() - bean.getCouponDiscount() + bean.getFreight());//支付金额(销售金额 - 营销优惠 + 运费)
+		this.orderMoney = Utils.moneyFormatCN(bean.getGoodsAmount() - bean.getPlateformDiscount() - bean.getDealerDiscount() - bean.getCouponDiscount());//支付金额(销售金额 - 营销优惠 )
 		
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		this.createTime = null != bean.getCreateTime() ? df.format(bean.getCreateTime()) : "";

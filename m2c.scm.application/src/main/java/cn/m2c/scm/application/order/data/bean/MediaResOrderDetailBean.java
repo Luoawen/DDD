@@ -29,7 +29,7 @@ public class MediaResOrderDetailBean {
 	private Long couponDiscount;//优惠券金额
 	private Long plateformDiscount;//平台优惠金额
 	private Long dealerDiscount;//商家优惠金额
-	private Long freight;//订单运费
+	//private Long freight;//订单运费
 	private String mediaCate;//媒体分类
 	private Integer mediaNo;//媒体编号
 	private String mediaName;//媒体名
@@ -153,12 +153,12 @@ public class MediaResOrderDetailBean {
 	public void setDealerDiscount(Long dealerDiscount) {
 		this.dealerDiscount = dealerDiscount;
 	}
-	public Long getFreight() {
+	/*public Long getFreight() {
 		return freight;
 	}
 	public void setFreight(Long freight) {
 		this.freight = freight;
-	}
+	}*/
 	public String getMediaCate() {
 		return mediaCate;
 	}

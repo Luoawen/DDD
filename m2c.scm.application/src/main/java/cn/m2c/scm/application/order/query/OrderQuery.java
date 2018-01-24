@@ -984,7 +984,7 @@ public class OrderQuery {
             sql.append(" SELECT ");
             sql.append(" tom.order_id orderId, tom.user_id userId, tom._status payStatus, tom.pay_way payWay, toas.order_type afterSellOrderType, tod.media_id mediaId, tod.media_res_id mediaResId, tod.goods_name goodsName, tod.sku_id skuid, ");
             sql.append(" tg.dealer_name dealerName, tod.sell_num sellNum, tom.created_date createTime, tod.discount_price discountPrice, tod.goods_amount goodsAmount, tod.is_special isSpecial, tod.special_price specialPrice, tod.coupon_discount couponDiscount, ");
-            sql.append(" tod.plateform_discount plateformDiscount, tod.dealer_discount dealerDiscount, tod.freight freight , ");
+            sql.append(" tod.plateform_discount plateformDiscount, tod.dealer_discount dealerDiscount, ");
             sql.append(" tm.media_cate mediaCate, tm.media_no mediaNo, tm.media_name mediaName, tm.mres_cate mresCate ,tm.form_id formId, tm.mres_no mresNo, tm.level level , tgs.sku_name skuName ");
             sql.append(" FROM t_scm_order_detail tod ");
             sql.append(" LEFT OUTER JOIN t_scm_order_main tom ON tod.order_id = tom.order_id ");
