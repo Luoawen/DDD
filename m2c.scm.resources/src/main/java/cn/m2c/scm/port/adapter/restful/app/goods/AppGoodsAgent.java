@@ -150,7 +150,7 @@ public class AppGoodsAgent {
                 //goods_status 商品状态，1：仓库中，2：出售中，3：已售罄   del_status 是否删除，1:正常，2：已删除
                 if (goodsBean.getGoodsStatus() == 1 || goodsBean.getDelStatus() == 2) {
                     result = new MResult(MCode.V_300, "商品已失效");
-                    new ResponseEntity<MResult>(result, HttpStatus.OK);
+                    return new ResponseEntity<MResult>(result, HttpStatus.OK);
                 }
                 List<GoodsGuaranteeBean> goodsGuarantee = goodsGuaranteeQueryApplication.queryGoodsGuaranteeByIds(JsonUtils.toList(goodsBean.getGoodsGuarantee(), String.class));
                 String goodsUnitName = unitQuery.getUnitNameByUnitId(goodsBean.getGoodsUnitId());
