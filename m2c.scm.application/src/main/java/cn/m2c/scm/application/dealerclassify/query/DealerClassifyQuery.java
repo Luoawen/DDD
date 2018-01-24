@@ -67,7 +67,7 @@ public class DealerClassifyQuery {
 		List<DealerClassifyedBean> result = new ArrayList<DealerClassifyedBean>();
 		StringBuilder sql = new StringBuilder();
 		try {
-			sql.append(" SELECT * FROM t_scm_dealer_classify WHERE dealer_level = 2 ");
+			sql.append(" SELECT * FROM t_scm_dealer_classify WHERE dealer_level = 2 ORDER BY order_by ");
 			result =  this.supportJdbcTemplate.queryForBeanList(sql.toString(), DealerClassifyedBean.class);
 		} catch (Exception e) {
 			throw new NegativeException(MCode.V_400,"查询商家所有二级分类失败出错");
