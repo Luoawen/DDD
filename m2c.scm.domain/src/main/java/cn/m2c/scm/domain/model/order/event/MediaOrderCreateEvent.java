@@ -29,15 +29,20 @@ public class MediaOrderCreateEvent implements DomainEvent {
 	
 	private Date occurredOn;
     private int eventVersion;
+    
+    public MediaOrderCreateEvent() {
+    	super();
+    	occurredOn = new Date();
+        eventVersion = 1;
+    }
 	
     public MediaOrderCreateEvent(String orderId, String dealerOrderId, String mediaId, String mediaResId
     		, int sortNo) {
+    	this();
     	this.orderId = orderId;
     	this.dealerOrderId = dealerOrderId;
     	this.mediaId = mediaId;
     	this.mediaResId = mediaResId;
-    	this.occurredOn = new Date();
-        this.eventVersion = 1;
         this.sortNo = sortNo;
     }
     

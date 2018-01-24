@@ -236,7 +236,7 @@ public class HibernateSaleAfterOrderRepository extends HibernateSupperRepository
 			.append(arr[0]).append("' AND sort_no=").append(arr[1]).append(")");
 			c ++;
 		}
-		sqlBuild.append(")");
+		sqlBuild.append(") AND order_type != 0");
 		Object o = this.session().createSQLQuery(sqlBuild.toString()).setParameter("orderId", orderId).uniqueResult();
 		
 		return o == null? 0: ((BigInteger)o).intValue();
