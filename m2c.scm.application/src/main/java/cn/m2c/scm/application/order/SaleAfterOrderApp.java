@@ -212,6 +212,10 @@ public class SaleAfterOrderApp {
                 discountMoney = OrderMarketCalc.calcReturnMoney(marketInfo, skuBeanLs, order.skuId(), order.sortNo());
                 if (marketInfo != null && marketInfo.isFull())
                     money = itemDtl.changePrice();
+              //-----将处理好的优惠平摊金额复制给所有订单的列表里面，用于计算优惠券使用
+                if (skuBeanLs.size() > 0) {
+                    copySku(skuBeanLs, totalSku);
+                }
             }
 
             if (marketInfo != null && !marketInfo.isFull()) {
