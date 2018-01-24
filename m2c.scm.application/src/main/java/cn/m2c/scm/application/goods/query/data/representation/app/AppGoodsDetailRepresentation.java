@@ -350,5 +350,12 @@ public class AppGoodsDetailRepresentation {
 	public void setGoodsMainVideo(String goodsMainVideo) {
 		this.goodsMainVideo = goodsMainVideo;
 	}
-    
+
+    public Map getPhotographGetCoupon() {
+        return photographGetCoupon;
+    }
+
+    public void setPhotographGetCoupon(Map photographGetCoupon) {
+        this.photographGetCoupon = photographGetCoupon;
+    }
 }
