@@ -952,9 +952,9 @@ public class OrderQuery {
                 params.add(mresNo);
             }
             if (StringUtils.isNotEmpty(goodsMessage)) { //商品名/商品SKU编号
-                sql.append(" AND ( tod.goods_name LIKE ? OR tod.sku_id LIKE ? ) ");
+                sql.append(" AND ( tod.goods_name LIKE ? OR tod.sku_id = ? ) ");
                 params.add("%" + goodsMessage + "%");
-                params.add("%" + goodsMessage + "%");
+                params.add(goodsMessage);
             }
             if (StringUtils.isNotEmpty(dealerName)) {
                 sql.append(" AND tg.dealer_name LIKE ? ");
@@ -1050,9 +1050,9 @@ public class OrderQuery {
                 params.add(mresNo);
             }
             if (StringUtils.isNotEmpty(goodsMessage)) { //商品名/商品SKU编号
-                sql.append(" AND ( tod.goods_name LIKE ? OR tod.sku_id LIKE ? ) ");
+                sql.append(" AND ( tod.goods_name LIKE ? OR tod.sku_id = ? ) ");
                 params.add("%" + goodsMessage + "%");
-                params.add("%" + goodsMessage + "%");
+                params.add(goodsMessage);
             }
             if (StringUtils.isNotEmpty(dealerName)) {
                 sql.append(" AND tg.dealer_name LIKE ? ");
