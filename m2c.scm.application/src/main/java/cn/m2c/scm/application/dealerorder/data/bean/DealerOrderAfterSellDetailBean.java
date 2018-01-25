@@ -59,7 +59,7 @@ public class DealerOrderAfterSellDetailBean {
 	@ColumnAlias(value = "order_id")
 	private String orderId;
 	/**
-	 * 订单总额
+	 * 订单商品总额
 	 */
 	@ColumnAlias(value = "goods_amount")
 	private long orderTotalMoney;
@@ -203,7 +203,7 @@ public class DealerOrderAfterSellDetailBean {
 
 
 	public long getOrderTotalMoney() {
-		return (orderTotalMoney/100 + this.getOrderFreight() - this.getPlateformDiscount() - this.getDealerDiscount());
+		return (orderTotalMoney/100 + this.getOrderFreight() - this.getPlateformDiscount() - this.getDealerDiscount() - ddCouponDiscount/100);
 	}
 	
 	public String getStrOrderTotalMoney() {
