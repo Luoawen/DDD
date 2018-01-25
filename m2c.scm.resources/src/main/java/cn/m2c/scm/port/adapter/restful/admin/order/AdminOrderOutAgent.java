@@ -34,7 +34,7 @@ import cn.m2c.scm.domain.NegativeException;
 import cn.m2c.scm.port.adapter.service.order.OrderServiceImpl;
 
 @RestController
-@RequestMapping("/order-out")
+@RequestMapping("/admin/order-out")
 public class AdminOrderOutAgent {
 	private final static Logger LOGGER = LoggerFactory.getLogger(AdminOrderOutAgent.class);
 	
