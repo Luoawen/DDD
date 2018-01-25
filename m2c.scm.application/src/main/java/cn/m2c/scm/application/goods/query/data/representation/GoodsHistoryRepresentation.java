@@ -6,6 +6,8 @@ import cn.m2c.scm.application.utils.Utils;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -23,7 +25,7 @@ public class GoodsHistoryRepresentation {
     // 变更后
     private String afterContent;
     // 增加sku
-    private Map addSku;
+    private List<Map> addSku;
     // 变更理由
     private String changeReason;
 
@@ -32,8 +34,8 @@ public class GoodsHistoryRepresentation {
         this.changeType = history.getChangeType();
         this.changeReason = history.getChangeReason();
         Map beforeMap = JsonUtils.toMap(history.getBeforeContent());
-        Map afterMap = JsonUtils.toMap(history.getAfterContent());
         if (history.getChangeType() == 1) {
+            Map afterMap = JsonUtils.toMap(history.getAfterContent());
             this.changeContent = "修改商品分类";
 
             // 变更前 {"goodsClassifyName":"手机,iOS系统","goodsClassifyId":"SPFL6104939BD41E4E2CB4715F19306C3478","serviceRate":"0","settlementMode":"1"}
@@ -54,6 +56,7 @@ public class GoodsHistoryRepresentation {
             this.afterContent = afterSb.toString();
 
         } else if (history.getChangeType() == 2) {
+            Map afterMap = JsonUtils.toMap(history.getAfterContent());
             this.changeContent = "修改拍获价";
             // 变更前 {"skuName":"5寸,红色","photographPrice":9970000,"skuId":"20171205155603147254"}
             StringBuffer beforeSb = new StringBuffer();
@@ -73,6 +76,7 @@ public class GoodsHistoryRepresentation {
             }
             this.afterContent = afterSb.toString();
         } else if (history.getChangeType() == 3) {
+            Map afterMap = JsonUtils.toMap(history.getAfterContent());
             this.changeContent = "修改供货价";
             // 变更前 {"skuName":"5寸,白色","supplyPrice":9950000,"skuId":"20171205160651663483"}
             StringBuffer beforeSb = new StringBuffer();
@@ -92,21 +96,28 @@ public class GoodsHistoryRepresentation {
             }
             this.afterContent = afterSb.toString();
         } else {
+            this.addSku = new ArrayList<>();
+            List<Map> afterList = JsonUtils.toList(history.getAfterContent(), Map.class);
             this.changeContent = "增加sku";
-            // 变更后 {"skuName":"3寸,白色","marketPrice":null,"supplyPrice":9960000.0,"weight":0.2,"photographPrice":9990000.0,"showStatus":2.0,"availableNum":222.0,"goodsCode":"87","skuId":"20180119173349110091"}
-            Long supplyPriceLong = null != afterMap.get("supplyPrice") ? new BigDecimal(String.valueOf(afterMap.get("supplyPrice"))).longValue() : null;
-            String supplyPrice = null != supplyPriceLong ? Utils.moneyFormatCN(supplyPriceLong) : null;
+            if (null != afterList && afterList.size() > 0) {
+                for (Map afterMap : afterList) {
+                    // 变更后 {"skuName":"3寸,白色","marketPrice":null,"supplyPrice":9960000.0,"weight":0.2,"photographPrice":9990000.0,"showStatus":2.0,"availableNum":222.0,"goodsCode":"87","skuId":"20180119173349110091"}
+                    Long supplyPriceLong = null != afterMap.get("supplyPrice") ? new BigDecimal(String.valueOf(afterMap.get("supplyPrice"))).longValue() : null;
+                    String supplyPrice = null != supplyPriceLong ? Utils.moneyFormatCN(supplyPriceLong) : null;
 
-            Long marketPriceLong = null != afterMap.get("marketPrice") ? new BigDecimal(String.valueOf(afterMap.get("marketPrice"))).longValue() : null;
-            String marketPrice = null != marketPriceLong ? Utils.moneyFormatCN(marketPriceLong) : null;
+                    Long marketPriceLong = null != afterMap.get("marketPrice") ? new BigDecimal(String.valueOf(afterMap.get("marketPrice"))).longValue() : null;
+                    String marketPrice = null != marketPriceLong ? Utils.moneyFormatCN(marketPriceLong) : null;
 
-            Long photographPriceLong = null != afterMap.get("photographPrice") ? new BigDecimal(String.valueOf(afterMap.get("photographPrice"))).longValue() : null;
-            String photographPrice = null != photographPriceLong ? Utils.moneyFormatCN(photographPriceLong) : null;
+                    Long photographPriceLong = null != afterMap.get("photographPrice") ? new BigDecimal(String.valueOf(afterMap.get("photographPrice"))).longValue() : null;
+                    String photographPrice = null != photographPriceLong ? Utils.moneyFormatCN(photographPriceLong) : null;
 
-            afterMap.put("photographPrice", photographPrice);
-            afterMap.put("supplyPrice", supplyPrice);
-            afterMap.put("marketPrice", marketPrice);
-            this.addSku = afterMap;
+                    afterMap.put("photographPrice", photographPrice);
+                    afterMap.put("supplyPrice", supplyPrice);
+                    afterMap.put("marketPrice", marketPrice);
+                    this.addSku.add(afterMap);
+                }
+            }
+
         }
     }
 
@@ -158,11 +169,11 @@ public class GoodsHistoryRepresentation {
         this.changeReason = changeReason;
     }
 
-    public Map getAddSku() {
+    public List<Map> getAddSku() {
         return addSku;
     }
 
-    public void setAddSku(Map addSku) {
+    public void setAddSku(List<Map> addSku) {
         this.addSku = addSku;
     }
 }
