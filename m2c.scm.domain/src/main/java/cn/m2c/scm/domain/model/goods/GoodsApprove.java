@@ -439,12 +439,6 @@ public class GoodsApprove extends ConcurrencySafeEntity {
                         skuMap.put("serviceRate", newServiceRate);
                         skuMap.put("settlementMode", settlementMode);
                         skuAddList.add(skuMap);
-
-                        String historyId = UUID.randomUUID().toString().replaceAll("-", "").toUpperCase();
-                        GoodsApproveHistory history = new GoodsApproveHistory(historyId, historyNo, this, this.goodsId,
-                                4, "",
-                                JsonUtils.toStr(skuAddList), this.changeReason, nowDate);
-                        this.goodsApproveHistories.add(history);
                     }
                 } else { //修改
                     String skuName = GetMapValueUtils.getStringFromMapKey(map, "skuName");
@@ -507,7 +501,11 @@ public class GoodsApprove extends ConcurrencySafeEntity {
             }
 
             if (null != skuAddList && skuAddList.size() > 0) {
-
+                String historyId = UUID.randomUUID().toString().replaceAll("-", "").toUpperCase();
+                GoodsApproveHistory history = new GoodsApproveHistory(historyId, historyNo, this, this.goodsId,
+                        4, "",
+                        JsonUtils.toStr(skuAddList), this.changeReason, nowDate);
+                this.goodsApproveHistories.add(history);
             }
         }
 
