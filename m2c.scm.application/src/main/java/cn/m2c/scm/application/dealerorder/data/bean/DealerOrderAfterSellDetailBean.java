@@ -188,7 +188,9 @@ public class DealerOrderAfterSellDetailBean {
 	}
 	
 	public String getStrBackMoney() {
-		return Utils.moneyFormatCN(backMoney - couponDiscount);
+		// return Utils.moneyFormatCN(backMoney - couponDiscount);
+		// modified by fanjc
+		return Utils.moneyFormatCN(backMoney);
 	}
 
 	public String getReason() {
