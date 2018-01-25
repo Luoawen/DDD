@@ -242,15 +242,17 @@ public class GoodsApprove extends ConcurrencySafeEntity {
 
                 // 增加sku
                 if (null != addGoodsSkuList && addGoodsSkuList.size() > 0) {
+                    List tempList = new ArrayList<>();
                     for (Map skuMap : addGoodsSkuList) {
-                        String historyId = UUID.randomUUID().toString().replaceAll("-", "").toUpperCase();
                         skuMap.put("serviceRate", newServiceRate);
                         skuMap.put("settlementMode", settlementMode);
-                        GoodsApproveHistory history = new GoodsApproveHistory(historyId, historyNo, this, this.goodsId,
-                                4, "",
-                                JsonUtils.toStr(skuMap), this.changeReason, nowDate);
-                        this.goodsApproveHistories.add(history);
+                        tempList.add(skuMap);
                     }
+                    String historyId = UUID.randomUUID().toString().replaceAll("-", "").toUpperCase();
+                    GoodsApproveHistory history = new GoodsApproveHistory(historyId, historyNo, this, this.goodsId,
+                            4, "",
+                            JsonUtils.toStr(tempList), this.changeReason, nowDate);
+                    this.goodsApproveHistories.add(history);
                 }
 
                 // 拍获价
@@ -429,6 +431,7 @@ public class GoodsApprove extends ConcurrencySafeEntity {
         }
         List<Map> skuList = JsonUtils.toList(goodsSkuApproves, Map.class);
         if (null != skuList && skuList.size() > 0) {
+            List<Map> skuAddList = new ArrayList<>();
             for (Map map : skuList) {
                 String skuId = GetMapValueUtils.getStringFromMapKey(map, "skuId");
                 // 判断商品规格sku是否存在,存在就修改供货价和拍获价，不存在就增加商品sku
@@ -438,14 +441,10 @@ public class GoodsApprove extends ConcurrencySafeEntity {
                     this.goodsSkuApproves.add(skuApprove);
                     if (isModifyApprove) {
                         // 商品审核库增加规格
-                        String historyId = UUID.randomUUID().toString().replaceAll("-", "").toUpperCase();
                         Map skuMap = skuApprove.convertToMap();
                         skuMap.put("serviceRate", newServiceRate);
                         skuMap.put("settlementMode", settlementMode);
-                        GoodsApproveHistory history = new GoodsApproveHistory(historyId, historyNo, this, this.goodsId,
-                                4, "",
-                                JsonUtils.toStr(skuMap), this.changeReason, nowDate);
-                        this.goodsApproveHistories.add(history);
+                        skuAddList.add(skuMap);
                     }
                 } else { //修改
                     String skuName = GetMapValueUtils.getStringFromMapKey(map, "skuName");
@@ -505,6 +504,14 @@ public class GoodsApprove extends ConcurrencySafeEntity {
                     goodsSkuApprove.modifyGoodsSkuApprove(skuName, availableNum, weight, photographPrice,
                             marketPrice, supplyPrice, goodsCode, showStatus);
                 }
+            }
+
+            if (null != skuAddList && skuAddList.size() > 0) {
+                String historyId = UUID.randomUUID().toString().replaceAll("-", "").toUpperCase();
+                GoodsApproveHistory history = new GoodsApproveHistory(historyId, historyNo, this, this.goodsId,
+                        4, "",
+                        JsonUtils.toStr(skuAddList), this.changeReason, nowDate);
+                this.goodsApproveHistories.add(history);
             }
         }
 
