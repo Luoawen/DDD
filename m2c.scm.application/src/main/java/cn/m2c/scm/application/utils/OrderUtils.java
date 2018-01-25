@@ -163,7 +163,7 @@ public class OrderUtils {
                 payStatusStr = "待支付";
             }
             if (orderStatus >= 1 && orderStatus <= 5) {
-                payStatusStr = "已付款";
+                payStatusStr = "已支付";
             }
         }
         return payStatusStr;
