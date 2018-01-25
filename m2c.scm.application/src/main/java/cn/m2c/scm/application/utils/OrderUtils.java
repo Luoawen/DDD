@@ -43,7 +43,7 @@ public class OrderUtils {
                     statusStr = "换货";
                     break;
                 case 1:
-                    statusStr = "退货";
+                    statusStr = "退货退款";
                     break;
                 case 2:
                     statusStr = "仅退款";
