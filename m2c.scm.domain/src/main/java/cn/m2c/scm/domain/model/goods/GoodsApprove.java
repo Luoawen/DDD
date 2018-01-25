@@ -244,8 +244,6 @@ public class GoodsApprove extends ConcurrencySafeEntity {
                 if (null != addGoodsSkuList && addGoodsSkuList.size() > 0) {
                     List tempList = new ArrayList<>();
                     for (Map skuMap : addGoodsSkuList) {
-                        skuMap.put("serviceRate", newServiceRate);
-                        skuMap.put("settlementMode", settlementMode);
                         tempList.add(skuMap);
                     }
                     String historyId = UUID.randomUUID().toString().replaceAll("-", "").toUpperCase();
