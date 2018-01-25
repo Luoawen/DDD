@@ -26,7 +26,6 @@ import cn.m2c.common.MPager;
 import cn.m2c.ddd.common.auth.RequirePermissions;
 import cn.m2c.scm.application.order.data.bean.MediaResOrderDetailBean;
 import cn.m2c.scm.application.order.data.export.OrderMediaExpModel;
-import cn.m2c.scm.application.order.data.export.SaleAfterExpModel;
 import cn.m2c.scm.application.order.data.representation.MediaResOrderDetailBeanRepresentation;
 import cn.m2c.scm.application.order.query.OrderQuery;
 import cn.m2c.scm.application.utils.ExcelUtil;
