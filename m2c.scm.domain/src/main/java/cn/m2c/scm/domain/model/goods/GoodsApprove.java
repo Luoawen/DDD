@@ -217,10 +217,10 @@ public class GoodsApprove extends ConcurrencySafeEntity {
 
                 String historyNo = UUID.randomUUID().toString().replaceAll("-", "").toUpperCase();
                 // 分类
-                String newServiceRate = null != map.get("newServiceRate") ? map.get("newServiceRate").toString() : null;
-                String settlementMode = null != map.get("settlementMode") ? map.get("settlementMode").toString() : null;
                 if (StringUtils.isNotEmpty(oldGoodsClassifyId) && StringUtils.isNotEmpty(newGoodsClassifyId)) {
                     String historyId = UUID.randomUUID().toString().replaceAll("-", "").toUpperCase();
+                    String newServiceRate = null != map.get("newServiceRate") ? map.get("newServiceRate").toString() : null;
+                    String settlementMode = null != map.get("settlementMode") ? map.get("settlementMode").toString() : null;
                     String oldServiceRate = null != map.get("oldServiceRate") ? map.get("oldServiceRate").toString() : null;
                     String oldClassifyName = null != map.get("oldClassifyName") ? map.get("oldClassifyName").toString() : null;
                     String newClassifyName = null != map.get("newClassifyName") ? map.get("newClassifyName").toString() : null;
@@ -242,14 +242,10 @@ public class GoodsApprove extends ConcurrencySafeEntity {
 
                 // 增加sku
                 if (null != addGoodsSkuList && addGoodsSkuList.size() > 0) {
-                    List tempList = new ArrayList<>();
-                    for (Map skuMap : addGoodsSkuList) {
-                        tempList.add(skuMap);
-                    }
                     String historyId = UUID.randomUUID().toString().replaceAll("-", "").toUpperCase();
                     GoodsApproveHistory history = new GoodsApproveHistory(historyId, historyNo, this, this.goodsId,
                             4, "",
-                            JsonUtils.toStr(tempList), this.changeReason, nowDate);
+                            JsonUtils.toStr(addGoodsSkuList), this.changeReason, nowDate);
                     this.goodsApproveHistories.add(history);
                 }
 
@@ -443,6 +439,12 @@ public class GoodsApprove extends ConcurrencySafeEntity {
                         skuMap.put("serviceRate", newServiceRate);
                         skuMap.put("settlementMode", settlementMode);
                         skuAddList.add(skuMap);
+
+                        String historyId = UUID.randomUUID().toString().replaceAll("-", "").toUpperCase();
+                        GoodsApproveHistory history = new GoodsApproveHistory(historyId, historyNo, this, this.goodsId,
+                                4, "",
+                                JsonUtils.toStr(skuAddList), this.changeReason, nowDate);
+                        this.goodsApproveHistories.add(history);
                     }
                 } else { //修改
                     String skuName = GetMapValueUtils.getStringFromMapKey(map, "skuName");
@@ -505,11 +507,7 @@ public class GoodsApprove extends ConcurrencySafeEntity {
             }
 
             if (null != skuAddList && skuAddList.size() > 0) {
-                String historyId = UUID.randomUUID().toString().replaceAll("-", "").toUpperCase();
-                GoodsApproveHistory history = new GoodsApproveHistory(historyId, historyNo, this, this.goodsId,
-                        4, "",
-                        JsonUtils.toStr(skuAddList), this.changeReason, nowDate);
-                this.goodsApproveHistories.add(history);
+
             }
         }
 
