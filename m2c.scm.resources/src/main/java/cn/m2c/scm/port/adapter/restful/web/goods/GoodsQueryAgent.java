@@ -65,6 +65,9 @@ public class GoodsQueryAgent {
         MPager result = new MPager(MCode.V_1);
         try {
             Integer total = goodsQueryApplication.goodsChoiceTotal(dealerId, goodsClassifyId, condition);
+            if(total<=(pageNum-1)*rows){//页面切换有问题
+        		pageNum = 1;
+        	}
             if (total > 0) {
                 List<GoodsBean> goodsBeans = goodsQueryApplication.goodsChoice(dealerId, goodsClassifyId,
                         condition, pageNum, rows);
