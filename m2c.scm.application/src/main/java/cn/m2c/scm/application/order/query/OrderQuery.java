@@ -928,8 +928,16 @@ public class OrderQuery {
 			}*/
             //String mediaCate, Integer mediaNo, String mediaName, Integer mresCate, Integer formId, Long mresNo
             if (StringUtils.isNotEmpty(mediaCate)) {
-                sql.append(" AND tm.media_cate = ? ");
-                params.add(mediaCate);
+            	if (mediaCate.endsWith("00")) {
+    				String cate = mediaCate.substring(0, 4);
+    				sql.append(" AND LEFT(tm.media_cate, 4 ) = ? ");
+    				params.add(cate);
+    			} else {
+    				sql.append(" AND tm.media_cate = ? ");
+    				params.add(mediaCate);
+    			}
+                //sql.append(" AND tm.media_cate = ? ");
+                //params.add(mediaCate);
             }
             if (null != mediaNo) {
                 sql.append(" AND tm.media_no = ? ");
@@ -1026,8 +1034,16 @@ public class OrderQuery {
 				sql.append(" AND tod.media_res_id IN ( " + Utils.listParseString(mediaResIds) + " ) ");
 			}*/
             if (StringUtils.isNotEmpty(mediaCate)) {
-                sql.append(" AND tm.media_cate = ? ");
-                params.add(mediaCate);
+            	if (mediaCate.endsWith("00")) {
+    				String cate = mediaCate.substring(0, 4);
+    				sql.append(" AND LEFT(tm.media_cate, 4 ) = ? ");
+    				params.add(cate);
+    			} else {
+    				sql.append(" AND tm.media_cate = ? ");
+    				params.add(mediaCate);
+    			}
+                //sql.append(" AND tm.media_cate = ? ");
+                //params.add(mediaCate);
             }
             if (null != mediaNo) {
                 sql.append(" AND tm.media_no = ? ");
