@@ -898,8 +898,8 @@ public class OrderQuery {
                 sql.append(" AND tom.user_id IN ( " + Utils.listParseString(userIds) + ") ");
             }
             if (StringUtils.isNotEmpty(orderId)) {
-                sql.append(" AND tom.order_id LIKE ? ");
-                params.add("%" + orderId + "%");
+                sql.append(" AND tom.order_id = ? ");
+                params.add(orderId);
             }
             if (null != payStatus) { //支付状态
                 if (payStatus == -1) {//-1已取消
@@ -932,8 +932,8 @@ public class OrderQuery {
                 params.add(mediaCate);
             }
             if (null != mediaNo) {
-                sql.append(" AND tm.media_no LIKE ? ");
-                params.add("%" + mediaNo + "%");
+                sql.append(" AND tm.media_no = ? ");
+                params.add(mediaNo);
             }
             if (StringUtils.isNotEmpty(mediaName)) {
                 sql.append(" AND tm.media_name LIKE ? ");
@@ -948,8 +948,8 @@ public class OrderQuery {
                 params.add(formId);
             }
             if (null != mresNo) {
-                sql.append(" AND tm.mres_no LIKE ? ");
-                params.add("%" + mresNo + "%");
+                sql.append(" AND tm.mres_no = ? ");
+                params.add(mresNo);
             }
             if (StringUtils.isNotEmpty(goodsMessage)) { //商品名/商品SKU编号
                 sql.append(" AND ( tod.goods_name LIKE ? OR tod.sku_id LIKE ? ) ");
@@ -997,8 +997,8 @@ public class OrderQuery {
                 sql.append(" AND tom.user_id IN ( " + Utils.listParseString(userIds) + ") ");
             }
             if (StringUtils.isNotEmpty(orderId)) {
-                sql.append(" AND tom.order_id LIKE ? ");
-                params.add("%" + orderId + "%");
+                sql.append(" AND tom.order_id = ? ");
+                params.add(orderId);
             }
             if (null != payStatus) { //支付状态
                 if (payStatus == -1) {//-1已取消
@@ -1030,8 +1030,8 @@ public class OrderQuery {
                 params.add(mediaCate);
             }
             if (null != mediaNo) {
-                sql.append(" AND tm.media_no LIKE ? ");
-                params.add("%" + mediaNo + "%");
+                sql.append(" AND tm.media_no = ? ");
+                params.add(mediaNo);
             }
             if (StringUtils.isNotEmpty(mediaName)) {
                 sql.append(" AND tm.media_name LIKE ? ");
@@ -1046,8 +1046,8 @@ public class OrderQuery {
                 params.add(formId);
             }
             if (null != mresNo) {
-                sql.append(" AND tm.mres_no LIKE ? ");
-                params.add("%" + mresNo + "%");
+                sql.append(" AND tm.mres_no = ? ");
+                params.add(mresNo);
             }
             if (StringUtils.isNotEmpty(goodsMessage)) { //商品名/商品SKU编号
                 sql.append(" AND ( tod.goods_name LIKE ? OR tod.sku_id LIKE ? ) ");
