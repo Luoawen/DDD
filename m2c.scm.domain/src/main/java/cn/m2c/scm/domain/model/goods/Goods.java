@@ -346,13 +346,9 @@ public class Goods extends ConcurrencySafeEntity {
                 // 判断商品规格sku是否存在,存在就修改供货价和拍获价，不存在就增加商品sku
                 GoodsSku goodsSku = getGoodsSKU(skuId);
                 if (null == goodsSku) {// 增加规格
-                    String historyId = UUID.randomUUID().toString().replaceAll("-", "").toUpperCase();
                     map.put("serviceRate", newServiceRate);
                     map.put("settlementMode", settlementMode);
-                    GoodsHistory history = new GoodsHistory(historyId, historyNo, this.goodsId,
-                            4, "",
-                            JsonUtils.toStr(map), changeReason, nowDate);
-                    histories.add(history);
+                    addSkuList.add(map);
                 } else { // 修改供货价和拍获价
                     Long photographPrice = GetMapValueUtils.getLongFromMapKey(map, "photographPrice");
                     Long supplyPrice = GetMapValueUtils.getLongFromMapKey(map, "supplyPrice");
@@ -389,6 +385,13 @@ public class Goods extends ConcurrencySafeEntity {
                         histories.add(history);
                     }
                 }
+            }
+            if (null != addSkuList &&addSkuList.size()>0){
+                String historyId = UUID.randomUUID().toString().replaceAll("-", "").toUpperCase();
+                GoodsHistory history = new GoodsHistory(historyId, historyNo, this.goodsId,
+                        4, "",
+                        JsonUtils.toStr(addSkuList), changeReason, nowDate);
+                histories.add(history);
             }
         }
         return histories;
