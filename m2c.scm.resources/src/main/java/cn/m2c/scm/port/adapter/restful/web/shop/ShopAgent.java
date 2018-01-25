@@ -66,8 +66,11 @@ public class ShopAgent {
 	            @RequestParam(value = "rows", required = false, defaultValue = "10") Integer rows) {
 	        MPager result = new MPager(MCode.V_1);
 	        try {
-	        	List<ShopBean> shopList  = query.getShopList(dealerName,dealerClassify,dealerId,pageNum,rows);
 	        	Integer shopCount = query.getShopCount(dealerName,dealerClassify,dealerId);
+	        	if(shopCount<=(pageNum-1)*rows){//页面切换有问题
+	        		pageNum = 1;
+	        	}
+	        	List<ShopBean> shopList  = query.getShopList(dealerName,dealerClassify,dealerId,pageNum,rows);
 	        	result.setContent(shopList);
 	            result.setPager(shopCount, pageNum, rows);
 	            result.setStatus(MCode.V_200);
