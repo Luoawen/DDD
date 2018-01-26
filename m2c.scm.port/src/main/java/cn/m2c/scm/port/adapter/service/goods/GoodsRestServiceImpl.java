@@ -388,8 +388,8 @@ public class GoodsRestServiceImpl implements GoodsService {
     }
 
     @Override
-    public Map packetZoneGoods() {
-        String url = M2C_HOST_URL + "/m2c.market/domain/packet/zone/goods";
+    public Map packetZoneGoods(String userId) {
+        String url = M2C_HOST_URL + "/m2c.market/domain/packet/zone/goods?userId=" + userId;
         Map resultMap = new HashMap<>();
         try {
             String result = restTemplate.getForObject(url, String.class);

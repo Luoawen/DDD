@@ -528,11 +528,12 @@ public class AppGoodsAgent {
      * @return
      */
     @RequestMapping(value = "packet/zone", method = RequestMethod.GET)
-    public ResponseEntity<MResult> packetZoneGoods() {
+    public ResponseEntity<MResult> packetZoneGoods(
+            @RequestParam(value = "userId", required = false, defaultValue = "") String userId) {
         MResult result = new MResult(MCode.V_200);
         try {
             Map resultMap = new HashMap<>();
-            Map map = goodsRestService.packetZoneGoods();
+            Map map = goodsRestService.packetZoneGoods(userId);
             if (null != map && !map.isEmpty()) {
                 Integer statusCode = Integer.parseInt(String.valueOf(map.get("statusCode")));
                 if (statusCode.equals(200)) {
