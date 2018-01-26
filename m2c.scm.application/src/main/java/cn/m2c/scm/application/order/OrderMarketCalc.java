@@ -488,8 +488,11 @@ public class OrderMarketCalc {
             	rtMoney += g.multiply(t.subtract(new BigDecimal(1)).abs()).longValue();
                 // rtMoney += (tmp.getGoodsAmount() * (1 - discount / 1000.0));
             	tmp.setDiscountMoney(rtMoney);
-            } else
-                rtMoney = discount;
+            } else {
+            	rtMoney = discount;
+            	if (tmp != null)
+            		tmp.setDiscountMoney(rtMoney);
+            }
         }
         return rtMoney;
     }
