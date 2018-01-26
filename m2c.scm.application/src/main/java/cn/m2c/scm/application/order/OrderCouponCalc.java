@@ -283,8 +283,14 @@ public class OrderCouponCalc {
             	t = t.divide(new BigDecimal(1000), 3, BigDecimal.ROUND_HALF_DOWN);
             	rtMoney += g.multiply(t.subtract(new BigDecimal(1)).abs()).longValue();
                 // rtMoney += (tmp.getGoodsAmount() * (1 - discount / 1000.0));
-            } else
-                rtMoney = discount;
+            } else {
+            	if (tmp != null) {
+	            	long finalAmount = tmp.getGoodsAmount()-tmp.getDiscountMoney();
+	            	if (total < 1 && (b == 1 && finalAmount < threshold))
+	            		discount = 0; // 0  表示少退0元
+            	}
+            	rtMoney = discount;
+            }
         }
         return rtMoney;
     }
