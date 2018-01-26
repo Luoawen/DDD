@@ -428,9 +428,12 @@ public class GoodsApprove extends ConcurrencySafeEntity {
             List<Map> skuAddList = new ArrayList<>();
             if (isCover) {
                 this.goodsSkuApproves.clear();
+                List<GoodsSkuApprove> tempGoodsSkuApproves = new ArrayList<>();
                 for (Map map : skuList) {
-                    this.goodsSkuApproves.add(createGoodsSkuApprove(map));
+                    GoodsSkuApprove skuApprove = createGoodsSkuApprove(map);
+                    tempGoodsSkuApproves.add(skuApprove);
                 }
+                this.goodsSkuApproves = tempGoodsSkuApproves;
             } else {
                 for (Map map : skuList) {
                     String skuId = GetMapValueUtils.getStringFromMapKey(map, "skuId");
