@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import cn.m2c.common.MCode;
 import cn.m2c.common.MResult;
+import cn.m2c.scm.application.order.data.representation.OrderNums;
 import cn.m2c.scm.application.order.query.OrderQuery;
 import cn.m2c.scm.domain.NegativeException;
 
@@ -56,6 +57,26 @@ public class OrderDomainAgent {
 			result.setContent("获取商家用户数据失败");
 		}
     	return new ResponseEntity<MResult>(result,HttpStatus.OK);
+    }
+    
+    /**
+     * 获取在某个用户下过的订单数
+     */
+    @RequestMapping(value="/get/num/{userId}", method = RequestMethod.GET)
+    public ResponseEntity<MResult> getOrdersByUserId(@PathVariable("userId") String userId
+    		,@RequestParam(value="userId", required=false, defaultValue="0") int hasPayed){
+    	MResult result = new MResult(MCode.V_1);
+    	try {
+    		OrderNums nums = orderQuery.getUserOrders(userId, hasPayed);
+    		result.setContent(nums);
+    		result.setStatus(MCode.V_200);
+		} 
+    	catch (Exception e) {
+			LOGGER.info("获取用户下单数失败,e:" + e.getMessage());
+			result.setStatus(MCode.V_400);
+			result.setContent("获取用户下单数失败");
+		}
+    	return new ResponseEntity<MResult>(result, HttpStatus.OK);
     }
     
     public static void main(String args[]) {

@@ -16,6 +16,7 @@ import cn.m2c.scm.application.order.data.bean.OrderDealerBean;
 import cn.m2c.scm.application.order.data.bean.OrderGoodsBean;
 import cn.m2c.scm.application.order.data.bean.SimpleCoupon;
 import cn.m2c.scm.application.order.data.bean.SimpleMarket;
+import cn.m2c.scm.application.order.data.representation.OrderNums;
 import cn.m2c.scm.application.utils.Utils;
 import cn.m2c.scm.domain.NegativeException;
 import cn.m2c.scm.domain.service.order.OrderService;
@@ -622,7 +623,7 @@ public class OrderQuery {
                                             String userName, String mediaOrResId) {
         List<Object> params = new ArrayList<Object>();
         StringBuilder sql = new StringBuilder();
-        sql.append(" SELECT  count(*) from (");
+        sql.append(" SELECT  count(1) from (");
         sql.append(" SELECT d.*");
         sql.append(" FROM t_scm_order_dealer d,t_scm_order_main m,t_scm_order_detail dtl");
         sql.append(" WHERE d.order_id = m.order_id and d.dealer_order_id = dtl.dealer_order_id");
@@ -1106,4 +1107,28 @@ public class OrderQuery {
         }
         return bean.getStrAmount();
     }
+    /***
+     * 获取用户下过的单数
+     * @param userId
+     * @param hasPayed
+     * @return
+     */
+	public OrderNums getUserOrders(String userId, int hasPayed) {
+		
+		List<Object> params = new ArrayList<Object>();
+		StringBuilder sql = new StringBuilder();
+		sql.append(" SELECT count(1) FROM t_scm_order_main m");
+		sql.append(" WHERE m.user_id = ?");
+		
+		params.add(userId);
+		
+		if (hasPayed != 0) {
+			sql.append(" AND m._status > ?");
+			params.add(0);
+		}
+		Long nn = supportJdbcTemplate.jdbcTemplate().queryForObject(sql.toString(), Long.class, params.toArray());
+		OrderNums nums = new OrderNums();
+		nums.setOrderNum(nn.intValue());
+		return nums;
+	}
 }
