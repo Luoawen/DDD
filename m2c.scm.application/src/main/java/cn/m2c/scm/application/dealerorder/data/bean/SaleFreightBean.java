@@ -13,10 +13,14 @@ public class SaleFreightBean {
 	private Long costFt;
 
 	public Long getCostFt() {
+		if (costFt == null)
+			costFt = 0l;
 		return costFt/100;
 	}
 	
 	public String getStrCostFt() {
+		if (costFt == null)
+			costFt = 0l;
 		return Utils.moneyFormatCN(costFt);
 	}
 
