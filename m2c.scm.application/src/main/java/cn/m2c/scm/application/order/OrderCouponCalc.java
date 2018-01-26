@@ -197,7 +197,8 @@ public class OrderCouponCalc {
         Integer discount = couponInfo.getDiscount();
         for (SkuNumBean bean : couponSku) {
         	// sortNo == 0是为了兼容之前的数据
-            boolean bFlag = (skuId.equals(bean.getSkuId()));
+            //boolean bFlag = (skuId.equals(bean.getSkuId()));
+            boolean bFlag = (skuId.equals(bean.getSkuId()) && (_sortNo == 0 || bean.getSortNo() == _sortNo));
             if (b == 1 && !bFlag && bean.getIsChange() == 0) {
                 total += bean.getGoodsAmount()-bean.getDiscountMoney();
             } else if (b == 2 && !bFlag && bean.getIsChange() == 0) {
@@ -212,7 +213,8 @@ public class OrderCouponCalc {
         if (total >= threshold || b == 3) {// 若还满足, 需要计算满足的值
             for (SkuNumBean bean : couponSku) {
 
-                boolean bFlag = (skuId.equals(bean.getSkuId()));
+                //boolean bFlag = (skuId.equals(bean.getSkuId()));
+                boolean bFlag = (skuId.equals(bean.getSkuId()) && (_sortNo == 0 || bean.getSortNo() == _sortNo));
                 if (bFlag) {
                     tmp = bean;//tmp售后的商品
                     continue;
@@ -247,7 +249,7 @@ public class OrderCouponCalc {
 //        	couponInfo.setIsFull(false);
             for (SkuNumBean bean : couponSku) {
 
-                boolean bFlag = (skuId.equals(bean.getSkuId()));
+            	boolean bFlag = (skuId.equals(bean.getSkuId()) && (_sortNo == 0 || bean.getSortNo() == _sortNo));
                 if (bFlag) {
                     tmp = bean;
                     continue;
