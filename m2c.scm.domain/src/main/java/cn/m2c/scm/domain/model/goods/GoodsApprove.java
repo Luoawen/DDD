@@ -343,7 +343,7 @@ public class GoodsApprove extends ConcurrencySafeEntity {
         this.approveStatus = 2;
         this.rejectReason = rejectReason;
     }
-
+    
     /**
      * 修改审核记录
      *
@@ -433,7 +433,7 @@ public class GoodsApprove extends ConcurrencySafeEntity {
                     GoodsSkuApprove skuApprove = createGoodsSkuApprove(map);
                     tempGoodsSkuApproves.add(skuApprove);
                 }
-                this.goodsSkuApproves = tempGoodsSkuApproves;
+                this.goodsSkuApproves.addAll(tempGoodsSkuApproves);
             } else {
                 for (Map map : skuList) {
                     String skuId = GetMapValueUtils.getStringFromMapKey(map, "skuId");
