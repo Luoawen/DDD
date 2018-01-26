@@ -350,7 +350,7 @@ public class DealerOrderDtl extends ConcurrencySafeEntity {
         return null;
     }
     /***
-     * 获取商品价格
+     * 获取商品金额
      *
      * @return
      */

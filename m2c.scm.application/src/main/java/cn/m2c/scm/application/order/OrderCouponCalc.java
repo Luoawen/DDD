@@ -237,7 +237,10 @@ public class OrderCouponCalc {
             }
 
             if (a == 2) {
-            	BigDecimal g = new BigDecimal(tmp.getGoodsAmount()-tmp.getDiscountMoney());
+            	long finalAmount = tmp.getGoodsAmount()-tmp.getDiscountMoney();
+            	BigDecimal g = new BigDecimal(finalAmount);
+            	if (total < 1 && (b == 1 && finalAmount < threshold)) // 只剩最后一个了，看下是不是是不是不满足
+            		discount = 1000;
             	BigDecimal t = new BigDecimal(discount);
             	
             	BigDecimal s = t.divide(new BigDecimal(1000), 3, BigDecimal.ROUND_HALF_DOWN);
@@ -270,7 +273,12 @@ public class OrderCouponCalc {
                 }
             }
             if (a == 2) {
-            	BigDecimal g = new BigDecimal(tmp.getGoodsAmount()-tmp.getDiscountMoney());
+            	//BigDecimal g = new BigDecimal(tmp.getGoodsAmount()-tmp.getDiscountMoney());
+            	long finalAmount = tmp.getGoodsAmount()-tmp.getDiscountMoney();
+            	BigDecimal g = new BigDecimal(finalAmount);
+            	if (total < 1 && (b == 1 && finalAmount < threshold)) // 只剩最后一个了，看下是不是是不是不满足
+            		discount = 1000; // 1000 表示不满足也表示打0折
+            	
             	BigDecimal t = new BigDecimal(discount);
             	t = t.divide(new BigDecimal(1000), 3, BigDecimal.ROUND_HALF_DOWN);
             	rtMoney += g.multiply(t.subtract(new BigDecimal(1)).abs()).longValue();
