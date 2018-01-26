@@ -64,7 +64,7 @@ public class OrderDomainAgent {
      */
     @RequestMapping(value="/get/num/{userId}", method = RequestMethod.GET)
     public ResponseEntity<MResult> getOrdersByUserId(@PathVariable("userId") String userId
-    		,@RequestParam(value="userId", required=false, defaultValue="0") int hasPayed){
+    		,@RequestParam(value="hasPayed", required=false, defaultValue="0") int hasPayed){
     	MResult result = new MResult(MCode.V_1);
     	try {
     		OrderNums nums = orderQuery.getUserOrders(userId, hasPayed);
