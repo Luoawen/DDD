@@ -107,7 +107,7 @@ public interface GoodsService {
     /**
      * 新人礼包专区商品范围展示
      */
-    Map packetZoneGoods();
+    Map packetZoneGoods(String userId);
 
     /**
      * 新人礼包专区商品更多
