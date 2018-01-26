@@ -368,9 +368,9 @@ public class SaleAfterOrderApp {
             throw new NegativeException(MCode.V_103, "状态不正确，不能进行发货操作！");
         }
         saleAfterRepository.updateSaleAfterOrder(order);
-        AfterSellFlow afterSellFlow = new AfterSellFlow();
-        afterSellFlow.add(cmd.getSaleAfterNo(), 10, cmd.getUserId(), null, null, null, null);
-        afterSellFlowRepository.save(afterSellFlow);
+     //   AfterSellFlow afterSellFlow = new AfterSellFlow();
+     //   afterSellFlow.add(cmd.getSaleAfterNo(), 10, cmd.getUserId(), null, null, null, null);
+     //   afterSellFlowRepository.save(afterSellFlow);
     }
 
     /***

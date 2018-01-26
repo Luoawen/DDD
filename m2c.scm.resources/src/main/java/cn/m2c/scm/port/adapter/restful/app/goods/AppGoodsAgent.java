@@ -103,13 +103,19 @@ public class AppGoodsAgent {
                 result = new MPager(MCode.V_1, "必选参数为空");
                 return new ResponseEntity<MPager>(result, HttpStatus.OK);
             }
+            Long qStart = System.currentTimeMillis();
             List<GoodsBean> goodsBeanList = goodsQueryApplication.queryGoodsGuessCache(positionType);
+            Long qEnd = System.currentTimeMillis();
+            LOGGER.info("查询时间差：" + (qEnd - qStart));
             if (null != goodsBeanList && goodsBeanList.size() > 0) {
                 if (positionType == 1 || positionType == 4) { //首页分页
                     List<GoodsBean> goodsBeans = goodsQueryApplication.getPagedList(pageNum, rows, goodsBeanList);
                     List<AppGoodsGuessRepresentation> resultRepresentation = new ArrayList<>();
                     for (GoodsBean goodsBean : goodsBeans) {
+                        Long start = System.currentTimeMillis();
                         List<Map> goodsTags = goodsRestService.getGoodsTags(goodsBean.getDealerId(), goodsBean.getGoodsId(), goodsBean.getGoodsClassifyId());
+                        Long end = System.currentTimeMillis();
+                        LOGGER.info("时间差：" + (end - start));
                         resultRepresentation.add(new AppGoodsGuessRepresentation(goodsBean, goodsTags));
                     }
                     result.setContent(resultRepresentation);
