@@ -442,10 +442,10 @@ public class SaleAfterOrderApp {
             throw new NegativeException(MCode.V_103, "状态不正确，不能进行此操作！");
         }
         saleAfterRepository.updateSaleAfterOrder(order);
-        AfterSellFlow afterSellFlow = new AfterSellFlow();
-        afterSellFlow.add(cmd.getSaleAfterNo(), 9, cmd.getUserId(), null, null, null, null);
-        System.out.println(afterSellFlow);
-        afterSellFlowRepository.save(afterSellFlow);
+//       AfterSellFlow afterSellFlow = new AfterSellFlow();
+//        afterSellFlow.add(cmd.getSaleAfterNo(), 9, cmd.getUserId(), null, null, null, null);
+//        System.out.println(afterSellFlow);
+//        afterSellFlowRepository.save(afterSellFlow);
 
         // 售后确认退款推送消息
         Map extraMap = new HashMap<>();
