@@ -29,9 +29,14 @@ public class SkuNumBean {
 	@ColumnAlias(value = "change_price")
 	private Long changePrice; // 换购价
 	/**优惠金额*/
+	@ColumnAlias(value = "discountMoney")
 	private long discountMoney = 0;
+	
 	@ColumnAlias(value = "sort_no")
 	private Integer sortNo;
+	// 满减状态
+	@ColumnAlias(value = "_status")
+	private int status = 0;
 	
 	public Integer getSortNo() {
 		return sortNo;
@@ -39,6 +44,14 @@ public class SkuNumBean {
 
 	public void setSortNo(Integer sortNo) {
 		this.sortNo = sortNo;
+	}
+
+	public int getStatus() {
+		return status;
+	}
+
+	public void setStatus(int status) {
+		this.status = status;
 	}
 
 	public Long getChangePrice() {

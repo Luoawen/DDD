@@ -177,6 +177,9 @@ public class OrderCouponCalc {
 			List<SkuNumBean> totalSku, String skuId, int _sortNo) {
 		List<SkuNumBean> couponSku = new ArrayList<SkuNumBean>();
 		for (SkuNumBean couponbean : totalSku) {
+			if (couponbean.getStatus() == 0) {
+				couponbean.setDiscountMoney(0);
+			}
 			if(!StringUtils.isEmpty(couponbean.getCouponId())){
 				couponSku.add(couponbean);
 			}

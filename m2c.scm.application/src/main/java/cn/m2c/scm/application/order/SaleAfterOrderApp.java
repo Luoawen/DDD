@@ -123,12 +123,14 @@ public class SaleAfterOrderApp {
         long money = itemDtl.sumGoodsMoney();
         if (orderType != 0) {
             // 生成售后单保存, 计算售后需要退的钱
-            List<SkuNumBean> totalSku = saleOrderQuery.getTotalSku(cmd.getOrderId());//所有的商品详情
             String mkId = itemDtl.getMarketId();
             String couponId = itemDtl.getCouponId();//优惠券id
+            //List<SkuNumBean> totalSku = saleOrderQuery.getTotalSku(cmd.getOrderId());//获取满足条件的所有的商品详情
+            List<SkuNumBean> totalSku = saleOrderQuery.getTotalSkuByMarket(cmd.getOrderId(), mkId, couponId);
+            
             long discountMoney = 0;//售后优惠的钱
             long couponDiscountMoney = 0;//优惠券优惠的钱
-            if (mkId != null) {//计算售后需要退的钱
+            if (!StringUtils.isEmpty(mkId)) {//计算售后需要退的钱
                 SimpleMarket marketInfo = saleOrderQuery.getMarketById(mkId, cmd.getOrderId());
                 List<SkuNumBean> skuBeanLs = saleOrderQuery.getOrderDtlByMarketId(mkId, cmd.getOrderId());
                 discountMoney = OrderMarketCalc.calcReturnMoney(marketInfo, skuBeanLs, cmd.getSkuId(), _sortNo);

@@ -687,14 +687,48 @@ public class AfterSellOrderQuery {
 	 */
 	public List<SkuNumBean> getTotalSku(String orderId) {
 		StringBuilder sql = new StringBuilder();
-		sql.append(" SELECT a.coupon_id,a.coupon_discount,a.sku_id, a.sell_num, a.is_change, a.goods_amount, a.marketing_id, a.change_price, a.sort_no\r\n")
-		.append("FROM t_scm_order_detail a\r\n")
-		.append("WHERE a.order_id = ?\r\n")
+		sql.append(" SELECT a.coupon_id,a.coupon_discount,a.sku_id, a.sell_num, a.is_change, a.goods_amount, a.marketing_id, a.change_price, a.sort_no, a.plateform_discount + a.dealer_discount AS discountMoney\r\n")
+		.append(" , b._status FROM t_scm_order_detail a\r\n")
+		.append(" LEFT OUTER JOIN t_scm_order_marketing_used b ON a.order_id=b.order_id AND a.marketing_id = b.marketing_id AND b._status=1\r\n")
+		.append(" WHERE a.order_id = ?\r\n")
 		.append("AND ((a.sort_no=0 AND a.sku_id NOT IN(SELECT b.sku_id FROM t_scm_order_after_sell b WHERE b.order_id=a.order_id AND b.dealer_order_id= a.dealer_order_id AND b._status > 3)) ")
 		.append(" OR (a.sort_no NOT IN(SELECT b.sort_no FROM t_scm_order_after_sell b WHERE b.order_id=a.order_id AND b.dealer_order_id= a.dealer_order_id AND b._status > 3)))")
 		;
 		return this.supportJdbcTemplate.queryForBeanList(sql.toString(), SkuNumBean.class, orderId);
 	}
 
+	
+	/**
+	 * 获取满足条件的所有的商品
+	 * @param orderId
+	 * @param marketId
+	 * @param counponId
+	 * @return
+	 */
+	public List<SkuNumBean> getTotalSkuByMarket(String orderId, String marketId, String counponId) {
+		List<String> params = new ArrayList<String>();
+		StringBuilder sql = new StringBuilder(512);
+		sql.append(" SELECT a.coupon_id,a.coupon_discount,a.sku_id, a.sell_num, a.is_change, a.goods_amount, a.marketing_id, a.change_price, a.sort_no, a.plateform_discount + a.dealer_discount AS discountMoney\r\n")
+		.append(" , b._status FROM t_scm_order_detail a\r\n")
+		.append(" LEFT OUTER JOIN t_scm_order_marketing_used b ON a.order_id=b.order_id AND a.marketing_id = b.marketing_id AND b._status=1\r\n")
+		.append(" WHERE a.order_id = ?\r\n")
+		;
+		params.add(orderId);
+		if (StringUtils.isNotEmpty(marketId) && StringUtils.isNotEmpty(counponId)) {
+			sql.append(" AND (a.marketing_id=? OR a.coupon_id=?)\r\n");
+			params.add(marketId);
+			params.add(counponId);
+		}
+		else if (StringUtils.isNotEmpty(marketId)) {
+			sql.append(" AND a.marketing_id=?\r\n");
+			params.add(marketId);
+		}
+		else if (StringUtils.isNotEmpty(counponId)) {
+			sql.append(" AND a.coupon_id=?");
+			params.add(counponId);
+		}
+		
+		return this.supportJdbcTemplate.queryForBeanList(sql.toString(), SkuNumBean.class, params.toArray());
+	}
 	
 }
