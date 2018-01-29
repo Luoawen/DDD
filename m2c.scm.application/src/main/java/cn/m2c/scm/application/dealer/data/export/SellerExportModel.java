@@ -53,8 +53,8 @@ public class SellerExportModel {
 		this.sellerPhone = model.getSellerPhone();
 		this.belongArea = model.getSellerProvince()+model.getSellerCity()+model.getSellerArea();
 		this.createdDate = dealDate(model.getCreatedDate());
+		this.sellerDimissionDate = dealDimissionDate(model.getSellerDimissionTime(), model.getSellerCondition());
 		this.sellerCondition = dealSellerCondition(model.getSellerCondition());
-		this.sellerDimissionDate = dealDate(model.getSellerDimissionTime());  
 	}
 	/**
 	 * 处理date
@@ -65,6 +65,14 @@ public class SellerExportModel {
 		SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
 		String str=sdf.format(date);  
 		return str;
+	}
+	private String  dealDimissionDate(Date date,Integer status) {
+		if (status == 1) {
+			this.sellerDimissionDate = "";
+		}else {
+			this.sellerDimissionDate = dealDate(date);
+		}
+		return this.sellerDimissionDate;
 	}
 	public String getSellerName() {
 		return sellerName;
