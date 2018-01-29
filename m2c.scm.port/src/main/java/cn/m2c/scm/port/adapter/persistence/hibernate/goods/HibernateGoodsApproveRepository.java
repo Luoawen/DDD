@@ -99,4 +99,12 @@ public class HibernateGoodsApproveRepository extends HibernateSupperRepository i
         query.setParameter("guaranteeId", "%" + guaranteeId + "%");
         return query.list();
     }
+
+    @Override
+    public GoodsApprove queryGoodsApprovingById(String goodsId) {
+        StringBuilder sql = new StringBuilder("select * from t_scm_goods_approve where goods_id =:goods_id and approve_status = 1");
+        Query query = this.session().createSQLQuery(sql.toString()).addEntity(GoodsApprove.class);
+        query.setParameter("goods_id", goodsId);
+        return (GoodsApprove) query.uniqueResult();
+    }
 }

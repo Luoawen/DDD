@@ -124,7 +124,7 @@ public class GoodsApplication {
         if (StringUtils.isEmpty(command.getChangeReason())) { //没有变更原因
             boolean isNeedApprove = goods.isNeedApprove(command.getGoodsClassifyId(), command.getGoodsSKUs());
             if (isNeedApprove) {
-                GoodsApprove goodsApprove = goodsApproveRepository.queryGoodsApproveById(command.getGoodsId());
+                GoodsApprove goodsApprove = goodsApproveRepository.queryGoodsApprovingById(command.getGoodsId());
                 if (null != goodsApprove) {
                     throw new NegativeException(MCode.V_503, "该商品有待审核信息");
                 } else {

@@ -31,4 +31,11 @@ public interface GoodsApproveRepository {
 	 * @return
 	 */
 	List<GoodsApprove> queryGoodsByDealerIdAndGuaranteeId(String dealerId, String guaranteeId);
+
+    /**
+     * 待审核记录
+     * @param goodsId
+     * @return
+     */
+    GoodsApprove queryGoodsApprovingById(String goodsId);
 }
