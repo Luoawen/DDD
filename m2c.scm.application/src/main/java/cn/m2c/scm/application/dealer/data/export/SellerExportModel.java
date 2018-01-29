@@ -95,6 +95,16 @@ public class SellerExportModel {
 		return sellerCondition;
 	}
 	
+	public String getSellerDimissionDate() {
+		return sellerDimissionDate;
+	}
+	public void setSellerCondition(String sellerCondition) {
+		this.sellerCondition = sellerCondition;
+	}
+	public void setSellerDimissionDate(String sellerDimissionDate) {
+		this.sellerDimissionDate = sellerDimissionDate;
+	}
+	
 	public String dealSellerCondition(Integer sellerCondition) {
 		if (sellerCondition == 1) {
 			this.sellerCondition = "在职";
