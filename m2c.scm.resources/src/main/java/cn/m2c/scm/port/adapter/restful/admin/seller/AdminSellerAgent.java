@@ -1,5 +1,7 @@
 package cn.m2c.scm.port.adapter.restful.admin.seller;
 
+import java.util.UUID;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,8 +15,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import cn.m2c.common.MCode;
 import cn.m2c.common.MResult;
+import cn.m2c.ddd.common.auth.RequirePermissions;
 import cn.m2c.scm.application.seller.SellerApplication;
 import cn.m2c.scm.application.seller.query.SellerQuery;
+import cn.m2c.scm.domain.IDGenerator;
 import cn.m2c.scm.domain.NegativeException;
 
 @Controller
@@ -35,6 +39,7 @@ public class AdminSellerAgent {
 	 * @return
 	 */
 	@RequestMapping(value = "/disable",method = RequestMethod.PUT)
+	@RequirePermissions(value ={"scm:seller:disable"})
 	public ResponseEntity<MResult> sellerDisable(@RequestParam(value = "sellerId",required = false) String sellerId){
 		MResult result = new MResult(MCode.V_1);
 		
