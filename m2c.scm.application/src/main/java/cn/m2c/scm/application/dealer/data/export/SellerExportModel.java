@@ -30,11 +30,20 @@ public class SellerExportModel {
 	 */
 	@ExcelField(title = "所属区域")
 	private String belongArea;
+	
+	@ExcelField(title = "状态")
+	private String sellerCondition;
+	
 	/**
 	 * 业务员所在市
 	 */
 	@ExcelField(title = "入职时间")
 	private String createdDate;
+	
+	@ExcelField(title = "离职时间")
+	private String sellerDimissionDate;
+	
+	
 	
 	
 	
@@ -44,6 +53,8 @@ public class SellerExportModel {
 		this.sellerPhone = model.getSellerPhone();
 		this.belongArea = model.getSellerProvince()+model.getSellerCity()+model.getSellerArea();
 		this.createdDate = dealDate(model.getCreatedDate());
+		this.sellerCondition = dealSellerCondition(model.getSellerCondition());
+		this.sellerDimissionDate = dealDate(model.getSellerDimissionTime());  
 	}
 	/**
 	 * 处理date
@@ -78,6 +89,20 @@ public class SellerExportModel {
 	}
 	public void setCreatedDate(String createdDate) {
 		this.createdDate = createdDate;
+	}
+	
+	public String getSellerCondition() {
+		return sellerCondition;
+	}
+	
+	public String dealSellerCondition(Integer sellerCondition) {
+		if (sellerCondition == 1) {
+			this.sellerCondition = "在职";
+		}
+		if (sellerCondition == 2) {
+			this.sellerCondition = "离职";
+		}
+		return this.sellerCondition;
 	}
 	
 	
