@@ -1,5 +1,6 @@
 package cn.m2c.scm.domain.model.goods;
 
+import cn.m2c.common.JsonUtils;
 import cn.m2c.ddd.common.domain.model.IdentifiedValueObject;
 
 import java.util.Date;
@@ -83,5 +84,37 @@ public class GoodsApproveHistory extends IdentifiedValueObject {
         map.put("changeReason", this.changeReason);
         map.put("modifyTime", this.createTime);
         return map;
+    }
+
+    public Integer changeType() {
+        return changeType;
+    }
+
+    public void modifyApproveHistory(String afterContent, Date createTime) {
+        this.afterContent = afterContent;
+        this.createTime = createTime;
+    }
+
+    public boolean isModifyPhotographPrice(String skuId) {
+        if (this.changeType == 2) {
+            Map map = JsonUtils.toMap(this.beforeContent);
+            String sku = (String) map.get("skuId");
+            return sku.equals(skuId);
+        }
+        return false;
+    }
+
+
+    public boolean isModifySupplyPrice(String skuId) {
+        if (this.changeType == 3) {
+            Map map = JsonUtils.toMap(this.beforeContent);
+            String sku = (String) map.get("skuId");
+            return sku.equals(skuId);
+        }
+        return false;
+    }
+
+    public String afterContent() {
+        return afterContent;
     }
 }

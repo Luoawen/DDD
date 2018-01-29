@@ -343,7 +343,7 @@ public class GoodsApprove extends ConcurrencySafeEntity {
         this.approveStatus = 2;
         this.rejectReason = rejectReason;
     }
-    
+
     /**
      * 修改审核记录
      *
@@ -396,7 +396,6 @@ public class GoodsApprove extends ConcurrencySafeEntity {
                 oldServiceRate = null != goodsInfoMap.get("oldServiceRate") ? goodsInfoMap.get("oldServiceRate").toString() : null;
                 oldClassifyName = null != goodsInfoMap.get("oldClassifyName") ? goodsInfoMap.get("oldClassifyName").toString() : null;
                 newClassifyName = null != goodsInfoMap.get("newClassifyName") ? goodsInfoMap.get("newClassifyName").toString() : null;
-
             }
             Map before = new HashMap<>();
             before.put("goodsClassifyId", oldGoodsClassifyId);
@@ -408,13 +407,23 @@ public class GoodsApprove extends ConcurrencySafeEntity {
             after.put("goodsClassifyName", newClassifyName);
             after.put("serviceRate", newServiceRate);
 
-
-            // 商品审核库修改分类
-            String historyId = UUID.randomUUID().toString().replaceAll("-", "").toUpperCase();
-            GoodsApproveHistory history = new GoodsApproveHistory(historyId, historyNo, this, this.goodsId,
-                    1, JsonUtils.toStr(before),
-                    JsonUtils.toStr(after), this.changeReason, nowDate);
-            this.goodsApproveHistories.add(history);
+            boolean isExistClassifyHistory = false;
+            if (null != this.goodsApproveHistories && this.goodsApproveHistories.size() > 0) {
+                for (GoodsApproveHistory history : this.goodsApproveHistories) {
+                    if (history.changeType() == 1) { // 修改了分类
+                        history.modifyApproveHistory(JsonUtils.toStr(after), nowDate);
+                        isExistClassifyHistory = true;
+                    }
+                }
+            }
+            if (!isExistClassifyHistory) {
+                // 商品审核库修改分类
+                String historyId = UUID.randomUUID().toString().replaceAll("-", "").toUpperCase();
+                GoodsApproveHistory history = new GoodsApproveHistory(historyId, historyNo, this, this.goodsId,
+                        1, JsonUtils.toStr(before),
+                        JsonUtils.toStr(after), this.changeReason, nowDate);
+                this.goodsApproveHistories.add(history);
+            }
         }
         this.goodsClassifyId = goodsClassifyId;
 
@@ -478,11 +487,22 @@ public class GoodsApprove extends ConcurrencySafeEntity {
 
                             Map after = new HashMap<>();
                             after.put("photographPrice", photographPriceMap.get("newPhotographPrice"));
-                            GoodsApproveHistory history = new GoodsApproveHistory(historyId, historyNo, this, this.goodsId,
-                                    2, JsonUtils.toStr(before),
-                                    JsonUtils.toStr(after), this.changeReason, nowDate);
-                            this.goodsApproveHistories.add(history);
 
+                            boolean isExistPhotographPriceHistory = false;
+                            if (null != this.goodsApproveHistories && this.goodsApproveHistories.size() > 0) {
+                                for (GoodsApproveHistory history : this.goodsApproveHistories) {
+                                    if (history.isModifyPhotographPrice(skuId)) { // 修改了拍获价
+                                        history.modifyApproveHistory(JsonUtils.toStr(after), nowDate);
+                                        isExistPhotographPriceHistory = true;
+                                    }
+                                }
+                            }
+                            if (!isExistPhotographPriceHistory) {
+                                GoodsApproveHistory history = new GoodsApproveHistory(historyId, historyNo, this, this.goodsId,
+                                        2, JsonUtils.toStr(before),
+                                        JsonUtils.toStr(after), this.changeReason, nowDate);
+                                this.goodsApproveHistories.add(history);
+                            }
                         }
                         // 商品审核库修改供货价
                         if (isModifyApprove && goodsSkuApprove.isModifySupplyPrice(supplyPrice)) {
@@ -498,10 +518,22 @@ public class GoodsApprove extends ConcurrencySafeEntity {
                             Map after = new HashMap<>();
                             after.put("supplyPrice", supplyPriceMap.get("newSupplyPrice"));
 
-                            GoodsApproveHistory history = new GoodsApproveHistory(historyId, historyNo, this, this.goodsId,
-                                    3, JsonUtils.toStr(before),
-                                    JsonUtils.toStr(after), this.changeReason, nowDate);
-                            this.goodsApproveHistories.add(history);
+
+                            boolean isExistSupplyPriceHistory = false;
+                            if (null != this.goodsApproveHistories && this.goodsApproveHistories.size() > 0) {
+                                for (GoodsApproveHistory history : this.goodsApproveHistories) {
+                                    if (history.isModifySupplyPrice(skuId)) { // 修改了供货价
+                                        history.modifyApproveHistory(JsonUtils.toStr(after), nowDate);
+                                        isExistSupplyPriceHistory = true;
+                                    }
+                                }
+                            }
+                            if (!isExistSupplyPriceHistory) {
+                                GoodsApproveHistory history = new GoodsApproveHistory(historyId, historyNo, this, this.goodsId,
+                                        3, JsonUtils.toStr(before),
+                                        JsonUtils.toStr(after), this.changeReason, nowDate);
+                                this.goodsApproveHistories.add(history);
+                            }
                         }
 
                         goodsSkuApprove.modifyGoodsSkuApprove(skuName, availableNum, weight, photographPrice,
@@ -510,11 +542,24 @@ public class GoodsApprove extends ConcurrencySafeEntity {
                 }
 
                 if (null != skuAddList && skuAddList.size() > 0) {
-                    String historyId = UUID.randomUUID().toString().replaceAll("-", "").toUpperCase();
-                    GoodsApproveHistory history = new GoodsApproveHistory(historyId, historyNo, this, this.goodsId,
-                            4, "",
-                            JsonUtils.toStr(skuAddList), this.changeReason, nowDate);
-                    this.goodsApproveHistories.add(history);
+                    boolean isExistAddSkuHistory = false;
+                    if (null != this.goodsApproveHistories && this.goodsApproveHistories.size() > 0) {
+                        for (GoodsApproveHistory history : this.goodsApproveHistories) {
+                            if (history.changeType() == 4) { // 增加了sku
+                                List<Map> list = JsonUtils.toList(history.afterContent(), Map.class);
+                                list.addAll(skuAddList);
+                                history.modifyApproveHistory(JsonUtils.toStr(list), nowDate);
+                                isExistAddSkuHistory = true;
+                            }
+                        }
+                    }
+                    if (!isExistAddSkuHistory) {
+                        String historyId = UUID.randomUUID().toString().replaceAll("-", "").toUpperCase();
+                        GoodsApproveHistory history = new GoodsApproveHistory(historyId, historyNo, this, this.goodsId,
+                                4, "",
+                                JsonUtils.toStr(skuAddList), this.changeReason, nowDate);
+                        this.goodsApproveHistories.add(history);
+                    }
                 }
             }
         }
