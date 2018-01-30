@@ -576,9 +576,9 @@ public class AfterSellOrderQuery {
 			List<Object> params = new ArrayList<>(4);
 			StringBuilder sql = new StringBuilder();
 			sql.append("SELECT count(1) FROM t_scm_order_after_sell a \r\n")
-			.append("LEFT OUTER JOIN t_scm_order_detail b ON a.order_id=b.order_id AND a.dealer_order_id=b.dealer_order_id AND a.sku_id = b.sku_id AND a.sort_no=b.sort_no AND b.is_invalide=0\r\n")
+			.append("LEFT OUTER JOIN t_scm_order_detail b ON a.order_id=b.order_id AND a.dealer_order_id=b.dealer_order_id AND a.sku_id = b.sku_id AND a.sort_no=b.sort_no\r\n")
 			.append("LEFT OUTER JOIN t_scm_dealer c ON a.dealer_id = c.dealer_id \r\n")
-			.append(" WHERE a.user_id=? ");
+			.append(" WHERE a.is_invalide=0 AND a.user_id=? ");
 			params.add(userId);
 			
 			if (status != null) {
@@ -618,9 +618,9 @@ public class AfterSellOrderQuery {
 			.append(",c.dealer_name, b.goods_name, b.sku_name, b.goods_type, b.goods_type_id, b.discount_price, b.goods_icon\r\n") 
 			.append(", a.last_updated_date, a.reject_reason, a.reason, a.back_express_no, a.back_express_name, a.express_no, a.express_name, a.sort_no, a.return_freight ")
 			.append("FROM t_scm_order_after_sell a \r\n")
-			.append("LEFT OUTER JOIN t_scm_order_detail b ON a.order_id=b.order_id AND a.dealer_order_id=b.dealer_order_id AND a.sku_id = b.sku_id AND a.sort_no=b.sort_no AND b.is_invalide=0\r\n")
+			.append("LEFT OUTER JOIN t_scm_order_detail b ON a.order_id=b.order_id AND a.dealer_order_id=b.dealer_order_id AND a.sku_id = b.sku_id AND a.sort_no=b.sort_no \r\n")
 			.append("LEFT OUTER JOIN t_scm_dealer c ON a.dealer_id = c.dealer_id \r\n")
-			.append(" WHERE a.user_id=? ");
+			.append(" WHERE a.is_invalide=0 AND a.user_id=? ");
 			params.add(userId);
 			
 			if (status != null) {
