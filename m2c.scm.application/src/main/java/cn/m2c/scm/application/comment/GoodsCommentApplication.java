@@ -109,7 +109,7 @@ public class GoodsCommentApplication {
         goodsComment.remove();
 
         // 更新订单状态
-        orderApp.commentSku(goodsComment.orderId(), goodsComment.skuId(), 0);
+        // orderApp.commentSku(goodsComment.orderId(), goodsComment.skuId(), 0);
     }
 
     /**
