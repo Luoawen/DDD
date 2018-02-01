@@ -31,6 +31,7 @@
         <property name="replyStatus" column="reply_status" type="int"/>
         <property name="commentStatus" column="comment_status" type="int"/>
         <property name="delayedFlag" column="delayed_flag" type="int"/>
+        <property name="sortNo" column="sort_no" type="int"/>
         <one-to-one name="goodsReplyComment" class="cn.m2c.scm.domain.model.comment.GoodsReplyComment"
                     property-ref="goodsComment" lazy="false"></one-to-one>
     </class>

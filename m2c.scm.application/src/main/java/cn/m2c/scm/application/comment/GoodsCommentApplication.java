@@ -61,7 +61,7 @@ public class GoodsCommentApplication {
                     command.getSkuId(), command.getSkuName(), command.getGoodsNum(), command.getGoodsName(),
                     command.getDealerId(), command.getDealerName(), command.getBuyerId(), command.getBuyerName(),
                     command.getBuyerPhoneNumber(), command.getBuyerIcon(), command.getCommentContent(), command.getCommentImages(),
-                    command.getStarLevel());
+                    command.getStarLevel(), command.getSortNo());
             goodsCommentRepository.save(goodsComment);
 
             // 更新订单状态
@@ -109,7 +109,7 @@ public class GoodsCommentApplication {
         goodsComment.remove();
 
         // 更新订单状态
-        // orderApp.commentSku(goodsComment.orderId(), goodsComment.skuId(), 0);
+        orderApp.commentSku(goodsComment.orderId(), goodsComment.skuId(), 0, goodsComment.sortNo());
     }
 
     /**

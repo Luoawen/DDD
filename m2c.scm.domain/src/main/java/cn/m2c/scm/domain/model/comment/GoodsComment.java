@@ -127,6 +127,8 @@ public class GoodsComment extends ConcurrencySafeEntity {
      */
     private GoodsReplyComment goodsReplyComment;
 
+    private Integer sortNo;
+
     public GoodsComment() {
         super();
     }
@@ -136,7 +138,7 @@ public class GoodsComment extends ConcurrencySafeEntity {
      */
     public GoodsComment(String commentId, String orderId, String goodsId, String skuId, String skuName, Integer goodsNum, String goodsName,
                         String dealerId, String dealerName, String buyerId, String buyerName,
-                        String buyerPhoneNumber, String buyerIcon, String commentContent, String commentImages, Integer starLevel) {
+                        String buyerPhoneNumber, String buyerIcon, String commentContent, String commentImages, Integer starLevel, Integer sortNo) {
         this.commentId = commentId;
         this.orderId = orderId;
         this.goodsId = goodsId;
@@ -152,6 +154,7 @@ public class GoodsComment extends ConcurrencySafeEntity {
         this.buyerIcon = buyerIcon;
         this.commentContent = commentContent;
         this.commentImages = commentImages;
+        this.sortNo = sortNo;
 
         if (StringUtils.isNotEmpty(commentImages)) {
             List<String> images = JsonUtils.toList(commentImages, String.class);
@@ -199,9 +202,6 @@ public class GoodsComment extends ConcurrencySafeEntity {
      */
     public void remove() {
         this.commentStatus = 2;
-      /*  DomainEventPublisher
-                .instance()
-                .publish(new GoodsCommentDeleteEvent(this.orderId, this.skuId));*/
     }
 
     public void over24HBadCommentStatus() {
@@ -234,5 +234,9 @@ public class GoodsComment extends ConcurrencySafeEntity {
 
     public String commentContent() {
         return commentContent;
+    }
+
+    public Integer sortNo() {
+        return sortNo;
     }
 }
