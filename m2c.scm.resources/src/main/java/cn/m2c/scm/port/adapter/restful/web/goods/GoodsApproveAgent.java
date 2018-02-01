@@ -16,7 +16,6 @@ import cn.m2c.scm.application.goods.query.GoodsApproveQueryApplication;
 import cn.m2c.scm.application.goods.query.GoodsGuaranteeQueryApplication;
 import cn.m2c.scm.application.goods.query.GoodsQueryApplication;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsApproveBean;
-import cn.m2c.scm.application.goods.query.data.bean.GoodsBean;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsGuaranteeBean;
 import cn.m2c.scm.application.goods.query.data.representation.GoodsApproveDetailRepresentation;
 import cn.m2c.scm.application.goods.query.data.representation.GoodsApproveSearchRepresentation;
@@ -436,24 +435,6 @@ public class GoodsApproveAgent {
                     serviceRate = goodsClassifyQueryApplication.queryServiceRateByClassifyId(goodsBean.getGoodsClassifyId());
                 }
                 PostageModelBean postageModelBean = postageModelQueryApplication.queryPostageModelsByModelId(goodsBean.getGoodsPostageId());
-
-                // 查询商品库信息,获取商品变更前的服务费率和分类名称
-                Float oldServiceRate = null;
-                String oldClassifyName = "";
-                GoodsBean bean = goodsQueryApplication.queryGoodsByGoodsId(goodsId);
-                if (null != bean) {
-                    if (!bean.getGoodsClassifyId().equals(goodsBean.getGoodsClassifyId())) { //
-                        Map oldClassifyMap = goodsClassifyQueryApplication.getClassifyMap(bean.getGoodsClassifyId());
-                        oldClassifyName = null == oldClassifyMap.get("name") ? "" : (String) oldClassifyMap.get("name");
-                        if (settlementMode == 2) {
-                            oldServiceRate = goodsClassifyQueryApplication.queryServiceRateByClassifyId(goodsBean.getGoodsClassifyId());
-                        }
-                    } else {
-                        oldServiceRate = serviceRate;
-                        oldClassifyName = null == goodsClassifyMap.get("name") ? "" : (String) goodsClassifyMap.get("name");
-                    }
-                }
-
                 List<Map> goodsSpecifications = JsonUtils.toList(goodsBean.getGoodsSpecifications(), Map.class);
                 if (null != goodsSpecifications && goodsSpecifications.size() > 0) {
                     for (Map tempMap : goodsSpecifications) {
