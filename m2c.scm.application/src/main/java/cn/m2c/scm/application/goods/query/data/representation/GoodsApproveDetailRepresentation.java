@@ -42,12 +42,10 @@ public class GoodsApproveDetailRepresentation {
     private String goodsPostageId;
     private Integer goodsShelves;
     private String goodsPostageName;
-    private Float oldServiceRate;
-    private String oldClassifyName;
 
     public GoodsApproveDetailRepresentation(GoodsApproveBean bean, Map goodsClassifyMap,
                                             List<GoodsGuaranteeBean> goodsGuarantees, String goodsUnitName,
-                                            Integer settlementMode, Float serviceRate, PostageModelBean postageModelBean, Float oldServiceRate, String oldClassifyName) {
+                                            Integer settlementMode, Float serviceRate, PostageModelBean postageModelBean) {
         this.goodsName = bean.getGoodsName();
         this.goodsSubTitle = bean.getGoodsSubTitle();
         this.goodsClassifyId = bean.getGoodsClassifyId();
@@ -110,8 +108,6 @@ public class GoodsApproveDetailRepresentation {
         if (null != postageModelBean) {
             this.goodsPostageName = postageModelBean.getModelName();
         }
-        this.oldClassifyName = oldClassifyName;
-        this.oldServiceRate = oldServiceRate;
     }
 
     public String getGoodsPostageName() {
@@ -320,21 +316,5 @@ public class GoodsApproveDetailRepresentation {
 
     public void setGoodsMainVideo(String goodsMainVideo) {
         this.goodsMainVideo = goodsMainVideo;
-    }
-
-    public Float getOldServiceRate() {
-        return oldServiceRate;
-    }
-
-    public void setOldServiceRate(Float oldServiceRate) {
-        this.oldServiceRate = oldServiceRate;
-    }
-
-    public String getOldClassifyName() {
-        return oldClassifyName;
-    }
-
-    public void setOldClassifyName(String oldClassifyName) {
-        this.oldClassifyName = oldClassifyName;
     }
 }

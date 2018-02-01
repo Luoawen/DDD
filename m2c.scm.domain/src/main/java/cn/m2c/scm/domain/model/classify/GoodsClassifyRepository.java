@@ -13,4 +13,8 @@ public interface GoodsClassifyRepository {
     boolean goodsClassifyNameIsRepeat(String classifyId, String classifyName);
 
     List<String> recursionQueryGoodsSubClassifyId(String parentClassifyId, List<String> resultList);
+
+    String getMainUpClassifyName(String classifyId);
+
+    Float queryServiceRateByClassifyId(String classifyId);
 }

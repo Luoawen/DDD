@@ -314,13 +314,22 @@ public class Goods extends ConcurrencySafeEntity {
         Date nowDate = new Date();
 
         Map changeMap = JsonUtils.toMap(changeInfo);
-        String newServiceRate = null != changeMap && null != changeMap.get("newServiceRate") ? changeMap.get("newServiceRate").toString() : null;
-        String settlementMode = null != changeMap && null != changeMap.get("settlementMode") ? changeMap.get("settlementMode").toString() : null;
+        String newServiceRate = "";
+        String settlementMode = "";
+        if (null != changeMap && !"".equals(changeMap)) {
+            newServiceRate = null != changeMap && null != changeMap.get("newServiceRate") ? changeMap.get("newServiceRate").toString() : null;
+            settlementMode = null != changeMap && null != changeMap.get("settlementMode") ? changeMap.get("settlementMode").toString() : null;
+        }
         if (!this.goodsClassifyId.equals(goodsClassifyId)) {
             // {"newClassifyName":"手机,iOS系统","oldServiceRate":"0","oldClassifyName":"手机,墨迹","newServiceRate":"0","settlementMode":1}
-            String oldServiceRate = null != changeMap.get("oldServiceRate") ? changeMap.get("oldServiceRate").toString() : null;
-            String oldClassifyName = null != changeMap.get("oldClassifyName") ? changeMap.get("oldClassifyName").toString() : null;
-            String newClassifyName = null != changeMap.get("newClassifyName") ? changeMap.get("newClassifyName").toString() : null;
+            String oldServiceRate = null;
+            String oldClassifyName = null;
+            String newClassifyName = null;
+            if (null != changeMap && !"".equals(changeMap)) {
+                oldServiceRate = null != changeMap.get("oldServiceRate") ? changeMap.get("oldServiceRate").toString() : null;
+                oldClassifyName = null != changeMap.get("oldClassifyName") ? changeMap.get("oldClassifyName").toString() : null;
+                newClassifyName = null != changeMap.get("newClassifyName") ? changeMap.get("newClassifyName").toString() : null;
+            }
             Map before = new HashMap<>();
             before.put("goodsClassifyId", this.goodsClassifyId);
             before.put("goodsClassifyName", oldClassifyName);
@@ -450,7 +459,7 @@ public class Goods extends ConcurrencySafeEntity {
                             String goodsClassifyId, String goodsBrandId, String goodsBrandName, String goodsUnitId, Integer goodsMinQuantity,
                             String goodsPostageId, String goodsBarCode, String goodsKeyWord, String goodsGuarantee,
                             String goodsMainImages, String goodsMainVideo, String goodsDesc, String goodsSpecifications, String goodsSKUs, String changeReason,
-                            String oldServiceRate, String newServiceRate, String oldClassifyName, String newClassifyName, String settlementMode) {
+                            Float oldServiceRate, Float newServiceRate, String oldClassifyName, String newClassifyName, Integer settlementMode) {
         this.lastUpdateTime = new Date();
         String oldGoodsUnitId = this.goodsUnitId;
         String newGoodsUnitId = goodsUnitId;
@@ -774,5 +783,9 @@ public class Goods extends ConcurrencySafeEntity {
         }
         map.put("goodsSKUs", skuMaps);
         return map;
+    }
+
+    public String goodsClassifyId() {
+        return goodsClassifyId;
     }
 }

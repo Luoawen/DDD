@@ -1,16 +1,15 @@
 package cn.m2c.scm.domain.model.dealer;
 
-import java.util.Date;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import cn.m2c.common.RedisUtil;
 import cn.m2c.ddd.common.domain.model.ConcurrencySafeEntity;
 import cn.m2c.ddd.common.domain.model.DomainEvent;
 import cn.m2c.ddd.common.domain.model.DomainEventPublisher;
 import cn.m2c.scm.domain.model.dealer.event.DealerAddEvent;
 import cn.m2c.scm.domain.model.dealer.event.DealerUpdateEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Date;
 
 public class Dealer extends ConcurrencySafeEntity{
 	private static final Logger log = LoggerFactory.getLogger(Dealer.class);
@@ -192,5 +191,9 @@ public class Dealer extends ConcurrencySafeEntity{
 		} catch (Exception e) {
 			log.error("清除缓存失败");
 		}
+	}
+
+	public Integer countMode() {
+		return countMode;
 	}
 }

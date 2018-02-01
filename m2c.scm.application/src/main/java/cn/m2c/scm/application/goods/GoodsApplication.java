@@ -12,6 +12,9 @@ import cn.m2c.scm.application.goods.command.GoodsRecognizedModifyCommand;
 import cn.m2c.scm.application.goods.command.GoodsSalesListCommand;
 import cn.m2c.scm.application.goods.command.MDViewGoodsCommand;
 import cn.m2c.scm.domain.NegativeException;
+import cn.m2c.scm.domain.model.classify.GoodsClassifyRepository;
+import cn.m2c.scm.domain.model.dealer.Dealer;
+import cn.m2c.scm.domain.model.dealer.DealerRepository;
 import cn.m2c.scm.domain.model.goods.Goods;
 import cn.m2c.scm.domain.model.goods.GoodsApprove;
 import cn.m2c.scm.domain.model.goods.GoodsApproveRepository;
@@ -59,7 +62,10 @@ public class GoodsApplication {
     GoodsService goodsRestService;
     @Autowired
     GoodsHistoryRepository goodsHistoryRepository;
-
+    @Autowired
+    GoodsClassifyRepository goodsClassifyRepository;
+    @Autowired
+    DealerRepository dealerRepository;
     @Resource
     private OperationLogManager operationLogManager;
 
@@ -136,12 +142,25 @@ public class GoodsApplication {
         if (StringUtils.isNotEmpty(_attach))
             operationLogManager.operationLog("修改商品", _attach, goods, new String[]{"goods"}, null);
 
+        String newClassifyName = "";
+        String oldClassifyName = "";
+        Float newServiceRate = null;
+        Float oldServiceRate = null;
+        if (!goods.goodsClassifyId().equals(command.getGoodsClassifyId())) {
+            newClassifyName = goodsClassifyRepository.getMainUpClassifyName(command.getGoodsClassifyId());
+            oldClassifyName = goodsClassifyRepository.getMainUpClassifyName(goods.goodsClassifyId());
+            newServiceRate = goodsClassifyRepository.queryServiceRateByClassifyId(command.getGoodsClassifyId());
+            oldServiceRate = goodsClassifyRepository.queryServiceRateByClassifyId(goods.goodsClassifyId());
+        }
+        Dealer dealer = dealerRepository.getDealer(goods.dealerId());
+        Integer settlementMode = null != dealer ? dealer.countMode() : null;
+
         goods.modifyGoods(command.getGoodsName(), command.getGoodsSubTitle(),
                 command.getGoodsClassifyId(), command.getGoodsBrandId(), command.getGoodsBrandName(), command.getGoodsUnitId(), command.getGoodsMinQuantity(),
                 command.getGoodsPostageId(), command.getGoodsBarCode(), command.getGoodsKeyWord(), command.getGoodsGuarantee(),
                 command.getGoodsMainImages(), command.getGoodsMainVideo(), command.getGoodsDesc(), command.getGoodsSpecifications(),
                 command.getGoodsSKUs(), command.getChangeReason(),
-                command.getOldServiceRate(), command.getNewServiceRate(), command.getOldClassifyName(), command.getNewClassifyName(), command.getSettlementMode());
+                oldServiceRate, newServiceRate, oldClassifyName, newClassifyName, settlementMode);
     }
 
     /**

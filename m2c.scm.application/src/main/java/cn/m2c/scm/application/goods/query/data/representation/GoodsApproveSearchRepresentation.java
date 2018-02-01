@@ -26,14 +26,9 @@ public class GoodsApproveSearchRepresentation {
     private String dealerType;
     private String dealerId;
     private String rejectReason;
-    private Integer settlementMode;//结算模式 1：按供货价 2：按服务费率
-    private Float newServiceRate;
-    private Float oldServiceRate;
-    private String oldClassifyName;
 
 
-    public GoodsApproveSearchRepresentation(GoodsApproveBean bean, Map goodsClassifyMap, String dealerType, Integer settlementMode,
-                                            Float newServiceRate, Float oldServiceRate, String oldClassifyName) {
+    public GoodsApproveSearchRepresentation(GoodsApproveBean bean, Map goodsClassifyMap, String dealerType) {
         List<String> mainImages = JsonUtils.toList(bean.getGoodsMainImages(), String.class);
         if (null != mainImages && mainImages.size() > 0) {
             this.goodsImageUrl = mainImages.get(0);
@@ -74,11 +69,6 @@ public class GoodsApproveSearchRepresentation {
         this.dealerType = dealerType;
         this.dealerId = bean.getDealerId();
         this.rejectReason = bean.getRejectReason();
-
-        this.settlementMode = settlementMode;
-        this.newServiceRate = newServiceRate;
-        this.oldClassifyName = oldClassifyName;
-        this.oldServiceRate = oldServiceRate;
     }
 
     public String getGoodsId() {
@@ -175,37 +165,5 @@ public class GoodsApproveSearchRepresentation {
 
     public void setRejectReason(String rejectReason) {
         this.rejectReason = rejectReason;
-    }
-
-    public Integer getSettlementMode() {
-        return settlementMode;
-    }
-
-    public void setSettlementMode(Integer settlementMode) {
-        this.settlementMode = settlementMode;
-    }
-
-    public Float getNewServiceRate() {
-        return newServiceRate;
-    }
-
-    public void setNewServiceRate(Float newServiceRate) {
-        this.newServiceRate = newServiceRate;
-    }
-
-    public Float getOldServiceRate() {
-        return oldServiceRate;
-    }
-
-    public void setOldServiceRate(Float oldServiceRate) {
-        this.oldServiceRate = oldServiceRate;
-    }
-
-    public String getOldClassifyName() {
-        return oldClassifyName;
-    }
-
-    public void setOldClassifyName(String oldClassifyName) {
-        this.oldClassifyName = oldClassifyName;
     }
 }
