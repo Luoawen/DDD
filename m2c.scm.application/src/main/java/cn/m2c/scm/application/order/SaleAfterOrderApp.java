@@ -104,7 +104,7 @@ public class SaleAfterOrderApp {
         if (orderType != 0) {
             int count = saleAfterRepository.checkCanApply(itemDtl.getOrderId(), itemDtl.getMarketId(), itemDtl.getCouponId());
             if (count > 0) {
-                throw new NegativeException(MCode.V_100, "商品处于不可申请售后状态，因参与活动的其他商品正在申请中！");
+                throw new NegativeException(MCode.V_101, "商品处于不可申请售后状态，因参与活动的其他商品正在申请中！");
             }
         }
 

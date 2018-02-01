@@ -27,10 +27,12 @@ public class AddGoodsCommentCommand extends AssertionConcern implements Serializ
      * 星级 1 2 3 4 5 评价星级，1-5星，好评为5星，中评为2-4星，差评为1星
      */
     private Integer starLevel;
+    /**商品在订单中的顺序*/
+    private int sortNo;
 
     public AddGoodsCommentCommand(String commentId, String orderId, String skuId, String skuName, Integer goodsNum, String buyerId, String buyerName,
                                   String buyerPhoneNumber, String buyerIcon, String commentContent, String commentImages,
-                                  String goodsId, String goodsName, String dealerId, String dealerName, Integer starLevel) {
+                                  String goodsId, String goodsName, String dealerId, String dealerName, Integer starLevel, int sortNo) {
         this.commentId = commentId;
         this.orderId = orderId;
         this.skuId = skuId;
@@ -47,6 +49,7 @@ public class AddGoodsCommentCommand extends AssertionConcern implements Serializ
         this.dealerId = dealerId;
         this.dealerName = dealerName;
         this.starLevel = starLevel;
+        this.sortNo = sortNo;
     }
 
     public String getOrderId() {
@@ -109,7 +112,11 @@ public class AddGoodsCommentCommand extends AssertionConcern implements Serializ
         return starLevel;
     }
 
-    public Integer getGoodsNum() {
+    public int getSortNo() {
+		return sortNo;
+	}
+
+	public Integer getGoodsNum() {
         return goodsNum;
     }
 }

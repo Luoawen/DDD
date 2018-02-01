@@ -10,7 +10,6 @@ import org.springframework.stereotype.Repository;
 import cn.m2c.ddd.common.port.adapter.persistence.hibernate.HibernateSupperRepository;
 import cn.m2c.ddd.common.port.adapter.persistence.springJdbc.SupportJdbcTemplate;
 import cn.m2c.scm.domain.model.order.DealerOrder;
-import cn.m2c.scm.domain.model.order.DealerOrderDtl;
 import cn.m2c.scm.domain.model.order.DealerOrderRepository;
 /**
  * 商家订单仓储
@@ -69,9 +68,9 @@ public class HibernateDealerOrderRepository extends HibernateSupperRepository im
 	 * 设置评论状态
 	 */
 	@Override
-	public void updateComment(String orderId, String skuId, int flag) {
-		session().createSQLQuery("update t_scm_order_detail set comment_status = :flag where order_id=:orderId and sku_id=:skuId")
-		.setParameter("flag", flag).setParameter("orderId", orderId)
+	public void updateComment(String orderId, String skuId, int flag, int sortNo) {
+		session().createSQLQuery("update t_scm_order_detail set comment_status = :flag where order_id=:orderId and sku_id=:skuId and sort_no=:sortNo")
+		.setParameter("flag", flag).setParameter("orderId", orderId).setParameter("sortNo", sortNo)
 		.setParameter("skuId", skuId).executeUpdate();
 	}
 	@Override

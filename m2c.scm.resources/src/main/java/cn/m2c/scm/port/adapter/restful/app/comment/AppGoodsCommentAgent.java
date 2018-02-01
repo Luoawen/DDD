@@ -62,6 +62,7 @@ public class AppGoodsCommentAgent {
             @RequestParam(value = "starLevel", required = false) Integer starLevel,
             @RequestParam(value = "commentContent", required = false) String commentContent,
             @RequestParam(value = "commentImages", required = false) String commentImages
+            ,@RequestParam(value = "sortNo", required = false, defaultValue="0") int sortNo
     ) {
         MResult result = new MResult(MCode.V_1);
 
@@ -74,7 +75,7 @@ public class AppGoodsCommentAgent {
         String id = IDGenerator.get(IDGenerator.SCM_GOODS_COMMENT_PREFIX_TITLE);
         AddGoodsCommentCommand command = new AddGoodsCommentCommand(id, orderId, skuId, info.getSkuName(), goodsNum, buyerId, buyerName,
                 buyerPhoneNumber, buyerIcon, commentContent, commentImages,
-                info.getGoodsId(), info.getGoodsName(), info.getDealerId(), info.getDealerName(), starLevel);
+                info.getGoodsId(), info.getGoodsName(), info.getDealerId(), info.getDealerName(), starLevel, sortNo);
         try {
             goodsCommentApplication.addGoodsComment(command);
             result.setStatus(MCode.V_200);

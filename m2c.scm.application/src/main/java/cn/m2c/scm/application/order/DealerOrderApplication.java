@@ -292,8 +292,8 @@ public class DealerOrderApplication {
 	}
 
 	@Transactional(rollbackFor = { Exception.class, RuntimeException.class, NegativeException.class })
-	public void commentSku(String orderId, String skuId, int flag) {
-		dealerOrderRepository.updateComment(orderId, skuId, flag);
+	public void commentSku(String orderId, String skuId, int flag, int sortNo) {
+		dealerOrderRepository.updateComment(orderId, skuId, flag, sortNo);
 	}
 	/***
 	 * 检测商家订单下的子单完成
