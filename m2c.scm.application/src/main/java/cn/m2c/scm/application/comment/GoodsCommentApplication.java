@@ -65,7 +65,7 @@ public class GoodsCommentApplication {
             goodsCommentRepository.save(goodsComment);
 
             // 更新订单状态
-            orderApp.commentSku(command.getOrderId(), command.getSkuId(), 1, command.getSortNo());
+            orderApp.commentSku(command.getOrderId(), command.getSkuId(), 1, command.getSortNo(), command.getDealerOrderId());
         }
     }
 

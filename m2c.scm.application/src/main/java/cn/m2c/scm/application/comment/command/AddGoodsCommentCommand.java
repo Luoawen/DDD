@@ -30,9 +30,12 @@ public class AddGoodsCommentCommand extends AssertionConcern implements Serializ
     /**商品在订单中的顺序*/
     private int sortNo;
 
+    private String dealerOrderId;
+    
     public AddGoodsCommentCommand(String commentId, String orderId, String skuId, String skuName, Integer goodsNum, String buyerId, String buyerName,
                                   String buyerPhoneNumber, String buyerIcon, String commentContent, String commentImages,
-                                  String goodsId, String goodsName, String dealerId, String dealerName, Integer starLevel, int sortNo) {
+                                  String goodsId, String goodsName, String dealerId, String dealerName, Integer starLevel
+                                  , int sortNo, String dealerOrderId) {
         this.commentId = commentId;
         this.orderId = orderId;
         this.skuId = skuId;
@@ -50,6 +53,7 @@ public class AddGoodsCommentCommand extends AssertionConcern implements Serializ
         this.dealerName = dealerName;
         this.starLevel = starLevel;
         this.sortNo = sortNo;
+        this.dealerOrderId = dealerOrderId;
     }
 
     public String getOrderId() {
@@ -114,6 +118,10 @@ public class AddGoodsCommentCommand extends AssertionConcern implements Serializ
 
     public int getSortNo() {
 		return sortNo;
+	}
+
+	public String getDealerOrderId() {
+		return dealerOrderId;
 	}
 
 	public Integer getGoodsNum() {

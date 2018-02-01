@@ -292,6 +292,11 @@ public class DealerOrderApplication {
 	}
 
 	@Transactional(rollbackFor = { Exception.class, RuntimeException.class, NegativeException.class })
+	public void commentSku(String orderId, String skuId, int flag, int sortNo, String dealerOrderId) {
+		dealerOrderRepository.updateComment(orderId, skuId, flag, sortNo, dealerOrderId);
+	}
+	
+	@Transactional(rollbackFor = { Exception.class, RuntimeException.class, NegativeException.class })
 	public void commentSku(String orderId, String skuId, int flag, int sortNo) {
 		dealerOrderRepository.updateComment(orderId, skuId, flag, sortNo);
 	}

@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang3.StringUtils;
+import org.hibernate.SQLQuery;
 import org.springframework.stereotype.Repository;
 
 import cn.m2c.ddd.common.port.adapter.persistence.hibernate.HibernateSupperRepository;
@@ -68,10 +70,32 @@ public class HibernateDealerOrderRepository extends HibernateSupperRepository im
 	 * 设置评论状态
 	 */
 	@Override
+	public void updateComment(String orderId, String skuId, int flag, int sortNo, String dealerOrderId) {
+		StringBuffer sb = new StringBuffer(256);
+		sb.append("update t_scm_order_detail set comment_status = :flag where order_id=:orderId and sku_id=:skuId and sort_no=:sortNo");
+		if (StringUtils.isNotEmpty(dealerOrderId)) {
+			sb.append(" and dealer_order_id=:dealerOrderId");
+		}
+		SQLQuery query = session().createSQLQuery(sb.toString());
+		query.setParameter("flag", flag).setParameter("orderId", orderId).setParameter("sortNo", sortNo)
+		.setParameter("skuId", skuId);
+		if (StringUtils.isNotEmpty(dealerOrderId)) {
+			query.setParameter("dealerOrderId", dealerOrderId);
+		}
+		query.executeUpdate();
+	}
+	
+	/***
+	 * 设置评论状态
+	 */
+	@Override
 	public void updateComment(String orderId, String skuId, int flag, int sortNo) {
-		session().createSQLQuery("update t_scm_order_detail set comment_status = :flag where order_id=:orderId and sku_id=:skuId and sort_no=:sortNo")
-		.setParameter("flag", flag).setParameter("orderId", orderId).setParameter("sortNo", sortNo)
-		.setParameter("skuId", skuId).executeUpdate();
+		StringBuffer sb = new StringBuffer(256);
+		sb.append("update t_scm_order_detail set comment_status = :flag where order_id=:orderId and sku_id=:skuId and sort_no=:sortNo");
+		SQLQuery query = session().createSQLQuery(sb.toString());
+		query.setParameter("flag", flag).setParameter("orderId", orderId).setParameter("sortNo", sortNo)
+		.setParameter("skuId", skuId);
+		query.executeUpdate();
 	}
 	@Override
 	public List<String> getSpecifiedDtlStatus(int hour) {
