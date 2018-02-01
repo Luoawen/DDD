@@ -44,10 +44,6 @@ public class GoodsDetailRepresentation {
      * 商品识别图
      */
     List<Map> goodsRecognized;
-
-    private Float oldServiceRate;
-    private String oldClassifyName;
-
     public GoodsDetailRepresentation(GoodsBean bean, Map goodsClassifyMap, List<GoodsGuaranteeBean> goodsGuaranteeBeans,
                                      String goodsUnitName, Integer settlementMode, Float serviceRate, PostageModelBean postageModelBean) {
         this.goodsName = bean.getGoodsName();
@@ -122,9 +118,6 @@ public class GoodsDetailRepresentation {
                 this.goodsRecognized.add(map);
             }
         }
-
-        this.oldClassifyName = this.goodsClassify;
-        this.oldServiceRate = serviceRate;
     }
 
     public String getGoodsPostageName() {
@@ -317,21 +310,5 @@ public class GoodsDetailRepresentation {
 
     public void setGoodsMainVideo(String goodsMainVideo) {
         this.goodsMainVideo = goodsMainVideo;
-    }
-
-    public Float getOldServiceRate() {
-        return oldServiceRate;
-    }
-
-    public void setOldServiceRate(Float oldServiceRate) {
-        this.oldServiceRate = oldServiceRate;
-    }
-
-    public String getOldClassifyName() {
-        return oldClassifyName;
-    }
-
-    public void setOldClassifyName(String oldClassifyName) {
-        this.oldClassifyName = oldClassifyName;
     }
 }
