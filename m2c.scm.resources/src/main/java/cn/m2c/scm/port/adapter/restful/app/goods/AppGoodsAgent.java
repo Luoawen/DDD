@@ -155,7 +155,8 @@ public class AppGoodsAgent {
             if (null != goodsBean) {
                 //goods_status 商品状态，1：仓库中，2：出售中，3：已售罄   del_status 是否删除，1:正常，2：已删除
                 if (goodsBean.getGoodsStatus() == 1 || goodsBean.getDelStatus() == 2) {
-                    result = new MResult(MCode.V_300, "商品已失效");
+                    result.setStatus(MCode.V_300);
+                    result.setErrorMessage("商品已失效");
                     return new ResponseEntity<MResult>(result, HttpStatus.OK);
                 }
                 List<GoodsGuaranteeBean> goodsGuarantee = goodsGuaranteeQueryApplication.queryGoodsGuaranteeByIds(JsonUtils.toList(goodsBean.getGoodsGuarantee(), String.class));
@@ -194,8 +195,11 @@ public class AppGoodsAgent {
                 AppGoodsDetailRepresentation representation = new AppGoodsDetailRepresentation(goodsBean,
                         goodsGuarantee, goodsUnitName, null, commentTotal, goodsCommentBean, fullCut, coupons, goodsTags, favoriteId, phone, null, null);
                 result.setContent(representation);
+                result.setStatus(MCode.V_200);
+            } else {
+                result.setStatus(MCode.V_300);
+                result.setErrorMessage("商品已失效");
             }
-            result.setStatus(MCode.V_200);
         } catch (Exception e) {
             LOGGER.error("queryGoodsDetailApp Exception e:", e);
             result = new MResult(MCode.V_400, "查询商品详情失败");
