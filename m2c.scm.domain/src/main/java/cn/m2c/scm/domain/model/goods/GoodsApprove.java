@@ -663,4 +663,12 @@ public class GoodsApprove extends ConcurrencySafeEntity {
     public String goodsId() {
         return goodsId;
     }
+
+    public String goodsClassifyId() {
+        return goodsClassifyId;
+    }
+
+    public String dealerId() {
+        return dealerId;
+    }
 }

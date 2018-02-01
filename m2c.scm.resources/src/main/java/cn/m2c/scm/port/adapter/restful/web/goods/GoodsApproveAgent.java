@@ -10,7 +10,6 @@ import cn.m2c.scm.application.classify.query.GoodsClassifyQueryApplication;
 import cn.m2c.scm.application.dealer.data.bean.DealerBean;
 import cn.m2c.scm.application.dealer.query.DealerQuery;
 import cn.m2c.scm.application.goods.GoodsApproveApplication;
-import cn.m2c.scm.application.goods.command.GoodsApproveAgreeCommand;
 import cn.m2c.scm.application.goods.command.GoodsApproveCommand;
 import cn.m2c.scm.application.goods.command.GoodsApproveRejectCommand;
 import cn.m2c.scm.application.goods.query.GoodsApproveQueryApplication;
@@ -205,20 +204,13 @@ public class GoodsApproveAgent {
     @RequestMapping(value = "/goods/approve/mng/agree", method = RequestMethod.POST)
     @RequirePermissions(value = {"scm:goodsCheck:agree"})
     public ResponseEntity<MResult> agreeGoodsApprove(
-            @RequestParam(value = "goodsId", required = false) String goodsId,
-            @RequestParam(value = "newServiceRate", required = false) String newServiceRate,
-            @RequestParam(value = "oldServiceRate", required = false) String oldServiceRate,
-            @RequestParam(value = "oldClassifyName", required = false) String oldClassifyName,
-            @RequestParam(value = "newClassifyName", required = false) String newClassifyName,
-            @RequestParam(value = "settlementMode", required = false) Integer settlementMode
+            @RequestParam(value = "goodsId", required = false) String goodsId
 
     ) {
         MResult result = new MResult(MCode.V_1);
         try {
             String _attach = request.getHeader("attach");
-            GoodsApproveAgreeCommand command = new GoodsApproveAgreeCommand(goodsId,newServiceRate,oldServiceRate,
-                    oldClassifyName,newClassifyName,settlementMode);
-            goodsApproveApplication.agreeGoodsApprove(command, _attach);
+            goodsApproveApplication.agreeGoodsApprove(goodsId, _attach);
             result.setStatus(MCode.V_200);
         } catch (NegativeException ne) {
             LOGGER.error("agreeGoodsApprove NegativeException e:", ne);
@@ -297,12 +289,7 @@ public class GoodsApproveAgent {
             @RequestParam(value = "goodsMainVideo", required = false) String goodsMainVideo,
             @RequestParam(value = "goodsDesc", required = false) String goodsDesc,
             @RequestParam(value = "goodsSpecifications", required = false) String goodsSpecifications,
-            @RequestParam(value = "goodsSKUs", required = false) String goodsSKUs,
-            @RequestParam(value = "oldServiceRate", required = false) String oldServiceRate,
-            @RequestParam(value = "newServiceRate", required = false) String newServiceRate,
-            @RequestParam(value = "oldClassifyName", required = false) String oldClassifyName,
-            @RequestParam(value = "newClassifyName", required = false) String newClassifyName,
-            @RequestParam(value = "settlementMode", required = false) String settlementMode) {
+            @RequestParam(value = "goodsSKUs", required = false) String goodsSKUs) {
         MResult result = new MResult(MCode.V_1);
         try {
             List<Map> skuList = JsonUtils.toList(goodsSKUs, Map.class);
@@ -339,8 +326,7 @@ public class GoodsApproveAgent {
             GoodsApproveCommand command = new GoodsApproveCommand(goodsId, dealerId, goodsName, goodsSubTitle,
                     goodsClassifyId, goodsBrandId, goodsBrandName, goodsUnitId, goodsMinQuantity,
                     goodsPostageId, goodsBarCode, goodsKeyWord, goodsGuarantee,
-                    goodsMainImages, goodsMainVideo, goodsDesc, goodsSpecifications, goodsSKUs,
-                    oldServiceRate, newServiceRate, oldClassifyName, newClassifyName, settlementMode);
+                    goodsMainImages, goodsMainVideo, goodsDesc, goodsSpecifications, goodsSKUs);
             String _attach = request.getHeader("attach");
             goodsApproveApplication.modifyGoodsApprove(command, _attach);
             result.setStatus(MCode.V_200);

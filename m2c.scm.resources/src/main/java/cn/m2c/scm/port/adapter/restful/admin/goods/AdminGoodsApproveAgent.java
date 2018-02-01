@@ -51,13 +51,11 @@ public class AdminGoodsApproveAgent {
     @RequirePermissions(value = {"scm:goodsCheck:agreebatch"})
     @RequestMapping(value = "/agreebatch", method = RequestMethod.POST)
     public ResponseEntity<MResult> agreeGoodsApproveBatch(
-            @RequestParam(value = "goodsIds", required = false) List goodsIds,
-            @RequestParam(value = "goodsClassifyChanges", required = false) String goodsClassifyChanges //[{"newServiceRate":"0","oldServiceRate":"0","oldClassifyName":"手机,iOS系统","newClassifyName":"手机,墨迹","settlementMode":"1"}]
-    ) {
+            @RequestParam(value = "goodsIds", required = false) List goodsIds) {
         MResult result = new MResult(MCode.V_1);
         try {
             String _attach = request.getHeader("attach");
-            goodsApproveApplication.agreeGoodsApproveBatch(goodsIds,goodsClassifyChanges, _attach);
+            goodsApproveApplication.agreeGoodsApproveBatch(goodsIds, _attach);
             result.setStatus(MCode.V_200);
         } catch (NegativeException ne) {
             LOGGER.error("agreeGoodsApproveBatch NegativeException e:", ne);

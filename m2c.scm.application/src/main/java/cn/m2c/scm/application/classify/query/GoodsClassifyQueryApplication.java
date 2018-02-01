@@ -5,6 +5,7 @@ import cn.m2c.common.RedisUtil;
 import cn.m2c.ddd.common.port.adapter.persistence.springJdbc.SupportJdbcTemplate;
 import cn.m2c.scm.application.classify.data.bean.GoodsClassifyBean;
 import cn.m2c.scm.application.utils.Utils;
+import cn.m2c.scm.domain.util.StringOptUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -122,7 +123,7 @@ public class GoodsClassifyQueryApplication {
                     ids.add(bean.getClassifyId());
                     names.add(bean.getClassifyName());
                 }
-                String goodsClassify = listJoinString(names);
+                String goodsClassify = StringOptUtils.listJoinString(names);
                 Collections.reverse(ids);
                 Map map = new HashMap<>();
                 map.put("name", goodsClassify);
@@ -135,15 +136,6 @@ public class GoodsClassifyQueryApplication {
             return mapCache;
         }
     }
-
-    private String listJoinString(List<String> obj) {
-        Collections.reverse(obj);
-        String[] type = new String[obj.size()];
-        String[] newGoodsClassify = (String[]) obj.toArray(type);
-        String goodsClassify = String.join(",", newGoodsClassify);
-        return goodsClassify;
-    }
-
 
     public List<GoodsClassifyBean> queryGoodsClassifyRandom(Integer number) {
         StringBuilder sql = new StringBuilder();

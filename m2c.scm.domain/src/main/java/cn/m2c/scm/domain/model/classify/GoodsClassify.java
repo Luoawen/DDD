@@ -83,4 +83,12 @@ public class GoodsClassify extends ConcurrencySafeEntity {
     public Float serviceRate() {
         return serviceRate;
     }
+
+    public String parentClassifyId() {
+        return parentClassifyId;
+    }
+
+    public String classifyName() {
+        return classifyName;
+    }
 }

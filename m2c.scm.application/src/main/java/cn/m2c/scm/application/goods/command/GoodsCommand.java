@@ -126,11 +126,6 @@ public class GoodsCommand extends AssertionConcern implements Serializable {
      * 变更原因
      */
     private String changeReason;
-    private String oldServiceRate;
-    private String newServiceRate;
-    private String oldClassifyName;
-    private String newClassifyName;
-    private String settlementMode;
 
     private String changeInfo;
 
@@ -167,8 +162,7 @@ public class GoodsCommand extends AssertionConcern implements Serializable {
     public GoodsCommand(String goodsId, String dealerId, String goodsName, String goodsSubTitle,
                         String goodsClassifyId, String goodsBrandId, String goodsBrandName, String goodsUnitId, Integer goodsMinQuantity,
                         String goodsPostageId, String goodsBarCode, String goodsKeyWord, String goodsGuarantee,
-                        String goodsMainImages, String goodsMainVideo, String goodsDesc, String goodsSpecifications, String goodsSKUs, String changeReason,
-                        String oldServiceRate, String newServiceRate, String oldClassifyName, String newClassifyName, String settlementMode) throws NegativeException {
+                        String goodsMainImages, String goodsMainVideo, String goodsDesc, String goodsSpecifications, String goodsSKUs, String changeReason) throws NegativeException {
         this.goodsId = goodsId;
         this.dealerId = dealerId;
         this.goodsName = goodsName;
@@ -189,11 +183,6 @@ public class GoodsCommand extends AssertionConcern implements Serializable {
         this.goodsSKUs = goodsSKUs;
         this.skuFlag = skuFlag;
         this.changeReason = changeReason;
-        this.oldServiceRate = oldServiceRate;
-        this.newServiceRate = newServiceRate;
-        this.oldClassifyName = oldClassifyName;
-        this.newClassifyName = StringUtils.isNotEmpty(newClassifyName) ? newClassifyName.replaceAll(" / ", ",") : "";
-        this.settlementMode = settlementMode;
 
         List<Map> skuList = JsonUtils.toList(goodsSKUs, Map.class);
         List<String> goodsCodes = new ArrayList<>();
@@ -308,27 +297,6 @@ public class GoodsCommand extends AssertionConcern implements Serializable {
 
     public String getChangeReason() {
         return changeReason;
-    }
-
-
-    public String getOldServiceRate() {
-        return oldServiceRate;
-    }
-
-    public String getNewServiceRate() {
-        return newServiceRate;
-    }
-
-    public String getOldClassifyName() {
-        return oldClassifyName;
-    }
-
-    public String getNewClassifyName() {
-        return newClassifyName;
-    }
-
-    public String getSettlementMode() {
-        return settlementMode;
     }
 
     public String getChangeInfo() {
