@@ -382,12 +382,12 @@ public class Goods extends ConcurrencySafeEntity {
                         Map before = new HashMap<>();
                         // 取商品库价格
                         Map supplyPriceMap = goodsSku.getChangeSupplyPrice(photographPrice);
-                        before.put("photographPrice", supplyPriceMap.get("oldSupplyPrice"));
+                        before.put("supplyPrice", supplyPriceMap.get("oldSupplyPrice"));
                         before.put("skuId", supplyPriceMap.get("skuId"));
                         before.put("skuName", supplyPriceMap.get("skuName"));
 
                         Map after = new HashMap<>();
-                        after.put("photographPrice", supplyPriceMap.get("newSupplyPrice"));
+                        after.put("supplyPrice", supplyPriceMap.get("newSupplyPrice"));
                         GoodsHistory history = new GoodsHistory(historyId, historyNo, this.goodsId,
                                 3, JsonUtils.toStr(before),
                                 JsonUtils.toStr(after), changeReason, nowDate);

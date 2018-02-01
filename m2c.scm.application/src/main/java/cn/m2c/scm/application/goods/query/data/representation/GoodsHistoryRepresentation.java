@@ -41,8 +41,8 @@ public class GoodsHistoryRepresentation {
             // 变更前 {"goodsClassifyName":"手机,iOS系统","goodsClassifyId":"SPFL6104939BD41E4E2CB4715F19306C3478","serviceRate":"0","settlementMode":"1"}
             StringBuffer beforeSb = new StringBuffer();
             beforeSb.append(beforeMap.get("goodsClassifyName"));
-            Integer settlementMode = Integer.parseInt(beforeMap.get("settlementMode").toString());
-            if (settlementMode == 2) {
+            Integer settlementMode = null != beforeMap.get("settlementMode") ? Integer.parseInt(beforeMap.get("settlementMode").toString()) : null;
+            if (null != settlementMode && settlementMode == 2) {
                 beforeSb.append("(费率").append(beforeMap.get("serviceRate")).append("%)");
             }
             this.beforeContent = beforeSb.toString();
@@ -50,7 +50,7 @@ public class GoodsHistoryRepresentation {
             // 变更后 {"goodsClassifyName":"手机,iOS系统","goodsClassifyId":"SPFL6104939BD41E4E2CB4715F19306C3478","serviceRate":"0"}
             StringBuffer afterSb = new StringBuffer();
             afterSb.append(afterMap.get("goodsClassifyName"));
-            if (settlementMode == 2) {
+            if (null != settlementMode && settlementMode == 2) {
                 afterSb.append("(费率").append(afterMap.get("serviceRate")).append("%)");
             }
             this.afterContent = afterSb.toString();
