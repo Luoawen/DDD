@@ -136,7 +136,7 @@ public class GoodsApproveApplication {
         Map changeInfo = new HashMap<>();
         Goods goods = goodsRepository.queryGoodsById(goodsId);
         if (null != goods) {
-            getGoodsChangeInfo(goodsApprove, goods, changeInfo);
+            getGoodsChangeInfo(goods.dealerId(), goodsApprove.goodsClassifyId(), goods.goodsClassifyId(), changeInfo);
         }
         goodsApprove.agree(changeInfo);
         goodsApproveRepository.remove(goodsApprove);
@@ -175,7 +175,7 @@ public class GoodsApproveApplication {
         if (null != goods) {
             isModifyApprove = true;
             goodsInfoMap = goods.goodsNeedApproveInfo();  // 商品库商品信息
-            getGoodsChangeInfo(goodsApprove, goods, goodsInfoMap);
+            getGoodsChangeInfo(goods.dealerId(), command.getGoodsClassifyId(), goods.goodsClassifyId(), goodsInfoMap);
         }
 
         goodsApprove.modifyGoodsApprove(command.getGoodsName(), command.getGoodsSubTitle(),
@@ -185,16 +185,16 @@ public class GoodsApproveApplication {
                 command.getGoodsSpecifications(), command.getGoodsSkuApproves(), false, null, isModifyApprove, goodsInfoMap);
     }
 
-    private void getGoodsChangeInfo(GoodsApprove goodsApprove, Goods goods, Map goodsChangeInfo) {
-        String newClassifyName = goodsClassifyRepository.getMainUpClassifyName(goodsApprove.goodsClassifyId());
-        String oldClassifyName = goodsClassifyRepository.getMainUpClassifyName(goods.goodsClassifyId());
-        Float newServiceRate = goodsClassifyRepository.queryServiceRateByClassifyId(goodsApprove.goodsClassifyId());
-        Float oldServiceRate = goodsClassifyRepository.queryServiceRateByClassifyId(goods.goodsClassifyId());
+    private void getGoodsChangeInfo(String dealerId, String newClassifyId, String oldClassifyId, Map goodsChangeInfo) {
+        String newClassifyName = goodsClassifyRepository.getMainUpClassifyName(newClassifyId);
+        String oldClassifyName = goodsClassifyRepository.getMainUpClassifyName(oldClassifyId);
+        Float newServiceRate = goodsClassifyRepository.queryServiceRateByClassifyId(newClassifyId);
+        Float oldServiceRate = goodsClassifyRepository.queryServiceRateByClassifyId(oldClassifyId);
         goodsChangeInfo.put("newServiceRate", newServiceRate);
         goodsChangeInfo.put("oldServiceRate", oldServiceRate);
         goodsChangeInfo.put("oldClassifyName", oldClassifyName);
         goodsChangeInfo.put("newClassifyName", newClassifyName);
-        Dealer dealer = dealerRepository.getDealer(goodsApprove.dealerId());
+        Dealer dealer = dealerRepository.getDealer(dealerId);
         goodsChangeInfo.put("settlementMode", null != dealer ? dealer.countMode() : null);
     }
 
@@ -273,7 +273,7 @@ public class GoodsApproveApplication {
                 Map changeInfo = new HashMap<>();
                 Goods goods = goodsRepository.queryGoodsById(goodsApprove.goodsId());
                 if (null != goods) {
-                    getGoodsChangeInfo(goodsApprove, goods, changeInfo);
+                    getGoodsChangeInfo(goods.dealerId(), goodsApprove.goodsClassifyId(), goods.goodsClassifyId(), changeInfo);
                 }
                 goodsApprove.agree(changeInfo);
                 goodsApproveRepository.remove(goodsApprove);

@@ -84,10 +84,8 @@ public class HibernateGoodsClassifyRepository extends HibernateSupperRepository 
         if (StringUtils.isEmpty(nameCache)) {
             List<GoodsClassify> goodsClassifies = recursionQueryGoodsUpClassify(classifyId, new ArrayList<GoodsClassify>());
             if (null != goodsClassifies && goodsClassifies.size() > 0) {
-                List<String> ids = new ArrayList<>();
                 List<String> names = new ArrayList<>();
                 for (GoodsClassify classify : goodsClassifies) {
-                    ids.add(classify.classifyId());
                     names.add(classify.classifyName());
                 }
                 String goodsClassify = StringOptUtils.listJoinString(names);
