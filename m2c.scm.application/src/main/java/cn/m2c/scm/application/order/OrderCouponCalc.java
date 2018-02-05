@@ -186,7 +186,7 @@ public class OrderCouponCalc {
 		}
         long rtMoney = 0;
         // 根据marketInfo 来计算
-        if (couponInfo == null || couponSku == null || couponSku.size() < 1)
+        if (couponInfo == null || couponSku.size() < 1)
             return rtMoney;
         //营销形式，1：减钱，2：打折
         Integer a = couponInfo.getCouponForm();
