@@ -33,6 +33,9 @@ public class SimpleCoupon {
 	@ColumnAlias(value = "coupon_name")
 	private String couponName;
 	
+	/**用于退货后是否还处于满足状态*/
+	private boolean isFull = true;
+	
 	public String getCouponName() {
 		return couponName;
 	}
@@ -92,5 +95,10 @@ public class SimpleCoupon {
 	public void setCouponType(Integer couponType) {
 		this.couponType = couponType;
 	}
-	
+	public void setIsFull(boolean full) {
+		isFull = full;
+	}
+	public boolean isFull() {
+		return isFull;
+	}
 }

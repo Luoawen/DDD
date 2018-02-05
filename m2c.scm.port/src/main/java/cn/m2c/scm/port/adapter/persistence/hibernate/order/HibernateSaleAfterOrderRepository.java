@@ -241,4 +241,16 @@ public class HibernateSaleAfterOrderRepository extends HibernateSupperRepository
 		
 		return o == null? 0: ((BigInteger)o).intValue();
 	}
+
+	/**
+	 * 设置优惠券的状态为不满足门槛
+	 */
+	@Override
+	public int disabledOrderCoupon(String orderId, String couponId) {
+			int rs = this.session().createSQLQuery("UPDATE t_scm_order_coupon_used set _status=0 WHERE order_id=:orderId AND coupon_id=:couponId")
+					.setParameter("orderId", orderId).setParameter("couponId", couponId)
+					.executeUpdate();
+			return rs;
+		
+	}
 }

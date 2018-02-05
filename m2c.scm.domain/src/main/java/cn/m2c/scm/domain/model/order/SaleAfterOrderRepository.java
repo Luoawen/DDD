@@ -115,4 +115,10 @@ public interface SaleAfterOrderRepository {
 	 * @return
 	 */
 	public int checkCanApply(String orderId, String marketId, String couponId);
+	/***
+	 * 使某个优惠券不可用， 主要是用于退款时用。
+	 * @param orderId
+	 * @param marketId
+	 */
+	public int disabledOrderCoupon(String orderId, String couponId);
 }

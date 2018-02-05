@@ -474,7 +474,7 @@ public class OrderMarketCalc {
                     	t = t.divide(new BigDecimal(1000), 3, BigDecimal.ROUND_HALF_DOWN);
                     	rtMoney += g.multiply(t.subtract(new BigDecimal(1)).abs()).longValue();
                         //rtMoney += (bean.getGoodsAmount() * (1 - discount / 1000.0));
-                    	bean.setDiscountMoney(rtMoney);
+                    	bean.setDiscountMoney(0);
                         break;
                     case 3:
                         bean.setDiscountMoney(0);

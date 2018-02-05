@@ -228,6 +228,11 @@ public class SaleAfterOrderApp {
             if (couponInfo!=null && !StringUtils.isEmpty(couponInfo.getCouponId())) {//计算优惠券的金额
                 couponDiscountMoney = OrderCouponCalc.calcReturnMoney(couponInfo, totalSku, order.skuId(), order.sortNo());//计算退款金额
             }
+            if (couponInfo != null && !couponInfo.isFull()) {
+                // 更新已使用营销 为不可用状态
+                saleAfterRepository.disabledOrderCoupon(order.orderId(), couponInfo.getCouponId());
+            }
+            
             money = money - discountMoney - couponDiscountMoney;
             if (money < 0) {
                 throw new NegativeException(MCode.V_103, "不符合发起售后条件，建议联系商家");

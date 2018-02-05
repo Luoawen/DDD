@@ -252,7 +252,7 @@ public class OrderCouponCalc {
             	rtMoney = g.multiply(m).longValue();
             }
         } else { // 不满足
-//        	couponInfo.setIsFull(false);
+        	couponInfo.setIsFull(false);
             for (SkuNumBean bean : couponSku) {
 
             	boolean bFlag = (skuId.equals(bean.getSkuId()) && (_sortNo == 0 || bean.getSortNo() == _sortNo));
