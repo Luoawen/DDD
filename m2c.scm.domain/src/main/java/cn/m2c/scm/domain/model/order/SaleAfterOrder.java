@@ -264,7 +264,8 @@ public class SaleAfterOrder extends ConcurrencySafeEntity {
      * 用户确认收货
      */
     public boolean userConfirmRev(String userId) {
-        if (status < 7)
+        if (status < 7 || status > 9)
+        	//if (status < 7)
             return false;
         status = 11;
         updateTime = new Date();

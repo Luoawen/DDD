@@ -367,6 +367,7 @@ public class AppOrderAgent {
             saleAfterApp.scanOrderDtlUpdated(userId, saleAfterNo);			
         } 
         catch (NegativeException e) {
+        	LOGGER.error("After sale rev Exception e:", e);
         	result = new MResult(e.getStatus(), e.getMessage());
         }
         catch (Exception e) {
