@@ -365,7 +365,7 @@ public class AfterSellOrderQuery {
 		.append("WHERE a.order_id = ?\r\n")
 		.append("AND a.marketing_id = ? ")
 		.append("AND ((a.sort_no=0 AND a.sku_id NOT IN(SELECT b.sku_id FROM t_scm_order_after_sell b WHERE b.order_id=a.order_id AND b.dealer_order_id= a.dealer_order_id AND b._status > 3)) ")
-		.append(" OR (a.sort_no NOT IN(SELECT b.sort_no FROM t_scm_order_after_sell b WHERE b.order_id=a.order_id AND b.dealer_order_id= a.dealer_order_id AND b._status > 3)))")
+		.append(" OR (a.sort_no!=0 AND a.sort_no NOT IN(SELECT b.sort_no FROM t_scm_order_after_sell b WHERE b.order_id=a.order_id AND b.dealer_order_id= a.dealer_order_id AND b._status > 3)))")
 		;
 		return this.supportJdbcTemplate.queryForBeanList(sql.toString(), SkuNumBean.class, orderId, marketId);
 	}
@@ -697,6 +697,39 @@ public class AfterSellOrderQuery {
 		return this.supportJdbcTemplate.queryForBeanList(sql.toString(), SkuNumBean.class, orderId);
 	}
 
+	/**
+	 * 获取所有的未售后的sku信息
+	 * @param orderId
+	 * @return
+	 */
+	public List<SkuNumBean> getTotalSkuForAfter(String orderId) {
+		StringBuilder sql = new StringBuilder();
+		sql.append(" SELECT a.coupon_id,a.coupon_discount,a.sku_id, a.sell_num, a.is_change, a.marketing_id, a.change_price, a.sort_no, a.special_price, a.discount_price, a.is_special\r\n")
+		.append(" , b._status FROM t_scm_order_detail a\r\n")
+		.append(" LEFT OUTER JOIN t_scm_order_marketing_used b ON a.order_id=b.order_id AND a.marketing_id = b.marketing_id AND b._status=1\r\n")
+		.append(" WHERE a.order_id = ?\r\n")
+		.append("AND ((a.sort_no=0 AND a.sku_id NOT IN(SELECT b.sku_id FROM t_scm_order_after_sell b WHERE b.order_id=a.order_id AND b.dealer_order_id= a.dealer_order_id AND b._status NOT IN(-1, 3))) ")
+		.append(" OR (a.sort_no NOT IN(SELECT b.sort_no FROM t_scm_order_after_sell b WHERE b.order_id=a.order_id AND b.dealer_order_id= a.dealer_order_id AND b._status NOT IN(-1, 3))))")
+		;
+		return this.supportJdbcTemplate.queryForBeanList(sql.toString(), SkuNumBean.class, orderId);
+	}
+	
+	/**
+	 * 获取所有的未售后的sku信息,为同意售后用
+	 * @param orderId
+	 * @return
+	 */
+	public List<SkuNumBean> getTotalSkuForAfterConfirm(String orderId, int sortNo, String skuId) {
+		StringBuilder sql = new StringBuilder();
+		sql.append(" SELECT a.coupon_id,a.coupon_discount,a.sku_id, a.sell_num, a.is_change, a.marketing_id, a.change_price, a.sort_no, a.special_price, a.discount_price, a.is_special\r\n")
+		.append(" , b._status FROM t_scm_order_detail a\r\n")
+		.append(" LEFT OUTER JOIN t_scm_order_marketing_used b ON a.order_id=b.order_id AND a.marketing_id = b.marketing_id AND b._status=1\r\n")
+		.append(" WHERE a.order_id = ?\r\n")
+		.append("AND ((a.sort_no=0 AND a.sku_id NOT IN(SELECT b.sku_id FROM t_scm_order_after_sell b WHERE b.order_id=a.order_id AND b.dealer_order_id= a.dealer_order_id AND b._status NOT IN(-1, 3) AND b.sku_id != ?)) ")
+		.append(" OR (a.sort_no NOT IN(SELECT b.sort_no FROM t_scm_order_after_sell b WHERE b.order_id=a.order_id AND b.dealer_order_id= a.dealer_order_id AND b._status NOT IN(-1, 3) AND b.sort_no != ?)))")
+		;
+		return this.supportJdbcTemplate.queryForBeanList(sql.toString(), SkuNumBean.class, orderId, skuId, sortNo);
+	}
 	
 	/**
 	 * 获取满足条件的所有的商品

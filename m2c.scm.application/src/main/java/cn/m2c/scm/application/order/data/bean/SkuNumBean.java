@@ -38,6 +38,55 @@ public class SkuNumBean {
 	@ColumnAlias(value = "_status")
 	private Integer status = 0;
 	
+	@ColumnAlias(value = "special_price")
+	private Long specialPrice;
+	
+	@ColumnAlias(value = "discount_price")
+	private Long discountPrice;
+	
+	@ColumnAlias(value = "is_special")
+	private Integer isSpecial;
+	/**优惠券优惠金额*/
+	private long couponMoney = 0;
+	
+	public Long getSpecialPrice() {
+		if (specialPrice == null)
+			specialPrice = 0l;
+		return specialPrice;
+	}
+
+	public void setSpecialPrice(Long specialPrice) {
+		this.specialPrice = specialPrice;
+	}
+
+	public Long getDiscountPrice() {
+		if (discountPrice == null)
+			discountPrice = 0l;
+		return discountPrice;
+	}
+
+	public void setDiscountPrice(Long discountPrice) {
+		this.discountPrice = discountPrice;
+	}
+
+	public Integer getIsSpecial() {
+		if (isSpecial == null)
+			isSpecial = 0;
+		return isSpecial;
+	}
+
+	public void setIsSpecial(Integer isSpecial) {
+		this.isSpecial = isSpecial;
+	}
+
+	public long getCouponMoney() {
+		return couponMoney;
+	}
+
+	public void setCouponMoney(long couponMoney) {
+		this.couponMoney = couponMoney;
+	}
+
 	public Integer getSortNo() {
 		return sortNo;
 	}
@@ -83,6 +132,8 @@ public class SkuNumBean {
 	}
 	
 	public Integer getNum() {
+		if (null == num)
+			num = 0;
 		return num;
 	}
 	
@@ -99,7 +150,7 @@ public class SkuNumBean {
 	}
 
 	public long getGoodsAmount() {
-		return goodsAmount;
+		return getThePrice() * getNum();
 	}
 
 	public void setGoodsAmount(long goodsAmount) {
@@ -121,5 +172,30 @@ public class SkuNumBean {
 	public void setCouponId(String couponId) {
 		this.couponId = couponId;
 	} 
-	
+	/***
+	 * 获取执行价格
+	 * @return
+	 */
+	public long getThePrice() {
+		if (isSpecial != null && isSpecial == 1)
+			return getSpecialPrice();
+		else
+		    return getDiscountPrice();
+	}
+	@Override
+	public SkuNumBean clone() {
+		SkuNumBean newBean = new SkuNumBean();
+		newBean.setChangePrice(changePrice);
+		newBean.setCouponId(couponId);
+		newBean.setDiscountPrice(discountPrice);
+		newBean.setIsChange(isChange);
+		newBean.setIsSpecial(isSpecial);
+		newBean.setMarketId(marketId);
+		newBean.setNum(num);
+		newBean.setSkuId(skuId);
+		newBean.setSortNo(sortNo);
+		newBean.setSpecialPrice(specialPrice);
+		newBean.setStatus(status);
+		return newBean;
+	}
 }
