@@ -22,6 +22,7 @@ import cn.m2c.scm.application.order.data.bean.OrderDealerBean;
 import cn.m2c.scm.application.order.data.bean.SimpleCoupon;
 import cn.m2c.scm.application.order.data.bean.SimpleMarket;
 import cn.m2c.scm.application.order.data.bean.SkuNumBean;
+import cn.m2c.scm.application.order.query.dto.GoodsDto;
 import cn.m2c.scm.domain.NegativeException;
 
 /**
@@ -728,6 +729,42 @@ public class AfterSellOrderQuery {
 			params.add(counponId);
 		}
 		
+		return this.supportJdbcTemplate.queryForBeanList(sql.toString(), SkuNumBean.class, params.toArray());
+	}
+
+	/**
+	 * 获取所有的未申请退货的商品
+	 * @param orderId
+	 * @param marketId
+	 * @return
+	 */
+	public List<SkuNumBean> getUnReturnGoods(String orderId, String marketId ,String counponId ,String skuId) {
+		List<String> params = new ArrayList<String>();
+		StringBuilder sql = new StringBuilder(512);
+		sql.append(" SELECT a.coupon_id,a.sku_id, a.sell_num, a.is_change, a.goods_amount, a.marketing_id, a.change_price, a.sort_no,b.market_type as market_type \r\n")
+		.append(" , b._status FROM t_scm_order_detail a\r\n")
+		.append(" LEFT OUTER JOIN t_scm_order_marketing_used b ON a.order_id=b.order_id AND a.marketing_id = b.marketing_id AND b._status=1\r\n")
+		.append(" WHERE a.order_id = ?\r\n")
+		;
+		params.add(orderId);
+		if (StringUtils.isNotEmpty(marketId) && StringUtils.isNotEmpty(counponId)) {
+			sql.append(" AND (a.marketing_id=? OR a.coupon_id=?)\r\n");
+			params.add(marketId);
+			params.add(counponId);
+		}
+		else if (StringUtils.isNotEmpty(marketId)) {
+			sql.append(" AND a.marketing_id=?\r\n");
+			params.add(marketId);
+		}
+		else if (StringUtils.isNotEmpty(counponId)) {
+			sql.append(" AND a.coupon_id=?");
+			params.add(counponId);
+		}
+		if(!StringUtils.isEmpty(skuId)){
+			sql.append(" AND a.skuId<> ?");
+			params.add(skuId);
+		}
+		sql.append(" AND a.sku_id NOT IN(SELECT s.sku_id FROM t_scm_order_after_sell s WHERE s.order_id=a.order_id AND s.dealer_order_id= a.dealer_order_id AND s._status > 3)");
 		return this.supportJdbcTemplate.queryForBeanList(sql.toString(), SkuNumBean.class, params.toArray());
 	}
 	

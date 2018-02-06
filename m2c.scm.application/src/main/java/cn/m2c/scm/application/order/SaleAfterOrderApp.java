@@ -9,11 +9,13 @@ import cn.m2c.scm.application.order.command.AproveSaleAfterCmd;
 import cn.m2c.scm.application.order.command.SaleAfterCmd;
 import cn.m2c.scm.application.order.command.SaleAfterShipCmd;
 import cn.m2c.scm.application.order.data.bean.DealerOrderMoneyBean;
+import cn.m2c.scm.application.order.data.bean.MarketBean;
 import cn.m2c.scm.application.order.data.bean.RefundEvtBean;
 import cn.m2c.scm.application.order.data.bean.SimpleCoupon;
 import cn.m2c.scm.application.order.data.bean.SimpleMarket;
 import cn.m2c.scm.application.order.data.bean.SkuNumBean;
 import cn.m2c.scm.application.order.query.AfterSellOrderQuery;
+import cn.m2c.scm.application.order.query.dto.GoodsDto;
 import cn.m2c.scm.application.utils.Utils;
 import cn.m2c.scm.domain.NegativeException;
 import cn.m2c.scm.domain.model.order.AfterSellFlow;
@@ -25,7 +27,9 @@ import cn.m2c.scm.domain.model.order.SaleAfterOrder;
 import cn.m2c.scm.domain.model.order.SaleAfterOrderRepository;
 import cn.m2c.scm.domain.service.order.OrderService;
 import cn.m2c.scm.domain.util.GetDisconfDataGetter;
+
 import com.baidu.disconf.client.usertools.DisconfDataGetter;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,6 +39,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -746,4 +751,105 @@ public class SaleAfterOrderApp {
             }
         }
     }
+
+
+    /**
+     * 创建售后单（重构）
+     * @param cmd
+     */
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+	public void afterSaleOrder(AddSaleAfterCmd cmd) throws NegativeException{
+    	 // 获取订单SKU详情看是否满足售后申请
+        DealerOrderDtl itemDtl = saleAfterRepository.getDealerOrderDtlBySku(cmd.getDealerOrderId(),
+                cmd.getSkuId(), cmd.getSortNo());
+
+        if (itemDtl == null) {
+            throw new NegativeException(MCode.V_1, "申请售后的商品不存在！");
+        }
+
+        int _sortNo = itemDtl.getSortNo();
+        int ij = saleAfterRepository.getSaleAfterOrderBySkuId(cmd.getDealerOrderId(),
+                cmd.getSkuId(), _sortNo);
+        if (ij > 0) {
+            throw new NegativeException(MCode.V_100, "此商品已有售后还在处理中！");
+        }
+
+        if (!itemDtl.canApplySaleAfter()) {
+            throw new NegativeException(MCode.V_100, "商品处于不可申请售后状态！");
+        }
+
+        int orderType = cmd.getType() == 3 ? 0 : cmd.getType(); //0换货， 1退货，2仅退款                  app传 1退货，2退款，3换货
+
+        // 增加售后限制, 换货除外
+        if (orderType != 0) {
+            int count = saleAfterRepository.checkCanApply(itemDtl.getOrderId(), itemDtl.getMarketId(), itemDtl.getCouponId());
+            if (count > 0) {
+                throw new NegativeException(MCode.V_101, "商品处于不可申请售后状态，因参与活动的其他商品正在申请中！");
+            }
+        }
+
+        int status = 2; //0申请退货,1申请换货,2申请退款          订单类型，0换货， 1退货，2仅退款
+        switch (orderType) {
+            case 0:
+                status = 1;
+                break;
+            case 1:
+                status = 0;
+                break;
+            case 2:
+                status = 2;
+                break;
+        }
+        long money = 0;
+        if (orderType != 0) {
+            // 生成售后单保存, 计算售后需要退的钱
+            String mkId = itemDtl.getMarketId();
+            String couponId = itemDtl.getCouponId();//优惠券id
+//            List<SkuNumBean> totalSku = saleOrderQuery.getTotalSkuByMarket(cmd.getOrderId(), mkId, couponId);
+            List<SkuNumBean> totalGoods = saleOrderQuery.getUnReturnGoods(cmd.getOrderId(),mkId,couponId,"");//上一次订单所有商品（不包含已经退换货的）
+            long totalResult = 0;
+            for (SkuNumBean skuNumBean : totalGoods) {
+            	totalResult+= (skuNumBean.getGoodsAmount() * skuNumBean.getNum()) - skuNumBean.getDiscountMoney() - skuNumBean.getCouponDiscount();
+			}
+            List<SkuNumBean> unReturnGoods = saleOrderQuery.getUnReturnGoods(cmd.getOrderId(),mkId,couponId,cmd.getSkuId());
+            if (!StringUtils.isEmpty(mkId)) {//计算满减
+            	SimpleMarket marketInfo = saleOrderQuery.getMarketById(mkId, cmd.getOrderId());
+            	OrderAfterSaleMarketCalc.calcMarketReturnMoney(marketInfo, unReturnGoods);
+            }
+            if (!StringUtils.isEmpty(couponId)) {//计算优惠券的金额
+                SimpleCoupon couponInfo = saleOrderQuery.getCouponById(couponId, cmd.getOrderId());
+                OrderCouponCalc.calcReturnMoney(couponInfo, unReturnGoods);//计算退款金额
+            }
+            //循环获取重新计算后的金额
+            long calResult = 0;
+            for (SkuNumBean skuNumBean : unReturnGoods) {
+            	calResult += (skuNumBean.getGoodsAmount() * skuNumBean.getNum()) - skuNumBean.getDiscountMoney() - skuNumBean.getCouponDiscount();
+			}
+            money = totalResult - calResult;
+           
+        }else {
+        	money = 0;
+        }
+        if (money < 0) {
+            throw new NegativeException(MCode.V_103, "不符合发起售后条件，建议联系商家");
+        }
+        long ft = 0;
+        int num = cmd.getBackNum();
+        if (num > itemDtl.sellNum())
+            num = itemDtl.sellNum();
+        AfterSellFlow afterSellFlow = new AfterSellFlow();
+        // 使之前申请的失效 20171218添加
+        saleAfterRepository.invalideBefore(cmd.getSkuId(), cmd.getDealerOrderId(), _sortNo);
+
+        SaleAfterOrder afterOrder = new SaleAfterOrder(cmd.getSaleAfterNo(), cmd.getUserId(), cmd.getOrderId(),
+                cmd.getDealerOrderId(), cmd.getDealerId(), cmd.getGoodsId(), cmd.getSkuId(), cmd.getReason()
+                , num, status, orderType, money, cmd.getReasonCode(), ft
+                , _sortNo);
+        afterOrder.addApply();
+        saleAfterRepository.save(afterOrder);
+        afterSellFlow.add(cmd.getSaleAfterNo(), 0, cmd.getUserId(), cmd.getReason(), cmd.getReasonCode(), null, null);
+        afterSellFlowRepository.save(afterSellFlow);
+        LOGGER.info("新增加售后申请成功！");
+	}
+
 }

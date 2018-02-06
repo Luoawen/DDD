@@ -48,7 +48,6 @@ public class MarketBean {
 	private int threshold;
 
 
-	
 	public String getCostList() {
 		if (costList != null)
 			return JsonUtils.toStr(costList);

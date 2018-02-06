@@ -297,7 +297,8 @@ public class AppOrderAgent {
         	AddSaleAfterCmd cmd = new AddSaleAfterCmd(userId, orderId, dealerOrderId,
         			skuId, saleAfterNo, type, dealerId, goodsId, backNum, reason, rCode
         			,sortNo);
-        	saleAfterApp.createSaleAfterOrder(cmd);
+//        	saleAfterApp.createSaleAfterOrder(cmd);
+        	saleAfterApp.afterSaleOrder(cmd);
             result.setStatus(MCode.V_200);
         } 
         catch (NegativeException e) {
