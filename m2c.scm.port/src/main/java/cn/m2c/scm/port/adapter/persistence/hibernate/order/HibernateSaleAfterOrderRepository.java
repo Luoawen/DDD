@@ -181,7 +181,7 @@ public class HibernateSaleAfterOrderRepository extends HibernateSupperRepository
 					"AND b._status NOT IN (-1, 4, 5)\r\n" + 
 					") AND _status NOT IN (-1, 4, 5)").setParameter("id", rs.get(0))
 					.setParameter("afterNo", afterNo).list();
-			if (rs1 != null && rs.size() > 0) {
+			if (rs1 != null && rs1.size() > 0) {
 				Object o = this.session().createSQLQuery("select count(1) from t_scm_order_after_sell where dealer_order_id=:dealerOrderId and _status IN (10, 11, 12)")
 						.setParameter("dealerOrderId", rs1.get(0)).uniqueResult();
 				BigInteger b = (BigInteger)o;
