@@ -26,6 +26,7 @@ public class SkuNumBean {
 	@ColumnAlias(value = "coupon_id")
 	private String couponId; // 优惠券
 	
+	@ColumnAlias(value = "coupon_discount")
 	private long couponDiscount = 0;
 	
 	@ColumnAlias(value = "change_price")

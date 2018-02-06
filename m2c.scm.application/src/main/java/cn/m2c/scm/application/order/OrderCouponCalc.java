@@ -310,6 +310,16 @@ public class OrderCouponCalc {
         // 根据marketInfo 来计算
         if (couponInfo == null)
             return ;
+        
+        List<SkuNumBean> couponSku = new ArrayList<SkuNumBean>();
+		for (SkuNumBean couponbean : unReturnGoods) {
+			if (couponbean.getStatus() == 0) {
+				couponbean.setDiscountMoney(0);
+			}
+			if(!StringUtils.isEmpty(couponbean.getCouponId())){
+				couponSku.add(couponbean);
+			}
+		}
         //营销形式，1：减钱，2：打折
         Integer a = couponInfo.getCouponForm();
         //门槛类型：1：金额，2：件数 3 无门槛
@@ -320,7 +330,7 @@ public class OrderCouponCalc {
         long total = 0;
         // 优惠金额或折扣
         Integer discount = couponInfo.getDiscount();
-        for (SkuNumBean bean : unReturnGoods) {
+        for (SkuNumBean bean : couponSku) {
         	// sortNo == 0是为了兼容之前的数据
             //boolean bFlag = (skuId.equals(bean.getSkuId()));
             if (b == 1 &&  bean.getIsChange() == 0) {
@@ -335,7 +345,7 @@ public class OrderCouponCalc {
 
         SkuNumBean tmp = null;
         if (total >= threshold || b == 3) {// 若还满足, 需要计算满足的值
-            for (SkuNumBean bean : unReturnGoods) {
+            for (SkuNumBean bean : couponSku) {
 
                 //boolean bFlag = (skuId.equals(bean.getSkuId()));
                 if (total == 0)
@@ -357,7 +367,7 @@ public class OrderCouponCalc {
 
         } else { // 不满足
         	couponInfo.setIsFull(false);
-            for (SkuNumBean bean : unReturnGoods) {
+            for (SkuNumBean bean : couponSku) {
 
                 switch (a) {
                     case 1:

@@ -741,7 +741,7 @@ public class AfterSellOrderQuery {
 	public List<SkuNumBean> getUnReturnGoods(String orderId, String marketId ,String counponId ,String skuId) {
 		List<String> params = new ArrayList<String>();
 		StringBuilder sql = new StringBuilder(512);
-		sql.append(" SELECT a.coupon_id,a.sku_id, a.sell_num, a.is_change, a.goods_amount, a.marketing_id, a.change_price, a.sort_no,b.market_type as market_type \r\n")
+		sql.append(" SELECT a.coupon_id,a.coupon_discount,a.sku_id, a.sell_num, a.is_change, a.goods_amount, a.marketing_id, a.change_price, a.sort_no,b.market_type as market_type,a.plateform_discount + a.dealer_discount AS discountMoney \r\n")
 		.append(" , b._status FROM t_scm_order_detail a\r\n")
 		.append(" LEFT OUTER JOIN t_scm_order_marketing_used b ON a.order_id=b.order_id AND a.marketing_id = b.marketing_id AND b._status=1\r\n")
 		.append(" WHERE a.order_id = ?\r\n")
@@ -761,7 +761,7 @@ public class AfterSellOrderQuery {
 			params.add(counponId);
 		}
 		if(!StringUtils.isEmpty(skuId)){
-			sql.append(" AND a.skuId<> ?");
+			sql.append(" AND a.sku_id<> ?");
 			params.add(skuId);
 		}
 		sql.append(" AND a.sku_id NOT IN(SELECT s.sku_id FROM t_scm_order_after_sell s WHERE s.order_id=a.order_id AND s.dealer_order_id= a.dealer_order_id AND s._status > 3)");

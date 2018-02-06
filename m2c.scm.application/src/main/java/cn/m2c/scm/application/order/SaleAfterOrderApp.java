@@ -804,13 +804,14 @@ public class SaleAfterOrderApp {
         if (orderType != 0) {
             // 生成售后单保存, 计算售后需要退的钱
             String mkId = itemDtl.getMarketId();
-            String couponId = itemDtl.getCouponId();//优惠券id
+            String couponId = "";
 //            List<SkuNumBean> totalSku = saleOrderQuery.getTotalSkuByMarket(cmd.getOrderId(), mkId, couponId);
             List<SkuNumBean> totalGoods = saleOrderQuery.getUnReturnGoods(cmd.getOrderId(),mkId,couponId,"");//上一次订单所有商品（不包含已经退换货的）
             long totalResult = 0;
             for (SkuNumBean skuNumBean : totalGoods) {
             	totalResult+= (skuNumBean.getGoodsAmount() * skuNumBean.getNum()) - skuNumBean.getDiscountMoney() - skuNumBean.getCouponDiscount();
-			}
+            	couponId = StringUtils.isNotEmpty(skuNumBean.getCouponId())?skuNumBean.getCouponId():"";
+            }
             List<SkuNumBean> unReturnGoods = saleOrderQuery.getUnReturnGoods(cmd.getOrderId(),mkId,couponId,cmd.getSkuId());
             if (!StringUtils.isEmpty(mkId)) {//计算满减
             	SimpleMarket marketInfo = saleOrderQuery.getMarketById(mkId, cmd.getOrderId());
