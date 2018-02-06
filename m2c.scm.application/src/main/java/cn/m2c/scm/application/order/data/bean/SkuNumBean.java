@@ -36,7 +36,7 @@ public class SkuNumBean {
 	private Integer sortNo;
 	// 满减状态
 	@ColumnAlias(value = "_status")
-	private int status = 0;
+	private Integer status = 0;
 	
 	public Integer getSortNo() {
 		return sortNo;
@@ -46,11 +46,13 @@ public class SkuNumBean {
 		this.sortNo = sortNo;
 	}
 
-	public int getStatus() {
+	public Integer getStatus() {
+		if (status == null)
+			status = 0;
 		return status;
 	}
 
-	public void setStatus(int status) {
+	public void setStatus(Integer status) {
 		this.status = status;
 	}
 
