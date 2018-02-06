@@ -39,17 +39,7 @@ public class SkuNumBean {
 	// 满减状态
 	@ColumnAlias(value = "_status")
 	private int status = 0;
-	@ColumnAlias(value = "market_type")
-	private Integer marketType = 0;
 	
-	
-	public Integer getMarketType() {
-		return marketType;
-	}
-
-	public void setMarketType(Integer marketType) {
-		this.marketType = marketType;
-	}
 
 	public Integer getSortNo() {
 		return sortNo;
