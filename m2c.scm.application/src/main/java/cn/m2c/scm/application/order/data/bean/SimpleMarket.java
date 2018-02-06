@@ -109,5 +109,4 @@ public class SimpleMarket {
 	public void setUseStatus(Integer useStatus) {
 		this.useStatus = useStatus;
 	}
-	
 }
