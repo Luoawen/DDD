@@ -33,6 +33,9 @@ public class SimpleCoupon {
 	@ColumnAlias(value = "coupon_name")
 	private String couponName;
 	
+	@ColumnAlias(value = "_status")
+	private Integer couponStatus;//状态 1:正常使用  0：未使用
+	
 	/**用于退货后是否还处于满足状态*/
 	private boolean isFull = true;
 	
@@ -101,4 +104,13 @@ public class SimpleCoupon {
 	public boolean isFull() {
 		return isFull;
 	}
+
+	public Integer getCouponStatus() {
+		return couponStatus;
+	}
+
+	public void setCouponStatus(Integer couponStatus) {
+		this.couponStatus = couponStatus;
+	}
+	
 }
