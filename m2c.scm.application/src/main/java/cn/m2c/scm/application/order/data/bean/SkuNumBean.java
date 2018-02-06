@@ -26,6 +26,8 @@ public class SkuNumBean {
 	@ColumnAlias(value = "coupon_id")
 	private String couponId; // 优惠券
 	
+	private long couponDiscount = 0;
+	
 	@ColumnAlias(value = "change_price")
 	private Long changePrice; // 换购价
 	/**优惠金额*/
@@ -36,8 +38,9 @@ public class SkuNumBean {
 	private Integer sortNo;
 	// 满减状态
 	@ColumnAlias(value = "_status")
-	private Integer status = 0;
+	private int status = 0;
 	
+
 	public Integer getSortNo() {
 		return sortNo;
 	}
@@ -46,13 +49,11 @@ public class SkuNumBean {
 		this.sortNo = sortNo;
 	}
 
-	public Integer getStatus() {
-		if (status == null)
-			status = 0;
+	public int getStatus() {
 		return status;
 	}
 
-	public void setStatus(Integer status) {
+	public void setStatus(int status) {
 		this.status = status;
 	}
 
@@ -120,6 +121,15 @@ public class SkuNumBean {
 
 	public void setCouponId(String couponId) {
 		this.couponId = couponId;
+	}
+
+	public long getCouponDiscount() {
+		return couponDiscount;
+	}
+
+	public void setCouponDiscount(long couponDiscount) {
+		this.couponDiscount = couponDiscount;
 	} 
+	
 	
 }
