@@ -22,7 +22,6 @@ import cn.m2c.scm.application.order.data.bean.OrderDealerBean;
 import cn.m2c.scm.application.order.data.bean.SimpleCoupon;
 import cn.m2c.scm.application.order.data.bean.SimpleMarket;
 import cn.m2c.scm.application.order.data.bean.SkuNumBean;
-import cn.m2c.scm.application.order.query.dto.GoodsDto;
 import cn.m2c.scm.domain.NegativeException;
 
 /**
@@ -366,7 +365,7 @@ public class AfterSellOrderQuery {
 		.append("WHERE a.order_id = ?\r\n")
 		.append("AND a.marketing_id = ? ")
 		.append("AND ((a.sort_no=0 AND a.sku_id NOT IN(SELECT b.sku_id FROM t_scm_order_after_sell b WHERE b.order_id=a.order_id AND b.dealer_order_id= a.dealer_order_id AND b._status > 3)) ")
-		.append(" OR (a.sort_no NOT IN(SELECT b.sort_no FROM t_scm_order_after_sell b WHERE b.order_id=a.order_id AND b.dealer_order_id= a.dealer_order_id AND b._status > 3)))")
+		.append(" OR (a.sort_no!=0 AND a.sort_no NOT IN(SELECT b.sort_no FROM t_scm_order_after_sell b WHERE b.order_id=a.order_id AND b.dealer_order_id= a.dealer_order_id AND b._status > 3)))")
 		;
 		return this.supportJdbcTemplate.queryForBeanList(sql.toString(), SkuNumBean.class, orderId, marketId);
 	}
@@ -410,9 +409,9 @@ public class AfterSellOrderQuery {
 		StringBuilder sql = new StringBuilder();
 		sql.append(" SELECT coupon_id, coupon_form, coupon_type, threshold, threshold_type, discount\r\n")
 		.append("FROM	t_scm_order_coupon_used\r\n")
-		.append("WHERE	order_id = ? AND coupon_id = (SELECT a.coupon_id FROM t_scm_order_detail a WHERE a.order_id=? AND a.sku_id=? AND a.sort_no=?)")
+		.append("WHERE	order_id = ? AND coupon_id IN (SELECT a.coupon_id FROM t_scm_order_detail a WHERE a.order_id=?)")
 		.append(" AND _status=1");
-		return this.supportJdbcTemplate.queryForBean(sql.toString(), SimpleCoupon.class, orderId, orderId, skuId, sortNo);
+		return this.supportJdbcTemplate.queryForBean(sql.toString(), SimpleCoupon.class, orderId, orderId);//, skuId, sortNo
 	}
 	
 	/***
@@ -698,6 +697,39 @@ public class AfterSellOrderQuery {
 		return this.supportJdbcTemplate.queryForBeanList(sql.toString(), SkuNumBean.class, orderId);
 	}
 
+	/**
+	 * 获取所有的未售后的sku信息
+	 * @param orderId
+	 * @return
+	 */
+	public List<SkuNumBean> getTotalSkuForAfter(String orderId) {
+		StringBuilder sql = new StringBuilder();
+		sql.append(" SELECT a.coupon_id,a.coupon_discount,a.sku_id, a.sell_num, a.is_change, a.marketing_id, a.change_price, a.sort_no, a.special_price, a.discount_price, a.is_special\r\n")
+		.append(" , b._status FROM t_scm_order_detail a\r\n")
+		.append(" LEFT OUTER JOIN t_scm_order_marketing_used b ON a.order_id=b.order_id AND a.marketing_id = b.marketing_id AND b._status=1\r\n")
+		.append(" WHERE a.order_id = ?\r\n")
+		.append("AND ((a.sort_no=0 AND a.sku_id NOT IN(SELECT b.sku_id FROM t_scm_order_after_sell b WHERE b.order_id=a.order_id AND b.dealer_order_id= a.dealer_order_id AND b._status NOT IN(-1, 3))) ")
+		.append(" OR (a.sort_no NOT IN(SELECT b.sort_no FROM t_scm_order_after_sell b WHERE b.order_id=a.order_id AND b.dealer_order_id= a.dealer_order_id AND b._status NOT IN(-1, 3))))")
+		;
+		return this.supportJdbcTemplate.queryForBeanList(sql.toString(), SkuNumBean.class, orderId);
+	}
+	
+	/**
+	 * 获取所有的未售后的sku信息,为同意售后用
+	 * @param orderId
+	 * @return
+	 */
+	public List<SkuNumBean> getTotalSkuForAfterConfirm(String orderId, int sortNo, String skuId) {
+		StringBuilder sql = new StringBuilder();
+		sql.append(" SELECT a.coupon_id,a.coupon_discount,a.sku_id, a.sell_num, a.is_change, a.marketing_id, a.change_price, a.sort_no, a.special_price, a.discount_price, a.is_special\r\n")
+		.append(" , b._status FROM t_scm_order_detail a\r\n")
+		.append(" LEFT OUTER JOIN t_scm_order_marketing_used b ON a.order_id=b.order_id AND a.marketing_id = b.marketing_id AND b._status=1\r\n")
+		.append(" WHERE a.order_id = ?\r\n")
+		.append("AND ((a.sort_no=0 AND a.sku_id NOT IN(SELECT b.sku_id FROM t_scm_order_after_sell b WHERE b.order_id=a.order_id AND b.dealer_order_id= a.dealer_order_id AND b._status NOT IN(-1, 3) AND b.sku_id != ?)) ")
+		.append(" OR (a.sort_no NOT IN(SELECT b.sort_no FROM t_scm_order_after_sell b WHERE b.order_id=a.order_id AND b.dealer_order_id= a.dealer_order_id AND b._status NOT IN(-1, 3) AND b.sort_no != ?)))")
+		;
+		return this.supportJdbcTemplate.queryForBeanList(sql.toString(), SkuNumBean.class, orderId, skuId, sortNo);
+	}
 	
 	/**
 	 * 获取满足条件的所有的商品
@@ -729,42 +761,6 @@ public class AfterSellOrderQuery {
 			params.add(counponId);
 		}
 		
-		return this.supportJdbcTemplate.queryForBeanList(sql.toString(), SkuNumBean.class, params.toArray());
-	}
-
-	/**
-	 * 获取所有的未申请退货的商品
-	 * @param orderId
-	 * @param marketId
-	 * @return
-	 */
-	public List<SkuNumBean> getUnReturnGoods(String orderId, String marketId ,String counponId ,String skuId) {
-		List<String> params = new ArrayList<String>();
-		StringBuilder sql = new StringBuilder(512);
-		sql.append(" SELECT a.coupon_id,a.coupon_discount,a.sku_id, a.sell_num, a.is_change, a.goods_amount, a.marketing_id, a.change_price, a.sort_no,b.market_type as market_type,a.plateform_discount + a.dealer_discount AS discountMoney \r\n")
-		.append(" , b._status FROM t_scm_order_detail a\r\n")
-		.append(" LEFT OUTER JOIN t_scm_order_marketing_used b ON a.order_id=b.order_id AND a.marketing_id = b.marketing_id AND b._status=1\r\n")
-		.append(" WHERE a.order_id = ?\r\n")
-		;
-		params.add(orderId);
-		if (StringUtils.isNotEmpty(marketId) && StringUtils.isNotEmpty(counponId)) {
-			sql.append(" AND (a.marketing_id=? OR a.coupon_id=?)\r\n");
-			params.add(marketId);
-			params.add(counponId);
-		}
-		else if (StringUtils.isNotEmpty(marketId)) {
-			sql.append(" AND a.marketing_id=?\r\n");
-			params.add(marketId);
-		}
-		else if (StringUtils.isNotEmpty(counponId)) {
-			sql.append(" AND a.coupon_id=?");
-			params.add(counponId);
-		}
-		if(!StringUtils.isEmpty(skuId)){
-			sql.append(" AND a.sku_id<> ?");
-			params.add(skuId);
-		}
-		sql.append(" AND a.sku_id NOT IN(SELECT s.sku_id FROM t_scm_order_after_sell s WHERE s.order_id=a.order_id AND s.dealer_order_id= a.dealer_order_id AND s._status > 3)");
 		return this.supportJdbcTemplate.queryForBeanList(sql.toString(), SkuNumBean.class, params.toArray());
 	}
 	
