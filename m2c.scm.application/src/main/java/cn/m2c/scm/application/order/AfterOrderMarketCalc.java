@@ -40,6 +40,7 @@ public class AfterOrderMarketCalc {
         long threshold = marketInfo.getThreshold();
 
         long total = 0;
+        long totalNum = 0;
         // 优惠金额或折扣
         Integer discount = marketInfo.getDiscount();
         for (SkuNumBean bean : skuBeanLs) {
@@ -47,7 +48,8 @@ public class AfterOrderMarketCalc {
             if (b == 1 && bean.getIsChange() == 0) {
                 total += bean.getGoodsAmount();
             } else if (b == 2 && bean.getIsChange() == 0) {
-                total += bean.getNum();
+            	total += bean.getGoodsAmount();
+            	totalNum += bean.getNum();
             }
             else if ((b == 1 || b == 2) && bean.getIsChange() == 1 && a == 3) {
             	discount = (int)(bean.getGoodsAmount() - bean.getChangePrice() * bean.getNum());
@@ -57,7 +59,7 @@ public class AfterOrderMarketCalc {
         if (discount == null)
             return ;
 
-        if (total >= threshold) {// 若还满足, 需要计算满足的值
+        if ((b != 2 && total >= threshold) || (b==2 && totalNum >= threshold)) {// 若还满足, 需要计算满足的值
             for (SkuNumBean bean : skuBeanLs) {
 
                 if (total == 0)
@@ -128,6 +130,7 @@ public class AfterOrderMarketCalc {
         long threshold = marketInfo.getThreshold();
 
         long total = 0;
+        long totalNum = 0;
         // 优惠金额或折扣
         Integer discount = marketInfo.getDiscount();
         for (SkuNumBean bean : skuBeanLs) {
@@ -136,7 +139,8 @@ public class AfterOrderMarketCalc {
             if (b == 1 && !bFlag && bean.getIsChange() == 0) {
                 total += bean.getGoodsAmount();
             } else if (b == 2 && !bFlag && bean.getIsChange() == 0) {
-                total += bean.getNum();
+            	total += bean.getGoodsAmount();
+            	totalNum += bean.getNum();
             }
             else if ((b == 1 || b == 2) && !bFlag && bean.getIsChange() == 1 && a == 3) {
             	discount = (int)(bean.getGoodsAmount() - bean.getChangePrice() * bean.getNum());
@@ -149,7 +153,7 @@ public class AfterOrderMarketCalc {
         }
 
         SkuNumBean tmp = null;
-        if (total >= threshold) {// 若还满足, 需要计算满足的值
+        if ((b != 2 && total >= threshold) || (b==2 && totalNum >= threshold)) {// 若还满足, 需要计算满足的值
             for (SkuNumBean bean : skuBeanLs) {
 
                 boolean bFlag = (skuId.equals(bean.getSkuId()) && (sortNo == 0 || bean.getSortNo() == sortNo));
@@ -261,6 +265,7 @@ public class AfterOrderMarketCalc {
         long threshold = couponInfo.getThreshold();
 
         long total = 0;
+        long totalNum = 0;
         // 优惠金额或折扣
         Integer discount = couponInfo.getDiscount();
         for (SkuNumBean bean : couponSku) {
@@ -268,14 +273,15 @@ public class AfterOrderMarketCalc {
             if (b == 1 && bean.getIsChange() == 0) {
                 total += bean.getGoodsAmount()-bean.getDiscountMoney();
             } else if (b == 2 && bean.getIsChange() == 0) {
-                total += bean.getNum();
+                total += (bean.getGoodsAmount()-bean.getDiscountMoney());
+                totalNum += bean.getNum();
             }
         }
         
         if (discount == null)
             return ;
 
-        if (total >= threshold || b == 3) {// 若还满足, 需要计算满足的值
+        if ((b != 2 && total >= threshold) || (b==2 && totalNum >= totalNum) || b == 3) {// 若还满足, 需要计算满足的值
             for (SkuNumBean bean : couponSku) {
                 if (total == 0)
             		total = 1;
@@ -345,6 +351,7 @@ public class AfterOrderMarketCalc {
         long threshold = couponInfo.getThreshold();
 
         long total = 0;
+        long totalNum = 0;
         // 优惠金额或折扣
         Integer discount = couponInfo.getDiscount();
         for (SkuNumBean bean : couponSku) {
@@ -354,7 +361,8 @@ public class AfterOrderMarketCalc {
             if (b == 1 && !bFlag && bean.getIsChange() == 0) {
                 total += bean.getGoodsAmount()-bean.getDiscountMoney();
             } else if (b == 2 && !bFlag && bean.getIsChange() == 0) {
-                total += bean.getNum();
+            	total += (bean.getGoodsAmount()-bean.getDiscountMoney());
+                totalNum += bean.getNum();
             }
         }
         
@@ -364,7 +372,7 @@ public class AfterOrderMarketCalc {
         }
 
         SkuNumBean tmp = null;
-        if (total >= threshold || b == 3) {// 若还满足, 需要计算满足的值
+        if ((b != 2 && total >= threshold) || (b==2 && totalNum >= totalNum) || b == 3) {// 若还满足, 需要计算满足的值
             for (SkuNumBean bean : couponSku) {
 
                 //boolean bFlag = (skuId.equals(bean.getSkuId()));
