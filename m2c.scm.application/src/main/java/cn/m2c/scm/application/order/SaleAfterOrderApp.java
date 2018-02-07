@@ -148,7 +148,11 @@ public class SaleAfterOrderApp {
             money = money - discountMoney - couponDiscountMoney;*/
             
             List<SkuNumBean> totalSku1 = saleOrderQuery.getTotalSkuForAfter(cmd.getOrderId());//获取满足条件的所有的商品详情
-            List<SkuNumBean> totalSku2 = copyList(totalSku1);
+            StringBuffer couponIdBuffer = new StringBuffer(50);
+            List<SkuNumBean> totalSku2 = copyList(totalSku1, couponIdBuffer);
+            if (StringUtils.isEmpty(couponId))
+            	couponId = couponIdBuffer.toString();
+            couponIdBuffer = null;
             
             long beforeMoney = 0;//退前的钱
             long afterMoney = 0;//退后的钱
@@ -181,7 +185,7 @@ public class SaleAfterOrderApp {
             if (!StringUtils.isEmpty(couponId)) {//计算优惠券的金额
                 AfterOrderMarketCalc.calcCouponReturnMoney2(couponInfo, totalSku2, cmd.getSkuId(), _sortNo);
             }
-            afterMoney = getTotalMoney(totalSku2);
+            afterMoney = getTotalMoney(totalSku2, cmd.getSkuId(), _sortNo);
             
             money = beforeMoney - afterMoney;
         } else {
@@ -287,7 +291,7 @@ public class SaleAfterOrderApp {
             
             money = money - discountMoney - couponDiscountMoney;*/
             List<SkuNumBean> totalSku1 = saleOrderQuery.getTotalSkuForAfterConfirm(order.orderId(), order.sortNo(), order.skuId());//获取满足条件的所有的商品详情
-            List<SkuNumBean> totalSku2 = copyList(totalSku1);
+            List<SkuNumBean> totalSku2 = copyList(totalSku1, null);
             
             long beforeMoney = 0;//退前的钱
             long afterMoney = 0;//退后的钱
@@ -316,7 +320,7 @@ public class SaleAfterOrderApp {
             if (couponInfo != null) {//计算优惠券的金额
                 AfterOrderMarketCalc.calcCouponReturnMoney2(couponInfo, totalSku2, order.skuId(), order.sortNo());
             }
-            afterMoney = getTotalMoney(totalSku2);
+            afterMoney = getTotalMoney(totalSku2, order.skuId(), order.sortNo());
             
             money = beforeMoney - afterMoney;
             
@@ -846,18 +850,40 @@ public class SaleAfterOrderApp {
     	
     	return totalMoney;
     }
+    
+    /***
+     * 不包括运费的优惠后的金额
+     * @param totalSku
+     * @return
+     */
+    private long getTotalMoney(List<SkuNumBean> totalSku, String skuId, int sortNo) {
+    	long totalMoney = 0;
+    	if (null == totalSku || totalSku.size() < 1)
+    		return totalMoney;
+    	for (SkuNumBean bean : totalSku) {
+    		if (skuId.equals(bean.getSkuId()) && sortNo == bean.getSortNo()) {
+    			continue;
+    		}
+    		totalMoney += (bean.getGoodsAmount() - bean.getDiscountMoney() - bean.getCouponMoney());
+    	}
+    	
+    	return totalMoney;
+    }
     /***
      * 拷贝列表
      * @param totalSku
      * @return
      */
-    private List<SkuNumBean> copyList(List<SkuNumBean> totalSku) {
+    private List<SkuNumBean> copyList(List<SkuNumBean> totalSku, StringBuffer sb) {
     	List<SkuNumBean> skus = null;
     	if (totalSku == null || totalSku.size() < 1) {
     		return skus;
     	}
     	skus = new ArrayList<SkuNumBean>();
     	for (SkuNumBean bean : totalSku) {
+    		if (sb != null && StringUtils.isNotEmpty(bean.getCouponId()) && sb.length() < 1) {
+    			sb.append(bean.getCouponId());
+    		}
     		skus.add(bean.clone());
     	}
     	return skus;

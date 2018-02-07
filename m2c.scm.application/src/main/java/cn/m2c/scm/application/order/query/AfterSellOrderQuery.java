@@ -409,9 +409,9 @@ public class AfterSellOrderQuery {
 		StringBuilder sql = new StringBuilder();
 		sql.append(" SELECT coupon_id, coupon_form, coupon_type, threshold, threshold_type, discount\r\n")
 		.append("FROM	t_scm_order_coupon_used\r\n")
-		.append("WHERE	order_id = ? AND coupon_id = (SELECT a.coupon_id FROM t_scm_order_detail a WHERE a.order_id=? AND a.sku_id=? AND a.sort_no=?)")
+		.append("WHERE	order_id = ? AND coupon_id IN (SELECT a.coupon_id FROM t_scm_order_detail a WHERE a.order_id=?)")
 		.append(" AND _status=1");
-		return this.supportJdbcTemplate.queryForBean(sql.toString(), SimpleCoupon.class, orderId, orderId, skuId, sortNo);
+		return this.supportJdbcTemplate.queryForBean(sql.toString(), SimpleCoupon.class, orderId, orderId);//, skuId, sortNo
 	}
 	
 	/***
