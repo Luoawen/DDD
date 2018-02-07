@@ -5,8 +5,6 @@ import cn.m2c.scm.application.order.data.bean.MarketBean;
 import cn.m2c.scm.application.order.data.bean.MarketLevelBean;
 import cn.m2c.scm.application.order.data.bean.MarketRangeSuit;
 import cn.m2c.scm.application.order.data.bean.MarketSku;
-import cn.m2c.scm.application.order.data.bean.SimpleMarket;
-import cn.m2c.scm.application.order.data.bean.SkuNumBean;
 import cn.m2c.scm.application.order.query.dto.GoodsDto;
 import cn.m2c.scm.domain.NegativeException;
 import org.apache.commons.lang3.StringUtils;
@@ -378,7 +376,7 @@ public class OrderMarketCalc {
      * @param skuId      要退货或退款的skuId
      * @return 返回本商品优惠的金额
      */
-    public static long calcReturnMoney(SimpleMarket marketInfo
+    /*public static long calcReturnMoney(SimpleMarket marketInfo
             , List<SkuNumBean> skuBeanLs, String skuId, int sortNo) {
         long rtMoney = 0;
         // 根据marketInfo 来计算
@@ -413,7 +411,7 @@ public class OrderMarketCalc {
             return rtMoney;
 
         SkuNumBean tmp = null;
-        if ((b !=2 && total >= threshold) || (b==2 && totalNum >= totalNum)) {// 若还满足, 需要计算满足的值
+        if ((b !=2 && total >= threshold) || (b==2 && totalNum >= threshold)) {// 若还满足, 需要计算满足的值
             for (SkuNumBean bean : skuBeanLs) {
 
                 boolean bFlag = (skuId.equals(bean.getSkuId()) && (sortNo == 0 || bean.getSortNo() == sortNo));
@@ -497,7 +495,7 @@ public class OrderMarketCalc {
             }
         }
         return rtMoney;
-    }
+    }*/
     
     public static void main(String[] args) {
     	BigDecimal g = new BigDecimal(22500);
