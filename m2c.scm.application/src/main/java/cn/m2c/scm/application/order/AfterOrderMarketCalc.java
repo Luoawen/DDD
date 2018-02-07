@@ -281,7 +281,7 @@ public class AfterOrderMarketCalc {
         if (discount == null)
             return ;
 
-        if ((b != 2 && total >= threshold) || (b==2 && totalNum >= totalNum) || b == 3) {// 若还满足, 需要计算满足的值
+        if ((b != 2 && total >= threshold) || (b==2 && totalNum >= threshold) || b == 3) {// 若还满足, 需要计算满足的值
             for (SkuNumBean bean : couponSku) {
                 if (total == 0)
             		total = 1;
@@ -372,7 +372,7 @@ public class AfterOrderMarketCalc {
         }
 
         SkuNumBean tmp = null;
-        if ((b != 2 && total >= threshold) || (b==2 && totalNum >= totalNum) || b == 3) {// 若还满足, 需要计算满足的值
+        if ((b != 2 && total >= threshold) || (b==2 && totalNum >= threshold) || b == 3) {// 若还满足, 需要计算满足的值
             for (SkuNumBean bean : couponSku) {
 
                 //boolean bFlag = (skuId.equals(bean.getSkuId()));

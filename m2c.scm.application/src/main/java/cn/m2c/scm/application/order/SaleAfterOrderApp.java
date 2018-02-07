@@ -179,7 +179,7 @@ public class SaleAfterOrderApp {
                 AfterOrderMarketCalc.calcReturnMoney2(marketInfo, skuBeanLs, cmd.getSkuId(), _sortNo);
                 //-----将处理好的优惠平摊金额复制给所有订单的列表里面，用于计算优惠券使用
                 if (skuBeanLs.size() > 0) {
-                    copySku(skuBeanLs, totalSku1);
+                    copySku(skuBeanLs, totalSku2);
                 }
             }
             if (!StringUtils.isEmpty(couponId)) {//计算优惠券的金额
@@ -314,7 +314,7 @@ public class SaleAfterOrderApp {
                 AfterOrderMarketCalc.calcReturnMoney2(marketInfo, skuBeanLs, order.skuId(), order.sortNo());
                 //-----将处理好的优惠平摊金额复制给所有订单的列表里面，用于计算优惠券使用
                 if (skuBeanLs.size() > 0) {
-                    copySku(skuBeanLs, totalSku1);
+                    copySku(skuBeanLs, totalSku2);
                 }
             }
             if (couponInfo != null) {//计算优惠券的金额
