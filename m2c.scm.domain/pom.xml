@@ -36,7 +36,7 @@
 		<dependency>
 			<groupId>cn.m2c.common</groupId>
 			<artifactId>ddd.framework</artifactId>
-			<version>1.1.2-SNAPSHOT</version>
+			<version>1.1.2.4-SNAPSHOT</version>
 		</dependency>
 
 	</dependencies>

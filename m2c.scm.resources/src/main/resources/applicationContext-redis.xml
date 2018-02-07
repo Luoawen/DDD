@@ -21,11 +21,11 @@
 		<!-- 连接池配置. -->
 	<bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
 		<!-- 连接池中最大连接数。高版本：maxTotal，低版本：maxActive -->
-		<property name="maxTotal" value="38" />
+		<property name="maxTotal" value="60" />
 		<!-- 连接池中最大空闲的连接数. -->
-		<property name="maxIdle" value="15" />
+		<property name="maxIdle" value="25" />
 		<!-- 连接池中最少空闲的连接数. -->
-		<property name="minIdle" value="10" />
+		<property name="minIdle" value="15" />
 		<!-- 当连接池资源耗尽时，调用者最大阻塞的时间，超时将跑出异常。单位，毫秒数;默认为-1.表示永不超时。高版本：maxWaitMillis，低版本：maxWait -->
 		<property name="maxWaitMillis" value="5000" />
 		<!-- 连接空闲的最小时间，达到此值后空闲连接将可能会被移除。负值(-1)表示不移除. -->
