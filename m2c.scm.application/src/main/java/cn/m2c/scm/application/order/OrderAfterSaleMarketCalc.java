@@ -89,9 +89,19 @@ public class OrderAfterSaleMarketCalc {
      */
     public static void calcMarketReturnMoney(SimpleMarket marketInfo
             , List<SkuNumBean> skuBeanLs) {
+    	List<SkuNumBean> marketSku = new ArrayList<SkuNumBean>();
         // 根据marketInfo 来计算
         if (marketInfo == null || skuBeanLs == null || skuBeanLs.size() < 1)
             return ;
+        for (SkuNumBean bean : skuBeanLs) {
+        	if(bean.getStatus()==0){
+        		bean.setDiscountMoney(0);
+        	}
+			if(!StringUtils.isEmpty(bean.getMarketId())){
+				marketSku.add(bean);
+				marketInfo.setIsFull(false);
+			}
+		}
         //营销形式，1：减钱，2：打折，3：换购
         Integer a = marketInfo.getMarketType();
         //门槛类型：1：金额，2：件数
@@ -102,7 +112,7 @@ public class OrderAfterSaleMarketCalc {
         long total = 0;
         // 优惠金额或折扣
         Integer discount = marketInfo.getDiscount();
-        for (SkuNumBean bean : skuBeanLs) {
+        for (SkuNumBean bean : marketSku) {
         	// sortNo == 0是为了兼容之前的数据
             if (b == 1 &&  bean.getIsChange() == 0) {
                 total += bean.getGoodsAmount();
@@ -118,7 +128,7 @@ public class OrderAfterSaleMarketCalc {
             return ;
 
         if (total >= threshold) {// 若还满足, 需要计算满足的值
-            for (SkuNumBean bean : skuBeanLs) {
+            for (SkuNumBean bean : marketSku) {
 
                 if (total == 0)
             		total = 1;
@@ -144,7 +154,7 @@ public class OrderAfterSaleMarketCalc {
 
         } else { // 不满足
             marketInfo.setIsFull(false);
-            for (SkuNumBean bean : skuBeanLs) {
+            for (SkuNumBean bean : marketSku) {
                 switch (a) {
                     case 1:
                         bean.setDiscountMoney(0);

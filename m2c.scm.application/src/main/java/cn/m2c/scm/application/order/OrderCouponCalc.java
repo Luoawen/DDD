@@ -315,6 +315,7 @@ public class OrderCouponCalc {
 		for (SkuNumBean couponbean : unReturnGoods) {
 			if (couponbean.getStatus() == 0) {
 				couponbean.setDiscountMoney(0);
+				couponInfo.setIsFull(false);
 			}
 			if(!StringUtils.isEmpty(couponbean.getCouponId())){
 				couponSku.add(couponbean);
