@@ -5,8 +5,6 @@ import cn.m2c.scm.application.order.data.bean.MarketBean;
 import cn.m2c.scm.application.order.data.bean.MarketLevelBean;
 import cn.m2c.scm.application.order.data.bean.MarketRangeSuit;
 import cn.m2c.scm.application.order.data.bean.MarketSku;
-import cn.m2c.scm.application.order.data.bean.SimpleMarket;
-import cn.m2c.scm.application.order.data.bean.SkuNumBean;
 import cn.m2c.scm.application.order.query.dto.GoodsDto;
 import cn.m2c.scm.domain.NegativeException;
 import org.apache.commons.lang3.StringUtils;
