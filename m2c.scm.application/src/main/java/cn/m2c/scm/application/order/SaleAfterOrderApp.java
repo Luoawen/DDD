@@ -263,7 +263,7 @@ public class SaleAfterOrderApp {
         if (order.orderType() != 0) {
 
             SimpleMarket marketInfo = saleOrderQuery.getMarketBySkuIdAndOrderId(order.skuId(), order.orderId(), order.sortNo());
-            SimpleCoupon couponInfo = saleOrderQuery.getCouponBySkuIdAndOrderId(order.skuId(), order.orderId(), order.sortNo());
+            //SimpleCoupon couponInfo = saleOrderQuery.getCouponBySkuIdAndOrderId(order.skuId(), order.orderId(), order.sortNo());
             /*List<SkuNumBean> totalSku = saleOrderQuery.getTotalSku(order.orderId());//所有的商品详情
             long discountMoney = 0;
             money = itemDtl.sumGoodsMoney();
@@ -291,7 +291,9 @@ public class SaleAfterOrderApp {
             
             money = money - discountMoney - couponDiscountMoney;*/
             List<SkuNumBean> totalSku1 = saleOrderQuery.getTotalSkuForAfterConfirm(order.orderId(), order.sortNo(), order.skuId());//获取满足条件的所有的商品详情
-            List<SkuNumBean> totalSku2 = copyList(totalSku1, null);
+            StringBuffer couponIdBuffer = new StringBuffer(50);
+            List<SkuNumBean> totalSku2 = copyList(totalSku1, couponIdBuffer);
+            SimpleCoupon couponInfo = saleOrderQuery.getCouponById(couponIdBuffer.toString(), order.orderId());
             
             long beforeMoney = 0;//退前的钱
             long afterMoney = 0;//退后的钱
@@ -317,8 +319,18 @@ public class SaleAfterOrderApp {
                     copySku(skuBeanLs, totalSku2);
                 }
             }
+            
+            if (marketInfo != null && !marketInfo.isFull()) {
+                // 更新已使用营销 为不可用状态
+                saleAfterRepository.disabledOrderMarket(order.orderId(), marketInfo.getMarketingId());
+            }
+            
             if (couponInfo != null) {//计算优惠券的金额
                 AfterOrderMarketCalc.calcCouponReturnMoney2(couponInfo, totalSku2, order.skuId(), order.sortNo());
+            }
+            if (couponInfo != null && !couponInfo.isFull()) {
+                // 更新已使用营销 为不可用状态
+                saleAfterRepository.disabledOrderCoupon(order.orderId(), couponInfo.getCouponId());
             }
             afterMoney = getTotalMoney(totalSku2, order.skuId(), order.sortNo());
             

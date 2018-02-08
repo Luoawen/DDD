@@ -144,12 +144,11 @@ public class GoodsApplication {
 
         String newClassifyName = "";
         String oldClassifyName = "";
-        Float newServiceRate = null;
+        Float newServiceRate = goodsClassifyRepository.queryServiceRateByClassifyId(command.getGoodsClassifyId());
         Float oldServiceRate = null;
         if (!goods.goodsClassifyId().equals(command.getGoodsClassifyId())) {
             newClassifyName = goodsClassifyRepository.getMainUpClassifyName(command.getGoodsClassifyId());
             oldClassifyName = goodsClassifyRepository.getMainUpClassifyName(goods.goodsClassifyId());
-            newServiceRate = goodsClassifyRepository.queryServiceRateByClassifyId(command.getGoodsClassifyId());
             oldServiceRate = goodsClassifyRepository.queryServiceRateByClassifyId(goods.goodsClassifyId());
         }
         Dealer dealer = dealerRepository.getDealer(goods.dealerId());
