@@ -77,9 +77,11 @@ public class AfterOrderMarketCalc {
         				bean.setDiscountMoney(m.multiply(p).longValue());
                         break;
                     case 3:// 换购
-                    	BigDecimal j = new BigDecimal(bean.getGoodsAmount()* discount);
-                    	BigDecimal k = new BigDecimal(total);
-                    	bean.setDiscountMoney(j.divide(k, 3, BigDecimal.ROUND_HALF_DOWN).longValue());
+                    	if (bean.getIsChange() != 1) {
+	                    	BigDecimal j = new BigDecimal(bean.getGoodsAmount()* discount);
+	                    	BigDecimal k = new BigDecimal(total);
+	                    	bean.setDiscountMoney(j.divide(k, 3, BigDecimal.ROUND_HALF_DOWN).longValue());
+                    	}
                         break;
                 }
             }
@@ -176,9 +178,11 @@ public class AfterOrderMarketCalc {
         				bean.setDiscountMoney(m.multiply(p).longValue());
                         break;
                     case 3:// 换购
-                    	BigDecimal j = new BigDecimal(bean.getGoodsAmount()* discount);
-                    	BigDecimal k = new BigDecimal(total);
-                    	bean.setDiscountMoney(j.divide(k, 3, BigDecimal.ROUND_HALF_DOWN).longValue());
+                    	if (bean.getIsChange() != 1) {
+	                    	BigDecimal j = new BigDecimal(bean.getGoodsAmount()* discount);
+	                    	BigDecimal k = new BigDecimal(total);
+	                    	bean.setDiscountMoney(j.divide(k, 3, BigDecimal.ROUND_HALF_DOWN).longValue());
+                    	}
                         break;
                 }
             }
