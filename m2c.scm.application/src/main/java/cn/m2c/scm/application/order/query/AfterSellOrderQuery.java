@@ -384,6 +384,19 @@ public class AfterSellOrderQuery {
 	}
 	
 	/***
+	 * 获取订单中的营销活动
+	 * @param marketId
+	 * @param orderId
+	 */
+	public List<SimpleMarket> getMarketsByOrderId(String orderId) {
+		StringBuilder sql = new StringBuilder();
+		sql.append(" SELECT marketing_id, market_level, market_type, threshold, threshold_type, discount\r\n")
+		.append("FROM	t_scm_order_marketing_used\r\n")
+		.append("WHERE	order_id = ? AND _status=1");
+		return this.supportJdbcTemplate.queryForBeanList(sql.toString(), SimpleMarket.class, orderId);
+	}
+	
+	/***
 	 * 获取订单中一个活动
 	 * @param marketId
 	 * @param orderId
