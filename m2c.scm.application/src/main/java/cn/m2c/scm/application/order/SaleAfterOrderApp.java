@@ -156,15 +156,26 @@ public class SaleAfterOrderApp {
             
             long beforeMoney = 0;//退前的钱
             long afterMoney = 0;//退后的钱
-            SimpleMarket marketInfo = null;
+            //SimpleMarket marketInfo = null;
             SimpleCoupon couponInfo = null;
-            if (!StringUtils.isEmpty(mkId)) {//计算售后需要退的钱
+            List<SimpleMarket> markets = saleOrderQuery.getMarketsByOrderId(cmd.getOrderId());
+            /*if (!StringUtils.isEmpty(mkId)) {//计算售后需要退的钱
                 marketInfo = saleOrderQuery.getMarketById(mkId, cmd.getOrderId());
                 List<SkuNumBean> skuBeanLs = splitByMarketId(mkId, totalSku1);
                 AfterOrderMarketCalc.calcReturnMoney1(marketInfo, skuBeanLs);
                 //-----将处理好的优惠平摊金额复制给所有订单的列表里面，用于计算优惠券使用
                 if (skuBeanLs.size() > 0) {
                     copySku(skuBeanLs, totalSku1);
+                }
+            }*/
+            if (markets != null && markets.size() > 0) {//计算售后需要退的钱
+                for(SimpleMarket marketInfo : markets) {
+	                List<SkuNumBean> skuBeanLs = splitByMarketId(marketInfo.getMarketingId(), totalSku1);
+	                AfterOrderMarketCalc.calcReturnMoney1(marketInfo, skuBeanLs);
+	                //-----将处理好的优惠平摊金额复制给所有订单的列表里面，用于计算优惠券使用
+	                if (skuBeanLs.size() > 0) {
+	                    copySku(skuBeanLs, totalSku1);
+	                }
                 }
             }
             if (!StringUtils.isEmpty(couponId)) {//计算优惠券的金额
@@ -174,13 +185,24 @@ public class SaleAfterOrderApp {
             //得到钱的总额
             beforeMoney = getTotalMoney(totalSku1);
             
-            if (!StringUtils.isEmpty(mkId)) {//计算售后需要退的钱
+            /*if (!StringUtils.isEmpty(mkId)) {//计算售后需要退的钱
                 List<SkuNumBean> skuBeanLs = splitByMarketId(mkId, totalSku2);
                 AfterOrderMarketCalc.calcReturnMoney2(marketInfo, skuBeanLs, cmd.getSkuId(), _sortNo);
                 //-----将处理好的优惠平摊金额复制给所有订单的列表里面，用于计算优惠券使用
                 if (skuBeanLs.size() > 0) {
                     copySku(skuBeanLs, totalSku2);
                 }
+            }*/
+            
+            if (markets != null && markets.size() > 0) {//计算售后需要退的钱
+            	for(SimpleMarket marketInfo : markets) {
+	                List<SkuNumBean> skuBeanLs = splitByMarketId(marketInfo.getMarketingId(), totalSku2);
+	                AfterOrderMarketCalc.calcReturnMoney2(marketInfo, skuBeanLs, cmd.getSkuId(), _sortNo);
+	                //-----将处理好的优惠平摊金额复制给所有订单的列表里面，用于计算优惠券使用
+	                if (skuBeanLs.size() > 0) {
+	                    copySku(skuBeanLs, totalSku2);
+	                }
+            	}
             }
             if (!StringUtils.isEmpty(couponId)) {//计算优惠券的金额
                 AfterOrderMarketCalc.calcCouponReturnMoney2(couponInfo, totalSku2, cmd.getSkuId(), _sortNo);
@@ -262,7 +284,8 @@ public class SaleAfterOrderApp {
                 order.skuId(), order.sortNo());
         if (order.orderType() != 0) {
 
-            SimpleMarket marketInfo = saleOrderQuery.getMarketBySkuIdAndOrderId(order.skuId(), order.orderId(), order.sortNo());
+            //SimpleMarket marketInfo = saleOrderQuery.getMarketBySkuIdAndOrderId(order.skuId(), order.orderId(), order.sortNo());
+            List<SimpleMarket> markets = saleOrderQuery.getMarketsByOrderId(order.orderId());
             //SimpleCoupon couponInfo = saleOrderQuery.getCouponBySkuIdAndOrderId(order.skuId(), order.orderId(), order.sortNo());
             /*List<SkuNumBean> totalSku = saleOrderQuery.getTotalSku(order.orderId());//所有的商品详情
             long discountMoney = 0;
@@ -297,32 +320,48 @@ public class SaleAfterOrderApp {
             
             long beforeMoney = 0;//退前的钱
             long afterMoney = 0;//退后的钱
-            if (marketInfo != null) {//计算售后需要退的钱
+            /*if (marketInfo != null) {//计算售后需要退的钱
                 List<SkuNumBean> skuBeanLs = splitByMarketId(marketInfo.getMarketingId(), totalSku1);
                 AfterOrderMarketCalc.calcReturnMoney1(marketInfo, skuBeanLs);
                 //-----将处理好的优惠平摊金额复制给所有订单的列表里面，用于计算优惠券使用
                 if (skuBeanLs.size() > 0) {
                     copySku(skuBeanLs, totalSku1);
                 }
+            }*/
+            if (markets != null && markets.size() > 0) {//计算售后需要退的钱
+            	for(SimpleMarket marketInfo : markets) {
+	                List<SkuNumBean> skuBeanLs = splitByMarketId(marketInfo.getMarketingId(), totalSku1);
+	                AfterOrderMarketCalc.calcReturnMoney1(marketInfo, skuBeanLs);
+	                //-----将处理好的优惠平摊金额复制给所有订单的列表里面，用于计算优惠券使用
+	                if (skuBeanLs.size() > 0) {
+	                    copySku(skuBeanLs, totalSku1);
+	                }
+            	}
             }
+            
             if (couponInfo != null) {//计算优惠券的金额
                 AfterOrderMarketCalc.calcCouponReturnMoney1(couponInfo, totalSku1);
             }
             //得到钱的总额
             beforeMoney = getTotalMoney(totalSku1);
             
-            if (marketInfo != null) {//计算售后需要退的钱
-                List<SkuNumBean> skuBeanLs = splitByMarketId(marketInfo.getMarketingId(), totalSku2);
-                AfterOrderMarketCalc.calcReturnMoney2(marketInfo, skuBeanLs, order.skuId(), order.sortNo());
-                //-----将处理好的优惠平摊金额复制给所有订单的列表里面，用于计算优惠券使用
-                if (skuBeanLs.size() > 0) {
-                    copySku(skuBeanLs, totalSku2);
-                }
+            if (markets != null && markets.size() > 0) {//计算售后需要退的钱
+            	for(SimpleMarket marketInfo : markets) {
+	                List<SkuNumBean> skuBeanLs = splitByMarketId(marketInfo.getMarketingId(), totalSku2);
+	                AfterOrderMarketCalc.calcReturnMoney2(marketInfo, skuBeanLs, order.skuId(), order.sortNo());
+	                //-----将处理好的优惠平摊金额复制给所有订单的列表里面，用于计算优惠券使用
+	                if (skuBeanLs.size() > 0) {
+	                    copySku(skuBeanLs, totalSku2);
+	                }
+            	}
             }
-            
-            if (marketInfo != null && !marketInfo.isFull()) {
-                // 更新已使用营销 为不可用状态
-                saleAfterRepository.disabledOrderMarket(order.orderId(), marketInfo.getMarketingId());
+            if (markets != null && markets.size() > 0) {//计算售后需要退的钱
+            	for(SimpleMarket marketInfo : markets) {
+		            if (marketInfo != null && !marketInfo.isFull()) {
+		                // 更新已使用营销 为不可用状态
+		                saleAfterRepository.disabledOrderMarket(order.orderId(), marketInfo.getMarketingId());
+		            }
+            	}
             }
             
             if (couponInfo != null) {//计算优惠券的金额
