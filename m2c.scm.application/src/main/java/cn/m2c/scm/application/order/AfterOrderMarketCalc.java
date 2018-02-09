@@ -254,9 +254,9 @@ public class AfterOrderMarketCalc {
         Integer discount = couponInfo.getDiscount();
         for (SkuNumBean bean : couponSku) {
         	// sortNo == 0是为了兼容之前的数据
-            if (b == 1 && bean.getIsChange() == 0) {
+            if ((b == 1 || b==3 ) && bean.getIsChange() == 0) {
                 total += bean.getGoodsAmount()-bean.getDiscountMoney();
-            } else if (b == 2 && bean.getIsChange() == 0) {
+            } else if ((b == 2 || b==3) && bean.getIsChange() == 0) {
                 total += (bean.getGoodsAmount()-bean.getDiscountMoney());
                 totalNum += bean.getNum();
             }
@@ -342,9 +342,9 @@ public class AfterOrderMarketCalc {
         	// sortNo == 0是为了兼容之前的数据
             //boolean bFlag = (skuId.equals(bean.getSkuId()));
             boolean bFlag = (skuId.equals(bean.getSkuId()) && (_sortNo == 0 || bean.getSortNo() == _sortNo));
-            if (b == 1 && !bFlag && bean.getIsChange() == 0) {
+            if ((b == 1 || b==3) && !bFlag && bean.getIsChange() == 0) {
                 total += bean.getGoodsAmount()-bean.getDiscountMoney();
-            } else if (b == 2 && !bFlag && bean.getIsChange() == 0) {
+            } else if ((b == 2 || b==3) && !bFlag && bean.getIsChange() == 0) {
             	total += (bean.getGoodsAmount()-bean.getDiscountMoney());
                 totalNum += bean.getNum();
             }
