@@ -72,7 +72,7 @@ public class OrderCouponCalc {
 			CouponBean couponBean) {
 		List<GoodsDto> dealerGoodsDto = new ArrayList<GoodsDto>();//满足使用此商家优惠券的
 		for (GoodsDto goodsDto : gdes) {
-			if(goodsDto.getDealerId().equals(couponBean.getDealerId())){
+			if(goodsDto.getDealerId().equals(couponBean.getDealerId()) && !StringUtils.isEmpty(goodsDto.getCouponId())){
 				dealerGoodsDto.add(goodsDto);
 			}
 		}
