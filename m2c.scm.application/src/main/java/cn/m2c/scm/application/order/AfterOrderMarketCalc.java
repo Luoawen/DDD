@@ -323,8 +323,6 @@ public class AfterOrderMarketCalc {
 		}
         // 根据couponInfo 来计算
         if (couponInfo == null || couponSku.size() < 1) {
-        	couponInfo = new SimpleCoupon();
-        	couponInfo.setIsFull(false);
         	return ;
         }
         couponInfo.setIsFull(true);
