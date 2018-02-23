@@ -63,7 +63,7 @@ public class OrderQueryApplication {
      * @return
      * @throws NegativeException 
      */
-    public List<OptLogBean> getDealerOrderOptLog(String orderId, String dealerOrderId,Integer pageNum,Integer rows) throws NegativeException {
+    public List<OptLogBean> getDealerOrderOptLog(String orderId, String dealerOrderId, Integer pageNum, Integer rows) throws NegativeException {
     	List<OptLogBean> logList = null;
 		try {
 			StringBuilder sql = new StringBuilder(200);
@@ -74,10 +74,10 @@ public class OrderQueryApplication {
 				params.add(orderId);
 			}
 			
-			/*if (!StringUtils.isEmpty(dealerOrderId)) {
-				sql.append(" AND dealer_order_no=?");
+			if (!StringUtils.isEmpty(dealerOrderId)) {
+				sql.append(" AND ((dealer_order_no=? AND _type=2) OR _type=1)");
 				params.add(dealerOrderId);
-			}*/
+			}
 			sql.append(" ORDER BY created_date DESC ");
 			sql.append(" LIMIT ?,?");
 			params.add(rows*(pageNum - 1));

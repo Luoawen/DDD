@@ -192,7 +192,7 @@ public class DealerOrderDtl extends ConcurrencySafeEntity {
         } else if (status == 2) {
             status = 3;
             updateTime = new Date();
-            DomainEventPublisher.instance().publish(new OrderOptLogEvent(orderId, dealerOrderId, "用户确认收货成功", userId));
+            DomainEventPublisher.instance().publish(new OrderOptLogEvent(orderId, dealerOrderId, "用户确认收货成功", userId, 2));
         }
         return true;
     }

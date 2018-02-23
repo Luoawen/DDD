@@ -215,7 +215,7 @@ public class DealerOrder extends ConcurrencySafeEntity {
 
         status = 2;
         updateTime = new Date();
-        DomainEventPublisher.instance().publish(new OrderOptLogEvent(orderId, dealerOrderId, "商家发货", userId));
+        DomainEventPublisher.instance().publish(new OrderOptLogEvent(orderId, dealerOrderId, "商家发货", userId, 2));
         DomainEventPublisher.instance().publish(new OrderShipEvent(orderId, shopName, expressCode, expressNo));
         return true;
     }
@@ -332,7 +332,7 @@ public class DealerOrder extends ConcurrencySafeEntity {
      */
     public void updateAddr(ReceiveAddr addr, String userId) {
         this.addr = addr;
-        DomainEventPublisher.instance().publish(new OrderOptLogEvent(orderId, dealerOrderId, "修改收货地址", userId));
+        DomainEventPublisher.instance().publish(new OrderOptLogEvent(orderId, dealerOrderId, "修改收货地址", userId, 2));
     }
 
     /**
@@ -342,7 +342,7 @@ public class DealerOrder extends ConcurrencySafeEntity {
      */
     public void updateOrderFreight(Long orderFreight, String userId) {
         this.orderFreight = orderFreight * 100;
-        DomainEventPublisher.instance().publish(new OrderOptLogEvent(orderId, dealerOrderId, "修改订单运费", userId));
+        DomainEventPublisher.instance().publish(new OrderOptLogEvent(orderId, dealerOrderId, "修改订单运费", userId, 2));
     }
 
     /**
@@ -404,7 +404,7 @@ public class DealerOrder extends ConcurrencySafeEntity {
         }
         orderFreight = frg;
         updateTime = new Date();
-        DomainEventPublisher.instance().publish(new OrderOptLogEvent(orderId, dealerOrderId, "更新订单运费", userId));
+        DomainEventPublisher.instance().publish(new OrderOptLogEvent(orderId, dealerOrderId, "更新订单运费", userId, 2));
         return true;
     }
 

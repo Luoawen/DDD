@@ -38,14 +38,17 @@ public class OrderOptLogListener extends ExchangeListener {
 		String optContent = reader.eventStringValue("optContent");
 		String optUser = reader.eventStringValue("optUser");
 		Date occurredOn = reader.eventDateValue("occurredOn");
+		Integer type = reader.eventIntegerValue("type");
+		if (type == null)
+			type = 1;
 		if (StringUtils.isEmpty(dealerOrderId)) {
 			dealerOrderId = "";
 		}
 		//String eventVersion = reader.eventStringValue("eventVersion");
 		StringBuilder sqlBuild = new StringBuilder(200);
-		sqlBuild.append("INSERT INTO t_scm_order_opt_log(order_no, dealer_order_no, opt_content, opt_user, created_date) VALUES(?,?,?,?,?)");
+		sqlBuild.append("INSERT INTO t_scm_order_opt_log(order_no, dealer_order_no, opt_content, opt_user, created_date, _type) VALUES(?,?,?,?,?,?)");
 		jdbcTemplate.jdbcTemplate().update(sqlBuild.toString(), new Object[] {orderId,
-				dealerOrderId, optContent, optUser, occurredOn});
+				dealerOrderId, optContent, optUser, occurredOn, type});
 		sqlBuild = null;
 	}
 

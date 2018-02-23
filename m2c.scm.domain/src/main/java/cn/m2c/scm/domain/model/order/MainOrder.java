@@ -140,7 +140,7 @@ public class MainOrder extends ConcurrencySafeEntity {
     public void add(Map<String, Integer> skus, Integer from, List<DealerOrder> dealerOrders, String sn, long orderAmount) {
         updateTime = new Date();
         DomainEventPublisher.instance().publish(new OrderAddedEvent(userId, skus, orderId, from,sn,orderAmount));
-        DomainEventPublisher.instance().publish(new OrderOptLogEvent(orderId, null, "订单提交成功", userId));
+        DomainEventPublisher.instance().publish(new OrderOptLogEvent(orderId, null, "订单提交成功", userId, 1));
         for (DealerOrder dealerOrder : dealerOrders) {//商家订单
         	if(dealerOrder.getOrderDtls()!=null && dealerOrder.getOrderDtls().size()>0){
         		for (DealerOrderDtl dealerOrderDtl : dealerOrder.getOrderDtls()) {//获取每一个订单详情将有广告位的事件
@@ -187,7 +187,7 @@ public class MainOrder extends ConcurrencySafeEntity {
         
         DomainEventPublisher.instance().publish(new OrderCancelEvent(orderId, allSales, markets));
         allSales = null;
-        DomainEventPublisher.instance().publish(new OrderOptLogEvent(orderId, null, "订单取消成功", userId));
+        DomainEventPublisher.instance().publish(new OrderOptLogEvent(orderId, null, "订单取消成功", userId, 1));
         return true;
     }
 
@@ -203,7 +203,7 @@ public class MainOrder extends ConcurrencySafeEntity {
             for (DealerOrder d : dealerOrders)
                 d.del();
         }
-        DomainEventPublisher.instance().publish(new OrderOptLogEvent(orderId, null, "用户删除订单", userId));
+        DomainEventPublisher.instance().publish(new OrderOptLogEvent(orderId, null, "用户删除订单", userId, 1));
         updateTime = new Date();
         delFlag = 1;
         return true;
@@ -265,7 +265,7 @@ public class MainOrder extends ConcurrencySafeEntity {
         	}
 		}
         updateTime = new Date();
-        DomainEventPublisher.instance().publish(new OrderOptLogEvent(orderId, null, "订单支付成功", uId));
+        DomainEventPublisher.instance().publish(new OrderOptLogEvent(orderId, null, "订单支付成功", uId, 1));
 
         DomainEventPublisher.instance().publish(new OrderPayedEvent(orderId, allSales, allRes, markets, payTime, userId ,couponUserId));
 
@@ -394,7 +394,7 @@ public class MainOrder extends ConcurrencySafeEntity {
         updateTime = new Date();
         DomainEventPublisher.instance().publish(new OrderCancelEvent(orderId, allSales, markets));
         allSales = null;
-        DomainEventPublisher.instance().publish(new OrderOptLogEvent(orderId, null, "订单取消成功", userId));
+        DomainEventPublisher.instance().publish(new OrderOptLogEvent(orderId, null, "订单取消成功", userId, 1));
         return true;
     }
 

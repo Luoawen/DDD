@@ -262,4 +262,12 @@ public class OrderOutAgent {
     	BigDecimal g1 = new BigDecimal(6);
     	System.out.println(g.divide(g1, BigDecimal.ROUND_CEILING, BigDecimal.ROUND_HALF_UP));
     }
+    
+    /**
+     * 测试页面用
+     */
+    @RequestMapping(value = "/page/test",method = RequestMethod.GET)
+    public String page(){
+    	return "/views/ab";
+    }
 }
