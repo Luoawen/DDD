@@ -429,7 +429,9 @@ public class SaleAfterOrder extends ConcurrencySafeEntity {
      * 系统自动重新同意退款
      */
     public boolean checkAgreeBackMoney(String userId, String payNo) {
-        if (status != 9)
+        if (orderType != 1 && orderType != 2)
+        	return true;
+    	if (status != 9)
             return false;
         if (returnFreight == null)
             returnFreight = 0l;
