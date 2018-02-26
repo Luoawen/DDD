@@ -121,4 +121,10 @@ public interface SaleAfterOrderRepository {
 	 * @param marketId
 	 */
 	public int disabledOrderCoupon(String orderId, String couponId);
+	/***
+	 * 获取满足条件的已经同意退款的售后单
+	 * @param minute
+	 * @return
+	 */
+	public List<SaleAfterOrder> getReturnMoneyOrder(int minute);
 }

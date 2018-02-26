@@ -581,7 +581,7 @@ public class SaleAfterOrderApp {
         }
         String payNo = saleOrderQuery.getMainOrderPayNo(order.orderId());
         if (StringUtils.isEmpty(payNo)) {
-            throw new NegativeException(MCode.V_101, "售后单状态不正确！");
+            throw new NegativeException(MCode.V_101, "订单未来支付！");
         }
         if (StringUtils.isNotEmpty(attach))
             operationLogManager.operationLog("商家同意退款", attach, order);
@@ -940,5 +940,46 @@ public class SaleAfterOrderApp {
     		skus.add(bean.clone());
     	}
     	return skus;
+    }
+    
+    /**
+     * 检查退款失败或超过某个时间段还没有退的，重新发事件退款
+     *
+     * @throws NegativeException
+     */
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+    @EventListener(isListening = true)
+    public void checkReturnMoneyFail(String userId) throws NegativeException {
+        int minute = 30;
+        try {
+        	minute = Integer.parseInt(GetDisconfDataGetter.getDisconfProperty("sale.after.user.return.money.check"));
+            if (minute < 1)
+            	minute = 1;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        List<SaleAfterOrder> saleAfterOrders = saleAfterRepository.getReturnMoneyOrder(minute);
+        if (saleAfterOrders.size() == 0)
+            return;
+        try {
+            for (SaleAfterOrder afterOrder : saleAfterOrders) {
+            	jobCheckReturnMoney(afterOrder, userId);
+            }
+        } catch (NegativeException e) {
+            e.printStackTrace();
+        }
+    }
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class}, propagation = Propagation.REQUIRES_NEW)
+    private void jobCheckReturnMoney(SaleAfterOrder order, String userId) throws NegativeException {
+    	
+    	String payNo = saleOrderQuery.getMainOrderPayNo(order.orderId());
+        if (StringUtils.isEmpty(payNo)) {
+            throw new NegativeException(MCode.V_101, "订单未来支付！");
+        }
+        
+        if (!order.checkAgreeBackMoney(userId, payNo)) {
+            throw new NegativeException(MCode.V_103, "状态不正确，不能进行此操作！");
+        }
+        saleAfterRepository.updateSaleAfterOrder(order);
     }
 }

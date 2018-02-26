@@ -424,4 +424,18 @@ public class SaleAfterOrder extends ConcurrencySafeEntity {
     public String userId() {
         return userId;
     }
+    
+    /***
+     * 系统自动重新同意退款
+     */
+    public boolean checkAgreeBackMoney(String userId, String payNo) {
+        if (status != 9)
+            return false;
+        if (returnFreight == null)
+            returnFreight = 0l;
+        updateTime = new Date();
+        DomainEventPublisher.instance().publish(new OrderOptLogEvent(saleAfterNo, dealerOrderId, "系统自动重新确认退款", userId, 2));
+        DomainEventPublisher.instance().publish(new SaleAfterRefundEvt(saleAfterNo, dealerId, backMoney + returnFreight, payNo));
+        return true;
+    }
 }
