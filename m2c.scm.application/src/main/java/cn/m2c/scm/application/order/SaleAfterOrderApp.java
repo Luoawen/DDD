@@ -706,9 +706,11 @@ public class SaleAfterOrderApp {
 
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class}, propagation = Propagation.REQUIRES_NEW)
     private void jobCancelAfterOrder(SaleAfterOrder afterOrder, AfterSellFlow afterSellFlow) {
-        if (afterOrder.cancel())
+        if (afterOrder.cancel()) {
             saleAfterRepository.save(afterOrder);
-        afterSellFlow.add(afterOrder.getSaleAfterNo(), -1, SCM_JOB_USER, null, null, null, null);
+            afterSellFlow.add(afterOrder.getSaleAfterNo(), -1, SCM_JOB_USER, null, null, null, null);
+            afterSellFlowRepository.save(afterSellFlow);
+        }
 
         // 售后商家未处理推送消息
         MainOrder mOrder = orderRepository.getOrderById(afterOrder.orderId());
