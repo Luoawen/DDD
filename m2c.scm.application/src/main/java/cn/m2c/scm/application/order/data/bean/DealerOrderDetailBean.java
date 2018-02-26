@@ -123,7 +123,7 @@ public class DealerOrderDetailBean {
 	@ColumnAlias(value = "dealer_discount")
 	private long dealerDiscount;
 	/**
-	 * 订单总额(订单商品总额 - 平台优惠券 - 商家优惠券 + 运费)
+	 * 订单总额(订单商品总额 - 平台优惠券 - 商家优惠券 - 优惠券 + 运费)
 	 */
 	private long orderPrice;
 

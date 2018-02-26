@@ -1,5 +1,6 @@
 package cn.m2c.scm.port.adapter.restful.domain.order;
 
+import java.util.HashMap;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -16,9 +17,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import cn.m2c.common.MCode;
 import cn.m2c.common.MResult;
+import cn.m2c.scm.application.order.data.bean.DealerOrderMoneyInfoBean;
+import cn.m2c.scm.application.order.data.representation.DealerOrderMoneyInfoRepresentation;
 import cn.m2c.scm.application.order.data.representation.OrderNums;
 import cn.m2c.scm.application.order.query.OrderQuery;
 import cn.m2c.scm.domain.NegativeException;
+import java.util.Map;
 
 /***
  * 订单中的对外服务
@@ -76,6 +80,39 @@ public class OrderDomainAgent {
 			result.setStatus(MCode.V_400);
 			result.setContent("获取用户下单数失败");
 		}
+    	return new ResponseEntity<MResult>(result, HttpStatus.OK);
+    }
+    
+    /**
+     * 获取多个商家订单的金额列表
+     * @param dealerOrderIds
+     * @param userId
+     * @return
+     */
+    @RequestMapping(value="/get/dealer/orders",method = RequestMethod.PUT)
+    public ResponseEntity<MResult> getDealerOrders(
+    		@RequestParam(value="dealerOrderIds", required=false)List dealerOrderIds,
+    		@RequestParam(value="userId", required=false)String userId){
+    	MResult result = new MResult(MCode.V_1);
+    	try {
+    		List<DealerOrderMoneyInfoBean> orderMoneyInfo = orderQuery.getDealerOrders(dealerOrderIds);
+    		if(null != orderMoneyInfo && orderMoneyInfo.size()>0) {
+        		Map<String, Object> map = new HashMap<String, Object>();
+    			for(DealerOrderMoneyInfoBean bean : orderMoneyInfo) {
+    				DealerOrderMoneyInfoRepresentation representation = new DealerOrderMoneyInfoRepresentation(bean);
+    				map.put(bean.getDealerOrderId(), representation);
+    			}
+    			result.setContent(map);	
+    		}
+    		result.setStatus(MCode.V_200);
+    	}catch (NegativeException e) {
+    		result.setStatus(e.getStatus());
+			result.setContent(e.getMessage());
+    	}catch(Exception e) {
+    		LOGGER.error("获取多个商家订单的金额列表失败,e:" + e.getMessage());
+			result.setStatus(MCode.V_400);
+			result.setContent("获取多个商家订单金额列表失败");
+    	}
     	return new ResponseEntity<MResult>(result, HttpStatus.OK);
     }
     
