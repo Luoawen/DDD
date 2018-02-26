@@ -192,7 +192,7 @@ public class ScheduledAgent {
 		} catch (NegativeException ne) {
 			result = new MResult(ne.getStatus(), ne.getMessage());
 		} catch (Exception e) {
-			LOGGER.error("自动退款状态", e);
+			LOGGER.error("自动收货状态", e);
 			result = new MResult(MCode.V_400, e.getMessage());
 		}
 		return new ResponseEntity<MResult>(result, HttpStatus.OK);
@@ -277,4 +277,24 @@ public class ScheduledAgent {
 		}
 		return new ResponseEntity<MResult>(result, HttpStatus.OK);
 	}*/
+	/***
+	 * 当商家同意售后， 换货类型且商家发货， 过七天需要用户自动收货
+	 * @return
+	 */
+	@RequestMapping(value = "/after/sale/return-money/check",method = RequestMethod.PUT)
+	public ResponseEntity<MResult> afterReturnMoneyCheck() {
+		
+		MResult result = new MResult(MCode.V_1);
+		try {
+			String val = GetDisconfDataGetter.getDisconfProperty("scm.job.user");
+			saleAfterOrderApplication.checkReturnMoneyFail(val);
+			result.setStatus(MCode.V_200);
+		} catch (NegativeException ne) {
+			result = new MResult(ne.getStatus(), ne.getMessage());
+		} catch (Exception e) {
+			LOGGER.error("退款重新发事件出错：", e);
+			result = new MResult(MCode.V_400, e.getMessage());
+		}
+		return new ResponseEntity<MResult>(result, HttpStatus.OK);
+	}
 }
