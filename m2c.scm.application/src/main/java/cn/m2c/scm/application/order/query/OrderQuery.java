@@ -8,6 +8,7 @@ import cn.m2c.scm.application.dealer.query.DealerQuery;
 import cn.m2c.scm.application.order.data.bean.AllOrderBean;
 import cn.m2c.scm.application.order.data.bean.AppInfo;
 import cn.m2c.scm.application.order.data.bean.DealerOrderDetailBean;
+import cn.m2c.scm.application.order.data.bean.DealerOrderMoneyInfoBean;
 import cn.m2c.scm.application.order.data.bean.GoodsInfoBean;
 import cn.m2c.scm.application.order.data.bean.MainOrderAmountBean;
 import cn.m2c.scm.application.order.data.bean.MainOrderBean;
@@ -1130,5 +1131,24 @@ public class OrderQuery {
 		OrderNums nums = new OrderNums();
 		nums.setOrderNum(nn.intValue());
 		return nums;
+	}
+
+	/**
+	 * 根据dealerOrderIds查询订单金额
+	 * @param dealerOrderIds
+	 * @return
+	 * @throws NegativeException 
+	 */
+	public List<DealerOrderMoneyInfoBean> getDealerOrders(List dealerOrderIds) throws NegativeException {
+		if(null != dealerOrderIds && dealerOrderIds.size() > 0) {
+			StringBuilder sql = new StringBuilder();
+			sql.append(" SELECT t.dealer_order_id dealerOrderId , t.goods_amount totalOrderPrice , t.order_freight totalFreight , t.plateform_discount plateformDiscount , t.dealer_discount dealerDiscount , t.coupon_discount couponDiscount ");
+			sql.append(" FROM t_scm_order_dealer t ");
+			sql.append(" WHERE t.dealer_order_id IN ( " + Utils.listParseString(dealerOrderIds) + ") ");
+	        List<DealerOrderMoneyInfoBean> list = this.supportJdbcTemplate.queryForBeanList(sql.toString(), DealerOrderMoneyInfoBean.class);
+			return list;
+		}else {
+            throw new NegativeException(MCode.V_1, "商家订单号为空！");
+        }
 	}
 }
