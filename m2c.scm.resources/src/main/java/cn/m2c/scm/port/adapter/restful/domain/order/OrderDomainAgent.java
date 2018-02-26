@@ -105,10 +105,10 @@ public class OrderDomainAgent {
     			result.setContent(map);	
     		}
     		result.setStatus(MCode.V_200);
-    	}catch (NegativeException e) {
-    		result.setStatus(e.getStatus());
-			result.setContent(e.getMessage());
-    	}catch(Exception e) {
+    	}catch (NegativeException ne) {
+			LOGGER.error("getDealerOrders NegativeException e:", ne);
+            result = new MResult(ne.getStatus(), ne.getMessage());
+    	}catch (Exception e) {
     		LOGGER.error("获取多个商家订单的金额列表失败,e:" + e.getMessage());
 			result.setStatus(MCode.V_400);
 			result.setContent("获取多个商家订单金额列表失败");
