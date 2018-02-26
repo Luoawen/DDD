@@ -259,7 +259,7 @@ public class HibernateSaleAfterOrderRepository extends HibernateSupperRepository
 	 */
 	@Override
 	public List<SaleAfterOrder> getReturnMoneyOrder(int minute) {
-		return (List<SaleAfterOrder>)this.session().createSQLQuery("SELECT * FROM t_scm_order_after_sell WHERE _status=9 AND order_type=0 AND round((UNIX_TIMESTAMP(now())-UNIX_TIMESTAMP(last_updated_date))/60) > " + minute)//60/
+		return (List<SaleAfterOrder>)this.session().createSQLQuery("SELECT * FROM t_scm_order_after_sell WHERE _status=9 AND order_type!=0 AND round((UNIX_TIMESTAMP(now())-UNIX_TIMESTAMP(last_updated_date))/60) > " + minute)//60/
 				.addEntity(SaleAfterOrder.class).list();
 	}
 }
