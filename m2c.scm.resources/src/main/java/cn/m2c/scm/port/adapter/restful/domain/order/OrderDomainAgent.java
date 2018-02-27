@@ -3,6 +3,7 @@ package cn.m2c.scm.port.adapter.restful.domain.order;
 import java.util.HashMap;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import cn.m2c.common.MCode;
 import cn.m2c.common.MResult;
+import cn.m2c.scm.application.order.SaleAfterOrderApp;
 import cn.m2c.scm.application.order.data.bean.DealerOrderMoneyInfoBean;
+import cn.m2c.scm.application.order.data.bean.RefundEvtBean;
 import cn.m2c.scm.application.order.data.representation.DealerOrderMoneyInfoRepresentation;
 import cn.m2c.scm.application.order.data.representation.OrderNums;
 import cn.m2c.scm.application.order.query.OrderQuery;
@@ -38,6 +41,9 @@ public class OrderDomainAgent {
 	
 	@Autowired
 	private OrderQuery orderQuery;
+	
+	@Autowired
+	private SaleAfterOrderApp saleApp;
 	
     /**
      * 获取在某个商家下单成功过的用户id列表
@@ -89,7 +95,7 @@ public class OrderDomainAgent {
      * @param userId
      * @return
      */
-    @RequestMapping(value="/get/dealer/orders",method = RequestMethod.PUT)
+    @RequestMapping(value="/get/dealer/orders",method = RequestMethod.GET)
     public ResponseEntity<MResult> getDealerOrders(
     		@RequestParam(value="dealerOrderIds", required=false)List dealerOrderIds,
     		@RequestParam(value="userId", required=false)String userId){
@@ -112,6 +118,44 @@ public class OrderDomainAgent {
     		LOGGER.error("获取多个商家订单的金额列表失败,e:" + e.getMessage());
 			result.setStatus(MCode.V_400);
 			result.setContent("获取多个商家订单金额列表失败");
+    	}
+    	return new ResponseEntity<MResult>(result, HttpStatus.OK);
+    }
+    
+    /**
+     * 获取多个商家订单的金额列表
+     * @param afterSellId
+     * @param orderRefundId 退款单号
+     * @param refundTime 退款时间 long型
+     * @param userId
+     * @return
+     */
+    @RequestMapping(value="/after/return/ok",method = RequestMethod.PUT)
+    public ResponseEntity<MResult> afterReturnMoneyOk(
+    		@RequestParam(value="afterSellId", required=false)String afterSellId,
+    		@RequestParam(value="orderRefundId", required=false)String orderRefundId,
+    		@RequestParam(value="refundTime", required=false)Long refundTime,
+    		@RequestParam(value="userId", required=false)String userId){
+    	MResult result = new MResult(MCode.V_1);
+    	try {
+    		if (StringUtils.isEmpty(afterSellId) || StringUtils.isEmpty(orderRefundId)
+    				|| refundTime == null) {
+    			throw new NegativeException(MCode.V_400, "参数不正确");
+    		}
+    		RefundEvtBean bean = new RefundEvtBean();
+    		bean.setAfterSellOrderId(afterSellId);
+    		bean.setOrderRefundId(orderRefundId);
+    		bean.setRefundTime(refundTime);
+    		saleApp.refundSuccess(bean);
+    		result.setStatus(MCode.V_200);
+    		bean = null;
+    	} catch (NegativeException ne) {
+			LOGGER.error("售后退款成功调用失败， e:", ne);
+            result = new MResult(ne.getStatus(), ne.getMessage());
+    	} catch (Exception e) {
+    		LOGGER.error("售后退款成功调用失败,e:" + e.getMessage());
+			result.setStatus(MCode.V_400);
+			result.setContent("售后退款成功调用失败");
     	}
     	return new ResponseEntity<MResult>(result, HttpStatus.OK);
     }
