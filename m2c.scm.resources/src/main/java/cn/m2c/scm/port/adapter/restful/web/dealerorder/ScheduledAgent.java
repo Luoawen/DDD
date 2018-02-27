@@ -285,7 +285,7 @@ public class ScheduledAgent {
 	public ResponseEntity<MResult> afterReturnMoneyCheck() {
 		
 		MResult result = new MResult(MCode.V_1);
-		try {
+		/*try {
 			String val = GetDisconfDataGetter.getDisconfProperty("scm.job.user");
 			saleAfterOrderApplication.checkReturnMoneyFail(val);
 			result.setStatus(MCode.V_200);
@@ -294,7 +294,8 @@ public class ScheduledAgent {
 		} catch (Exception e) {
 			LOGGER.error("退款重新发事件出错：", e);
 			result = new MResult(MCode.V_400, e.getMessage());
-		}
+		}*/
+		result.setStatus(MCode.V_200);
 		return new ResponseEntity<MResult>(result, HttpStatus.OK);
 	}
 }
