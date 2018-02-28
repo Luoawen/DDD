@@ -72,7 +72,7 @@ public class OrderCouponCalc {
 			CouponBean couponBean) {
 		List<GoodsDto> dealerGoodsDto = new ArrayList<GoodsDto>();//满足使用此商家优惠券的
 		for (GoodsDto goodsDto : gdes) {
-			if(goodsDto.getDealerId().equals(couponBean.getDealerId()) && !StringUtils.isEmpty(goodsDto.getCouponId())){
+			if(goodsDto.getDealerId().equals(couponBean.getDealerId()) && !StringUtils.isEmpty(goodsDto.getCouponId())){//使用优惠券的商品
 				dealerGoodsDto.add(goodsDto);
 			}
 		}
@@ -99,7 +99,7 @@ public class OrderCouponCalc {
 	private static void calWithoutThreshold(List<GoodsDto> couponsGoods, CouponBean couponBean) {
 		Long sum = 0L;//去掉营销活动后优惠券的总金额
 		for (GoodsDto goodsDto : couponsGoods) {
-			 sum +=  (goodsDto.getThePrice() * goodsDto.getPurNum() - goodsDto.getPlateformDiscount());
+			 sum +=  (goodsDto.getThePrice() * goodsDto.getPurNum() - goodsDto.getPlateformDiscount());//计算商品总金额方便计算优惠券分摊
 		}
 		countCouponDiscount(couponsGoods,couponBean,sum);
 	}
@@ -202,9 +202,9 @@ public class OrderCouponCalc {
         	// sortNo == 0是为了兼容之前的数据
             //boolean bFlag = (skuId.equals(bean.getSkuId()));
             boolean bFlag = (skuId.equals(bean.getSkuId()) && (_sortNo == 0 || bean.getSortNo() == _sortNo));
-            if (b == 1 && !bFlag && bean.getIsChange() == 0) {
+            if (b == 1 && !bFlag && bean.getIsChange() == 0) {//计算除去退货商品后的其他商品的总金额（此时总金额为减去满减优惠金额后的金额）
                 total += bean.getGoodsAmount()-bean.getDiscountMoney();
-            } else if (b == 2 && !bFlag && bean.getIsChange() == 0) {
+            } else if (b == 2 && !bFlag && bean.getIsChange() == 0) {//计算件数（此总件数是除去退货商品后的总件数）
                 total += bean.getNum();
             }
         }
