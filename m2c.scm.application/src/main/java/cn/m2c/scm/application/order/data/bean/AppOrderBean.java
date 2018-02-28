@@ -78,6 +78,17 @@ public class AppOrderBean extends AssertionConcern implements Serializable {
 	private long dPlateformDiscount;
 	@ColumnAlias(value = "dDealerDiscount")
 	private long dDealerDiscount;
+	/**优惠券优惠金额*/
+	@ColumnAlias(value = "mainCouponDiscount")
+	private long mainCouponDiscount;
+	
+	public void setMainCouponDiscount(long couponDiscount) {
+		this.mainCouponDiscount = couponDiscount;
+	}
+	
+	public long getMainCouponDiscount() {
+		return mainCouponDiscount;
+	}
 	
 	public void setdOrderFreight(long dOrderFreight) {
 		this.dOrderFreight = dOrderFreight;

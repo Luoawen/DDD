@@ -264,7 +264,7 @@ public class OrderQueryApplication {
 			sql.append("SELECT a.province_code, b.coupon_discount, a.province, a.city, a.city_code, a.area_code, a.area_county, a.street_addr\r\n");
 			sql.append(", a.order_freight, a.order_id, a.goods_amount, a.plateform_discount, a.dealer_discount\r\n")
 			.append(", b.order_freight dOrderFreight, b.goods_amount dGoodsAmount, b.plateform_discount dPlateformDiscount, b.dealer_discount dDealerDiscount\r\n")
-			.append(", b.invoice_code, b.invoice_header, b.invoice_name, b.invoice_type, a.created_date, b._status\r\n") 
+			.append(", b.invoice_code, b.invoice_header, b.invoice_name, b.invoice_type, a.created_date, b._status, a.coupon_discount mainCouponDiscount\r\n") 
 			.append(", b.dealer_id, d.shop_name, b.dealer_order_id\r\n") 
 			.append("FROM t_scm_order_dealer b \r\n")
 			.append("LEFT OUTER JOIN t_scm_order_main a ON a.order_id=b.order_id \r\n") 
@@ -313,6 +313,7 @@ public class OrderQueryApplication {
 					if (o.getStatus() <= 0 && !o.getOrderId().equals(tmpOrderId)) {
 						tmp = o;
 						tmpOrderId = o.getOrderId();
+						o.setCouponDiscount(o.getMainCouponDiscount());
 						sql.delete(0, sql.length());
 						sql.append("SELECT a.goods_icon, a.goods_name, a.goods_title, a.sku_name, a.sku_id, a.sell_num, a.discount_price, a.freight, ")
 						.append(" a.goods_amount, b._status afterStatus, a.goods_id, a.goods_type_id, a.sort_no\r\n") 
@@ -324,6 +325,7 @@ public class OrderQueryApplication {
 					}
 					else if (o.getStatus() <= 0 && o.getOrderId().equals(tmpOrderId)) {
 						result.remove(i);
+						o.setCouponDiscount(o.getMainCouponDiscount());
 						/*tmp.setDealerDiscount(tmp.getDealerDiscount() + o.getDealerDiscount());
 						tmp.setPlateFormDiscount(tmp.getPlateFormDiscount() + o.getPlateFormDiscount());
 						tmp.setGoodAmount(tmp.getGoodAmount() + o.getGoodAmount());
@@ -417,7 +419,7 @@ public class OrderQueryApplication {
 			
 			if (StringUtils.isEmpty(cmd.getDealerOrderId())) {
 				
-				sql.append("SELECT a.province_code, b.coupon_discount, a.province, a.city, a.city_code, a.area_code, a.area_county, a.street_addr\r\n")
+				sql.append("SELECT a.province_code, a.coupon_discount, a.province, a.city, a.city_code, a.area_code, a.area_county, a.street_addr\r\n")
 				.append(",a.post_code, a.order_freight, a.order_id, a.goods_amount, a.plateform_discount, a.dealer_discount\r\n")
 				.append(", b.invoice_code, b.invoice_header, b.invoice_name, b.invoice_type, a.created_date, b._status\r\n") 
 				.append(", b.dealer_id, d.shop_name, b.dealer_order_id, b.rev_phone, b.rev_person, a.pay_way, a.pay_no\r\n") 
@@ -443,7 +445,7 @@ public class OrderQueryApplication {
 				.append(", b.post_code, a.order_freight, a.order_id, a.goods_amount, a.plateform_discount, a.dealer_discount, d.customer_service_tel\r\n")
 				.append(", b.invoice_code, b.invoice_header, b.invoice_name, b.invoice_type, a.created_date, b._status\r\n") 
 				.append(", b.order_freight dOrderFreight, b.goods_amount dGoodsAmount, b.plateform_discount dPlateformDiscount, b.dealer_discount dDealerDiscount\r\n")
-				.append(", b.dealer_id, d.shop_name, b.dealer_order_id,b.rev_phone, b.rev_person, a.pay_way, a.pay_no\r\n") 
+				.append(", b.dealer_id, d.shop_name, b.dealer_order_id,b.rev_phone, b.rev_person, a.pay_way, a.pay_no, a.coupon_discount mainCouponDiscount\r\n") 
 				.append("FROM t_scm_order_dealer b \r\n")
 				.append("LEFT OUTER JOIN t_scm_order_main a ON a.order_id=b.order_id \r\n") 
 				.append("LEFT OUTER JOIN t_scm_dealer c ON c.dealer_id = b.dealer_id \r\n")
@@ -477,6 +479,7 @@ public class OrderQueryApplication {
 					pa = new Object[] {result.getOrderId(), result.getDealerOrderId()};
 				}
 				else {
+					result.setCouponDiscount(result.getMainCouponDiscount());
 					pa = new Object[] {result.getOrderId()};
 				}
 				result.setGoodses(this.supportJdbcTemplate.queryForBeanList(sql.toString(), 
