@@ -588,9 +588,10 @@ public class OrderApplication {
     @EventListener
     public void delOrder(CancelOrderCmd cmd) throws NegativeException {
 
+    	MainOrder order = orderRepository.getOrderById(cmd.getOrderId(), cmd.getUserId());
     	if (StringUtils.isEmpty(cmd.getDealerOrderId())) {
-	        MainOrder order = orderRepository.getOrderById(cmd.getOrderId(), cmd.getUserId());
-	        // 检查是否可取消,若不可取消抛出异常。
+	        //MainOrder order = orderRepository.getOrderById(cmd.getOrderId(), cmd.getUserId());
+	        // 检查是否可删除,若不可删除抛出异常。
 	        if (order == null) {
 	        	throw new NegativeException(MCode.V_1, "无此订单！");
 	        }
@@ -602,6 +603,9 @@ public class OrderApplication {
 	        }
     	}
     	else {
+    		if (order.del()) {
+    			orderRepository.updateMainOrder(order);
+    		}
     		DealerOrder d = orderRepository.getDealerOrderById(cmd.getOrderId(), cmd.getUserId(), cmd.getDealerOrderId());
     		if (d.del()) {
 	            orderRepository.updateDealerOrder(d);
