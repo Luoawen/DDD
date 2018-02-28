@@ -479,7 +479,8 @@ public class OrderQueryApplication {
 					pa = new Object[] {result.getOrderId(), result.getDealerOrderId()};
 				}
 				else {
-					result.setCouponDiscount(result.getMainCouponDiscount());
+					if(result.getMainCouponDiscount() > 0)
+						result.setCouponDiscount(result.getMainCouponDiscount());
 					pa = new Object[] {result.getOrderId()};
 				}
 				result.setGoodses(this.supportJdbcTemplate.queryForBeanList(sql.toString(), 
