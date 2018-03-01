@@ -277,7 +277,7 @@ public class SaleAfterOrder extends ConcurrencySafeEntity {
      * 同意退款
      */
     public boolean agreeBackMoney(String userId, String payNo) {
-        if (status < 4)
+        if (status < 4 || status >= 9)
             return false;
         if (orderType == 1 && status < 5) {
             return false;

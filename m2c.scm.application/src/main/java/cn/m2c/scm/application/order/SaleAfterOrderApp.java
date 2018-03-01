@@ -764,7 +764,7 @@ public class SaleAfterOrderApp {
         }
 
         saleAfterRepository.save(afterOrder);
-        afterSellFlow.add(afterOrder.getSaleAfterNo(), 10, SCM_JOB_USER, null, null, null, null);
+        afterSellFlow.add(afterOrder.getSaleAfterNo(), 9, SCM_JOB_USER, null, null, null, null);
         afterSellFlowRepository.save(afterSellFlow);
     }
 
