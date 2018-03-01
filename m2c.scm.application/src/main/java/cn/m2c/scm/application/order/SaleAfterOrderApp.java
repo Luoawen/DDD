@@ -279,6 +279,9 @@ public class SaleAfterOrderApp {
         if (order == null) {
             throw new NegativeException(MCode.V_101, "无此售后单！");
         }
+        if (!order.canAgree()) {
+            throw new NegativeException(MCode.V_101, "此售后单状态不可进行同意操作！");
+        }
         long money = 0;
         DealerOrderDtl itemDtl = saleAfterRepository.getDealerOrderDtlBySku(order.dealerOrderId(),
                 order.skuId(), order.sortNo());

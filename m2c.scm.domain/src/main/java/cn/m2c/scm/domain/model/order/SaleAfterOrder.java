@@ -78,7 +78,7 @@ public class SaleAfterOrder extends ConcurrencySafeEntity {
      */
     private String rejectReason;
     /**
-     * 状态，0申请退货,1申请换货,2申请退款,3拒绝,4同意(退换货),5客户寄出,6商家收到,7商家寄出,8客户收到,9同意退款, 10确认退款 11交易完成，12交易关闭
+     * 状态，-1取消，0申请退货,1申请换货,2申请退款,3拒绝,4同意(退换货),5客户寄出,6商家收到,7商家寄出,8客户收到,9同意退款, 10确认退款 11交易完成，12交易关闭
      */
     private Integer status;
     /**
@@ -158,7 +158,7 @@ public class SaleAfterOrder extends ConcurrencySafeEntity {
      */
     public boolean agreeApply(String userId, long rtFreight) {
 
-        if (rtFreight < 0)
+        if (rtFreight < 0 || status < 0)
             return false;
         else if (status == 2) {
             returnFreight = rtFreight;
@@ -423,6 +423,13 @@ public class SaleAfterOrder extends ConcurrencySafeEntity {
 
     public String userId() {
         return userId;
+    }
+    /***
+     * 是否可同意申请
+     * @return
+     */
+    public boolean canAgree() {
+        return status > -1 && status < 3;
     }
     
     /***
