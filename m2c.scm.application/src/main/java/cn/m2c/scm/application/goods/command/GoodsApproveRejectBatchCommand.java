@@ -6,14 +6,10 @@ import java.util.List;
  * 批量拒绝
  */
 public class GoodsApproveRejectBatchCommand {
-	/**
-     * 商品id
-     */
+	/**商品id*/
     private List goodsIds;
 
-    /**
-     * 拒绝原因
-     */
+    /**拒绝原因*/
     private String rejectReason;
 
     public GoodsApproveRejectBatchCommand(List goodsIds, String rejectReason) {
