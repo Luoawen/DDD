@@ -42,17 +42,19 @@ public class GoodsApproveSearchRepresentation {
         List<GoodsSkuApproveBean> goodsSkuBeans = bean.getGoodsSkuApproves();
         if (null != goodsSkuBeans && goodsSkuBeans.size() > 0) {
             //排序
+            // System.setProperty("java.util.Arrays.useLegacyMergeSort", "true");
             Collections.sort(goodsSkuBeans, new Comparator<GoodsSkuApproveBean>() {
                 public int compare(GoodsSkuApproveBean bean1, GoodsSkuApproveBean bean2) {
                     Long price1 = bean1.getPhotographPrice();
                     Long price2 = bean2.getPhotographPrice();
-                    if (price1 > price2) {
+                    /* if (price1 > price2) {
                         return 1;
                     } else if (price1 == price2) {
                         return 0;
                     } else {
                         return -1;
-                    }
+                    }*/
+                    return price1.compareTo(price2);
                 }
             });
             Integer stockNum = 0;

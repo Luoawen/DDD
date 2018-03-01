@@ -182,10 +182,12 @@ public class DealerOrderApplication {
 				, null);
 		
 		MainOrder mOrder = orderRepository.getOrderById(dealerOrder.getOrderNo());
-		if (updatedAddr) {
+		if (updatedAddr && isModifyAddress) {
 			dealerOrder.updateAddr(addr, cmd.getUserId());
 		}
-		boolean updatedFreight = dealerOrder.updateOrderFreight(cmd.getFreights(), cmd.getUserId());
+		boolean updatedFreight = false;
+		if (isModifyFreight)
+			updatedFreight = dealerOrder.updateOrderFreight(cmd.getFreights(), cmd.getUserId());
 		if (mOrder.updateAddr(addr) || updatedFreight) {
 			mOrder.updateFreight(dealerOrder);
 			orderRepository.updateMainOrder(mOrder);
