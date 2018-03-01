@@ -50,14 +50,12 @@ public class ShipGoodsListener extends ExchangeListener{
 			throw new NegativeException(MCode.V_401,"店铺名为空！");
 		}
 		String userId = orderQuery.getOrderUserId(orderId);
-		SendOrderSMSCommand cmd = new SendOrderSMSCommand(userId,shopName);
-		orderapplication.sendOrderSMS(cmd);
 		//如果不是自有物流那么去注册监听
 		if(!StringUtils.isEmpty(com)){
 			orderapplication.registExpress(com,nu,0);
 		}
-		
-		
+		SendOrderSMSCommand cmd = new SendOrderSMSCommand(userId,shopName);
+		orderapplication.sendOrderSMS(cmd);
 	}
 
 	@Override
