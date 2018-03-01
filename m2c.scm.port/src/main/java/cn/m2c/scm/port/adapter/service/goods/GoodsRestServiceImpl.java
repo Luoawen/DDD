@@ -1,11 +1,14 @@
 package cn.m2c.scm.port.adapter.service.goods;
 
+import cn.m2c.common.JsonUtils;
+import cn.m2c.common.RedisUtil;
 import cn.m2c.ddd.common.port.adapter.persistence.springJdbc.SupportJdbcTemplate;
 import cn.m2c.scm.application.utils.Utils;
 import cn.m2c.scm.domain.service.goods.GoodsService;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baidu.disconf.client.usertools.DisconfDataGetter;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +42,16 @@ public class GoodsRestServiceImpl implements GoodsService {
 
     @Override
     public List<Map> getGoodsTags(String dealerId, String goodsId, String classifyId) {
+        String key = "scm.goods.market.tags";
+        Map cacheMap = new HashMap<>();
+        String tags = RedisUtil.getString(key); //从缓存中取数据
+        if (StringUtils.isNotEmpty(tags)) { // 缓存不为空
+            cacheMap = JsonUtils.toMap(tags);
+            if (null != cacheMap && null != cacheMap.get(goodsId)) {
+                List<Map> cacheList = (List<Map>) cacheMap.get(goodsId);
+                return cacheList;
+            }
+        }
         List<Map> resultList = new ArrayList<>();
         String url = M2C_HOST_URL + "/m2c.market/market/type/list?dealer_id={0}&goods_id={1}&classify_id={2}";
         try {
@@ -62,6 +75,11 @@ public class GoodsRestServiceImpl implements GoodsService {
                     mapTags.put("wordcolorTmd", typeColorTmd);
                     resultList.add(mapTags);
                 }
+                if (null == cacheMap) {
+                    cacheMap = new HashMap<>();
+                }
+                cacheMap.put(goodsId, resultList);
+                RedisUtil.setString(key, 24 * 3600, JsonUtils.toStr(cacheMap));
             }
         } catch (Exception e) {
             LOGGER.error("查询商品营销活动标签失败");

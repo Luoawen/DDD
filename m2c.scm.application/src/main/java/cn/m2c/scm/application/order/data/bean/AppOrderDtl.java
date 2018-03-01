@@ -103,14 +103,25 @@ public class AppOrderDtl extends AssertionConcern implements Serializable {
 	@ColumnAlias(value = "coupon_discount")
 	private long couponDiscount;
 	
+	@ColumnAlias(value = "mainCouponDiscount")
+	private long mainCouponDiscount;
+	
 	public long getCouponDiscount() {
-		return couponDiscount/10000;
+		return couponDiscount/100;
 	}
 	public String getStrCouponDiscount(){
 		return Utils.moneyFormatCN(couponDiscount);
 	}
 	public void setCouponDiscount(long couponDiscount) {
 		this.couponDiscount = couponDiscount;
+	}
+	
+	public void setMainCouponDiscount(long couponDiscount) {
+		this.mainCouponDiscount = couponDiscount;
+	}
+	
+	public long getMainCouponDiscount() {
+		return mainCouponDiscount;
 	}
 	
 	public int getHasSaleAfter() {

@@ -195,7 +195,7 @@ public class MainOrder extends ConcurrencySafeEntity {
      * 删除订单(用户主动操作)
      */
     public boolean del() {
-        // 检查是否可以取消，只有在未支付的状态下用户可以取消
+        // 检查是否可以删除，只有在未支付的状态下用户可以删除
         if (status > 0 && status < 3) {
             return false;
         }
@@ -204,6 +204,23 @@ public class MainOrder extends ConcurrencySafeEntity {
                 d.del();
         }
         DomainEventPublisher.instance().publish(new OrderOptLogEvent(orderId, null, "用户删除订单", userId, 1));
+        updateTime = new Date();
+        delFlag = 1;
+        return true;
+    }
+    
+    /***
+     * 删除订单(用户主动操作)
+     */
+    public boolean delBySub() {
+        // 检查是否可以删除，只有在未支付的状态下用户可以删除
+        if (status > 0) {
+            return false;
+        }
+        if (dealerOrders != null) {
+            for (DealerOrder d : dealerOrders)
+                d.delSub();
+        }
         updateTime = new Date();
         delFlag = 1;
         return true;

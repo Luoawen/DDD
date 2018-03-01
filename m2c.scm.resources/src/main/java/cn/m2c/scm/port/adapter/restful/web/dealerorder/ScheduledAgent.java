@@ -295,6 +295,7 @@ public class ScheduledAgent {
 			LOGGER.error("退款重新发事件出错：", e);
 			result = new MResult(MCode.V_400, e.getMessage());
 		}
+		/*result.setStatus(MCode.V_200);*/
 		return new ResponseEntity<MResult>(result, HttpStatus.OK);
 	}
 }
