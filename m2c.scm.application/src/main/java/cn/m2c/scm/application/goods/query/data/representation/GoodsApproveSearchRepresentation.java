@@ -42,6 +42,7 @@ public class GoodsApproveSearchRepresentation {
         List<GoodsSkuApproveBean> goodsSkuBeans = bean.getGoodsSkuApproves();
         if (null != goodsSkuBeans && goodsSkuBeans.size() > 0) {
             //排序
+            System.setProperty("java.util.Arrays.useLegacyMergeSort", "true");
             Collections.sort(goodsSkuBeans, new Comparator<GoodsSkuApproveBean>() {
                 public int compare(GoodsSkuApproveBean bean1, GoodsSkuApproveBean bean2) {
                     Long price1 = bean1.getPhotographPrice();
