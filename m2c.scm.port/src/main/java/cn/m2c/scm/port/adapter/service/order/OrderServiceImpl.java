@@ -345,7 +345,7 @@ public class OrderServiceImpl implements OrderService {
                     throw new NegativeException(500, "服务器错误（即快递100的服务器出理间隙或临时性异常，有时如果因为不按规范提交请求，比如快递公司参数写错等，也会报此错误）");
             }
         } catch (Exception e) {
-            throw new NegativeException(MCode.V_400, "内部错误");
+            throw new NegativeException(MCode.V_400, "注册物流失败，请检查单号是否正确！");
         }
     }
 
