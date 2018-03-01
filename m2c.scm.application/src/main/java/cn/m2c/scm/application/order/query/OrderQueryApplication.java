@@ -450,7 +450,7 @@ public class OrderQueryApplication {
 				.append("LEFT OUTER JOIN t_scm_order_main a ON a.order_id=b.order_id \r\n") 
 				.append("LEFT OUTER JOIN t_scm_dealer c ON c.dealer_id = b.dealer_id \r\n")
 				.append("LEFT OUTER JOIN t_scm_dealer_shop d ON b.dealer_id = d.dealer_id \r\n")
-				.append("WHERE a.user_id=? ");
+				.append("WHERE a.user_id=? AND b.del_flag=0 ");
 				params.add(cmd.getUserId());		
 				
 				if (!StringUtils.isEmpty(cmd.getOrderId())) {
