@@ -133,8 +133,8 @@ public class OrderServiceImpl implements OrderService {
 
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-        LOGGER.info("获取广告位的信息入参广告位id"+JSONObject.toJSONString(resIds));
-        LOGGER.info("获取广告位的日期"+formatter.format(new Date(time)));
+        LOGGER.info("==fanjc==skuListStr="+JSONObject.toJSONString(resIds));
+        LOGGER.info("==fanjc==orderDateTime="+formatter.format(new Date(time)));
         String rtResult = restTemplate.getForObject(url, String.class, JSONObject.toJSONString(resIds),
                 formatter.format(new Date(time)));
         formatter = null;
@@ -144,6 +144,8 @@ public class OrderServiceImpl implements OrderService {
         if (json.getInteger("status") == 200) {
             result = new HashMap<String, Object>();
             JSONObject contentArr = json.getJSONObject("content");
+            if (contentArr != null)
+            	LOGGER.info("===fanjc==m2c.media/order/ad==content:" + contentArr.toJSONString());
             //int sz = contentArr.size();
             Gson gson = new Gson();
             //for (int i=0; i< sz; i++) {
