@@ -158,6 +158,9 @@ public class OrderServiceImpl implements OrderService {
             result.putAll(mp);
             //}
         }
+        else {
+        	LOGGER.error("===fanjc==m2c.media/order/ad==status:" + json.getInteger("status"));
+        }
         
         /*if (json.getInteger("status") == 200) {
             result = new HashMap<String, Object>();
