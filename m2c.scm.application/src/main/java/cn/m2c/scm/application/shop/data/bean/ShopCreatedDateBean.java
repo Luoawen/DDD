@@ -40,6 +40,12 @@ public class ShopCreatedDateBean {
 		this.dayTimes = dayTimes;
 	}
 	
+	/**
+	 * 计算开店时间
+	 * @param createdDate
+	 * @param thisDate
+	 * @return
+	 */
 	public Integer createdDays(Date createdDate,Date thisDate) {
 		Calendar cal1 = Calendar.getInstance();
         cal1.setTime(createdDate);

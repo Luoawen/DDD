@@ -38,10 +38,16 @@ public class Unit extends ConcurrencySafeEntity {
 		this.unitName = unitName;
 	}
 	
+	/**
+	 * 商品使用到计量单位
+	 */
 	public void used() {
 		this.useNum ++;
 	}
 	
+	/**
+	 * 商品取消使用计量单位
+	 */
 	public void noUsed() {
 		this.useNum --;
 	}

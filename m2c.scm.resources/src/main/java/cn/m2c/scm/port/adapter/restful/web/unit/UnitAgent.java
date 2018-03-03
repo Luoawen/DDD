@@ -42,6 +42,10 @@ public class UnitAgent {
 	@Autowired
 	private  HttpServletRequest request;
 	
+	/**
+	 * 获取计量单位ID，防止重复提交
+	 * @return
+	 */
 	@RequestMapping(value = "/unit/id",method = RequestMethod.GET)
 	public ResponseEntity<MResult> getUnitId(){
 		MResult result = new MResult(MCode.V_1);
@@ -133,7 +137,7 @@ public class UnitAgent {
 	}
 
 	/**
-	 * 查询计量单位
+	 * 查询计量单位列表
 	 * @param pageNum
 	 * @param rows
 	 * @return

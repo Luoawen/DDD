@@ -692,7 +692,7 @@ public class AppOrderAgent {
     
     
     /**
-     * 售后单好查询售后流程记录
+     * 售后单号查询售后流程记录
      * @param saleAfterNo
      * @return
      */
