@@ -262,10 +262,11 @@ public class DealerOrderQuery {
 
         if (null != hasMedia) {
 			if (hasMedia == 1) {
-				sql.append(" AND media_res_id IS NOT NULL ");
-			}if (hasMedia == 0) {
-				sql.append(" AND media_res_id IS NULL ");
+				sql.append(" AND dtl.media_res_id IS NOT NULL ");
+			}else if (hasMedia == 0) {
+				sql.append(" AND dtl.media_res_id IS NULL ");
 			}
+			params.add(hasMedia);
 		}
         
         if (hasComment != null && hasComment >= 0) {
@@ -497,6 +498,15 @@ public class DealerOrderQuery {
         if (orderType != null && orderType >= 0) {
             sql.append(" AND om.order_type=?\r\n");
             params.add(orderType);
+        }
+        
+        if (hasMedia != null ) {
+        	if(hasMedia==0){
+        		sql.append(" AND dtl.media_res_id is null \r\n");
+        	}else if(hasMedia==1){
+        		sql.append(" AND dtl.media_res_id is not null \r\n");
+        	}
+        	params.add(hasMedia);
         }
 
         if (payWay != null && payWay > 0) {
