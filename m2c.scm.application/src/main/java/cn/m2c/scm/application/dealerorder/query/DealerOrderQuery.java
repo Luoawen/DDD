@@ -266,7 +266,6 @@ public class DealerOrderQuery {
 			}else if (hasMedia == 0) {
 				sql.append(" AND dtl.media_res_id IS NULL ");
 			}
-			params.add(hasMedia);
 		}
         
         if (hasComment != null && hasComment >= 0) {
@@ -506,7 +505,6 @@ public class DealerOrderQuery {
         	}else if(hasMedia==1){
         		sql.append(" AND dtl.media_res_id is not null \r\n");
         	}
-        	params.add(hasMedia);
         }
 
         if (payWay != null && payWay > 0) {
