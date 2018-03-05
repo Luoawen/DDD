@@ -262,9 +262,9 @@ public class DealerOrderQuery {
 
         if (null != hasMedia) {
 			if (hasMedia == 1) {
-				sql.append(" AND media_res_id IS NOT NULL ");
-			}if (hasMedia == 0) {
-				sql.append(" AND media_res_id IS NULL ");
+				sql.append(" AND dtl.media_res_id IS NOT NULL ");
+			}else if (hasMedia == 0) {
+				sql.append(" AND dtl.media_res_id IS NULL ");
 			}
 		}
         
@@ -497,6 +497,14 @@ public class DealerOrderQuery {
         if (orderType != null && orderType >= 0) {
             sql.append(" AND om.order_type=?\r\n");
             params.add(orderType);
+        }
+        
+        if (hasMedia != null ) {
+        	if(hasMedia==0){
+        		sql.append(" AND dtl.media_res_id is null \r\n");
+        	}else if(hasMedia==1){
+        		sql.append(" AND dtl.media_res_id is not null \r\n");
+        	}
         }
 
         if (payWay != null && payWay > 0) {
@@ -869,7 +877,7 @@ public class DealerOrderQuery {
 				params.add(2);
 				break;
 			case 21:// 待顾客寄回商品
-				sql.append(" AND d.order_type IN(0,1) AND af._status =? AND d.is_invalide=0\r\n");
+				sql.append(" AND d.order_type IN(0,1) AND d._status =? AND d.is_invalide=0\r\n");
 				params.add(4);
 				break;
 			case 22:// 待商家确认退款
@@ -954,7 +962,7 @@ public class DealerOrderQuery {
 				params.add(2);
 				break;
 			case 21:// 待顾客寄回商品
-				sql.append(" AND d.order_type IN(0,1) AND af._status =?\r\n");
+				sql.append(" AND d.order_type IN(0,1) AND d._status =?\r\n");
 				params.add(4);
 				break;
 			case 22:// 待商家确认退款

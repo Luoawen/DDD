@@ -557,8 +557,13 @@ public class OrderAgent {
     
     /**
      * 商家替用户添加物流信息
-     * @param com
-     * @param nu
+     * @param userId         操作人ID
+     * @param skuId			 skuId
+     * @param saleAfterNo	  售后单号
+     * @param expressName	  物流公司名
+     * @param com			  单号
+     * @param nu			  物流公司编号
+     * @param shipType		  配送方式
      * @return
      */
     @RequestMapping(value = {"/web/rigisterExpress","/rigisterExpress"},method = RequestMethod.POST)

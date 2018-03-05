@@ -241,12 +241,13 @@ public class SellerAgent {
 	@RequirePermissions(value = {"scm:seller:export"})
 	public ResponseEntity<MPager> getSellerExport(
 			HttpServletResponse response,
+			@RequestParam(value = "sellerCondition", required = false) Integer sellerCondition,
 			@RequestParam(value = "filter", required = false) String filter,
 			@RequestParam(value = "startTime", required = false) String startTime,
 			@RequestParam(value = "endTime", required = false) String endTime) {
 		MPager result = new MPager(MCode.V_1);
 		try {
-			List<SellerBean> sellerList = sellerQuery.getSellerExportList(filter,startTime,endTime);
+			List<SellerBean> sellerList = sellerQuery.getSellerExportList(sellerCondition,filter,startTime,endTime);
 			List<SellerExportModel> excelList = new ArrayList<SellerExportModel>();  
 			for (SellerBean model : sellerList) {
 				excelList.add(new SellerExportModel(model));
