@@ -16,22 +16,22 @@ public class MiniGoodsSkuRepresentation {
     /**可用库存*/
     private Integer availableNum;
 
+    private Float weight;
+    
     /**拍获价*/
     private Long photographPrice;
-
-    private Float weight;
-
-    /**特惠价*/
-    //private Long specialPrice;
 
     /**新增字段，拍获价/10000*/
     private String strPhotographPrice;
 
-    /**新增字段，特惠价/10000*/
-    //private String strSpecialPrice;
-
     /**市场价/10000*/
     private String strMarketPrice;
+    
+    /**特惠价*/
+    //private Long specialPrice;    
+    
+    /**新增字段，特惠价/10000*/
+    //private String strSpecialPrice;
 
     public MiniGoodsSkuRepresentation(GoodsSkuBean bean) {
         this.skuId = bean.getSkuId();

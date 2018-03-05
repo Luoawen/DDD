@@ -105,7 +105,6 @@ public class MiniGoodsAgent {
         String mresId = null == mediaMap ? "" : (String) mediaMap.get("mresId");
         String mresName = null == mediaMap ? "" : (String) mediaMap.get("mresName");
 
-
         try {
             List<GoodsBean> goodsBeans = goodsQueryApplication.recognizedGoods(recognizedInfo, location);
             if (null != goodsBeans && goodsBeans.size() > 0) {
@@ -171,12 +170,11 @@ public class MiniGoodsAgent {
                         osVersion, triggerTime, userId, userName,
                         goodsBeans.get(0).getGoodsId(), goodsBeans.get(0).getGoodsName(), mediaId, mediaName,
                         mresId, mresName);
-
             }
             result.setStatus(MCode.V_200);
         } catch (Exception e) {
             LOGGER.error("miniRecognizedPic Exception e:", e);
-            result = new MResult(MCode.V_400, "拍照获取商品失败");
+            result = new MResult(MCode.V_400, "小程序拍照获取商品失败");
         }
         return new ResponseEntity<MResult>(result, HttpStatus.OK);
     }
