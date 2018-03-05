@@ -19,7 +19,7 @@ public class MiniGoodsSkuRepresentation {
     private Float weight;
     
     /**拍获价*/
-    private Long photographPrice;
+    //private Long photographPrice;
 
     /**新增字段，拍获价/10000*/
     private String strPhotographPrice;
@@ -37,7 +37,7 @@ public class MiniGoodsSkuRepresentation {
         this.skuId = bean.getSkuId();
         this.skuName = "".equals(bean.getSkuName()) ? "默认" : bean.getSkuName();
         this.availableNum = bean.getAvailableNum();
-        this.photographPrice = bean.getPhotographPrice() / 100;
+        //this.photographPrice = bean.getPhotographPrice() / 100;
         this.strPhotographPrice = Utils.moneyFormatCN(bean.getPhotographPrice());
         this.weight = bean.getWeight();
         this.strMarketPrice = null != bean.getMarketPrice() ? Utils.moneyFormatCN(bean.getMarketPrice()) : null;
@@ -67,14 +67,6 @@ public class MiniGoodsSkuRepresentation {
         this.availableNum = availableNum;
     }
 
-    public Long getPhotographPrice() {
-        return photographPrice;
-    }
-
-    public void setPhotographPrice(Long photographPrice) {
-        this.photographPrice = photographPrice;
-    }
-
     public Float getWeight() {
         return weight;
     }
@@ -99,7 +91,15 @@ public class MiniGoodsSkuRepresentation {
         this.strMarketPrice = strMarketPrice;
     }
     
-    /*public Long getSpecialPrice() {
+    /*public Long getPhotographPrice() {
+        return photographPrice;
+    }
+
+    public void setPhotographPrice(Long photographPrice) {
+        this.photographPrice = photographPrice;
+    }
+    
+    public Long getSpecialPrice() {
         return specialPrice;
     }
 
