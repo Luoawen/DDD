@@ -133,8 +133,8 @@ public class OrderServiceImpl implements OrderService {
 
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-        LOGGER.info("获取广告位的信息入参广告位id"+JSONObject.toJSONString(resIds));
-        LOGGER.info("获取广告位的日期"+formatter.format(new Date(time)));
+        LOGGER.info("==fanjc==skuListStr="+JSONObject.toJSONString(resIds));
+        LOGGER.info("==fanjc==orderDateTime="+formatter.format(new Date(time)));
         String rtResult = restTemplate.getForObject(url, String.class, JSONObject.toJSONString(resIds),
                 formatter.format(new Date(time)));
         formatter = null;
@@ -144,6 +144,8 @@ public class OrderServiceImpl implements OrderService {
         if (json.getInteger("status") == 200) {
             result = new HashMap<String, Object>();
             JSONObject contentArr = json.getJSONObject("content");
+            if (contentArr != null)
+            	LOGGER.info("===fanjc==m2c.media/order/ad==content:" + contentArr.toJSONString());
             //int sz = contentArr.size();
             Gson gson = new Gson();
             //for (int i=0; i< sz; i++) {
@@ -157,6 +159,9 @@ public class OrderServiceImpl implements OrderService {
             HashMap<String, MediaResBean> mp = gson.fromJson(contentArr.toJSONString(), type);
             result.putAll(mp);
             //}
+        }
+        else {
+        	LOGGER.error("===fanjc==m2c.media/order/ad==status:" + json.getInteger("status"));
         }
         
         /*if (json.getInteger("status") == 200) {
@@ -345,7 +350,7 @@ public class OrderServiceImpl implements OrderService {
                     throw new NegativeException(500, "服务器错误（即快递100的服务器出理间隙或临时性异常，有时如果因为不按规范提交请求，比如快递公司参数写错等，也会报此错误）");
             }
         } catch (Exception e) {
-            throw new NegativeException(MCode.V_400, "内部错误");
+            throw new NegativeException(MCode.V_400, "注册物流失败，请检查单号是否正确！");
         }
     }
 

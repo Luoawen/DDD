@@ -39,6 +39,10 @@ public class StantardAgent {
 	@Autowired
 	private  HttpServletRequest request;
 	
+	/**
+	 * 获取规格ID，防止重复提交
+	 * @return
+	 */
 	@RequestMapping(value = "/stantard/id",method = RequestMethod.GET)
 	public ResponseEntity<MResult> getStantardId(){
 		MResult result = new MResult(MCode.V_1);

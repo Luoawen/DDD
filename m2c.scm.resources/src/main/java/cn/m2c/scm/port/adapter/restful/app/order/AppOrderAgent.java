@@ -397,6 +397,8 @@ public class AppOrderAgent {
         	AppOrderDtl orderBean = orderQueryApp.getOrderDtl(cmd);
         	result.setContent(orderBean);
             result.setStatus(MCode.V_200);
+            if (orderBean == null)
+            result.setErrorMessage("您查的订单不存在或已被删除！");
         } 
         catch (NegativeException e) {
         	result.setStatus(e.getStatus());
@@ -690,7 +692,7 @@ public class AppOrderAgent {
     
     
     /**
-     * 售后单好查询售后流程记录
+     * 售后单号查询售后流程记录
      * @param saleAfterNo
      * @return
      */

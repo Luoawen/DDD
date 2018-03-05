@@ -98,6 +98,10 @@ public class StandstardApplication {
 	    	stantardRepository.saveStantard(stantard);
 	    }
 	  
+	  	/**
+		 * 规格被商品使用 <使用次数加1>
+		 * @param unitId
+		 */
 	  @Transactional(rollbackFor = {Exception.class,RuntimeException.class,NegativeException.class})
 	  public void beUsed(List<String> list) {
 		  for (String stantardId : list) {
@@ -109,6 +113,10 @@ public class StandstardApplication {
   		}
 	  }
 	  
+	  /**
+	   * 使用到规格的商品取消了使用 <使用次数减1>
+	   * @param list
+	   */
 	  @Transactional(rollbackFor = {Exception.class,RuntimeException.class,NegativeException.class})
 	  public void noBeUsed(List<String> list) {
 		  for (String stantardId : list) {

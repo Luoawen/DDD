@@ -107,7 +107,7 @@ public class AppOrderDtl extends AssertionConcern implements Serializable {
 	private long mainCouponDiscount;
 	
 	public long getCouponDiscount() {
-		return couponDiscount/10000;
+		return couponDiscount/100;
 	}
 	public String getStrCouponDiscount(){
 		return Utils.moneyFormatCN(couponDiscount);

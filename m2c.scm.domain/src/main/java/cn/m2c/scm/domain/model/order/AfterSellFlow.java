@@ -64,20 +64,13 @@ public class AfterSellFlow extends ConcurrencySafeEntity {
 	/**
 	 * 添加售后流程记录
 	 * 
-	 * @param afterSellOrderId
-	 *            售后订单号
-	 * @param status
-	 *            状态ID
-	 * @param userId
-	 *            操作人id
-	 * @param applyReason
-	 *            售后申请原因
-	 * @param applyReasonCode
-	 *            申请原因Code
-	 * @param rejectReason
-	 *            申请拒绝理由
-	 * @param rejectReasonCode
-	 *            拒绝原因Code
+	 * @param afterSellOrderId 售后订单号
+	 * @param status 状态ID
+	 * @param userId 操作人id
+	 * @param applyReason 售后申请原因
+	 * @param applyReasonCode 申请原因Code
+	 * @param rejectReason 申请拒绝理由
+	 * @param rejectReasonCode 拒绝原因Code
 	 */
 	public void add(String afterSellOrderId, Integer status, String userId, String applyReason, Integer applyReasonCode,
 			String rejectReason, Integer rejectReasonCode) {
@@ -95,6 +88,20 @@ public class AfterSellFlow extends ConcurrencySafeEntity {
 		saveStatusName(status);
 	}
 
+	/**
+	 * 
+	 * @param afterSellOrderId
+	 * @param status
+	 * @param userId
+	 * @param applyReason
+	 * @param applyReasonCode
+	 * @param rejectReason
+	 * @param rejectReasonCode
+	 * @param expressNo          物流单号
+	 * @param expressName        物流公司名称
+	 * @param backExpressNo      用户寄回物流单号
+	 * @param backExpressName    用户寄回物流公司名称
+	 */
 	public void save(String afterSellOrderId, Integer status, String userId, String applyReason,
 			Integer applyReasonCode, String rejectReason, Integer rejectReasonCode, String expressNo,
 			String expressName, String backExpressNo, String backExpressName) {

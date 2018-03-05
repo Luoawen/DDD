@@ -66,7 +66,7 @@ public class MediaResOrderDetailBeanRepresentation {
 		this.mediaNo = null != bean.getMediaNo() ? bean.getMediaNo().toString() : "";
 		this.mediaName = null != bean.getMediaName() ? bean.getMediaName() : "";
 		this.mresNo = null != bean.getMresNo() ? bean.getMresNo().toString() : "";
-		this.level = null != bean.getLevel() ? (bean.getLevel() == 1 ? "A级" : bean.getLevel() == 2 ? "B级" : bean.getLevel() == 3 ? "C级" : "") : "";
+		this.level = null != bean.getLevel() ? (bean.getLevel() == 1 ? "A级" : bean.getLevel() == 2 ? "B级" : bean.getLevel() == 3 ? "C级" : bean.getLevel() == 4 ? "D级" : "") : "";
 	}
 
 	public String getOrderId() {

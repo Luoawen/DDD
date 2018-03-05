@@ -606,12 +606,14 @@ public class OrderApplication {
     		if (order.del()) {
     			orderRepository.updateMainOrder(order);
     		}
-    		DealerOrder d = orderRepository.getDealerOrderById(cmd.getOrderId(), cmd.getUserId(), cmd.getDealerOrderId());
-    		if (d.del()) {
-	            orderRepository.updateDealerOrder(d);
-	        } else {
-	            throw new NegativeException(MCode.V_1, "订单处于不可删除状态！");
-	        }
+    		else {
+	    		DealerOrder d = orderRepository.getDealerOrderById(cmd.getOrderId(), cmd.getUserId(), cmd.getDealerOrderId());
+	    		if (d.del()) {
+		            orderRepository.updateDealerOrder(d);
+		        } else {
+		            throw new NegativeException(MCode.V_1, "订单处于不可删除状态！");
+		        }
+    		}
     	}
     }
 

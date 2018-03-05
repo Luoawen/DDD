@@ -90,12 +90,14 @@ public class UnitApplication {
 		}
 		if (StringUtils.isNotEmpty(_attach))
 			operationLogManager.operationLog("修改计量单位", _attach, unit);
-		System.out.println("-------计量单位："+command.getUnitId());
-		System.out.println("---"+command.toString());
 		unit.modify(command.getUnitId(), command.getUnitName(), command.getUnitStatus());
 		unitRepository.saveUnit(unit);
 	}
 
+	/**
+	 * 计量单位被商品使用 <使用次数加1>
+	 * @param unitId
+	 */
 	@Transactional(rollbackFor = { Exception.class, RuntimeException.class, NegativeException.class })
 	public void beUsed(String unitId) {
 		Unit unit = unitRepository.getUnitByUnitId(unitId);
@@ -103,6 +105,11 @@ public class UnitApplication {
 		unitRepository.saveUnit(unit);
 	}
 
+	/**
+	 * 使用到计量单位的商品取消了使用 <使用次数减1>
+	 * @param unitId
+	 * @throws NegativeException
+	 */
 	@Transactional(rollbackFor = { Exception.class, RuntimeException.class, NegativeException.class })
 	@EventListener(isListening = true)
 	public void noBeUsed(String unitId) throws NegativeException {
@@ -116,6 +123,11 @@ public class UnitApplication {
 		}
 	}
 
+	/**
+	 * 商品取消使用一个计量单位使用到新的计量单位<取消使用的减1，新使用的加1>
+	 * @param oldUnitId
+	 * @param newUnitId
+	 */
 	@Transactional(rollbackFor = { Exception.class, RuntimeException.class, NegativeException.class })
 	@EventListener(isListening = true)
 	public void updateUsed(String oldUnitId, String newUnitId) {
