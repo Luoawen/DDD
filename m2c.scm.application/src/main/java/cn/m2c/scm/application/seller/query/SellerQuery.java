@@ -87,7 +87,7 @@ public class SellerQuery {
 	 * @return
 	 * @throws NegativeException
 	 */
-	public List<SellerBean> getSellerExportList(String filter, String startTime, String endTime) throws NegativeException {
+	public List<SellerBean> getSellerExportList(Integer sellerCondition, String filter, String startTime, String endTime) throws NegativeException {
 		List<SellerBean> sellerList = null;
 		try {
 			 StringBuilder sql = new StringBuilder();
@@ -98,6 +98,10 @@ public class SellerQuery {
 	            sql.append(" t_scm_dealer_seller sds ");
 	            sql.append(" WHERE ");
 	            sql.append(" sds.seller_status = 1 ");
+	            if(null != sellerCondition) {
+	            	sql.append(" AND sds.seller_condition = ? ");
+	            	params.add(sellerCondition);
+	            }
 	            if(filter!=null && !"".equals(filter)){
 	            	sql.append(" AND (sds.seller_name LIKE concat('%', ?,'%') or sds.seller_phone LIKE concat('%', ?,'%'))");
 	            	params.add(filter);
