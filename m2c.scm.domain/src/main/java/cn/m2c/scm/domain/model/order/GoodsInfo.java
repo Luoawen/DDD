@@ -150,4 +150,10 @@ public class GoodsInfo extends ValueObject {
 	String getCouponId() {
 		return couponId;
 	}
+	
+	Long getCouponDiscount() {
+		if (couponDiscount == null)
+			couponDiscount = 0l;
+		return couponDiscount;
+	}
 }
