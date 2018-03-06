@@ -62,7 +62,7 @@ public class OrderDomainAgent {
     	catch (Exception e) {
 			LOGGER.info("获取商家用户数据失败,e:" + e.getMessage());
 			result.setStatus(MCode.V_400);
-			result.setContent("获取商家用户数据失败");
+			result.setErrorMessage("获取商家用户数据失败");
 		}
     	return new ResponseEntity<MResult>(result,HttpStatus.OK);
     }
@@ -82,7 +82,7 @@ public class OrderDomainAgent {
     	catch (Exception e) {
 			LOGGER.info("获取用户下单数失败,e:" + e.getMessage());
 			result.setStatus(MCode.V_400);
-			result.setContent("获取用户下单数失败");
+			result.setErrorMessage("获取用户下单数失败");
 		}
     	return new ResponseEntity<MResult>(result, HttpStatus.OK);
     }
@@ -101,7 +101,7 @@ public class OrderDomainAgent {
 		catch (Exception e) {
 			LOGGER.info("获取用户以前下单数失败,e:" + e.getMessage());
 			result.setStatus(MCode.V_400);
-			result.setContent("获取用户以前下单数失败");
+			result.setErrorMessage("获取用户以前下单数失败");
 		}
 		return new ResponseEntity<MResult>(result, HttpStatus.OK);
 	}
