@@ -282,6 +282,162 @@ public class OrderApplication {
         return new OrderResult(cmd.getOrderId(), goodsAmounts, freight, plateDiscount, dealerDiscount);
     }
 
+    /**
+     * 提交订单 for wechat mini app
+     *
+     * @param cmd
+     * @throws NegativeException
+     */
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+    @EventListener(isListening = true)
+    public OrderResult submitOrderMini(OrderAddCommand cmd) throws NegativeException {
+    	// 提交的商品数据
+    	List<GoodsDto> gdes = cmd.getGoodses();
+        /**skuId与数量的键值对, 用于锁定库存*/
+        Map<String, Integer> skus = new HashMap<String, Integer>();
+        /**提交上来的商品位置 与广告位之间的关系*/
+        Map<Integer, SkuMediaBean> mresIds = new HashMap<Integer, SkuMediaBean>();
+        /**提交上来的商品sku 与广告位之间的关系*/
+        Map<String, SkuMediaBean> mediaResIds = new HashMap<String, SkuMediaBean>();
+        /**营销ID*/
+        List<String> marketIds = new ArrayList<String>();
+        /**需要查询特惠价的sku集合*/
+        List<String> specialSkus = new ArrayList<String>();
+        
+        //此处表示为app上传的参数处理
+        int sz = gdes.size();
+        for (int i = 0; i < sz; i++) {
+        	GoodsDto o = gdes.get(i);
+            String sku = o.getSkuId();
+            int pnum = o.getPurNum();
+            Integer oNum = skus.get(sku);
+            if (oNum == null) {
+            	skus.put(sku, pnum);
+            }
+            else
+            	skus.put(sku, oNum + pnum);
+            String marketId = o.getMarketingId();
+
+            String mResId = o.getMresId();
+            if (!StringUtils.isEmpty(mResId)) {
+            	SkuMediaBean skb = new SkuMediaBean(sku, mResId);
+            	mresIds.put(i, skb);
+                mediaResIds.put(sku, skb);
+            }
+            if (!StringUtils.isEmpty(marketId) && !marketIds.contains(marketId))
+                marketIds.add(marketId);
+            
+            if (o.getIsSpecial() == 1)
+            	specialSkus.add(sku);
+        }
+        
+        try {// 锁定库存
+            goodsApp.outInventory(skus);
+        } catch (NegativeException e) {//不存在或库存不够
+            throw new NegativeException(MCode.V_100, e.getMessage());
+        }
+
+        long orderTime = System.currentTimeMillis();
+        
+        // 获取商品详情
+        List<GoodsDto> goodDtls = gQueryApp.getGoodsDtl(skus.keySet());
+        //Map<String, GoodsSkuSpecial> specialPriceMap = (Map<String, GoodsSkuSpecial>)goodsSpecialRsp.getEffectiveGoodsSkuSpecial(specialSkus);
+        
+        //checkNotSatisfy(specialPriceMap, specialSkus);
+        //LOGGER.info("特惠价比较开始");
+        //判断app传入的特惠价和商品获取的特惠价是否相同
+        //checkSpecialPriceChange(specialPriceMap,gdes);
+        //LOGGER.info("特惠价比较结束");
+        // 获取分类及费率
+        getClassifyRate(goodDtls, mediaResIds);
+        //若有媒体信息则需要查询媒体信息
+        Map<String, Object> resMap = null;
+        if (mediaResIds != null) {
+            Iterator<SkuMediaBean> it = mediaResIds.values().iterator();
+            List<SkuMediaBean> lsMd = new ArrayList<>();
+            while (it.hasNext()) {
+                lsMd.add(it.next());
+            }
+            resMap = orderDomainService.getMediaBdByResIds(lsMd, orderTime);
+            resetMediaMap(resMap, mediaResIds);
+        }
+        
+        // 先把数据填充好,商品信息，特惠价，再处理其他事情
+        //fillData(gdes, goodDtls, specialPriceMap);
+        fillData(gdes, goodDtls, null);
+        // 拆单 设置商品数量即按商家来拆分
+        Set<String> idsSet = new HashSet<String>();
+        Map<String, List<GoodsDto>> dealerOrderMap = splitOrder(gdes, idsSet);
+        // 获取运费模板，计算运费
+        //calFreight(skuBeans, list, cmd.getAddr().getCityCode());
+        calFreight(dealerOrderMap, cmd.getAddr().getCityCode(), skus);
+        
+        //List<MarketBean> mks = orderDomainService.getMarketingsByIds(marketIds, cmd.getUserId(), MarketBean[].class);
+        // 计算营销活动优惠
+        //OrderMarketCalc.calMarkets(mks, gdes);
+        //校验营销活动分摊后金额为负数的情况
+        checkMarkets(gdes);
+        //计算优惠券
+        //1.获取满足条件的优惠券id
+        String couponId = getCouponId(gdes);
+        CouponBean couponBean = null;
+        //2.根据优惠券id查询营销接口获取优惠券详情
+        if(!StringUtils.isEmpty(couponId)){
+        	 couponBean = orderDomainService.getCouponById(couponId,cmd.getCouponUserId(),cmd.getUserId(),CouponBean.class);
+        	LOGGER.info("获取到营销模块的优惠券的信息-----"+couponBean==null?"":couponBean.toString());
+        	//3.计算优惠券优惠后最后的金额
+        	//3.1首先将满足此优惠券的sku放入列表中<sku,GoodsDto>
+        	if(couponBean!=null)
+        		OrderCouponCalc.calCoupon(gdes,couponBean);
+        	//校验优惠券优惠金额位负数的情况
+        	checkCoupon(gdes);
+        }
+        // 获取结算方式
+        Map<String, Integer> dealerCount = getDealerWay(idsSet);
+        List<DealerOrder> dealerOrders = trueSplit(dealerOrderMap, cmd, dealerCount,
+                resMap);
+
+        long goodsAmounts = 0;
+        long freight = 0;
+        long plateDiscount = 0;
+        long dealerDiscount = 0;
+        long couponDiscount = 0;
+        // 计算主订单费用
+        for (DealerOrder d : dealerOrders) {
+            freight += d.getOrderFreight();
+            goodsAmounts += d.getGoodsAmount();
+            plateDiscount += (d.getPlateformDiscount() == null ? 0 : d.getPlateformDiscount());
+            dealerDiscount += d.getDealerDiscount();
+            couponDiscount += (d.getCouponDiscount() == null ? 0 : d.getCouponDiscount());
+        }
+        //结算金额
+        long orderAmount = goodsAmounts - plateDiscount - dealerDiscount - couponDiscount;
+        List<MarketUseBean> useList = new ArrayList<>();
+        List<CouponUseBean> useCouponList = new ArrayList<>();
+        MainOrder order = new MainOrder(cmd.getOrderId(), cmd.getAddr(), goodsAmounts, freight
+                , plateDiscount, dealerDiscount, cmd.getUserId(), cmd.getNoted(), dealerOrders
+                , getUsedCoupon(cmd.getOrderId(), cmd.getCouponUserId(), couponBean, gdes, useCouponList)
+                , getUsedMarket(cmd.getOrderId(), gdes, useList), cmd.getLatitude(), cmd.getLongitude()
+                , couponDiscount);
+        // 组织保存(重新设置计算好的价格)
+        AppOrdInfo appInfo = cmd.getInfo().toAppInfo();
+        order.add(skus, cmd.getFrom(),dealerOrders,appInfo==null?"":appInfo.getSn(),orderAmount);
+        orderRepository.save(order);
+        // 锁定营销 , orderNo, 营销ID, userId -----
+        if (!orderDomainService.lockMarketIds(useList, cmd.getCouponUserId(),cmd.getOrderId(), cmd.getUserId(),orderAmount,orderTime,JSONObject.toJSONString(useCouponList))) {
+            throw new NegativeException(MCode.V_300, "活动已被用完！");
+        }
+        
+        try {
+        	if (appInfo != null)
+        		orderRepository.saveAppInfo(appInfo);
+        }
+        catch (Exception e) {
+        	LOGGER.info("===fanjc==save appinfo error." + e.getMessage());
+        }
+        
+        return new OrderResult(cmd.getOrderId(), goodsAmounts, freight, plateDiscount, dealerDiscount);
+    }
 
     /**
      * 数据组装，获取此订单里面所有的Sku

@@ -5,6 +5,7 @@ import cn.m2c.common.MPager;
 import cn.m2c.common.MResult;
 import cn.m2c.scm.application.CommonApplication;
 import cn.m2c.scm.application.order.OrderApplication;
+import cn.m2c.scm.application.order.OrderResult;
 import cn.m2c.scm.application.order.SaleAfterOrderApp;
 import cn.m2c.scm.application.order.command.AddSaleAfterCmd;
 import cn.m2c.scm.application.order.command.CancelOrderCmd;
@@ -23,6 +24,8 @@ import cn.m2c.scm.application.order.data.bean.AppOrderDtl;
 import cn.m2c.scm.application.order.data.bean.OrderExpressBean;
 import cn.m2c.scm.application.order.data.bean.UserOrderStatic;
 import cn.m2c.scm.application.order.data.representation.OrderNo;
+import cn.m2c.scm.application.order.mini.data.representation.AddOrderRepresentation;
+import cn.m2c.scm.application.order.mini.data.representation.MiniOrderRepresentation;
 import cn.m2c.scm.application.order.query.AfterSellOrderQuery;
 import cn.m2c.scm.application.order.query.OrderQueryApplication;
 import cn.m2c.scm.domain.NegativeException;
@@ -38,6 +41,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /***
@@ -120,7 +124,8 @@ public class MiniOrderAgent {
         try {
         	OrderAddCommand cmd = new OrderAddCommand(orderId, userId,couponUserId, noted, goodses, invoice, addr, coupons,
         			latitude, longitude, from, appVersion, os, osVersion, sn);
-            result.setContent(orderApp.submitOrder(cmd));
+        	OrderResult addResult = orderApp.submitOrderMini(cmd);
+            result.setContent(new AddOrderRepresentation(addResult));
             result.setStatus(MCode.V_200);
         } 
         catch (NegativeException e) {
@@ -161,8 +166,14 @@ public class MiniOrderAgent {
         	if (pageNum == 0)
         		pageNum = 1;
         	List<AppOrderBean> cntList = orderQueryApp.getAppOrderList(userId, status, commentStatus, pageIndex, pageNum, keyword);
+        	List<MiniOrderRepresentation> orderList = new ArrayList<MiniOrderRepresentation>();
+        	if(cntList != null && cntList.size() > 0) {
+        		for (AppOrderBean bean : cntList) {
+        			orderList.add(new MiniOrderRepresentation(bean));
+        		}
+        	}
             result.setPager(total, pageIndex, pageNum);
-            result.setContent(cntList);
+            result.setContent(orderList);
             result.setStatus(MCode.V_200);
         } catch (Exception e) {
             LOGGER.error("app get order list error, e:", e);

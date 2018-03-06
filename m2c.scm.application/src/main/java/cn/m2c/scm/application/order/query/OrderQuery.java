@@ -923,21 +923,21 @@ public class OrderQuery {
                 params.add(afterSellOrderType);
             }
             /*if(null != mediaIds && mediaIds.size() > 0) {//媒体id
-				sql.append(" AND tod.media_id IN ( " + Utils.listParseString(mediaIds) + " ) ");
+                sql.append(" AND tod.media_id IN ( " + Utils.listParseString(mediaIds) + " ) ");
 			}
 			if(null != mediaResIds && mediaResIds.size() > 0) {//广告位id
 				sql.append(" AND tod.media_res_id IN ( " + Utils.listParseString(mediaResIds) + " ) ");
 			}*/
             //String mediaCate, Integer mediaNo, String mediaName, Integer mresCate, Integer formId, Long mresNo
             if (StringUtils.isNotEmpty(mediaCate)) {
-            	if (mediaCate.endsWith("00")) {
-    				String cate = mediaCate.substring(0, 4);
-    				sql.append(" AND LEFT(tm.media_cate, 4 ) = ? ");
-    				params.add(cate);
-    			} else {
-    				sql.append(" AND tm.media_cate = ? ");
-    				params.add(mediaCate);
-    			}
+                if (mediaCate.endsWith("00")) {
+                    String cate = mediaCate.substring(0, 4);
+                    sql.append(" AND LEFT(tm.media_cate, 4 ) = ? ");
+                    params.add(cate);
+                } else {
+                    sql.append(" AND tm.media_cate = ? ");
+                    params.add(mediaCate);
+                }
                 //sql.append(" AND tm.media_cate = ? ");
                 //params.add(mediaCate);
             }
@@ -1029,21 +1029,21 @@ public class OrderQuery {
                 sql.append(" AND toas.order_type = ? ");
                 params.add(afterSellOrderType);
             }
-			/*if(null != mediaIds && mediaIds.size() > 0) {//媒体id
+            /*if(null != mediaIds && mediaIds.size() > 0) {//媒体id
 				sql.append(" AND tod.media_id IN ( " + Utils.listParseString(mediaIds) + " ) ");
 			}
 			if(null != mediaResIds && mediaResIds.size() > 0) {//广告位id
 				sql.append(" AND tod.media_res_id IN ( " + Utils.listParseString(mediaResIds) + " ) ");
 			}*/
             if (StringUtils.isNotEmpty(mediaCate)) {
-            	if (mediaCate.endsWith("00")) {
-    				String cate = mediaCate.substring(0, 4);
-    				sql.append(" AND LEFT(tm.media_cate, 4 ) = ? ");
-    				params.add(cate);
-    			} else {
-    				sql.append(" AND tm.media_cate = ? ");
-    				params.add(mediaCate);
-    			}
+                if (mediaCate.endsWith("00")) {
+                    String cate = mediaCate.substring(0, 4);
+                    sql.append(" AND LEFT(tm.media_cate, 4 ) = ? ");
+                    params.add(cate);
+                } else {
+                    sql.append(" AND tm.media_cate = ? ");
+                    params.add(mediaCate);
+                }
                 //sql.append(" AND tm.media_cate = ? ");
                 //params.add(mediaCate);
             }
@@ -1108,47 +1108,75 @@ public class OrderQuery {
         }
         return bean.getStrAmount();
     }
+
     /***
      * 获取用户下过的单数
+     *
      * @param userId
      * @param hasPayed
      * @return
      */
-	public OrderNums getUserOrders(String userId, int hasPayed) {
-		
-		List<Object> params = new ArrayList<Object>();
-		StringBuilder sql = new StringBuilder();
-		sql.append(" SELECT count(1) FROM t_scm_order_main m");
-		sql.append(" WHERE m.user_id = ?");
-		
-		params.add(userId);
-		
-		if (hasPayed != 0) {
-			sql.append(" AND m._status > ?");
-			params.add(0);
-		}
-		Long nn = supportJdbcTemplate.jdbcTemplate().queryForObject(sql.toString(), Long.class, params.toArray());
-		OrderNums nums = new OrderNums();
-		nums.setOrderNum(nn.intValue());
-		return nums;
-	}
+    public OrderNums getUserOrders(String userId, int hasPayed) {
 
-	/**
-	 * 根据dealerOrderIds查询订单金额
-	 * @param dealerOrderIds
-	 * @return
-	 * @throws NegativeException 
-	 */
-	public List<DealerOrderMoneyInfoBean> getDealerOrders(List dealerOrderIds) throws NegativeException {
-		if(null != dealerOrderIds && dealerOrderIds.size() > 0) {
-			StringBuilder sql = new StringBuilder();
-			sql.append(" SELECT t.dealer_order_id dealerOrderId , t.goods_amount totalOrderPrice , t.order_freight totalFreight , t.plateform_discount plateformDiscount , t.dealer_discount dealerDiscount , t.coupon_discount couponDiscount ");
-			sql.append(" FROM t_scm_order_dealer t ");
-			sql.append(" WHERE t.dealer_order_id IN ( " + Utils.listParseString(dealerOrderIds) + ") ");
-	        List<DealerOrderMoneyInfoBean> list = this.supportJdbcTemplate.queryForBeanList(sql.toString(), DealerOrderMoneyInfoBean.class);
-			return list;
-		}else {
+        List<Object> params = new ArrayList<Object>();
+        StringBuilder sql = new StringBuilder();
+        sql.append(" SELECT count(1) FROM t_scm_order_main m");
+        sql.append(" WHERE m.user_id = ?");
+
+        params.add(userId);
+
+        if (hasPayed != 0) {
+            sql.append(" AND m._status > ?");
+            params.add(0);
+        }
+        Long nn = supportJdbcTemplate.jdbcTemplate().queryForObject(sql.toString(), Long.class, params.toArray());
+        OrderNums nums = new OrderNums();
+        nums.setOrderNum(nn.intValue());
+        return nums;
+    }
+
+    /***
+     * 获取用户之前下过的单数
+     *
+     * @param mainOrderId
+     * @return
+     */
+    public Integer getUserBeforeOrders(String mainOrderId) {
+        StringBuilder orderSql = new StringBuilder();
+        orderSql.append(" SELECT m.user_id FROM t_scm_order_main m");
+        orderSql.append(" WHERE m.order_id = ?");
+        String userId = supportJdbcTemplate.jdbcTemplate().queryForObject(orderSql.toString(), String.class, mainOrderId);
+        Integer count = 0;
+        if (StringUtils.isNotEmpty(userId)) {
+            List<Object> params = new ArrayList<Object>();
+            StringBuilder sql = new StringBuilder();
+            sql.append(" SELECT count(1) FROM t_scm_order_main m");
+            sql.append(" WHERE m.user_id = ? and m.order_id <> ?");
+            params.add(userId);
+            params.add(mainOrderId);
+            count = supportJdbcTemplate.jdbcTemplate().queryForObject(sql.toString(), Integer.class, params.toArray());
+        }
+        return count;
+    }
+
+
+    /**
+     * 根据dealerOrderIds查询订单金额
+     *
+     * @param dealerOrderIds
+     * @return
+     * @throws NegativeException
+     */
+    public List<DealerOrderMoneyInfoBean> getDealerOrders(List dealerOrderIds) throws NegativeException {
+        if (null != dealerOrderIds && dealerOrderIds.size() > 0) {
+            StringBuilder sql = new StringBuilder();
+            sql.append(" SELECT t.dealer_order_id dealerOrderId , t.goods_amount totalOrderPrice , t.order_freight totalFreight , t.plateform_discount plateformDiscount , t.dealer_discount dealerDiscount , t.coupon_discount couponDiscount ");
+            sql.append(" FROM t_scm_order_dealer t ");
+            sql.append(" WHERE t.dealer_order_id IN ( " + Utils.listParseString(dealerOrderIds) + ") ");
+            List<DealerOrderMoneyInfoBean> list = this.supportJdbcTemplate.queryForBeanList(sql.toString(), DealerOrderMoneyInfoBean.class);
+            return list;
+        } else {
             throw new NegativeException(MCode.V_1, "商家订单号为空！");
         }
-	}
+    }
 }

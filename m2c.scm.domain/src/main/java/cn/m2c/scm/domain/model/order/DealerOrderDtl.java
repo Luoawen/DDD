@@ -259,7 +259,7 @@ public class DealerOrderDtl extends ConcurrencySafeEntity {
      * @return
      */
     long getDiscountMoney() {
-        return goodsAmount - goodsInfo.getPlateformDiscount() - dealerDiscount;
+        return goodsAmount - goodsInfo.getPlateformDiscount() - dealerDiscount - goodsInfo.getCouponDiscount();
     }
 
     public void finished() {
