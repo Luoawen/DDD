@@ -1044,6 +1044,12 @@ public class GoodsQueryApplication {
         return goodsBeanList;
     }
 
+    /**
+     * 拍照获取商品（通过recognizedId查询匹配度最高的商品）
+     * @param recognizedInfo
+     * @param location
+     * @return
+     */
     public List<GoodsBean> recognizedGoods(String recognizedInfo, String location) {
         //解析json
         List<Map<String, Object>> recognizedList = new Gson().fromJson(recognizedInfo, new TypeToken<List<Map<String, Object>>>() {
