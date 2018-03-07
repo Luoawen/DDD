@@ -918,7 +918,7 @@ public class DealerOrderQuery {
 		.append("LEFT OUTER JOIN t_scm_dealer f ON c.dealer_id=f.dealer_id\r\n")
 		.append("WHERE a.dealer_order_id=c.dealer_order_id\r\n");
 		
-		if (orderStatus != null && orderStatus >= 0) {
+		if (orderStatus != null && orderStatus >= -1) {
 			sql.append(" AND c._status=?\r\n");
 			params.add(orderStatus);
 		}
