@@ -478,7 +478,7 @@ public class OrderApplication {
 			  for (GoodsDto goodsDto : gdes) {
 				  if((goodsDto.getThePrice() * goodsDto.getPurNum() - goodsDto.getPlateformDiscount() -goodsDto.getCouponDiscount())<=0){
 					  LOGGER.info("优惠券减的钱超过了商品原价");
-					  throw new NegativeException(302, "下单失败");
+					  throw new NegativeException(302, "下单失败，某商品的优惠金额大于商品金额。");
 					 }
 			}
 			
