@@ -116,7 +116,7 @@ public class MiniGoodsAgent {
                     String goodsUnitName = unitQuery.getUnitNameByUnitId(goodsBean.getGoodsUnitId());
 
                     // 商家客服电话
-                    String phone = shopQuery.getDealerShopCustmerTel(goodsBean.getDealerId());
+                    //String phone = shopQuery.getDealerShopCustmerTel(goodsBean.getDealerId());
                     
                     // 拍获进来，特惠价/优惠券
                     GoodsSpecialBean goodsSpecialBean = null;
@@ -124,15 +124,10 @@ public class MiniGoodsAgent {
                     if (null != mediaMap && mediaMap.size() > 0) {
                         //商品有无媒体信息,有媒体信息则返回特惠价
                         goodsSpecialBean = goodsSpecialQueryApplication.queryGoodsSpecialByGoodsId(goodsBean.getGoodsId());
-                        // 特惠价角标
-                        ConfigBean configBean = configQueryApplication.queryConfigBeanByConfigKey("SCM_GOODS_SPECIAL_IMAGE");
-                        if (null != configBean) {
-                            goodsSpecialBean.setSpecialIcon(configBean.getConfigValue());
-                        }
                     }
                     
                     MiniGoodsDetailRepresentation representation = new MiniGoodsDetailRepresentation(goodsBean,
-                            goodsGuarantee, goodsUnitName, mresId, phone, goodsSpecialBean);
+                            goodsGuarantee, goodsUnitName, mresId, goodsSpecialBean);
                     
                     representations.add(representation);
                     

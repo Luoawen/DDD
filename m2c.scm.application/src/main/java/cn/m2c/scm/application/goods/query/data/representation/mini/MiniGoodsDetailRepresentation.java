@@ -43,9 +43,8 @@ public class MiniGoodsDetailRepresentation {
     private String goodsDescUrl;
     private Integer skuFlag;
     private String desc;
-    private String customerTel;
-    private Map goodsSpecial;
-    
+    //private Map goodsSpecial;
+    //private String customerTel;
     //private Map goodsComment;
     //private List<Map> fullCuts;
     //private String favoriteId;
@@ -60,7 +59,7 @@ public class MiniGoodsDetailRepresentation {
     */
     
     public MiniGoodsDetailRepresentation(GoodsBean bean, List<GoodsGuaranteeBean> goodsGuaranteeBeans,
-                                        String goodsUnitName, String mresId, String phone, GoodsSpecialBean goodsSpecialBean) {
+                                        String goodsUnitName, String mresId, GoodsSpecialBean goodsSpecialBean) {
         //this.photographGetCoupon = photographGetCoupon;
         this.skuFlag = bean.getSkuFlag();
         this.dealerId = bean.getDealerId();
@@ -102,7 +101,7 @@ public class MiniGoodsDetailRepresentation {
 
 
         this.desc = bean.getGoodsDesc();
-        this.customerTel = phone;
+        //this.customerTel = phone;
         
         /*if (null == this.goodsComment) {
             this.goodsComment = new HashMap<>();
@@ -137,14 +136,14 @@ public class MiniGoodsDetailRepresentation {
 
         // 特惠价
         if (null != goodsSpecialBean) {
-            this.goodsSpecial = new HashMap<>();
-            SimpleDateFormat df = new SimpleDateFormat("yyyy.MM.dd");
-            this.goodsSpecial.put("specialIcon", goodsSpecialBean.getSpecialIcon()); // 特惠价角标
-            this.goodsSpecial.put("specialId", goodsSpecialBean.getSpecialId());
-            this.goodsSpecial.put("startTime", df.format(goodsSpecialBean.getStartTime()));
-            this.goodsSpecial.put("endTime", df.format(goodsSpecialBean.getEndTime()));
-            this.goodsSpecial.put("congratulations", goodsSpecialBean.getCongratulations());
-            this.goodsSpecial.put("activityDescription", goodsSpecialBean.getActivityDescription());
+            //this.goodsSpecial = new HashMap<>();
+            //SimpleDateFormat df = new SimpleDateFormat("yyyy.MM.dd");
+            //this.goodsSpecial.put("specialIcon", goodsSpecialBean.getSpecialIcon()); // 特惠价角标
+            //this.goodsSpecial.put("specialId", goodsSpecialBean.getSpecialId());
+            //this.goodsSpecial.put("startTime", df.format(goodsSpecialBean.getStartTime()));
+            //this.goodsSpecial.put("endTime", df.format(goodsSpecialBean.getEndTime()));
+            //this.goodsSpecial.put("congratulations", goodsSpecialBean.getCongratulations());
+            //this.goodsSpecial.put("activityDescription", goodsSpecialBean.getActivityDescription());
             if (null != this.goodsSKUs && this.goodsSKUs.size() > 0) {
                 List<GoodsSkuSpecialBean> skuSpecials = goodsSpecialBean.getGoodsSpecialSkuBeans();
                 for (MiniGoodsSkuRepresentation sku : this.goodsSKUs) {
@@ -297,14 +296,6 @@ public class MiniGoodsDetailRepresentation {
         this.dealerName = dealerName;
     }
 
-    public String getCustomerTel() {
-        return customerTel;
-    }
-
-    public void setCustomerTel(String customerTel) {
-        this.customerTel = customerTel;
-    }
-
 	public String getGoodsMainVideo() {
 		return goodsMainVideo;
 	}
@@ -313,7 +304,7 @@ public class MiniGoodsDetailRepresentation {
 		this.goodsMainVideo = goodsMainVideo;
 	}
 
-    public Map getGoodsSpecial() {
+    /*public Map getGoodsSpecial() {
         return goodsSpecial;
     }
 
@@ -321,7 +312,15 @@ public class MiniGoodsDetailRepresentation {
         this.goodsSpecial = goodsSpecial;
     }
     
-    /*public Map getPhotographGetCoupon() {
+    public String getCustomerTel() {
+        return customerTel;
+    }
+
+    public void setCustomerTel(String customerTel) {
+        this.customerTel = customerTel;
+    }
+    
+    public Map getPhotographGetCoupon() {
         return photographGetCoupon;
     }
 
