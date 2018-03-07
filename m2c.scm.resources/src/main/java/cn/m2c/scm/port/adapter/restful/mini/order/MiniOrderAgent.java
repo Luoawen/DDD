@@ -13,7 +13,6 @@ import cn.m2c.scm.application.order.command.ConfirmSkuCmd;
 import cn.m2c.scm.application.order.command.ExpressInfoBean;
 import cn.m2c.scm.application.order.command.GetOrderCmd;
 import cn.m2c.scm.application.order.command.OrderAddCommand;
-import cn.m2c.scm.application.order.command.PayOrderCmd;
 import cn.m2c.scm.application.order.command.SaleAfterCmd;
 import cn.m2c.scm.application.order.command.SaleAfterShipCmd;
 import cn.m2c.scm.application.order.data.bean.AfterSellApplyReason;
@@ -213,33 +212,6 @@ public class MiniOrderAgent {
     }
     
     /**
-     * 订单支付
-     * @param userId
-     * @param orderId
-     * @return
-     */
-    @RequestMapping(value = "/pay__", method = RequestMethod.POST)
-    public ResponseEntity<MResult> payOrder(
-            @RequestParam(value = "userId", required = false) String userId
-            ,@RequestParam(value = "orderId", required = false) String orderId
-            ) {
-    	MResult result = new MResult(MCode.V_1);
-        try {
-        	PayOrderCmd cmd = new PayOrderCmd(orderId, userId);
-        	result.setContent(orderApp.payOrder(cmd));
-            result.setStatus(MCode.V_200);
-        } 
-        catch (NegativeException e) {
-        	result = new MResult(e.getStatus(), e.getMessage());
-        }
-        catch (Exception e) {
-            LOGGER.error("pay order Exception e:", e);
-            result = new MResult(MCode.V_400, e.getMessage());
-        }
-        return new ResponseEntity<MResult>(result, HttpStatus.OK);
-    }
-    
-    /**
      * 确认收货
      * @param userId
      * @param orderId
@@ -309,7 +281,6 @@ public class MiniOrderAgent {
         			skuId, saleAfterNo, type, dealerId, goodsId, backNum, reason, rCode
         			,sortNo);
         	saleAfterApp.createSaleAfterOrder(cmd);
-        	//saleAfterApp.afterSaleOrder(cmd);
             result.setStatus(MCode.V_200);
         } 
         catch (NegativeException e) {
