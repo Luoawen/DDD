@@ -1,5 +1,6 @@
 package cn.m2c.scm.port.adapter.restful.mini.goods;
 
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -178,7 +179,7 @@ public class MiniGoodsAgent {
      * @param writer
      * @param goodsId
      */
-    /*@RequestMapping(value = "/desc", method = RequestMethod.GET)
+    @RequestMapping(value = "/desc", method = RequestMethod.GET)
     public void miniGoodsDesc(Writer writer,
                              @RequestParam(value = "goodsId", required = true) String goodsId) {
         try {
@@ -193,5 +194,5 @@ public class MiniGoodsAgent {
         } catch (Exception e) {
             LOGGER.error("miniGoodsDesc Exception e:", e);
         }
-    }*/
+    }
 }
