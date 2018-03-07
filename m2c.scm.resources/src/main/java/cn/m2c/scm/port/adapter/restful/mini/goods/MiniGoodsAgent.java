@@ -1,13 +1,11 @@
 package cn.m2c.scm.port.adapter.restful.mini.goods;
 
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,8 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 import cn.m2c.common.JsonUtils;
 import cn.m2c.common.MCode;
 import cn.m2c.common.MResult;
-import cn.m2c.scm.application.comment.query.data.bean.GoodsCommentBean;
-import cn.m2c.scm.application.config.data.bean.ConfigBean;
 import cn.m2c.scm.application.config.query.ConfigQueryApplication;
 import cn.m2c.scm.application.goods.GoodsApplication;
 import cn.m2c.scm.application.goods.query.GoodsGuaranteeQueryApplication;
@@ -31,7 +27,6 @@ import cn.m2c.scm.application.goods.query.data.bean.GoodsBean;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsGuaranteeBean;
 import cn.m2c.scm.application.goods.query.data.representation.mini.MiniGoodsDetailRepresentation;
 import cn.m2c.scm.application.shop.query.ShopQuery;
-import cn.m2c.scm.application.special.data.bean.GoodsSpecialBean;
 import cn.m2c.scm.application.special.query.GoodsSpecialQueryApplication;
 import cn.m2c.scm.application.unit.query.UnitQuery;
 import cn.m2c.scm.domain.service.goods.GoodsService;
@@ -74,29 +69,21 @@ public class MiniGoodsAgent {
      * @param token
      * @param recognizedInfo
      * @param barNo
-     * @param location
-     * @param sn
-     * @param os
-     * @param appVersion
-     * @param osVersion
-     * @param triggerTime
-     * @param userId
-     * @param userName
      * @return
      */
     @RequestMapping(value = "/recognized", method = RequestMethod.GET)
     public ResponseEntity<MResult> miniRecognizedPic(
-            @RequestParam(value = "token", required = false) String token,
+            //@RequestParam(value = "token", required = false) String token,
             @RequestParam(value = "recognizedInfo", required = false) String recognizedInfo,
-            @RequestParam(value = "barNo", required = false) String barNo,
-            @RequestParam(value = "location", required = false) String location,
-            @RequestParam(value = "sn", required = false) String sn,
-            @RequestParam(value = "os", required = false) String os,
-            @RequestParam(value = "appVersion", required = false) String appVersion,
-            @RequestParam(value = "osVersion", required = false) String osVersion,
-            @RequestParam(value = "triggerTime", required = false) long triggerTime,
-            @RequestParam(value = "userId", required = false, defaultValue = "") String userId,
-            @RequestParam(value = "userName", required = false, defaultValue = "") String userName
+            @RequestParam(value = "barNo", required = false) String barNo
+            //@RequestParam(value = "location", required = false) String location,
+            //@RequestParam(value = "sn", required = false) String sn,
+            //@RequestParam(value = "os", required = false) String os,
+            //@RequestParam(value = "appVersion", required = false) String appVersion,
+            //@RequestParam(value = "osVersion", required = false) String osVersion,
+            //@RequestParam(value = "triggerTime", required = false) long triggerTime,
+            //@RequestParam(value = "userId", required = false, defaultValue = "") String userId,
+            //@RequestParam(value = "userName", required = false, defaultValue = "") String userName
     ) {
         MResult result = new MResult(MCode.V_1);
         Map mediaMap = goodsDubboService.getMediaResourceInfo(barNo);
@@ -106,7 +93,13 @@ public class MiniGoodsAgent {
         String mresName = null == mediaMap ? "" : (String) mediaMap.get("mresName");
 
         try {
-            List<GoodsBean> goodsBeans = goodsQueryApplication.recognizedGoods(recognizedInfo, location);
+        	//List<GoodsBean> goodsBeans = goodsQueryApplication.recognizedGoods(recognizedInfo, null);
+        	List<String> recognizedIds = new ArrayList<>();
+        	//test
+        	recognizedIds.add("0da1b03489aa70b1161bbd8cb8561943");
+        	//local
+        	//recognizedIds.add("860c52d06a15e4c12753114fcd5dccb1");
+        	List<GoodsBean> goodsBeans = goodsQueryApplication.queryGoodsByRecognizedIds(recognizedIds);
             if (null != goodsBeans && goodsBeans.size() > 0) {
                 List<MiniGoodsDetailRepresentation> representations = new ArrayList<>();
                 for (GoodsBean goodsBean : goodsBeans) {
@@ -165,11 +158,11 @@ public class MiniGoodsAgent {
                 }
                 result.setContent(representations);
 
-                // 埋点
-                goodsApplication.goodsAppCapturedMD(sn, os, appVersion,
+                // 埋点 ,2：小程序
+                /*goodsApplication.goodsAppCapturedMD(sn, os, appVersion,
                         osVersion, triggerTime, userId, userName,
                         goodsBeans.get(0).getGoodsId(), goodsBeans.get(0).getGoodsName(), mediaId, mediaName,
-                        mresId, mresName);
+                        mresId, mresName, 2);*/
             }
             result.setStatus(MCode.V_200);
         } catch (Exception e) {

@@ -1136,7 +1136,7 @@ public class OrderQuery {
     }
 
     /***
-     * 获取用户之前下过的单数
+     * 获取用户之前下过的已支付的单数
      *
      * @param mainOrderId
      * @return
@@ -1151,7 +1151,7 @@ public class OrderQuery {
             List<Object> params = new ArrayList<Object>();
             StringBuilder sql = new StringBuilder();
             sql.append(" SELECT count(1) FROM t_scm_order_main m");
-            sql.append(" WHERE m.user_id = ? and m.order_id <> ?");
+            sql.append(" WHERE m.user_id = ? and m.order_id <> ? and m._status > 0");
             params.add(userId);
             params.add(mainOrderId);
             count = supportJdbcTemplate.jdbcTemplate().queryForObject(sql.toString(), Integer.class, params.toArray());

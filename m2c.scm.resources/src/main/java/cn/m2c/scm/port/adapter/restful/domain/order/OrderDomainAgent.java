@@ -88,7 +88,7 @@ public class OrderDomainAgent {
     }
 
 	/**
-	 * 获取在某个用户下过的订单数
+	 * 获取在某个用户下过的已支付的订单数
 	 */
 	@RequestMapping(value="/get/user/before/num", method = RequestMethod.GET)
 	public ResponseEntity<MResult> getOrdersByUserId(@RequestParam(value="mainOrderId", required=false) String mainOrderId){

@@ -26,6 +26,7 @@ public class GoodsAppCapturedMDEvent extends AssertionConcern implements DomainE
     private Date currentTime;
     private Date occurredOn;
     private int eventVersion;
+    //private Integer source;  //来源(1：app , 2：小程序)
 
 
     public GoodsAppCapturedMDEvent() {
