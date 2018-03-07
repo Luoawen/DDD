@@ -1,5 +1,6 @@
 package cn.m2c.scm.application.goods.query.data.representation.mini;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -42,9 +43,8 @@ public class MiniGoodsDetailRepresentation {
     private String goodsDescUrl;
     private Integer skuFlag;
     private String desc;
-    private String customerTel;
-    
     //private Map goodsSpecial;
+    //private String customerTel;
     //private Map goodsComment;
     //private List<Map> fullCuts;
     //private String favoriteId;
@@ -59,7 +59,7 @@ public class MiniGoodsDetailRepresentation {
     */
     
     public MiniGoodsDetailRepresentation(GoodsBean bean, List<GoodsGuaranteeBean> goodsGuaranteeBeans,
-                                        String goodsUnitName, String mresId, String phone) {
+                                        String goodsUnitName, String mresId, GoodsSpecialBean goodsSpecialBean) {
         //this.photographGetCoupon = photographGetCoupon;
         this.skuFlag = bean.getSkuFlag();
         this.dealerId = bean.getDealerId();
@@ -101,7 +101,7 @@ public class MiniGoodsDetailRepresentation {
 
 
         this.desc = bean.getGoodsDesc();
-        this.customerTel = phone;
+        //this.customerTel = phone;
         
         /*if (null == this.goodsComment) {
             this.goodsComment = new HashMap<>();
@@ -135,29 +135,29 @@ public class MiniGoodsDetailRepresentation {
         */
 
         // 特惠价
-        /*if (null != goodsSpecialBean) {
-            this.goodsSpecial = new HashMap<>();
-            SimpleDateFormat df = new SimpleDateFormat("yyyy.MM.dd");
-            this.goodsSpecial.put("specialIcon", goodsSpecialBean.getSpecialIcon()); // 特惠价角标
-            this.goodsSpecial.put("specialId", goodsSpecialBean.getSpecialId());
-            this.goodsSpecial.put("startTime", df.format(goodsSpecialBean.getStartTime()));
-            this.goodsSpecial.put("endTime", df.format(goodsSpecialBean.getEndTime()));
-            this.goodsSpecial.put("congratulations", goodsSpecialBean.getCongratulations());
-            this.goodsSpecial.put("activityDescription", goodsSpecialBean.getActivityDescription());
+        if (null != goodsSpecialBean) {
+            //this.goodsSpecial = new HashMap<>();
+            //SimpleDateFormat df = new SimpleDateFormat("yyyy.MM.dd");
+            //this.goodsSpecial.put("specialIcon", goodsSpecialBean.getSpecialIcon()); // 特惠价角标
+            //this.goodsSpecial.put("specialId", goodsSpecialBean.getSpecialId());
+            //this.goodsSpecial.put("startTime", df.format(goodsSpecialBean.getStartTime()));
+            //this.goodsSpecial.put("endTime", df.format(goodsSpecialBean.getEndTime()));
+            //this.goodsSpecial.put("congratulations", goodsSpecialBean.getCongratulations());
+            //this.goodsSpecial.put("activityDescription", goodsSpecialBean.getActivityDescription());
             if (null != this.goodsSKUs && this.goodsSKUs.size() > 0) {
                 List<GoodsSkuSpecialBean> skuSpecials = goodsSpecialBean.getGoodsSpecialSkuBeans();
-                for (AppGoodsSkuRepresentation sku : this.goodsSKUs) {
+                for (MiniGoodsSkuRepresentation sku : this.goodsSKUs) {
                     if (null != skuSpecials && skuSpecials.size() > 0) {
                         for (GoodsSkuSpecialBean skuSpecialBean : skuSpecials) {
                             if (skuSpecialBean.getSkuId().equals(sku.getSkuId())) {
-                                sku.setSpecialPrice(skuSpecialBean.getSpecialPrice() / 100);
+                                //sku.setSpecialPrice(skuSpecialBean.getSpecialPrice() / 100);
                                 sku.setStrSpecialPrice(Utils.moneyFormatCN(skuSpecialBean.getSpecialPrice()));
                             }
                         }
                     }
                 }
             }
-        }*/
+        }
     }
 
     public String getGoodsName() {
@@ -296,14 +296,6 @@ public class MiniGoodsDetailRepresentation {
         this.dealerName = dealerName;
     }
 
-    public String getCustomerTel() {
-        return customerTel;
-    }
-
-    public void setCustomerTel(String customerTel) {
-        this.customerTel = customerTel;
-    }
-
 	public String getGoodsMainVideo() {
 		return goodsMainVideo;
 	}
@@ -318,6 +310,14 @@ public class MiniGoodsDetailRepresentation {
 
     public void setGoodsSpecial(Map goodsSpecial) {
         this.goodsSpecial = goodsSpecial;
+    }
+    
+    public String getCustomerTel() {
+        return customerTel;
+    }
+
+    public void setCustomerTel(String customerTel) {
+        this.customerTel = customerTel;
     }
     
     public Map getPhotographGetCoupon() {

@@ -1,5 +1,6 @@
 package cn.m2c.scm.port.adapter.restful.mini.goods;
 
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -16,9 +17,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import cn.jiguang.common.utils.StringUtils;
 import cn.m2c.common.JsonUtils;
 import cn.m2c.common.MCode;
 import cn.m2c.common.MResult;
+import cn.m2c.scm.application.config.data.bean.ConfigBean;
 import cn.m2c.scm.application.config.query.ConfigQueryApplication;
 import cn.m2c.scm.application.goods.GoodsApplication;
 import cn.m2c.scm.application.goods.query.GoodsGuaranteeQueryApplication;
@@ -27,6 +30,7 @@ import cn.m2c.scm.application.goods.query.data.bean.GoodsBean;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsGuaranteeBean;
 import cn.m2c.scm.application.goods.query.data.representation.mini.MiniGoodsDetailRepresentation;
 import cn.m2c.scm.application.shop.query.ShopQuery;
+import cn.m2c.scm.application.special.data.bean.GoodsSpecialBean;
 import cn.m2c.scm.application.special.query.GoodsSpecialQueryApplication;
 import cn.m2c.scm.application.unit.query.UnitQuery;
 import cn.m2c.scm.domain.service.goods.GoodsService;
@@ -93,13 +97,18 @@ public class MiniGoodsAgent {
         String mresName = null == mediaMap ? "" : (String) mediaMap.get("mresName");
 
         try {
-        	//List<GoodsBean> goodsBeans = goodsQueryApplication.recognizedGoods(recognizedInfo, null);
-        	List<String> recognizedIds = new ArrayList<>();
-        	//test
-        	recognizedIds.add("0da1b03489aa70b1161bbd8cb8561943");
-        	//local
-        	//recognizedIds.add("860c52d06a15e4c12753114fcd5dccb1");
-        	List<GoodsBean> goodsBeans = goodsQueryApplication.queryGoodsByRecognizedIds(recognizedIds);
+        	List<GoodsBean> goodsBeans = null;
+        	if(StringUtils.isNotEmpty(recognizedInfo)) {
+        		//根据识别图id查询商品
+        		goodsBeans = goodsQueryApplication.recognizedGoods(recognizedInfo, null);
+        	} else {
+        		//调试微信小程序商品
+            	List<String> recognizedIds = new ArrayList<>();
+            	//test
+            	recognizedIds.add("044aa39f65d42a5b57c20f74ca6ea6fc");
+            	//recognizedIds.add("0da1b03489aa70b1161bbd8cb8561943");
+            	goodsBeans = goodsQueryApplication.queryGoodsByRecognizedIds(recognizedIds);
+        	}
             if (null != goodsBeans && goodsBeans.size() > 0) {
                 List<MiniGoodsDetailRepresentation> representations = new ArrayList<>();
                 for (GoodsBean goodsBean : goodsBeans) {
@@ -107,10 +116,18 @@ public class MiniGoodsAgent {
                     String goodsUnitName = unitQuery.getUnitNameByUnitId(goodsBean.getGoodsUnitId());
 
                     // 商家客服电话
-                    String phone = shopQuery.getDealerShopCustmerTel(goodsBean.getDealerId());
+                    //String phone = shopQuery.getDealerShopCustmerTel(goodsBean.getDealerId());
+                    
+                    // 拍获进来，特惠价/优惠券
+                    GoodsSpecialBean goodsSpecialBean = null;
+                    //Map photographGetCoupon = null;
+                    if (null != mediaMap && mediaMap.size() > 0) {
+                        //商品有无媒体信息,有媒体信息则返回特惠价
+                        goodsSpecialBean = goodsSpecialQueryApplication.queryGoodsSpecialByGoodsId(goodsBean.getGoodsId());
+                    }
                     
                     MiniGoodsDetailRepresentation representation = new MiniGoodsDetailRepresentation(goodsBean,
-                            goodsGuarantee, goodsUnitName, mresId, phone);
+                            goodsGuarantee, goodsUnitName, mresId, goodsSpecialBean);
                     
                     representations.add(representation);
                     
@@ -178,7 +195,7 @@ public class MiniGoodsAgent {
      * @param writer
      * @param goodsId
      */
-    /*@RequestMapping(value = "/desc", method = RequestMethod.GET)
+    @RequestMapping(value = "/desc", method = RequestMethod.GET)
     public void miniGoodsDesc(Writer writer,
                              @RequestParam(value = "goodsId", required = true) String goodsId) {
         try {
@@ -193,5 +210,5 @@ public class MiniGoodsAgent {
         } catch (Exception e) {
             LOGGER.error("miniGoodsDesc Exception e:", e);
         }
-    }*/
+    }
 }

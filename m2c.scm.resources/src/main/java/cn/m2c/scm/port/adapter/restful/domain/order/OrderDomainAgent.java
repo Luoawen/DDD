@@ -134,7 +134,7 @@ public class OrderDomainAgent {
     	}catch (Exception e) {
     		LOGGER.error("获取多个商家订单的金额列表失败,e:" + e.getMessage());
 			result.setStatus(MCode.V_400);
-			result.setContent("获取多个商家订单金额列表失败");
+			result.setErrorMessage("获取多个商家订单金额列表失败");
     	}
     	return new ResponseEntity<MResult>(result, HttpStatus.OK);
     }
@@ -172,7 +172,7 @@ public class OrderDomainAgent {
     	} catch (Exception e) {
     		LOGGER.error("售后退款成功调用失败,e:" + e.getMessage());
 			result.setStatus(MCode.V_400);
-			result.setContent("售后退款成功调用失败");
+			result.setErrorMessage("售后退款成功调用失败");
     	}
     	return new ResponseEntity<MResult>(result, HttpStatus.OK);
     }

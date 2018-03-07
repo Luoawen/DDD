@@ -31,7 +31,7 @@ public class MiniGoodsSkuRepresentation {
     //private Long specialPrice;    
     
     /**新增字段，特惠价/10000*/
-    //private String strSpecialPrice;
+    private String strSpecialPrice;
 
     public MiniGoodsSkuRepresentation(GoodsSkuBean bean) {
         this.skuId = bean.getSkuId();
@@ -90,6 +90,14 @@ public class MiniGoodsSkuRepresentation {
     public void setStrMarketPrice(String strMarketPrice) {
         this.strMarketPrice = strMarketPrice;
     }
+
+    public String getStrSpecialPrice() {
+        return strSpecialPrice;
+    }
+
+    public void setStrSpecialPrice(String strSpecialPrice) {
+        this.strSpecialPrice = strSpecialPrice;
+    }
     
     /*public Long getPhotographPrice() {
         return photographPrice;
@@ -105,13 +113,6 @@ public class MiniGoodsSkuRepresentation {
 
     public void setSpecialPrice(Long specialPrice) {
         this.specialPrice = specialPrice;
-    }
-     
-    public String getStrSpecialPrice() {
-        return strSpecialPrice;
-    }
-
-    public void setStrSpecialPrice(String strSpecialPrice) {
-        this.strSpecialPrice = strSpecialPrice;
     }*/
+    
 }
