@@ -87,7 +87,7 @@ public class DealerOrder extends ConcurrencySafeEntity {
     private Long couponDiscount = 0l;
 
     public Long getDealerOrderMoney() {
-        return this.goodsAmount + this.orderFreight - this.plateformDiscount - this.dealerDiscount;
+        return this.goodsAmount + this.orderFreight - this.plateformDiscount - this.dealerDiscount - this.couponDiscount;
     }
 
     /***
