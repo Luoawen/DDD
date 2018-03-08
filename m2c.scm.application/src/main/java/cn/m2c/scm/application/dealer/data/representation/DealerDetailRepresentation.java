@@ -55,6 +55,7 @@ public class DealerDetailRepresentation {
 		
 		 private Integer isPayDeposit;
 		 private Long deposit;
+		 private String strDeposit;
 		private String managerName;//商家负责人姓名
 		private String managerPhone;//商家负责人手机
 		private String managerqq;//商家负责人qq
@@ -97,12 +98,20 @@ public class DealerDetailRepresentation {
 			this.endSignDate = model.getEndSignDate();
 			this.isPayDeposit = model.getIsPayDeposit();
 			this.deposit = model.getDeposit();
+			this.strDeposit = model.getStrDeposit();
 		}
 		public String getDealerName() {
 			return dealerName;
 		}
 		public void setDealerName(String dealerName) {
 			this.dealerName = dealerName;
+		}
+		
+		public String getStrDeposit() {
+			return strDeposit;
+		}
+		public void setStrDeposit(String strDeposit) {
+			this.strDeposit = strDeposit;
 		}
 		public String getDealerId() {
 			return dealerId;
