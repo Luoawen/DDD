@@ -20,6 +20,8 @@ public class AddOrderRepresentation {
 	private long plateformDiscount;
 	
 	private long dealerDiscount;
+	
+	private long couponDiscount;
 
 	public AddOrderRepresentation() {
 		
@@ -33,6 +35,7 @@ public class AddOrderRepresentation {
 		this.freight = bean.getFreight();
 		this.plateformDiscount = bean.getPlateformDiscount();
 		this.dealerDiscount = bean.getDealerDiscount();
+		couponDiscount = bean.getCouponDiscount();
 	}
 	
 	public String getOrderId() {
@@ -73,5 +76,9 @@ public class AddOrderRepresentation {
 
 	public void setDealerDiscount(int dealerDiscount) {
 		this.dealerDiscount = dealerDiscount;
+	}
+	
+	public String getStrCouponDiscount() {
+		return Utils.moneyFormatCN(couponDiscount);
 	}
 }

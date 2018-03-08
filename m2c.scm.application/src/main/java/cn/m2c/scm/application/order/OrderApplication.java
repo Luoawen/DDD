@@ -10,6 +10,7 @@ import cn.m2c.scm.application.goods.query.GoodsQueryApplication;
 import cn.m2c.scm.application.order.command.CancelOrderCmd;
 import cn.m2c.scm.application.order.command.ConfirmSkuCmd;
 import cn.m2c.scm.application.order.command.OrderAddCommand;
+import cn.m2c.scm.application.order.command.OrderPayableCommand;
 import cn.m2c.scm.application.order.command.OrderPayedCmd;
 import cn.m2c.scm.application.order.command.PayOrderCmd;
 import cn.m2c.scm.application.order.command.SendOrderSMSCommand;
@@ -279,7 +280,7 @@ public class OrderApplication {
         	LOGGER.info("===fanjc==save appinfo error." + e.getMessage());
         }
         
-        return new OrderResult(cmd.getOrderId(), goodsAmounts, freight, plateDiscount, dealerDiscount);
+        return new OrderResult(cmd.getOrderId(), goodsAmounts, freight, plateDiscount, dealerDiscount, couponDiscount);
     }
 
     /**
@@ -436,7 +437,7 @@ public class OrderApplication {
         	LOGGER.info("===fanjc==save appinfo error." + e.getMessage());
         }
         
-        return new OrderResult(cmd.getOrderId(), goodsAmounts, freight, plateDiscount, dealerDiscount);
+        return new OrderResult(cmd.getOrderId(), goodsAmounts, freight, plateDiscount, dealerDiscount, couponDiscount);
     }
 
     /**
@@ -815,7 +816,8 @@ public class OrderApplication {
         
         while(it.hasNext()) {
         	List<GoodsDto> ls = map.get(it.next());
-	        List<String> goodsIds = new ArrayList<String>();
+        	calFreight(ls, cityCode, skus);
+	        /*List<String> goodsIds = new ArrayList<String>();
 	        
 	        int sumNum = 0;
 	        float sumWeight = 0;
@@ -832,14 +834,6 @@ public class OrderApplication {
 	        		sumWeight = 0;
 	        	}
 	        	
-	        	//String skuId = bean.getSkuId();
-	        	//Integer nm = skus.get(skuId);
-	            //bean.setPurNum(nm);
-	        	
-	            /*bean.setMarketingId(gdb.getMarketId());
-	            bean.setMarketLevel(gdb.getLevel());
-	            bean.setIsChange(gdb.getIsChange());*/
-	            
 	            sumNum += bean.getPurNum();
 	            sumWeight += bean.getPurNum() * bean.getWeight();
 	            fBean.setNums(sumNum);
@@ -852,7 +846,46 @@ public class OrderApplication {
 	        while(goodsIt.hasNext()) {
 	        	String goodsId = goodsIt.next();
 	            calFrt(calMap.get(goodsId), postMap.get(goodsId));
-	        }
+	        }*/
+        }
+    }
+    
+    /***
+     * 计算运费 按商家单来计算
+     * @param map 拆分后的商家订货单
+     * @param cityCode 城市code
+     * @param skus 带营销相关的东东
+     */
+    private void calFreight(List<GoodsDto> list, String cityCode, Map<String, Integer> skus) throws NegativeException {
+        LOGGER.info("==fanjc==计算运费_inner.");
+        List<String> goodsIds = new ArrayList<String>();
+        int sumNum = 0;
+        float sumWeight = 0;
+        Map<String, FreightCalBean> calMap = new HashMap<String, FreightCalBean>();// 按商品ID分
+        FreightCalBean fBean = null;
+        for (GoodsDto bean : list) {
+        	String id = bean.getGoodsId();
+        	if (!goodsIds.contains(id)) { // 商品id合并
+        		goodsIds.add(id);
+        		fBean = new FreightCalBean();
+        		fBean.setBean(bean);
+        		calMap.put(id, fBean);
+        		sumNum = 0;
+        		sumWeight = 0;
+        	}
+        	
+            sumNum += bean.getPurNum();
+            sumWeight += bean.getPurNum() * bean.getWeight();
+            fBean.setNums(sumNum);
+            fBean.setWeight(sumWeight);
+        }
+
+        Map<String, PostageModelRuleRepresentation> postMap = postApp.getGoodsPostageRuleByGoodsId(goodsIds, cityCode);
+        
+        Iterator<String> goodsIt = calMap.keySet().iterator();
+        while(goodsIt.hasNext()) {
+        	String goodsId = goodsIt.next();
+            calFrt(calMap.get(goodsId), postMap.get(goodsId));
         }
     }
 
@@ -937,6 +970,40 @@ public class OrderApplication {
         }
     }
 
+    /***
+     * 计算商品金额
+     * @return
+     */
+    public OrderResult calcOrderPayable(OrderPayableCommand cmd) throws NegativeException {
+    	List<GoodsDto> gdes = cmd.getGoodses();
+        /**skuId与数量的键值对, 用于锁定库存*/
+        Map<String, Integer> skus = new HashMap<String, Integer>();
+    	int sz = gdes.size();
+        for (int i = 0; i < sz; i++) {
+        	GoodsDto o = gdes.get(i);
+            String sku = o.getSkuId();
+            int pnum = o.getPurNum();
+            Integer oNum = skus.get(sku);
+            if (oNum == null) {
+            	skus.put(sku, pnum);
+            }
+            else
+            	skus.put(sku, oNum + pnum);
+        }
+    	// 获取商品详情
+        List<GoodsDto> goodDtls = gQueryApp.getGoodsDtl(skus.keySet());
+        
+        calFreight(goodDtls, cmd.getCityCode(), skus);
+        
+        long goodsAmounts = 0, freight = 0, plateDiscount = 0, dealerDiscount = 0, couponDiscount = 0;
+        for (GoodsDto dto : goodDtls) {
+        	goodsAmounts += dto.getDiscountPrice() * dto.getPurNum();
+        	freight += dto.getFreight();
+        	plateDiscount += dto.getPlateformDiscount();
+        	couponDiscount += dto.getCouponDiscount();
+        }
+    	return new OrderResult("", goodsAmounts, freight, plateDiscount, dealerDiscount, couponDiscount);
+    }
     /***
      * 获取商家结算方式
      *

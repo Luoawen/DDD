@@ -13,6 +13,7 @@ import cn.m2c.scm.application.order.command.ConfirmSkuCmd;
 import cn.m2c.scm.application.order.command.ExpressInfoBean;
 import cn.m2c.scm.application.order.command.GetOrderCmd;
 import cn.m2c.scm.application.order.command.OrderAddCommand;
+import cn.m2c.scm.application.order.command.OrderPayableCommand;
 import cn.m2c.scm.application.order.command.SaleAfterCmd;
 import cn.m2c.scm.application.order.command.SaleAfterShipCmd;
 import cn.m2c.scm.application.order.data.bean.AfterSellApplyReason;
@@ -722,5 +723,46 @@ public class MiniOrderAgent {
             result = new MPager(MCode.V_400, e.getMessage());
         }
         return new ResponseEntity<MPager>(result, HttpStatus.OK);
+    }
+    
+    /**
+     * 计算传过来的商品应付金额
+     * @param goodsId 商品ID
+     * @param userId userId
+     * @param cityCode 城市编号
+     * @param skuId skuId
+     * @param num 购买数量
+     * @return
+     */
+    @RequestMapping(value = "/calc/payable", method = RequestMethod.GET)
+    public ResponseEntity<MResult> getGoodsMoney(
+            @RequestParam(value = "goodses", required = false) String goodses
+            ,@RequestParam(value = "userId", required = false) String userId
+            ,@RequestParam(value = "cityCode", required = false) String cityCode
+    		) {
+    	LOGGER.info("goodses:" + goodses + " ; cityCode:"+cityCode);
+    	MResult result = new MResult(MCode.V_1);
+        try {
+        	OrderPayableCommand cmd = new OrderPayableCommand(cityCode, userId, goodses);
+        	OrderResult addResult = orderApp.calcOrderPayable(cmd);
+            result.setContent(new AddOrderRepresentation(addResult));
+            result.setStatus(MCode.V_200);
+        } 
+        catch (NegativeException e) {
+        	int st = e.getStatus();
+        	if (st == MCode.V_100 || st == MCode.V_105) {
+        		result.setStatus(e.getStatus());
+        		result.setContent(e.getMessage());
+        	}
+        	else {
+        		result.setStatus(e.getStatus());
+        		result.setErrorMessage(e.getMessage());
+        	}
+        }
+        catch (Exception e) {
+            LOGGER.error("order add Exception e:", e);
+            result = new MResult(MCode.V_400, e.getMessage());
+        }
+        return new ResponseEntity<MResult>(result, HttpStatus.OK);
     }
 }
