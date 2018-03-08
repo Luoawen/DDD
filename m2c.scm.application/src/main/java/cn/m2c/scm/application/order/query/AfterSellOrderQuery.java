@@ -230,8 +230,8 @@ public class AfterSellOrderQuery {
 		}
 		if (StringUtils.isNotEmpty(endTime) && StringUtils.isNotEmpty(endTime)) {
 			sql.append(" AND after.created_date BETWEEN ? AND ? ");
-			params.add(startTime  + "00:00:00");
-			params.add(endTime + "23:59:59");
+			params.add(startTime + " 00:00:00");
+			params.add(endTime + " 23:59:59");
 		}
 		if (null != dealerClassify && "".equals(dealerClassify)) {
 			sql.append(" AND dealer.dealer_classify = ? ");
