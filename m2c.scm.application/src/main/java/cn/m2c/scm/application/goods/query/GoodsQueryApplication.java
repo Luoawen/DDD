@@ -133,8 +133,8 @@ public class GoodsQueryApplication {
 
         if (StringUtils.isNotEmpty(startTime) && StringUtils.isNotEmpty(endTime)) {
             sql.append(" AND g.created_date BETWEEN ? AND ?");
-            params.add(startTime);
-            params.add(endTime);
+            params.add(startTime + " 00:00:00");
+            params.add(endTime+ " 23:59:59");
         }
         if (null != delStatus && delStatus == 2) {
             sql.append(" AND g.del_status= 2");
@@ -210,8 +210,8 @@ public class GoodsQueryApplication {
 
         if (StringUtils.isNotEmpty(startTime) && StringUtils.isNotEmpty(endTime)) {
             sql.append(" AND g.created_date BETWEEN ? AND ?");
-            params.add(startTime);
-            params.add(endTime);
+            params.add(startTime + " 00:00:00");
+            params.add(endTime+ " 23:59:59");
         }
         if (null != delStatus && delStatus == 2) {
             sql.append(" AND g.del_status= 2");
