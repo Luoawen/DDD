@@ -36,7 +36,6 @@ public class DealerBean {
 	 private Long deposit;
 
 	 
-	 
 	 @ColumnAlias(value = "dealer_province")
 	 private String dealerProvince;
 	 
