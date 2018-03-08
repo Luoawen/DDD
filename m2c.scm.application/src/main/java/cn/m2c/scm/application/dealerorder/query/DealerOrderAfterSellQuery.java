@@ -392,7 +392,7 @@ public class DealerOrderAfterSellQuery {
 			params.add(condition);
 		}
 		if (!StringUtils.isEmpty(startTime) && !StringUtils.isEmpty(endTime)) {
-			sql.append(" AND dealer.created_date BETWEEN ? AND ? ");
+			sql.append(" AND a.created_date BETWEEN ? AND ? ");
 			params.add(startTime + " 00:00:00");
 			params.add(endTime + " 23:59:59");
 		}
