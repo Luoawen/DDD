@@ -6,6 +6,7 @@ import org.springframework.util.StringUtils;
 
 import cn.m2c.common.MCode;
 import cn.m2c.ddd.common.AssertionConcern;
+import cn.m2c.scm.application.utils.Utils;
 import cn.m2c.scm.domain.NegativeException;
 
 public class DealerAddOrUpdateCommand extends AssertionConcern implements Serializable{
@@ -54,7 +55,7 @@ public class DealerAddOrUpdateCommand extends AssertionConcern implements Serial
 			String startSignDate, String endSignDate, String dealerProvince,
 			String dealerCity, String dealerArea, String dealerPcode,
 			String dealerCcode, String dealerAcode, String dealerDetailAddress,
-			Integer countMode, Long deposit, Integer isPayDeposit,
+			Integer countMode, String deposit, Integer isPayDeposit,
 			String managerName, String managerPhone, String managerqq,
 			String managerWechat, String managerEmail,
 			String managerDepartment, String sellerId, String sellerName,
@@ -84,13 +85,12 @@ public class DealerAddOrUpdateCommand extends AssertionConcern implements Serial
 			throw new NegativeException(400,"请选择区信息");
 		}
 		
+		if(!StringUtils.isEmpty(deposit)){
+			this.deposit = (long) (Utils.DIVIDE * Double.parseDouble(deposit));
+		}
 		
 		if (null == countMode) {
 			throw new NegativeException(MCode.V_1,"请选择结算方式");
-		}
-		
-		if(deposit>100000000){
-			throw new NegativeException(MCode.V_1,"押金超出范围");
 		}
 		
 		assertArgumentNotNull(sellerId, "请选择业务员");
@@ -112,7 +112,7 @@ public class DealerAddOrUpdateCommand extends AssertionConcern implements Serial
 		this.dealerAcode = dealerAcode;
 		this.dealerDetailAddress = dealerDetailAddress;
 		this.countMode = countMode;
-		this.deposit = deposit;
+		this.deposit = (long) (Utils.DIVIDE * Double.parseDouble(deposit));
 		this.isPayDeposit = isPayDeposit;
 		this.managerName = managerName;
 		this.managerPhone = managerPhone;
@@ -134,6 +134,11 @@ public class DealerAddOrUpdateCommand extends AssertionConcern implements Serial
 	public String getUserId() {
 		return userId;
 	}
+
+	public Long getDeposit() {
+		return deposit;
+	}
+	
 
 	public String getDealerName() {
 		return dealerName;
@@ -189,9 +194,6 @@ public class DealerAddOrUpdateCommand extends AssertionConcern implements Serial
 		return countMode;
 	}
 
-	public Long getDeposit() {
-		return deposit;
-	}
 
 	public Integer getIsPayDeposit() {
 		return isPayDeposit;
@@ -242,23 +244,4 @@ public class DealerAddOrUpdateCommand extends AssertionConcern implements Serial
 		return sellerPhone;
 	}
 
-	@Override
-	public String toString() {
-		return "DealerAddOrUpdateCommand [dealerId=" + dealerId + ", userId="
-				+ userId + ", dealerName=" + dealerName + ", dealerClassify="
-				+ dealerClassify + ", cooperationMode=" + cooperationMode
-				+ ", startSignDate=" + startSignDate + ", endSignDate="
-				+ endSignDate + ", dealerProvince=" + dealerProvince
-				+ ", dealerCity=" + dealerCity + ", dealerArea=" + dealerArea
-				+ ", dealerPcode=" + dealerPcode + ", dealerCcode="
-				+ dealerCcode + ", dealerAcode=" + dealerAcode
-				+ ", dealerDetailAddress=" + dealerDetailAddress
-				+ ", countMode=" + countMode + ", deposit=" + deposit
-				+ ", isPayDeposit=" + isPayDeposit + ", managerName="
-				+ managerName + ", managerPhone=" + managerPhone
-				+ ", managerqq=" + managerqq + ", managerWechat="
-				+ managerWechat + ", managerEmail=" + managerEmail
-				+ ", managerDepartment=" + managerDepartment + ", sellerId="
-				+ sellerId + "]";
-	}
 }

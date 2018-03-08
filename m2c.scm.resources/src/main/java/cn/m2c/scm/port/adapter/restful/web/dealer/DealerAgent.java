@@ -116,7 +116,7 @@ public class DealerAgent {
 			@RequestParam(value="dealerAcode",defaultValue="")String dealerAcode,
 			@RequestParam(value="dealerDetailAddress",required=false,defaultValue="")String dealerDetailAddress,
 			@RequestParam(value="countMode",required=false)Integer countMode,
-			@RequestParam(value="deposit",required=false,defaultValue="0")Long deposit,
+			@RequestParam(value="deposit",required=false)String deposit,
 			@RequestParam(value="isPayDeposit",required=true,defaultValue="0")Integer isPayDeposit,
 			@RequestParam(value="managerName",required=false)String managerName,
 			@RequestParam(value="managerPhone",required=false)String managerPhone,
@@ -194,7 +194,7 @@ public class DealerAgent {
 			@RequestParam(value="dealerAcode",defaultValue="")String dealerAcode,
 			@RequestParam(value="dealerDetailAddress",required=false,defaultValue="")String dealerDetailAddress,
 			@RequestParam(value="countMode",required=true)Integer countMode,
-			@RequestParam(value="deposit",required=false,defaultValue="0")Long deposit,
+			@RequestParam(value="deposit",required=false)String deposit,
 			@RequestParam(value="isPayDeposit",required=true)Integer isPayDeposit,
 			@RequestParam(value="managerName",required=false)String managerName,
 			@RequestParam(value="managerPhone",required=false)String managerPhone,
@@ -211,6 +211,9 @@ public class DealerAgent {
 				String _attach= request.getHeader("attach");
 				application.updateDealer(command,_attach);
 				result.setStatus(MCode.V_200);
+			}catch(NumberFormatException na ){
+				log.error("输入押金参数不合法", na);
+				result = new MResult(MCode.V_1, "输入押金参数不合法");
 			}catch (IllegalArgumentException e) {
 				log.error("修改经销商出错", e);
 				result = new MResult(MCode.V_1, e.getMessage());
