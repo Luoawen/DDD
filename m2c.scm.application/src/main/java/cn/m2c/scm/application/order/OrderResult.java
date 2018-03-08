@@ -19,18 +19,21 @@ public class OrderResult {
 	private long plateformDiscount;
 	
 	private long dealerDiscount;
+	
+	private long couponDiscount = 0;
 
 	public OrderResult() {
 		
 	}
 	
 	public OrderResult(String orderNo, long goodsMoney, 
-			long freight, long plateformDiscount, long dealerDiscount) {
+			long freight, long plateformDiscount, long dealerDiscount, long couponDiscount) {
 		orderId = orderNo;
 		this.goodsMoney = goodsMoney;
 		this.freight = freight;
 		this.plateformDiscount = plateformDiscount;
 		this.dealerDiscount = dealerDiscount;
+		this.couponDiscount = couponDiscount;
 	}
 	
 	public String getOrderId() {
@@ -87,5 +90,13 @@ public class OrderResult {
 
 	public void setDealerDiscount(int dealerDiscount) {
 		this.dealerDiscount = dealerDiscount;
+	}
+	
+	public long getCouponDiscount() {
+		return couponDiscount;
+	}
+	
+	public String getStrCouponDiscount() {
+		return Utils.moneyFormatCN(couponDiscount);
 	}
 }
