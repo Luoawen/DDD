@@ -89,6 +89,10 @@ public class DealerAddOrUpdateCommand extends AssertionConcern implements Serial
 			throw new NegativeException(MCode.V_1,"请选择结算方式");
 		}
 		
+		if(deposit>100000000){
+			throw new NegativeException(MCode.V_1,"押金超出范围");
+		}
+		
 		assertArgumentNotNull(sellerId, "请选择业务员");
 		
 		this.dealerId = dealerId;
