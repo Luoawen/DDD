@@ -2,6 +2,7 @@ package cn.m2c.scm.application.goods.query.data.representation;
 
 import cn.m2c.common.JsonUtils;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsBean;
+import cn.m2c.scm.application.utils.Utils;
 
 import java.util.List;
 
@@ -15,6 +16,7 @@ public class GoodsSimpleDetailRepresentation {
     private String goodsSubTitle;
     private String goodsId;
     private Long goodsPrice;
+    private String strGoodsPrice;
     private String goodsImageUrl;
     private String goodsClassifyId;
     private String goodsClassifyName;
@@ -34,6 +36,7 @@ public class GoodsSimpleDetailRepresentation {
         }
         if (null != bean.getGoodsSkuBeans() && bean.getGoodsSkuBeans().size() > 0) {
             this.goodsPrice = bean.getGoodsSkuBeans().get(0).getPhotographPrice();
+            this.strGoodsPrice = Utils.moneyFormatCN(this.goodsPrice);
         }
     }
 
@@ -107,5 +110,13 @@ public class GoodsSimpleDetailRepresentation {
 
     public void setGoodsClassifyName(String goodsClassifyName) {
         this.goodsClassifyName = goodsClassifyName;
+    }
+
+    public String getStrGoodsPrice() {
+        return strGoodsPrice;
+    }
+
+    public void setStrGoodsPrice(String strGoodsPrice) {
+        this.strGoodsPrice = strGoodsPrice;
     }
 }
