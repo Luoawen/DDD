@@ -3,6 +3,7 @@ package cn.m2c.scm.application.dealer.data.bean;
 import java.util.Date;
 
 import cn.m2c.ddd.common.persistence.orm.ColumnAlias;
+import cn.m2c.scm.application.utils.Utils;
 
 public class DealerBean {
 
@@ -76,7 +77,8 @@ public class DealerBean {
 	@ColumnAlias(value = "seller_id")
 	private String sellerId;
 	
-
+	private String strDeposit;
+	
 	@ColumnAlias(value = "seller_name")
 	private String sellerName;
 	
@@ -340,7 +342,11 @@ public class DealerBean {
 	public void setShopName(String shopName) {
 		this.shopName = shopName;
 	}
-
 	
+	public String getStrDeposit() {
+		if (deposit == null)
+			deposit = 0l;
+		return Utils.moneyFormatCN(deposit);
+	}
 	
 }
