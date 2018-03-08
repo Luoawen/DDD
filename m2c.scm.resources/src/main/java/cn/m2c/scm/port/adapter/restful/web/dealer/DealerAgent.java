@@ -401,11 +401,11 @@ public class DealerAgent {
 		return new ResponseEntity<MResult>(result, HttpStatus.OK);
 	}
 
-	private long dealData(Long dealerDesposit) {
+	private String dealData(Long dealerDesposit) {
 		BigDecimal d1 = new BigDecimal(dealerDesposit);
 		BigDecimal d2 = new BigDecimal(10000);
 		BigDecimal d3 = d1.divide(d2);
-		return d3.longValue();
+		return d3.toString();
 	}
 
 }
