@@ -110,7 +110,7 @@ public class SellerQuery {
 	        	if(startTime !=null&&!"".equals(startTime)){
 					
 					sql.append(" AND sds.created_date>=?");
-					params.add(startTime);
+					params.add(startTime + " 00:00:00");
 				}
 				if(endTime!=null&&!"".equals(endTime)){
 					

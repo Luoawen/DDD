@@ -721,8 +721,8 @@ public class DealerOrderQuery {
         }
         if (!StringUtils.isEmpty(startTime) && !StringUtils.isEmpty(endTime)) {
             sql.append(" AND a.created_date BETWEEN ? AND ?\r\n");
-            params.add(startTime);
-            params.add(endTime);
+            params.add(startTime + " 00:00:00");
+            params.add(endTime + " 23:59:59");
         }
         sql.append(" ORDER BY a.dealer_order_id DESC, a.created_date DESC, afStatus DESC");
 
@@ -925,8 +925,8 @@ public class DealerOrderQuery {
 		
 		if (!StringUtils.isEmpty(startTime) && !StringUtils.isEmpty(endTime)) {
 			sql.append(" AND a.created_date BETWEEN ? AND ?\r\n");
-			params.add(startTime);
-			params.add(endTime);
+			params.add(startTime + " 00:00:00");
+			params.add(endTime + " 23:59:59");
 		}
 		
 		if (payWay != null && payWay > 0) {
