@@ -32,6 +32,7 @@ import cn.m2c.scm.application.dealer.data.representation.DealerRepresentation;
 import cn.m2c.scm.application.dealer.data.representation.DealerShopRepresentation;
 import cn.m2c.scm.application.dealer.query.DealerQuery;
 import cn.m2c.scm.application.dealerclassify.query.DealerClassifyQuery;
+import cn.m2c.scm.application.utils.Utils;
 import cn.m2c.scm.domain.IDGenerator;
 import cn.m2c.scm.domain.NegativeException;
 
@@ -403,7 +404,7 @@ public class DealerAgent {
 
 	private String dealData(Long dealerDesposit) {
 		BigDecimal d1 = new BigDecimal(dealerDesposit);
-		BigDecimal d2 = new BigDecimal(10000);
+		BigDecimal d2 = new BigDecimal(Utils.DIVIDE);
 		BigDecimal d3 = d1.divide(d2);
 		return d3.toString();
 	}
