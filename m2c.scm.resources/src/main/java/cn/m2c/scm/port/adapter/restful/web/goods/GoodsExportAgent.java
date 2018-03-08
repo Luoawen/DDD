@@ -50,10 +50,10 @@ public class GoodsExportAgent {
     @RequirePermissions(value = {"scm:goodsStorage:export"})
     public void exportExcel(HttpServletResponse response,
                             String dealerId, String goodsClassifyId, Integer goodsStatus,
-                            String condition, String startTime, String endTime) throws Exception {
+                            String condition, String startTime, String endTime, Integer recognizedStatus) throws Exception {
         String fileName = "商品库.xls";
         List<GoodsBean> goodsBeanList = goodsQueryApplication.searchGoodsExport(dealerId, goodsClassifyId, goodsStatus,
-                condition, startTime, endTime);
+                condition, startTime, endTime, recognizedStatus);
         Integer settlementMode = null;
         if (StringUtils.isNotEmpty(dealerId)) {
             //结算模式 1：按供货价 2：按服务费率
