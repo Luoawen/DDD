@@ -56,6 +56,21 @@ public class Utils {
         return String.format("%1$.2f", a/DIVIDE);
     }
     
+    /***转换成数据库需要的金额<br>
+     * @param d 字符串
+     */
+    public static long convertNeedMoney(String d) throws NumberFormatException {
+    	double dMoney = Double.parseDouble(d);
+        return (long)(dMoney * DIVIDE);
+    }
+    
+    /***转换成数据库需要的金额<br>
+     * @param d
+     */
+    public static long convertNeedMoney(double d) {
+        return (long)(d * DIVIDE);
+    }
+    
     /***主要是针对金额的数据<br>
      * 格式化成2位小数的串返回
      * @param divide
