@@ -993,10 +993,19 @@ public class OrderApplication {
     	// 获取商品详情
         List<GoodsDto> goodDtls = gQueryApp.getGoodsDtl(skus.keySet());
         
-        calFreight(goodDtls, cmd.getCityCode(), skus);
+        for (GoodsDto t : gdes) {
+    		
+    		String sku = t.getSkuId();
+    		
+    		GoodsDto src = getGoodsBySkuId(sku, goodDtls);
+    		if (src != null)
+    			t.copyField(src);
+        }
+        
+        calFreight(gdes, cmd.getCityCode(), skus);
         
         long goodsAmounts = 0, freight = 0, plateDiscount = 0, dealerDiscount = 0, couponDiscount = 0;
-        for (GoodsDto dto : goodDtls) {
+        for (GoodsDto dto : gdes) {
         	goodsAmounts += dto.getDiscountPrice() * dto.getPurNum();
         	freight += dto.getFreight();
         	plateDiscount += dto.getPlateformDiscount();
