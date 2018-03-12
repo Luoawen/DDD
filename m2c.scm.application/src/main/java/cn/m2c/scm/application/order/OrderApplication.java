@@ -1017,6 +1017,7 @@ public class OrderApplication {
         	if (dto.getIsSpecial() == 1 && specialPriceMap != null) {
         		GoodsSkuSpecial goodsSpecial = specialPriceMap.get(dto.getSkuId());
         		if (goodsSpecial != null) {
+        			LOGGER.info("==fanjc==dto.getIsSpecial()=" + dto.getIsSpecial() +";=goodsSpecial.specialPrice()=" + goodsSpecial.specialPrice());
         			dto.setSpecialPrice(goodsSpecial.specialPrice());
         			goodsAmounts += dto.getSpecialPrice() * dto.getPurNum();
         		}
@@ -1024,8 +1025,10 @@ public class OrderApplication {
         			goodsAmounts += dto.getDiscountPrice() * dto.getPurNum();
         		}
         	}
-        	else
+        	else {
+        		LOGGER.info("==fanjc==dto.getIsSpecial()=" + dto.getIsSpecial() +";=specialPriceMap=" + (specialPriceMap != null));
         		goodsAmounts += dto.getDiscountPrice() * dto.getPurNum();
+        	}
         	freight += dto.getFreight();
         	plateDiscount += dto.getPlateformDiscount();
         	couponDiscount += dto.getCouponDiscount();
