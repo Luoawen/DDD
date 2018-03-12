@@ -97,7 +97,7 @@ public class MiniGoodsAgent {
 
                     //特惠价/优惠券
                     GoodsSpecialBean goodsSpecialBean = null;
-                    //商品有无媒体信息,有媒体信息则返回特惠价
+                    //小程序拍照识别商品，查询特惠价
                     goodsSpecialBean = goodsSpecialQueryApplication.queryGoodsSpecialByGoodsId(goodsBean.getGoodsId());
                     
                     MiniGoodsDetailRepresentation representation = new MiniGoodsDetailRepresentation(goodsBean,
