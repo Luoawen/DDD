@@ -31,10 +31,10 @@ public class AddOrderRepresentation {
 		if (bean == null)
 			return;
 		orderId = bean.getOrderId();
-		this.goodsMoney = bean.getGoodsMoney();
-		this.freight = bean.getFreight();
-		this.plateformDiscount = bean.getPlateformDiscount();
-		this.dealerDiscount = bean.getDealerDiscount();
+		this.goodsMoney = bean.getGoodsMoney() * 100;
+		this.freight = bean.getFreight() * 100;
+		this.plateformDiscount = bean.getPlateformDiscount() * 100;
+		this.dealerDiscount = bean.getDealerDiscount() * 100;
 		couponDiscount = bean.getCouponDiscount();
 	}
 	

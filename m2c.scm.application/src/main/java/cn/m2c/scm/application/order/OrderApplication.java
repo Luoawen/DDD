@@ -1014,7 +1014,7 @@ public class OrderApplication {
         
         long goodsAmounts = 0, freight = 0, plateDiscount = 0, dealerDiscount = 0, couponDiscount = 0;
         for (GoodsDto dto : gdes) {
-        	if (dto.getIsSpecial() == 1) {
+        	if (dto.getIsSpecial() == 1 && specialPriceMap != null) {
         		GoodsSkuSpecial goodsSpecial = specialPriceMap.get(dto.getSkuId());
         		if (goodsSpecial != null) {
         			dto.setSpecialPrice(goodsSpecial.specialPrice());

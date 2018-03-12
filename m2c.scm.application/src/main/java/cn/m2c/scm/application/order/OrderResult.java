@@ -99,4 +99,11 @@ public class OrderResult {
 	public String getStrCouponDiscount() {
 		return Utils.moneyFormatCN(couponDiscount);
 	}
+	
+	public String toString() {
+		return new StringBuilder().append("goodsMoney===" + goodsMoney)
+				.append(";freight===" + freight)
+				.append(";plateformDiscount===" + plateformDiscount)
+				.toString();
+	}
 }
