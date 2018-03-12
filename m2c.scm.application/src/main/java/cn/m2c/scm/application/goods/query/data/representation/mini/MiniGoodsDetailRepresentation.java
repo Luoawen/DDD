@@ -43,24 +43,10 @@ public class MiniGoodsDetailRepresentation {
     private String goodsDescUrl;
     private Integer skuFlag;
     private String desc;
-    //private Map goodsSpecial;
-    //private String customerTel;
-    //private Map goodsComment;
-    //private List<Map> fullCuts;
-    //private String favoriteId;
-    //private List<Map> goodsTags;
-    //private List<Map> coupons;
-    //private Map photographGetCoupon;
 
-    /*public MiniGoodsDetailRepresentation(GoodsBean bean, List<GoodsGuaranteeBean> goodsGuaranteeBeans,
-            String goodsUnitName, String mresId, Integer commentTotal, GoodsCommentBean goodsCommentBean,
-            List<Map> fullCuts, List<Map> coupons, List<Map> goodsTags, String favoriteId, String phone, GoodsSpecialBean goodsSpecialBean,
-            Map photographGetCoupon) {
-    */
     
     public MiniGoodsDetailRepresentation(GoodsBean bean, List<GoodsGuaranteeBean> goodsGuaranteeBeans,
                                         String goodsUnitName, String mresId, GoodsSpecialBean goodsSpecialBean) {
-        //this.photographGetCoupon = photographGetCoupon;
         this.skuFlag = bean.getSkuFlag();
         this.dealerId = bean.getDealerId();
         this.dealerName = bean.getDealerName();
@@ -99,58 +85,16 @@ public class MiniGoodsDetailRepresentation {
         this.mresId = mresId;
         this.goodsDescUrl = M2C_HOST_URL + "/m2c.scm/goods/mini/desc?goodsId=" + this.goodsId;
 
-
         this.desc = bean.getGoodsDesc();
-        //this.customerTel = phone;
-        
-        /*if (null == this.goodsComment) {
-            this.goodsComment = new HashMap<>();
-        }
-        this.goodsComment.put("commentTotal", commentTotal);
-        if (null != goodsCommentBean) {
-            this.goodsComment.put("buyerIcon", goodsCommentBean.getBuyerIcon());
-            this.goodsComment.put("buyerPhoneNumber", goodsCommentBean.getBuyerPhoneNumber());
-            this.goodsComment.put("buyerName", goodsCommentBean.getBuyerName());
-            this.goodsComment.put("skuName", this.skuFlag == 0 ? "默认" : goodsCommentBean.getSkuName());
-            this.goodsComment.put("goodsNum", goodsCommentBean.getGoodsNum());
-            this.goodsComment.put("starLevel", goodsCommentBean.getStarLevel());
-            this.goodsComment.put("commentContent", goodsCommentBean.getCommentContent());
-
-            String images = goodsCommentBean.getCommentImages();
-            List<String> imageList = JsonUtils.toList(images, String.class);
-            this.goodsComment.put("commentImages", imageList);
-
-            String replyCommentContent = "";
-            if (null != goodsCommentBean.getGoodsReplyCommentBean()) {
-                replyCommentContent = goodsCommentBean.getGoodsReplyCommentBean().getReplyContent();
-            }
-            this.goodsComment.put("replyCommentContent", replyCommentContent);
-        }
-        this.fullCuts = fullCuts;
-        this.coupons = coupons;
-        this.favoriteId = favoriteId;
-        if (null != goodsTags && goodsTags.size() > 0) {
-            this.goodsTags = goodsTags;
-        }
-        */
 
         // 特惠价
         if (null != goodsSpecialBean) {
-            //this.goodsSpecial = new HashMap<>();
-            //SimpleDateFormat df = new SimpleDateFormat("yyyy.MM.dd");
-            //this.goodsSpecial.put("specialIcon", goodsSpecialBean.getSpecialIcon()); // 特惠价角标
-            //this.goodsSpecial.put("specialId", goodsSpecialBean.getSpecialId());
-            //this.goodsSpecial.put("startTime", df.format(goodsSpecialBean.getStartTime()));
-            //this.goodsSpecial.put("endTime", df.format(goodsSpecialBean.getEndTime()));
-            //this.goodsSpecial.put("congratulations", goodsSpecialBean.getCongratulations());
-            //this.goodsSpecial.put("activityDescription", goodsSpecialBean.getActivityDescription());
             if (null != this.goodsSKUs && this.goodsSKUs.size() > 0) {
                 List<GoodsSkuSpecialBean> skuSpecials = goodsSpecialBean.getGoodsSpecialSkuBeans();
                 for (MiniGoodsSkuRepresentation sku : this.goodsSKUs) {
                     if (null != skuSpecials && skuSpecials.size() > 0) {
                         for (GoodsSkuSpecialBean skuSpecialBean : skuSpecials) {
                             if (skuSpecialBean.getSkuId().equals(sku.getSkuId())) {
-                                //sku.setSpecialPrice(skuSpecialBean.getSpecialPrice() / 100);
                                 sku.setStrSpecialPrice(Utils.moneyFormatCN(skuSpecialBean.getSpecialPrice()));
                             }
                         }

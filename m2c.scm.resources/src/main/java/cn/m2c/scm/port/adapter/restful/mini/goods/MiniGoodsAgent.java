@@ -77,17 +77,8 @@ public class MiniGoodsAgent {
      */
     @RequestMapping(value = "/recognized", method = RequestMethod.GET)
     public ResponseEntity<MResult> miniRecognizedPic(
-            //@RequestParam(value = "token", required = false) String token,
             @RequestParam(value = "recognizedInfo", required = false) String recognizedInfo,
             @RequestParam(value = "barNo", required = false) String barNo
-            //@RequestParam(value = "location", required = false) String location,
-            //@RequestParam(value = "sn", required = false) String sn,
-            //@RequestParam(value = "os", required = false) String os,
-            //@RequestParam(value = "appVersion", required = false) String appVersion,
-            //@RequestParam(value = "osVersion", required = false) String osVersion,
-            //@RequestParam(value = "triggerTime", required = false) long triggerTime,
-            //@RequestParam(value = "userId", required = false, defaultValue = "") String userId,
-            //@RequestParam(value = "userName", required = false, defaultValue = "") String userName
     ) {
         MResult result = new MResult(MCode.V_1);
         Map mediaMap = goodsDubboService.getMediaResourceInfo(barNo);
@@ -97,89 +88,24 @@ public class MiniGoodsAgent {
         String mresName = null == mediaMap ? "" : (String) mediaMap.get("mresName");
 
         try {
-        	List<GoodsBean> goodsBeans = null;
-        	if(StringUtils.isNotEmpty(recognizedInfo)) {
-        		//根据识别图id查询商品
-        		goodsBeans = goodsQueryApplication.recognizedGoods(recognizedInfo, null);
-        	} else {
-        		//调试微信小程序商品
-            	List<String> recognizedIds = new ArrayList<>();
-            	//test
-            	recognizedIds.add("044aa39f65d42a5b57c20f74ca6ea6fc");
-            	//recognizedIds.add("0da1b03489aa70b1161bbd8cb8561943");
-            	goodsBeans = goodsQueryApplication.queryGoodsByRecognizedIds(recognizedIds);
-        	}
+        	List<GoodsBean> goodsBeans = goodsQueryApplication.recognizedGoods(recognizedInfo, null);
             if (null != goodsBeans && goodsBeans.size() > 0) {
                 List<MiniGoodsDetailRepresentation> representations = new ArrayList<>();
                 for (GoodsBean goodsBean : goodsBeans) {
                     List<GoodsGuaranteeBean> goodsGuarantee = goodsGuaranteeQueryApplication.queryGoodsGuaranteeByIds(JsonUtils.toList(goodsBean.getGoodsGuarantee(), String.class));
                     String goodsUnitName = unitQuery.getUnitNameByUnitId(goodsBean.getGoodsUnitId());
 
-                    // 商家客服电话
-                    //String phone = shopQuery.getDealerShopCustmerTel(goodsBean.getDealerId());
-                    
-                    // 拍获进来，特惠价/优惠券
+                    //特惠价/优惠券
                     GoodsSpecialBean goodsSpecialBean = null;
-                    //Map photographGetCoupon = null;
-                    if (null != mediaMap && mediaMap.size() > 0) {
-                        //商品有无媒体信息,有媒体信息则返回特惠价
-                        goodsSpecialBean = goodsSpecialQueryApplication.queryGoodsSpecialByGoodsId(goodsBean.getGoodsId());
-                    }
+                    //商品有无媒体信息,有媒体信息则返回特惠价
+                    goodsSpecialBean = goodsSpecialQueryApplication.queryGoodsSpecialByGoodsId(goodsBean.getGoodsId());
                     
                     MiniGoodsDetailRepresentation representation = new MiniGoodsDetailRepresentation(goodsBean,
                             goodsGuarantee, goodsUnitName, mresId, goodsSpecialBean);
                     
                     representations.add(representation);
-                    
-                    /*
-                    //商品总评论数
-                    Integer commentTotal = goodsCommentQueryApplication.queryGoodsCommentTotal(goodsBean.getGoodsId());
-                    GoodsCommentBean goodsCommentBean = null;
-                    if (commentTotal > 0) {
-                        goodsCommentBean = goodsCommentQueryApplication.queryGoodsDetailComment(goodsBean.getGoodsId());
-                    }
-				    //满减
-                    List<Map> fullCut = goodsRestService.getGoodsFullCut(userId, goodsBean.getDealerId(), goodsBean.getGoodsId(), goodsBean.getGoodsClassifyId());
-                    // 优惠券
-                    List<Map> coupons = goodsRestService.getGoodsCoupon(userId, goodsBean.getDealerId(), goodsBean.getGoodsId(), goodsBean.getGoodsClassifyId());
-                    //标签
-                    List<Map> goodsTags = goodsRestService.getGoodsTags(goodsBean.getDealerId(), goodsBean.getGoodsId(), goodsBean.getGoodsClassifyId());
-
-                    //查询商品被收藏id 
-                    String favoriteId = null;
-                    if (StringUtils.isNotEmpty(userId)) {
-                        favoriteId = goodsRestService.getUserIsFavoriteGoods(userId, goodsBean.getGoodsId(), "");
-                    }
-                    
-                    // 拍获进来，特惠价/优惠券
-                    GoodsSpecialBean goodsSpecialBean = null;
-                    //Map photographGetCoupon = null;
-                    if (null != mediaMap && mediaMap.size() > 0) {
-                        //商品有无媒体信息,有媒体信息则返回特惠价
-                        goodsSpecialBean = goodsSpecialQueryApplication.queryGoodsSpecialByGoodsId(goodsBean.getGoodsId());
-                        if (null != goodsSpecialBean) {
-                            // 特惠价角标
-                            ConfigBean configBean = configQueryApplication.queryConfigBeanByConfigKey("SCM_GOODS_SPECIAL_IMAGE");
-                            if (null != configBean) {
-                                goodsSpecialBean.setSpecialIcon(configBean.getConfigValue());
-                            }
-                        } else {
-                            // 拍照领券
-                            //photographGetCoupon = goodsRestService.photographGetCoupon(userId, mresId);
-                        }
-                    }
-                    
-                    MiniGoodsDetailRepresentation representation = new MiniGoodsDetailRepresentation(goodsBean,
-                            goodsGuarantee, goodsUnitName, mresId, commentTotal, goodsCommentBean, fullCut, coupons, goodsTags, favoriteId, phone, goodsSpecialBean, photographGetCoupon);
-                    */
                 }
                 result.setContent(representations);
-
-                // 埋点 ,2：小程序
-                /*goodsApplication.goodsAppCapturedMD(sn, os, appVersion,
-                        osVersion, triggerTime, userId, userName,
-                        goodsBeans.get(0).getGoodsId(), goodsBeans.get(0).getGoodsName(), mediaId, mediaName,
-                        mresId, mresName, 2);*/
             }
             result.setStatus(MCode.V_200);
         } catch (Exception e) {
