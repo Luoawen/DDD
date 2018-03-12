@@ -12,6 +12,7 @@ import com.alibaba.fastjson.JSONObject;
 import cn.m2c.common.MCode;
 import cn.m2c.ddd.common.AssertionConcern;
 import cn.m2c.scm.application.order.query.dto.GoodsDto;
+import cn.m2c.scm.application.utils.Utils;
 import cn.m2c.scm.domain.NegativeException;
 /***
  * 订单提交命令, 订单号，用户，收货地址必填
@@ -83,6 +84,22 @@ public class OrderPayableCommand extends AssertionConcern implements Serializabl
 				throw new NegativeException(MCode.V_1, "购买数量必须大于0！");
 			}
 			
+			//解析app传入的特惠价
+			String appSpecialPrice = "";
+			Integer isSpecial = goods.getInteger("isSpecial");
+			if(isSpecial != null && isSpecial==1){
+				appSpecialPrice = goods.getString("appSpecialPrice");
+				if (!StringUtils.isEmpty(appSpecialPrice)) {
+					// 因后台已经变成了100表示1元
+					appSpecialPrice = String.valueOf(Long.parseLong(appSpecialPrice) * 100);
+				}
+				
+				String strPrice = goods.getString("strAppSpecialPrice");
+				if (!StringUtils.isEmpty(strPrice)) {
+					appSpecialPrice = String.valueOf((long)(Float.parseFloat(strPrice) * (long)Utils.DIVIDE));
+				}
+			}
+			
 			if (goodses == null) {
 				goodses = new ArrayList<GoodsDto>();
 			}
@@ -91,6 +108,7 @@ public class OrderPayableCommand extends AssertionConcern implements Serializabl
 			dto.setSkuId(skuId);
 			dto.setGoodsId(tmp);
 			dto.setPurNum(sl);
+			dto.setAppSpecialPrice(appSpecialPrice);
 			
             goodses.add(dto);
 		}

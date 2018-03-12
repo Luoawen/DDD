@@ -342,13 +342,13 @@ public class OrderApplication {
         
         // 获取商品详情
         List<GoodsDto> goodDtls = gQueryApp.getGoodsDtl(skus.keySet());
-        //Map<String, GoodsSkuSpecial> specialPriceMap = (Map<String, GoodsSkuSpecial>)goodsSpecialRsp.getEffectiveGoodsSkuSpecial(specialSkus);
+        Map<String, GoodsSkuSpecial> specialPriceMap = (Map<String, GoodsSkuSpecial>)goodsSpecialRsp.getEffectiveGoodsSkuSpecial(specialSkus);
         
-        //checkNotSatisfy(specialPriceMap, specialSkus);
-        //LOGGER.info("特惠价比较开始");
-        //判断app传入的特惠价和商品获取的特惠价是否相同
-        //checkSpecialPriceChange(specialPriceMap,gdes);
-        //LOGGER.info("特惠价比较结束");
+        checkNotSatisfy(specialPriceMap, specialSkus);
+        LOGGER.info("--特惠价比较开始");
+        //判断webchat_mini传入的特惠价和商品获取的特惠价是否相同
+        checkSpecialPriceChange(specialPriceMap,gdes);
+        LOGGER.info("--特惠价比较结束");
         // 获取分类及费率
         getClassifyRate(goodDtls, mediaResIds);
         //若有媒体信息则需要查询媒体信息
@@ -364,8 +364,8 @@ public class OrderApplication {
         }
         
         // 先把数据填充好,商品信息，特惠价，再处理其他事情
-        //fillData(gdes, goodDtls, specialPriceMap);
-        fillData(gdes, goodDtls, null);
+        fillData(gdes, goodDtls, specialPriceMap);
+        //fillData(gdes, goodDtls, null);
         // 拆单 设置商品数量即按商家来拆分
         Set<String> idsSet = new HashSet<String>();
         Map<String, List<GoodsDto>> dealerOrderMap = splitOrder(gdes, idsSet);
@@ -979,6 +979,9 @@ public class OrderApplication {
         /**skuId与数量的键值对, 用于锁定库存*/
         Map<String, Integer> skus = new HashMap<String, Integer>();
     	int sz = gdes.size();
+    	/**需要查询特惠价的sku集合*/
+        List<String> specialSkus = new ArrayList<String>();
+        
         for (int i = 0; i < sz; i++) {
         	GoodsDto o = gdes.get(i);
             String sku = o.getSkuId();
@@ -989,10 +992,15 @@ public class OrderApplication {
             }
             else
             	skus.put(sku, oNum + pnum);
+            
+            if (o.getIsSpecial() == 1)
+            	specialSkus.add(sku);
         }
     	// 获取商品详情
         List<GoodsDto> goodDtls = gQueryApp.getGoodsDtl(skus.keySet());
         
+        Map<String, GoodsSkuSpecial> specialPriceMap = (Map<String, GoodsSkuSpecial>)goodsSpecialRsp.getEffectiveGoodsSkuSpecial(specialSkus);
+        //adfas;
         for (GoodsDto t : gdes) {
     		
     		String sku = t.getSkuId();
@@ -1006,7 +1014,18 @@ public class OrderApplication {
         
         long goodsAmounts = 0, freight = 0, plateDiscount = 0, dealerDiscount = 0, couponDiscount = 0;
         for (GoodsDto dto : gdes) {
-        	goodsAmounts += dto.getDiscountPrice() * dto.getPurNum();
+        	if (dto.getIsSpecial() == 1) {
+        		GoodsSkuSpecial goodsSpecial = specialPriceMap.get(dto.getSkuId());
+        		if (goodsSpecial != null) {
+        			dto.setSpecialPrice(goodsSpecial.specialPrice());
+        			goodsAmounts += dto.getSpecialPrice() * dto.getPurNum();
+        		}
+        		else {
+        			goodsAmounts += dto.getDiscountPrice() * dto.getPurNum();
+        		}
+        	}
+        	else
+        		goodsAmounts += dto.getDiscountPrice() * dto.getPurNum();
         	freight += dto.getFreight();
         	plateDiscount += dto.getPlateformDiscount();
         	couponDiscount += dto.getCouponDiscount();
