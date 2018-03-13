@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import cn.m2c.common.DateUtils;
 import cn.m2c.scm.application.order.data.bean.AppOrderBean;
 import cn.m2c.scm.application.order.data.bean.OrderDetailBean;
 import cn.m2c.scm.application.utils.Utils;
@@ -117,8 +118,14 @@ public class MiniOrderRepresentation implements Serializable {
 		return payNo;
 	}
 
-	public Date getCreateDate() {
+	/*public Date getCreateDate() {
 		return createDate;
+	}*/
+	
+	public String getCreateDate() {
+		if (createDate != null)
+			return DateUtils.dateToString(createDate, DateUtils.PATTERN_YYYYMMDD_HHMMSS);
+		return "";
 	}
 
 	public String getStrGoodAmount() {
