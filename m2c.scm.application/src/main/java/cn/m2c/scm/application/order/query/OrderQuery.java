@@ -800,7 +800,7 @@ public class OrderQuery {
                     break;
                 case 25://售后已完成
                     sql.append(" AND d.dealer_order_id IN ( SELECT af.dealer_order_id FROM t_scm_order_after_sell af WHERE af._status >= ?)");
-                    params.add(9);
+                    params.add(10);
                     break;
                 case 26://售后已取消
                     sql.append(" AND d.dealer_order_id IN (SELECT af.dealer_order_id FROM t_scm_order_after_sell af WHERE af._status = ?)");
@@ -810,6 +810,10 @@ public class OrderQuery {
                     sql.append(" AND d.dealer_order_id IN (SELECT af.dealer_order_id FROM t_scm_order_after_sell af WHERE af._status = ?)");
                     params.add(3);
                     break;
+                case 28://退款中
+                	sql.append(" AND d.dealer_order_id IN ( SELECT af.dealer_order_id FROM t_scm_order_after_sell af WHERE af._status = ?)");
+		            params.add(9);
+	        		break;
             }
         }
     }

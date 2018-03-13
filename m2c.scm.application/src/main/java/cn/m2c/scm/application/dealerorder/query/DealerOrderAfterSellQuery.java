@@ -88,7 +88,7 @@ public class DealerOrderAfterSellQuery {
 	        		break;
 	        	case 25://售后已完成
 	        		sql.append(" AND af._status >= ?\r\n");
-		            params.add(9);
+		            params.add(10);
 	        		break;
 	        	case 26://售后已取消
 	        		sql.append(" AND af._status = ?\r\n");
@@ -97,7 +97,11 @@ public class DealerOrderAfterSellQuery {
 	        	case 27://商家已拒绝
 	        		sql.append(" AND af._status = ?\r\n");
 		            params.add(3);
-	        		break;	        	
+	        		break;
+	        	case 28://退款中
+	        		sql.append(" AND af._status = ?\r\n");
+		            params.add(9);
+	        		break;
         	}
         }
 		
@@ -247,7 +251,7 @@ public class DealerOrderAfterSellQuery {
 	        		break;
 	        	case 25://售后已完成
 	        		sql.append(" AND af._status >= ?\r\n");
-		            params.add(9);
+		            params.add(10);
 	        		break;
 	        	case 26://售后已取消
 	        		sql.append(" AND af._status = ?\r\n");
@@ -256,7 +260,11 @@ public class DealerOrderAfterSellQuery {
 	        	case 27://商家已拒绝
 	        		sql.append(" AND af._status = ?\r\n");
 		            params.add(3);
-	        		break;	        	
+	        		break;	 
+	        	case 28://退款中
+	        		sql.append(" AND af._status = ?\r\n");
+		            params.add(9);
+	        		break;
         	}
         }
 		if (!StringUtils.isEmpty(condition)) {
@@ -412,7 +420,7 @@ public class DealerOrderAfterSellQuery {
 	        		break;
 	        	case 25://售后已完成
 	        		sql.append(" AND a._status >= ?\r\n");
-		            params.add(9);
+		            params.add(10);
 	        		break;
 	        	case 26://售后已取消
 	        		sql.append(" AND a._status = ?\r\n");
@@ -421,7 +429,11 @@ public class DealerOrderAfterSellQuery {
 	        	case 27://商家已拒绝
 	        		sql.append(" AND a._status = ?\r\n");
 		            params.add(3);
-	        		break;	        	
+	        		break;	  
+	        	case 28://退款中
+	        		sql.append(" AND af._status = ?\r\n");
+		            params.add(9);
+	        		break;
         	}
         }
 		if (!StringUtils.isEmpty(condition)) {
