@@ -974,6 +974,7 @@ public class OrderApplication {
      * 计算商品金额
      * @return
      */
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
     public OrderResult calcOrderPayable(OrderPayableCommand cmd) throws NegativeException {
     	List<GoodsDto> gdes = cmd.getGoodses();
         /**skuId与数量的键值对, 用于锁定库存*/
