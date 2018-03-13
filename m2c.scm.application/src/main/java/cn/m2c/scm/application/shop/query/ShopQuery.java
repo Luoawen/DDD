@@ -289,7 +289,7 @@ public class ShopQuery {
 		List<ShopBean> shops = new ArrayList<ShopBean>();
 		try {
 			StringBuffer sql = new StringBuffer();
-			sql.append(" SELECT s.dealer_id, d.dealer_name, s.shop_id, s.shop_name, s.shop_icon").
+			sql.append(" SELECT s.dealer_id, s.last_updated_date, d.dealer_name, s.shop_id, s.shop_name, s.shop_icon").
 			append(" FROM t_scm_dealer_shop s LEFT JOIN t_scm_dealer d ON s.dealer_id = d.dealer_id ").
 			append(" WHERE s.dealer_id = ? ");
 			for (String dealerId : dealerIds) {

@@ -64,7 +64,7 @@ public class ShopBean {
 	
 
 	public String getLastUpdateDate() {
-		return new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(lastUpdatedTIme);
+		return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(lastUpdatedTIme);
 	}
 
 
