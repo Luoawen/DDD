@@ -392,7 +392,7 @@ public class DealerOrderAfterSellQuery {
 			sql.append(" AND a._status = ? ");
 			params.add(status);
 		}*/
-		if (status != null && (status >= 20 && status < 28)) {
+		if (status != null && (status >= 20 && status <= 28)) {
         	switch(status) {
 	        	case 20: //待商家同意
 	        		sql.append(" AND a._status IN(?,?,?)\r\n");

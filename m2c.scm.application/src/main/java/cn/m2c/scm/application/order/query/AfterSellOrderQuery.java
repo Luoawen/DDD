@@ -73,7 +73,7 @@ public class AfterSellOrderQuery {
 			sql.append(" AND after.order_type = ? ");
 			params.add(orderType);
 		}
-		if (status != null && (status >= 20 && status < 28)) {
+		if (status != null && (status >= 20 && status <= 28)) {
         	switch(status) {
 	        	case 20: //待商家同意
 	        		sql.append(" AND after._status IN(?,?,?)\r\n");
@@ -179,7 +179,7 @@ public class AfterSellOrderQuery {
 			sql.append(" AND after.order_type = ? ");
 			params.add(orderType);
 		}
-		if (status != null && (status >= 20 && status < 28)) {
+		if (status != null && (status >= 20 && status <= 28)) {
         	switch(status) {
 	        	case 20: //待商家同意
 	        		sql.append(" AND after._status IN(?,?,?)\r\n");
