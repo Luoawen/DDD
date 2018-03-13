@@ -6,6 +6,7 @@ import cn.m2c.common.RedisUtil;
 import cn.m2c.ddd.common.port.adapter.persistence.springJdbc.SupportJdbcTemplate;
 import cn.m2c.scm.application.dealer.data.bean.DealerBean;
 import cn.m2c.scm.application.goods.query.GoodsQueryApplication;
+import cn.m2c.scm.application.shop.data.bean.ShopBackImgBean;
 import cn.m2c.scm.application.shop.data.bean.ShopBean;
 import cn.m2c.scm.application.shop.data.bean.ShopCreatedDateBean;
 import cn.m2c.scm.domain.NegativeException;
@@ -333,16 +334,16 @@ public class ShopQuery {
 	 * @return
 	 * @throws NegativeException
 	 */
-	public String getShopBackImg(String shopId) throws NegativeException {
-		String shopBackImg = "";
+	public ShopBackImgBean getShopBackImg(String shopId) throws NegativeException {
+		ShopBackImgBean shopBackImgBean =  null;
 		try {
-			StringBuilder sql = new StringBuilder("SELECT shop_background_img FROM t_scm_dealer_shop WHERE shop_id = ?");
-			shopBackImg = this.supportJdbcTemplate.jdbcTemplate().queryForObject(sql.toString(), String.class,shopId);
+			StringBuilder sql = new StringBuilder("SELECT shop_background_img, last_updated_date FROM t_scm_dealer_shop WHERE shop_id = ?");
+			shopBackImgBean = this.supportJdbcTemplate.queryForBean(sql.toString(), ShopBackImgBean.class, shopId);
 		} catch (Exception e) {
 			log.error("查询创建店铺门头图出错",e);
 			throw new NegativeException(MCode.V_400,"查询失败");
 		}
-		return shopBackImg;
+		return shopBackImgBean;
 		
 	}
 	
