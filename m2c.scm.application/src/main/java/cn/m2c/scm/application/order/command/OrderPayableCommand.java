@@ -96,9 +96,11 @@ public class OrderPayableCommand extends AssertionConcern implements Serializabl
 				
 				String strPrice = goods.getString("strAppSpecialPrice");
 				if (!StringUtils.isEmpty(strPrice)) {
-					appSpecialPrice = String.valueOf((long)(Float.parseFloat(strPrice) * (long)Utils.DIVIDE));
+					appSpecialPrice = String.valueOf(Utils.convertNeedMoney(strPrice));
 				}
 			}
+			else
+				isSpecial = 0;
 			
 			if (goodses == null) {
 				goodses = new ArrayList<GoodsDto>();
@@ -108,6 +110,7 @@ public class OrderPayableCommand extends AssertionConcern implements Serializabl
 			dto.setSkuId(skuId);
 			dto.setGoodsId(tmp);
 			dto.setPurNum(sl);
+			dto.setIsSpecial(isSpecial);
 			dto.setAppSpecialPrice(appSpecialPrice);
 			
             goodses.add(dto);
