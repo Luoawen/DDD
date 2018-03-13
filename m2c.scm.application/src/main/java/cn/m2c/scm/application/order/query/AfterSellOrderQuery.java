@@ -18,7 +18,6 @@ import cn.m2c.scm.application.order.data.bean.AfterSellOrderDetailBean;
 import cn.m2c.scm.application.order.data.bean.AftreSellLogisticsBean;
 import cn.m2c.scm.application.order.data.bean.DealerOrderMoneyBean;
 import cn.m2c.scm.application.order.data.bean.GoodsInfoBean;
-import cn.m2c.scm.application.order.data.bean.OrderDealerBean;
 import cn.m2c.scm.application.order.data.bean.SimpleCoupon;
 import cn.m2c.scm.application.order.data.bean.SimpleMarket;
 import cn.m2c.scm.application.order.data.bean.SkuNumBean;
@@ -102,7 +101,7 @@ public class AfterSellOrderQuery {
 	        		break;
 	        	case 25://售后已完成
 	        		sql.append(" AND after._status >= ?\r\n");
-		            params.add(9);
+		            params.add(10);
 	        		break;
 	        	case 26://售后已取消
 	        		sql.append(" AND after._status = ?\r\n");
@@ -111,7 +110,11 @@ public class AfterSellOrderQuery {
 	        	case 27://商家已拒绝
 	        		sql.append(" AND after._status = ?\r\n");
 		            params.add(3);
-	        		break;	        	
+	        		break;
+	        	case 28://退款中
+	        		sql.append(" AND af._status = ?\r\n");
+		            params.add(9);
+	        		break;
         	}
         }
 		if (null != createDate && "".equals(createDate)) {
@@ -204,7 +207,7 @@ public class AfterSellOrderQuery {
 	        		break;
 	        	case 25://售后已完成
 	        		sql.append(" AND after._status >= ?\r\n");
-		            params.add(9);
+		            params.add(10);
 	        		break;
 	        	case 26://售后已取消
 	        		sql.append(" AND after._status = ?\r\n");
@@ -213,7 +216,11 @@ public class AfterSellOrderQuery {
 	        	case 27://商家已拒绝
 	        		sql.append(" AND after._status = ?\r\n");
 		            params.add(3);
-	        		break;	        	
+	        		break;	 
+	        	case 28://退款中
+	        		sql.append(" AND af._status = ?\r\n");
+		            params.add(9);
+	        		break;
         	}
         }
 		if (null != createDate && "".equals(createDate)) {

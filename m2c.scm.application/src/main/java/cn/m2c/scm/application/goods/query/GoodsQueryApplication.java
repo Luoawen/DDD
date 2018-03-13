@@ -1316,7 +1316,7 @@ public class GoodsQueryApplication {
             params.add("%" + condition + "%");
             params.add("%" + condition + "%");
         }
-        sql.append(" AND g.del_status= 1 AND g.goods_status <> 3 AND g.recognized_flag = 1 group by g.goods_id ORDER BY g.created_date desc,s.photograph_price desc ");
+        sql.append(" AND g.del_status= 1 AND g.goods_status <> 3 group by g.goods_id ORDER BY g.created_date desc,s.photograph_price desc ");
         sql.append(" LIMIT ?,?");
         params.add(rows * (pageNum - 1));
         params.add(rows);
@@ -1341,7 +1341,7 @@ public class GoodsQueryApplication {
             params.add("%" + condition + "%");
             params.add("%" + condition + "%");
         }
-        sql.append(" AND g.del_status= 1 AND g.goods_status <> 3 AND g.recognized_flag = 1");
+        sql.append(" AND g.del_status= 1 AND g.goods_status <> 3");
         return supportJdbcTemplate.jdbcTemplate().queryForObject(sql.toString(), params.toArray(), Integer.class);
     }
 

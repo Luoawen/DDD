@@ -371,18 +371,16 @@ public class AppGoodsAgent {
                     String phone = shopQuery.getDealerShopCustmerTel(goodsBean.getDealerId());
 
                     // 拍获进来，特惠价/优惠券
-                    GoodsSpecialBean goodsSpecialBean = null;
                     Map photographGetCoupon = null;
-                    if (null != mediaMap && mediaMap.size() > 0) {
-                        //商品有无媒体信息,有媒体信息则返回特惠价
-                        goodsSpecialBean = goodsSpecialQueryApplication.queryGoodsSpecialByGoodsId(goodsBean.getGoodsId());
-                        if (null != goodsSpecialBean) {
-                            // 特惠价角标
-                            ConfigBean configBean = configQueryApplication.queryConfigBeanByConfigKey("SCM_GOODS_SPECIAL_IMAGE");
-                            if (null != configBean) {
-                                goodsSpecialBean.setSpecialIcon(configBean.getConfigValue());
-                            }
-                        } else {
+                    GoodsSpecialBean goodsSpecialBean = goodsSpecialQueryApplication.queryGoodsSpecialByGoodsId(goodsBean.getGoodsId());
+                    if (null != goodsSpecialBean) {
+                        // 特惠价角标
+                        ConfigBean configBean = configQueryApplication.queryConfigBeanByConfigKey("SCM_GOODS_SPECIAL_IMAGE");
+                        if (null != configBean) {
+                            goodsSpecialBean.setSpecialIcon(configBean.getConfigValue());
+                        }
+                    } else {
+                        if (null != mediaMap && mediaMap.size() > 0) {
                             // 拍照领券
                             photographGetCoupon = goodsRestService.photographGetCoupon(userId, mresId);
                         }
