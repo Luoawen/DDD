@@ -1,5 +1,6 @@
 package cn.m2c.scm.application.shop.data.bean;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import cn.m2c.ddd.common.persistence.orm.ColumnAlias;
@@ -10,24 +11,41 @@ public class ShopBackImgBean {
 	private String shopBackImg;
 	
 	@ColumnAlias(value = "last_updated_date")
-	private Date lastUpdatedDate;
+	private Date lastUpdatedTime;
+	
+	private String lastUpdateDate;
+	
+
+
+	public String getLastUpdateDate() {
+		return new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(lastUpdatedTime);
+	}
+
+
+	public Date getLastUpdatedTime() {
+		return lastUpdatedTime;
+	}
+
+
+	public void setLastUpdatedTime(Date lastUpdatedTime) {
+		this.lastUpdatedTime = lastUpdatedTime;
+	}
+
+
+	public void setLastUpdateDate(String lastUpdateDate) {
+		this.lastUpdateDate = lastUpdateDate;
+	}
+
 
 	public String getShopBackImg() {
 		return shopBackImg;
 	}
 
-	public Date getLastUpdatedDate() {
-		return lastUpdatedDate;
-	}
 
 	public void setShopBackImg(String shopBackImg) {
 		this.shopBackImg = shopBackImg;
 	}
 
-	public void setLastUpdatedDate(Date lastUpdatedDate) {
-		this.lastUpdatedDate = lastUpdatedDate;
-	}
-	
 	
 	
 

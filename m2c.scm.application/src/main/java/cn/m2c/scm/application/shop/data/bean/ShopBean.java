@@ -1,5 +1,6 @@
 package cn.m2c.scm.application.shop.data.bean;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.springframework.util.StringUtils;
@@ -26,6 +27,8 @@ public class ShopBean {
 	
 	@ColumnAlias(value = "last_updated_date")
 	private Date lastUpdatedTIme;
+	
+	private String lastUpdateDate;
 	
 	private Integer onSaleGoods;
 	
@@ -58,6 +61,16 @@ public class ShopBean {
 	public String getDealerId() {
 		return dealerId;
 	}
+	
+
+	public String getLastUpdateDate() {
+		return new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(lastUpdatedTIme);
+	}
+
+
+	public void setLastUpdateDate(String lastUpdateDate) {
+		this.lastUpdateDate = lastUpdateDate;
+	}
 
 	public void setDealerId(String dealerId) {
 		this.dealerId = dealerId;
@@ -65,10 +78,6 @@ public class ShopBean {
 
 	public Date getLastUpdatedTIme() {
 		return lastUpdatedTIme;
-	}
-
-	public void setLastUpdatedTIme(Date lastUpdatedTIme) {
-		this.lastUpdatedTIme = lastUpdatedTIme;
 	}
 
 	public String getShopId() {
