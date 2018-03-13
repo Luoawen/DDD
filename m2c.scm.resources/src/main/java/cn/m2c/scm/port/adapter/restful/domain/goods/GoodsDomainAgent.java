@@ -6,6 +6,7 @@ import cn.m2c.common.MResult;
 import cn.m2c.scm.application.goods.query.GoodsQueryApplication;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsBean;
 import cn.m2c.scm.application.goods.query.data.representation.GoodsForNormalRepresentation;
+import cn.m2c.scm.application.goods.query.data.representation.domain.GoodsDetailRepresentation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,7 @@ public class GoodsDomainAgent {
 
     /**
      * 给营销工具提供接口查询商品信息
+     *
      * @param goodsIds
      * @return
      */
@@ -52,6 +54,29 @@ public class GoodsDomainAgent {
         } catch (Exception e) {
             LOGGER.error("queryNormalGoodsByGoodsIds Exception e:", e);
             result = new MPager(MCode.V_400, "查询在售商品列表失败");
+        }
+        return new ResponseEntity<MResult>(result, HttpStatus.OK);
+    }
+
+    /**
+     * 给营销工具提供接口查询商品信息
+     *
+     * @param goodsId
+     * @return
+     */
+    @RequestMapping(value = "/id", method = RequestMethod.GET)
+    public ResponseEntity<MResult> queryGoodsByGoodsId(
+            @RequestParam(value = "goodsId", required = false) String goodsId) {
+        MResult result = new MResult(MCode.V_1);
+        try {
+            GoodsBean goodsBean = goodsQueryApplication.queryGoodsByGoodsId(goodsId);
+            if (null != goodsBean) {
+                result.setContent(new GoodsDetailRepresentation(goodsBean));
+            }
+            result.setStatus(MCode.V_200);
+        } catch (Exception e) {
+            LOGGER.error("queryGoodsByGoodsId Exception e:", e);
+            result = new MPager(MCode.V_400, "查询商品信息失败");
         }
         return new ResponseEntity<MResult>(result, HttpStatus.OK);
     }
