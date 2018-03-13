@@ -26,6 +26,7 @@ import cn.m2c.scm.application.goods.query.GoodsQueryApplication;
 import cn.m2c.scm.application.shop.ShopApplication;
 import cn.m2c.scm.application.shop.command.ShopBackImgCommand;
 import cn.m2c.scm.application.shop.command.ShopInfoUpdateCommand;
+import cn.m2c.scm.application.shop.data.bean.ShopBackImgBean;
 import cn.m2c.scm.application.shop.data.bean.ShopBean;
 import cn.m2c.scm.application.shop.data.bean.ShopCreatedDateBean;
 import cn.m2c.scm.application.shop.data.representation.ShopInfoRepresentation;
@@ -323,7 +324,7 @@ public class ShopAgent {
 				 if (StringUtils.isEmpty(shopId)) {
 						throw new NegativeException(MCode.V_400,"店铺ID为空");
 					}
-				 String shopBackImg = query.getShopBackImg(shopId);
+				 ShopBackImgBean shopBackImg = query.getShopBackImg(shopId);
 				 result.setContent(shopBackImg);
 				 result.setStatus(MCode.V_200);
 			} catch (NegativeException ne) {

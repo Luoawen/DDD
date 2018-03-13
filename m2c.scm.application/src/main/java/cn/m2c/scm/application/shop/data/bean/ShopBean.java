@@ -1,5 +1,7 @@
 package cn.m2c.scm.application.shop.data.bean;
 
+import java.util.Date;
+
 import org.springframework.util.StringUtils;
 
 import cn.m2c.ddd.common.persistence.orm.ColumnAlias;
@@ -21,6 +23,9 @@ public class ShopBean {
 	private String shopReceipt;
 	@ColumnAlias(value = "customer_service_tel")
 	private String customerServiceTel;
+	
+	@ColumnAlias(value = "last_updated_date")
+	private Date lastUpdatedTIme;
 	
 	private Integer onSaleGoods;
 	
@@ -56,6 +61,14 @@ public class ShopBean {
 
 	public void setDealerId(String dealerId) {
 		this.dealerId = dealerId;
+	}
+
+	public Date getLastUpdatedTIme() {
+		return lastUpdatedTIme;
+	}
+
+	public void setLastUpdatedTIme(Date lastUpdatedTIme) {
+		this.lastUpdatedTIme = lastUpdatedTIme;
 	}
 
 	public String getShopId() {
