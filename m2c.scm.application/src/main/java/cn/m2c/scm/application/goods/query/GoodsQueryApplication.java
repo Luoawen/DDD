@@ -1395,7 +1395,9 @@ public class GoodsQueryApplication {
         sql.append(" SELECT ");
         sql.append(" * ");
         sql.append(" FROM ");
-        sql.append(" t_scm_goods WHERE goods_name LIKE ? AND del_status = 1 ORDER BY created_date ASC LIMIT 0,10 ");
+        //sql.append(" t_scm_goods WHERE goods_name LIKE ? AND del_status = 1 ORDER BY created_date ASC LIMIT 0,10 ");
+        sql.append(" t_scm_goods g LEFT OUTER JOIN t_scm_goods_sku s ON g.id = s.goods_id ");
+        sql.append(" WHERE goods_name LIKE ? AND g.del_status = 1 AND s.available_num > 0 AND g.`goods_status` = 2 GROUP BY g.`goods_name` ORDER BY g.created_date ASC LIMIT 0,10 ");
         if (StringUtils.isEmpty(goodsName)) {
             goodsName = "";
         }
