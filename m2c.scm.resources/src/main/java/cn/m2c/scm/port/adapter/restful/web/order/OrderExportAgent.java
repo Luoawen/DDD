@@ -1,5 +1,7 @@
 package cn.m2c.scm.port.adapter.restful.web.order;
 
+import cn.m2c.common.MCode;
+import cn.m2c.common.MPager;
 import cn.m2c.ddd.common.auth.RequirePermissions;
 import cn.m2c.scm.application.dealerorder.data.bean.DealerGoodsBean;
 import cn.m2c.scm.application.dealerorder.data.bean.DealerOrderQB;
@@ -25,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -219,9 +222,8 @@ public class OrderExportAgent {
 			        null, null, null, null);
 			List<OrderExpressBean> allExpress = orderAppQuery.getAllExpress();
 			orderApp.exportShipModel(response,allExpress,dealerOrderList);
-			
 		} catch (NegativeException e) {
-			e.printStackTrace();
+			LOGGER.error("导出批量发货模板出错" + e.getMessage(), e);
 		}
     	 	
 
