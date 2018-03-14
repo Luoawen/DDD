@@ -203,6 +203,11 @@ public class OrderExportAgent {
         }
     }
     
+    /**
+     * 导出批量发货模板
+     * @param response
+     * @param dealerId
+     */
     @RequestMapping(value = {"/web/outputmodel","/outputmodel"},method = RequestMethod.GET)
     public void outPutModel(
     		HttpServletResponse response,

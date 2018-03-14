@@ -1493,6 +1493,7 @@ public class OrderApplication {
 	 */
 	public void exportShipModel(HttpServletResponse response,List<OrderExpressBean> allExpress,List<DealerOrderQB> dealerOrderList) throws NegativeException {
 		
+		//传入所有物流公司和满足的订单List转换成String数组
 		ArrayList<String> arrayExpress = new ArrayList<String>();
 		ArrayList<String> arrayOrder = new ArrayList<String>();
 		for (OrderExpressBean express : allExpress) {
@@ -1504,6 +1505,7 @@ public class OrderApplication {
 		}
 		String[] list = (String[]) arrayExpress.toArray(new String[arrayExpress.size()]);
 		String[] list1 = (String[]) arrayOrder.toArray(new String[arrayOrder.size()]);
+		
 		createListBox(response,list,list1);
 	}
 	
@@ -1512,8 +1514,7 @@ public class OrderApplication {
 			String fileName = "批量发货模板";
 	        HSSFSheet realSheet = workbook.createSheet("fileName"); 
 	        HSSFSheet hidden = workbook.createSheet("hidden"); 
-	        
-	        
+	        //设置单元格宽度
 	        realSheet.setDefaultColumnWidth(20);
 	        
 	        //设置Excel表头
@@ -1525,7 +1526,7 @@ public class OrderApplication {
 			HSSFCell cell2 = hssfRow.createCell(2);
 			cell2.setCellValue("物流单号");
 	        
-			//操作所有物流公司设置到Excel下拉菜单
+			//写入物流公司名到Excel
 	        HSSFCell cell = null;
 	        for (int i = 0, length= expressList.length; i < length; ++i) { 
 	           String name = expressList[i]; 
@@ -1539,12 +1540,12 @@ public class OrderApplication {
 	        for(int i = 0, length= dealerOrderList.length; i < length; ++i) {
 	        	String name = dealerOrderList[i];
 	        	HSSFRow row = realSheet.createRow(i+1); 
-	        	//参数代表：
 	        	dealerOrderCell = row.createCell(0,i+1);
 	        	System.out.println(name);
 	        	dealerOrderCell.setCellValue(name);
 	        }
 
+	        //设置所有物流公司为下拉菜单
 	        Name namedCell = workbook.createName(); 
 	        namedCell.setNameName("hidden"); 
 	        namedCell.setRefersToFormula("hidden!A1:A" + expressList.length); 
