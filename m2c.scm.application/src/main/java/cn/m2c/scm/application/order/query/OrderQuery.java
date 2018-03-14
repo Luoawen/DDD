@@ -772,7 +772,7 @@ public class OrderQuery {
      * @param params
      */
     private void afterSaleStatusDeal(Integer afterSaleStatus, StringBuilder sql, List<Object> params) {
-        if (afterSaleStatus != null && (afterSaleStatus >= 20 && afterSaleStatus < 28)) {
+        if (afterSaleStatus != null && (afterSaleStatus >= 20 && afterSaleStatus <= 28)) {
             switch (afterSaleStatus) {
                 case 20: //待商家同意
                     sql.append(" AND d.dealer_order_id IN (SELECT af.dealer_order_id FROM t_scm_order_after_sell af WHERE af._status IN(?,?,?))");
