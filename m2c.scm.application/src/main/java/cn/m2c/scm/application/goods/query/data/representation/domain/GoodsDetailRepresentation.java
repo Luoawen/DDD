@@ -3,6 +3,7 @@ package cn.m2c.scm.application.goods.query.data.representation.domain;
 import cn.m2c.common.JsonUtils;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsBean;
 import cn.m2c.scm.application.goods.query.data.bean.GoodsSkuBean;
+import cn.m2c.scm.application.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -46,6 +47,7 @@ public class GoodsDetailRepresentation {
                 skuMap.put("skuName", skuBean.getSkuName());
                 skuMap.put("availableNum", skuBean.getAvailableNum());
                 skuMap.put("showStatus", skuBean.getShowStatus()); // 是否对外展示，1：不展示，2：展示
+                skuMap.put("price", Utils.moneyFormatCN(skuBean.getPhotographPrice()));
                 this.goodsSkus.add(skuMap);
             }
         }
