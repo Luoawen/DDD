@@ -1617,5 +1617,23 @@ public class GoodsQueryApplication {
         }
         return null;
     }
+    
+    /**
+     * 根据商品名模糊查询GoodsBean
+     * @param goodsName
+     * @return
+     */
+    public List<GoodsBean> queryGoodsMessageByGoodsName(String goodsName) {
+        if(StringUtils.isNotEmpty(goodsName)) {
+        	StringBuilder sql = new StringBuilder();
+            sql.append(" SELECT ");
+            sql.append(" * ");
+            sql.append(" FROM ");
+            sql.append(" t_scm_goods WHERE goods_name LIKE ? ");
+            List<GoodsBean> goodsBeans = this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsBean.class, "%" + goodsName + "%");
+            return goodsBeans;
+        }
+        return null;
+    }
 }
 
