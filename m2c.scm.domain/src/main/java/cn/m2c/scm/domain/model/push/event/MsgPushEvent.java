@@ -54,11 +54,16 @@ public class MsgPushEvent implements DomainEvent {
      */
     private Long sendDate;
 
+    /**
+     * 用户推送开关
+     */
+    private String pushSwitch;
+
     private Date occurredOn;
     private int eventVersion;
 
     public MsgPushEvent(Integer msgType, String userId, String userName, String deviceState, String deviceSn,
-                        String title, String alert, String extra, String senderId, Long sendDate) {
+                        String title, String alert, String extra, String senderId, Long sendDate, String pushSwitch) {
         this.msgType = msgType;
         this.userId = userId;
         this.userName = userName;
@@ -69,6 +74,7 @@ public class MsgPushEvent implements DomainEvent {
         this.extra = extra;
         this.senderId = senderId;
         this.sendDate = sendDate;
+        this.pushSwitch = pushSwitch;
         this.occurredOn = new Date();
         this.eventVersion = 0;
     }
