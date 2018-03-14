@@ -267,7 +267,7 @@ public class GoodsQueryApplication {
             params.add("%" + condition + "%");
             params.add("%" + condition + "%");
         }
-        sql.append(" AND g.del_status= 1 AND g.goods_status <> 1 group by g.goods_id ORDER BY g.created_date desc,s.photograph_price desc ");
+        sql.append(" AND g.del_status= 1 AND g.goods_status = 2 group by g.goods_id ORDER BY g.created_date desc,s.photograph_price desc ");
         sql.append(" LIMIT ?,?");
         params.add(rows * (pageNum - 1));
         params.add(rows);
