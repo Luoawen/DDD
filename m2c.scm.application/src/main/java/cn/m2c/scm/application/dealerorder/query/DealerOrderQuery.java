@@ -334,11 +334,14 @@ public class DealerOrderQuery {
         }
         sql.append(" GROUP BY sku_id, dealer_order_id, sort_no \r\n");
         sql.append(" ORDER BY a.dealer_order_id DESC, a.created_date DESC, af.last_updated_date DESC");
+        
+        if(rows != null && pageNum != null) {
+        	sql.append(" LIMIT ?,?");
+        	
+        	params.add(rows * (pageNum - 1));
+        	params.add(rows);
+        }
 
-        sql.append(" LIMIT ?,?");
-
-        params.add(rows * (pageNum - 1));
-        params.add(rows);
 
         List<Map<String, Object>> beanList = this.supportJdbcTemplate.jdbcTemplate().queryForList(sql.toString(), params.toArray());//(sql.toString(), HashMap.class, params.toArray());
 

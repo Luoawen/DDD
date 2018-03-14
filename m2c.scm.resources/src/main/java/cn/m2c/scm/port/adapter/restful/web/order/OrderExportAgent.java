@@ -8,10 +8,14 @@ import cn.m2c.scm.application.dealerorder.query.DealerOrderAfterSellQuery;
 import cn.m2c.scm.application.dealerorder.query.DealerOrderQuery;
 import cn.m2c.scm.application.order.OrderApplication;
 import cn.m2c.scm.application.order.SaleAfterOrderApp;
+import cn.m2c.scm.application.order.data.bean.OrderExpressBean;
 import cn.m2c.scm.application.order.data.export.DealerOrderExpModel;
 import cn.m2c.scm.application.order.data.export.MngOrderExpModel;
 import cn.m2c.scm.application.order.data.export.SaleAfterExpModel;
+import cn.m2c.scm.application.order.query.OrderQueryApplication;
 import cn.m2c.scm.application.utils.ExcelUtil;
+import cn.m2c.scm.domain.NegativeException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +48,8 @@ public class OrderExportAgent {
     DealerOrderAfterSellQuery saleAfterQuery;
     @Autowired
     DealerOrderQuery dealerOrderQuery;
+    @Autowired
+    OrderQueryApplication orderAppQuery;
 
     /**
      * 售后单导出
@@ -195,5 +201,24 @@ public class OrderExportAgent {
                 e.printStackTrace();
             }
         }
+    }
+    
+    @RequestMapping(value = {"/web/outputmodel","/outputmodel"},method = RequestMethod.GET)
+    public void outPutModel(
+    		HttpServletResponse response,
+    		@RequestParam(value = "dealerId", required = false) String dealerId) {
+    	
+    	try {
+			List<DealerOrderQB> dealerOrderList = dealerOrderQuery.dealerOrderQuery1(dealerId,
+			        1, null, null, null, null, null, null, null,
+			        null, null, null, null);
+			List<OrderExpressBean> allExpress = orderAppQuery.getAllExpress();
+			orderApp.exportShipModel(response,allExpress,dealerOrderList);
+			
+		} catch (NegativeException e) {
+			e.printStackTrace();
+		}
+    	 	
+
     }
 }

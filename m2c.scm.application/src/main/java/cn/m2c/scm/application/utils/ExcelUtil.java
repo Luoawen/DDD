@@ -65,7 +65,7 @@ public class ExcelUtil {
                 }
             }
         }
-        response.setHeader("Content-Disposition", "attachment;filename=" + urlEncode(fileName));
+        response.setHeader("Content-Disposition", "attachment;filename=" + urlEncode(fileName+"xls"));
         response.setContentType("application/ms-excel");
         OutputStream ouPutStream = null;
         try {
