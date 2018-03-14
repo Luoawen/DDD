@@ -69,7 +69,7 @@ public class DealerOrderApplication {
 	 * @param command
 	 * @throws NegativeException
 	 */
-	@Transactional(rollbackFor = { Exception.class, RuntimeException.class, NegativeException.class })
+	@Transactional(rollbackFor = { Exception.class, RuntimeException.class, NegativeException.class },propagation = Propagation.REQUIRES_NEW)
 	@EventListener
 	public void updateExpress(SendOrderCommand command, String attach) throws NegativeException {
 		LOGGER.info("---command： "+command.toString()+"-----attach:"+attach);

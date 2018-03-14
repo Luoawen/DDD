@@ -96,6 +96,10 @@ public class SendOrderCommand extends AssertionConcern{
 		return orderId;
 	}
 	
+	public void setOrderId(String orderId) {
+		this.orderId = orderId;
+	}
+	
 	public String getShopName() {
 		return shopName;
 	}

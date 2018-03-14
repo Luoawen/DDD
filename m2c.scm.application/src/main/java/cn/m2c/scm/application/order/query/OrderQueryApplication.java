@@ -11,6 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import cn.m2c.common.JsonUtils;
@@ -25,6 +26,7 @@ import cn.m2c.scm.application.order.data.bean.DealerOrderBean;
 import cn.m2c.scm.application.order.data.bean.OrderDetailBean;
 import cn.m2c.scm.application.order.data.bean.OrderExpressBean;
 import cn.m2c.scm.application.order.data.bean.OrderExpressDetailBean;
+import cn.m2c.scm.application.order.data.bean.ShipExpressBean;
 import cn.m2c.scm.application.order.data.bean.SkuNumBean;
 import cn.m2c.scm.application.order.data.bean.UserOrderStatic;
 import cn.m2c.scm.application.order.data.representation.OptLogBean;
@@ -777,6 +779,25 @@ public class OrderQueryApplication {
 			throw new NegativeException(MCode.V_400, "查询物流信息出错");
 		}
 		return result;
+	}
+	
+	
+	/**
+	 * 订货号拉取主订单，收货人信息
+	 * @param dealerOrderId
+	 * @return
+	 * @throws NegativeException
+	 */
+	public ShipExpressBean queryOrderIdByDealerOrderId(String dealerOrderId) throws NegativeException {
+		ShipExpressBean expressBean = null;
+		try {
+			String sql = "SELECT order_id, rev_person, rev_phone FROM t_scm_order_dealer WHERE dealer_order_id = ?";
+			expressBean = this.getSupportJdbcTemplate().queryForBean(sql, ShipExpressBean.class,dealerOrderId);
+			return expressBean;
+		} catch (Exception e) {
+			throw new NegativeException(MCode.V_400,"查询主订单出错");
+		}
+		
 	}
 }
 

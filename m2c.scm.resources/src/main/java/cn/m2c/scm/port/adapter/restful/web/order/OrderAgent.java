@@ -33,6 +33,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -596,4 +597,28 @@ public class OrderAgent {
     	return new ResponseEntity<MResult>(result,HttpStatus.OK);
 	}
 	
+    /**
+     * 
+     * @param myFile
+     * @return
+     */
+    @RequestMapping(value = "expressmodel",method = RequestMethod.POST)
+    public ResponseEntity<MResult> importExpressModel(@RequestParam("myfile") MultipartFile myFile,
+    		@RequestParam(value = "userId", required = false) String userId,
+    		@RequestParam(value = "shopName", required = false) String shopName
+    		){
+    	MResult result = new MResult();
+    	try {
+    		String _attach= request.getHeader("attach");
+			orderapplication.importExpressModel(myFile,userId,shopName,0,_attach);
+		} catch (NegativeException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+    	
+		return new ResponseEntity<MResult>(result,HttpStatus.OK);
+    	
+    }
+    
 }

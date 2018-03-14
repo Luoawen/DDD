@@ -14,6 +14,7 @@ import cn.m2c.scm.application.order.command.OrderAddCommand;
 import cn.m2c.scm.application.order.command.OrderPayableCommand;
 import cn.m2c.scm.application.order.command.OrderPayedCmd;
 import cn.m2c.scm.application.order.command.PayOrderCmd;
+import cn.m2c.scm.application.order.command.SendOrderCommand;
 import cn.m2c.scm.application.order.command.SendOrderSMSCommand;
 import cn.m2c.scm.application.order.data.bean.CouponBean;
 import cn.m2c.scm.application.order.data.bean.CouponUseBean;
@@ -23,6 +24,7 @@ import cn.m2c.scm.application.order.data.bean.MarketBean;
 import cn.m2c.scm.application.order.data.bean.MarketUseBean;
 import cn.m2c.scm.application.order.data.bean.MediaResBean;
 import cn.m2c.scm.application.order.data.bean.OrderExpressBean;
+import cn.m2c.scm.application.order.data.bean.ShipExpressBean;
 import cn.m2c.scm.application.order.data.bean.SkuMediaBean;
 import cn.m2c.scm.application.order.data.representation.OrderMoney;
 import cn.m2c.scm.application.order.query.OrderQueryApplication;
@@ -55,7 +57,11 @@ import org.apache.poi.hssf.usermodel.HSSFDataValidation;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Name;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddressList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,15 +69,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.alibaba.fastjson.JSONObject;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -118,6 +120,9 @@ public class OrderApplication {
     
     @Autowired
     ExpressPlatformRepository expressPlatformRepository;
+    
+    @Autowired
+    DealerOrderApplication dealerOrderApplication;
 
     /**
      * 提交订单
@@ -1540,9 +1545,9 @@ public class OrderApplication {
 	        for(int i = 0, length= dealerOrderList.length; i < length; ++i) {
 	        	String name = dealerOrderList[i];
 	        	HSSFRow row = realSheet.createRow(i+1); 
-	        	dealerOrderCell = row.createCell(0,i+1);
-	        	System.out.println(name);
+	        	dealerOrderCell = row.createCell(0,1);
 	        	dealerOrderCell.setCellValue(name);
+	        	System.out.println(name);
 	        }
 
 	        //设置所有物流公司为下拉菜单
@@ -1574,5 +1579,62 @@ public class OrderApplication {
 			}
 	}
 	
+	/**
+	 * 批量导入发货单模板 发货
+	 * @param myFile
+	 * @param userId
+	 * @param shopName
+	 * @param expressWay
+	 * @throws NegativeException
+	 * @throws Exception
+	 */
+	public void importExpressModel(MultipartFile myFile,String userId,String shopName,Integer expressWay,String attach) throws NegativeException, Exception {
+		Workbook workbook = null ;
+		String fileName = myFile.getOriginalFilename(); 
+		List<OrderExpressBean> allExpress = queryApp.getAllExpress();
+		List<SendOrderCommand> commands = new ArrayList<SendOrderCommand>();
+		SendOrderCommand command = new SendOrderCommand();
+		 if(fileName.endsWith("xls")){ 
+			   //2003 
+			   workbook = new HSSFWorkbook(myFile.getInputStream()); 
+			  }else{
+			   throw new NegativeException(MCode.V_401,"文件不是Excel文件");
+			  }
+
+		 Sheet sheet = workbook.getSheet("批量发货模板");
+		 int rows = sheet.getLastRowNum();// 一共有多少行
+		 
+		 //发货参数：dealerOrderId,orderId,expressWay,expressName,expressCode,expressNo,userId,expressPhone.expressPerson
+		 //填充发货参数
+		 for(int i = 1; i <= rows+1; ++i) {
+			// 读取左上端单元格
+			   Row row = sheet.getRow(i);
+			   // 行不为空
+			   if (row != null) {
+				   String dealerOrder = row.getCell(0).getStringCellValue();
+				   command.setDealerOrderId(dealerOrder);
+				   ShipExpressBean bean = queryApp.queryOrderIdByDealerOrderId(dealerOrder);
+				   command.setOrderId(bean.getOrderId());
+				   command.setExpressPerson(bean.getExpressPerson());
+				   command.setExpressPhone(bean.getExpressPhone());
+				   String expressName = row.getCell(1).getStringCellValue();
+				   command.setExpressName(expressName);
+				   for (OrderExpressBean express : allExpress) {
+					   if (expressName.equals(express.getExpressName())) {
+						command.setExpressCode(express.getExpressCode());
+					}
+				   }
+				   String expressNo = row.getCell(2).getStringCellValue();
+				   command.setExpressNo(expressNo);
+				   command.setExpressWay(expressWay);
+				   
+				   commands.add(command);
+			   }
+		 }
+		 
+		 for (SendOrderCommand shipCommand : commands) {
+			dealerOrderApplication.updateExpress(shipCommand, attach);
+		}
+	}
 	
 }
