@@ -60,7 +60,7 @@ public class DealerOrderAfterSellQuery {
 			params.add(orderType);
 		}
 		
-		if (status != null && (status >= 20 && status < 28)) {
+		if (status != null && (status >= 20 && status <= 28)) {
         	switch(status) {
 	        	case 20: //待商家同意
 	        		sql.append(" AND af._status IN(?,?,?)\r\n");
@@ -223,7 +223,7 @@ public class DealerOrderAfterSellQuery {
 			sql.append(" AND af.order_type = ? ");
 			params.add(orderType);
 		}
-		if (status != null && (status >= 20 && status < 28)) {
+		if (status != null && (status >= 20 && status <= 28)) {
         	switch(status) {
 	        	case 20: //待商家同意
 	        		sql.append(" AND af._status IN(?,?,?)\r\n");

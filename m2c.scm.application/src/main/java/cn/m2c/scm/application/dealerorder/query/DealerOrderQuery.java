@@ -460,7 +460,7 @@ public class DealerOrderQuery {
             params.add(hasComment);
         }
 
-        if (afterSellStatus != null && afterSellStatus >= 20 && afterSellStatus < 28) {
+        if (afterSellStatus != null && afterSellStatus >= 20 && afterSellStatus <= 28) {
         	switch(afterSellStatus) {
 	        	case 20: //待商家同意
 	        		sql.append(" AND af._status IN(?,?,?)\r\n");
@@ -680,7 +680,7 @@ public class DealerOrderQuery {
             params.add(hasComment);
         }
 
-        if (afterSellStatus != null && afterSellStatus >= 20 && afterSellStatus < 28) {
+        if (afterSellStatus != null && afterSellStatus >= 20 && afterSellStatus <= 28) {
         	switch(afterSellStatus) {
 	        	case 20: //待商家同意
 	        		sql.append(" AND af._status IN(?,?,?)\r\n");
@@ -883,7 +883,7 @@ public class DealerOrderQuery {
 		.append("FROM t_scm_order_detail a\r\n")
 		.append("LEFT OUTER JOIN t_scm_order_main b ON a.order_id=b.order_id\r\n")
 		.append("LEFT OUTER JOIN t_scm_order_after_sell d ON a.sku_id=d.sku_id AND a.sort_no=d.sort_no AND a.dealer_order_id=d.dealer_order_id ");
-		if (afterSellStatus != null && afterSellStatus >= 20 && afterSellStatus < 28) {
+		if (afterSellStatus != null && afterSellStatus >= 20 && afterSellStatus <= 28) {
 			switch (afterSellStatus) {
 			case 20: // 待商家同意
 				sql.append(" AND d._status IN(?,?,?) AND d.is_invalide=0\r\n");
@@ -972,7 +972,7 @@ public class DealerOrderQuery {
 				sql.append("AND a.media_res_id IS NOT NULL\r\n");
 		}
 		
-		if (afterSellStatus != null && afterSellStatus >= 20 && afterSellStatus < 28) {
+		if (afterSellStatus != null && afterSellStatus >= 20 && afterSellStatus <= 28) {
 			switch (afterSellStatus) {
 			case 20: // 待商家同意
 				sql.append(" AND d._status IN(?,?,?)\r\n");
