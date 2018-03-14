@@ -5,6 +5,7 @@ import cn.m2c.ddd.common.event.annotation.EventListener;
 import cn.m2c.scm.application.classify.query.GoodsClassifyQueryApplication;
 import cn.m2c.scm.application.dealer.data.bean.DealerBean;
 import cn.m2c.scm.application.dealer.query.DealerQuery;
+import cn.m2c.scm.application.dealerorder.data.bean.DealerOrderQB;
 import cn.m2c.scm.application.goods.GoodsApplication;
 import cn.m2c.scm.application.goods.query.GoodsQueryApplication;
 import cn.m2c.scm.application.order.command.CancelOrderCmd;
@@ -21,12 +22,14 @@ import cn.m2c.scm.application.order.data.bean.GoodsReqBean;
 import cn.m2c.scm.application.order.data.bean.MarketBean;
 import cn.m2c.scm.application.order.data.bean.MarketUseBean;
 import cn.m2c.scm.application.order.data.bean.MediaResBean;
+import cn.m2c.scm.application.order.data.bean.OrderExpressBean;
 import cn.m2c.scm.application.order.data.bean.SkuMediaBean;
 import cn.m2c.scm.application.order.data.representation.OrderMoney;
 import cn.m2c.scm.application.order.query.OrderQueryApplication;
 import cn.m2c.scm.application.order.query.dto.GoodsDto;
 import cn.m2c.scm.application.postage.data.representation.PostageModelRuleRepresentation;
 import cn.m2c.scm.application.postage.query.PostageModelQueryApplication;
+import cn.m2c.scm.application.utils.ExcelUtil;
 import cn.m2c.scm.domain.NegativeCode;
 import cn.m2c.scm.domain.NegativeException;
 import cn.m2c.scm.domain.model.expressPlatform.ExpressPlatform;
@@ -46,6 +49,14 @@ import cn.m2c.scm.domain.service.order.OrderService;
 import cn.m2c.scm.domain.util.GetDisconfDataGetter;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.hssf.usermodel.DVConstraint;
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFDataValidation;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Name;
+import org.apache.poi.ss.util.CellRangeAddressList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,6 +66,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.alibaba.fastjson.JSONObject;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -62,6 +79,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import javax.servlet.http.HttpServletResponse;
 
 /***
  * 订单应用服务类
@@ -1463,6 +1482,95 @@ public class OrderApplication {
 		ep.save(com, nu, shipType);
 		expressPlatformRepository.saveOrUpdate(ep);
 		orderDomainService.registExpress(com,nu);
+	}
+	
+	/**
+	 * 导出批量发货模板
+	 * @param allExpress
+	 * @param dealerOrderList
+	 * @throws NegativeException 
+	 * @throws Exception 
+	 */
+	public void exportShipModel(HttpServletResponse response,List<OrderExpressBean> allExpress,List<DealerOrderQB> dealerOrderList) throws NegativeException {
+		
+		ArrayList<String> arrayExpress = new ArrayList<String>();
+		ArrayList<String> arrayOrder = new ArrayList<String>();
+		for (OrderExpressBean express : allExpress) {
+			arrayExpress.add(express.getExpressName());
+		}
+		
+		for (DealerOrderQB dealerOrder : dealerOrderList) {
+			arrayOrder.add(dealerOrder.getDealerOrderId());
+		}
+		String[] list = (String[]) arrayExpress.toArray(new String[arrayExpress.size()]);
+		String[] list1 = (String[]) arrayOrder.toArray(new String[arrayOrder.size()]);
+		createListBox(response,list,list1);
+	}
+	
+	public  void createListBox(HttpServletResponse response,String[] expressList,String[] dealerOrderList) throws NegativeException{
+			HSSFWorkbook workbook = new HSSFWorkbook(); 
+			String fileName = "批量发货模板";
+	        HSSFSheet realSheet = workbook.createSheet("fileName"); 
+	        HSSFSheet hidden = workbook.createSheet("hidden"); 
+	        
+	        
+	        realSheet.setDefaultColumnWidth(20);
+	        
+	        //设置Excel表头
+	        HSSFRow hssfRow = realSheet.createRow(0);
+	        HSSFCell cell0 = hssfRow.createCell(0);
+			cell0.setCellValue("订货号");
+			HSSFCell cell1 = hssfRow.createCell(1, 1);
+			cell1.setCellValue("物流公司");
+			HSSFCell cell2 = hssfRow.createCell(2);
+			cell2.setCellValue("物流单号");
+	        
+			//操作所有物流公司设置到Excel下拉菜单
+	        HSSFCell cell = null;
+	        for (int i = 0, length= expressList.length; i < length; ++i) { 
+	           String name = expressList[i]; 
+	           HSSFRow row = hidden.createRow(i); 
+	           cell = row.createCell(1,1); 
+	           cell.setCellValue(name); 
+	         } 
+	        
+	        //写入订货单号到Excel
+	        HSSFCell dealerOrderCell = null;
+	        for(int i = 0, length= dealerOrderList.length; i < length; ++i) {
+	        	String name = dealerOrderList[i];
+	        	HSSFRow row = realSheet.createRow(i+1); 
+	        	//参数代表：
+	        	dealerOrderCell = row.createCell(0,i+1);
+	        	System.out.println(name);
+	        	dealerOrderCell.setCellValue(name);
+	        }
+
+	        Name namedCell = workbook.createName(); 
+	        namedCell.setNameName("hidden"); 
+	        namedCell.setRefersToFormula("hidden!A1:A" + expressList.length); 
+	        //加载数据,将名称为hidden的
+	        DVConstraint constraint = DVConstraint.createFormulaListConstraint("hidden"); 
+
+	        // 设置数据有效性加载在哪个单元格上,四个参数分别是：起始行、终止行、起始列、终止列
+	        CellRangeAddressList addressList = new CellRangeAddressList(1, dealerOrderList.length, 1, 1 ); 
+	        HSSFDataValidation validation = new HSSFDataValidation(addressList, constraint);
+
+	        //将第二个sheet设置为隐藏
+	        workbook.setSheetHidden(1, true); 
+	        realSheet.addValidationData(validation); 
+	        try {
+				response.setHeader("Content-Disposition", "attachment;filename=" + ExcelUtil.urlEncode(fileName+".xls"));
+				response.setContentType("application/ms-excel");
+				OutputStream ouPutStream = null;
+				try {
+				    ouPutStream = response.getOutputStream();
+				    workbook.write(ouPutStream);
+				} finally {
+				    ouPutStream.close();
+				}
+			} catch (Exception e) {
+				throw new NegativeException(MCode.V_401,"导出批量发货模板出错！");
+			}
 	}
 	
 	
