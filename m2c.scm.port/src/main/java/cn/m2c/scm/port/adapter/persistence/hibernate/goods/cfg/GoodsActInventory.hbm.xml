@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping default-access="field" default-cascade="all">
+    <class name="cn.m2c.scm.domain.model.goods.GoodsActInventory" table="t_scm_goods_activity_inventory" lazy="true"
+           optimistic-lock="version" dynamic-insert="true" dynamic-update="true">
+
+        <id name="id" column="id" type="long" unsaved-value="-1">
+            <generator class="native"/>
+        </id>
+        <version name="concurrencyVersion" column="concurrency_version" type="int"/>
+        <property name="inventoryId" column="inventory_id" type="string"/>
+        <property name="activityId" column="activity_id" type="string"/>
+        <property name="activityType" column="activity_type" type="int"/>
+        <property name="skuId" column="sku_id" type="string"/>
+        <property name="expectFreezeNum" column="expect_freeze_num" type="int"/>
+        <property name="realFreezeNum" column="real_freeze_num" type="int"/>
+        <property name="availableNum" column="available_num" type="int"/>
+        <property name="price" column="price" type="long"/>
+        <property name="status" column="status" type="int"/>
+        <property name="createTime" column="create_time" type="timestamp"/>
+    </class>
+</hibernate-mapping>
