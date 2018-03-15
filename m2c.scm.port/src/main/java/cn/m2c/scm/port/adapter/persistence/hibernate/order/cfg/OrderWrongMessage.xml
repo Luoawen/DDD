@@ -17,5 +17,6 @@
         <property name="expressName" column="express_name" type="string"/>
         <property name="expressNo" column="express_no" type="string"/>
         <property name="importWrongMessage" column="import_wrong_message" type="string"/>
+        <property name="expressFlag" column="express_flag" type="long"/>
     </class>
 </hibernate-mapping>
