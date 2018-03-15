@@ -46,8 +46,8 @@ public class MediaOrderCreateListener extends ExchangeListener {
 	@Override
 	protected void filteredDispatch(String aType, String aTextMessage) throws Exception {
 		LOGGER.info("MediaOrderCreateListener aTextMessage ==> " + aTextMessage);
-		NotificationReader reader = new NotificationReader(aTextMessage);
-		/*String orderId = reader.eventStringValue("orderId");
+		/*NotificationReader reader = new NotificationReader(aTextMessage);
+		String orderId = reader.eventStringValue("orderId");
 		String dealerOrderId = reader.eventStringValue("dealerOrderId");
 		String mediaId = reader.eventStringValue("mediaId");
 		String mediaResId = reader.eventStringValue("mediaResId");
@@ -63,35 +63,36 @@ public class MediaOrderCreateListener extends ExchangeListener {
 			    while(it.hasNext()){
 			        Entry entry = (Entry) it.next();
 			        String orderId = (String) entry.getKey();
-			        //JSONArray array = (JSONArray) data.get(orderId);
-			        //List<MediaGoods> list = array.toJavaList(MediaGoods.class);
-			        List<MediaGoods> list = JsonUtils.toList((String)data.get(orderId), MediaGoods.class);
-			        for(MediaGoods mediaGoods : list) {
-			        	String dealerOrderId = mediaGoods.getDealerOrderId();
-			    		String mediaId = mediaGoods.getMediaId();
-			    		String mediaResId = mediaGoods.getMediaResId();
-			    		Integer sortNo = mediaGoods.getSortNo();
-			    		
-			    		//调用媒体接口查询广告位信息
-			    		Map map = orderServiceImpl.getMediaMessageInfo(mediaId, mediaResId);
-			    		if(null != map && map.size() > 0) {
-			    			String mediaCate = map.get("mediaCate") == null ? null : (String) map.get("mediaCate");
-			    			Integer mediaNo = map.get("mediaNo") == null ? null : Integer.parseInt((String) map.get("mediaNo")); 
-			    			String mediaName = map.get("mediaName") == null ? null : (String) map.get("mediaName");
-			    			Integer mresCate = map.get("mresCate") == null ? null : Integer.parseInt((String) map.get("mresCate"));
-			    			Integer formId = map.get("formId") == null ? null : Integer.parseInt((String) map.get("formId"));
-			    			Long mresNo = map.get("mresNo") == null ? null : Long.parseLong((String) map.get("mresNo"));
-			    			Integer level = map.get("level") == null ? null : Integer.parseInt((String) map.get("level"));
-			    			//封装，保存
-			    			OrderMediaCommand command = new OrderMediaCommand(orderId, dealerOrderId, mediaCate, mediaNo, mediaName, mresCate, formId, mresNo, level, sortNo);
-			    			orderMediaApplication.addOrderMedia(command);
-				        }
-				    }
+			        JSONArray array = (JSONArray) data.get(orderId);
+			        if(null !=array && array.size() > 0){
+			            for(int i = 0; i < array.size(); i++){
+			                JSONObject job = array.getJSONObject(i);  // 遍历 jsonarray 数组，把每一个对象转成 json 对象
+			                String dealerOrderId = job.getString("dealerOrderId");
+			                String mediaId = job.getString("mediaId");
+			                String mediaResId = job.getString("mediaResId");
+			                Integer sortNo = job.getInteger("sortNo");
+			            
+			                //调用媒体接口查询广告位信息
+			                Map map = orderServiceImpl.getMediaMessageInfo(mediaId, mediaResId);
+			                if(null != map && map.size() > 0) {
+			                	String mediaCate = map.get("mediaCate") == null ? null : (String) map.get("mediaCate");
+			                	Integer mediaNo = map.get("mediaNo") == null ? null : Integer.parseInt((String) map.get("mediaNo")); 
+			                	String mediaName = map.get("mediaName") == null ? null : (String) map.get("mediaName");
+			                	Integer mresCate = map.get("mresCate") == null ? null : Integer.parseInt((String) map.get("mresCate"));
+			                	Integer formId = map.get("formId") == null ? null : Integer.parseInt((String) map.get("formId"));
+			                	Long mresNo = map.get("mresNo") == null ? null : Long.parseLong((String) map.get("mresNo"));
+			                	Integer level = map.get("level") == null ? null : Integer.parseInt((String) map.get("level"));
+			    			    //封装，保存
+			                	OrderMediaCommand command = new OrderMediaCommand(orderId, dealerOrderId, mediaCate, mediaNo, mediaName, mresCate, formId, mresNo, level, sortNo);
+			                	orderMediaApplication.addOrderMedia(command);
+				            }
+			            }
+			        }
 				}
 			}
 		}
 	}
-
+	
 	@Override
 	protected String[] listensTo() {
 		return new String[] {"cn.m2c.scm.domain.model.order.event.MediaOrderCreateEvent"};
