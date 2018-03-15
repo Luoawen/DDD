@@ -1,6 +1,8 @@
 package cn.m2c.scm.domain.model.order.event;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 import cn.m2c.ddd.common.domain.model.DomainEvent;
 
@@ -8,24 +10,11 @@ import cn.m2c.ddd.common.domain.model.DomainEvent;
  * 下单时媒体广告位媒体事件 
  */
 public class MediaOrderCreateEvent implements DomainEvent {
+	
 	/**
-	 * 平台订单号
+	 * key 平台订单号,val 为订单中商品与媒体数据
 	 */
-	private String orderId;
-	/**
-	 * 商家订单号
-	 */
-	private String dealerOrderId;
-	/**
-	 * 媒体id
-	 */
-	private String mediaId;
-	/**
-	 * 广告位id
-	 */
-	private String mediaResId;
-	/**sort no商家在订单中的插入位置*/
-	private int sortNo;
+	private Map<String, List<MediaGoods>> data = null;
 	
 	private Date occurredOn;
     private int eventVersion;
@@ -36,14 +25,9 @@ public class MediaOrderCreateEvent implements DomainEvent {
         eventVersion = 1;
     }
 	
-    public MediaOrderCreateEvent(String orderId, String dealerOrderId, String mediaId, String mediaResId
-    		, int sortNo) {
+    public MediaOrderCreateEvent(Map<String, List<MediaGoods>> datas) {
     	this();
-    	this.orderId = orderId;
-    	this.dealerOrderId = dealerOrderId;
-    	this.mediaId = mediaId;
-    	this.mediaResId = mediaResId;
-        this.sortNo = sortNo;
+    	data = datas;
     }
     
 	@Override
@@ -55,5 +39,8 @@ public class MediaOrderCreateEvent implements DomainEvent {
 	public Date occurredOn() {
 		return this.occurredOn;
 	}
-
+	
+	public Map<String, List<MediaGoods>> getData() {
+		return data;
+	}
 }

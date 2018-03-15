@@ -3,6 +3,7 @@ package cn.m2c.scm.domain.model.order;
 import cn.m2c.ddd.common.domain.model.ConcurrencySafeEntity;
 import cn.m2c.ddd.common.domain.model.DomainEventPublisher;
 import cn.m2c.scm.domain.model.dealer.event.DealerReportStatisticsEvent;
+import cn.m2c.scm.domain.model.order.event.MediaGoods;
 import cn.m2c.scm.domain.model.order.event.MediaOrderCreateEvent;
 import cn.m2c.scm.domain.model.order.event.OrderAddedEvent;
 import cn.m2c.scm.domain.model.order.event.OrderCancelEvent;
@@ -141,16 +142,26 @@ public class MainOrder extends ConcurrencySafeEntity {
         updateTime = new Date();
         DomainEventPublisher.instance().publish(new OrderAddedEvent(userId, skus, orderId, from,sn,orderAmount));
         DomainEventPublisher.instance().publish(new OrderOptLogEvent(orderId, null, "订单提交成功", userId, 1));
+        
+        Map<String, List<MediaGoods>> mediaGoodsMap = null;
+        List<MediaGoods> datas = null;
         for (DealerOrder dealerOrder : dealerOrders) {//商家订单
-        	if(dealerOrder.getOrderDtls()!=null && dealerOrder.getOrderDtls().size()>0){
+        	if(dealerOrder.getOrderDtls() != null && dealerOrder.getOrderDtls().size() > 0){
         		for (DealerOrderDtl dealerOrderDtl : dealerOrder.getOrderDtls()) {//获取每一个订单详情将有广告位的事件
         			if(!StringUtils.isEmpty(dealerOrderDtl.getMediaId()) && !StringUtils.isEmpty(dealerOrderDtl.getMediaResId())){
-        				DomainEventPublisher.instance().publish(new MediaOrderCreateEvent(orderId, dealerOrder.getId(), dealerOrderDtl.getMediaId(), 
-        						dealerOrderDtl.getMediaResId(), dealerOrderDtl.getSortNo()));
+        				if (datas == null) {
+        					mediaGoodsMap = new HashMap<String, List<MediaGoods>>();
+        					datas = new ArrayList<MediaGoods>();
+        					mediaGoodsMap.put(orderId, datas);
+        				}
+        				datas.add(new MediaGoods(dealerOrder.dealerId(), dealerOrderDtl.getMediaId(), dealerOrderDtl.getMediaResId()
+        						, dealerOrderDtl.getSortNo()));
         			}
         		}
         	}
 		}
+        if (mediaGoodsMap != null)
+        	DomainEventPublisher.instance().publish(new MediaOrderCreateEvent(mediaGoodsMap));
     }
 
     /***
