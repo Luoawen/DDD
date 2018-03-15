@@ -23,6 +23,11 @@ public class GoodsActInventory extends ConcurrencySafeEntity {
     private Integer activityType;
 
     /**
+     * 商品id
+     */
+    private String goodsId;
+
+    /**
      * 规格id
      */
     private String skuId;
@@ -61,18 +66,18 @@ public class GoodsActInventory extends ConcurrencySafeEntity {
         super();
     }
 
-    public GoodsActInventory(String inventoryId, String activityId, Integer activityType, String skuId,
-                             Integer expectFreezeNum, Integer realFreezeNum, Integer availableNum, Long price,
-                             Integer status, Date createTime) {
+    public GoodsActInventory(String inventoryId, String activityId, String goodsId, String skuId,
+                             Integer expectFreezeNum, Integer realFreezeNum, Long price) {
         this.inventoryId = inventoryId;
         this.activityId = activityId;
-        this.activityType = activityType;
+        this.activityType = 1;
+        this.goodsId = goodsId;
         this.skuId = skuId;
         this.expectFreezeNum = expectFreezeNum;
         this.realFreezeNum = realFreezeNum;
-        this.availableNum = availableNum;
+        this.availableNum = 0;
         this.price = price;
-        this.status = status;
-        this.createTime = createTime;
+        this.status = 0;
+        this.createTime = new Date();
     }
 }

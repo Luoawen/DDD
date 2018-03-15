@@ -788,4 +788,8 @@ public class Goods extends ConcurrencySafeEntity {
     public String goodsClassifyId() {
         return goodsClassifyId;
     }
+
+    public boolean isSelling() {
+        return this.delStatus == 1 && this.goodsStatus == 2;
+    }
 }

@@ -13,6 +13,7 @@
         <property name="inventoryId" column="inventory_id" type="string"/>
         <property name="activityId" column="activity_id" type="string"/>
         <property name="activityType" column="activity_type" type="int"/>
+        <property name="goodsId" column="goods_id" type="string"/>
         <property name="skuId" column="sku_id" type="string"/>
         <property name="expectFreezeNum" column="expect_freeze_num" type="int"/>
         <property name="realFreezeNum" column="real_freeze_num" type="int"/>

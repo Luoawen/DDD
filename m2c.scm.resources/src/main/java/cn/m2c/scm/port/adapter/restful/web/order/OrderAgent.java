@@ -598,11 +598,13 @@ public class OrderAgent {
 	}
 	
     /**
-     * 
-     * @param myFile
+     * 上传批量发货Excel
+     * @param myFile          模板文件
+     * @param userId          用户ID
+     * @param shopName        商家名
      * @return
      */
-    @RequestMapping(value = "expressmodel",method = RequestMethod.POST)
+    @RequestMapping(value = {"/expressmodel","/web/expressmodel"},method = RequestMethod.POST)
     public ResponseEntity<MResult> importExpressModel(@RequestParam("myfile") MultipartFile myFile,
     		@RequestParam(value = "userId", required = false) String userId,
     		@RequestParam(value = "shopName", required = false) String shopName
@@ -611,7 +613,7 @@ public class OrderAgent {
     	try {
     		String _attach= request.getHeader("attach");
 			List<Integer> times = orderapplication.importExpressModel(myFile,userId,shopName,0,_attach);
-			result.setContent("批量发货成功" + times.get(1) + "个," + "批量发货失败" + times.get(0) +  "个");
+			result.setContent("成功" + times.get(1)  + "失败" + times.get(0));
 		} catch (NegativeException e) {
 			LOGGER.error("上传发货模板出错", e);
             result = new MResult(MCode.V_400, e.getMessage());

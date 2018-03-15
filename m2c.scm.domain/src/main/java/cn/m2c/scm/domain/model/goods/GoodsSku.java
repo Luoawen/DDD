@@ -197,4 +197,8 @@ public class GoodsSku extends ConcurrencySafeEntity {
     public boolean isModifySupplyPrice(Long supplyPrice) {
         return null != this.supplyPrice && !this.supplyPrice.equals(supplyPrice);
     }
+
+    public boolean isShow() {
+        return this.showStatus == 2;
+    }
 }
