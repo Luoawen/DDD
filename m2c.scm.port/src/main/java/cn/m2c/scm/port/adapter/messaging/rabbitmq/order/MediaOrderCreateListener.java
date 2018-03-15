@@ -11,8 +11,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate4.HibernateTransactionManager;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
+import cn.m2c.common.JsonUtils;
 import cn.m2c.ddd.common.application.configuration.RabbitmqConfiguration;
 import cn.m2c.ddd.common.event.ConsumedEventStore;
 import cn.m2c.ddd.common.notification.NotificationReader;
@@ -52,16 +54,18 @@ public class MediaOrderCreateListener extends ExchangeListener {
 		Integer sortNo = reader.eventIntegerValue("sortNo");*/
 		
 		//原事件修改--> key平台订单号,val 为订单中商品与媒体数据 Map<String, List<MediaGoods>> data
-		String eventStringValue = reader.eventStringValue("data");
+		String eventStringValue = JSONObject.parseObject(aTextMessage).getJSONObject("event").getString("data");
+		
 		if(StringUtils.isNotEmpty(eventStringValue)) {
-			//Map data = (Map) JSON.parse(eventStringValue);
 			Map data = JSONObject.parseObject(eventStringValue);
 			if(null != data && data.size() > 0 ) {
 			    Iterator it = data.entrySet().iterator();
 			    while(it.hasNext()){
 			        Entry entry = (Entry) it.next();
 			        String orderId = (String) entry.getKey();
-			        List<MediaGoods> list = (List<MediaGoods>) data.get(orderId);
+			        //JSONArray array = (JSONArray) data.get(orderId);
+			        //List<MediaGoods> list = array.toJavaList(MediaGoods.class);
+			        List<MediaGoods> list = JsonUtils.toList((String)data.get(orderId), MediaGoods.class);
 			        for(MediaGoods mediaGoods : list) {
 			        	String dealerOrderId = mediaGoods.getDealerOrderId();
 			    		String mediaId = mediaGoods.getMediaId();
