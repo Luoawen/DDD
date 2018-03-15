@@ -154,7 +154,7 @@ public class MainOrder extends ConcurrencySafeEntity {
         					datas = new ArrayList<MediaGoods>();
         					mediaGoodsMap.put(orderId, datas);
         				}
-        				datas.add(new MediaGoods(dealerOrder.dealerId(), dealerOrderDtl.getMediaId(), dealerOrderDtl.getMediaResId()
+        				datas.add(new MediaGoods(dealerOrder.getId(), dealerOrderDtl.getMediaId(), dealerOrderDtl.getMediaResId()
         						, dealerOrderDtl.getSortNo()));
         			}
         		}
