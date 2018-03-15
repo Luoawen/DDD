@@ -15,4 +15,6 @@ public interface GoodsSkuRepository {
     boolean goodsCodeIsRepeat(String dealerId, String skuId, String code);
 
     GoodsSku getEffectiveGoodsSku(String skuId);
+
+    int freezeActInventory(String skuId, Integer num, Integer concurrencyVersion);
 }
