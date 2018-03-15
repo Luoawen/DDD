@@ -611,6 +611,9 @@ public class OrderAgent {
     		){
     	MResult result = new MResult();
     	try {
+    		LOGGER.info(myFile.toString());
+    		LOGGER.info(userId);
+    		LOGGER.info(shopName);
     		String _attach= request.getHeader("attach");
 			List<Integer> times = orderapplication.importExpressModel(myFile,userId,shopName,0,_attach);
 			result.setContent("成功" + times.get(1)  + "失败" + times.get(0));
