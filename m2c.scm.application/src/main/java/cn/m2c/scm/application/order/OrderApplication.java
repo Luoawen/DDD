@@ -1635,14 +1635,16 @@ public class OrderApplication {
 		 int i = 0;         //失败次数
 		 int j = 0;         //成功次数
 		 List<Integer> times = new ArrayList<Integer>();
-		 try {
+		
 			for (SendOrderCommand shipCommand : commands) {
-				dealerOrderApplication.updateExpress(shipCommand, attach);
-				j++;
+				try {
+					dealerOrderApplication.updateExpress(shipCommand, attach);
+					++j;
+				} catch (NegativeException e) {
+					++i;
+					continue;
+				}
 			}
-		} catch (NegativeException e) {
-			i++;
-		}
 		times.add(i);
 		times.add(j);
 		return times;
