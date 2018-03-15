@@ -19,9 +19,8 @@ public class OrderWrongMessage {
 	private Date createdDate;
 
 	
-	public OrderWrongMessage(String dealerOrderId, String expressName, String expressNo, String importWrongMessage,
+	public void add(String dealerOrderId, String expressName, String expressNo, String importWrongMessage,
 			Date createdDate) {
-		super();
 		this.dealerOrderId = dealerOrderId;
 		this.expressName = expressName;
 		this.expressNo = expressNo;
