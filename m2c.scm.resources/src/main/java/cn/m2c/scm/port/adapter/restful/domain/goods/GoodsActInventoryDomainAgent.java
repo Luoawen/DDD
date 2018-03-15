@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 活动商品库存
@@ -46,8 +47,9 @@ public class GoodsActInventoryDomainAgent {
                 result.setErrorMessage("冻结参数为空");
                 return new ResponseEntity<MResult>(result, HttpStatus.OK);
             }
-            goodsActInventoryApplication.goodsActInventoryFreeze(freezeInfos);
+            List<Map> resultList = goodsActInventoryApplication.goodsActInventoryFreeze(freezeInfos);
             result.setStatus(MCode.V_200);
+            result.setContent(resultList);
         } catch (NegativeException ne) {
             LOGGER.error("goodsActInventoryFreeze NegativeException e:", ne);
             result = new MResult(ne.getStatus(), ne.getMessage());

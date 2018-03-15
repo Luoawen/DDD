@@ -20,7 +20,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 活动商品库存
@@ -38,7 +40,7 @@ public class GoodsActInventoryApplication {
 
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
     @EventListener(isListening = true)
-    public void goodsActInventoryFreeze(List<GoodsActInventoryFreezeCommand> freezeInfos) throws NegativeException {
+    public List<Map> goodsActInventoryFreeze(List<GoodsActInventoryFreezeCommand> freezeInfos) throws NegativeException {
         boolean isFreeze = false;
         if (null == freezeInfos || freezeInfos.size() <= 0) {
             throw new NegativeException(MCode.V_1, "冻结参数为空");
@@ -49,13 +51,16 @@ public class GoodsActInventoryApplication {
         if (!goods.isSelling()) {
             throw new NegativeException(MCode.V_203, "商品状态不在出售中");
         }
-
+        List<Map> resultList = new ArrayList<>();
         for (GoodsActInventoryFreezeCommand command : freezeInfos) {
             // 查询商品规格信息
             GoodsSku goodsSku = goodsSkuRepository.queryGoodsSkuById(command.getSkuId());
             if (!goodsSku.isShow()) {
                 throw new NegativeException(MCode.V_203, "商品规格不对外展示");
             }
+
+            Map map = new HashMap<>();
+            map.put("skuId", command.getSkuId());
             Integer availableNum = goodsSku.availableNum();
             if (availableNum > 0) {
                 isFreeze = true;
@@ -74,7 +79,15 @@ public class GoodsActInventoryApplication {
                 GoodsActInventory inventory = new GoodsActInventory(IDGenerator.get(), command.getRuleId(), command.getGoodsId(), command.getSkuId(),
                         command.getSkuNum(), realFreezeNum, command.getPrice());
                 goodsActInventoryRepository.save(inventory);
+                map.put("freezeNum", realFreezeNum);
+            } else {
+                // 实际冻结0
+                GoodsActInventory inventory = new GoodsActInventory(IDGenerator.get(), command.getRuleId(), command.getGoodsId(), command.getSkuId(),
+                        command.getSkuNum(), 0, command.getPrice());
+                goodsActInventoryRepository.save(inventory);
+                map.put("freezeNum", 0);
             }
+            resultList.add(map);
         }
         if (!isFreeze) {
             throw new NegativeException(MCode.V_203, "商品库存不足");
@@ -86,5 +99,7 @@ public class GoodsActInventoryApplication {
         DomainEventPublisher
                 .instance()
                 .publish(new GoodsOutInventoryEvent(goodsIds));
+
+        return resultList;
     }
 }
