@@ -37,7 +37,7 @@ public class GoodsActInventoryDomainAgent {
      * @param freezeInfo 格式：[{"rule_id":"123456","sku_num":10,"price":100,"sku_id":"123456"},{"rule_id":"123456","sku_num":20,"price":200,"sku_id":"789654"}]
      * @return
      */
-    @RequestMapping(value = "/freeze", method = RequestMethod.GET)
+    @RequestMapping(value = "/freeze", method = RequestMethod.POST)
     public ResponseEntity<MResult> goodsActInventoryFreeze(
             @RequestParam(value = "freezeInfo", required = false) String freezeInfo) {
         MResult result = new MResult(MCode.V_1);
