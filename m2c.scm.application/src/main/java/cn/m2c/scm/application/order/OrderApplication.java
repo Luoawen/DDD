@@ -1588,7 +1588,7 @@ public class OrderApplication {
 	 * @throws NegativeException
 	 * @throws Exception
 	 */
-	public void importExpressModel(MultipartFile myFile,String userId,String shopName,Integer expressWay,String attach) throws NegativeException, Exception {
+	public List<Integer> importExpressModel(MultipartFile myFile,String userId,String shopName,Integer expressWay,String attach) throws NegativeException, Exception {
 		Workbook workbook = null ;
 		String fileName = myFile.getOriginalFilename(); 
 		List<OrderExpressBean> allExpress = queryApp.getAllExpress();
@@ -1632,9 +1632,20 @@ public class OrderApplication {
 			   }
 		 }
 		 
-		 for (SendOrderCommand shipCommand : commands) {
-			dealerOrderApplication.updateExpress(shipCommand, attach);
+		 int i = 0;         //失败次数
+		 int j = 0;         //成功次数
+		 List<Integer> times = new ArrayList<Integer>();
+		 try {
+			for (SendOrderCommand shipCommand : commands) {
+				dealerOrderApplication.updateExpress(shipCommand, attach);
+				j++;
+			}
+		} catch (NegativeException e) {
+			i++;
 		}
+		times.add(i);
+		times.add(j);
+		return times;
 	}
 	
 }
