@@ -80,4 +80,25 @@ public class GoodsActInventory extends ConcurrencySafeEntity {
         this.status = 0;
         this.createTime = new Date();
     }
+
+    public void goodsActCreateSuccess() {
+        this.availableNum = this.realFreezeNum;
+        this.status = 1;
+    }
+
+    public void goodsActEnd() {
+        this.availableNum = 0;
+    }
+
+    public String goodsId() {
+        return this.goodsId;
+    }
+
+    public String skuId() {
+        return this.skuId;
+    }
+
+    public Integer availableNum() {
+        return this.availableNum;
+    }
 }

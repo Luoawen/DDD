@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 活动商品库存
@@ -36,7 +37,7 @@ public class GoodsActInventoryDomainAgent {
      * @param freezeInfo 格式：[{"rule_id":"123456","sku_num":10,"price":100,"sku_id":"123456"},{"rule_id":"123456","sku_num":20,"price":200,"sku_id":"789654"}]
      * @return
      */
-    @RequestMapping(value = "/freeze", method = RequestMethod.GET)
+    @RequestMapping(value = "/freeze", method = RequestMethod.POST)
     public ResponseEntity<MResult> goodsActInventoryFreeze(
             @RequestParam(value = "freezeInfo", required = false) String freezeInfo) {
         MResult result = new MResult(MCode.V_1);
@@ -46,8 +47,9 @@ public class GoodsActInventoryDomainAgent {
                 result.setErrorMessage("冻结参数为空");
                 return new ResponseEntity<MResult>(result, HttpStatus.OK);
             }
-            goodsActInventoryApplication.goodsActInventoryFreeze(freezeInfos);
+            List<Map> resultList = goodsActInventoryApplication.goodsActInventoryFreeze(freezeInfos);
             result.setStatus(MCode.V_200);
+            result.setContent(resultList);
         } catch (NegativeException ne) {
             LOGGER.error("goodsActInventoryFreeze NegativeException e:", ne);
             result = new MResult(ne.getStatus(), ne.getMessage());
