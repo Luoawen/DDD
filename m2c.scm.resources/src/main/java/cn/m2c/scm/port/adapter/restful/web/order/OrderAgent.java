@@ -598,11 +598,13 @@ public class OrderAgent {
 	}
 	
     /**
-     * 
-     * @param myFile
+     * 上传批量发货Excel
+     * @param myFile          模板文件
+     * @param userId          用户ID
+     * @param shopName        商家名
      * @return
      */
-    @RequestMapping(value = "expressmodel",method = RequestMethod.POST)
+    @RequestMapping(value = {"/expressmodel","/web/expressmodel"},method = RequestMethod.POST)
     public ResponseEntity<MResult> importExpressModel(@RequestParam("myfile") MultipartFile myFile,
     		@RequestParam(value = "userId", required = false) String userId,
     		@RequestParam(value = "shopName", required = false) String shopName
