@@ -791,11 +791,11 @@ public class OrderQueryApplication {
 	public ShipExpressBean queryOrderIdByDealerOrderId(String dealerOrderId) throws NegativeException {
 		ShipExpressBean expressBean = null;
 		try {
-			String sql = "SELECT order_id, rev_person, rev_phone FROM t_scm_order_dealer WHERE dealer_order_id = ?";
+			String sql = "SELECT dealer_id, order_id, rev_person, rev_phone FROM t_scm_order_dealer WHERE dealer_order_id = ?";
 			expressBean = this.getSupportJdbcTemplate().queryForBean(sql, ShipExpressBean.class,dealerOrderId);
 			return expressBean;
 		} catch (Exception e) {
-			throw new NegativeException(MCode.V_400,"查询主订单出错");
+			throw new NegativeException(MCode.V_400,"发货信息");
 		}
 		
 	}

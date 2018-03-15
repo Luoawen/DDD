@@ -607,12 +607,14 @@ public class OrderAgent {
     @RequestMapping(value = {"/expressmodel","/web/expressmodel"},method = RequestMethod.POST)
     public ResponseEntity<MResult> importExpressModel(@RequestParam("myfile") MultipartFile myFile,
     		@RequestParam(value = "userId", required = false) String userId,
-    		@RequestParam(value = "shopName", required = false) String shopName
+    		@RequestParam(value = "shopName", required = false) String shopName,
+    		@RequestParam(value = "dealerId", required = false) String dealerId
     		){
     	MResult result = new MResult();
     	try {
     		String _attach= request.getHeader("attach");
 			List<Integer> times = orderapplication.importExpressModel(myFile,userId,shopName,0,_attach);
+//			List<Integer> times = orderapplication.importExpress(myFile,userId,shopName,dealerId,0,_attach);
 			result.setContent("成功" + times.get(1)  + "失败" + times.get(0));
 		} catch (NegativeException e) {
 			LOGGER.error("上传发货模板出错", e);

@@ -6,6 +6,7 @@ import cn.m2c.scm.application.classify.query.GoodsClassifyQueryApplication;
 import cn.m2c.scm.application.dealer.data.bean.DealerBean;
 import cn.m2c.scm.application.dealer.query.DealerQuery;
 import cn.m2c.scm.application.dealerorder.data.bean.DealerOrderQB;
+import cn.m2c.scm.application.dealerorder.query.DealerOrderQuery;
 import cn.m2c.scm.application.goods.GoodsApplication;
 import cn.m2c.scm.application.goods.query.GoodsQueryApplication;
 import cn.m2c.scm.application.order.command.CancelOrderCmd;
@@ -18,6 +19,7 @@ import cn.m2c.scm.application.order.command.SendOrderCommand;
 import cn.m2c.scm.application.order.command.SendOrderSMSCommand;
 import cn.m2c.scm.application.order.data.bean.CouponBean;
 import cn.m2c.scm.application.order.data.bean.CouponUseBean;
+import cn.m2c.scm.application.order.data.bean.DealerOrderBean;
 import cn.m2c.scm.application.order.data.bean.FreightCalBean;
 import cn.m2c.scm.application.order.data.bean.GoodsReqBean;
 import cn.m2c.scm.application.order.data.bean.MarketBean;
@@ -73,6 +75,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.alibaba.fastjson.JSONObject;
 
+import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -123,6 +126,9 @@ public class OrderApplication {
     
     @Autowired
     DealerOrderApplication dealerOrderApplication;
+    
+    @Autowired
+    DealerOrderQuery dealerOrderQuery;
 
     /**
      * 提交订单
@@ -1649,5 +1655,65 @@ public class OrderApplication {
 		times.add(j);
 		return times;
 	}
-	
+
+	/**
+	 * 批量导入发货单模板 发货
+	 * @param myFile
+	 * @param userId
+	 * @param shopName
+	 * @param dealerId 
+	 * @param i
+	 * @param _attach
+	 * @return
+	 */
+	public List<Integer> importExpress(MultipartFile myFile,String userId,String shopName,String dealerId, Integer expressWay,String attach) {
+		try {
+			Workbook workbook = null ;
+			String fileName = myFile.getOriginalFilename(); 
+			List<OrderExpressBean> allExpress = queryApp.getAllExpress();
+			List<SendOrderCommand> commands = new ArrayList<SendOrderCommand>();
+			SendOrderCommand command = new SendOrderCommand();
+			 if(fileName.endsWith("xls")){ 
+				   //2003 
+				   workbook = new HSSFWorkbook(myFile.getInputStream()); 
+				  }else{
+				   throw new NegativeException(MCode.V_401,"文件不是Excel文件");
+				  }
+
+			 Sheet sheet = workbook.getSheet("批量发货模板");
+			 int rows = sheet.getLastRowNum();// 一共有多少行
+			 if(rows>500){//判断记录是否大于500
+				 throw new NegativeException(402,"记录超出500");
+			 }
+			 if(rows>0){//确认有数据才会导入
+				 for(int i = 1; i <= rows+1; ++i) {
+					// 读取左上端单元格
+					Row row = sheet.getRow(i);
+					 if (row != null) {
+						 String dealerOrderId = row.getCell(0).getStringCellValue();
+						 String expressName = row.getCell(1).getStringCellValue();
+						 String expressNo = row.getCell(2).getStringCellValue();
+						 if(StringUtils.isEmpty(dealerOrderId)){//校验1：订货号为空 导入失败，提示订货号不能为空
+							 //--入库信息
+							 continue;
+						 }
+						 DealerOrderBean dealerOrder = queryApp.getDealerOrder(dealerOrderId);
+						 if(dealerOrder==null || !dealerOrder.getDealerId().equals(dealerId)){//检验2：订货号不存在
+							 //--入库信息
+							 continue;
+						 }
+						 if(dealerOrder.getStatus()!=1){//检验3：该单号不是待发货状态
+							 continue;
+						 }
+					 }
+				 }
+			 }
+		} catch (NegativeException e) {
+			
+		} catch (IOException e) {
+			
+		}
+		
+		return null;
+	}
 }
