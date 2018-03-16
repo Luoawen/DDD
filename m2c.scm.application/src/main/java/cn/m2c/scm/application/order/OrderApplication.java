@@ -24,6 +24,7 @@ import cn.m2c.scm.application.order.data.bean.MarketBean;
 import cn.m2c.scm.application.order.data.bean.MarketUseBean;
 import cn.m2c.scm.application.order.data.bean.MediaResBean;
 import cn.m2c.scm.application.order.data.bean.OrderExpressBean;
+import cn.m2c.scm.application.order.data.bean.OrderShipSuccessBean;
 import cn.m2c.scm.application.order.data.bean.ShipExpressBean;
 import cn.m2c.scm.application.order.data.bean.SkuMediaBean;
 import cn.m2c.scm.application.order.data.representation.OrderMoney;
@@ -1588,7 +1589,7 @@ public class OrderApplication {
 	 * @throws NegativeException
 	 * @throws Exception
 	 */
-	public List<Integer> importExpressModel(MultipartFile myFile,String userId,String shopName,Integer expressWay,String attach) throws NegativeException, Exception {
+	public OrderShipSuccessBean importExpressModel(MultipartFile myFile,String userId,String shopName,Integer expressWay,String attach) throws NegativeException, Exception {
 		Workbook workbook = null ;
 		String fileName = myFile.getOriginalFilename(); 
 		List<OrderExpressBean> allExpress = queryApp.getAllExpress();
@@ -1601,7 +1602,7 @@ public class OrderApplication {
 			   throw new NegativeException(MCode.V_401,"文件不是Excel文件");
 			  }
 
-		 Sheet sheet = workbook.getSheet("批量发货模板");
+		 Sheet sheet = workbook.getSheet("fileName");
 		 int rows = sheet.getLastRowNum();// 一共有多少行
 		 
 		 //发货参数：dealerOrderId,orderId,expressWay,expressName,expressCode,expressNo,userId,expressPhone.expressPerson
@@ -1624,30 +1625,33 @@ public class OrderApplication {
 						command.setExpressCode(express.getExpressCode());
 					}
 				   }
-				   String expressNo = row.getCell(2).getStringCellValue();
-				   command.setExpressNo(expressNo);
+				   if (row.getCell(2) != null) {
+					   row.getCell(2).setCellType(Cell.CELL_TYPE_STRING);
+					   String expressNo = row.getCell(2).getStringCellValue();
+					   command.setExpressNo(expressNo);
+				}
 				   command.setExpressWay(expressWay);
 				   
 				   commands.add(command);
 			   }
 		 }
 		 
-		 int i = 0;         //失败次数
-		 int j = 0;         //成功次数
-		 List<Integer> times = new ArrayList<Integer>();
+		 OrderShipSuccessBean bean = new OrderShipSuccessBean();
+		 int failed = 0;         //失败次数
+		 int success = 0;         //成功次数
 		
 			for (SendOrderCommand shipCommand : commands) {
 				try {
 					dealerOrderApplication.updateExpress(shipCommand, attach);
-					++j;
+					++success;
 				} catch (NegativeException e) {
-					++i;
+					++failed;
 					continue;
 				}
 			}
-		times.add(i);
-		times.add(j);
-		return times;
+		bean.setSuccess(success);
+		bean.setFailed(failed);
+		return bean;
 	}
 	
 }

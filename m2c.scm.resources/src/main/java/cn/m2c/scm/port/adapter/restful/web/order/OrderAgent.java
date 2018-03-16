@@ -17,6 +17,7 @@ import cn.m2c.scm.application.order.data.bean.DealerOrderDetailBean;
 import cn.m2c.scm.application.order.data.bean.MainOrderBean;
 import cn.m2c.scm.application.order.data.bean.OrderExpressBean;
 import cn.m2c.scm.application.order.data.bean.OrderExpressDetailBean;
+import cn.m2c.scm.application.order.data.bean.OrderShipSuccessBean;
 import cn.m2c.scm.application.order.data.representation.OptLogBean;
 import cn.m2c.scm.application.order.data.representation.OrderExpressDetailRepresentation;
 import cn.m2c.scm.application.order.query.OrderQuery;
@@ -611,12 +612,9 @@ public class OrderAgent {
     		){
     	MResult result = new MResult();
     	try {
-    		LOGGER.info("File name---------"+myFile.getName());
-    		LOGGER.info("userID----------" + userId);
-    		LOGGER.info("shopName---------" + shopName);
     		String _attach= request.getHeader("attach");
-			List<Integer> times = orderapplication.importExpressModel(myFile,userId,shopName,0,_attach);
-			result.setContent("成功" + times.get(1)  + "失败" + times.get(0));
+			OrderShipSuccessBean importExpressModel = orderapplication.importExpressModel(myFile,userId,shopName,0,_attach);
+			result.setContent(importExpressModel);
 		} catch (NegativeException e) {
 			LOGGER.error("上传发货模板出错", e);
             result = new MResult(MCode.V_400, e.getMessage());
