@@ -1704,9 +1704,9 @@ public class OrderApplication {
 					// 读取左上端单元格
 					Row row = sheet.getRow(i);
 					 if (row != null) {
-						 String dealerOrderId = row.getCell(0).getStringCellValue();
-						 String expressName = row.getCell(1).getStringCellValue();
-						 String expressNo = "";
+						 String dealerOrderId = row.getCell(0)==null?"":row.getCell(0).getStringCellValue();
+						 String expressName = row.getCell(1)==null?"":row.getCell(1).getStringCellValue();
+						 String expressNo ="";
 						 if (row.getCell(2) != null) {
 							   row.getCell(2).setCellType(Cell.CELL_TYPE_STRING);
 							   expressNo = row.getCell(2).getStringCellValue();
