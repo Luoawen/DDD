@@ -1706,7 +1706,11 @@ public class OrderApplication {
 					 if (row != null) {
 						 String dealerOrderId = row.getCell(0).getStringCellValue();
 						 String expressName = row.getCell(1).getStringCellValue();
-						 String expressNo = row.getCell(2).getStringCellValue();
+						 String expressNo = "";
+						 if (row.getCell(2) != null) {
+							   row.getCell(2).setCellType(Cell.CELL_TYPE_STRING);
+							   expressNo = row.getCell(2).getStringCellValue();
+						}
 						 if(StringUtils.isEmpty(dealerOrderId)){//校验1：订货号为空 导入失败，提示订货号不能为空
 							 //--入库信息
 							 failNum++;
