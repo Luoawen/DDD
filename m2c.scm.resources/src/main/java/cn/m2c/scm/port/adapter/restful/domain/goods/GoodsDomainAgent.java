@@ -150,17 +150,19 @@ public class GoodsDomainAgent {
 	}
 	
 	/**
-	 * 给营销工具提供接口根据商品名称模糊查询商品信息
+	 * 给营销工具提供接口根据商品名称/ids查询所有商品
 	 * @param goodsName  商品名称
+	 * @param goodsIds   商品ids
 	 * @return
 	 */
-	@RequestMapping(value = "/name", method = RequestMethod.GET)
+	@RequestMapping(value = "/name/ids", method = RequestMethod.GET)
 	public ResponseEntity<MResult> queryGoodsMessageByGoodsName(
-			@RequestParam(value = "goodsName", required = false) String goodsName 
+			 @RequestParam(value = "goodsName", required = false) String goodsName
+			,@RequestParam(value = "goodsIds", required = false) List goodsIds 
 			){
 		MResult result = new MResult(MCode.V_1);
 		try {
-			List<GoodsBean> list = goodsQueryApplication.queryGoodsMessageByGoodsName(goodsName);
+			List<GoodsBean> list = goodsQueryApplication.queryGoodsMessageByGoodsNameOrGoodsIds(goodsName, goodsIds);
 			if(null != list && list.size() > 0) {
 				List<GoodsRandomRepresentation> representations = new ArrayList<>();
 				for(GoodsBean bean : list) {
@@ -175,4 +177,5 @@ public class GoodsDomainAgent {
 		}
 		return new ResponseEntity<MResult>(result, HttpStatus.OK);
 	}
+	
 }
