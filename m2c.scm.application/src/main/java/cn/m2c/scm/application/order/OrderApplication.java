@@ -1707,8 +1707,8 @@ public class OrderApplication {
 	 * @throws IOException 
 	 */
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class},propagation= Propagation.REQUIRES_NEW)
-	public List<Map<String,Integer>> importExpress(MultipartFile myFile,String userId,String shopName,String dealerId, Integer expressWay,String attach) throws NegativeException, IOException {
-		List<Map<String,Integer>> result = null;
+	public List<Map<String,Object>> importExpress(MultipartFile myFile,String userId,String shopName,String dealerId, Integer expressWay,String attach) throws NegativeException, IOException {
+		List<Map<String,Object>> result = null;
 		try {
 			Workbook workbook = null ;
 			String fileName = myFile.getOriginalFilename(); 
@@ -1727,7 +1727,7 @@ public class OrderApplication {
 				 throw new NegativeException(402,"记录超出500");
 			 }
 			 if(rows>0){//确认有数据才会导入
-				 long expressFlag = System.currentTimeMillis();
+				 String expressFlag = StringDealUtil.getUUID();
 				 int successNum = 0;
 				 int failNum = 0;
 				 for(int i = 1; i <= rows+1; ++i) {
@@ -1806,7 +1806,7 @@ public class OrderApplication {
 						  }
 					 }
 				 }
-				 result = dealData(successNum,failNum);
+				 result = dealData(successNum,failNum,expressFlag);
 			 }
 		} catch (NegativeException e) {
 			LOGGER.error("自定义异常");
@@ -1826,13 +1826,15 @@ public class OrderApplication {
 	 * 封装数据成List<map>格式
 	 * @param successNum
 	 * @param failNum
+	 * @param expressFlag 
 	 * @return
 	 */
-	private List<Map<String, Integer>> dealData(int successNum, int failNum) {
-		List<Map<String, Integer>> result = new ArrayList<Map<String,Integer>>();
-		Map<String, Integer> resMap = new HashMap<String, Integer>();
+	private List<Map<String, Object>> dealData(int successNum, int failNum, String expressFlag) {
+		List<Map<String, Object>> result = new ArrayList<Map<String,Object>>();
+		Map<String, Object> resMap = new HashMap<String, Object>();
 		resMap.put("successNum", successNum);
 		resMap.put("failNum", failNum);
+		resMap.put("expressFlag", expressFlag);
 		result.add(resMap);
 		return result;
 	}

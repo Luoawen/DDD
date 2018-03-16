@@ -19,7 +19,7 @@ public class OrderWrongMessage extends ConcurrencySafeEntity {
 	private String importWrongMessage;
 	
 	
-	private long expressFlag;
+	private String expressFlag;
 	private Date createdDate;
 	
 	public OrderWrongMessage() {
@@ -28,7 +28,7 @@ public class OrderWrongMessage extends ConcurrencySafeEntity {
 
 	
 	public OrderWrongMessage(String dealerOrderId, String expressName,
-			String expressNo, String importWrongMessage, long expressFlag) {
+			String expressNo, String importWrongMessage, String expressFlag) {
 		super();
 		this.dealerOrderId = dealerOrderId;
 		this.expressName = expressName;
