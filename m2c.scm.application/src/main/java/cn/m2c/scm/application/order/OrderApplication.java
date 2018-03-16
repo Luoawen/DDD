@@ -1807,4 +1807,18 @@ public class OrderApplication {
 		result.add(resMap);
 		return result;
 	}
+
+	@Transactional
+	public void getImport() {
+		String dealerOrderId="2018031614030025";
+		String expressName = "顺丰快递";
+		String expressNo = "602214566544";
+		long expressFlag = System.currentTimeMillis();
+		OrderWrongMessage ow = new OrderWrongMessage(dealerOrderId, expressName, expressNo, "订货号不能为空",  expressFlag);
+		try {
+			owmRepository.save(ow);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 }
