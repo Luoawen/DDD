@@ -2,12 +2,20 @@ package cn.m2c.scm.domain.model.order;
 
 import java.util.Date;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import cn.m2c.ddd.common.domain.model.ConcurrencySafeEntity;
+
 /**
  * 批量发货失败内容
  * @author lqwen
  *
  */
-public class OrderWrongMessage {
+public class OrderWrongMessage extends ConcurrencySafeEntity {
+	
+	private final static Logger LOGGER = LoggerFactory.getLogger(OrderWrongMessage.class);
+	
 	private String dealerOrderId;
 	
 	private String expressName;
