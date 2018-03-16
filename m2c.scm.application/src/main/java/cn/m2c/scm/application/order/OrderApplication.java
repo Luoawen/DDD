@@ -1677,8 +1677,8 @@ public class OrderApplication {
 	 * @throws NegativeException 
 	 * @throws IOException 
 	 */
-	public List<Integer> importExpress(MultipartFile myFile,String userId,String shopName,String dealerId, Integer expressWay,String attach) throws NegativeException, IOException {
-		List<Integer> result = null;
+	public List<Map<String,Integer>> importExpress(MultipartFile myFile,String userId,String shopName,String dealerId, Integer expressWay,String attach) throws NegativeException, IOException {
+		List<Map<String,Integer>> result = null;
 		try {
 			Workbook workbook = null ;
 			String fileName = myFile.getOriginalFilename(); 
@@ -1772,9 +1772,7 @@ public class OrderApplication {
 						  }
 					 }
 				 }
-				 result = new ArrayList<Integer>();
-				 result.add(successNum);
-				 result.add(failNum);
+				 result = dealData(successNum,failNum);
 			 }
 		} catch (NegativeException e) {
 			LOGGER.error("自定义异常");
@@ -1787,6 +1785,21 @@ public class OrderApplication {
 			throw ee;
 		}
 		
+		return result;
+	}
+
+	/**
+	 * 封装数据成List<map>格式
+	 * @param successNum
+	 * @param failNum
+	 * @return
+	 */
+	private List<Map<String, Integer>> dealData(int successNum, int failNum) {
+		List<Map<String, Integer>> result = new ArrayList<Map<String,Integer>>();
+		Map<String, Integer> resMap = new HashMap<String, Integer>();
+		resMap.put("successNum", successNum);
+		resMap.put("failNum", failNum);
+		result.add(resMap);
 		return result;
 	}
 }
