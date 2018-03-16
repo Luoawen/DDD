@@ -620,7 +620,7 @@ public class OrderAgent {
     		LOGGER.info("shopName---------" + shopName);
     		String _attach= request.getHeader("attach");
 //			List<Integer> times = orderapplication.importExpressModel(myFile,userId,shopName,0,_attach);
-			List<Map<String, Integer>> countResult = orderapplication.importExpress(myFile,userId,shopName,dealerId,0,_attach);
+			List<Map<String, Object>> countResult = orderapplication.importExpress(myFile,userId,shopName,dealerId,0,_attach);
 			result.setContent(countResult);
 		} catch (NegativeException e) {
 			LOGGER.error("上传发货模板出错", e);
