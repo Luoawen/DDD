@@ -615,9 +615,6 @@ public class OrderAgent {
     		){
     	MResult result = new MResult();
     	try {
-    		LOGGER.info("File name---------"+myFile.getName());
-    		LOGGER.info("userID----------" + userId);
-    		LOGGER.info("shopName---------" + shopName);
     		String _attach= request.getHeader("attach");
 //			List<Integer> times = orderapplication.importExpressModel(myFile,userId,shopName,0,_attach);
 			List<Map<String, Integer>> countResult = orderapplication.importExpress(myFile,userId,shopName,dealerId,0,_attach);
@@ -633,4 +630,5 @@ public class OrderAgent {
 		return new ResponseEntity<MResult>(result,HttpStatus.OK);
     	
     }
+    
 }

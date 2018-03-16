@@ -10,6 +10,7 @@ import cn.m2c.scm.application.dealerorder.query.DealerOrderAfterSellQuery;
 import cn.m2c.scm.application.dealerorder.query.DealerOrderQuery;
 import cn.m2c.scm.application.order.OrderApplication;
 import cn.m2c.scm.application.order.SaleAfterOrderApp;
+import cn.m2c.scm.application.order.data.bean.ImportFailedOrderBean;
 import cn.m2c.scm.application.order.data.bean.OrderExpressBean;
 import cn.m2c.scm.application.order.data.export.DealerOrderExpModel;
 import cn.m2c.scm.application.order.data.export.MngOrderExpModel;
@@ -225,7 +226,23 @@ public class OrderExportAgent {
 		} catch (NegativeException e) {
 			LOGGER.error("导出批量发货模板出错" + e.getMessage(), e);
 		}
-    	 	
-
+    }
+    
+    /**
+     * 导出批量发货模板
+     * @param response
+     * @param dealerId
+     */
+    @RequestMapping(value = {"/web/failmodel","/failmodel"},method = RequestMethod.GET)
+    public void outputFailedModel(
+    		HttpServletResponse response,
+    		@RequestParam(value = "expressFlag", required = false) String expressFlag) {
+    	try {
+			List<ImportFailedOrderBean> orderModelInfo = dealerOrderQuery.getImportOrderModelInfo(expressFlag);
+			
+			orderApp.createListBox(response, null, null, orderModelInfo);
+		} catch (NegativeException e) {
+			LOGGER.error("导出批量发货失败数据出错" + e.getMessage(), e);
+		}
     }
 }

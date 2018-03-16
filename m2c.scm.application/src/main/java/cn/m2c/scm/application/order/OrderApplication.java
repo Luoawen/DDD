@@ -22,6 +22,7 @@ import cn.m2c.scm.application.order.data.bean.CouponUseBean;
 import cn.m2c.scm.application.order.data.bean.DealerOrderBean;
 import cn.m2c.scm.application.order.data.bean.FreightCalBean;
 import cn.m2c.scm.application.order.data.bean.GoodsReqBean;
+import cn.m2c.scm.application.order.data.bean.ImportFailedOrderBean;
 import cn.m2c.scm.application.order.data.bean.MarketBean;
 import cn.m2c.scm.application.order.data.bean.MarketUseBean;
 import cn.m2c.scm.application.order.data.bean.MediaResBean;
@@ -1501,6 +1502,11 @@ public class OrderApplication {
 		orderDomainService.registExpress(com,nu);
 	}
 	
+	public void exportFailedOrderModel(HttpServletResponse response,List<ImportFailedOrderBean> orderModelInfo) {
+		
+		
+	}
+	
 	/**
 	 * 导出批量发货模板
 	 * @param allExpress
@@ -1523,12 +1529,12 @@ public class OrderApplication {
 		String[] list = (String[]) arrayExpress.toArray(new String[arrayExpress.size()]);
 		String[] list1 = (String[]) arrayOrder.toArray(new String[arrayOrder.size()]);
 		
-		createListBox(response,list,list1);
+		createListBox(response,list,list1,null);
 	}
 	
-	public  void createListBox(HttpServletResponse response,String[] expressList,String[] dealerOrderList) throws NegativeException{
+	public  void createListBox(HttpServletResponse response,String[] expressList,String[] dealerOrderList,List<ImportFailedOrderBean> failedOrderModelInfo) throws NegativeException{
 			HSSFWorkbook workbook = new HSSFWorkbook(); 
-			String fileName = "批量发货模板";
+			String fileName = "";
 	        HSSFSheet realSheet = workbook.createSheet("fileName"); 
 	        HSSFSheet hidden = workbook.createSheet("hidden"); 
 	        //设置单元格宽度
@@ -1542,40 +1548,63 @@ public class OrderApplication {
 			cell1.setCellValue("物流公司");
 			HSSFCell cell2 = hssfRow.createCell(2);
 			cell2.setCellValue("物流单号");
+	       
+			HSSFCell failedCell = null;
+	        if (failedOrderModelInfo.size() > 0 && failedOrderModelInfo != null) {
+	        	//批量发货失败数据导出
+	        	fileName = "批量发货失败数据";
+	        	HSSFCell cell3 = hssfRow.createCell(3);
+				cell3.setCellValue("失败理由");
+				for(int i = 0,length = failedOrderModelInfo.size(); i < length; ++i) {
+					HSSFRow row = realSheet.createRow(i+1);
+					failedCell = row.createCell(0,1);
+					failedCell.setCellValue(failedOrderModelInfo.get(i).getDealerOrderId());
+					failedCell = row.createCell(1,1);
+					failedCell.setCellValue(failedOrderModelInfo.get(i).getExpressName());
+					failedCell = row.createCell(2,1);
+					failedCell.setCellValue(failedOrderModelInfo.get(i).getExpressNo());
+					failedCell = row.createCell(3,1);
+					failedCell.setCellValue(failedOrderModelInfo.get(i).getFailedReason());
+				}
+			}else {   //导出批量发货模板
+				//写入物流公司名到Excel
+				fileName = "批量发货模板";
+		        HSSFCell cell = null;
+		        for (int i = 0, length= expressList.length; i < length; ++i) { 
+		           String name = expressList[i]; 
+		           HSSFRow row = hidden.createRow(i); 
+		           cell = row.createCell(1,1); 
+		           cell.setCellValue(name); 
+		         }
+		        
+		        //写入订货单号到Excel
+		        HSSFCell dealerOrderCell = null;
+		        for(int i = 0, length= dealerOrderList.length; i < length; ++i) {
+		        	String name = dealerOrderList[i];
+		        	HSSFRow row = realSheet.createRow(i+1); 
+		        	dealerOrderCell = row.createCell(0,1);
+		        	dealerOrderCell.setCellValue(name);
+		        	System.out.println(name);
+		        }
+		        
+		      //设置所有物流公司为下拉菜单
+		        Name namedCell = workbook.createName(); 
+		        namedCell.setNameName("hidden"); 
+		        namedCell.setRefersToFormula("hidden!A1:A" + expressList.length); 
+		        //加载数据,将名称为hidden的
+		        DVConstraint constraint = DVConstraint.createFormulaListConstraint("hidden"); 
+
+		        // 设置数据有效性加载在哪个单元格上,四个参数分别是：起始行、终止行、起始列、终止列
+		        CellRangeAddressList addressList = new CellRangeAddressList(1, dealerOrderList.length, 1, 1 ); 
+		        HSSFDataValidation validation = new HSSFDataValidation(addressList, constraint);
+
+		        //将第二个sheet设置为隐藏
+		        workbook.setSheetHidden(1, true); 
+		        realSheet.addValidationData(validation); 
+				
+			}
+
 	        
-			//写入物流公司名到Excel
-	        HSSFCell cell = null;
-	        for (int i = 0, length= expressList.length; i < length; ++i) { 
-	           String name = expressList[i]; 
-	           HSSFRow row = hidden.createRow(i); 
-	           cell = row.createCell(1,1); 
-	           cell.setCellValue(name); 
-	         } 
-	        
-	        //写入订货单号到Excel
-	        HSSFCell dealerOrderCell = null;
-	        for(int i = 0, length= dealerOrderList.length; i < length; ++i) {
-	        	String name = dealerOrderList[i];
-	        	HSSFRow row = realSheet.createRow(i+1); 
-	        	dealerOrderCell = row.createCell(0,1);
-	        	dealerOrderCell.setCellValue(name);
-	        	System.out.println(name);
-	        }
-
-	        //设置所有物流公司为下拉菜单
-	        Name namedCell = workbook.createName(); 
-	        namedCell.setNameName("hidden"); 
-	        namedCell.setRefersToFormula("hidden!A1:A" + expressList.length); 
-	        //加载数据,将名称为hidden的
-	        DVConstraint constraint = DVConstraint.createFormulaListConstraint("hidden"); 
-
-	        // 设置数据有效性加载在哪个单元格上,四个参数分别是：起始行、终止行、起始列、终止列
-	        CellRangeAddressList addressList = new CellRangeAddressList(1, dealerOrderList.length, 1, 1 ); 
-	        HSSFDataValidation validation = new HSSFDataValidation(addressList, constraint);
-
-	        //将第二个sheet设置为隐藏
-	        workbook.setSheetHidden(1, true); 
-	        realSheet.addValidationData(validation); 
 	        try {
 				response.setHeader("Content-Disposition", "attachment;filename=" + ExcelUtil.urlEncode(fileName+".xls"));
 				response.setContentType("application/ms-excel");

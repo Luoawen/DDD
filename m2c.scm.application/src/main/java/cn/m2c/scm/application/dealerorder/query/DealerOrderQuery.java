@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import cn.m2c.common.MCode;
 import cn.m2c.ddd.common.port.adapter.persistence.springJdbc.SupportJdbcTemplate;
 import cn.m2c.scm.application.classify.query.GoodsClassifyQueryApplication;
 import cn.m2c.scm.application.dealerorder.data.bean.DealerGoodsBean;
@@ -22,6 +23,8 @@ import cn.m2c.scm.application.dealerorder.data.bean.DealerOrderQB;
 import cn.m2c.scm.application.dealerorder.data.bean.OrderDtlBean;
 import cn.m2c.scm.application.order.data.bean.DealerOrderDetailBean;
 import cn.m2c.scm.application.order.data.bean.GoodsInfoBean;
+import cn.m2c.scm.application.order.data.bean.ImportFailedOrderBean;
+import cn.m2c.scm.domain.NegativeException;
 
 @Repository
 public class DealerOrderQuery {
@@ -1035,6 +1038,27 @@ public class DealerOrderQuery {
 		}
 		
 		return beanList;
+	}
+	
+	/**
+	 * 查询批量发货失败数据
+	 * @param expressFlag
+	 * @return
+	 * @throws NegativeException
+	 */
+	public List<ImportFailedOrderBean> getImportOrderModelInfo(String expressFlag) throws NegativeException{
+		List<ImportFailedOrderBean> list = null;
+		StringBuilder sql = new StringBuilder();
+		
+		try {
+			sql.append(" SELECT * FROM t_scm_order_exp_import_wrong_message WHERE express_flag = ? ");
+			list = this.supportJdbcTemplate.queryForBeanList(sql.toString(),ImportFailedOrderBean.class,expressFlag);
+		} catch (Exception e) {
+			throw new NegativeException(MCode.V_401,"查询批量发货失败数据出错！");
+		}
+		
+		return list;
+		
 	}
 
 }
