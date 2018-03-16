@@ -12,7 +12,6 @@ public class HibernateOrderWrongMessage extends HibernateSupperRepository implem
 
 	@Override
 	public void save(OrderWrongMessage orderWrongMessage) {
-		System.out.println("wwww");
 		this.session().saveOrUpdate(orderWrongMessage);
 		
 	}

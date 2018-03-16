@@ -2,9 +2,6 @@ package cn.m2c.scm.domain.model.order;
 
 import java.util.Date;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import cn.m2c.ddd.common.domain.model.ConcurrencySafeEntity;
 
 /**
@@ -38,18 +35,9 @@ public class OrderWrongMessage extends ConcurrencySafeEntity {
 		this.expressNo = expressNo;
 		this.importWrongMessage = importWrongMessage;
 		this.expressFlag = expressFlag;
-		this.createdDate = new Date();
 	}
 
 
-	public void add(String dealerOrderId, String expressName, String expressNo, String importWrongMessage,
-			long expressFlag) {
-		this.dealerOrderId = dealerOrderId;
-		this.expressName = expressName;
-		this.expressNo = expressNo;
-		this.importWrongMessage = importWrongMessage;
-		this.expressFlag = expressFlag;
-	}
 	
 
 }
