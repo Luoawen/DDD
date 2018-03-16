@@ -44,7 +44,7 @@ public class GoodsGuaranteeAgent {
 	private  HttpServletRequest request;
     
     /**
-     * 查询商品保障
+     * 查询商品保障（原接口查询系统默认保障，4个）
      *
      * @return
      */
@@ -71,7 +71,6 @@ public class GoodsGuaranteeAgent {
     
     /**
      * 获取ID
-     *
      * @return
      */
     @RequestMapping(value = "/id", method = RequestMethod.GET)
@@ -91,15 +90,18 @@ public class GoodsGuaranteeAgent {
     
     /**
      * 新增商品保障
-     *
+     * @param guaranteeId   商品保障id
+     * @param guaranteeName 商品保障名
+     * @param guaranteeDesc 商品保障内容
+     * @param dealerId      商家ID
      * @return
      */
     @RequestMapping(value = "", method = RequestMethod.POST)
     public ResponseEntity<MResult> addGoodsGuarantee(
-		@RequestParam(value="guaranteeId",required = false) String guaranteeId,     //商品保障id
-		@RequestParam(value="guaranteeName",required = false) String guaranteeName, //商品保障名
-		@RequestParam(value="guaranteeDesc",required = false) String guaranteeDesc, //商品保障内容
-		@RequestParam(value="dealerId",required = false) String dealerId            //商家ID
+		@RequestParam(value="guaranteeId",required = false) String guaranteeId,     
+		@RequestParam(value="guaranteeName",required = false) String guaranteeName, 
+		@RequestParam(value="guaranteeDesc",required = false) String guaranteeDesc, 
+		@RequestParam(value="dealerId",required = false) String dealerId            
 	) {
 		MResult result = new MResult(MCode.V_1);
 		try{
@@ -118,13 +120,17 @@ public class GoodsGuaranteeAgent {
     
     /**
 	* 修改商品保障
+	* @param guaranteeId   商品保障id
+	* @param guaranteeName 商品保障名
+	* @param guaranteeDesc 商品保障内容
+	* @param dealerId      商家ID
 	*/
 	@RequestMapping(value = "/{guaranteeId}", method = RequestMethod.PUT)
 	public ResponseEntity<MResult> modifyGoodsGuarantee(
-		@PathVariable("guaranteeId") String guaranteeId,                            //商品保障id
-		@RequestParam(value="guaranteeName",required = false) String guaranteeName, //商品保障名
-		@RequestParam(value="guaranteeDesc",required = false) String guaranteeDesc, //商品保障内容
-		@RequestParam(value="dealerId",required = false) String dealerId            //商家ID
+		@PathVariable("guaranteeId") String guaranteeId,                            
+		@RequestParam(value="guaranteeName",required = false) String guaranteeName, 
+		@RequestParam(value="guaranteeDesc",required = false) String guaranteeDesc, 
+		@RequestParam(value="dealerId",required = false) String dealerId            
 	) {
 		MResult result = new MResult(MCode.V_1);
 		try{
@@ -144,10 +150,11 @@ public class GoodsGuaranteeAgent {
 	
 	/**
 	 * 删除商品保障
-	 * */
+	 * @param guaranteeId   商品保障id
+	 */
 	@RequestMapping(value = "/del/{guaranteeId}", method = RequestMethod.DELETE)
 	public ResponseEntity<MResult> deleteGoodsGuarantee(
-		@PathVariable(value = "guaranteeId", required = false) String guaranteeId //保障id
+		@PathVariable(value = "guaranteeId", required = false) String guaranteeId 
 			){
 		MResult result = new MResult(MCode.V_1);
 		try {
@@ -166,10 +173,11 @@ public class GoodsGuaranteeAgent {
 	
 	/**
 	 * 新版本查询商品保障接口
+	 * @param dealerId   商家ID
 	 */
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
     public ResponseEntity<MResult> queryDealerGoodsGuarantee(
-    		@RequestParam(value="dealerId",required = true) String dealerId //商家ID
+    		@RequestParam(value="dealerId",required = true) String dealerId 
     	) {
 	 	MResult result = new MResult(MCode.V_1);
 		try{

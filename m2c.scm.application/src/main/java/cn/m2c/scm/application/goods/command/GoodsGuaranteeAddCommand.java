@@ -35,7 +35,7 @@ public class GoodsGuaranteeAddCommand extends AssertionConcern implements Serial
 		this.guaranteeId   = guaranteeId;
 		this.guaranteeName = guaranteeName.trim();
 		if(StringUtils.isNotEmpty(guaranteeDesc) && StringUtils.isNotEmpty(guaranteeDesc.trim())) {
-			//排除保障内容输入空格情况
+			//排除保障内容前后空格
 			this.guaranteeDesc = guaranteeDesc.trim();
 		}else {
 			this.guaranteeDesc = null;

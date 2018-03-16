@@ -67,7 +67,7 @@ public class GoodsGuaranteeQueryApplication {
     }
 
     /**
-     * 原查询商品保障(查询所有系统默认)
+     * 原查询商品保障(查询所有系统默认，4个)
      * @return
      */
     public List<GoodsGuaranteeBean> queryGoodsGuarantee() {
