@@ -1677,6 +1677,7 @@ public class OrderApplication {
 	 * @throws NegativeException 
 	 * @throws IOException 
 	 */
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class},propagation= Propagation.REQUIRES_NEW)
 	public List<Map<String,Integer>> importExpress(MultipartFile myFile,String userId,String shopName,String dealerId, Integer expressWay,String attach) throws NegativeException, IOException {
 		List<Map<String,Integer>> result = null;
 		try {
@@ -1691,7 +1692,7 @@ public class OrderApplication {
 				   throw new NegativeException(MCode.V_401,"文件不是Excel文件");
 				  }
 
-			 Sheet sheet = workbook.getSheet("批量发货模板");
+			 Sheet sheet = workbook.getSheet("fileName");
 			 int rows = sheet.getLastRowNum();// 一共有多少行
 			 if(rows>500){//判断记录是否大于500
 				 throw new NegativeException(402,"记录超出500");
