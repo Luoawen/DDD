@@ -619,6 +619,7 @@ public class OrderAgent {
 //			List<Integer> times = orderapplication.importExpressModel(myFile,userId,shopName,0,_attach);
 			List<Map<String, Object>> countResult = orderapplication.importExpress(myFile,userId,shopName,dealerId,0,_attach);
 			result.setContent(countResult);
+			result.setStatus(MCode.V_200);
 		} catch (NegativeException e) {
 			LOGGER.error("上传发货模板出错", e);
             result = new MResult(e.getStatus(), e.getMessage());
