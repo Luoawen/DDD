@@ -22,6 +22,7 @@ import cn.m2c.scm.application.order.data.representation.OrderExpressDetailRepres
 import cn.m2c.scm.application.order.query.OrderQuery;
 import cn.m2c.scm.application.order.query.OrderQueryApplication;
 import cn.m2c.scm.domain.NegativeException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,8 +37,10 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 
 @RestController
@@ -607,7 +610,8 @@ public class OrderAgent {
     @RequestMapping(value = {"/expressmodel","/web/expressmodel"},method = RequestMethod.POST)
     public ResponseEntity<MResult> importExpressModel(@RequestParam("myfile") MultipartFile myFile,
     		@RequestParam(value = "userId", required = false) String userId,
-    		@RequestParam(value = "shopName", required = false) String shopName
+    		@RequestParam(value = "shopName", required = false) String shopName,
+    		@RequestParam(value = "dealerId", required = false) String dealerId
     		){
     	MResult result = new MResult();
     	try {
@@ -615,14 +619,15 @@ public class OrderAgent {
     		LOGGER.info("userID----------" + userId);
     		LOGGER.info("shopName---------" + shopName);
     		String _attach= request.getHeader("attach");
-			List<Integer> times = orderapplication.importExpressModel(myFile,userId,shopName,0,_attach);
-			result.setContent("成功" + times.get(1)  + "失败" + times.get(0));
+//			List<Integer> times = orderapplication.importExpressModel(myFile,userId,shopName,0,_attach);
+			List<Map<String, Integer>> countResult = orderapplication.importExpress(myFile,userId,shopName,dealerId,0,_attach);
+			result.setContent(countResult);
 		} catch (NegativeException e) {
 			LOGGER.error("上传发货模板出错", e);
-            result = new MResult(MCode.V_400, e.getMessage());
+            result = new MResult(e.getStatus(), e.getMessage());
 		} catch (Exception e) {
 			LOGGER.error("上传发货模板出错", e);
-            result = new MResult(MCode.V_400, e.getMessage());
+            result = new MResult(500, e.getMessage());
 		}
     	
 		return new ResponseEntity<MResult>(result,HttpStatus.OK);

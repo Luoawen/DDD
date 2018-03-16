@@ -10,12 +10,13 @@
             <generator class="native"/>
         </id>
         <version name="concurrencyVersion" column="concurrency_version" type="int" />
-		<property name="createdDate" generated="insert" not-null="false">
-			<column name="created_date" sql-type="timestamp"></column>
+		<property name="createdDate" generated="insert" not-null="true">
+			<column name="created_date" sql-type="timestamp" default="CURRENT_TIMESTAMP"></column>
 		</property>
         <property name="dealerOrderId" column="dealer_order_id" type="string"/>
         <property name="expressName" column="express_name" type="string"/>
         <property name="expressNo" column="express_no" type="string"/>
         <property name="importWrongMessage" column="import_wrong_message" type="string"/>
+        <property name="expressFlag" column="express_flag" type="long"/>
     </class>
 </hibernate-mapping>

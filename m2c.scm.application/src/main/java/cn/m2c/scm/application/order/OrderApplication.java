@@ -6,6 +6,7 @@ import cn.m2c.scm.application.classify.query.GoodsClassifyQueryApplication;
 import cn.m2c.scm.application.dealer.data.bean.DealerBean;
 import cn.m2c.scm.application.dealer.query.DealerQuery;
 import cn.m2c.scm.application.dealerorder.data.bean.DealerOrderQB;
+import cn.m2c.scm.application.dealerorder.query.DealerOrderQuery;
 import cn.m2c.scm.application.goods.GoodsApplication;
 import cn.m2c.scm.application.goods.query.GoodsQueryApplication;
 import cn.m2c.scm.application.order.command.CancelOrderCmd;
@@ -18,12 +19,14 @@ import cn.m2c.scm.application.order.command.SendOrderCommand;
 import cn.m2c.scm.application.order.command.SendOrderSMSCommand;
 import cn.m2c.scm.application.order.data.bean.CouponBean;
 import cn.m2c.scm.application.order.data.bean.CouponUseBean;
+import cn.m2c.scm.application.order.data.bean.DealerOrderBean;
 import cn.m2c.scm.application.order.data.bean.FreightCalBean;
 import cn.m2c.scm.application.order.data.bean.GoodsReqBean;
 import cn.m2c.scm.application.order.data.bean.MarketBean;
 import cn.m2c.scm.application.order.data.bean.MarketUseBean;
 import cn.m2c.scm.application.order.data.bean.MediaResBean;
 import cn.m2c.scm.application.order.data.bean.OrderExpressBean;
+import cn.m2c.scm.application.order.data.bean.OrderShipSuccessBean;
 import cn.m2c.scm.application.order.data.bean.ShipExpressBean;
 import cn.m2c.scm.application.order.data.bean.SkuMediaBean;
 import cn.m2c.scm.application.order.data.representation.OrderMoney;
@@ -32,6 +35,7 @@ import cn.m2c.scm.application.order.query.dto.GoodsDto;
 import cn.m2c.scm.application.postage.data.representation.PostageModelRuleRepresentation;
 import cn.m2c.scm.application.postage.query.PostageModelQueryApplication;
 import cn.m2c.scm.application.utils.ExcelUtil;
+import cn.m2c.scm.application.utils.StringDealUtil;
 import cn.m2c.scm.domain.NegativeCode;
 import cn.m2c.scm.domain.NegativeException;
 import cn.m2c.scm.domain.model.expressPlatform.ExpressPlatform;
@@ -42,6 +46,8 @@ import cn.m2c.scm.domain.model.order.DealerOrder;
 import cn.m2c.scm.domain.model.order.DealerOrderDtl;
 import cn.m2c.scm.domain.model.order.MainOrder;
 import cn.m2c.scm.domain.model.order.OrderRepository;
+import cn.m2c.scm.domain.model.order.OrderWrongMessage;
+import cn.m2c.scm.domain.model.order.OrderWrongMessageRepository;
 import cn.m2c.scm.domain.model.order.SimpleCoupon;
 import cn.m2c.scm.domain.model.order.SimpleMarketInfo;
 import cn.m2c.scm.domain.model.order.SimpleMarketing;
@@ -73,6 +79,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.alibaba.fastjson.JSONObject;
 
+import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -123,7 +130,12 @@ public class OrderApplication {
     
     @Autowired
     DealerOrderApplication dealerOrderApplication;
+    
+    @Autowired
+    DealerOrderQuery dealerOrderQuery;
 
+    @Autowired
+    OrderWrongMessageRepository owmRepository;
     /**
      * 提交订单
      *
@@ -1588,7 +1600,7 @@ public class OrderApplication {
 	 * @throws NegativeException
 	 * @throws Exception
 	 */
-	public List<Integer> importExpressModel(MultipartFile myFile,String userId,String shopName,Integer expressWay,String attach) throws NegativeException, Exception {
+	public OrderShipSuccessBean importExpressModel(MultipartFile myFile,String userId,String shopName,Integer expressWay,String attach) throws NegativeException, Exception {
 		Workbook workbook = null ;
 		String fileName = myFile.getOriginalFilename(); 
 		List<OrderExpressBean> allExpress = queryApp.getAllExpress();
@@ -1601,7 +1613,7 @@ public class OrderApplication {
 			   throw new NegativeException(MCode.V_401,"文件不是Excel文件");
 			  }
 
-		 Sheet sheet = workbook.getSheet("批量发货模板");
+		 Sheet sheet = workbook.getSheet("fileName");
 		 int rows = sheet.getLastRowNum();// 一共有多少行
 		 
 		 //发货参数：dealerOrderId,orderId,expressWay,expressName,expressCode,expressNo,userId,expressPhone.expressPerson
@@ -1624,30 +1636,174 @@ public class OrderApplication {
 						command.setExpressCode(express.getExpressCode());
 					}
 				   }
-				   String expressNo = row.getCell(2).getStringCellValue();
-				   command.setExpressNo(expressNo);
+				   if (row.getCell(2) != null) {
+					   row.getCell(2).setCellType(Cell.CELL_TYPE_STRING);
+					   String expressNo = row.getCell(2).getStringCellValue();
+					   command.setExpressNo(expressNo);
+				}
 				   command.setExpressWay(expressWay);
 				   
 				   commands.add(command);
 			   }
 		 }
 		 
-		 int i = 0;         //失败次数
-		 int j = 0;         //成功次数
-		 List<Integer> times = new ArrayList<Integer>();
+		 OrderShipSuccessBean bean = new OrderShipSuccessBean();
+		 int failed = 0;         //失败次数
+		 int success = 0;         //成功次数
 		
 			for (SendOrderCommand shipCommand : commands) {
 				try {
 					dealerOrderApplication.updateExpress(shipCommand, attach);
-					++j;
+					++success;
 				} catch (NegativeException e) {
-					++i;
+					++failed;
 					continue;
 				}
 			}
-		times.add(i);
-		times.add(j);
-		return times;
+		bean.setSuccess(success);
+		bean.setFailed(failed);
+		return bean;
 	}
-	
+
+	/**
+	 * 批量导入发货单模板 发货
+	 * @param myFile
+	 * @param userId
+	 * @param shopName
+	 * @param dealerId 
+	 * @param i
+	 * @param _attach
+	 * @return
+	 * @throws NegativeException 
+	 * @throws IOException 
+	 */
+	public List<Map<String,Integer>> importExpress(MultipartFile myFile,String userId,String shopName,String dealerId, Integer expressWay,String attach) throws NegativeException, IOException {
+		List<Map<String,Integer>> result = null;
+		try {
+			Workbook workbook = null ;
+			String fileName = myFile.getOriginalFilename(); 
+			List<OrderExpressBean> allExpress = queryApp.getAllExpress();
+			SendOrderCommand command = null;
+			 if(fileName.endsWith("xls")){ 
+				   //2003 
+				   workbook = new HSSFWorkbook(myFile.getInputStream()); 
+				  }else{
+				   throw new NegativeException(MCode.V_401,"文件不是Excel文件");
+				  }
+
+			 Sheet sheet = workbook.getSheet("批量发货模板");
+			 int rows = sheet.getLastRowNum();// 一共有多少行
+			 if(rows>500){//判断记录是否大于500
+				 throw new NegativeException(402,"记录超出500");
+			 }
+			 if(rows>0){//确认有数据才会导入
+				 long expressFlag = System.currentTimeMillis();
+				 int successNum = 0;
+				 int failNum = 0;
+				 for(int i = 1; i <= rows+1; ++i) {
+					// 读取左上端单元格
+					Row row = sheet.getRow(i);
+					 if (row != null) {
+						 String dealerOrderId = row.getCell(0).getStringCellValue();
+						 String expressName = row.getCell(1).getStringCellValue();
+						 String expressNo = "";
+						 if (row.getCell(2) != null) {
+							   row.getCell(2).setCellType(Cell.CELL_TYPE_STRING);
+							   expressNo = row.getCell(2).getStringCellValue();
+						}
+						 if(StringUtils.isEmpty(dealerOrderId)){//校验1：订货号为空 导入失败，提示订货号不能为空
+							 //--入库信息
+							 failNum++;
+							 owmRepository.save(new OrderWrongMessage(dealerOrderId, expressName, expressNo, "订货号不能为空",  expressFlag));
+							 continue;
+						 }
+						 DealerOrderBean dealerOrder = queryApp.getDealerOrder(dealerOrderId);
+						 if(dealerOrder==null || !dealerOrder.getDealerId().equals(dealerId)){//检验2：订货号不存在
+							 //--入库信息
+							 failNum++;
+							 owmRepository.save(new OrderWrongMessage(dealerOrderId, expressName, expressNo, "订货号不存在",  expressFlag));
+							 continue;
+						 }
+						 if(dealerOrder.getStatus()!=1){//检验3：该单号不是待发货状态
+							 failNum++;
+							 owmRepository.save(new OrderWrongMessage(dealerOrderId, expressName, expressNo, "该单号不是待发货状态",  expressFlag));
+							 continue;
+						 }
+						 if(StringUtils.isEmpty(expressName)){//校验4：物流公司不能为空
+							 //--入库信息
+							 failNum++;
+							 owmRepository.save(new OrderWrongMessage(dealerOrderId, expressName, expressNo, "物流公司不能为空",  expressFlag));
+							 continue;
+						 }
+						 boolean isExpressCom = false;//标志是否是物流公司
+						 for (OrderExpressBean express : allExpress) {
+							   if (expressName.equals(express.getExpressName())) {
+								   isExpressCom = true;
+							}
+						 }
+						 if(!isExpressCom){//校验5：请按照系统提供的物流公司名称填写
+							//--入库信息
+							 failNum++;
+							 owmRepository.save(new OrderWrongMessage(dealerOrderId, expressName, expressNo, "请按照系统提供的物流公司名称填写",  expressFlag));
+							 continue;
+						 }
+						 if(StringUtils.isEmpty(expressNo)){//校验6：物流单号不能为空
+							 //--入库信息
+							 failNum++;
+							 owmRepository.save(new OrderWrongMessage(dealerOrderId, expressName, expressNo, "物流单号不能为空",  expressFlag));
+							 continue;
+						 }
+						 if(expressNo.length()>20){//校验7：物流单号超出20字符
+							 //--入库信息
+							 failNum++;
+							 owmRepository.save(new OrderWrongMessage(dealerOrderId, expressName, expressNo, "物流单号超出20字符",  expressFlag));
+							 continue;
+						 }
+						 if(!StringDealUtil.InputNumOrEnglish(expressNo)){
+							 //--入库信息
+							 failNum++;
+							 owmRepository.save(new OrderWrongMessage(dealerOrderId, expressName, expressNo, "物流单号只能为数字、或者字母+数字组合",  expressFlag));
+							 continue;
+						 }
+						 //可以一个个进行发货了
+						 for (OrderExpressBean express : allExpress) {
+							   if (expressName.equals(express.getExpressName())) {
+								   command = new SendOrderCommand(dealerOrderId, expressNo, expressName, dealerOrder.getRevPerson(), dealerOrder.getRevPhone(), expressWay,"" , express.getExpressCode(), userId, dealerOrder.getOrderId(), shopName);
+								   successNum++;
+								   dealerOrderApplication.updateExpress(command, attach);//发货
+								   break;
+							   }
+						  }
+					 }
+				 }
+				 result = dealData(successNum,failNum);
+			 }
+		} catch (NegativeException e) {
+			LOGGER.error("自定义异常");
+            throw new NegativeException(e.getStatus(), e.getMessage());
+		} catch (IOException ie) {
+			LOGGER.error("文件读取出问题");
+			throw ie;
+		} catch (Exception ee){
+			LOGGER.error("导入问题抛异常-exception");
+			throw ee;
+		}
+		
+		return result;
+	}
+
+	/**
+	 * 封装数据成List<map>格式
+	 * @param successNum
+	 * @param failNum
+	 * @return
+	 */
+	private List<Map<String, Integer>> dealData(int successNum, int failNum) {
+		List<Map<String, Integer>> result = new ArrayList<Map<String,Integer>>();
+		Map<String, Integer> resMap = new HashMap<String, Integer>();
+		resMap.put("successNum", successNum);
+		resMap.put("failNum", failNum);
+		result.add(resMap);
+		return result;
+	}
 }

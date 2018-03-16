@@ -1036,4 +1036,5 @@ public class DealerOrderQuery {
 		
 		return beanList;
 	}
+
 }
