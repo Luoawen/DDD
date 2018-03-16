@@ -235,6 +235,60 @@ public class DealerOrder extends ConcurrencySafeEntity {
         DomainEventPublisher.instance().publish(new OrderShipEvent(orderId, shopName, expressCode, expressNo));
         return true;
     }
+    /***
+     * 返回当前能做什么处理
+     * @return 1 可发货，2可修改发货， 0 不可发货
+     */
+    public int canDoSth() {
+    	switch (status) {
+    		case 1:
+    			return 1;
+    		case 2:
+    			return 2;
+    		default:
+    			return 0;
+    	}
+    }
+    
+    /**
+     * 商家修改订单的物流信息
+     *
+     * @param expressName
+     * @param expressNo
+     * @param expressNote
+     * @param expressPerson
+     * @param expressPhone
+     * @param expressWay
+     * @param skuIds
+     */
+    public boolean modifyExpress(String expressName, String expressNo,
+                                 String expressNote, String expressPerson, String expressPhone,
+                                 Integer expressWay, String expressCode, String userId
+            , List<String> skuIds, List<Integer> sortNos, String shopName, Map userMap) {
+        if (status != 2) {
+            return false;
+        }
+        int ct = 0;
+        for (DealerOrderDtl dealerOrderDtl : orderDtls) {
+            if (skuIds != null && skuIds.contains(dealerOrderDtl.getSkuId())
+                    && sortNos.contains(dealerOrderDtl.getSortNo())) {
+                ct++;
+                continue;
+            }
+            dealerOrderDtl.updateOrderDetailExpress(expressName, expressNo, expressNote, expressPerson
+                    , expressPhone, expressWay, expressCode);
+        }
+
+        if (ct > 0 && ct == orderDtls.size()) {
+            return true;
+        }
+
+        //status = 2;
+        updateTime = new Date();
+        DomainEventPublisher.instance().publish(new OrderOptLogEvent(orderId, dealerOrderId, "商家修改发货", userId, 2));
+        DomainEventPublisher.instance().publish(new OrderShipEvent(orderId, shopName, expressCode, expressNo));
+        return true;
+    }
 
     /***
      * 检查是否全部确认收货，除指定的sku外

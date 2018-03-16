@@ -151,7 +151,8 @@ public class DealerOrderDtl extends ConcurrencySafeEntity {
         this.expressInfo.updateExpress(expressName, expressNo, expressNote, expressPerson, expressPhone, expressWay
                 , expressCode);
         updateTime = new Date();
-        this.status = 2;
+        if (status < 2)
+        	this.status = 2;
     }
 
     void cancel() {
