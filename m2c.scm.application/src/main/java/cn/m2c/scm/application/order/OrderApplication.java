@@ -1600,70 +1600,70 @@ public class OrderApplication {
 	 * @throws NegativeException
 	 * @throws Exception
 	 */
-	public OrderShipSuccessBean importExpressModel(MultipartFile myFile,String userId,String shopName,Integer expressWay,String attach) throws NegativeException, Exception {
-		Workbook workbook = null ;
-		String fileName = myFile.getOriginalFilename(); 
-		List<OrderExpressBean> allExpress = queryApp.getAllExpress();
-		List<SendOrderCommand> commands = new ArrayList<SendOrderCommand>();
-		SendOrderCommand command = new SendOrderCommand();
-		 if(fileName.endsWith("xls")){ 
-			   //2003 
-			   workbook = new HSSFWorkbook(myFile.getInputStream()); 
-			  }else{
-			   throw new NegativeException(MCode.V_401,"文件不是Excel文件");
-			  }
-
-		 Sheet sheet = workbook.getSheet("fileName");
-		 int rows = sheet.getLastRowNum();// 一共有多少行
-		 
-		 //发货参数：dealerOrderId,orderId,expressWay,expressName,expressCode,expressNo,userId,expressPhone.expressPerson
-		 //填充发货参数
-		 for(int i = 1; i <= rows+1; ++i) {
-			// 读取左上端单元格
-			   Row row = sheet.getRow(i);
-			   // 行不为空
-			   if (row != null) {
-				   String dealerOrder = row.getCell(0).getStringCellValue();
-				   command.setDealerOrderId(dealerOrder);
-				   ShipExpressBean bean = queryApp.queryOrderIdByDealerOrderId(dealerOrder);
-				   command.setOrderId(bean.getOrderId());
-				   command.setExpressPerson(bean.getExpressPerson());
-				   command.setExpressPhone(bean.getExpressPhone());
-				   String expressName = row.getCell(1).getStringCellValue();
-				   command.setExpressName(expressName);
-				   for (OrderExpressBean express : allExpress) {
-					   if (expressName.equals(express.getExpressName())) {
-						command.setExpressCode(express.getExpressCode());
-					}
-				   }
-				   if (row.getCell(2) != null) {
-					   row.getCell(2).setCellType(Cell.CELL_TYPE_STRING);
-					   String expressNo = row.getCell(2).getStringCellValue();
-					   command.setExpressNo(expressNo);
-				}
-				   command.setExpressWay(expressWay);
-				   
-				   commands.add(command);
-			   }
-		 }
-		 
-		 OrderShipSuccessBean bean = new OrderShipSuccessBean();
-		 int failed = 0;         //失败次数
-		 int success = 0;         //成功次数
-		
-			for (SendOrderCommand shipCommand : commands) {
-				try {
-					dealerOrderApplication.updateExpress(shipCommand, attach);
-					++success;
-				} catch (NegativeException e) {
-					++failed;
-					continue;
-				}
-			}
-		bean.setSuccess(success);
-		bean.setFailed(failed);
-		return bean;
-	}
+//	public OrderShipSuccessBean importExpressModel(MultipartFile myFile,String userId,String shopName,Integer expressWay,String attach) throws NegativeException, Exception {
+//		Workbook workbook = null ;
+//		String fileName = myFile.getOriginalFilename(); 
+//		List<OrderExpressBean> allExpress = queryApp.getAllExpress();
+//		List<SendOrderCommand> commands = new ArrayList<SendOrderCommand>();
+//		SendOrderCommand command = new SendOrderCommand();
+//		 if(fileName.endsWith("xls")){ 
+//			   //2003 
+//			   workbook = new HSSFWorkbook(myFile.getInputStream()); 
+//			  }else{
+//			   throw new NegativeException(MCode.V_401,"文件不是Excel文件");
+//			  }
+//
+//		 Sheet sheet = workbook.getSheet("fileName");
+//		 int rows = sheet.getLastRowNum();// 一共有多少行
+//		 
+//		 //发货参数：dealerOrderId,orderId,expressWay,expressName,expressCode,expressNo,userId,expressPhone.expressPerson
+//		 //填充发货参数
+//		 for(int i = 1; i <= rows+1; ++i) {
+//			// 读取左上端单元格
+//			   Row row = sheet.getRow(i);
+//			   // 行不为空
+//			   if (row != null) {
+//				   String dealerOrder = row.getCell(0).getStringCellValue();
+//				   command.setDealerOrderId(dealerOrder);
+//				   ShipExpressBean bean = queryApp.queryOrderIdByDealerOrderId(dealerOrder);
+//				   command.setOrderId(bean.getOrderId());
+//				   command.setExpressPerson(bean.getExpressPerson());
+//				   command.setExpressPhone(bean.getExpressPhone());
+//				   String expressName = row.getCell(1).getStringCellValue();
+//				   command.setExpressName(expressName);
+//				   for (OrderExpressBean express : allExpress) {
+//					   if (expressName.equals(express.getExpressName())) {
+//						command.setExpressCode(express.getExpressCode());
+//					}
+//				   }
+//				   if (row.getCell(2) != null) {
+//					   row.getCell(2).setCellType(Cell.CELL_TYPE_STRING);
+//					   String expressNo = row.getCell(2).getStringCellValue();
+//					   command.setExpressNo(expressNo);
+//				}
+//				   command.setExpressWay(expressWay);
+//				   
+//				   commands.add(command);
+//			   }
+//		 }
+//		 
+//		 OrderShipSuccessBean bean = new OrderShipSuccessBean();
+//		 int failed = 0;         //失败次数
+//		 int success = 0;         //成功次数
+//		
+//			for (SendOrderCommand shipCommand : commands) {
+//				try {
+//					dealerOrderApplication.updateExpress(shipCommand, attach);
+//					++success;
+//				} catch (NegativeException e) {
+//					++failed;
+//					continue;
+//				}
+//			}
+//		bean.setSuccess(success);
+//		bean.setFailed(failed);
+//		return bean;
+//	}
 
 	/**
 	 * 批量导入发货单模板 发货
@@ -1808,17 +1808,4 @@ public class OrderApplication {
 		return result;
 	}
 
-	@Transactional
-	public void getImport() {
-		String dealerOrderId="2018031614030025";
-		String expressName = "顺丰快递";
-		String expressNo = "602214566544";
-		long expressFlag = System.currentTimeMillis();
-		OrderWrongMessage ow = new OrderWrongMessage(dealerOrderId, expressName, expressNo, "订货号不能为空",  expressFlag);
-		try {
-			owmRepository.save(ow);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 }
