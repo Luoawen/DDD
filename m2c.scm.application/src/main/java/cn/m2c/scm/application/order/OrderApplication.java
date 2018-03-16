@@ -45,6 +45,8 @@ import cn.m2c.scm.domain.model.order.DealerOrder;
 import cn.m2c.scm.domain.model.order.DealerOrderDtl;
 import cn.m2c.scm.domain.model.order.MainOrder;
 import cn.m2c.scm.domain.model.order.OrderRepository;
+import cn.m2c.scm.domain.model.order.OrderWrongMessage;
+import cn.m2c.scm.domain.model.order.OrderWrongMessageRepository;
 import cn.m2c.scm.domain.model.order.SimpleCoupon;
 import cn.m2c.scm.domain.model.order.SimpleMarketInfo;
 import cn.m2c.scm.domain.model.order.SimpleMarketing;
@@ -131,6 +133,8 @@ public class OrderApplication {
     @Autowired
     DealerOrderQuery dealerOrderQuery;
 
+    @Autowired
+    OrderWrongMessageRepository owmRepository;
     /**
      * 提交订单
      *
@@ -1666,8 +1670,11 @@ public class OrderApplication {
 	 * @param i
 	 * @param _attach
 	 * @return
+	 * @throws NegativeException 
+	 * @throws IOException 
 	 */
-	public List<Integer> importExpress(MultipartFile myFile,String userId,String shopName,String dealerId, Integer expressWay,String attach) {
+	public List<Integer> importExpress(MultipartFile myFile,String userId,String shopName,String dealerId, Integer expressWay,String attach) throws NegativeException, IOException {
+		List<Integer> result = null;
 		try {
 			Workbook workbook = null ;
 			String fileName = myFile.getOriginalFilename(); 
@@ -1686,6 +1693,9 @@ public class OrderApplication {
 				 throw new NegativeException(402,"记录超出500");
 			 }
 			 if(rows>0){//确认有数据才会导入
+				 long expressFlag = System.currentTimeMillis();
+				 int successNum = 0;
+				 int failNum = 0;
 				 for(int i = 1; i <= rows+1; ++i) {
 					// 读取左上端单元格
 					Row row = sheet.getRow(i);
@@ -1695,19 +1705,26 @@ public class OrderApplication {
 						 String expressNo = row.getCell(2).getStringCellValue();
 						 if(StringUtils.isEmpty(dealerOrderId)){//校验1：订货号为空 导入失败，提示订货号不能为空
 							 //--入库信息
-							 
+							 failNum++;
+							 owmRepository.save(new OrderWrongMessage(dealerOrderId, expressName, expressNo, "订货号不能为空",  expressFlag));
 							 continue;
 						 }
 						 DealerOrderBean dealerOrder = queryApp.getDealerOrder(dealerOrderId);
 						 if(dealerOrder==null || !dealerOrder.getDealerId().equals(dealerId)){//检验2：订货号不存在
 							 //--入库信息
+							 failNum++;
+							 owmRepository.save(new OrderWrongMessage(dealerOrderId, expressName, expressNo, "订货号不存在",  expressFlag));
 							 continue;
 						 }
 						 if(dealerOrder.getStatus()!=1){//检验3：该单号不是待发货状态
+							 failNum++;
+							 owmRepository.save(new OrderWrongMessage(dealerOrderId, expressName, expressNo, "该单号不是待发货状态",  expressFlag));
 							 continue;
 						 }
 						 if(StringUtils.isEmpty(expressName)){//校验4：物流公司不能为空
 							 //--入库信息
+							 failNum++;
+							 owmRepository.save(new OrderWrongMessage(dealerOrderId, expressName, expressNo, "物流公司不能为空",  expressFlag));
 							 continue;
 						 }
 						 boolean isExpressCom = false;//标志是否是物流公司
@@ -1718,37 +1735,54 @@ public class OrderApplication {
 						 }
 						 if(!isExpressCom){//校验5：请按照系统提供的物流公司名称填写
 							//--入库信息
+							 failNum++;
+							 owmRepository.save(new OrderWrongMessage(dealerOrderId, expressName, expressNo, "请按照系统提供的物流公司名称填写",  expressFlag));
 							 continue;
 						 }
 						 if(StringUtils.isEmpty(expressNo)){//校验6：物流单号不能为空
 							 //--入库信息
+							 failNum++;
+							 owmRepository.save(new OrderWrongMessage(dealerOrderId, expressName, expressNo, "物流单号不能为空",  expressFlag));
 							 continue;
 						 }
 						 if(expressNo.length()>20){//校验7：物流单号超出20字符
 							 //--入库信息
+							 failNum++;
+							 owmRepository.save(new OrderWrongMessage(dealerOrderId, expressName, expressNo, "物流单号超出20字符",  expressFlag));
 							 continue;
 						 }
 						 if(!StringDealUtil.InputNumOrEnglish(expressNo)){
 							 //--入库信息
+							 failNum++;
+							 owmRepository.save(new OrderWrongMessage(dealerOrderId, expressName, expressNo, "物流单号只能为数字、或者字母+数字组合",  expressFlag));
 							 continue;
 						 }
 						 //可以一个个进行发货了
 						 for (OrderExpressBean express : allExpress) {
 							   if (expressName.equals(express.getExpressName())) {
 								   command = new SendOrderCommand(dealerOrderId, expressNo, expressName, dealerOrder.getRevPerson(), dealerOrder.getRevPhone(), expressWay,"" , express.getExpressCode(), userId, dealerOrder.getOrderId(), shopName);
+								   successNum++;
 								   dealerOrderApplication.updateExpress(command, attach);//发货
 								   break;
 							   }
 						  }
 					 }
 				 }
+				 result = new ArrayList<Integer>();
+				 result.add(successNum);
+				 result.add(failNum);
 			 }
 		} catch (NegativeException e) {
-			
-		} catch (IOException e) {
-			
+			LOGGER.error("自定义异常");
+            throw new NegativeException(e.getStatus(), e.getMessage());
+		} catch (IOException ie) {
+			LOGGER.error("文件读取出问题");
+			throw ie;
+		} catch (Exception ee){
+			LOGGER.error("导入问题抛异常-exception");
+			throw ee;
 		}
 		
-		return null;
+		return result;
 	}
 }

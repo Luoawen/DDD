@@ -616,8 +616,8 @@ public class OrderAgent {
     		LOGGER.info("userID----------" + userId);
     		LOGGER.info("shopName---------" + shopName);
     		String _attach= request.getHeader("attach");
-			List<Integer> times = orderapplication.importExpressModel(myFile,userId,shopName,0,_attach);
-//			List<Integer> times = orderapplication.importExpress(myFile,userId,shopName,dealerId,0,_attach);
+//			List<Integer> times = orderapplication.importExpressModel(myFile,userId,shopName,0,_attach);
+			List<Integer> times = orderapplication.importExpress(myFile,userId,shopName,dealerId,0,_attach);
 			result.setContent("成功" + times.get(1)  + "失败" + times.get(0));
 		} catch (NegativeException e) {
 			LOGGER.error("上传发货模板出错", e);
