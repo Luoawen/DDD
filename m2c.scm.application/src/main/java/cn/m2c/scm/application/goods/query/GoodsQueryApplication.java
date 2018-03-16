@@ -1619,18 +1619,26 @@ public class GoodsQueryApplication {
     }
     
     /**
-     * 根据商品名模糊查询GoodsBean
+     * 根据商品名/商品ids查询GoodsBean
      * @param goodsName
      * @return
      */
-    public List<GoodsBean> queryGoodsMessageByGoodsName(String goodsName) {
-        if(StringUtils.isNotEmpty(goodsName)) {
+    public List<GoodsBean> queryGoodsMessageByGoodsNameOrGoodsIds(String goodsName, List goodsIds) {
+        if(StringUtils.isNotEmpty(goodsName) || (null != goodsIds && goodsIds.size() > 0)) {
         	StringBuilder sql = new StringBuilder();
+        	List<Object> params = new ArrayList<Object>();
             sql.append(" SELECT ");
             sql.append(" * ");
             sql.append(" FROM ");
-            sql.append(" t_scm_goods WHERE goods_name LIKE ? ");
-            List<GoodsBean> goodsBeans = this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsBean.class, "%" + goodsName + "%");
+            sql.append(" t_scm_goods WHERE 1 = 1 ");
+            if(StringUtils.isNotEmpty(goodsName)) {
+            	sql.append(" AND goods_name LIKE ? ");
+            	params.add("%" + goodsName + "%");
+            }
+            if(null != goodsIds && goodsIds.size() > 0) {
+            	sql.append(" AND goods_id IN ( " + Utils.listParseString(goodsIds) + " ) ");
+            }
+            List<GoodsBean> goodsBeans = this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsBean.class, params.toArray());
             return goodsBeans;
         }
         return null;
