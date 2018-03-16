@@ -14,13 +14,17 @@ public class GoodsAddEvent implements DomainEvent {
      * 商品id
      */
     private String goodsId;
+    private Integer goodsShelves;//1:手动上架,2:审核通过立即上架
+    private String goodsPostageId; // 运费模板
     private String goodsUnitId; //计量单位id
     private List<String> standardIds; //规格id
     private Date occurredOn;
     private int eventVersion;
 
-    public GoodsAddEvent(String goodsId, String goodsUnitId, List<String> standardIds) {
+    public GoodsAddEvent(String goodsId, String goodsPostageId, String goodsUnitId, List<String> standardIds, Integer goodsShelves) {
         this.goodsId = goodsId;
+        this.goodsPostageId = goodsPostageId;
+        this.goodsShelves = goodsShelves;
         this.goodsUnitId = goodsUnitId;
         this.standardIds = standardIds;
         this.occurredOn = new Date();

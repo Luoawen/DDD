@@ -200,9 +200,9 @@ public class Goods extends ConcurrencySafeEntity {
             this.goodsStatus = 1;
         } else {
             this.goodsStatus = 2;
-            DomainEventPublisher
+            /*DomainEventPublisher
                     .instance()
-                    .publish(new GoodsUpShelfEvent(this.goodsId, this.goodsPostageId, this.goodsRecognizeds(), 1));
+                    .publish(new GoodsUpShelfEvent(this.goodsId, this.goodsPostageId, this.goodsRecognizeds(), 1));*/
         }
         this.goodsSpecifications = goodsSpecifications;
 
@@ -224,7 +224,7 @@ public class Goods extends ConcurrencySafeEntity {
 
         DomainEventPublisher
                 .instance()
-                .publish(new GoodsAddEvent(this.goodsId, this.goodsUnitId, getStandardId(goodsSpecifications)));
+                .publish(new GoodsAddEvent(this.goodsId, this.goodsPostageId, this.goodsUnitId, getStandardId(goodsSpecifications), this.goodsShelves));
 
         Map<String, Map> dealerInfo = new HashMap<>();
         Map infoMap = new HashMap<>();

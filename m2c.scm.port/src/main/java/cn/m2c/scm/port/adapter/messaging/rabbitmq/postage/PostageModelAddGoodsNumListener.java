@@ -28,11 +28,18 @@ public class PostageModelAddGoodsNumListener extends ExchangeListener {
     protected void filteredDispatch(String aType, String aTextMessage) throws Exception {
         NotificationReader reader = new NotificationReader(aTextMessage);
         String goodsPostageId = reader.eventStringValue("goodsPostageId");
-        postageModelApplication.addGoodsUserNum(goodsPostageId);
+        if (aType.contains("GoodsAddEvent")) {
+            Integer goodsShelves = reader.eventIntegerValue("goodsShelves");
+            if (goodsShelves == 2) {
+                postageModelApplication.addGoodsUserNum(goodsPostageId);
+            }
+        } else {
+            postageModelApplication.addGoodsUserNum(goodsPostageId);
+        }
     }
 
     @Override
     protected String[] listensTo() {
-        return new String[]{"cn.m2c.scm.domain.model.goods.event.GoodsUpShelfEvent"};
+        return new String[]{"cn.m2c.scm.domain.model.goods.event.GoodsUpShelfEvent", "cn.m2c.scm.domain.model.goods.event.GoodsAddEvent"};
     }
 }
