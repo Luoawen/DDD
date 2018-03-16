@@ -634,4 +634,20 @@ public class OrderAgent {
     	
     }
     
+    
+    
+    @RequestMapping(value = "/test",method = RequestMethod.POST)
+    public ResponseEntity<MResult> test(){
+    	MResult result = new MResult();
+    	try {
+    		orderapplication.getImport();
+		}  catch (Exception e) {
+			LOGGER.error("test", e);
+            result = new MResult(500, e.getMessage());
+		}
+    	
+		return new ResponseEntity<MResult>(result,HttpStatus.OK);
+    	
+    }
+    
 }

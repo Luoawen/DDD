@@ -6,11 +6,13 @@ import cn.m2c.ddd.common.port.adapter.persistence.hibernate.HibernateSupperRepos
 import cn.m2c.scm.domain.model.order.OrderWrongMessage;
 import cn.m2c.scm.domain.model.order.OrderWrongMessageRepository;
 
+
 @Repository
 public class HibernateOrderWrongMessage extends HibernateSupperRepository implements OrderWrongMessageRepository{
 
 	@Override
 	public void save(OrderWrongMessage orderWrongMessage) {
+		System.out.println("wwww");
 		this.session().saveOrUpdate(orderWrongMessage);
 		
 	}
