@@ -34,6 +34,7 @@ import cn.m2c.scm.application.order.query.dto.GoodsDto;
 import cn.m2c.scm.application.postage.data.representation.PostageModelRuleRepresentation;
 import cn.m2c.scm.application.postage.query.PostageModelQueryApplication;
 import cn.m2c.scm.application.utils.ExcelUtil;
+import cn.m2c.scm.application.utils.StringDealUtil;
 import cn.m2c.scm.domain.NegativeCode;
 import cn.m2c.scm.domain.NegativeException;
 import cn.m2c.scm.domain.model.expressPlatform.ExpressPlatform;
@@ -1671,8 +1672,7 @@ public class OrderApplication {
 			Workbook workbook = null ;
 			String fileName = myFile.getOriginalFilename(); 
 			List<OrderExpressBean> allExpress = queryApp.getAllExpress();
-			List<SendOrderCommand> commands = new ArrayList<SendOrderCommand>();
-			SendOrderCommand command = new SendOrderCommand();
+			SendOrderCommand command = null;
 			 if(fileName.endsWith("xls")){ 
 				   //2003 
 				   workbook = new HSSFWorkbook(myFile.getInputStream()); 
@@ -1695,6 +1695,7 @@ public class OrderApplication {
 						 String expressNo = row.getCell(2).getStringCellValue();
 						 if(StringUtils.isEmpty(dealerOrderId)){//校验1：订货号为空 导入失败，提示订货号不能为空
 							 //--入库信息
+							 
 							 continue;
 						 }
 						 DealerOrderBean dealerOrder = queryApp.getDealerOrder(dealerOrderId);
@@ -1705,6 +1706,40 @@ public class OrderApplication {
 						 if(dealerOrder.getStatus()!=1){//检验3：该单号不是待发货状态
 							 continue;
 						 }
+						 if(StringUtils.isEmpty(expressName)){//校验4：物流公司不能为空
+							 //--入库信息
+							 continue;
+						 }
+						 boolean isExpressCom = false;//标志是否是物流公司
+						 for (OrderExpressBean express : allExpress) {
+							   if (expressName.equals(express.getExpressName())) {
+								   isExpressCom = true;
+							}
+						 }
+						 if(!isExpressCom){//校验5：请按照系统提供的物流公司名称填写
+							//--入库信息
+							 continue;
+						 }
+						 if(StringUtils.isEmpty(expressNo)){//校验6：物流单号不能为空
+							 //--入库信息
+							 continue;
+						 }
+						 if(expressNo.length()>20){//校验7：物流单号超出20字符
+							 //--入库信息
+							 continue;
+						 }
+						 if(!StringDealUtil.InputNumOrEnglish(expressNo)){
+							 //--入库信息
+							 continue;
+						 }
+						 //可以一个个进行发货了
+						 for (OrderExpressBean express : allExpress) {
+							   if (expressName.equals(express.getExpressName())) {
+								   command = new SendOrderCommand(dealerOrderId, expressNo, expressName, dealerOrder.getRevPerson(), dealerOrder.getRevPhone(), expressWay,"" , express.getExpressCode(), userId, dealerOrder.getOrderId(), shopName);
+								   dealerOrderApplication.updateExpress(command, attach);//发货
+								   break;
+							   }
+						  }
 					 }
 				 }
 			 }
