@@ -17,7 +17,7 @@ public class StringDealUtil {
 	 */
 	public static boolean InputNumOrEnglish(String str){
 		boolean result = false;
-		if(StringUtils.isEmpty(str)){
+		if(!StringUtils.isEmpty(str)){
 			Pattern pattern = Pattern.compile(NumOrEnglishRegex);
 			Matcher match=pattern.matcher(str);
 			result =  match.matches();
@@ -37,4 +37,9 @@ public class StringDealUtil {
 		return uuid.replaceAll("-", "");
 	}
 	
+	public static void main(String[] args) {
+		Pattern pattern = Pattern.compile(NumOrEnglishRegex);
+		Matcher match=pattern.matcher("123465fsafs4456");
+		System.out.println(match.matches());
+	}
 }
