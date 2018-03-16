@@ -13,9 +13,6 @@ import cn.m2c.ddd.common.domain.model.ConcurrencySafeEntity;
  *
  */
 public class OrderWrongMessage extends ConcurrencySafeEntity {
-	
-	private final static Logger LOGGER = LoggerFactory.getLogger(OrderWrongMessage.class);
-	
 	private String dealerOrderId;
 	
 	private String expressName;
@@ -24,9 +21,9 @@ public class OrderWrongMessage extends ConcurrencySafeEntity {
 	
 	private String importWrongMessage;
 	
-	private Date createdDate;
 	
 	private long expressFlag;
+	private Date createdDate;
 	
 	public OrderWrongMessage() {
 		super();
@@ -41,6 +38,7 @@ public class OrderWrongMessage extends ConcurrencySafeEntity {
 		this.expressNo = expressNo;
 		this.importWrongMessage = importWrongMessage;
 		this.expressFlag = expressFlag;
+		this.createdDate = new Date();
 	}
 
 
@@ -52,11 +50,6 @@ public class OrderWrongMessage extends ConcurrencySafeEntity {
 		this.importWrongMessage = importWrongMessage;
 		this.expressFlag = expressFlag;
 	}
-	
-	
-	
-	
-	
 	
 
 }

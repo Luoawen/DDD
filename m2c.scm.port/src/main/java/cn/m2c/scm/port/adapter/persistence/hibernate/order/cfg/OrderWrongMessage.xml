@@ -4,11 +4,12 @@
 
 <hibernate-mapping default-access="field" default-cascade="all">
     <class name="cn.m2c.scm.domain.model.order.OrderWrongMessage" table="t_scm_order_exp_import_wrong_message" lazy="true"
-           dynamic-insert="true" dynamic-update="true">
+           optimistic-lock="version" dynamic-insert="true" dynamic-update="true">
 
         <id name="id" column="id" type="long" unsaved-value="-1">
             <generator class="native"/>
         </id>
+        <version name="concurrencyVersion" column="concurrency_version" type="int" />
 		<property name="createdDate" generated="insert" not-null="true">
 			<column name="created_date" sql-type="timestamp" default="CURRENT_TIMESTAMP"></column>
 		</property>
