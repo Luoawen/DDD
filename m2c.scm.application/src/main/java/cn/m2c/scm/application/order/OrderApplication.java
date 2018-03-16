@@ -1550,23 +1550,8 @@ public class OrderApplication {
 			cell2.setCellValue("物流单号");
 	       
 			HSSFCell failedCell = null;
-	        if (failedOrderModelInfo.size() > 0 && failedOrderModelInfo != null) {
-	        	//批量发货失败数据导出
-	        	fileName = "批量发货失败数据";
-	        	HSSFCell cell3 = hssfRow.createCell(3);
-				cell3.setCellValue("失败理由");
-				for(int i = 0,length = failedOrderModelInfo.size(); i < length; ++i) {
-					HSSFRow row = realSheet.createRow(i+1);
-					failedCell = row.createCell(0,1);
-					failedCell.setCellValue(failedOrderModelInfo.get(i).getDealerOrderId());
-					failedCell = row.createCell(1,1);
-					failedCell.setCellValue(failedOrderModelInfo.get(i).getExpressName());
-					failedCell = row.createCell(2,1);
-					failedCell.setCellValue(failedOrderModelInfo.get(i).getExpressNo());
-					failedCell = row.createCell(3,1);
-					failedCell.setCellValue(failedOrderModelInfo.get(i).getFailedReason());
-				}
-			}else {   //导出批量发货模板
+	        if (failedOrderModelInfo == null || failedOrderModelInfo.size() == 0 ) {
+	        	 //导出批量发货模板
 				//写入物流公司名到Excel
 				fileName = "批量发货模板";
 		        HSSFCell cell = null;
@@ -1601,7 +1586,22 @@ public class OrderApplication {
 		        //将第二个sheet设置为隐藏
 		        workbook.setSheetHidden(1, true); 
 		        realSheet.addValidationData(validation); 
-				
+			}else {  
+				//批量发货失败数据导出
+	        	fileName = "批量发货失败数据";
+	        	HSSFCell cell3 = hssfRow.createCell(3);
+				cell3.setCellValue("失败理由");
+				for(int i = 0,length = failedOrderModelInfo.size(); i < length; ++i) {
+					HSSFRow row = realSheet.createRow(i+1);
+					failedCell = row.createCell(0,1);
+					failedCell.setCellValue(failedOrderModelInfo.get(i).getDealerOrderId());
+					failedCell = row.createCell(1,1);
+					failedCell.setCellValue(failedOrderModelInfo.get(i).getExpressName());
+					failedCell = row.createCell(2,1);
+					failedCell.setCellValue(failedOrderModelInfo.get(i).getExpressNo());
+					failedCell = row.createCell(3,1);
+					failedCell.setCellValue(failedOrderModelInfo.get(i).getFailedReason());
+				}
 			}
 
 	        
