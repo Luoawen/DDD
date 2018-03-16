@@ -92,8 +92,22 @@ public class AppOrderAgent {
     }
 
     /**
-     * 提交订单     *
-     * @param goodsId 商品ID
+     * 提交订单
+     * @param goodses 商品sku及数量等json串
+     * @param userId 提交用户
+     * @param couponUserId 
+     * @param orderId 订单号
+     * @param invoice 发票信息json串
+     * @param addr 地址信息json串
+     * @param noted 备注
+     * @param coupons 优惠券 暂不用
+     * @param latitude 纬度
+     * @param longitude 经度
+     * @param from 来源 0 购物车，1直接购买
+     * @param appVersion app版本号
+     * @param os 系统 android or ios
+     * @param osVersion os版本号
+     * @param sn 机器sn号
      * @return
      */
     @RequestMapping(value = "/app/add", method = RequestMethod.POST)
@@ -143,7 +157,12 @@ public class AppOrderAgent {
     
     /**
      * 获取订单列表
-     * @param userId 当前登录用户ID,app用户id
+     * @param userId
+     * @param pageIndex 页码
+     * @param pageNum 页大小
+     * @param status 订单状态
+     * @param commentStatus 评论状态
+     * @param keyword 查询关键字
      * @return
      */
     @RequestMapping(value = "/app/list", method = RequestMethod.GET)
@@ -267,13 +286,13 @@ public class AppOrderAgent {
      * @param orderId
      * @param dealerOrderId
      * @param skuId
-     * @param saleAfterNo
-     * @param type
-     * @param goodsId
-     * @param dealerId
-     * @param backNum
-     * @param reason
-     * @param rCode
+     * @param saleAfterNo 售后单号
+     * @param type 售后类型
+     * @param goodsId 商品id
+     * @param dealerId 商家id
+     * @param backNum 售后数量
+     * @param reason 售后原因
+     * @param reasonCode 原因编码 
      * @param sortNo 新数据这个值必须大于0（2017-12-09之后）
      * @return
      */
@@ -316,7 +335,12 @@ public class AppOrderAgent {
     /**
      * 用户退货发货
      * @param userId
-     * @param orderId
+     * @param expressNo 快递单号
+     * @param expressCode 快递公司编码
+     * @param skuId 发货商品
+     * @param saleAfterNo 售后单号
+     * @param expressName 快递公司名称
+     * @param noted 备注
      * @return
      */
     @RequestMapping(value = "/app/aftersale/ship", method = {RequestMethod.PUT, RequestMethod.POST})
@@ -351,6 +375,7 @@ public class AppOrderAgent {
      * 用户确认收货
      * @param userId
      * @param orderId
+     * @param saleAfterNo
      * @return
      */
     @RequestMapping(value = "/app/aftersale/user-rev", method = {RequestMethod.PUT, RequestMethod.POST})
@@ -382,7 +407,7 @@ public class AppOrderAgent {
      * 订单详情
      * @param userId
      * @param orderId
-     * @param dealerOrderId
+     * @param dealerOrderId 商家订单号
      * @return
      */
     @RequestMapping(value = "/app/orderdtl", method = RequestMethod.GET)
