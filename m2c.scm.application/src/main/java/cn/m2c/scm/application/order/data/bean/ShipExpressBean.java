@@ -13,6 +13,9 @@ public class ShipExpressBean {
 	@ColumnAlias(value = "rev_person")
 	private String expressPerson;
 
+	@ColumnAlias(value = "dealer_id")
+	private String dealerId;
+	
 	public String getOrderId() {
 		return orderId;
 	}
@@ -35,6 +38,14 @@ public class ShipExpressBean {
 
 	public void setExpressPerson(String expressPerson) {
 		this.expressPerson = expressPerson;
+	}
+
+	public String getDealerId() {
+		return dealerId;
+	}
+
+	public void setDealerId(String dealerId) {
+		this.dealerId = dealerId;
 	}
 	
 

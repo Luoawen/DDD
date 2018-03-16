@@ -19,16 +19,30 @@ public class OrderWrongMessage {
 	private Date createdDate;
 	
 	private long expressFlag;
+	
+	public OrderWrongMessage() {
+		super();
+	}
 
 	
-	public void add(String dealerOrderId, String expressName, String expressNo, String importWrongMessage,
-			Date createdDate,long expressFlag) {
+	public OrderWrongMessage(String dealerOrderId, String expressName,
+			String expressNo, String importWrongMessage, long expressFlag) {
+		super();
 		this.dealerOrderId = dealerOrderId;
 		this.expressName = expressName;
 		this.expressNo = expressNo;
 		this.importWrongMessage = importWrongMessage;
 		this.expressFlag = expressFlag;
-		this.createdDate = new Date();
+	}
+
+
+	public void add(String dealerOrderId, String expressName, String expressNo, String importWrongMessage,
+			long expressFlag) {
+		this.dealerOrderId = dealerOrderId;
+		this.expressName = expressName;
+		this.expressNo = expressNo;
+		this.importWrongMessage = importWrongMessage;
+		this.expressFlag = expressFlag;
 	}
 	
 	
