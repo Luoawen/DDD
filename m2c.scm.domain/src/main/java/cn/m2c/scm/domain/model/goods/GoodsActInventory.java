@@ -101,4 +101,10 @@ public class GoodsActInventory extends ConcurrencySafeEntity {
     public Integer availableNum() {
         return this.availableNum;
     }
+
+
+    public void goodsActReturn() {
+        this.availableNum = 0;
+        this.status = 2;
+    }
 }

@@ -25,4 +25,11 @@ public class HibernateGoodsActInventoryRepository extends HibernateSupperReposit
         query.setParameter("activity_id", actId);
         return query.list();
     }
+
+    @Override
+    public List<GoodsActInventory> getGoodsActInventoriesReturn() {
+        StringBuilder sql = new StringBuilder("SELECT * FROM t_scm_goods_activity_inventory t WHERE t.create_time < NOW()-INTERVAL 1 HOUR and t.`status` = 0");
+        Query query = this.session().createSQLQuery(sql.toString()).addEntity(GoodsActInventory.class);
+        return query.list();
+    }
 }

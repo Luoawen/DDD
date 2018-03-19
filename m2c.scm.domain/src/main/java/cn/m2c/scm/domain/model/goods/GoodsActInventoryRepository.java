@@ -9,4 +9,6 @@ public interface GoodsActInventoryRepository {
     void save(GoodsActInventory goodsActInventory);
 
     List<GoodsActInventory> getGoodsActInventoriesByActId(String actId);
+
+    List<GoodsActInventory> getGoodsActInventoriesReturn();
 }

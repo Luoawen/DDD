@@ -59,4 +59,25 @@ public class GoodsActInventoryDomainAgent {
         }
         return new ResponseEntity<MResult>(result, HttpStatus.OK);
     }
+
+    /**
+     * 活动（限时购）创建失败，冻结的商品库存返还
+     *
+     * @return
+     */
+    @RequestMapping(value = "/return", method = RequestMethod.POST)
+    public ResponseEntity<MResult> goodsActInventoryReturn() {
+        MResult result = new MResult(MCode.V_1);
+        try {
+            goodsActInventoryApplication.goodsActInventoriesReturn();
+            result.setStatus(MCode.V_200);
+        } catch (NegativeException ne) {
+            LOGGER.error("goodsActInventoryReturn NegativeException e:", ne);
+            result = new MResult(ne.getStatus(), ne.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("goodsActInventoryReturn Exception e:", e);
+            result = new MResult(MCode.V_400, "活动商品冻结库存返还失败");
+        }
+        return new ResponseEntity<MResult>(result, HttpStatus.OK);
+    }
 }

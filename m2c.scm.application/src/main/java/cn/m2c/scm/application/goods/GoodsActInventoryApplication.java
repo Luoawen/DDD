@@ -148,4 +148,34 @@ public class GoodsActInventoryApplication {
             goodsActInventory.goodsActEnd();
         }
     }
+
+    /**
+     * 活动（限时购）创建失败，冻结的商品库存返还
+     */
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class})
+    @EventListener(isListening = true)
+    public void goodsActInventoriesReturn() throws NegativeException {
+        // 查询活动冻结的库存
+        List<GoodsActInventory> actInventories = goodsActInventoryRepository.getGoodsActInventoriesReturn();
+        if (null != actInventories && actInventories.size() > 0) {
+            for (GoodsActInventory goodsActInventory : actInventories) {
+                // 更新商品状态
+                Goods goods = goodsRepository.queryGoodsByGoodsId(goodsActInventory.goodsId());
+                if (null == goods) {
+                    throw new NegativeException(MCode.V_401, "商品不存在");
+                }
+                goods.actReturnUpdateStatus();
+
+                // 返还商品库存
+                GoodsSku goodsSku = goodsSkuRepository.queryGoodsSkuById(goodsActInventory.skuId());
+                if (null == goodsSku) {
+                    throw new NegativeException(MCode.V_400, "商品规格不存在");
+                }
+                goodsSku.actReturnGoods(goodsActInventory.availableNum());
+                // 更新冻结库存
+                goodsActInventory.goodsActReturn();
+            }
+        }
+
+    }
 }
