@@ -295,7 +295,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public void sendOrderSMS(String userMobile, String shopName)
             throws NegativeException {
-        String url = M2C_HOST_URL + "/m2c.support/sms/sendsmsByTemplate";
+        String url = M2C_HOST_URL + "/m2c.support/sms/sendByTempPreAttack";
         HashMap<String, String> params = new HashMap<String, String>();
         params.put("codeType", "6");
         params.put("mobile", userMobile);
