@@ -118,6 +118,12 @@ public class Goods extends ConcurrencySafeEntity {
      */
     private String goodsMainVideo;
 
+    /**商品主图视频时长*/
+    private Integer goodsMainVideoDuration;
+    
+    /**商品主图视频大小*/
+    private Integer goodsMainVideoSize;
+    
     /**
      * 商品描述
      */
@@ -458,7 +464,8 @@ public class Goods extends ConcurrencySafeEntity {
     public void modifyGoods(String goodsName, String goodsSubTitle,
                             String goodsClassifyId, String goodsBrandId, String goodsBrandName, String goodsUnitId, Integer goodsMinQuantity,
                             String goodsPostageId, String goodsBarCode, String goodsKeyWord, String goodsGuarantee,
-                            String goodsMainImages, String goodsMainVideo, String goodsDesc, String goodsSpecifications, String goodsSKUs, String changeReason,
+                            String goodsMainImages, String goodsMainVideo, Integer goodsMainVideoDuration, Integer goodsMainVideoSize,
+                            String goodsDesc, String goodsSpecifications, String goodsSKUs, String changeReason,
                             Float oldServiceRate, Float newServiceRate, String oldClassifyName, String newClassifyName, Integer settlementMode) {
         this.lastUpdateTime = new Date();
         String oldGoodsUnitId = this.goodsUnitId;
@@ -476,6 +483,8 @@ public class Goods extends ConcurrencySafeEntity {
         this.goodsGuarantee = goodsGuarantee;
         this.goodsMainImages = goodsMainImages;
         this.goodsMainVideo = goodsMainVideo;
+        this.goodsMainVideoDuration = goodsMainVideoDuration;
+        this.goodsMainVideoSize = goodsMainVideoSize;
         this.goodsDesc = goodsDesc;
 
         //修改分类，供货价、拍获价、规格需要审批
@@ -585,8 +594,8 @@ public class Goods extends ConcurrencySafeEntity {
                     .publish(new GoodsApproveAddEvent(this.goodsId, this.dealerId, this.dealerName, this.goodsName,
                             this.goodsSubTitle, goodsClassifyId, this.goodsBrandId, this.goodsBrandName, this.goodsUnitId,
                             this.goodsMinQuantity, this.goodsPostageId, this.goodsBarCode,
-                            this.goodsKeyWord, this.goodsGuarantee, this.goodsMainImages, this.goodsMainVideo, this.goodsDesc, spec,
-                            goodsSKUs, this.skuFlag, changeGoodsInfo));
+                            this.goodsKeyWord, this.goodsGuarantee, this.goodsMainImages, this.goodsMainVideo, this.goodsMainVideoDuration,
+                            this.goodsMainVideoSize, this.goodsDesc, spec, goodsSKUs, this.skuFlag, changeGoodsInfo));
         }
 
         DomainEventPublisher.instance().publish(new GoodsChangedEvent(this.goodsId, this.goodsName, this.dealerId, this.dealerName,

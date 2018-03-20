@@ -81,6 +81,7 @@ public class GoodsApproveApplication {
                     command.getGoodsBrandId(), command.getGoodsBrandName(), command.getGoodsUnitId(), command.getGoodsMinQuantity(),
                     command.getGoodsPostageId(), command.getGoodsBarCode(), JsonUtils.toStr(command.getGoodsKeyWord()),
                     JsonUtils.toStr(command.getGoodsGuarantee()), JsonUtils.toStr(command.getGoodsMainImages()), command.getGoodsMainVideo(),
+                    command.getGoodsMainVideoDuration(), command.getGoodsMainVideoSize(),
                     command.getGoodsDesc(), command.getGoodsShelves(), command.getGoodsSpecifications(), command.getGoodsSkuApproves(), command.getSkuFlag(), null);
             goodsApproveRepository.save(goodsApprove);
         }
@@ -106,13 +107,14 @@ public class GoodsApproveApplication {
                     command.getGoodsBrandId(), command.getGoodsBrandName(), command.getGoodsUnitId(), command.getGoodsMinQuantity(),
                     command.getGoodsPostageId(), command.getGoodsBarCode(), JsonUtils.toStr(command.getGoodsKeyWord()),
                     JsonUtils.toStr(command.getGoodsGuarantee()), JsonUtils.toStr(command.getGoodsMainImages()), command.getGoodsMainVideo(),
+                    command.getGoodsMainVideoDuration(), command.getGoodsMainVideoSize(),
                     command.getGoodsDesc(), null, command.getGoodsSpecifications(), command.getGoodsSkuApproves(), command.getSkuFlag(), command.getChangeGoodsInfo());
         } else {
             goodsApprove.modifyGoodsApprove(command.getGoodsName(), command.getGoodsSubTitle(),
                     command.getGoodsClassifyId(), command.getGoodsBrandId(), command.getGoodsBrandName(), command.getGoodsUnitId(), command.getGoodsMinQuantity(),
                     command.getGoodsPostageId(), command.getGoodsBarCode(), JsonUtils.toStr(command.getGoodsKeyWord()), JsonUtils.toStr(command.getGoodsGuarantee()),
-                    JsonUtils.toStr(command.getGoodsMainImages()), command.getGoodsMainVideo(), command.getGoodsDesc(),
-                    command.getGoodsSpecifications(), command.getGoodsSkuApproves(), true, command.getChangeGoodsInfo(), false, null);
+                    JsonUtils.toStr(command.getGoodsMainImages()), command.getGoodsMainVideo(), command.getGoodsMainVideoDuration(), command.getGoodsMainVideoSize(),
+                    command.getGoodsDesc(), command.getGoodsSpecifications(), command.getGoodsSkuApproves(), true, command.getChangeGoodsInfo(), false, null);
         }
         goodsApproveRepository.save(goodsApprove);
     }
@@ -181,8 +183,9 @@ public class GoodsApproveApplication {
         goodsApprove.modifyGoodsApprove(command.getGoodsName(), command.getGoodsSubTitle(),
                 command.getGoodsClassifyId(), command.getGoodsBrandId(), command.getGoodsBrandName(), command.getGoodsUnitId(), command.getGoodsMinQuantity(),
                 command.getGoodsPostageId(), command.getGoodsBarCode(), JsonUtils.toStr(command.getGoodsKeyWord()), JsonUtils.toStr(command.getGoodsGuarantee()),
-                JsonUtils.toStr(command.getGoodsMainImages()), command.getGoodsMainVideo(), command.getGoodsDesc(),
-                command.getGoodsSpecifications(), command.getGoodsSkuApproves(), false, null, isModifyApprove, goodsInfoMap);
+                JsonUtils.toStr(command.getGoodsMainImages()), command.getGoodsMainVideo(),
+                command.getGoodsMainVideoDuration(), command.getGoodsMainVideoSize(),
+                command.getGoodsDesc(), command.getGoodsSpecifications(), command.getGoodsSkuApproves(), false, null, isModifyApprove, goodsInfoMap);
     }
 
     private void getGoodsChangeInfo(String dealerId, String newClassifyId, String oldClassifyId, Map goodsChangeInfo) {

@@ -44,6 +44,12 @@ public class GoodsApproveAgreeListener extends ExchangeListener {
         String goodsGuarantee = reader.eventStringValue("goodsGuarantee");
         String goodsMainImages = reader.eventStringValue("goodsMainImages");
         String goodsMainVideo = reader.eventStringValue("goodsMainVideo");
+        Integer mainVideoDuration = reader.eventIntegerValue("goodsMainVideoDuration");
+        Double goodsMainVideoDuration = null;
+        if(null != mainVideoDuration) {
+            goodsMainVideoDuration = Double.parseDouble(mainVideoDuration.toString());
+        }
+        Integer goodsMainVideoSize = reader.eventIntegerValue("goodsMainVideoSize");
         String goodsDesc = reader.eventStringValue("goodsDesc");
         Integer goodsShelves = reader.eventIntegerValue("goodsShelves");
         String goodsSkuApproves = reader.eventStringValue("goodsSkuApproves");
@@ -55,7 +61,8 @@ public class GoodsApproveAgreeListener extends ExchangeListener {
         GoodsCommand command = new GoodsCommand(goodsId, dealerId, dealerName, goodsName, goodsSubTitle,
                 goodsClassifyId, goodsBrandId, goodsBrandName, goodsUnitId, goodsMinQuantity,
                 goodsPostageId, goodsBarCode, goodsKeyWord, goodsGuarantee,
-                goodsMainImages, goodsMainVideo, goodsDesc, goodsShelves, goodsSpecifications, goodsSkuApproves, skuFlag,
+                goodsMainImages, goodsMainVideo, goodsMainVideoDuration, goodsMainVideoSize,
+                goodsDesc, goodsShelves, goodsSpecifications, goodsSkuApproves, skuFlag,
                 changeReason,changeInfo);
         goodsApplication.saveGoods(command);
     }

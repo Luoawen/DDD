@@ -91,6 +91,9 @@ public class GoodsAgent {
      * @param goodsKeyWord     关键词
      * @param goodsGuarantee   商品保障
      * @param goodsMainImages  商品主图  存储类型是[“url1”,"url2"]
+     * @param goodsMainVideo   商品主图视频
+     * @param goodsMainVideoDuration  商品主图视频时长
+     * @param goodsMainVideoSize  商品主图视频大小
      * @param goodsDesc        商品描述
      * @param goodsSKUs        商品sku规格列表,格式：[{"availableNum":200,"goodsCode":"111111","marketPrice":6000,"photographPrice":5000,"showStatus":2,"skuId":"SPSHA5BDED943A1D42CC9111B3723B0987BF","skuName":"L,红","supplyPrice":4000,"weight":20.5}]
      * @param changeReason     变更原因
@@ -113,6 +116,8 @@ public class GoodsAgent {
             @RequestParam(value = "goodsGuarantee", required = false) List goodsGuarantee,
             @RequestParam(value = "goodsMainImages", required = false) List goodsMainImages,
             @RequestParam(value = "goodsMainVideo", required = false) String goodsMainVideo,
+            @RequestParam(value = "goodsMainVideoDuration", required = false) Double goodsMainVideoDuration,
+            @RequestParam(value = "goodsMainVideoSize", required = false) Integer goodsMainVideoSize,
             @RequestParam(value = "goodsDesc", required = false) String goodsDesc,
             @RequestParam(value = "goodsSpecifications", required = false) String goodsSpecifications,
             @RequestParam(value = "goodsSKUs", required = false) String goodsSKUs,
@@ -155,7 +160,8 @@ public class GoodsAgent {
             GoodsCommand command = new GoodsCommand(goodsId, dealerId, goodsName, goodsSubTitle,
                     goodsClassifyId, goodsBrandId, goodsBrandName, goodsUnitId, goodsMinQuantity,
                     goodsPostageId, goodsBarCode, JsonUtils.toStr(goodsKeyWord), JsonUtils.toStr(goodsGuarantee),
-                    JsonUtils.toStr(goodsMainImages), goodsMainVideo, goodsDesc, goodsSpecifications, goodsSKUs, changeReason);
+                    JsonUtils.toStr(goodsMainImages), goodsMainVideo, goodsMainVideoDuration, goodsMainVideoSize,
+                    goodsDesc, goodsSpecifications, goodsSKUs, changeReason);
             String _attach = request.getHeader("attach");
             goodsApplication.modifyGoods(command, _attach);
             result.setStatus(MCode.V_200);

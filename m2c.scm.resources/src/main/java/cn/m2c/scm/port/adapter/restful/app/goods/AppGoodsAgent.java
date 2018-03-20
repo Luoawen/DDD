@@ -331,7 +331,8 @@ public class AppGoodsAgent {
             @RequestParam(value = "osVersion", required = false) String osVersion,
             @RequestParam(value = "triggerTime", required = false) long triggerTime,
             @RequestParam(value = "userId", required = false, defaultValue = "") String userId,
-            @RequestParam(value = "userName", required = false, defaultValue = "") String userName
+            @RequestParam(value = "userName", required = false, defaultValue = "") String userName,
+            @RequestParam(value = "searchSupplier", required = false, defaultValue = "") String searchSupplier
     ) {
         MResult result = new MResult(MCode.V_1);
         Map mediaMap = goodsDubboService.getMediaResourceInfo(barNo);
@@ -342,7 +343,7 @@ public class AppGoodsAgent {
 
 
         try {
-            List<GoodsBean> goodsBeans = goodsQueryApplication.recognizedGoods(recognizedInfo, location);
+            List<GoodsBean> goodsBeans = goodsQueryApplication.recognizedGoods(recognizedInfo, location,searchSupplier);
             if (null != goodsBeans && goodsBeans.size() > 0) {
                 List<AppGoodsDetailRepresentation> representations = new ArrayList<>();
                 for (GoodsBean goodsBean : goodsBeans) {

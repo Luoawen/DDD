@@ -91,6 +91,12 @@ public class GoodsApproveAddEvent implements DomainEvent {
      */
     private String goodsMainVideo;
 
+    /**商品主图视频时长*/
+    private Integer goodsMainVideoDuration;
+    
+    /**商品主图视频大小*/
+    private Integer goodsMainVideoSize;
+    
     /**
      * 商品描述
      */
@@ -113,7 +119,8 @@ public class GoodsApproveAddEvent implements DomainEvent {
     public GoodsApproveAddEvent(String goodsId, String dealerId, String dealerName, String goodsName,
                                 String goodsSubTitle, String goodsClassifyId, String goodsBrandId, String goodsBrandName, String goodsUnitId,
                                 Integer goodsMinQuantity, String goodsPostageId, String goodsBarCode,
-                                String goodsKeyWord, String goodsGuarantee, String goodsMainImages, String goodsMainVideo, String goodsDesc,
+                                String goodsKeyWord, String goodsGuarantee, String goodsMainImages, String goodsMainVideo,
+                                Integer goodsMainVideoDuration, Integer goodsMainVideoSize, String goodsDesc,
                                 String goodsSpecifications, String goodsSkuApproves, Integer skuFlag, Map changeGoodsInfo) {
         this.goodsId = goodsId;
         this.dealerId = dealerId;
@@ -131,6 +138,8 @@ public class GoodsApproveAddEvent implements DomainEvent {
         this.goodsGuarantee = goodsGuarantee;
         this.goodsMainImages = goodsMainImages;
         this.goodsMainVideo = goodsMainVideo;
+        this.goodsMainVideoDuration = goodsMainVideoDuration;
+        this.goodsMainVideoSize = goodsMainVideoSize;
         this.goodsDesc = goodsDesc;
         this.goodsSpecifications = goodsSpecifications;
         this.goodsSkuApproves = goodsSkuApproves;

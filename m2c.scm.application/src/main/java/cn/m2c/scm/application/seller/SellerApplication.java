@@ -39,11 +39,10 @@ public class SellerApplication {
 			throw new NegativeException(NegativeCode.SELLER_PHONE_IS_EXIST, "此业务员手机号已存在.");
 		}
 			Seller seller = sellerRepository.getSeller(command.getSellerId());
-//			if (seller != null)
-//				throw new NegativeException(NegativeCode.SELLER_IS_EXIST, "此业务员已存在.");
-			if(seller==null){
-				seller = new Seller();
-				seller.add(command.getSellerId(), command.getSellerName(), command.getSellerPhone(), command.getSellerSex(),
+			if (seller != null){
+				throw new NegativeException(NegativeCode.SELLER_IS_EXIST, "此业务员已存在.");
+			}else{
+				seller = new Seller(command.getSellerId(), command.getSellerName(), command.getSellerPhone(), command.getSellerSex(),
 						command.getSellerNo(), command.getSellerConfirmPass(), command.getSellerProvince(),
 						command.getSellerCity(), command.getSellerArea(), command.getSellerPcode(), command.getSellerCcode(),
 						command.getSellerAcode(), command.getSellerqq(), command.getSellerWechat(), command.getSellerRemark());
