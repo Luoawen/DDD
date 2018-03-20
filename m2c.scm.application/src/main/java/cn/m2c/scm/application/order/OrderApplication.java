@@ -1892,11 +1892,13 @@ public class OrderApplication {
 			String[] expressList, String[] sendOrderList) throws NegativeException {
 		 String[] handers = {"订货号","物流公司","物流单号"}; //列标题
 	        
+		 
+		 
 	        //下拉框数据
 	        List<String[]> downData = new ArrayList();
 	        downData.add(expressList);
 	        String [] downRows = {"1"}; //下拉的列序号数组(序号从0开始)
-	        HSSFWorkbook hb = ExcelUtil.createExcelTemplate( handers, downData, downRows);
+	        HSSFWorkbook hb = ExcelUtil.createExcelTemplate( handers, downData, downRows,sendOrderList);
 	        
 	        try {
 				response.setHeader("Content-Disposition", "attachment;filename=" + ExcelUtil.urlEncode("批量发货模板.xls"));
