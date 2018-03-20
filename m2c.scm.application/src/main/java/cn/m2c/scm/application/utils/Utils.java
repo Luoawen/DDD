@@ -78,8 +78,41 @@ public class Utils {
     public static String moneyFormatCN(double divide) {
         return String.format("%1$.2f", divide);
     }
+
+    /**
+     * 根据秒数获取时间串
+     * @param second (eg: 100)
+     * @return (eg: 01:40 / 00:01:40)
+     */
+    public static String getTimeStrBySecond(Integer second) {
+    	if(null != second) {
+    		if (second <= 0) {
+                //return "00:00:00";
+            	return "00:00";
+            }
+
+            StringBuilder sb = new StringBuilder();
+            Integer hours = second / (60 * 60);
+            /*if (hours > 0) {
+                second -= hours * (60 * 60);
+            }*/
+
+            Integer minutes = second / 60;
+            if (minutes > 0) {
+                second -= minutes * 60;
+            }
+            /*return (hours >= 10 ? (hours + "")
+                    : ("0" + hours)) + ":" + (minutes >= 10 ? (minutes + "") : ("0" + minutes)) + ":"
+                            + (second >= 10 ? (second + "") : ("0" + second));*/
+            return (minutes >= 10 ? (minutes + "") : ("0" + minutes)) + ":"
+                            + (second >= 10 ? (second + "") : ("0" + second));
+    	}
+        return null;
+    }
     
     public static void main(String[] args) {
     	System.out.println(Utils.moneyFormatCN(1100, 10000));
+    	System.out.println(getTimeStrBySecond(659));
     }
+
 }

@@ -37,6 +37,8 @@ public class AppGoodsDetailRepresentation {
     private List<AppGoodsSkuRepresentation> goodsSKUs;
     private List<String> goodsMainImages;
     private String goodsMainVideo;
+    private String goodsMainVideoDuration;//主图视频时长
+    private String goodsMainVideoSize;//主图视频大小
     private String mresId;
     private String goodsDescUrl;
     private Map goodsComment;
@@ -90,6 +92,10 @@ public class AppGoodsDetailRepresentation {
         }
         this.goodsMainImages = JsonUtils.toList(bean.getGoodsMainImages(), String.class);
         this.goodsMainVideo = bean.getGoodsMainVideo();
+        this.goodsMainVideoDuration = Utils.getTimeStrBySecond(bean.getGoodsMainVideoDuration());
+        if(null != bean.getGoodsMainVideoSize()) {
+            this.goodsMainVideoSize = bean.getGoodsMainVideoSize().toString();
+        }
         this.mresId = mresId;
         this.goodsDescUrl = M2C_HOST_URL + "/m2c.scm/goods/app/desc?goodsId=" + this.goodsId;
 
@@ -358,4 +364,21 @@ public class AppGoodsDetailRepresentation {
     public void setPhotographGetCoupon(Map photographGetCoupon) {
         this.photographGetCoupon = photographGetCoupon;
     }
+
+	public String getGoodsMainVideoDuration() {
+		return goodsMainVideoDuration;
+	}
+
+	public void setGoodsMainVideoDuration(String goodsMainVideoDuration) {
+		this.goodsMainVideoDuration = goodsMainVideoDuration;
+	}
+
+	public String getGoodsMainVideoSize() {
+		return goodsMainVideoSize;
+	}
+
+	public void setGoodsMainVideoSize(String goodsMainVideoSize) {
+		this.goodsMainVideoSize = goodsMainVideoSize;
+	}
+    
 }
