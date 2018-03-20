@@ -34,6 +34,8 @@ public class GoodsDetailRepresentation {
     private List<Map> goodsSKUs;
     private List<String> goodsMainImages;
     private String goodsMainVideo;//商品主图
+    private Integer goodsMainVideoDuration;//商品主图视频时长
+    private Integer goodsMainVideoSize;//商品主图视频大小
     private String goodsDesc;
     private Integer settlementMode;//结算模式 1：按供货价 2：按服务费率
     private Float serviceRate;//服务费率
@@ -101,6 +103,8 @@ public class GoodsDetailRepresentation {
         this.goodsSKUs = list;
         this.goodsMainImages = JsonUtils.toList(bean.getGoodsMainImages(), String.class);
         this.goodsMainVideo = bean.getGoodsMainVideo();
+        this.goodsMainVideoDuration = bean.getGoodsMainVideoDuration();
+        this.goodsMainVideoSize = bean.getGoodsMainVideoSize();
         this.goodsDesc = bean.getGoodsDesc();
         this.settlementMode = settlementMode;
         this.serviceRate = serviceRate;
@@ -311,4 +315,21 @@ public class GoodsDetailRepresentation {
     public void setGoodsMainVideo(String goodsMainVideo) {
         this.goodsMainVideo = goodsMainVideo;
     }
+
+	public Integer getGoodsMainVideoDuration() {
+		return goodsMainVideoDuration;
+	}
+
+	public void setGoodsMainVideoDuration(Integer goodsMainVideoDuration) {
+		this.goodsMainVideoDuration = goodsMainVideoDuration;
+	}
+
+	public Integer getGoodsMainVideoSize() {
+		return goodsMainVideoSize;
+	}
+
+	public void setGoodsMainVideoSize(Integer goodsMainVideoSize) {
+		this.goodsMainVideoSize = goodsMainVideoSize;
+	}
+    
 }

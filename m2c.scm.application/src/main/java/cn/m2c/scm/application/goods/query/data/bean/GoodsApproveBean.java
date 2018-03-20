@@ -109,6 +109,14 @@ public class GoodsApproveBean {
     @ColumnAlias(value = "goods_main_video")
     private String goodsMainVideo;
     
+    /**商品主图视频时长*/
+    @ColumnAlias(value = "goods_main_video_duration")
+    private Integer goodsMainVideoDuration;
+    
+    /**商品主图视频大小*/
+    @ColumnAlias(value = "goods_main_video_size")
+    private Integer goodsMainVideoSize;
+    
     /**
      * 商品描述
      */
@@ -355,6 +363,22 @@ public class GoodsApproveBean {
 
 	public void setGoodsMainVideo(String goodsMainVideo) {
 		this.goodsMainVideo = goodsMainVideo;
+	}
+
+	public Integer getGoodsMainVideoDuration() {
+		return goodsMainVideoDuration;
+	}
+
+	public void setGoodsMainVideoDuration(Integer goodsMainVideoDuration) {
+		this.goodsMainVideoDuration = goodsMainVideoDuration;
+	}
+
+	public Integer getGoodsMainVideoSize() {
+		return goodsMainVideoSize;
+	}
+
+	public void setGoodsMainVideoSize(Integer goodsMainVideoSize) {
+		this.goodsMainVideoSize = goodsMainVideoSize;
 	}
     
 }
