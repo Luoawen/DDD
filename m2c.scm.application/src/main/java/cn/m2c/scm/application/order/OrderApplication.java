@@ -60,15 +60,18 @@ import cn.m2c.scm.domain.util.GetDisconfDataGetter;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.DVConstraint;
 import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFDataValidation;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Name;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.CellRangeAddressList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -1535,8 +1538,17 @@ public class OrderApplication {
 	public  void createListBox(HttpServletResponse response,String[] expressList,String[] dealerOrderList,List<ImportFailedOrderBean> failedOrderModelInfo) throws NegativeException{
 			HSSFWorkbook workbook = new HSSFWorkbook(); 
 			String fileName = "";
-	        HSSFSheet realSheet = workbook.createSheet("fileName"); 
+	        HSSFSheet realSheet = workbook.createSheet("批量发货"); 
 	        HSSFSheet hidden = workbook.createSheet("hidden"); 
+	        HSSFCellStyle style = workbook.createCellStyle();
+	        style.setWrapText(true);
+	        //设置表格说明
+	        HSSFSheet translation = workbook.createSheet("表格说明"); 
+	        int addMergedRegion = translation.addMergedRegion(new CellRangeAddress(2, 19, 1, 10));
+	        HSSFRow sheet3 = translation.createRow(2);
+	        HSSFCell info = sheet3.createCell(1, 1);
+	        info.setCellStyle(style);
+	        info.setCellValue("请严格按照表格说明的规范填写，填写不合法均会导入失败；/r/n 1、表格已预置待发货的订货号，请勿篡改；/r/n 2、物流公司名称，请按照提供的标准填写，必填，否则导入失败；/r/n 3、物流单号，请按照实际物流公司单号填写，必填，1-20字符以内");
 	        //设置单元格宽度
 	        realSheet.setDefaultColumnWidth(20);
 	        
@@ -1569,7 +1581,6 @@ public class OrderApplication {
 		        	HSSFRow row = realSheet.createRow(i+1); 
 		        	dealerOrderCell = row.createCell(0,1);
 		        	dealerOrderCell.setCellValue(name);
-		        	System.out.println(name);
 		        }
 		        
 		      //设置所有物流公司为下拉菜单
@@ -1580,11 +1591,11 @@ public class OrderApplication {
 		        DVConstraint constraint = DVConstraint.createFormulaListConstraint("hidden"); 
 
 		        // 设置数据有效性加载在哪个单元格上,四个参数分别是：起始行、终止行、起始列、终止列
-		        CellRangeAddressList addressList = new CellRangeAddressList(1, dealerOrderList.length, 1, 1 ); 
+		        CellRangeAddressList addressList = new CellRangeAddressList(1, 500, 1, 1 ); 
 		        HSSFDataValidation validation = new HSSFDataValidation(addressList, constraint);
 
 		        //将第二个sheet设置为隐藏
-		        workbook.setSheetHidden(1, true); 
+		    //    workbook.setSheetHidden(1, true); 
 		        realSheet.addValidationData(validation); 
 			}else {  
 				//批量发货失败数据导出
@@ -1721,7 +1732,7 @@ public class OrderApplication {
 				   throw new NegativeException(MCode.V_401,"文件不是Excel文件");
 				  }
 
-			 Sheet sheet = workbook.getSheet("fileName");
+			 Sheet sheet = workbook.getSheet("批量发货");
 			 int rows = sheet.getLastRowNum();// 一共有多少行
 			 if(rows>500){//判断记录是否大于500
 				 throw new NegativeException(402,"记录超出500");
