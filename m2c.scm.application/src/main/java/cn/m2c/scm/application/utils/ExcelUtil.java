@@ -120,7 +120,7 @@ public class ExcelUtil {
     
     
     public  static HSSFWorkbook createExcelTemplate( String[] handers, 
-            List<String[]> downData, String[] downRows){
+            List<String[]> downData, String[] downRows, String[] sendOrderList){
         
         HSSFWorkbook wb = new HSSFWorkbook();//创建工作薄
         
@@ -145,6 +145,13 @@ public class ExcelUtil {
 	    info.setCellStyle(style);
 	    info.setCellValue("请严格按照表格说明的规范填写，填写不合法均会导入失败；/r/n 1、表格已预置待发货的订货号，请勿篡改；/r/n 2、物流公司名称，请按照提供的标准填写，必填，否则导入失败；/r/n 3、物流单号，请按照实际物流公司单号填写，必填，1-20字符以内");
 
+	    
+	    HSSFCell dealerOrderCell = null;
+        for(int i = 0, length= sendOrderList.length; i < length; ++i) {
+        	HSSFRow row = sheet1.createRow(i+1); 
+        	dealerOrderCell = row.createCell(0,1);
+        	dealerOrderCell.setCellValue(sendOrderList[i]);
+        }
         
         //生成sheet1内容
         HSSFRow rowFirst = sheet1.createRow(0);//第一个sheet的第一行为标题
