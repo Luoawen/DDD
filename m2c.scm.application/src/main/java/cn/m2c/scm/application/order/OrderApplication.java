@@ -1541,16 +1541,18 @@ public class OrderApplication {
 	        HSSFSheet realSheet = workbook.createSheet("批量发货"); 
 	        HSSFSheet hidden = workbook.createSheet("hidden"); 
 	        HSSFCellStyle style = workbook.createCellStyle();
+	        style.setVerticalAlignment(style.VERTICAL_CENTER);
 	        style.setWrapText(true);
 	        //设置表格说明
 	        HSSFSheet translation = workbook.createSheet("表格说明"); 
-	        int addMergedRegion = translation.addMergedRegion(new CellRangeAddress(2, 19, 1, 10));
-	        HSSFRow sheet3 = translation.createRow(2);
-	        HSSFCell info = sheet3.createCell(1, 1);
-	        info.setCellStyle(style);
-	        info.setCellValue("请严格按照表格说明的规范填写，填写不合法均会导入失败；/r/n 1、表格已预置待发货的订货号，请勿篡改；/r/n 2、物流公司名称，请按照提供的标准填写，必填，否则导入失败；/r/n 3、物流单号，请按照实际物流公司单号填写，必填，1-20字符以内");
-	        //设置单元格宽度
 	        realSheet.setDefaultColumnWidth(20);
+	        translation.setDefaultColumnWidth(18);
+	        translation.addMergedRegion(new CellRangeAddress(2, 19, 2, 11));
+	        HSSFRow sheet3 = translation.createRow(2);
+	        HSSFCell info = sheet3.createCell(2, 2);
+	        info.setCellValue("请严格按照表格说明的规范填写，填写不合法均会导入失败；\r\n 1、表格已预置待发货的订货号，请勿篡改；\r\n 2、物流公司名称，请按照提供的标准填写，必填，否则导入失败；\r\n 3、物流单号，请按照实际物流公司单号填写，必填，1-20字符以内");
+	        info.setCellStyle(style);
+	      
 	        
 	        //设置Excel表头
 	        HSSFRow hssfRow = realSheet.createRow(0);
@@ -1560,31 +1562,34 @@ public class OrderApplication {
 			cell1.setCellValue("物流公司");
 			HSSFCell cell2 = hssfRow.createCell(2);
 			cell2.setCellValue("物流单号");
+			
+			HSSFRow rows = translation.createRow(0);
+			HSSFCell createCell = rows.createCell(0);
+			createCell.setCellValue("物流公司名称");
 	       
 			HSSFCell failedCell = null;
 	        if (failedOrderModelInfo == null || failedOrderModelInfo.size() == 0 ) {
-	        	 //导出批量发货模板
-				//写入物流公司名到Excel
+	        	
+	        	//写入物流公司名到Excel
 				fileName = "批量发货模板";
 		        HSSFCell cell = null;
+		      
 		        for (int i = 0, length= expressList.length; i < length; ++i) { 
-		           String name = expressList[i]; 
-		           HSSFRow row = hidden.createRow(i); 
-		           cell = row.createCell(1,1); 
-		           cell.setCellValue(name); 
+		           HSSFRow row = hidden.createRow(i + length); 
+		           cell = row.createCell(1); 
+		           cell.setCellValue(expressList[i]); 
 		         }
 		        
 		        //写入订货单号到Excel
 		        HSSFCell dealerOrderCell = null;
 		        for(int i = 0, length= dealerOrderList.length; i < length; ++i) {
-		        	String name = dealerOrderList[i];
 		        	HSSFRow row = realSheet.createRow(i+1); 
 		        	dealerOrderCell = row.createCell(0,1);
-		        	dealerOrderCell.setCellValue(name);
+		        	dealerOrderCell.setCellValue(dealerOrderList[i]);
 		        }
 		        
 		      //设置所有物流公司为下拉菜单
-		        Name namedCell = workbook.createName(); 
+		      Name namedCell = workbook.createName(); 
 		        namedCell.setNameName("hidden"); 
 		        namedCell.setRefersToFormula("hidden!A1:A" + expressList.length); 
 		        //加载数据,将名称为hidden的
@@ -1592,10 +1597,7 @@ public class OrderApplication {
 
 		        // 设置数据有效性加载在哪个单元格上,四个参数分别是：起始行、终止行、起始列、终止列
 		        CellRangeAddressList addressList = new CellRangeAddressList(1, 500, 1, 1 ); 
-		        HSSFDataValidation validation = new HSSFDataValidation(addressList, constraint);
-
-		        //将第二个sheet设置为隐藏
-		    //    workbook.setSheetHidden(1, true); 
+		        HSSFDataValidation validation = new HSSFDataValidation(addressList,constraint);
 		        realSheet.addValidationData(validation); 
 			}else {  
 				//批量发货失败数据导出
@@ -1615,7 +1617,9 @@ public class OrderApplication {
 				}
 			}
 
-	        
+	        //将第二个sheet设置为隐藏
+		//     workbook.setSheetHidden(1, true); 
+		     
 	        try {
 				response.setHeader("Content-Disposition", "attachment;filename=" + ExcelUtil.urlEncode(fileName+".xls"));
 				response.setContentType("application/ms-excel");
