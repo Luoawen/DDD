@@ -94,14 +94,18 @@ public class Seller extends ConcurrencySafeEntity {
 	 *  离职时间    
 	 */
 	private Date sellerDimissionTime;
+	
+	
+	
 
 	public Seller() {
 		super();
 	}
 
-	public void add(String sellerId, String sellerName, String sellerPhone, Integer sellerSex, String sellerNo,
+	public Seller(String sellerId, String sellerName, String sellerPhone, Integer sellerSex, String sellerNo,
 			String sellerConfirmPass, String sellerProvince, String sellerCity, String sellerArea, String sellerPcode,
 			String sellerCcode, String sellerAcode, String sellerqq, String sellerWechat, String sellerRemark) {
+		super();
 		this.sellerId = sellerId;
 		this.sellerName = sellerName;
 		this.sellerPhone = sellerPhone;
