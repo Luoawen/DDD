@@ -454,6 +454,12 @@ public class DealerOrder extends ConcurrencySafeEntity {
         }
         return false;
     }
+    
+    public boolean isModifyOrderFreight(long freights) {
+        if (freights > -1 && freights != orderFreight)
+        	return true;
+        return false;
+    }
 
     /**
      * 更新运费 主要用于商家修改
@@ -475,6 +481,20 @@ public class DealerOrder extends ConcurrencySafeEntity {
         orderFreight = frg;
         updateTime = new Date();
         DomainEventPublisher.instance().publish(new OrderOptLogEvent(orderId, dealerOrderId, "更新订单运费", userId, 2));
+        return true;
+    }
+    
+    /**
+     * 更新运费 主要用于商家修改
+     *
+     * @param freights
+     */
+    public boolean updateOrderFreight(long dealerFreight, String userId, String strDealerFreight) {
+        if (dealerFreight < 0)
+            return true;
+        orderFreight = dealerFreight;
+        updateTime = new Date();
+        DomainEventPublisher.instance().publish(new OrderOptLogEvent(orderId, dealerOrderId, "更新订单运费为" + strDealerFreight, userId, 2));
         return true;
     }
 

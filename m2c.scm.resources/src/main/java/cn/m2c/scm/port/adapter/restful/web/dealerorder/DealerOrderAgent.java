@@ -254,7 +254,43 @@ public class DealerOrderAgent {
             if (StringUtil.isEmpty(dealerOrderId))
                 throw new NegativeException(MCode.V_1, "商家订单号为空");
             UpdateAddrFreightCmd cmd = new UpdateAddrFreightCmd(dealerOrderId, province, provCode, city, cityCode, area,
-                    areaCode, street, revPerson, phone, freights, userId);
+                    areaCode, street, revPerson, phone, freights, userId, null);
+
+            String _attach = request.getHeader("attach");
+            dealerOrderApplication.updateAddrFreight(cmd, _attach);
+            result.setStatus(MCode.V_200);
+        } catch (NegativeException ne) {
+            result = new MResult(ne.getStatus(), ne.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("修改收货地址发生错误", e);
+            result = new MResult(MCode.V_400, e.getMessage());
+        }
+        return new ResponseEntity<MResult>(result, HttpStatus.OK);
+    }
+    
+    @RequestMapping(value = "/web/addr2freight", method = RequestMethod.PUT)
+    public ResponseEntity<MResult> modifyAddrFreight(
+            @RequestParam(value = "dealerOrderId", required = false) String dealerOrderId,
+            @RequestParam(value = "province", required = false) String province,
+            @RequestParam(value = "provCode", required = false) String provCode,
+            @RequestParam(value = "city", required = false) String city,
+            @RequestParam(value = "cityCode", required = false) String cityCode,
+            @RequestParam(value = "area", required = false) String area,
+            @RequestParam(value = "areaCode", required = false) String areaCode,
+            @RequestParam(value = "street", required = false) String street,
+            @RequestParam(value = "revPerson", required = false) String revPerson,
+            @RequestParam(value = "phone", required = false) String phone
+            , @RequestParam(value = "dealerOrderFreight", required = false) String dealerOrderFreight
+            , @RequestParam(value = "userId", required = false) String userId
+    ) {
+
+        MResult result = new MResult(MCode.V_1);
+
+        try {
+            if (StringUtil.isEmpty(dealerOrderId))
+                throw new NegativeException(MCode.V_1, "商家订单号为空");
+            UpdateAddrFreightCmd cmd = new UpdateAddrFreightCmd(dealerOrderId, province, provCode, city, cityCode, area,
+                    areaCode, street, revPerson, phone, null, userId, dealerOrderFreight);
 
             String _attach = request.getHeader("attach");
             dealerOrderApplication.updateAddrFreight(cmd, _attach);

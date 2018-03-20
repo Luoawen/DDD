@@ -12,6 +12,7 @@ import cn.m2c.scm.application.order.data.bean.SkuNumBean;
 import cn.m2c.scm.application.order.query.AfterSellOrderQuery;
 import cn.m2c.scm.application.shop.data.bean.ShopBean;
 import cn.m2c.scm.application.shop.query.ShopQuery;
+import cn.m2c.scm.application.utils.Utils;
 import cn.m2c.scm.domain.NegativeCode;
 import cn.m2c.scm.domain.NegativeException;
 import cn.m2c.scm.domain.model.order.DealerOrder;
@@ -195,6 +196,71 @@ public class DealerOrderApplication {
 		boolean updatedFreight = false;
 		if (isModifyFreight)
 			updatedFreight = dealerOrder.updateOrderFreight(cmd.getFreights(), cmd.getUserId());
+		if (mOrder.updateAddr(addr) || updatedFreight) {
+			mOrder.updateFreight(dealerOrder);
+			orderRepository.updateMainOrder(mOrder);
+		}
+		if (StringUtils.isNotEmpty(attach))
+			operationLogManager.operationLog("修改运费及收货地址", attach, mOrder);
+		if (updatedFreight || updatedAddr) {
+			dealerOrderRepository.updateFreight(dealerOrder);
+		}
+
+		// 修改收货地址或运费推送消息
+		if (isModifyFreight || isModifyAddress) {
+			Map extraMap = new HashMap<>();
+			extraMap.put("dealerOrderId", dealerOrder.getId());
+			extraMap.put("orderId", dealerOrder.getOrderNo());
+			ShopBean shopBean = shopQuery.getShop(dealerOrder.dealerId());
+			String shopName = null != shopBean ? shopBean.getShopName() : null;
+			extraMap.put("shopName", shopName);
+			if (isModifyAddress) {
+				extraMap.put("optType", 2);
+				orderService.msgPush(1, mOrder.userId(), JsonUtils.toStr(extraMap), dealerOrder.dealerId());
+			}
+			if (isModifyFreight) {
+				extraMap.put("optType", 3);
+				orderService.msgPush(1, mOrder.userId(), JsonUtils.toStr(extraMap), dealerOrder.dealerId());
+			}
+		}
+	}
+	
+	/**
+	 * 修改收货地址及运费 新
+	 * @param command
+	 * @throws NegativeException
+	 */
+	@Transactional(rollbackFor = { Exception.class, RuntimeException.class, NegativeException.class })
+	@EventListener
+	public void modifyAddrFreight(UpdateAddrFreightCmd cmd, String attach) throws NegativeException {
+
+		DealerOrder dealerOrder = dealerOrderRepository.getDealerOrderById(cmd.getDealerOrderId());
+		if (dealerOrder == null)
+			throw new NegativeException(NegativeCode.DEALER_ORDER_IS_NOT_EXIST, "此商家订单不存在.");
+
+		if (!dealerOrder.canUpdateFreight())
+			throw new NegativeException(MCode.V_1, "此商家订单处于不能修改状态.");
+
+		ReceiveAddr addr = dealerOrder.getAddr();
+
+		// 是否修改运费
+		long longOrderFreight = Utils.convertNeedMoney(cmd.getDealerOrderFreight());
+		boolean isModifyFreight = dealerOrder.isModifyOrderFreight(longOrderFreight);
+		// 是否修改收货地址
+		boolean isModifyAddress = addr.isModifyAddress(cmd.getProvince(), cmd.getProvCode(), cmd.getCity(), cmd.getCityCode(),
+				cmd.getArea(), cmd.getAreaCode(), cmd.getStreet(), cmd.getRevPerson(), cmd.getPhone());
+
+		boolean updatedAddr = addr.updateAddr(cmd.getProvince(), cmd.getProvCode(), cmd.getCity(), cmd.getCityCode(),
+				cmd.getArea(), cmd.getAreaCode(), cmd.getStreet(), cmd.getRevPerson(), cmd.getPhone()
+				, null);
+		
+		MainOrder mOrder = orderRepository.getOrderById(dealerOrder.getOrderNo());
+		if (updatedAddr && isModifyAddress) {
+			dealerOrder.updateAddr(addr, cmd.getUserId());
+		}
+		boolean updatedFreight = false;
+		if (isModifyFreight)
+			updatedFreight = dealerOrder.updateOrderFreight(longOrderFreight, cmd.getUserId(), cmd.getDealerOrderFreight());
 		if (mOrder.updateAddr(addr) || updatedFreight) {
 			mOrder.updateFreight(dealerOrder);
 			orderRepository.updateMainOrder(mOrder);

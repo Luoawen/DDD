@@ -88,6 +88,12 @@
             <mvc:exclude-mapping path="/**/domain/**"/>
             <bean class="cn.m2c.common.permission.interceptor.AuthorizationInterceptor" />
        </mvc:interceptor>
+       <!-- 拦截领域间的请求接口-->
+       <mvc:interceptor>
+            <mvc:mapping path="/**/domain/order1/**" /> 
+            <mvc:mapping path="/**/order-out1/**" /> 
+            <bean class="cn.m2c.common.permission.interceptor.DomainAccessInterceptor" />
+       </mvc:interceptor>
 	</mvc:interceptors> 
 	
 </beans>  
