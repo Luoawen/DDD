@@ -1850,4 +1850,63 @@ public class OrderApplication {
 		return result;
 	}
 
+	/**
+	 * 导出发货模板
+	 * @param response
+	 * @param allExpress
+	 * @param dealerOrderList
+	 * @throws NegativeException 
+	 */
+	public void exportSendModel(HttpServletResponse response,
+			List<OrderExpressBean> allExpress,
+			List<DealerOrderQB> dealerOrderList) throws NegativeException {
+
+		//传入所有物流公司和满足的订单List转换成String数组
+		ArrayList<String> arrayExpress = new ArrayList<String>();
+		ArrayList<String> arrayOrder = new ArrayList<String>();
+		for (OrderExpressBean express : allExpress) {
+			arrayExpress.add(express.getExpressName());
+		}
+		
+		for (DealerOrderQB dealerOrder : dealerOrderList) {
+			arrayOrder.add(dealerOrder.getDealerOrderId());
+		}
+		String[] expressList = (String[]) arrayExpress.toArray(new String[arrayExpress.size()]);
+		String[] sendOrderList = (String[]) arrayOrder.toArray(new String[arrayOrder.size()]);
+		
+		createExcel(response,expressList,sendOrderList);
+	}
+
+	/**
+	 * 生成发货模板
+	 * @param response
+	 * @param expressList
+	 * @param sendOrderList
+	 * @throws NegativeException 
+	 */
+	private void createExcel(HttpServletResponse response,
+			String[] expressList, String[] sendOrderList) throws NegativeException {
+		 String[] handers = {"订货号","物流公司","物流单号"}; //列标题
+	        
+	        //下拉框数据
+	        List<String[]> downData = new ArrayList();
+	        downData.add(expressList);
+	        String [] downRows = {"1"}; //下拉的列序号数组(序号从0开始)
+	        HSSFWorkbook hb = ExcelUtil.createExcelTemplate( handers, downData, downRows);
+	        
+	        try {
+				response.setHeader("Content-Disposition", "attachment;filename=" + ExcelUtil.urlEncode("批量发货模板.xls"));
+				response.setContentType("application/ms-excel");
+				OutputStream ouPutStream = null;
+				try {
+				    ouPutStream = response.getOutputStream();
+				    hb.write(ouPutStream);
+				} finally {
+				    ouPutStream.close();
+				}
+			} catch (Exception e) {
+				throw new NegativeException(MCode.V_401,"导出批量发货模板出错！");
+			}
+	}
+
 }
