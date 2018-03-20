@@ -6,6 +6,7 @@ import cn.m2c.ddd.common.domain.model.DomainEvent;
 import cn.m2c.ddd.common.domain.model.DomainEventPublisher;
 import cn.m2c.scm.domain.model.dealer.event.DealerAddEvent;
 import cn.m2c.scm.domain.model.dealer.event.DealerUpdateEvent;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,7 +53,7 @@ public class Dealer extends ConcurrencySafeEntity{
 	}
 
 
-	public void add(String dealerId, String userId,
+	public Dealer(String dealerId, String userId,
 			String userName, String userPhone, String dealerName,
 			String dealerClassify, Integer cooperationMode,
 			String startSignDate, String endSignDate, String dealerProvince,
@@ -63,6 +64,7 @@ public class Dealer extends ConcurrencySafeEntity{
 			String managerWechat, String managerEmail,
 			String managerDepartment, String sellerId, String sellerName,
 			String sellerPhone) {
+		// TODO Auto-generated constructor stub
 		DomainEvent dealerAddEvent= new DealerAddEvent(userId,userName,userPhone,dealerId,dealerName);
 		DomainEventPublisher.instance().publish(dealerAddEvent);
 		this.dealerId = dealerId;
@@ -94,6 +96,8 @@ public class Dealer extends ConcurrencySafeEntity{
 		this.sellerName = sellerName;
 		this.sellerPhone = sellerPhone;
 	}
+
+
 
 	public void update(String userId,
 			String userName, String userPhone, String dealerName,

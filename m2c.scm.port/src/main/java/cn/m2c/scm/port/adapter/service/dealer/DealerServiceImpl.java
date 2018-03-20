@@ -15,6 +15,11 @@ import cn.m2c.scm.application.utils.HttpRequest;
 import cn.m2c.scm.domain.NegativeException;
 import cn.m2c.scm.domain.service.dealer.DealerService;
 
+/**
+ * 生成默认店铺的restful
+ * @author ps
+ *
+ */
 @Service("dealerRestService")
 public class DealerServiceImpl implements DealerService{
 	
