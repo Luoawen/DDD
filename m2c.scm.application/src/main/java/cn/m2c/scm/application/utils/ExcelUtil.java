@@ -126,13 +126,14 @@ public class ExcelUtil {
         
         //表头样式
         HSSFCellStyle style = wb.createCellStyle();  
-        style.setAlignment(HSSFCellStyle.ALIGN_CENTER); // 创建一个居中格式  
+        style.setVerticalAlignment(style.VERTICAL_CENTER);// 创建一个居中格式  
+        style.setWrapText(true);
         //字体样式
-        HSSFFont fontStyle = wb.createFont();    
-        fontStyle.setFontName("微软雅黑");    
-        fontStyle.setFontHeightInPoints((short)12);    
-        fontStyle.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD); 
-        style.setFont(fontStyle);
+  //      HSSFFont fontStyle = wb.createFont();    
+  //      fontStyle.setFontName("微软雅黑");    
+  //      fontStyle.setFontHeightInPoints((short)12);    
+  //      fontStyle.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD); 
+  //      style.setFont(fontStyle);
         
         //新建sheet
         HSSFSheet sheet1 = wb.createSheet("批量发货");
