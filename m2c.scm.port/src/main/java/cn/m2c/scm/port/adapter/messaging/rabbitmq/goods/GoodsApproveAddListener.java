@@ -52,10 +52,10 @@ public class GoodsApproveAddListener extends ExchangeListener {
         String goodsMainImages = reader.eventStringValue("goodsMainImages");
         List goodsMainImageList = JsonUtils.toList(goodsMainImages, String.class);
         String goodsMainVideo = reader.eventStringValue("goodsMainVideo");
-        Integer MainVideoDuration = reader.eventIntegerValue("goodsMainVideoDuration");
+        Integer mainVideoDuration = reader.eventIntegerValue("goodsMainVideoDuration");
         Double goodsMainVideoDuration = null;
-        if(null != MainVideoDuration) {
-            goodsMainVideoDuration = Double.parseDouble(MainVideoDuration.toString());
+        if(null != mainVideoDuration) {
+            goodsMainVideoDuration = Double.parseDouble(mainVideoDuration.toString());
         }
         
         Integer goodsMainVideoSize = reader.eventIntegerValue("goodsMainVideoSize");

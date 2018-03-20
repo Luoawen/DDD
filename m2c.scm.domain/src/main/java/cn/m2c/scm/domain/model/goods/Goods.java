@@ -182,7 +182,8 @@ public class Goods extends ConcurrencySafeEntity {
     public Goods(String goodsId, String dealerId, String dealerName, String goodsName, String goodsSubTitle,
                  String goodsClassifyId, String goodsBrandId, String goodsBrandName, String goodsUnitId, Integer goodsMinQuantity,
                  String goodsPostageId, String goodsBarCode, String goodsKeyWord, String goodsGuarantee,
-                 String goodsMainImages, String goodsMainVideo, String goodsDesc, Integer goodsShelves, String goodsSpecifications, String goodsSKUs, Integer skuFlag) {
+                 String goodsMainImages, String goodsMainVideo, Integer goodsMainVideoDuration, Integer goodsMainVideoSize,
+                 String goodsDesc, Integer goodsShelves, String goodsSpecifications, String goodsSKUs, Integer skuFlag) {
         this.goodsId = goodsId;
         this.dealerId = dealerId;
         this.dealerName = dealerName;
@@ -199,6 +200,8 @@ public class Goods extends ConcurrencySafeEntity {
         this.goodsGuarantee = goodsGuarantee;
         this.goodsMainImages = goodsMainImages;
         this.goodsMainVideo = goodsMainVideo;
+        this.goodsMainVideoDuration = goodsMainVideoDuration;
+        this.goodsMainVideoSize = goodsMainVideoSize;
         this.goodsDesc = goodsDesc;
         this.goodsShelves = goodsShelves;
         this.skuFlag = skuFlag;
