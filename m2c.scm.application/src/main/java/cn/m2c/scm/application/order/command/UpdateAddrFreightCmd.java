@@ -50,9 +50,11 @@ public class UpdateAddrFreightCmd {
 	
 	/** SKU及对应的运费 */
 	private Map<String, Float> freights;
+	
+	private String dealerOrderFreight;
 
 	public UpdateAddrFreightCmd(String dealerOrderId, String province, String provCode, String city, String cityCode,
-			String area, String areaCode, String street,String revPerson,String phone, String freights, String userId) {
+			String area, String areaCode, String street,String revPerson,String phone, String freights, String userId, String dealerOrderFreight) {
 		super();
 		this.dealerOrderId = dealerOrderId;
 		this.province = province;
@@ -73,8 +75,10 @@ public class UpdateAddrFreightCmd {
 		    this.freights = gson.fromJson(freights, type);
 		    gson = null;
 		}
+		else {
+			this.dealerOrderFreight = dealerOrderFreight;
+		}
 	}
-
 	
 	public String getUserId() {
 		return userId;
@@ -163,5 +167,11 @@ public class UpdateAddrFreightCmd {
 
 	public Map<String, Float> getFreights() {
 		return freights;
+	}
+	
+	public String getDealerOrderFreight() {
+		if (StringUtils.isEmpty(dealerOrderFreight))
+			dealerOrderFreight = "-1";
+		return dealerOrderFreight;
 	}
 }
