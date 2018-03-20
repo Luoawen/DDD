@@ -98,6 +98,12 @@ public class GoodsCommand extends AssertionConcern implements Serializable {
      * 商品主图视频
      */
     private String goodsMainVideo;
+    
+    /**商品主图视频时长*/
+    private Integer goodsMainVideoDuration;
+    
+    /**商品主图视频大小*/
+    private Integer goodsMainVideoSize;
 
     /**
      * 商品描述
@@ -132,7 +138,7 @@ public class GoodsCommand extends AssertionConcern implements Serializable {
     public GoodsCommand(String goodsId, String dealerId, String dealerName, String goodsName, String goodsSubTitle,
                         String goodsClassifyId, String goodsBrandId, String goodsBrandName, String goodsUnitId, Integer goodsMinQuantity,
                         String goodsPostageId, String goodsBarCode, String goodsKeyWord, String goodsGuarantee,
-                        String goodsMainImages, String goodsMainVideo, String goodsDesc, Integer goodsShelves,
+                        String goodsMainImages, String goodsMainVideo, Double goodsMainVideoDuration, Integer goodsMainVideoSize, String goodsDesc, Integer goodsShelves,
                         String goodsSpecifications, String goodsSKUs, Integer skuFlag, String changeReason, String changeInfo) {
         this.goodsId = goodsId;
         this.dealerId = dealerId;
@@ -150,6 +156,16 @@ public class GoodsCommand extends AssertionConcern implements Serializable {
         this.goodsGuarantee = goodsGuarantee;
         this.goodsMainImages = goodsMainImages;
         this.goodsMainVideo = goodsMainVideo;
+        
+        if(null != goodsMainVideoDuration) {
+        	//商品主图视频时长向上取整处理
+            Double d = Math.ceil(goodsMainVideoDuration);//向上取整
+        	Integer processingTime = Integer.valueOf(d.intValue());
+        	this.goodsMainVideoDuration = processingTime;
+        }
+        
+        this.goodsMainVideoSize = goodsMainVideoSize;//主图视频大小
+        
         this.goodsDesc = goodsDesc;
         this.goodsShelves = goodsShelves;
         this.goodsSpecifications = goodsSpecifications;
@@ -162,7 +178,7 @@ public class GoodsCommand extends AssertionConcern implements Serializable {
     public GoodsCommand(String goodsId, String dealerId, String goodsName, String goodsSubTitle,
                         String goodsClassifyId, String goodsBrandId, String goodsBrandName, String goodsUnitId, Integer goodsMinQuantity,
                         String goodsPostageId, String goodsBarCode, String goodsKeyWord, String goodsGuarantee,
-                        String goodsMainImages, String goodsMainVideo, String goodsDesc, String goodsSpecifications, String goodsSKUs, String changeReason) throws NegativeException {
+                        String goodsMainImages, String goodsMainVideo, Double goodsMainVideoDuration, Integer goodsMainVideoSize, String goodsDesc, String goodsSpecifications, String goodsSKUs, String changeReason) throws NegativeException {
         this.goodsId = goodsId;
         this.dealerId = dealerId;
         this.goodsName = goodsName;
@@ -177,7 +193,17 @@ public class GoodsCommand extends AssertionConcern implements Serializable {
         this.goodsKeyWord = goodsKeyWord;
         this.goodsGuarantee = goodsGuarantee;
         this.goodsMainImages = goodsMainImages;
-        this.goodsMainVideo = goodsMainVideo;//商品主图
+        this.goodsMainVideo = goodsMainVideo;//商品主图视频
+        
+        if(null != goodsMainVideoDuration) {
+        	//商品主图视频时长向上取整处理
+            Double d = Math.ceil(goodsMainVideoDuration);//向上取整
+        	Integer processingTime = Integer.valueOf(d.intValue());
+        	this.goodsMainVideoDuration = processingTime;
+        }
+        
+        this.goodsMainVideoSize = goodsMainVideoSize;//主图视频大小
+        
         this.goodsDesc = goodsDesc;
         this.goodsSpecifications = goodsSpecifications;
         this.goodsSKUs = goodsSKUs;
@@ -293,6 +319,14 @@ public class GoodsCommand extends AssertionConcern implements Serializable {
 
     public String getGoodsMainVideo() {
         return goodsMainVideo;
+    }
+    
+    public Integer getGoodsMainVideoDuration() {
+    	return goodsMainVideoDuration;
+    }
+    
+    public Integer getGoodsMainVideoSize() {
+    	return goodsMainVideoSize;
     }
 
     public String getChangeReason() {

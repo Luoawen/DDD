@@ -115,6 +115,9 @@ public class GoodsApproveAgent {
      * @param goodsKeyWord        关键词
      * @param goodsGuarantee      商品保障
      * @param goodsMainImages     商品主图  存储类型是[“url1”,"url2"]
+     * @param goodsMainVideo      商品主图视频
+     * @param goodsMainVideoDuration 商品主图视频时长
+     * @param goodsMainVideoSize  商品主图视频大小
      * @param goodsDesc           商品描述
      * @param goodsShelves        1:手动上架,2:审核通过立即上架
      * @param goodsSpecifications 商品规格,格式：[{"itemName":"尺寸","itemValue":["L","M"]},{"itemName":"颜色","itemValue":["蓝色","白色"]}]
@@ -139,6 +142,8 @@ public class GoodsApproveAgent {
             @RequestParam(value = "goodsGuarantee", required = false) List goodsGuarantee,
             @RequestParam(value = "goodsMainImages", required = false) List goodsMainImages,
             @RequestParam(value = "goodsMainVideo", required = false) String goodsMainVideo,
+            @RequestParam(value = "goodsMainVideoDuration", required = false) Double goodsMainVideoDuration,
+            @RequestParam(value = "goodsMainVideoSize", required = false) Integer goodsMainVideoSize,
             @RequestParam(value = "goodsDesc", required = false) String goodsDesc,
             @RequestParam(value = "goodsShelves", required = false) Integer goodsShelves,
             @RequestParam(value = "goodsSpecifications", required = false) String goodsSpecifications,
@@ -181,7 +186,8 @@ public class GoodsApproveAgent {
             GoodsApproveCommand command = new GoodsApproveCommand(goodsId, dealerId, dealerName, goodsName, goodsSubTitle,
                     goodsClassifyId, goodsBrandId, goodsBrandName, goodsUnitId, goodsMinQuantity,
                     goodsPostageId, goodsBarCode, goodsKeyWord, goodsGuarantee,
-                    goodsMainImages, goodsMainVideo, goodsDesc, goodsShelves, goodsSpecifications, goodsSkuApproves, skuFlag);
+                    goodsMainImages, goodsMainVideo, goodsMainVideoDuration, goodsMainVideoSize,
+                    goodsDesc, goodsShelves, goodsSpecifications, goodsSkuApproves, skuFlag);
             goodsApproveApplication.addGoodsApprove(command);
             result.setStatus(MCode.V_200);
         } catch (NegativeException ne) {
@@ -265,6 +271,9 @@ public class GoodsApproveAgent {
      * @param goodsKeyWord     关键词
      * @param goodsGuarantee   商品保障
      * @param goodsMainImages  商品主图  存储类型是[“url1”,"url2"]
+     * @param goodsMainVideo   商品主图视频
+     * @param goodsMainVideoDuration 商品主图视频时长
+     * @param goodsMainVideoSize 商品主图视频大小
      * @param goodsDesc        商品描述
      * @param goodsSKUs        商品sku规格列表,格式：[{"availableNum":200,"goodsCode":"111111","marketPrice":6000,"photographPrice":5000,"showStatus":2,"skuId":"SPSHA5BDED943A1D42CC9111B3723B0987BF","skuName":"L,红","supplyPrice":4000,"weight":20.5}]
      * @return
@@ -286,6 +295,8 @@ public class GoodsApproveAgent {
             @RequestParam(value = "goodsGuarantee", required = false) List goodsGuarantee,
             @RequestParam(value = "goodsMainImages", required = false) List goodsMainImages,
             @RequestParam(value = "goodsMainVideo", required = false) String goodsMainVideo,
+            @RequestParam(value = "goodsMainVideoDuration", required = false) Double goodsMainVideoDuration,
+            @RequestParam(value = "goodsMainVideoSize", required = false) Integer goodsMainVideoSize,
             @RequestParam(value = "goodsDesc", required = false) String goodsDesc,
             @RequestParam(value = "goodsSpecifications", required = false) String goodsSpecifications,
             @RequestParam(value = "goodsSKUs", required = false) String goodsSKUs) {
@@ -325,7 +336,7 @@ public class GoodsApproveAgent {
             GoodsApproveCommand command = new GoodsApproveCommand(goodsId, dealerId, goodsName, goodsSubTitle,
                     goodsClassifyId, goodsBrandId, goodsBrandName, goodsUnitId, goodsMinQuantity,
                     goodsPostageId, goodsBarCode, goodsKeyWord, goodsGuarantee,
-                    goodsMainImages, goodsMainVideo, goodsDesc, goodsSpecifications, goodsSKUs);
+                    goodsMainImages, goodsMainVideo, goodsMainVideoDuration, goodsMainVideoSize, goodsDesc, goodsSpecifications, goodsSKUs);
             String _attach = request.getHeader("attach");
             goodsApproveApplication.modifyGoodsApprove(command, _attach);
             result.setStatus(MCode.V_200);

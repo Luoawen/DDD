@@ -32,7 +32,7 @@ public class GoodsApproveDetailRepresentation {
     private List<Map> goodsSpecifications;
     private List<Map> goodsSKUs;
     private List<String> goodsMainImages;
-    private String goodsMainVideo;//商品主图
+    private String goodsMainVideo;//商品主图视频
     private String goodsDesc;
     private Integer approveStatus;//审核状态，1：审核中，2：审核不通过
     private String rejectReason;

@@ -18,119 +18,83 @@ import java.util.Set;
  * 商品审核
  */
 public class GoodsApproveCommand extends AssertionConcern implements Serializable {
-    /**
-     * 商品id
-     */
+    /**商品id*/
     private String goodsId;
 
-    /**
-     * 商家ID
-     */
+    /**商家ID*/
     private String dealerId;
 
-    /**
-     * 商家名称
-     */
+    /**商家名称*/
     private String dealerName;
 
-    /**
-     * 商品名称
-     */
+    /**商品名称*/
     private String goodsName;
 
-    /**
-     * 商品副标题
-     */
+    /**商品副标题*/
     private String goodsSubTitle;
 
-    /**
-     * 商品分类id
-     */
+    /**商品分类id*/
     private String goodsClassifyId;
 
-    /**
-     * 商品品牌id
-     */
+    /**商品品牌id*/
     private String goodsBrandId;
 
-    /**
-     * 商品品牌名称
-     */
+    /**商品品牌名称*/
     private String goodsBrandName;
 
-    /**
-     * 商品计量单位id
-     */
+    /**商品计量单位id*/
     private String goodsUnitId;
 
-    /**
-     * 最小起订量
-     */
+    /**最小起订量*/
     private Integer goodsMinQuantity;
 
-    /**
-     * 运费模板id
-     */
+    /**运费模板id*/
     private String goodsPostageId;
 
-    /**
-     * 商品条形码
-     */
+    /**商品条形码*/
     private String goodsBarCode;
 
-    /**
-     * 关键词
-     */
+    /**关键词*/
     private List goodsKeyWord;
 
-    /**
-     * 商品保障
-     */
+    /**商品保障*/
     private List goodsGuarantee;
 
-    /**
-     * 商品主图  存储类型是[“url1”,"url2"]
-     */
+    /** 商品主图  存储类型是[“url1”,"url2"] */
     private List goodsMainImages;
 
-    /**
-     * 商品主图视频
-     */
+    /**商品主图视频*/
     private String goodsMainVideo;
+    
+    /**商品主图视频时长*/
+    private Integer goodsMainVideoDuration;
+    
+    /**商品主图视频大小*/
+    private Integer goodsMainVideoSize;
 
-    /**
-     * 商品描述
-     */
+    /**商品描述*/
     private String goodsDesc;
 
-    /**
-     * 1:手动上架,2:审核通过立即上架
-     */
+    /** 1:手动上架,2:审核通过立即上架*/
     private Integer goodsShelves;
 
-    /**
-     * 商品規格sku列表
-     */
+    /**商品規格sku列表*/
     private String goodsSkuApproves;
 
     private String goodsSpecifications;
 
     private List<String> goodsCodes;
 
-    /**
-     * 是否是多规格：0：单规格，1：多规格
-     */
+    /** 是否是多规格：0：单规格，1：多规格  */
     private Integer skuFlag;
 
-    /**
-     * 变更信息
-     */
+    /**变更信息*/
     private String changeGoodsInfo;
 
     public GoodsApproveCommand(String goodsId, String dealerId, String dealerName, String goodsName, String goodsSubTitle,
                                String goodsClassifyId, String goodsBrandId, String goodsBrandName, String goodsUnitId, Integer goodsMinQuantity,
                                String goodsPostageId, String goodsBarCode, List goodsKeyWord, List goodsGuarantee,
-                               List goodsMainImages, String goodsMainVideo, String goodsDesc, Integer goodsShelves, String goodsSpecifications, String goodsSkuApproves, Integer skuFlag) throws NegativeException {
+                               List goodsMainImages, String goodsMainVideo, Double goodsMainVideoDuration, Integer goodsMainVideoSize, String goodsDesc, Integer goodsShelves, String goodsSpecifications, String goodsSkuApproves, Integer skuFlag) throws NegativeException {
         if (StringUtils.isEmpty(goodsId)) {
             throw new NegativeException(MCode.V_1, "商品ID为空");
         }
@@ -212,6 +176,15 @@ public class GoodsApproveCommand extends AssertionConcern implements Serializabl
         this.goodsGuarantee = goodsGuarantee;
         this.goodsMainImages = goodsMainImages;
         this.goodsMainVideo = goodsMainVideo;//主图视频
+        
+        if(null != goodsMainVideoDuration) {
+        	//商品主图视频时长向上取整处理
+            Double d = Math.ceil(goodsMainVideoDuration);//向上取整
+        	Integer processingTime = Integer.valueOf(d.intValue());
+        	this.goodsMainVideoDuration = processingTime;
+        }
+        
+    	this.goodsMainVideoSize = goodsMainVideoSize;//主图视频大小
         this.goodsDesc = goodsDesc;
         this.goodsShelves = goodsShelves;
         this.goodsSpecifications = goodsSpecifications;
@@ -223,7 +196,7 @@ public class GoodsApproveCommand extends AssertionConcern implements Serializabl
     public GoodsApproveCommand(String goodsId, String dealerId, String dealerName, String goodsName, String goodsSubTitle,
                                String goodsClassifyId, String goodsBrandId, String goodsBrandName, String goodsUnitId, Integer goodsMinQuantity,
                                String goodsPostageId, String goodsBarCode, List goodsKeyWord, List goodsGuarantee,
-                               List goodsMainImages, String goodsMainVideo, String goodsDesc, String goodsSpecifications, String goodsSkuApproves, Integer skuFlag, String changeGoodsInfo) {
+                               List goodsMainImages, String goodsMainVideo, Double goodsMainVideoDuration, Integer goodsMainVideoSize, String goodsDesc, String goodsSpecifications, String goodsSkuApproves, Integer skuFlag, String changeGoodsInfo) {
         this.goodsId = goodsId;
         this.dealerId = dealerId;
         this.dealerName = dealerName;
@@ -240,6 +213,15 @@ public class GoodsApproveCommand extends AssertionConcern implements Serializabl
         this.goodsGuarantee = goodsGuarantee;
         this.goodsMainImages = goodsMainImages;
         this.goodsMainVideo = goodsMainVideo;//主图视频
+        
+        if(null != goodsMainVideoDuration) {
+        	//商品主图视频时长向上取整处理
+            Double d = Math.ceil(goodsMainVideoDuration);//向上取整
+        	Integer processingTime = Integer.valueOf(d.intValue());
+        	this.goodsMainVideoDuration = processingTime;
+        }
+        
+        this.goodsMainVideoSize = goodsMainVideoSize;//主图视频大小
         this.goodsDesc = goodsDesc;
         this.goodsSpecifications = goodsSpecifications;
         this.goodsSkuApproves = goodsSkuApproves;
@@ -250,7 +232,7 @@ public class GoodsApproveCommand extends AssertionConcern implements Serializabl
     public GoodsApproveCommand(String goodsId, String dealerId, String goodsName, String goodsSubTitle,
                                String goodsClassifyId, String goodsBrandId, String goodsBrandName, String goodsUnitId, Integer goodsMinQuantity,
                                String goodsPostageId, String goodsBarCode, List goodsKeyWord, List goodsGuarantee,
-                               List goodsMainImages, String goodsMainVideo, String goodsDesc, String goodsSpecifications, String goodsSkuApproves) {
+                               List goodsMainImages, String goodsMainVideo, Double goodsMainVideoDuration, Integer goodsMainVideoSize, String goodsDesc, String goodsSpecifications, String goodsSkuApproves) {
         this.goodsId = goodsId;
         this.dealerId = dealerId;
         this.goodsName = goodsName;
@@ -265,7 +247,16 @@ public class GoodsApproveCommand extends AssertionConcern implements Serializabl
         this.goodsKeyWord = goodsKeyWord;
         this.goodsGuarantee = goodsGuarantee;
         this.goodsMainImages = goodsMainImages;
-        this.goodsMainVideo = goodsMainVideo;//商品主图
+        this.goodsMainVideo = goodsMainVideo;//商品主图视频
+
+        if(null != goodsMainVideoDuration) {
+        	//商品主图视频时长向上取整处理
+            Double d = Math.ceil(goodsMainVideoDuration);//向上取整
+        	Integer processingTime = Integer.valueOf(d.intValue());
+        	this.goodsMainVideoDuration = processingTime;
+        }
+        
+        this.goodsMainVideoSize = goodsMainVideoSize;//主图视频大小
         this.goodsDesc = goodsDesc;
         this.goodsSpecifications = goodsSpecifications;
         this.goodsSkuApproves = goodsSkuApproves;
@@ -359,6 +350,14 @@ public class GoodsApproveCommand extends AssertionConcern implements Serializabl
         return goodsMainVideo;
     }
 
+    public Integer getGoodsMainVideoDuration() {
+    	return goodsMainVideoDuration;
+    }
+    
+    public Integer getGoodsMainVideoSize() {
+    	return goodsMainVideoSize;
+    }
+    
     public String getChangeGoodsInfo() {
         return changeGoodsInfo;
     }

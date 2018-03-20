@@ -99,6 +99,12 @@ public class GoodsApprove extends ConcurrencySafeEntity {
      * 商品主图视频
      */
     private String goodsMainVideo;
+    
+    /**商品主图时长*/
+    private Integer goodsMainVideoDuration;
+    
+    /**商品主图大小*/
+    private Integer goodsMainVideoSize;
 
     /**
      * 商品描述
@@ -154,7 +160,8 @@ public class GoodsApprove extends ConcurrencySafeEntity {
     public GoodsApprove(String goodsId, String dealerId, String dealerName, String goodsName, String goodsSubTitle,
                         String goodsClassifyId, String goodsBrandId, String goodsBrandName, String goodsUnitId, Integer goodsMinQuantity,
                         String goodsPostageId, String goodsBarCode, String goodsKeyWord, String goodsGuarantee,
-                        String goodsMainImages, String goodsMainVideo, String goodsDesc, Integer goodsShelves, String goodsSpecifications, String goodsSkuApproves,
+                        String goodsMainImages, String goodsMainVideo, Integer goodsMainVideoDuration, Integer goodsMainVideoSize,
+                        String goodsDesc, Integer goodsShelves, String goodsSpecifications, String goodsSkuApproves,
                         Integer skuFlag, String changeGoodsInfo) {
         this.goodsId = goodsId;
         this.dealerId = dealerId;
@@ -172,6 +179,9 @@ public class GoodsApprove extends ConcurrencySafeEntity {
         this.goodsGuarantee = goodsGuarantee;
         this.goodsMainImages = goodsMainImages;
         this.goodsMainVideo = goodsMainVideo;//主图视频
+        this.goodsMainVideoDuration = goodsMainVideoDuration;//商品主图时长
+        this.goodsMainVideoSize = goodsMainVideoSize;//商品主图大小
+        
         this.goodsDesc = goodsDesc;
         if (null != goodsShelves) {
             this.goodsShelves = goodsShelves;
@@ -329,7 +339,8 @@ public class GoodsApprove extends ConcurrencySafeEntity {
                         this.goodsSubTitle, this.goodsClassifyId, this.goodsBrandId, this.goodsBrandName,
                         this.goodsUnitId, this.goodsMinQuantity, this.goodsPostageId,
                         this.goodsBarCode, this.goodsKeyWord, this.goodsGuarantee,
-                        this.goodsMainImages, this.goodsMainVideo, this.goodsDesc,
+                        this.goodsMainImages, this.goodsMainVideo, this.goodsMainVideoDuration,
+                        this.goodsMainVideoSize, this.goodsDesc,
                         this.goodsShelves, this.goodsSpecifications, goodsSKUs, this.skuFlag,
                         this.changeReason, JsonUtils.toStr(changeInfo)));
     }
@@ -352,8 +363,9 @@ public class GoodsApprove extends ConcurrencySafeEntity {
     public void modifyGoodsApprove(String goodsName, String goodsSubTitle,
                                    String goodsClassifyId, String goodsBrandId, String goodsBrandName, String goodsUnitId, Integer goodsMinQuantity,
                                    String goodsPostageId, String goodsBarCode, String goodsKeyWord, String goodsGuarantee,
-                                   String goodsMainImages, String goodsMainVideo, String goodsDesc, String goodsSpecifications,
-                                   String goodsSkuApproves, boolean isCover, String changeGoodsInfo, boolean isModifyApprove, Map goodsInfoMap) {
+                                   String goodsMainImages, String goodsMainVideo, Integer goodsMainVideoDuration, Integer goodsMainVideoSize,
+                                   String goodsDesc, String goodsSpecifications, String goodsSkuApproves, boolean isCover,
+                                   String changeGoodsInfo, boolean isModifyApprove, Map goodsInfoMap) {
         this.goodsName = goodsName;
         this.goodsSubTitle = goodsSubTitle;
         this.goodsBrandId = goodsBrandId;
@@ -366,6 +378,8 @@ public class GoodsApprove extends ConcurrencySafeEntity {
         this.goodsGuarantee = goodsGuarantee;
         this.goodsMainImages = goodsMainImages;
         this.goodsMainVideo = goodsMainVideo;
+        this.goodsMainVideoDuration = goodsMainVideoDuration;
+        this.goodsMainVideoSize = goodsMainVideoSize;
         this.goodsDesc = goodsDesc;
         this.approveStatus = 1;
         this.rejectReason = null;
