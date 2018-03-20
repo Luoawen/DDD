@@ -1732,7 +1732,7 @@ public class OrderApplication {
 				   throw new NegativeException(MCode.V_401,"文件不是Excel文件");
 				  }
 
-			 Sheet sheet = workbook.getSheet("批量发货");
+			 Sheet sheet = workbook.getSheetAt(0);
 			 int rows = sheet.getLastRowNum();// 一共有多少行
 			 if(rows>500){//判断记录是否大于500
 				 throw new NegativeException(402,"记录超出500");
