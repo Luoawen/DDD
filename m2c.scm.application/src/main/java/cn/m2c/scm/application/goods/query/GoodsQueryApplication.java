@@ -134,7 +134,7 @@ public class GoodsQueryApplication {
         if (StringUtils.isNotEmpty(startTime) && StringUtils.isNotEmpty(endTime)) {
             sql.append(" AND g.created_date BETWEEN ? AND ?");
             params.add(startTime + " 00:00:00");
-            params.add(endTime+ " 23:59:59");
+            params.add(endTime + " 23:59:59");
         }
         if (null != delStatus && delStatus == 2) {
             sql.append(" AND g.del_status= 2");
@@ -211,7 +211,7 @@ public class GoodsQueryApplication {
         if (StringUtils.isNotEmpty(startTime) && StringUtils.isNotEmpty(endTime)) {
             sql.append(" AND g.created_date BETWEEN ? AND ?");
             params.add(startTime + " 00:00:00");
-            params.add(endTime+ " 23:59:59");
+            params.add(endTime + " 23:59:59");
         }
         if (null != delStatus && delStatus == 2) {
             sql.append(" AND g.del_status= 2");
@@ -1054,52 +1054,41 @@ public class GoodsQueryApplication {
 
     /**
      * 拍照获取商品（通过recognizedId查询匹配度最高的商品）
+     *
      * @param recognizedInfo
      * @param location
      * @return
      */
-    public List<GoodsBean> recognizedGoods(String recognizedInfo, String location) {
+    public List<GoodsBean> recognizedGoods(String recognizedInfo, String location, String searchSupplier) {
         //解析json
         List<Map<String, Object>> recognizedList = new Gson().fromJson(recognizedInfo, new TypeToken<List<Map<String, Object>>>() {
         }.getType());
         List<Double> scoreList = new ArrayList<Double>();
         List<String> recognizedIds = new ArrayList<String>();
-        //识别图片列表逻辑
-        if (null != recognizedList && recognizedList.size() > 0) {
-            for (Map<String, Object> map : recognizedList) {
-                Double score = (Double) map.get("score");
-                scoreList.add(score);
-            }
-            //判断识别率高低
-            Collections.sort(scoreList);//升序排序
-            Collections.reverse(scoreList);//倒序
-            // 商品图片拍获识别阈值
-            Float recognizedScore = Float.parseFloat(GetDisconfDataGetter.getDisconfProperty("goods.recognized.score"));
-            LOGGER.info("商品图片拍获识别阈值为" + recognizedScore);
-            if (scoreList.get(0) > recognizedScore) {
+        if ("baidu".equals(searchSupplier)) {  // 百度识别
+            if (null != recognizedList && recognizedList.size() > 0) {
                 recognizedIds.add((String) recognizedList.get(0).get("recognizedId"));
                 return queryGoodsByRecognizedIds(recognizedIds);
-            } /*else if (scoreList.get(0) > 0.01) {
-                //取前10条
-                for (int j = 0; j < scoreList.size() && j < 10; j++) {
-                    if (scoreList.get(j) > 0.01)
-                        recognizedIds.add((String) recognizedList.get(j).get("recognizedId"));
-                }
-                return queryGoodsByRecognizedIds(recognizedIds);
-            }*/
-        }
-
-       /* Map<String, Object> locationInfo = new Gson().fromJson(location, new TypeToken<Map<String, Object>>() {
-        }.getType());
-        if (null != locationInfo) {
-            Double longitude = Double.parseDouble((String) locationInfo.get("longitude"));
-            Double latitude = Double.parseDouble((String) locationInfo.get("latitude"));
-            //根据经纬度坐标查询商品ID
-            List<String> goodsIdList = goodsDubboService.getGoodsIdByCoordinate(longitude, latitude);
-            if (null != goodsIdList && goodsIdList.size() > 0) {
-                return queryGoodsByGoodsIds(goodsIdList);
             }
-        }*/
+        } else {
+            //识别图片列表逻辑
+            if (null != recognizedList && recognizedList.size() > 0) {
+                for (Map<String, Object> map : recognizedList) {
+                    Double score = (Double) map.get("score");
+                    scoreList.add(score);
+                }
+                //判断识别率高低
+                Collections.sort(scoreList);//升序排序
+                Collections.reverse(scoreList);//倒序
+                // 商品图片拍获识别阈值
+                Float recognizedScore = Float.parseFloat(GetDisconfDataGetter.getDisconfProperty("goods.recognized.score"));
+                LOGGER.info("商品图片拍获识别阈值为" + recognizedScore);
+                if (scoreList.get(0) > recognizedScore) {
+                    recognizedIds.add((String) recognizedList.get(0).get("recognizedId"));
+                    return queryGoodsByRecognizedIds(recognizedIds);
+                }
+            }
+        }
         return null;
     }
 
@@ -1617,26 +1606,27 @@ public class GoodsQueryApplication {
         }
         return null;
     }
-    
+
     /**
      * 根据商品名/商品ids查询GoodsBean
+     *
      * @param goodsName
      * @return
      */
     public List<GoodsBean> queryGoodsMessageByGoodsNameOrGoodsIds(String goodsName, List goodsIds) {
-        if(StringUtils.isNotEmpty(goodsName) || (null != goodsIds && goodsIds.size() > 0)) {
-        	StringBuilder sql = new StringBuilder();
-        	List<Object> params = new ArrayList<Object>();
+        if (StringUtils.isNotEmpty(goodsName) || (null != goodsIds && goodsIds.size() > 0)) {
+            StringBuilder sql = new StringBuilder();
+            List<Object> params = new ArrayList<Object>();
             sql.append(" SELECT ");
             sql.append(" * ");
             sql.append(" FROM ");
             sql.append(" t_scm_goods WHERE 1 = 1 ");
-            if(StringUtils.isNotEmpty(goodsName)) {
-            	sql.append(" AND goods_name LIKE ? ");
-            	params.add("%" + goodsName + "%");
+            if (StringUtils.isNotEmpty(goodsName)) {
+                sql.append(" AND goods_name LIKE ? ");
+                params.add("%" + goodsName + "%");
             }
-            if(null != goodsIds && goodsIds.size() > 0) {
-            	sql.append(" AND goods_id IN ( " + Utils.listParseString(goodsIds) + " ) ");
+            if (null != goodsIds && goodsIds.size() > 0) {
+                sql.append(" AND goods_id IN ( " + Utils.listParseString(goodsIds) + " ) ");
             }
             List<GoodsBean> goodsBeans = this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsBean.class, params.toArray());
             return goodsBeans;
