@@ -45,7 +45,10 @@ public class GoodsApproveAgreeListener extends ExchangeListener {
         String goodsMainImages = reader.eventStringValue("goodsMainImages");
         String goodsMainVideo = reader.eventStringValue("goodsMainVideo");
         Integer mainVideoDuration = reader.eventIntegerValue("goodsMainVideoDuration");
-        Double goodsMainVideoDuration = Double.parseDouble(mainVideoDuration.toString());
+        Double goodsMainVideoDuration = null;
+        if(null != mainVideoDuration) {
+            goodsMainVideoDuration = Double.parseDouble(mainVideoDuration.toString());
+        }
         Integer goodsMainVideoSize = reader.eventIntegerValue("goodsMainVideoSize");
         String goodsDesc = reader.eventStringValue("goodsDesc");
         Integer goodsShelves = reader.eventIntegerValue("goodsShelves");
