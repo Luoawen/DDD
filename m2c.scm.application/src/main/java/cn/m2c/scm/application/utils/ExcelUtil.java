@@ -16,6 +16,7 @@ import org.apache.poi.ss.usermodel.DataValidationHelper;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.CellRangeAddressList;
 
 import javax.servlet.http.HttpServletResponse;
@@ -134,8 +135,15 @@ public class ExcelUtil {
         style.setFont(fontStyle);
         
         //新建sheet
-        HSSFSheet sheet1 = wb.createSheet("Sheet1");
+        HSSFSheet sheet1 = wb.createSheet("批量发货");
         HSSFSheet sheet2 = wb.createSheet("Sheet2");
+        HSSFSheet translation = wb.createSheet("表格说明"); 
+	    int addMergedRegion = translation.addMergedRegion(new CellRangeAddress(2, 19, 1, 10));
+	    HSSFRow sheet3 = translation.createRow(2);
+	    HSSFCell info = sheet3.createCell(1, 1);
+	    info.setCellStyle(style);
+	    info.setCellValue("请严格按照表格说明的规范填写，填写不合法均会导入失败；/r/n 1、表格已预置待发货的订货号，请勿篡改；/r/n 2、物流公司名称，请按照提供的标准填写，必填，否则导入失败；/r/n 3、物流单号，请按照实际物流公司单号填写，必填，1-20字符以内");
+
         
         //生成sheet1内容
         HSSFRow rowFirst = sheet1.createRow(0);//第一个sheet的第一行为标题
