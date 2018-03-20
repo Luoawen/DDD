@@ -126,7 +126,7 @@ public class ExcelUtil {
         
         //表头样式
         HSSFCellStyle style = wb.createCellStyle();  
-        style.setAlignment(HSSFCellStyle.ALIGN_CENTER); // 创建一个居中格式  
+        style.setVerticalAlignment(style.VERTICAL_CENTER); // 创建一个居中格式  
         //字体样式
         HSSFFont fontStyle = wb.createFont();    
         fontStyle.setFontName("微软雅黑");    
