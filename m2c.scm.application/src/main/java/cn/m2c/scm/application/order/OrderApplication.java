@@ -1539,18 +1539,28 @@ public class OrderApplication {
 			HSSFWorkbook workbook = new HSSFWorkbook(); 
 			String fileName = "";
 	        HSSFSheet realSheet = workbook.createSheet("批量发货"); 
-	        HSSFSheet hidden = workbook.createSheet("hidden"); 
+	     //   HSSFSheet hidden = workbook.createSheet("hidden"); 
 	        HSSFCellStyle style = workbook.createCellStyle();
+	        style.setVerticalAlignment(style.VERTICAL_CENTER);
 	        style.setWrapText(true);
 	        //设置表格说明
 	        HSSFSheet translation = workbook.createSheet("表格说明"); 
-	        int addMergedRegion = translation.addMergedRegion(new CellRangeAddress(2, 19, 1, 10));
-	        HSSFRow sheet3 = translation.createRow(2);
-	        HSSFCell info = sheet3.createCell(1, 1);
-	        info.setCellStyle(style);
-	        info.setCellValue("请严格按照表格说明的规范填写，填写不合法均会导入失败；/r/n 1、表格已预置待发货的订货号，请勿篡改；/r/n 2、物流公司名称，请按照提供的标准填写，必填，否则导入失败；/r/n 3、物流单号，请按照实际物流公司单号填写，必填，1-20字符以内");
-	        //设置单元格宽度
 	        realSheet.setDefaultColumnWidth(20);
+	        translation.setDefaultColumnWidth(18);
+	        translation.addMergedRegion(new CellRangeAddress(2, 19, 2, 11));
+	        HSSFRow sheet3 = translation.createRow(2);
+	        HSSFCell info = sheet3.createCell(2, 2);
+	        info.setCellValue("请严格按照表格说明的规范填写，填写不合法均会导入失败；\r\n 1、表格已预置待发货的订货号，请勿篡改；\r\n 2、物流公司名称，请按照提供的标准填写，必填，否则导入失败；\r\n 3、物流单号，请按照实际物流公司单号填写，必填，1-20字符以内");
+	        info.setCellStyle(style);
+	        HSSFCell cell = null;
+	        
+	      //写入物流公司名到Excel
+	        for (int i = 0, length= expressList.length; i < length; ++i) { 
+	           HSSFRow row = translation.createRow(i + 1); 
+	           cell = row.createCell(0); 
+	           cell.setCellValue(expressList[i]); 
+	         }
+	        
 	        
 	        //设置Excel表头
 	        HSSFRow hssfRow = realSheet.createRow(0);
@@ -1560,31 +1570,27 @@ public class OrderApplication {
 			cell1.setCellValue("物流公司");
 			HSSFCell cell2 = hssfRow.createCell(2);
 			cell2.setCellValue("物流单号");
+			
+			HSSFRow rows = translation.createRow(0);
+			HSSFCell createCell = rows.createCell(0);
+			createCell.setCellValue("物流公司名称");
 	       
 			HSSFCell failedCell = null;
 	        if (failedOrderModelInfo == null || failedOrderModelInfo.size() == 0 ) {
-	        	 //导出批量发货模板
-				//写入物流公司名到Excel
+	        	
+	        	
 				fileName = "批量发货模板";
-		        HSSFCell cell = null;
-		        for (int i = 0, length= expressList.length; i < length; ++i) { 
-		           String name = expressList[i]; 
-		           HSSFRow row = hidden.createRow(i); 
-		           cell = row.createCell(1,1); 
-		           cell.setCellValue(name); 
-		         }
 		        
 		        //写入订货单号到Excel
 		        HSSFCell dealerOrderCell = null;
 		        for(int i = 0, length= dealerOrderList.length; i < length; ++i) {
-		        	String name = dealerOrderList[i];
 		        	HSSFRow row = realSheet.createRow(i+1); 
 		        	dealerOrderCell = row.createCell(0,1);
-		        	dealerOrderCell.setCellValue(name);
+		        	dealerOrderCell.setCellValue(dealerOrderList[i]);
 		        }
 		        
 		      //设置所有物流公司为下拉菜单
-		        Name namedCell = workbook.createName(); 
+		     /* Name namedCell = workbook.createName(); 
 		        namedCell.setNameName("hidden"); 
 		        namedCell.setRefersToFormula("hidden!A1:A" + expressList.length); 
 		        //加载数据,将名称为hidden的
@@ -1592,11 +1598,8 @@ public class OrderApplication {
 
 		        // 设置数据有效性加载在哪个单元格上,四个参数分别是：起始行、终止行、起始列、终止列
 		        CellRangeAddressList addressList = new CellRangeAddressList(1, 500, 1, 1 ); 
-		        HSSFDataValidation validation = new HSSFDataValidation(addressList, constraint);
-
-		        //将第二个sheet设置为隐藏
-		    //    workbook.setSheetHidden(1, true); 
-		        realSheet.addValidationData(validation); 
+		        HSSFDataValidation validation = new HSSFDataValidation(addressList,constraint);
+		        realSheet.addValidationData(validation); */
 			}else {  
 				//批量发货失败数据导出
 	        	fileName = "批量发货失败数据";
@@ -1615,7 +1618,9 @@ public class OrderApplication {
 				}
 			}
 
-	        
+	        //将第二个sheet设置为隐藏
+		//     workbook.setSheetHidden(1, true); 
+		     
 	        try {
 				response.setHeader("Content-Disposition", "attachment;filename=" + ExcelUtil.urlEncode(fileName+".xls"));
 				response.setContentType("application/ms-excel");
@@ -1848,6 +1853,130 @@ public class OrderApplication {
 		resMap.put("expressFlag", expressFlag);
 		result.add(resMap);
 		return result;
+	}
+
+	/**
+	 * 导出发货模板
+	 * @param response
+	 * @param allExpress
+	 * @param dealerOrderList
+	 * @param type 0:导出失败模板 1:正常导出
+	 * @throws NegativeException
+	 */
+	public void exportSendModel(HttpServletResponse response,
+			List<OrderExpressBean> allExpress,
+			List<DealerOrderQB> dealerOrderList) throws NegativeException {
+
+		//传入所有物流公司和满足的订单List转换成String数组
+		ArrayList<String> arrayExpress = new ArrayList<String>();
+		ArrayList<String> arrayOrder = new ArrayList<String>();
+		for (OrderExpressBean express : allExpress) {
+			arrayExpress.add(express.getExpressName());
+		}
+		
+		for (DealerOrderQB dealerOrder : dealerOrderList) {
+			arrayOrder.add(dealerOrder.getDealerOrderId());
+		}
+		String[] expressList = (String[]) arrayExpress.toArray(new String[arrayExpress.size()]);
+		String[] sendOrderList = (String[]) arrayOrder.toArray(new String[arrayOrder.size()]);
+		
+		createExcel(response,expressList,sendOrderList);
+	}
+
+	/**
+	 * 生成发货模板
+	 * @param response
+	 * @param expressList
+	 * @param sendOrderList
+	 * @throws NegativeException 
+	 */
+	private void createExcel(HttpServletResponse response,
+			String[] expressList, String[] sendOrderList) throws NegativeException {
+			String[] handers = {"订货号","物流公司","物流单号"}; //列标题
+			
+		 
+		 
+	        //下拉框数据
+	        List<String[]> downData = new ArrayList();
+	        downData.add(expressList);
+	        String [] downRows = {"1"}; //下拉的列序号数组(序号从0开始)
+	        	HSSFWorkbook hb = ExcelUtil.createExcelTemplate( handers, downData, downRows,sendOrderList,null,null);
+	        
+	        try {
+				response.setHeader("Content-Disposition", "attachment;filename=" + ExcelUtil.urlEncode("批量发货模板.xls"));
+				response.setContentType("application/ms-excel");
+				OutputStream ouPutStream = null;
+				try {
+				    ouPutStream = response.getOutputStream();
+				    hb.write(ouPutStream);
+				} finally {
+				    ouPutStream.close();
+				}
+			} catch (Exception e) {
+				throw new NegativeException(MCode.V_401,"导出批量发货模板出错！");
+			}
+	}
+
+	/**
+	 * 下载发货失败日志信息
+	 * @param response
+	 * @param allExpress
+	 * @param orderModelInfo
+	 * @throws NegativeException 
+	 */
+	public void exportSendModelLog(HttpServletResponse response,
+			List<OrderExpressBean> allExpress,
+			List<ImportFailedOrderBean> orderModelInfo) throws NegativeException {
+		//传入所有物流公司和满足的订单List转换成String数组
+				ArrayList<String> arrayExpress = new ArrayList<String>();
+				ArrayList<String> arrayOrder = new ArrayList<String>();
+				ArrayList<String> arrayLog = new ArrayList<String>();
+				ArrayList<String> expressItem = new ArrayList<String>();
+				for (OrderExpressBean express : allExpress) {
+					arrayExpress.add(express.getExpressName());
+				}
+				
+				for (ImportFailedOrderBean errorLog : orderModelInfo) {
+					arrayOrder.add(errorLog.getDealerOrderId());
+					arrayLog.add(errorLog.getFailedReason());
+					expressItem.add(errorLog.getExpressName());
+				}
+				String[] expressList = (String[]) arrayExpress.toArray(new String[arrayExpress.size()]);
+				String[] sendOrderList = (String[]) arrayOrder.toArray(new String[arrayOrder.size()]);
+				String[] errorLogList = (String[]) arrayLog.toArray(new String[arrayLog.size()]);
+				String[] expressFailList = (String[]) expressItem.toArray(new String[arrayLog.size()]);
+				
+				createExcel(response,expressList,sendOrderList,errorLogList,expressFailList);
+	}
+
+	private void createExcel(HttpServletResponse response,
+			String[] expressList, String[] sendOrderList, String[] errorLogList, String[] expressFailList) throws NegativeException {
+
+		String[]	handers = {"订货号","物流公司","物流单号","错误信息"}; //列标题
+		
+	 
+	 
+        //下拉框数据
+        List<String[]> downData = new ArrayList();
+        downData.add(expressList);
+        String [] downRows = {"1"}; //下拉的列序号数组(序号从0开始)
+        	HSSFWorkbook hb = ExcelUtil.createExcelTemplate( handers, downData, downRows,sendOrderList,errorLogList,expressFailList);
+        
+        try {
+			response.setHeader("Content-Disposition", "attachment;filename=" + ExcelUtil.urlEncode("批量发货模板.xls"));
+			response.setContentType("application/ms-excel");
+			OutputStream ouPutStream = null;
+			try {
+			    ouPutStream = response.getOutputStream();
+			    hb.write(ouPutStream);
+			} finally {
+			    ouPutStream.close();
+			}
+		} catch (Exception e) {
+			throw new NegativeException(MCode.V_401,"导出批量发货模板出错！");
+		}
+
+		
 	}
 
 }

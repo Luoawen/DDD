@@ -222,7 +222,8 @@ public class OrderExportAgent {
 			        1, null, null, null, null, null, null, null,
 			        null, null, null, null);
 			List<OrderExpressBean> allExpress = orderAppQuery.getAllExpress();
-			orderApp.exportShipModel(response,allExpress,dealerOrderList);
+//			orderApp.exportShipModel(response,allExpress,dealerOrderList);
+			orderApp.exportSendModel(response,allExpress,dealerOrderList);
 		} catch (NegativeException e) {
 			LOGGER.error("导出批量发货模板出错" + e.getMessage(), e);
 		}
@@ -239,8 +240,8 @@ public class OrderExportAgent {
     		@RequestParam(value = "expressFlag", required = false) String expressFlag) {
     	try {
 			List<ImportFailedOrderBean> orderModelInfo = dealerOrderQuery.getImportOrderModelInfo(expressFlag);
-			
-			orderApp.createListBox(response, null, null, orderModelInfo);
+			List<OrderExpressBean> allExpress = orderAppQuery.getAllExpress();
+			orderApp.exportSendModelLog(response, allExpress, orderModelInfo);
 		} catch (NegativeException e) {
 			LOGGER.error("导出批量发货失败数据出错" + e.getMessage(), e);
 		}
