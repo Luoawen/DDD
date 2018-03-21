@@ -27,8 +27,6 @@ import cn.m2c.scm.application.order.data.bean.MarketBean;
 import cn.m2c.scm.application.order.data.bean.MarketUseBean;
 import cn.m2c.scm.application.order.data.bean.MediaResBean;
 import cn.m2c.scm.application.order.data.bean.OrderExpressBean;
-import cn.m2c.scm.application.order.data.bean.OrderShipSuccessBean;
-import cn.m2c.scm.application.order.data.bean.ShipExpressBean;
 import cn.m2c.scm.application.order.data.bean.SkuMediaBean;
 import cn.m2c.scm.application.order.data.representation.OrderMoney;
 import cn.m2c.scm.application.order.query.OrderQueryApplication;
@@ -711,7 +709,7 @@ public class OrderApplication {
             List<GoodsDto> dtos = map.get(dealerId);
 
             List<DealerOrderDtl> dtls = new ArrayList<DealerOrderDtl>();
-            int freight = 0;
+            long freight = 0;
             long goodsAmount = 0;
             long plateDiscount = 0;
             long dealerDiscount = 0;
@@ -725,7 +723,7 @@ public class OrderApplication {
             for (GoodsDto bean : dtos) {
                 float num = bean.getPurNum();
                 freight += bean.getFreight();
-                goodsAmount += (int) (num * bean.getThePrice());
+                goodsAmount += (long) (num * bean.getThePrice());
                 plateDiscount += bean.getPlateformDiscount();
                 couponDiscount += bean.getCouponDiscount();
                 String resId = bean.getMresId();
@@ -1719,23 +1717,34 @@ public class OrderApplication {
 	 * @param i
 	 * @param _attach
 	 * @return
-	 * @throws NegativeException 
-	 * @throws IOException 
+	 * @throws Exception 
 	 */
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class},propagation= Propagation.REQUIRES_NEW)
-	public List<Map<String,Object>> importExpress(MultipartFile myFile,String userId,String shopName,String dealerId, Integer expressWay,String attach) throws NegativeException, IOException {
+	public List<Map<String,Object>> importExpress(MultipartFile myFile,String userId,String shopName,String dealerId, Integer expressWay,String attach) throws Exception {
 		List<Map<String,Object>> result = null;
 		try {
 			Workbook workbook = null ;
 			String fileName = myFile.getOriginalFilename(); 
 			List<OrderExpressBean> allExpress = queryApp.getAllExpress();
 			SendOrderCommand command = null;
+<<<<<<< HEAD
 			 if(fileName.endsWith("xls") || fileName.endsWith("xlsx")){ 
 				   //2003 
 				   workbook = new HSSFWorkbook(myFile.getInputStream()); 
 				  }else{
 				   throw new NegativeException(MCode.V_401,"文件不是Excel文件");
 				  }
+=======
+			  if(fileName.endsWith("xls")){ 
+			   //2003 
+			   workbook = new HSSFWorkbook(myFile.getInputStream()); 
+			  }else if(fileName.endsWith("xlsx")){ 
+			   //2007 
+			   workbook = new XSSFWorkbook(myFile.getInputStream()); 
+			  }else{
+				  throw new NegativeException(401,"不是excel文件");
+			  }
+>>>>>>> local
 
 			 Sheet sheet = workbook.getSheetAt(0);
 			 int rows = sheet.getLastRowNum();// 一共有多少行
