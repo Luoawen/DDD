@@ -1305,7 +1305,7 @@ public class GoodsQueryApplication {
             params.add("%" + condition + "%");
             params.add("%" + condition + "%");
         }
-        sql.append(" AND g.del_status= 1 AND g.goods_status <> 3 group by g.goods_id ORDER BY g.created_date desc,s.photograph_price desc ");
+        sql.append(" AND g.del_status= 1 AND g.goods_status = 2 group by g.goods_id ORDER BY g.created_date desc,s.photograph_price desc ");
         sql.append(" LIMIT ?,?");
         params.add(rows * (pageNum - 1));
         params.add(rows);
@@ -1330,7 +1330,7 @@ public class GoodsQueryApplication {
             params.add("%" + condition + "%");
             params.add("%" + condition + "%");
         }
-        sql.append(" AND g.del_status= 1 AND g.goods_status <> 3");
+        sql.append(" AND g.del_status= 1 AND g.goods_status = 2");
         return supportJdbcTemplate.jdbcTemplate().queryForObject(sql.toString(), params.toArray(), Integer.class);
     }
 
@@ -1632,6 +1632,21 @@ public class GoodsQueryApplication {
             return goodsBeans;
         }
         return null;
+    }
+
+    /**
+     * 百度数据迁移
+     *
+     * @return
+     */
+    public List<GoodsRecognizedBean> goodsRecognized() {
+        StringBuilder sql = new StringBuilder();
+        sql.append(" SELECT ");
+        sql.append(" * ");
+        sql.append(" FROM ");
+        sql.append(" t_scm_goods_recognized WHERE 1 = 1 ");
+        List<GoodsRecognizedBean> goodsRecognizedBean = this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsRecognizedBean.class);
+        return goodsRecognizedBean;
     }
 }
 

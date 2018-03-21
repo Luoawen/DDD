@@ -241,6 +241,7 @@ public class OrderExportAgent {
     	try {
 			List<ImportFailedOrderBean> orderModelInfo = dealerOrderQuery.getImportOrderModelInfo(expressFlag);
 			List<OrderExpressBean> allExpress = orderAppQuery.getAllExpress();
+			LOGGER.info("orderModelInfo :"+orderModelInfo==null?"":orderModelInfo.toString());
 			orderApp.exportSendModelLog(response, allExpress, orderModelInfo);
 		} catch (NegativeException e) {
 			LOGGER.error("导出批量发货失败数据出错" + e.getMessage(), e);

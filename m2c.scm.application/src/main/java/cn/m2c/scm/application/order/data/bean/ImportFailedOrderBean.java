@@ -44,6 +44,14 @@ public class ImportFailedOrderBean {
 	public void setFailedReason(String failedReason) {
 		this.failedReason = failedReason;
 	}
+
+	@Override
+	public String toString() {
+		return "ImportFailedOrderBean [dealerOrderId=" + dealerOrderId
+				+ ", expressName=" + expressName + ", expressNo=" + expressNo
+				+ ", failedReason=" + failedReason + "]";
+	}
+	
 	
 	
 
