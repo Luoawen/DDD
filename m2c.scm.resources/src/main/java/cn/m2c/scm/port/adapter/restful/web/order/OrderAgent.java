@@ -239,7 +239,7 @@ public class OrderAgent {
     	MResult result = new MResult(MCode.V_1);
         try {
         	SaleAfterShipCmd cmd = new SaleAfterShipCmd(userId, saleAfterNo, skuId,
-        			expressNo, expressCode, expressName, expressPerson, expressPhone, expressWay, orderId, shopName);
+        			expressNo, expressCode, expressName, expressPerson, expressPhone, expressWay, orderId, shopName, noted);
         	String _attach= request.getHeader("attach");
         	saleAfterApp.dealerShipGoods(cmd, _attach);
             result.setStatus(MCode.V_200);

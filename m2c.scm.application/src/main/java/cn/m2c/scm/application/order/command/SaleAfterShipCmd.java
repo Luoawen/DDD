@@ -39,6 +39,8 @@ public class SaleAfterShipCmd extends AssertionConcern {
 	
 	private String shopName;
 	
+	private String expressNote;
+	
 	public SaleAfterShipCmd(String userId, String saleAfterNo, String skuId, String expressNo
 			, String expressCode, String expressName) throws NegativeException {
 		
@@ -68,7 +70,7 @@ public class SaleAfterShipCmd extends AssertionConcern {
 	
 	public SaleAfterShipCmd(String userId, String saleAfterNo, String skuId, String expressNo
 			, String expressCode, String expressName, String expressPerson, String expressPhone
-			, int expressWay,String orderId,String shopName) throws NegativeException {
+			, int expressWay,String orderId,String shopName, String noted) throws NegativeException {
 		
 		//this(userId, saleAfterNo, skuId, expressNo, expressCode, expressName);
 		
@@ -94,6 +96,7 @@ public class SaleAfterShipCmd extends AssertionConcern {
 		this.expressNo = expressNo;
 		this.expressCode = expressCode;
 		this.expressName = expressName;
+		expressNote = noted;
 		
 		if (expressWay != 1 && StringUtils.isEmpty(expressCode)) {
 			throw new NegativeException(MCode.V_1, "快递公司编码为空(expressCode)！");
@@ -185,6 +188,6 @@ public class SaleAfterShipCmd extends AssertionConcern {
 	 */
 	public ExpressInfo getSdExpressInfo() {
 		return new ExpressInfo(expressNo, expressName, expressPerson, expressCode,
-				expressPhone, expressWay, "", new Date());
+				expressPhone, expressWay, expressNote, new Date());
 	}
 }
