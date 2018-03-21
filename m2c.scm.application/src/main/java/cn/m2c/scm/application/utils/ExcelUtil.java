@@ -162,7 +162,6 @@ public class ExcelUtil {
         		expressCell.setCellValue(expressFailList[i]);
         	}
         }
-        
         if(errorLogList!=null && errorLogList.length>0){
         	HSSFCell logCell = null;
         	for(int i = 0, length= errorLogList.length; i < length; ++i) {
