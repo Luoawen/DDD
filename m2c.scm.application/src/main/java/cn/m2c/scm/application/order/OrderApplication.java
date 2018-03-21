@@ -1940,7 +1940,7 @@ public class OrderApplication {
 				}
 				String[] expressList = (String[]) arrayExpress.toArray(new String[arrayExpress.size()]);
 				String[] sendOrderList = (String[]) arrayOrder.toArray(new String[arrayOrder.size()]);
-				String[] errorLogList = (String[]) arrayOrder.toArray(new String[arrayLog.size()]);
+				String[] errorLogList = (String[]) arrayLog.toArray(new String[arrayLog.size()]);
 				
 				createExcel(response,expressList,sendOrderList,errorLogList);
 	}
