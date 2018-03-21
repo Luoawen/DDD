@@ -12,6 +12,9 @@
 		<property name="createdDate" generated="insert" not-null="true">
 			<column name="created_date" sql-type="timestamp" default="CURRENT_TIMESTAMP"></column>
 		</property>
+		<property name="backImgLastUpdate" generated="insert" not-null="false">
+			<column name="head_img_last_update" sql-type="timestamp" default="CURRENT_TIMESTAMP"></column>
+		</property>
 		<property name="shopId" column="shop_id" type="string" />
 		<property name="dealerId" column="dealer_id" type="string" />
 	<property name="shopName" column="shop_name" type="string"/>

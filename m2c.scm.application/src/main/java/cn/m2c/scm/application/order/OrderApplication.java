@@ -56,16 +56,22 @@ import cn.m2c.scm.domain.service.order.OrderService;
 import cn.m2c.scm.domain.util.GetDisconfDataGetter;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.hssf.usermodel.DVConstraint;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFDataValidation;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Name;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.ss.util.CellRangeAddressList;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -1712,23 +1718,31 @@ public class OrderApplication {
 	 * @param i
 	 * @param _attach
 	 * @return
-	 * @throws NegativeException 
-	 * @throws IOException 
+	 * @throws Exception 
 	 */
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class, NegativeException.class},propagation= Propagation.REQUIRES_NEW)
-	public List<Map<String,Object>> importExpress(MultipartFile myFile,String userId,String shopName,String dealerId, Integer expressWay,String attach) throws NegativeException, IOException {
+	public List<Map<String,Object>> importExpress(MultipartFile myFile,String userId,String shopName,String dealerId, Integer expressWay,String attach) throws Exception {
 		List<Map<String,Object>> result = null;
 		try {
 			Workbook workbook = null ;
 			String fileName = myFile.getOriginalFilename(); 
 			List<OrderExpressBean> allExpress = queryApp.getAllExpress();
 			SendOrderCommand command = null;
-			 if(fileName.endsWith("xls")){ 
+			 if(fileName.endsWith("xls") || fileName.endsWith("xlsx")){ 
 				   //2003 
 				   workbook = new HSSFWorkbook(myFile.getInputStream()); 
 				  }else{
 				   throw new NegativeException(MCode.V_401,"文件不是Excel文件");
 				  }
+			  if(fileName.endsWith("xls")){ 
+			   //2003 
+			   workbook = new HSSFWorkbook(myFile.getInputStream()); 
+			  }else if(fileName.endsWith("xlsx")){ 
+			   //2007 
+			   workbook = new XSSFWorkbook(myFile.getInputStream()); 
+			  }else{
+				  throw new NegativeException(401,"不是excel文件");
+			  }
 
 			 Sheet sheet = workbook.getSheetAt(0);
 			 int rows = sheet.getLastRowNum();// 一共有多少行
@@ -1936,8 +1950,6 @@ public class OrderApplication {
 				}
 				String[] expressList = (String[]) arrayExpress.toArray(new String[arrayExpress.size()]);
 				String[] sendOrderList = (String[]) arrayOrder.toArray(new String[arrayOrder.size()]);
-				String[] errorLogList = (String[]) arrayLog.toArray(new String[arrayLog.size()]);
-				String[] expressFailList = (String[]) expressItem.toArray(new String[expressItem.size()]);
 				
 				createExcel(response,expressList,sendOrderList/*,errorLogList,expressFailList*/,orderModelInfo);
 	}

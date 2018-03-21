@@ -10,7 +10,7 @@ public class ShopBackImgBean {
 	@ColumnAlias(value = "shop_background_img")
 	private String shopBackImg;
 	
-	@ColumnAlias(value = "last_updated_date")
+	@ColumnAlias(value = "head_img_last_update")
 	private Date lastUpdatedTime;
 	
 	private String lastUpdateDate;
