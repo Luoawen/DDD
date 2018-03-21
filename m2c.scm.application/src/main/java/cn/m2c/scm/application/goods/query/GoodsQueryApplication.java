@@ -1633,5 +1633,20 @@ public class GoodsQueryApplication {
         }
         return null;
     }
+
+    /**
+     * 百度数据迁移
+     *
+     * @return
+     */
+    public List<GoodsRecognizedBean> goodsRecognized() {
+        StringBuilder sql = new StringBuilder();
+        sql.append(" SELECT ");
+        sql.append(" * ");
+        sql.append(" FROM ");
+        sql.append(" t_scm_goods_recognized WHERE 1 = 1 ");
+        List<GoodsRecognizedBean> goodsRecognizedBean = this.getSupportJdbcTemplate().queryForBeanList(sql.toString(), GoodsRecognizedBean.class);
+        return goodsRecognizedBean;
+    }
 }
 
