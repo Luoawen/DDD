@@ -136,7 +136,7 @@ public class GoodsSpecialAgent {
     }
 
     /**
-     * 增加商品特惠价
+     * 修改商品特惠价
      *
      * @param specialId           特惠编号
      * @param startTime           开始时间

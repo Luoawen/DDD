@@ -304,7 +304,7 @@ public class DealerAgent {
 	}
 
 	/**
-	 * 
+	 * 根据经销商id查询经销商信息
 	 * @param dealerId
 	 * @return
 	 */
@@ -321,7 +321,7 @@ public class DealerAgent {
 			result.setContent(representation);
 			result.setStatus(MCode.V_200);
 		} catch (Exception e) {
-			log.error("经销商列表出错", e);
+			log.error("查询经销商出错", e);
 			result = new MPager(MCode.V_400, "服务器开小差了，请稍后再试");
 		}
 		return new ResponseEntity<MResult>(result, HttpStatus.OK);
