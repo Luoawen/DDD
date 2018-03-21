@@ -76,7 +76,7 @@ public class Shop extends ConcurrencySafeEntity{
 	
 	public void addShopBackImg(String shopBackgroundImg) {
 		this.shopBackgroundImg = shopBackgroundImg;
-		this.lastUpdatedDate = new Date();
+		this.backImgLastUpdate = new Date();
 	}
 	
 }

@@ -337,7 +337,7 @@ public class ShopQuery {
 	public ShopBackImgBean getShopBackImg(String shopId) throws NegativeException {
 		ShopBackImgBean shopBackImgBean =  null;
 		try {
-			StringBuilder sql = new StringBuilder("SELECT shop_background_img, last_updated_date FROM t_scm_dealer_shop WHERE shop_id = ?");
+			StringBuilder sql = new StringBuilder("SELECT shop_background_img, head_img_last_update FROM t_scm_dealer_shop WHERE shop_id = ?");
 			shopBackImgBean = this.supportJdbcTemplate.queryForBean(sql.toString(), ShopBackImgBean.class, shopId);
 		} catch (Exception e) {
 			log.error("查询创建店铺门头图出错",e);
