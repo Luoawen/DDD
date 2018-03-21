@@ -148,12 +148,6 @@ public class ExcelUtil {
 	    info.setCellStyle(style);
 
 	    
-	    HSSFCell dealerOrderCell = null;
-        for(int i = 0, length= sendOrderList.length; i < length; ++i) {
-        	HSSFRow row = sheet1.createRow(i+1); 
-        	dealerOrderCell = row.createCell(0,1);
-        	dealerOrderCell.setCellValue(sendOrderList[i]);
-        }
         if(expressFailList!=null && expressFailList.length>0){
         	HSSFCell expressCell = null;
         	for(int i = 0, length= errorLogList.length; i < length; ++i) {
@@ -171,6 +165,12 @@ public class ExcelUtil {
         	}
         }
         
+        HSSFCell dealerOrderCell = null;
+        for(int i = 0, length= sendOrderList.length; i < length; ++i) {
+        	HSSFRow row = sheet1.createRow(i+1); 
+        	dealerOrderCell = row.createCell(0,1);
+        	dealerOrderCell.setCellValue(sendOrderList[i]);
+        }
         
         //生成sheet1内容
         HSSFRow rowFirst = sheet1.createRow(0);//第一个sheet的第一行为标题
