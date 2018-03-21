@@ -27,6 +27,7 @@ public class Shop extends ConcurrencySafeEntity{
 	private Date createdDate;
 	private Date lastUpdatedDate;
 	private String shopBackgroundImg;
+	private Date backImgLastUpdate;
 
 	public Shop() {
 		super();
@@ -75,6 +76,7 @@ public class Shop extends ConcurrencySafeEntity{
 	
 	public void addShopBackImg(String shopBackgroundImg) {
 		this.shopBackgroundImg = shopBackgroundImg;
+		this.lastUpdatedDate = new Date();
 	}
 	
 }

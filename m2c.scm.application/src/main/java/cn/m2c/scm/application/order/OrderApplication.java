@@ -71,6 +71,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.CellRangeAddressList;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -1727,14 +1728,12 @@ public class OrderApplication {
 			String fileName = myFile.getOriginalFilename(); 
 			List<OrderExpressBean> allExpress = queryApp.getAllExpress();
 			SendOrderCommand command = null;
-<<<<<<< HEAD
 			 if(fileName.endsWith("xls") || fileName.endsWith("xlsx")){ 
 				   //2003 
 				   workbook = new HSSFWorkbook(myFile.getInputStream()); 
 				  }else{
 				   throw new NegativeException(MCode.V_401,"文件不是Excel文件");
 				  }
-=======
 			  if(fileName.endsWith("xls")){ 
 			   //2003 
 			   workbook = new HSSFWorkbook(myFile.getInputStream()); 
@@ -1744,7 +1743,6 @@ public class OrderApplication {
 			  }else{
 				  throw new NegativeException(401,"不是excel文件");
 			  }
->>>>>>> local
 
 			 Sheet sheet = workbook.getSheetAt(0);
 			 int rows = sheet.getLastRowNum();// 一共有多少行
@@ -1952,8 +1950,6 @@ public class OrderApplication {
 				}
 				String[] expressList = (String[]) arrayExpress.toArray(new String[arrayExpress.size()]);
 				String[] sendOrderList = (String[]) arrayOrder.toArray(new String[arrayOrder.size()]);
-				String[] errorLogList = (String[]) arrayLog.toArray(new String[arrayLog.size()]);
-				String[] expressFailList = (String[]) expressItem.toArray(new String[expressItem.size()]);
 				
 				createExcel(response,expressList,sendOrderList/*,errorLogList,expressFailList*/,orderModelInfo);
 	}
