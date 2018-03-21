@@ -1900,7 +1900,7 @@ public class OrderApplication {
 	        List<String[]> downData = new ArrayList();
 	        downData.add(expressList);
 	        String [] downRows = {"1"}; //下拉的列序号数组(序号从0开始)
-	        	HSSFWorkbook hb = ExcelUtil.createExcelTemplate( handers, downData, downRows,sendOrderList,null,null);
+	        	HSSFWorkbook hb = ExcelUtil.createExcelTemplate( handers, downData, downRows,sendOrderList,null/*,null*/);
 	        
 	        try {
 				response.setHeader("Content-Disposition", "attachment;filename=" + ExcelUtil.urlEncode("批量发货模板.xls"));
@@ -1946,11 +1946,11 @@ public class OrderApplication {
 				String[] errorLogList = (String[]) arrayLog.toArray(new String[arrayLog.size()]);
 				String[] expressFailList = (String[]) expressItem.toArray(new String[expressItem.size()]);
 				
-				createExcel(response,expressList,sendOrderList,errorLogList,expressFailList);
+				createExcel(response,expressList,sendOrderList/*,errorLogList,expressFailList*/,orderModelInfo);
 	}
 
 	private void createExcel(HttpServletResponse response,
-			String[] expressList, String[] sendOrderList, String[] errorLogList, String[] expressFailList) throws NegativeException {
+			String[] expressList, String[] sendOrderList, /*String[] errorLogList, String[] expressFailList*/List<ImportFailedOrderBean> orderModelInfo) throws NegativeException {
 
 		String[]	handers = {"订货号","物流公司","物流单号","错误信息"}; //列标题
 		
@@ -1960,7 +1960,7 @@ public class OrderApplication {
         List<String[]> downData = new ArrayList();
         downData.add(expressList);
         String [] downRows = {"1"}; //下拉的列序号数组(序号从0开始)
-        	HSSFWorkbook hb = ExcelUtil.createExcelTemplate( handers, downData, downRows,sendOrderList,errorLogList,expressFailList);
+        	HSSFWorkbook hb = ExcelUtil.createExcelTemplate( handers, downData, downRows,sendOrderList,/*errorLogList,expressFailList*/orderModelInfo);
         
         try {
 			response.setHeader("Content-Disposition", "attachment;filename=" + ExcelUtil.urlEncode("批量发货模板.xls"));

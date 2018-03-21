@@ -19,6 +19,8 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.CellRangeAddressList;
 
+import cn.m2c.scm.application.order.data.bean.ImportFailedOrderBean;
+
 import javax.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
@@ -120,7 +122,7 @@ public class ExcelUtil {
     
     
     public  static HSSFWorkbook createExcelTemplate( String[] handers, 
-            List<String[]> downData, String[] downRows, String[] sendOrderList,String[] errorLogList, String[] expressFailList){
+            List<String[]> downData, String[] downRows, String[] sendOrderList,/*String[] errorLogList, String[] expressFailList*/List<ImportFailedOrderBean> orderModelInfo){
         
         HSSFWorkbook wb = new HSSFWorkbook();//创建工作薄
         
@@ -140,6 +142,8 @@ public class ExcelUtil {
         HSSFSheet translation = wb.createSheet("表格说明"); 
 	    int addMergedRegion = translation.addMergedRegion(new CellRangeAddress(2, 19, 1, 10));
 	    HSSFRow sheet3 = translation.createRow(2);
+	    
+	    //设置sheet2表格说明
 	    HSSFCell info = sheet3.createCell(1, 1);
 	    HSSFCellStyle style = wb.createCellStyle();  
 	    style.setWrapText(true);
@@ -148,36 +152,53 @@ public class ExcelUtil {
 	    info.setCellStyle(style);
 
 	    
-//        if(expressFailList!=null && expressFailList.length>0){
-//        	HSSFCell expressCell = null;
-//        	for(int i = 0, length= errorLogList.length; i < length; ++i) {
-//        		HSSFRow row = sheet1.createRow(i+1); 
-//        		expressCell = row.createCell(1,1);
-//        		expressCell.setCellValue(expressFailList[i]);
-//        	}
-//        }
-//        if(errorLogList!=null && errorLogList.length>0){
-//        	HSSFCell logCell = null;
-//        	for(int i = 0, length= errorLogList.length; i < length; ++i) {
-//        		HSSFRow row = sheet1.createRow(i+1); 
-//        		logCell = row.createCell(3,1);
-//        		logCell.setCellValue(errorLogList[i]);
-//        	}
-//        }
-        
-        HSSFCell dealerOrderCell = null;
-        HSSFCell expressCell = null;
+	    /*HSSFCell dealerOrderCell = null;
         for(int i = 0, length= sendOrderList.length; i < length; ++i) {
         	HSSFRow row = sheet1.createRow(i+1); 
         	dealerOrderCell = row.createCell(0,1);
         	dealerOrderCell.setCellValue(sendOrderList[i]);
-         if(expressFailList!=null && expressFailList.length>0){
-        	HSSFRow row2 = sheet1.createRow(i+1); 
-     		expressCell = row2.createCell(1,1);
-     		expressCell.setCellValue(expressFailList[i]);
-         }
-        	
+        }*/
+       /* if(expressFailList!=null && expressFailList.length>0){
+        	HSSFCell expressCell = null;
+        	for(int i = 0, length= errorLogList.length; i < length; ++i) {
+        		HSSFRow row = sheet1.createRow(i+1); 
+        		expressCell = row.createCell(1,1);
+        		expressCell.setCellValue(expressFailList[i]);
+        	}
         }
+        if(errorLogList!=null && errorLogList.length>0){
+        	HSSFCell logCell = null;
+        	for(int i = 0, length= errorLogList.length; i < length; ++i) {
+        		HSSFRow row = sheet1.createRow(i+1); 
+        		logCell = row.createCell(3,1);
+        		logCell.setCellValue(errorLogList[i]);
+        	}
+        }*/
+        if (orderModelInfo != null && orderModelInfo.size() != 0) {      //导出批量发货失败数据
+        	for(int i = 0; i < orderModelInfo.size(); ++i) {
+        		//订货号
+        		HSSFRow row = sheet1.createRow(i + 1);
+        		HSSFCell cell = row.createCell(0,1);
+        		cell.setCellValue(orderModelInfo.get(i).getDealerOrderId());
+        		//物流公司名
+        		HSSFCell cell1 = row.createCell(1,1);
+        		cell1.setCellValue(orderModelInfo.get(i).getExpressName());
+        		//物流号
+        		HSSFCell cell2 = row.createCell(2,1);
+        		cell2.setCellValue(orderModelInfo.get(i).getExpressNo());
+        		//失败原因
+        		HSSFCell cell3 = row.createCell(3,1);
+        		cell3.setCellValue(orderModelInfo.get(i).getFailedReason());
+        	}
+		}else {      //导出批量发货模板
+			HSSFCell dealerOrderCell = null;
+	        for(int i = 0, length= sendOrderList.length; i < length; ++i) {
+	        	HSSFRow row = sheet1.createRow(i+1); 
+	        	dealerOrderCell = row.createCell(0,1);
+	        	dealerOrderCell.setCellValue(sendOrderList[i]);
+	        }
+		}
+        
         
         //生成sheet1内容
         HSSFRow rowFirst = sheet1.createRow(0);//第一个sheet的第一行为标题
