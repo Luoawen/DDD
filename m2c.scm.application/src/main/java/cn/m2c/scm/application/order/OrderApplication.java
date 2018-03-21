@@ -27,8 +27,6 @@ import cn.m2c.scm.application.order.data.bean.MarketBean;
 import cn.m2c.scm.application.order.data.bean.MarketUseBean;
 import cn.m2c.scm.application.order.data.bean.MediaResBean;
 import cn.m2c.scm.application.order.data.bean.OrderExpressBean;
-import cn.m2c.scm.application.order.data.bean.OrderShipSuccessBean;
-import cn.m2c.scm.application.order.data.bean.ShipExpressBean;
 import cn.m2c.scm.application.order.data.bean.SkuMediaBean;
 import cn.m2c.scm.application.order.data.representation.OrderMoney;
 import cn.m2c.scm.application.order.query.OrderQueryApplication;
@@ -58,21 +56,16 @@ import cn.m2c.scm.domain.service.order.OrderService;
 import cn.m2c.scm.domain.util.GetDisconfDataGetter;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.hssf.usermodel.DVConstraint;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
-import org.apache.poi.hssf.usermodel.HSSFDataValidation;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.Name;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
-import org.apache.poi.ss.util.CellRangeAddressList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -711,7 +704,7 @@ public class OrderApplication {
             List<GoodsDto> dtos = map.get(dealerId);
 
             List<DealerOrderDtl> dtls = new ArrayList<DealerOrderDtl>();
-            int freight = 0;
+            long freight = 0;
             long goodsAmount = 0;
             long plateDiscount = 0;
             long dealerDiscount = 0;
@@ -725,7 +718,7 @@ public class OrderApplication {
             for (GoodsDto bean : dtos) {
                 float num = bean.getPurNum();
                 freight += bean.getFreight();
-                goodsAmount += (int) (num * bean.getThePrice());
+                goodsAmount += (long) (num * bean.getThePrice());
                 plateDiscount += bean.getPlateformDiscount();
                 couponDiscount += bean.getCouponDiscount();
                 String resId = bean.getMresId();
