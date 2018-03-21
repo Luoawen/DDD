@@ -1728,12 +1728,6 @@ public class OrderApplication {
 			String fileName = myFile.getOriginalFilename(); 
 			List<OrderExpressBean> allExpress = queryApp.getAllExpress();
 			SendOrderCommand command = null;
-			 if(fileName.endsWith("xls") || fileName.endsWith("xlsx")){ 
-				   //2003 
-				   workbook = new HSSFWorkbook(myFile.getInputStream()); 
-				  }else{
-				   throw new NegativeException(MCode.V_401,"文件不是Excel文件");
-				  }
 			  if(fileName.endsWith("xls")){ 
 			   //2003 
 			   workbook = new HSSFWorkbook(myFile.getInputStream()); 

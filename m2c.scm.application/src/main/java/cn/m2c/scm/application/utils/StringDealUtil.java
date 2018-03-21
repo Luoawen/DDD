@@ -40,7 +40,7 @@ public class StringDealUtil {
 	
 	public static void main(String[] args) {
 		Pattern pattern = Pattern.compile(NumOrEnglishRegex);
-		Matcher match=pattern.matcher("fasdfsa");
+		Matcher match=pattern.matcher("正则");
 		System.out.println(match.matches());
 	}
 }
