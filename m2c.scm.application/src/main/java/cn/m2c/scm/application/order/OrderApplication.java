@@ -1730,7 +1730,7 @@ public class OrderApplication {
 			String fileName = myFile.getOriginalFilename(); 
 			List<OrderExpressBean> allExpress = queryApp.getAllExpress();
 			SendOrderCommand command = null;
-			 if(fileName.endsWith("xls")){ 
+			 if(fileName.endsWith("xls") || fileName.endsWith("xlsx")){ 
 				   //2003 
 				   workbook = new HSSFWorkbook(myFile.getInputStream()); 
 				  }else{
