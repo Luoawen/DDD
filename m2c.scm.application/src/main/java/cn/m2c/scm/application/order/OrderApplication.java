@@ -1539,7 +1539,7 @@ public class OrderApplication {
 			HSSFWorkbook workbook = new HSSFWorkbook(); 
 			String fileName = "";
 	        HSSFSheet realSheet = workbook.createSheet("批量发货"); 
-	        HSSFSheet hidden = workbook.createSheet("hidden"); 
+	     //   HSSFSheet hidden = workbook.createSheet("hidden"); 
 	        HSSFCellStyle style = workbook.createCellStyle();
 	        style.setVerticalAlignment(style.VERTICAL_CENTER);
 	        style.setWrapText(true);
@@ -1552,7 +1552,15 @@ public class OrderApplication {
 	        HSSFCell info = sheet3.createCell(2, 2);
 	        info.setCellValue("请严格按照表格说明的规范填写，填写不合法均会导入失败；\r\n 1、表格已预置待发货的订货号，请勿篡改；\r\n 2、物流公司名称，请按照提供的标准填写，必填，否则导入失败；\r\n 3、物流单号，请按照实际物流公司单号填写，必填，1-20字符以内");
 	        info.setCellStyle(style);
-	      
+	        HSSFCell cell = null;
+	        
+	      //写入物流公司名到Excel
+	        for (int i = 0, length= expressList.length; i < length; ++i) { 
+	           HSSFRow row = translation.createRow(i + 1); 
+	           cell = row.createCell(0); 
+	           cell.setCellValue(expressList[i]); 
+	         }
+	        
 	        
 	        //设置Excel表头
 	        HSSFRow hssfRow = realSheet.createRow(0);
@@ -1570,15 +1578,8 @@ public class OrderApplication {
 			HSSFCell failedCell = null;
 	        if (failedOrderModelInfo == null || failedOrderModelInfo.size() == 0 ) {
 	        	
-	        	//写入物流公司名到Excel
+	        	
 				fileName = "批量发货模板";
-		        HSSFCell cell = null;
-		      
-		        for (int i = 0, length= expressList.length; i < length; ++i) { 
-		           HSSFRow row = hidden.createRow(i + length); 
-		           cell = row.createCell(1); 
-		           cell.setCellValue(expressList[i]); 
-		         }
 		        
 		        //写入订货单号到Excel
 		        HSSFCell dealerOrderCell = null;
@@ -1589,7 +1590,7 @@ public class OrderApplication {
 		        }
 		        
 		      //设置所有物流公司为下拉菜单
-		      Name namedCell = workbook.createName(); 
+		     /* Name namedCell = workbook.createName(); 
 		        namedCell.setNameName("hidden"); 
 		        namedCell.setRefersToFormula("hidden!A1:A" + expressList.length); 
 		        //加载数据,将名称为hidden的
@@ -1598,7 +1599,7 @@ public class OrderApplication {
 		        // 设置数据有效性加载在哪个单元格上,四个参数分别是：起始行、终止行、起始列、终止列
 		        CellRangeAddressList addressList = new CellRangeAddressList(1, 500, 1, 1 ); 
 		        HSSFDataValidation validation = new HSSFDataValidation(addressList,constraint);
-		        realSheet.addValidationData(validation); 
+		        realSheet.addValidationData(validation); */
 			}else {  
 				//批量发货失败数据导出
 	        	fileName = "批量发货失败数据";

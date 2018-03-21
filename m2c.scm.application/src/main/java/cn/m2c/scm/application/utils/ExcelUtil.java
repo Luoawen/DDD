@@ -125,24 +125,27 @@ public class ExcelUtil {
         HSSFWorkbook wb = new HSSFWorkbook();//创建工作薄
         
         //表头样式
-        HSSFCellStyle style = wb.createCellStyle();  
-        style.setVerticalAlignment(style.VERTICAL_CENTER); // 创建一个居中格式  
+        
         //字体样式
-        HSSFFont fontStyle = wb.createFont();    
+        /*HSSFFont fontStyle = wb.createFont();    
         fontStyle.setFontName("微软雅黑");    
         fontStyle.setFontHeightInPoints((short)12);    
         fontStyle.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD); 
-        style.setFont(fontStyle);
+        style.setFont(fontStyle);*/
         
         //新建sheet
         HSSFSheet sheet1 = wb.createSheet("批量发货");
         HSSFSheet sheet2 = wb.createSheet("Sheet2");
+        sheet1.setDefaultColumnWidth(20);
         HSSFSheet translation = wb.createSheet("表格说明"); 
 	    int addMergedRegion = translation.addMergedRegion(new CellRangeAddress(2, 19, 1, 10));
 	    HSSFRow sheet3 = translation.createRow(2);
 	    HSSFCell info = sheet3.createCell(1, 1);
-	    info.setCellStyle(style);
+	    HSSFCellStyle style = wb.createCellStyle();  
+	    style.setWrapText(true);
+        style.setVerticalAlignment(style.VERTICAL_CENTER); // 创建一个居中格式  
 	    info.setCellValue("请严格按照表格说明的规范填写，填写不合法均会导入失败；\r\n 1、表格已预置待发货的订货号，请勿篡改；\r\n 2、物流公司名称，请按照提供的标准填写，必填，否则导入失败；\r\n 3、物流单号，请按照实际物流公司单号填写，必填，1-20字符以内");
+	    info.setCellStyle(style);
 
 	    
 	    HSSFCell dealerOrderCell = null;
@@ -166,7 +169,7 @@ public class ExcelUtil {
         //写标题
         for(int i=0;i<handers.length;i++){
             HSSFCell cell = rowFirst.createCell(i); //获取第一行的每个单元格
-            sheet1.setColumnWidth(i, 4000); //设置每列的列宽
+            sheet1.setColumnWidth(i, 5000); //设置每列的列宽
             cell.setCellStyle(style); //加样式
             cell.setCellValue(handers[i]); //往单元格里写数据
         }
