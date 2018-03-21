@@ -8,7 +8,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 
 public class StringDealUtil {
-	private static final String NumOrEnglishRegex="^[a-zA-Z0-9\u4E00-\u9FA5]+$";
+//	private static final String NumOrEnglishRegex="^[a-zA-Z0-9\u4E00-\u9FA5]+$";
+	private static final String NumOrEnglishRegex="^[0-9a-zA-Z]+$";
 	
 	/**
 	 * 如果满足是英文或者数字组合，返回true 否则返回false
@@ -39,7 +40,7 @@ public class StringDealUtil {
 	
 	public static void main(String[] args) {
 		Pattern pattern = Pattern.compile(NumOrEnglishRegex);
-		Matcher match=pattern.matcher("123465fsafs4456");
+		Matcher match=pattern.matcher("fasdfsa");
 		System.out.println(match.matches());
 	}
 }
