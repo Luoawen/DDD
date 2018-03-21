@@ -120,7 +120,7 @@ public class ExcelUtil {
     
     
     public  static HSSFWorkbook createExcelTemplate( String[] handers, 
-            List<String[]> downData, String[] downRows, String[] sendOrderList,String[] errorLogList){
+            List<String[]> downData, String[] downRows, String[] sendOrderList,String[] errorLogList, String[] expressFailList){
         
         HSSFWorkbook wb = new HSSFWorkbook();//创建工作薄
         
@@ -154,6 +154,15 @@ public class ExcelUtil {
         	dealerOrderCell = row.createCell(0,1);
         	dealerOrderCell.setCellValue(sendOrderList[i]);
         }
+        if(expressFailList!=null && expressFailList.length>0){
+        	HSSFCell expressCell = null;
+        	for(int i = 0, length= errorLogList.length; i < length; ++i) {
+        		HSSFRow row = sheet1.createRow(i+1); 
+        		expressCell = row.createCell(1,1);
+        		expressCell.setCellValue(expressFailList[i]);
+        	}
+        }
+        
         if(errorLogList!=null && errorLogList.length>0){
         	HSSFCell logCell = null;
         	for(int i = 0, length= errorLogList.length; i < length; ++i) {
